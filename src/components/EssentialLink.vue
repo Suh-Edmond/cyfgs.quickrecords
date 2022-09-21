@@ -22,6 +22,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
   name: 'EssentialLink',
   props: {
@@ -44,6 +46,18 @@ export default {
       type: String,
       default: ''
     }
+  },
+
+  created(){
+    this.$store.dispatch("auth/someAction")
+  },
+
+  computed: {
+    ...mapGetters({
+      posts: 'auth/testGetter'
+    })
   }
+
+
 }
 </script>

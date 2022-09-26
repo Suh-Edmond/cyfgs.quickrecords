@@ -66,7 +66,11 @@ module.exports = function (/* ctx */) {
       chainWebpack(chain) {
         chain
           .plugin("eslint-webpack-plugin")
-          .use(ESLintPlugin, [{ extensions: ["js", "vue"] }]);
+          .use(ESLintPlugin, [
+            { extensions: ["js", "vue"] },
+            { loader: "@kazupon/vue-i18n-loader" },
+            { loader: "yaml-loader" },
+          ]);
       },
     },
 
@@ -96,7 +100,12 @@ module.exports = function (/* ctx */) {
       // directives: [],
 
       // Quasar plugins
-      plugins: [],
+      plugins: [
+        'Notify'
+      ],
+      config: {
+        notify: { /* look at QUASARCONFOPTIONS from the API card (bottom of page) */ }
+      }
     },
 
     // animations: 'all', // --- includes all animations

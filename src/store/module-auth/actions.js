@@ -1,10 +1,12 @@
 import axios from "axios";
 
-export function someAction({ commit }) {
+export function loginUser({ commit }) {
+  const API_URL = process.env.BASE_URL;
+
   axios
-    .get(`${process.env.BASE_URL}/posts`)
+    .get(`${API_URL}/auth/login`)
     .then((res) => {
-      commit("TEST_MUTATION", res.data);
+      commit("LOGIN_USER", res.data);
     })
     .catch((error) => {
       console.log(error);

@@ -1,3 +1,3 @@
-export function TEST_MUTATION (state, data) {
+export function LOGIN_USER (state, data) {
   state.user = data
 }

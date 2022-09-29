@@ -1,6 +1,6 @@
 <template>
   <q-page>
-    <div class="q-pa-xl">
+    <div class="q-pa-lg">
       <div class="row">
         <div class="col-4"></div>
         <div class="col-4">
@@ -20,8 +20,8 @@
               >
                 SIGN UP
               </div>
-              <div class="text-subtitle2 text-center">
-                Sign up to get started with Financial-Assistant
+              <div class="text-subtitle2 text-center q-pt-sm">
+                Sign up to get started to Financial-Assistant
               </div>
             </q-card-section>
 
@@ -31,17 +31,29 @@
                 <q-form @submit="onSubmit" class="q-gutter-md">
                   <div>
                     <label for="name" class="form_field">Name</label>
-                    <q-input v-model="user.name" outlined dense type="text" />
+                    <q-input
+                      v-model="user.name"
+                      outlined
+                      dense
+                      type="text"
+                      lazy-rules
+                      :rules="[
+                        (val) => (val && val.length > 0) || 'Name is required',
+                      ]"
+                    />
                   </div>
                   <div>
-                    <label for="telephone" class="form_field"
-                      >Telephone/E-mail</label
-                    >
+                    <label for="telephone" class="form_field">Telephone</label>
                     <q-input
                       v-model="user.telephone"
                       outlined
                       dense
                       type="tel"
+                      lazy-rules
+                      :rules="[
+                        (val) =>
+                          (val && val.length > 0) || 'Telephone is required',
+                      ]"
                     />
                   </div>
                   <div>
@@ -51,6 +63,11 @@
                       :type="is_pwd ? 'password' : 'text'"
                       outlined
                       dense
+                      lazy-rules
+                      :rules="[
+                        (val) =>
+                          (val && val.length > 0) || 'Password is required',
+                      ]"
                     >
                       <template v-slot:append>
                         <q-icon
@@ -66,10 +83,16 @@
                       >Confirm Password</label
                     >
                     <q-input
-                      v-model="user.confirm_password"
+                      v-model="user.password_confirmation"
                       :type="is_confirm_pwd ? 'password' : 'text'"
                       outlined
                       dense
+                      :rules="[
+                        (val) =>
+                          (val && val.length > 0) ||
+                          'Confirm Password is required',
+                      ]"
+                      :error="!validatePassword"
                     >
                       <template v-slot:append>
                         <q-icon
@@ -80,6 +103,7 @@
                           @click="is_confirm_pwd = !is_confirm_pwd"
                         />
                       </template>
+                      <template v-slot:error> Password mismatch </template>
                     </q-input>
                   </div>
                   <div>
@@ -87,7 +111,9 @@
                       class="form_button"
                       :label="label_sigup"
                       :loading="loading"
-                    ></ButtonVue>
+                      :disabled="validateForm"
+                    >
+                    </ButtonVue>
                   </div>
                 </q-form>
               </div>
@@ -102,14 +128,16 @@
 
 <script>
 import ButtonVue from "src/components/Button.vue";
+import notificationMixin from "src/mixins/notificationMixin";
 export default {
   name: "PageIndex",
+  mixins:[notificationMixin],
   data() {
     return {
       user: {
         telephone: "",
         password: "",
-        confirm_password: "",
+        password_confirmation: "",
         name: "",
       },
       is_pwd: true,
@@ -117,20 +145,49 @@ export default {
       label_sigup: "SIGN UP",
       loading: false,
       has_logged_in: false,
+      disabled: true,
+      is_valid_email: false,
     };
   },
+  computed: {
+    validatePassword() {
+      return this.user.password === this.user.password_confirmation
+        ? true
+        : false;
+    },
+    validateForm() {
+      if (
+        this.user.name !== "" &&
+        this.user.telephone !== "" &&
+        this.user.password !== "" &&
+        this.user.password_confirmation === this.user.password
+      ) {
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+        this.disabled = false;
+      } else {
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+        this.disabled = true;
+      }
+      return this.disabled;
+    },
+  },
   methods: {
-    onSubmit() {
+    async onSubmit() {
       this.loading = true;
-      // call endpoint to login user
-      this.has_logged_in = true;
-      //sample case
-      setTimeout(() => {
-        // delay simulated, we are done,
-        // now restoring submit to its initial state
-        this.loading = false;
-        this.$router.push("/auth/login");
-      }, 3000);
+      await this.$store
+        .dispatch("auth/registerUser", this.user)
+        .then((res) => {
+          this.loading = false;
+          if (res.status == 200) {
+            this.$router.push("/auth/login");
+            this.sendMessage("positive", res.data.message)
+          } else if (res.status == 500) {
+            this.sendMessage("negative", "Fail to create Account")
+          }
+        })
+        .finally(() => {
+          this.loading = false;
+        });
     },
     goBack() {
       this.is_user_exist = false;
@@ -143,12 +200,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+* {
+  margin: 0;
+}
+
 .col-4 {
   display: block;
+  width: 100%;
 }
 
 .login_form {
-  width: 100%;
+  // width: 100%;
+  // display: block;
 }
 
 .back_arrow {

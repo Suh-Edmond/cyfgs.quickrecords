@@ -1,7 +1,7 @@
 <template>
-  <q-btn color="primary" :label="label"  class="button" type="submit"  :loading="loading">
+  <q-btn color="primary" :label="label"  class="button" type="submit"  :loading="loading" :disable="disabled">
     <template v-slot:loading>
-          <q-spinner-facebook />
+          <q-spinner-ios />
         </template>
   </q-btn>
 </template>
@@ -13,6 +13,9 @@ export default {
      required:true
     },
     loading: {
+      required:true
+    },
+    disabled: {
       required:true
     }
   },

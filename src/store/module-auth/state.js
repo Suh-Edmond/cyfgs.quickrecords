@@ -1,6 +1,6 @@
 export default function () {
   return {
-    user: [],
-    token: {},
+    // is_authenticated: false,
+    has_logged_in: false
   };
 }

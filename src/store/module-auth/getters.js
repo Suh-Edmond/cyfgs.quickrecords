@@ -1,3 +1,3 @@
-export function testGetter ( state ) {
-  return state.user
+export function isLoggedIn ( state ) {
+  return state.has_logged_in
 }

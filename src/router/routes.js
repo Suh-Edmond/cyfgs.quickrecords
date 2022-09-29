@@ -3,14 +3,35 @@ const routes = [
   {
     path: '/',
     component: () => import('layouts/AuthLayout.vue'),
+    redirect:'/auth/login',
+    meta: {
+      middleware: "guest"
+    },
     children: [
-      { path: 'auth/login', component: () => import('src/pages/Auth/Login.vue') },
-      { path: 'auth/register', component: () => import('src/pages/Auth/Register.vue') }
+      {
+        name:"Login",
+        path: 'auth/login', component: () => import('src/pages/Auth/Login.vue'),
+        meta: {
+          middleware: "guest"
+        },
+      },
+      {
+        name:"Register",
+        path: 'auth/register', component: () => import('src/pages/Auth/Register.vue'),
+        meta: {
+          middleware: "guest"
+        }
+      }
     ]
   },
   {
+    name:"Dashboard",
     path: '/user/dashboard',
     component: () => import('layouts/MainLayout.vue'),
+    meta: {
+      middleware: "auth",
+      roles: 'PRESIDENT'
+    }
   },
 
   // Always leave this as last one,

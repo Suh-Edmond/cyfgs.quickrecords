@@ -8,7 +8,7 @@ export function loginUser({ commit }, payload) {
       commit("LOGIN_USER", true);
       const data = JSON.stringify(res.data);
       localStorage.setItem("data", data);
-      localStorage.setItem("hasLoggedInBefore", true);
+      localStorage.setItem('has_logged_in', true);
       return res;
     })
     .catch((error) => {
@@ -22,6 +22,7 @@ export function registerUser({ commit }, user) {
     .post(`${API_URL}/api/public/auth/signup`, user)
     .then((res) => {
       commit("REGISTER_USER", true);
+      localStorage.setItem('is_exist_user', true);
       return res;
     })
     .catch((error) => {
@@ -37,13 +38,9 @@ export function registerUser({ commit }, user) {
     });
 }
 
-export function checkUserExist(payload) {
-  return axios.get(`${API_URL}/api/public/auth/check-user`, payload).then((res) => {
-    return res
-  }).catch((error) => {
-    return error
-  })
-}
+// export function checkUserExist({},payload) {
+//   return axios.get(`${API_URL}/api/public/auth/check-user`, payload);
+// }
 
 export function setNewPassword(payload) {
   return axios.post(`${API_URL}/api/public/auth/set-password`, payload).then((res) => {

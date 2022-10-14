@@ -144,6 +144,7 @@ export default {
       this.is_user_exist = false;
     },
     onSubmit() {
+      this.loading = true;
       let payload = {
         url: "/api/public/auth/login",
         data: this.user,

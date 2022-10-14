@@ -36,20 +36,24 @@
                 <div class="q-pb-sm">
                   <label for="confirm_password" class="form_field">Confirm Password</label>
                   <q-input v-model="user.password_confirmation" :type="is_confirm_pwd ? 'password' : 'text'" outlined
-                    dense>
+                    @input="checkValidate()" bottom-slots dense>
                     <template v-slot:append>
                       <q-icon :name="
                         is_confirm_pwd ? 'visibility_off' : 'visibility'
                       " class="cursor-pointer" @click="is_confirm_pwd = !is_confirm_pwd" />
                     </template>
-                    <template v-slot:error> Password mismatch </template>
+                    <template v-slot:hint v-if="!validatePasswordMatch">
+                      <span class="text-red">Password must match</span>
+                    </template>
                   </q-input>
                 </div>
                 <div class="bottom">
-                  <ButtonVue class="form_button" :label="label_sigup" :loading="loading" :disabled="false">
+                  <ButtonVue class="form_button" :label="label_sigup" :loading="loading" :disabled="!validateForm">
                   </ButtonVue>
-                  <div class="account_text" v-if="!$q.screen.lg">Already Have an Account ?<router-link to="/auth/login" class="sign_link">
-                      <span>SIGN IN</span></router-link>
+                  <div class="account_text" v-if="!$q.screen.lg">Already Have an Account ?<router-link to="/auth/login"
+                      class="sign_link">
+                      <span>SIGN IN</span>
+                    </router-link>
                   </div>
                 </div>
               </q-form>
@@ -84,29 +88,37 @@ export default {
     };
   },
   computed: {
-    validatePassword() {
-      return this.user.password === this.user.password_confirmation
-        ? true
-        : false;
+    validatePasswordMatch() {
+      return this.checkValidate();
     },
     validateForm() {
-      return (this.user.name)
+      return (this.user.name !== null && this.user.telephone !== null && this.user.password !== null && this.user.password_confirmation !== null && this.validatePasswordMatch) ? true : false
     },
   },
   methods: {
     onSubmit() {
-      this.loading = true;
-      this.$store.dispatch("auth/postRequest", {
-        data: this.user,
+      let payload = {
         url: "/api/public/auth/signup",
-        color: "positive",
-        to_on_ok:"Login",
-        fail_msg: "default",
-        to_on_fail:"undefined"
-      }).then(() => {
+        data: this.user,
+        msg: "Account Created Successfully",
+        color: "default",
+        to_on_ok: "Login",
+        to_on_fail: "undefined",
+        error_msg: "default",
+        to_be_store_data: {
+          required: true,
+          has_value: true,
+          data: [{ key: 'is_exist_user', value: true }, { key: 'has_logged_in', value: true }]
+        }
+      }
+      this.loading = true;
+      this.$store.dispatch("auth/postRequest", payload).then(() => {
         this.loading = false
       })
     },
+    checkValidate() {
+      return (this.user.password === this.user.password_confirmation) ? true : false;
+    }
   },
   components: {
     ButtonVue,
@@ -118,6 +130,7 @@ export default {
 * {
   margin: 0;
 }
+
 .page {
   background-color: $grey1;
 }
@@ -185,7 +198,7 @@ export default {
 .account_text {
   font-family: 'Roboto';
   font-style: normal;
-  font-weight:500;
+  font-weight: 500;
   font-size: 10px;
   color: $dark;
   text-transform: uppercase;
@@ -193,6 +206,7 @@ export default {
   float: right;
 
 }
+
 .bottom {
   margin-bottom: 2.5rem;
 }

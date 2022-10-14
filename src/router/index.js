@@ -44,12 +44,11 @@ export default function (
         type: "info",
         position: "top-right",
         message: `Login is required to view this page`,
-        progress: true,
       });
     }
 
     if (to.meta.middleware === "auth" && data !== null) {
-      data.data.roles.forEach((role) => {
+      data.roles.forEach((role) => {
         roles.push(role.name);
       });
       if (roles.includes(to.meta.roles)) {
@@ -59,7 +58,6 @@ export default function (
           type: "info",
           position: "top-right",
           message: `Access denied to view this page`,
-          progress: true,
         });
       }
     }

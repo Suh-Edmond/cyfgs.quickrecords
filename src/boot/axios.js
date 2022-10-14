@@ -6,7 +6,7 @@ Vue.prototype.$axios = axios;
 const data = JSON.parse(localStorage.getItem("data"));
 let token = "";
 if (data !== null) {
-  token = data.data.token;
+  token = data.token;
 }
 
 axios.interceptors.request.use(function (config) {

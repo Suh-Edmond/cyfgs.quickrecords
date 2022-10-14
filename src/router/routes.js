@@ -5,14 +5,16 @@ const routes = [
     component: () => import('layouts/AuthLayout.vue'),
     redirect:'/auth/login',
     meta: {
-      middleware: "guest"
+      middleware: "guest",
+      firstTimer: true
     },
     children: [
       {
         name:"Login",
         path: 'auth/login', component: () => import('src/pages/Auth/Login.vue'),
         meta: {
-          middleware: "guest"
+          middleware: "guest",
+          firstTimer: true
         },
       },
       {
@@ -29,7 +31,7 @@ const routes = [
     path: '/user/dashboard',
     component: () => import('layouts/MainLayout.vue'),
     meta: {
-      middleware: "auth",
+      middleware: "guest",
       roles: 'PRESIDENT'
     }
   },

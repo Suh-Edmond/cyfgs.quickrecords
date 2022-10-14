@@ -8,6 +8,7 @@
 // Configuration for your app
 // https://v1.quasar.dev/quasar-cli/quasar-conf-js
 
+
 const ESLintPlugin = require("eslint-webpack-plugin");
 
 module.exports = function (/* ctx */) {
@@ -43,7 +44,7 @@ module.exports = function (/* ctx */) {
     // Full list of options: https://v1.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
       vueRouterMode: "history", // available values: 'hash', 'history'
-      env: require("dotenv").config().parsed,
+      // env: require("dotenv").config().parsed,
       // env: envparser(),
       // transpile: false,
 
@@ -81,6 +82,7 @@ module.exports = function (/* ctx */) {
       open: true, // opens browser window automatically
     },
 
+
     // https://v1.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-framework
     framework: {
       iconSet: "material-icons", // Quasar icon set
@@ -101,7 +103,7 @@ module.exports = function (/* ctx */) {
 
       // Quasar plugins
       plugins: [
-        'Notify'
+        'Notify', 'LocalStorage','SessionStorage'
       ],
       config: {
         notify: { /* look at QUASARCONFOPTIONS from the API card (bottom of page) */ }

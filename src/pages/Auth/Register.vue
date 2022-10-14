@@ -1,126 +1,61 @@
 <template>
-  <q-page>
-    <div class="q-pa-lg">
-      <div class="row">
-        <div class="col-4"></div>
-        <div class="col-4">
-          <q-card class="login_form">
-            <q-card-section class="q-pt-xs">
-              <div class="q-py-xs back_arrow_button" v-show="has_logged_in">
-                <q-btn
-                  class="material-icons back_arrow"
-                  icon="arrow_back"
-                  @click="goBack"
-                  flat
-                />
-              </div>
-              <div
-                class="text_h6 text-center"
-                :class="!has_logged_in ? 'q-pt-lg' : ''"
-              >
-                SIGN UP
-              </div>
-              <div class="text-subtitle2 text-center q-pt-sm">
-                Sign up to get started to Financial-Assistant
-              </div>
-            </q-card-section>
-
-            <q-card-section>
-              <div class="q-pa-xs" style="width: 100%">
-                <!-- register form -->
-                <q-form @submit="onSubmit" class="q-gutter-md">
-                  <div>
-                    <label for="name" class="form_field">Name</label>
-                    <q-input
-                      v-model="user.name"
-                      outlined
-                      dense
-                      type="text"
-                      lazy-rules
-                      :rules="[
-                        (val) => (val && val.length > 0) || 'Name is required',
-                      ]"
-                    />
+  <q-page class="page">
+    <div class="row q-px-sm" :class="$q.screen.lg?'q-pt-md flex flex-center':'q-pt-sm'">
+      <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12">
+        <q-card>
+          <q-card-section>
+            <div class="text_h6 text-center q-pt-sm">
+              SIGN UP
+            </div>
+            <div class="text-subtitle2 text-center">
+              Sign up to get started with FinancialAssistant
+            </div>
+            <div class="q-pa-md">
+              <q-form @submit="onSubmit" class="q-gutter-md">
+                <div class="q-pb-md">
+                  <label for="name" class="form_field">Name</label>
+                  <q-input v-model="user.name" outlined dense type="text" lazy-rules />
+                </div>
+                <div class="q-pb-md">
+                  <label for="telephone" class="form_field">Telephone</label>
+                  <q-input v-model="user.telephone" outlined dense type="tel" />
+                </div>
+                <div class="q-pb-md">
+                  <label for="email" class="form_field">E-mail</label>
+                  <q-input v-model="user.email" outlined dense type="email" />
+                </div>
+                <div class="q-pb-md">
+                  <label for="password" class="form_field">Password</label>
+                  <q-input v-model="user.password" :type="is_pwd ? 'password' : 'text'" outlined dense>
+                    <template v-slot:append>
+                      <q-icon :name="is_pwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
+                        @click="is_pwd = !is_pwd" />
+                    </template>
+                  </q-input>
+                </div>
+                <div class="q-pb-sm">
+                  <label for="confirm_password" class="form_field">Confirm Password</label>
+                  <q-input v-model="user.password_confirmation" :type="is_confirm_pwd ? 'password' : 'text'" outlined
+                    dense>
+                    <template v-slot:append>
+                      <q-icon :name="
+                        is_confirm_pwd ? 'visibility_off' : 'visibility'
+                      " class="cursor-pointer" @click="is_confirm_pwd = !is_confirm_pwd" />
+                    </template>
+                    <template v-slot:error> Password mismatch </template>
+                  </q-input>
+                </div>
+                <div class="bottom">
+                  <ButtonVue class="form_button" :label="label_sigup" :loading="loading" :disabled="false">
+                  </ButtonVue>
+                  <div class="account_text" v-if="!$q.screen.lg">Already Have an Account ?<router-link to="/auth/login" class="sign_link">
+                      <span>SIGN IN</span></router-link>
                   </div>
-                  <div>
-                    <label for="telephone" class="form_field">Telephone</label>
-                    <q-input
-                      v-model="user.telephone"
-                      outlined
-                      dense
-                      type="tel"
-                      lazy-rules
-                      :rules="[
-                        (val) =>
-                          (val && val.length > 0) || 'Telephone is required',
-                      ]"
-                    />
-                  </div>
-                  <div>
-                    <label for="password" class="form_field">Password</label>
-                    <q-input
-                      v-model="user.password"
-                      :type="is_pwd ? 'password' : 'text'"
-                      outlined
-                      dense
-                      lazy-rules
-                      :rules="[
-                        (val) =>
-                          (val && val.length > 0) || 'Password is required',
-                      ]"
-                    >
-                      <template v-slot:append>
-                        <q-icon
-                          :name="is_pwd ? 'visibility_off' : 'visibility'"
-                          class="cursor-pointer"
-                          @click="is_pwd = !is_pwd"
-                        />
-                      </template>
-                    </q-input>
-                  </div>
-                  <div>
-                    <label for="confirm_password" class="form_field"
-                      >Confirm Password</label
-                    >
-                    <q-input
-                      v-model="user.password_confirmation"
-                      :type="is_confirm_pwd ? 'password' : 'text'"
-                      outlined
-                      dense
-                      :rules="[
-                        (val) =>
-                          (val && val.length > 0) ||
-                          'Confirm Password is required',
-                      ]"
-                      :error="!validatePassword"
-                    >
-                      <template v-slot:append>
-                        <q-icon
-                          :name="
-                            is_confirm_pwd ? 'visibility_off' : 'visibility'
-                          "
-                          class="cursor-pointer"
-                          @click="is_confirm_pwd = !is_confirm_pwd"
-                        />
-                      </template>
-                      <template v-slot:error> Password mismatch </template>
-                    </q-input>
-                  </div>
-                  <div>
-                    <ButtonVue
-                      class="form_button"
-                      :label="label_sigup"
-                      :loading="loading"
-                      :disabled="validateForm"
-                    >
-                    </ButtonVue>
-                  </div>
-                </q-form>
-              </div>
-            </q-card-section>
-          </q-card>
-        </div>
-        <div class="col-4"></div>
+                </div>
+              </q-form>
+            </div>
+          </q-card-section>
+        </q-card>
       </div>
     </div>
   </q-page>
@@ -128,17 +63,16 @@
 
 <script>
 import ButtonVue from "src/components/Button.vue";
-import notificationMixin from "src/mixins/notificationMixin";
 export default {
   name: "PageIndex",
-  mixins:[notificationMixin],
   data() {
     return {
       user: {
-        telephone: "",
-        password: "",
-        password_confirmation: "",
-        name: "",
+        telephone: null,
+        password: null,
+        password_confirmation: null,
+        name: null,
+        email: null
       },
       is_pwd: true,
       is_confirm_pwd: true,
@@ -156,41 +90,22 @@ export default {
         : false;
     },
     validateForm() {
-      if (
-        this.user.name !== "" &&
-        this.user.telephone !== "" &&
-        this.user.password !== "" &&
-        this.user.password_confirmation === this.user.password
-      ) {
-        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-        this.disabled = false;
-      } else {
-        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-        this.disabled = true;
-      }
-      return this.disabled;
+      return (this.user.name)
     },
   },
   methods: {
-    async onSubmit() {
+    onSubmit() {
       this.loading = true;
-      await this.$store
-        .dispatch("auth/registerUser", this.user)
-        .then((res) => {
-          this.loading = false;
-          if (res.status == 200) {
-            this.$router.push("/auth/login");
-            this.sendMessage("positive", res.data.message)
-          } else if (res.status == 500) {
-            this.sendMessage("negative", "Fail to create Account")
-          }
-        })
-        .finally(() => {
-          this.loading = false;
-        });
-    },
-    goBack() {
-      this.is_user_exist = false;
+      this.$store.dispatch("auth/postRequest", {
+        data: this.user,
+        url: "/api/public/auth/signup",
+        color: "positive",
+        to_on_ok:"Login",
+        fail_msg: "default",
+        to_on_fail:"undefined"
+      }).then(() => {
+        this.loading = false
+      })
     },
   },
   components: {
@@ -203,21 +118,8 @@ export default {
 * {
   margin: 0;
 }
-
-.col-4 {
-  display: block;
-  width: 100%;
-}
-
-.login_form {
-  // width: 100%;
-  // display: block;
-}
-
-.back_arrow {
-  font-size: 0.9rem;
-  margin-left: 0;
-  padding-left: 0;
+.page {
+  background-color: $grey1;
 }
 
 .text_h6 {
@@ -225,7 +127,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: bold;
-  font-size: 20px;
+  font-size: 15px;
   line-height: 24px;
   align-items: center;
   text-align: center;
@@ -257,7 +159,7 @@ export default {
 .form_button {
   width: 100%;
   margin-top: 0.5rem;
-  margin-bottom: 2.5rem;
+  margin-bottom: .5rem;
 }
 
 .forgot_password {
@@ -273,5 +175,25 @@ export default {
   color: $primary;
   cursor: pointer;
   margin-bottom: 2.2rem;
+}
+
+.sign_link {
+  text-decoration: none;
+  color: $primary;
+}
+
+.account_text {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight:500;
+  font-size: 10px;
+  color: $dark;
+  text-transform: uppercase;
+  line-height: 37px;
+  float: right;
+
+}
+.bottom {
+  margin-bottom: 2.5rem;
 }
 </style>

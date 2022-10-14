@@ -2,14 +2,10 @@
   <q-layout view="hHh lpR fFf">
     <q-header class="header text-white">
       <q-toolbar>
-        <q-toolbar-title class="header_title">
-          <!-- <q-avatar class="logo"> -->
-            <!-- <img alt="Quasar logo" src="~assets/UB-Logo.png"> -->
-          <!-- </q-avatar> -->
-          <span class="app_name">Financial</span>-Assistant
+        <q-toolbar-title :class="$q.screen.lg? 'header_title':'header_title_small'">
+          <span class="app_name">Financial</span>Assistant
         </q-toolbar-title>
-
-        <div class="header_note">
+        <div class="header_note" v-show="$q.screen.lg">
           <div class="account_text" v-show="hasAccount">
             Don't Have an Account ?
           </div>
@@ -40,13 +36,30 @@
             </q-btn-dropdown>
           </div>
         </div>
+        <div class="header_note" v-show="!$q.screen.lg">
+          <div class="q-pa-md header_language">
+            <q-btn-dropdown color="black" :label="language" flat>
+              <q-list>
+                <q-item clickable v-close-popup @click="onItemClick('English')">
+                  <q-item-section class="text-center">
+                    <q-item-label>English</q-item-label>
+                  </q-item-section>
+                </q-item>
+
+                <q-item clickable v-close-popup @click="onItemClick('French')">
+                  <q-item-section class="text-center">
+                    <q-item-label>French</q-item-label>
+                  </q-item-section>
+                </q-item>
+              </q-list>
+            </q-btn-dropdown>
+          </div>
+        </div>
       </q-toolbar>
     </q-header>
-
     <q-page-container class="content">
       <router-view />
     </q-page-container>
-
     <q-footer class="text-black footer flex flex-center">
       <q-toolbar>
         <q-toolbar-title>
@@ -60,7 +73,6 @@
 </template>
 
 <script>
-
 export default {
   data() {
     return {
@@ -101,6 +113,7 @@ export default {
 
 .content {
   background-color: $grey1;
+  height: 100vh;
 }
 
 .app_name {
@@ -119,6 +132,19 @@ export default {
   font-size: xx-large;
   font-family: "Roboto";
   letter-spacing: 0.009em;
+  display: block;
+}
+
+.header_title_small {
+  text-transform: capitalize;
+  color: $orange;
+  font-weight: bold;
+  padding: .6rem;
+  font-size: large;
+  font-family: "Roboto";
+  letter-spacing: 0.009em;
+  display: block;
+
 }
 
 .logo {
@@ -183,4 +209,5 @@ export default {
 .copy_right {
   font-size: large;
 }
+
 </style>

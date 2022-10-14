@@ -3,7 +3,7 @@
     <div>
       <q-header class="bg-primary text-white header">
         <q-toolbar>
-          <q-btn dense flat round icon="menu" @click="left = !left" v-if="$q.screen.lt.md" />
+          <q-btn dense flat round icon="menu" @click="showLeftDrawer" v-if="$q.screen.lt.md" />
           <q-toolbar-title class="toolbar_title">
             Welcome President
           </q-toolbar-title>
@@ -39,14 +39,19 @@
               </q-list>
             </q-btn-dropdown>
           </div>
-          <!-- <q-btn dense flat round icon="menu" @click="right = !right" /> -->
         </q-toolbar>
       </q-header>
     </div>
     <div class="main_content">
       <div>
         <q-card class="card">
-          <q-card-section class="content_header"> </q-card-section>
+          <q-card-section class="content_header">
+            <div class="row">
+              <label for="title" class="title"><q-btn round color="primary" icon="arrow_back" flat dense /><span class="q-pl-sm">{{item}}</span></label>
+              <q-space />
+              <q-btn color="primary" icon-right="add" label="Add" flat size="md" dense no-caps v-show="requires_add" @click="showRightDrawer"/>
+            </div>
+          </q-card-section>
           <q-card-section class="content">
           </q-card-section>
         </q-card>
@@ -68,10 +73,31 @@
 
 <script>
 export default {
+  props: {
+    item: {
+      type: String,
+      required: true
+    },
+    requires_add: {
+      type: Boolean,
+      required: true,
+    }
+  },
   data() {
     return {
       left: false,
       year: new Date().getFullYear(),
+      right:false,
+    }
+  },
+  methods:{
+    showRightDrawer(){
+      this.right = true;
+      this.$emit('show-right-drawer', this.right)
+    },
+    showLeftDrawer(){
+      this.left = !this.left;
+      this.$emit('show-left-drawer', this.left)
     }
   }
 };
@@ -133,5 +159,15 @@ export default {
   height: 2rem;
   background-color: $white1;
   margin-left: 1rem;
+}
+
+.title {
+  font-family: 'Roboto';
+  font-style: normal;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: $primary;
+  font-weight: 500;
+  font-size: smaller;
 }
 </style>

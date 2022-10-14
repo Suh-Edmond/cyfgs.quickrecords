@@ -1,6 +1,6 @@
 <template>
   <q-layout view="lHr lpR lFr">
-    <q-drawer show-if-above v-model="left" side="left" bordered :width="260">
+    <q-drawer show-if-above v-model="left" side="left" bordered :width="280">
       <div>
         <div class="bg-transparent q-pa-sm flex flex-center">
           <q-avatar size="70px">
@@ -11,106 +11,124 @@
       </div>
       <div class="nav">
         <q-list padding>
-          <q-item :active="active" clickable v-ripple :class="active?'item':''">
-            <q-item-section avatar>
-              <q-icon name="grid_view" />
+          <q-item :active="item == 'Dashboard'" clickable v-ripple :active-class="item =='Dashboard'?'item':'item_text'" @click="setItem('Dashboard', false)">
+            <q-item-section avatar :class="item =='Dashboard'?'item_icon':'item_text'">
+              <q-icon name="grid_view" size="xs" />
             </q-item-section>
 
-            <q-item-section>
+            <q-item-section class="item_name">
               Dashboard
             </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple class="item_text" @click="onItemChange" :to="{ name: 'Login' }">
-            <q-item-section avatar>
-              <q-icon name="diversity_3" />
+          <q-item clickable v-ripple :active-class="item =='Organisation Management'?'item':'item_text'" :active="item == 'Organisation Management'" @click="setItem('Organisation Management', false)">
+            <q-item-section avatar :class="item =='Organisation Management'?'item_icon':'item_text'">
+              <q-icon name="diversity_3" size="xs"/>
             </q-item-section>
-            <q-item-section>
-              Organisation
+            <q-item-section class="item_name">
+              Organisation Management
             </q-item-section>
           </q-item>
-          <q-item clickable v-ripple class="item_text">
-            <q-item-section avatar>
-              <q-icon name="manage_accounts" />
+          <q-item clickable v-ripple :active-class="item =='User Management'?'item':'item_text'" :active="item == 'User Management'" @click="setItem('User Management', false)">
+            <q-item-section avatar :class="item =='User Management'?'item_icon':'item_text'">
+              <q-icon name="manage_accounts" size="xs" />
             </q-item-section>
-            <q-item-section>
+            <q-item-section class="item_name">
               User Management
             </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple class="item_text" >
-            <q-item-section avatar>
-              <q-icon name="settings" />
+          <q-item clickable v-ripple :active-class="item =='Settings'?'item':'item_text'" :active="item == 'Settings'" @click="setItem('Settings', false)">
+            <q-item-section avatar :class="item =='Settings'?'item_icon':'item_text'">
+              <q-icon name="settings" size="xs"/>
             </q-item-section>
-            <q-item-section>
+            <q-item-section class="item_name">
               Settings Zone
             </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple class="item_text" >
-            <q-item-section avatar>
-              <q-icon name="drafts" />
+          <q-item clickable v-ripple :active-class="item =='Payment Categories'?'item':'item_text'" :active="item == 'Payment Categories'" @click="setItem('Payment Categories', true)">
+            <q-item-section avatar :class="item =='Payment Categories'?'item_icon':'item_text'">
+              <q-icon name="monetization_on" size="xs"/>
             </q-item-section>
-            <q-item-section>
+            <q-item-section class="item_name">
               Payment Categories
             </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple class="item_text" >
-            <q-item-section avatar>
-              <q-icon name="drafts" />
+          <q-item clickable v-ripple :active-class="item =='Expenditure Categories'?'item':'item_text'" :active="item == 'Expenditure Categories'" @click="setItem('Expenditure Categories', true)">
+            <q-item-section avatar :class="item =='Expenditure Categories'?'item_icon':'item_text'">
+              <q-icon name="monetization_on" size="xs" />
             </q-item-section>
-            <q-item-section>
+            <q-item-section class="item_name">
               Expenditure Categories
             </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple class="item_text">
-            <q-item-section avatar>
-              <q-icon name="savings" />
+          <q-item clickable v-ripple :active-class="item =='Member Savings'?'item':'item_text'" :active="item == 'Member Savings'" @click="setItem('Member Savings', true)">
+            <q-item-section avatar :class="item =='Member Savings'?'item_icon':'item_text'">
+              <q-icon name="savings" size="xs"/>
             </q-item-section>
-            <q-item-section>
+            <q-item-section class="item_name">
               Member Savings
             </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple class="item_text">
-            <q-item-section avatar>
-              <q-icon name="drafts" />
+          <q-item clickable v-ripple :active-class="item =='Income Activities'?'item':'item_text'" :active="item == 'Income Activities'" @click="setItem('Income Activities', true)">
+            <q-item-section avatar :class="item =='Income Activities'?'item_icon':'item_text'">
+              <q-icon name="local_activity" size="xs"/>
             </q-item-section>
-            <q-item-section>
+            <q-item-section class="item_name">
               Income Activities
             </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple class="item_text">
-            <q-item-section avatar>
-              <q-icon name="payments" />
+          <q-item clickable v-ripple :active-class="item =='Contributions'?'item':'item_text'" :active="item == 'Contributions'" @click="setItem('Contributions', true)">
+            <q-item-section avatar :class="item =='Contributions'?'item_icon':'item_text'">
+              <q-icon name="payments" size="xs"/>
             </q-item-section>
-            <q-item-section>
+            <q-item-section class="item_name">
               Contributions
             </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple class="item_text">
-            <q-item-section avatar>
-              <q-icon name="summarize" />
+          <q-item clickable v-ripple :active-class="item =='Reports Generation'?'item':'item_text'" :active="item == 'Reports Generation'" @click="setItem('Reports Generation', false)">
+            <q-item-section avatar :class="item =='Reports Generation'?'item_icon':'item_text'">
+              <q-icon name="summarize" size="xs"/>
             </q-item-section>
-            <q-item-section>
-              Reports
+            <q-item-section class="item_name">
+              Reports Generation
             </q-item-section>
           </q-item>
-
+        </q-list>
+        <q-list padding>
+          <q-item clickable v-ripple :active-class="item =='Logout'?'item':'item_text'">
+            <q-item-section avatar class="item_text">
+              <q-icon name="logout" size="xs"/>
+            </q-item-section>
+            <q-item-section class="item_name">
+              Logout
+            </q-item-section>
+          </q-item>
         </q-list>
       </div>
     </q-drawer>
 
-    <q-drawer v-model="right" side="right" bordered>
-      <!-- drawer content -->
+    <q-drawer v-model="right" side="right" bordered :width="370">
+      <q-page>
+        <q-bar class="bar">
+          <div></div>
+          <q-space />
+          <div>
+            <q-btn dense flat icon="close" v-close-popup @click="updateRightDrawer(false)" size="md">
+          </q-btn>
+          </div>
+        </q-bar>
+      </q-page>
     </q-drawer>
 
     <q-page-container class="content">
-      <MainContent>
+      <MainContent :item="item" :requires_add="requires_add" @show-right-drawer="updateRightDrawer" @show-left-drawer="updateLeftDrawer">
         <router-view />
       </MainContent>
     </q-page-container>
@@ -126,13 +144,21 @@ export default {
       left: false,
       right: false,
       year: new Date().getFullYear(),
-      active: true
+      item: "Dashboard",
+      requires_add: false,
+      roles:[],
     }
   },
   methods:{
-    onItemChange(evt){
-      evt.preventDefault()
-      console.log(evt.to);
+    setItem(item, requires_add) {
+      this.item = item;
+      this.requires_add = requires_add;
+    },
+    updateRightDrawer(right){
+      this.right = right
+    },
+    updateLeftDrawer(left){
+      this.left = left;
     }
   },
   components: {
@@ -179,7 +205,11 @@ export default {
 
 .nav {
   background-color: $grey6;
-  height: 77vh;
+  height: 77.9vh;
+}
+.item_icon {
+  color: $white1;
+  font-size: .8rem;
 }
 
 .item {
@@ -188,5 +218,13 @@ export default {
 }
 .item_text {
   color:$grey2;
+}
+.item_name {
+  font-size: .8rem;
+}
+.bar {
+  background-color: $primary;
+  color: $white1;
+  padding: 0;
 }
 </style>

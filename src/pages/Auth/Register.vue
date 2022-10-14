@@ -46,10 +46,10 @@
                   </q-input>
                 </div>
                 <div class="bottom">
-                  <ButtonVue class="form_button" :label="label_sigup" :loading="loading" :disabled="validateForm">
+                  <ButtonVue class="form_button" :label="label_sigup" :loading="loading" :disabled="false">
                   </ButtonVue>
                   <div class="account_text" v-if="!$q.screen.lg">Already Have an Account ?<router-link to="/auth/login" class="sign_link">
-                      <span @click="checkAccountExist">SIGN IN</span></router-link>
+                      <span>SIGN IN</span></router-link>
                   </div>
                 </div>
               </q-form>
@@ -63,18 +63,16 @@
 
 <script>
 import ButtonVue from "src/components/Button.vue";
-import notificationMixin from "src/mixins/notificationMixin";
 export default {
   name: "PageIndex",
-  mixins: [notificationMixin],
   data() {
     return {
       user: {
-        telephone: "",
-        password: "",
-        password_confirmation: "",
-        name: "",
-        email: ""
+        telephone: null,
+        password: null,
+        password_confirmation: null,
+        name: null,
+        email: null
       },
       is_pwd: true,
       is_confirm_pwd: true,
@@ -92,41 +90,22 @@ export default {
         : false;
     },
     validateForm() {
-      if (
-        this.user.name !== "" &&
-        this.user.telephone !== "" &&
-        this.user.password !== "" &&
-        this.user.password_confirmation === this.user.password
-      ) {
-        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-        this.disabled = false;
-      } else {
-        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-        this.disabled = true;
-      }
-      return this.disabled;
+      return (this.user.name)
     },
   },
   methods: {
-    async onSubmit() {
+    onSubmit() {
       this.loading = true;
-      await this.$store
-        .dispatch("auth/registerUser", this.user)
-        .then((res) => {
-          this.loading = false;
-          if (res.status == 200) {
-            this.$router.push("/auth/login");
-            this.sendMessage("positive", res.data.message)
-          } else if (res.status == 500) {
-            this.sendMessage("negative", "Fail to create Account")
-          }
-        })
-        .finally(() => {
-          this.loading = false;
-        });
-    },
-    goBack() {
-      this.is_user_exist = false;
+      this.$store.dispatch("auth/postRequest", {
+        data: this.user,
+        url: "/api/public/auth/signup",
+        color: "positive",
+        to_on_ok:"Login",
+        fail_msg: "default",
+        to_on_fail:"undefined"
+      }).then(() => {
+        this.loading = false
+      })
     },
   },
   components: {

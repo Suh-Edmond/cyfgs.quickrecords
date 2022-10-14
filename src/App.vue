@@ -9,7 +9,6 @@ export default {
   name: 'App',
 
   created(){
-    // localStorage.setItem('is_exist_user', false);
   }
 }
 </script>

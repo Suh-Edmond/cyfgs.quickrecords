@@ -1,58 +1,78 @@
+
+import { Notify, Platform } from "quasar";
 import axios from "axios";
 
-const API_URL = process.env.BASE_URL[0];
-export function loginUser({ commit }, payload) {
-  return axios
-    .post(`${API_URL}/api/public/auth/login`, payload)
-    .then((res) => {
-      commit("LOGIN_USER", true);
-      const data = JSON.stringify(res.data);
-      localStorage.setItem("data", data);
-      localStorage.setItem('has_logged_in', true);
-      return res;
-    })
-    .catch((error) => {
-      commit("LOGIN_USER", false);
-      return error.response;
-    });
-}
-
-export function registerUser({ commit }, user) {
-  return axios
-    .post(`${API_URL}/api/public/auth/signup`, user)
-    .then((res) => {
-      commit("REGISTER_USER", true);
-      localStorage.setItem('is_exist_user', true);
-      return res;
-    })
-    .catch((error) => {
-      commit("REGISTER_USER", false);
-      error.response.data.errors.forEach(element => {
-        this.$q.notify({
-          type: "negative",
-          position: "top-right",
-          message: `Fail to create Account`,
-          progress: true,
-        });
+export function handleRequestResponse({commit}, payload) {
+  if (payload.status == "success") {
+    if (payload.msg == "default") {
+      Notify.create({
+        color: payload.color != "default" ? payload.color : "teal",
+        message: "Action completed successful",
+        position: Platform.is.mobile ? "bottom" : "top-right",
       });
-    });
+    } else if (payload.msg) {
+      Notify.create({
+        color: payload.color != "default" ? payload.color : "teal",
+        message: payload.msg,
+        position: Platform.is.mobile ? "bottom" : "top-right",
+      });
+    }
+    if (typeof payload.to_on_ok !== "undefined") {
+      this.$router.push({
+        name: payload.to_on_ok,
+      });
+    }
+  }
+  if (payload.status == "fail") {
+    if (payload.fail_msg !== "default") {
+      Notify.create({
+        color: payload.color != "default" ? payload.color : "red",
+        message: "Action did not complete successfully",
+        position: Platform.is.mobile ? "bottom" : "top-right",
+      });
+    } else if (payload.data.fail_msg) {
+      Notify.create({
+        color: payload.color != "default" ? payload.color : "red",
+        message: payload.msg,
+        position: Platform.is.mobile ? "bottom" : "top-right",
+      });
+    }
+    if (typeof payload.to_on_fail !== "undefined") {
+      this.$router.push({
+        name: payload.to_on_fail,
+      });
+    }
+  }
 }
 
-// export function checkUserExist({},payload) {
-//   return axios.get(`${API_URL}/api/public/auth/check-user`, payload);
-// }
-
-export function setNewPassword(payload) {
-  return axios.post(`${API_URL}/api/public/auth/set-password`, payload).then((res) => {
-    commit("LOGIN_USER", true);
-      const data = JSON.stringify(res.data);
-      localStorage.setItem("data", data);
-      localStorage.setItem("hasLoggedInBefore", true);
-      return res;
-  }).catch((error) => {
-    commit("LOGIN_USER", false);
-    return error.response;
-  });
+export function postRequest({ commit, dispatch }, payload) {
+  // return axios({
+  //   method:"POST",
+  //   url: payload.url,
+  //   data: payload.data,
+  //   headers: payload.headers || null,
+  // }).then((res) => {
+  //     console.log(res)
+  //     let handle_response_payload = {
+  //       data: res.data,
+  //       status: 'success',
+  //       color: payload.color,
+  //       msg: res.data.message? res.data.message: 'default',
+  //       to_on_ok: payload.to_on_ok
+  //     };
+  //     dispatch("handleRequestResponse",  handle_response_payload );
+  //     return res;
+  //   })
+  //   .catch((error) => {
+  //     console.log(error);
+  //     let handle_response_payload = {
+  //       status: 'fail',
+  //       color: 'red',
+  //       to_on_fail: payload.to_on_fail,
+  //       // fail_msg: error.response.message? error.response.message : 'default'
+  //     };
+  //     dispatch("handleRequestResponse", { handle_response_payload });
+  //     throw error;
+  //   });
+axios.post(payload.url, payload.data);
 }
-
-

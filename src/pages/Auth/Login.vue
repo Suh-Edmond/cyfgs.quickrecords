@@ -45,7 +45,7 @@
                 <div class="row q-mb-xl justify-end">
                   <span class="account_text" v-if="!$q.screen.lg">Don't Have an Account ?
                     <router-link to="/auth/register" class="sign_link">
-                      <span @click="checkAccountExist">SIGN UP</span>
+                      <span>SIGN UP</span>
                     </router-link>
                   </span>
                 </div>
@@ -80,7 +80,7 @@
                 <div class="row q-mb-xl" :class="!$q.screen.lg?'justify-evenly':'justify-end'">
                   <span class="account_text" v-if="!$q.screen.lg">Don't Have an Account ?
                     <router-link to="/auth/register" class="sign_link">
-                      <span @click="checkAccountExist">SIGN UP</span>
+                      <span>SIGN UP</span>
                     </router-link>
                   </span>
                   <span class="forgot_password">Forgot Password ?</span>
@@ -97,10 +97,8 @@
 <script>
 import axios from "axios";
 import ButtonVue from "src/components/Button.vue";
-import notificationMixin from "src/mixins/notificationMixin";
 export default {
   name: "PageIndex",
-  mixins: [notificationMixin],
   created() {
     this.has_logged_in = this.$router.history.current.meta.firstTimer;
     this.is_exist_user = localStorage.getItem('is_exist_user');
@@ -118,7 +116,8 @@ export default {
       loading: false,
       disabled: false,
       validateForm: false,
-      is_exist_user: false
+      is_exist_user: false,
+      has_logged_in:true,
     };
   },
   computed: {
@@ -164,7 +163,7 @@ export default {
         console.log(response.data.telephone);
         this.user.telephone = response.data.telephone
       }).catch((error) => {
-        this.sendMessage('negative', 'User Account not found');
+
       }).finally(() => {
         this.loading = false;
       })
@@ -176,7 +175,7 @@ export default {
         const data = JSON.stringify(res.data);
         localStorage.setItem("data", data);
         this.$router.history.current.meta.firstTimer = false;
-        this.sendMessage('positive', 'Login Successful');
+
       }).catch((error) => {
         return error.response;
       }).finally(() => {

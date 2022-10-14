@@ -4,19 +4,19 @@
       <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12">
         <q-card :class="$q.screen.lg?'q-mt-lg':'q-mt-md q-mb-xl'">
           <q-card-section>
-            <div class="back_arrow_button" v-show="has_logged_in">
+            <div class="back_arrow_button" v-show="!is_exist_user || !has_logged_in">
               <q-btn class="material-icons back_arrow" icon="arrow_back" @click="goBack" flat />
             </div>
             <div class="text_h6 text-center q-pt-sm">
               SIGN IN
             </div>
             <div class="text-subtitle2 text-center">
-              Sign in to continue to Financial-Assistant
+              Sign in to continue to FinancialAssistant
             </div>
-            <q-form @submit="loginUser" class="q-gutter-md q-mt-lg q-px-md" v-show="!has_logged_in">
+            <q-form @submit="onSubmit" class="q-gutter-md q-mt-lg q-px-md" v-show="has_logged_in && is_exist_user">
               <div>
-                <label for="telephone" class="form_field">Telephone/Email</label>
-                <q-input v-model="user.telephone" outlined dense type="tel" />
+                <label for="credential" class="form_field">Telephone/Email</label>
+                <q-input v-model="user.credential" outlined dense type="text" />
               </div>
               <div>
                 <label for="password" class="form_field">Password</label>
@@ -28,16 +28,16 @@
                 </q-input>
               </div>
               <div>
-                <ButtonVue class="form_button" :label="label_sigin" :loading="loading" :disabled="validateForm">
+                <ButtonVue class="form_button" :label="label_sigin" :loading="loading" :disabled="validateLogin">
                 </ButtonVue>
                 <span class="forgot_password text-right">Forgot Password ?</span>
               </div>
             </q-form>
             <q-form @submit="onCheckUserExist" class="q-gutter-md q-mt-xl q-px-md"
-              v-show="has_logged_in && !is_exist_user">
+              v-show="!has_logged_in && !is_exist_user">
               <div>
-                <label for="telephone" class="form_field">Telephone/Email</label>
-                <q-input v-model="user.telephone" outlined dense type="tel" />
+                <label for="credential" class="form_field">Telephone/Email</label>
+                <q-input v-model="check_user.credential" outlined dense type="text" />
               </div>
               <div>
                 <ButtonVue class="form_button" :label="label_continue" :loading="loading" :disabled="!validatePhone">
@@ -51,10 +51,11 @@
                 </div>
               </div>
             </q-form>
-            <q-form @submit="onSetPassword" class="q-gutter-md q-mt-lg q-px-md" v-show="has_logged_in && is_exist_user">
+            <q-form @submit="onSetPassword" class="q-gutter-md q-mt-lg q-px-md"
+              v-show="!has_logged_in && is_exist_user">
               <div>
-                <label for="telephone" class="form_field">Telephone/Email</label>
-                <q-input v-model="user.telephone" outlined dense type="tel" />
+                <label for="credential" class="form_field">Telephone/Email</label>
+                <q-input v-model="user.credential" outlined dense type="text" />
               </div>
               <div>
                 <label for="password" class="form_field">Password</label>
@@ -67,15 +68,20 @@
               </div>
               <div>
                 <label for="password_confirmation" class="form_field">Confirm Password</label>
-                <q-input v-model="user.password_confirmation" :type="isPwd ? 'password' : 'text'" outlined dense>
+                <q-input v-model="user.password_confirmation" :type="is_pwd_confirm ? 'password' : 'text'" outlined
+                  dense bottom-slots>
                   <template v-slot:append>
-                    <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
-                      @click="isPwd = !isPwd" />
+                    <q-icon :name="is_pwd_confirm ? 'visibility_off' : 'visibility'" class="cursor-pointer"
+                      @click="is_pwd_confirm = !is_pwd_confirm" />
+                  </template>
+                  <template v-slot:hint v-if="validatePasswordMatch">
+                    <span class="text-red">Password must match</span>
                   </template>
                 </q-input>
               </div>
               <div>
-                <ButtonVue class="form_button" :label="label_sigin" :loading="loading" :disabled="validateForm">
+                <ButtonVue class="form_button" :label="label_sigin" :loading="loading"
+                  :disabled="validatePasswordMatch">
                 </ButtonVue>
                 <div class="row q-mb-xl" :class="!$q.screen.lg?'justify-evenly':'justify-end'">
                   <span class="account_text" v-if="!$q.screen.lg">Don't Have an Account ?
@@ -95,92 +101,121 @@
 </template>
 
 <script>
-import axios from "axios";
 import ButtonVue from "src/components/Button.vue";
 export default {
   name: "PageIndex",
   created() {
-    this.has_logged_in = this.$router.history.current.meta.firstTimer;
+    this.has_logged_in = localStorage.getItem('has_logged_in');
     this.is_exist_user = localStorage.getItem('is_exist_user');
+    this.user.credential = localStorage.getItem('credential')
   },
   data() {
     return {
       user: {
-        telephone: "",
-        password: "",
-        password_confirmation: "",
+        password: null,
+        password_confirmation: null,
+        credential: localStorage.getItem('credential') !== undefined ? localStorage.getItem('credentail') : null,
+      },
+      check_user: {
+        credential: null
       },
       isPwd: true,
+      is_pwd_confirm: true,
       label_continue: "CONTINUE",
       label_sigin: "SIGN IN",
       loading: false,
-      disabled: false,
-      validateForm: false,
-      is_exist_user: false,
-      has_logged_in:true,
+      is_exist_user: localStorage.getItem('is_exist_user'),
+      has_logged_in: localStorage.getItem('has_logged_in'),
     };
   },
   computed: {
-    checkUserExist() {
-      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-      this.is_exist_user = localStorage.getItem('is_exist_user');
-      return this.is_exist_user;
-    },
     validatePhone() {
-      return (this.user.telephone == "") ? false : true
+      return (this.check_user.credential == null) ? false : true
+    },
+    validatePasswordMatch() {
+      return (this.user.password === this.user.password_confirmation) ? false : true
+    },
+    validateLogin() {
+      return (this.user.credential !== null && this.user.password !== null) ? false : true
     }
   },
   methods: {
-    loginUser() {
-      // this.loading = true;
-      // this.$store
-      //   .dispatch("auth/loginUser", this.user)
-      //   .then((response) => {
-      //     if (response.status == 200) {
-      //       this.sendMessage("positive", "Login Successful");
-      //       this.$router.push("/user/dashboard");
-      //     } else if (response.status == 401) {
-      //       this.sendMessage("negative", "Login Failed!  Invalid Credentials ");
-      //     }
-      //   })
-      //   .finally(() => {
-      //     this.loading = false;
-      //   });
-      console.log("hi");
-    },
     goBack() {
       this.is_user_exist = false;
     },
     onSubmit() {
-      console.log("hello");
+      let payload = {
+        url: "/api/public/auth/login",
+        data: this.user,
+        msg: "Login Successful",
+        color: "default",
+        to_on_ok: "Dashboard",
+        to_on_fail: "none",
+        error_msg: "Invalid Credentials",
+        to_be_store_data: {
+          required: true,
+          has_value: false,
+          data: [
+            { key: 'data', value: null }
+          ]
+        }
+      }
+      this.$store.dispatch("auth/postRequest", payload).then(() => {
+      }).finally(() => {
+        this.loading = false;
+      })
     },
     onCheckUserExist() {
-      const API_URL = process.env.BASE_URL[0];
+      let payload = {
+        url: "/api/public/auth/check-user",
+        data: this.check_user,
+        msg: "Success! please provide a password to Login",
+        color: "default",
+        to_on_ok: "none",
+        to_on_fail: "none",
+        error_msg: "User Account does not exist",
+        to_be_store_data: {
+          required: true,
+          has_value: true,
+          data: [
+            { key: 'is_exist_user', value: true },
+            { key: 'credential', value: this.check_user.credential }
+          ]
+        }
+      }
       this.loading = true;
-      axios.post(`${API_URL}/api/public/auth/check-user`, this.user).then((response) => {
-        this.is_exist_user = true;
-        localStorage.setItem('is_exist_user', true);
-        console.log(response.data.telephone);
-        this.user.telephone = response.data.telephone
-      }).catch((error) => {
+      this.$store.dispatch('auth/postRequest', payload).then((res) => {
+        if (res !== undefined) {
+          this.is_exist_user = true;
+          this.user.credential = this.check_user.credential
+        }
 
       }).finally(() => {
         this.loading = false;
       })
     },
     onSetPassword() {
-      const API_URL = process.env.BASE_URL[0];
+      let payload = {
+        url: "/api/public/auth/set-password",
+        data: this.user,
+        msg: "Login Successful",
+        color: "default",
+        to_on_ok: "Dashboard",
+        to_on_fail: "none",
+        error_msg: "Invalid Credentails",
+        to_be_store_data: {
+          required: true,
+          has_value: false,
+          data: [
+            { key: 'data', value: null }
+          ]
+        }
+      }
       this.loading = true;
-      axios.post(`${API_URL}/api/public/auth/set-password`, this.user).then((res) => {
-        const data = JSON.stringify(res.data);
-        localStorage.setItem("data", data);
-        this.$router.history.current.meta.firstTimer = false;
-
-      }).catch((error) => {
-        return error.response;
+      this.$store.dispatch("auth/postRequest", payload).then(() => {
       }).finally(() => {
-        this.loading = false
-      });
+        this.loading = false;
+      })
     }
 
 

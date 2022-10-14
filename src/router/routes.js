@@ -31,8 +31,8 @@ const routes = [
     path: '/user/dashboard',
     component: () => import('layouts/MainLayout.vue'),
     meta: {
-      middleware: "guest",
-      roles: 'PRESIDENT'
+      middleware: "auth",
+      roles: 'USER'
     }
   },
 

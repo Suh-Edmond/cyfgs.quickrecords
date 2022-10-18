@@ -22,12 +22,11 @@ export function handleRequestResponse({ commit }, payload) {
         if (payload.to_be_store_data.has_value) {
           localStorage.setItem(element.key, element.value);
         } else {
-          console.log(element);
           localStorage.setItem(element.key, JSON.stringify(element.value));
         }
       });
     }
-    if (payload.to_on_ok !== "none") {
+    if (payload.to_on_ok !== "none" && payload.status == "success") {
       this.$router.push({
         name: payload.to_on_ok,
       });
@@ -70,7 +69,10 @@ export function postRequest({ commit, dispatch }, payload) {
           required: payload.to_be_store_data.required,
           data: payload.to_be_store_data.has_value
             ? payload.to_be_store_data.data
-            : [{ key: "data", value: res.data.data }],
+            : [
+                { key: "data", value: res.data.data },
+                { key: "has_logged_in", value: true },
+              ],
         },
       };
       dispatch("handleRequestResponse", handle_response_payload);
@@ -89,4 +91,16 @@ export function postRequest({ commit, dispatch }, payload) {
       };
       dispatch("handleRequestResponse", handle_response_payload);
     });
+}
+
+export function setRoles({ commit }, roles) {
+  commit("SET_ROLES", roles);
+}
+
+export function logoutUser({ commit }, payload) {
+  localStorage.removeItem("data");
+  this.$router.push({
+    name: payload.to_on_ok,
+  });
+  commit("SET_ROLES", []);
 }

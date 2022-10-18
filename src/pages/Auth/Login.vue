@@ -1,15 +1,13 @@
 <template>
   <q-page class="page">
-    <div class="row q-px-sm" :class="$q.screen.lg?'q-pt-lg flex flex-center':'q-pt-sm'">
+    <div class="row q-px-sm" :class="$q.screen.lg ? 'q-pt-lg flex flex-center' : 'q-pt-sm'">
       <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12">
-        <q-card :class="$q.screen.lg?'q-mt-lg':'q-mt-md q-mb-xl'">
+        <q-card :class="$q.screen.lg ? 'q-mt-lg' : 'q-mt-md q-mb-xl'">
           <q-card-section>
             <div class="back_arrow_button" v-show="!is_exist_user || !has_logged_in">
               <q-btn class="material-icons back_arrow" icon="arrow_back" @click="goBack" flat />
             </div>
-            <div class="text_h6 text-center q-pt-sm">
-              SIGN IN
-            </div>
+            <div class="text_h6 text-center q-pt-sm">SIGN IN</div>
             <div class="text-subtitle2 text-center">
               Sign in to continue to FinancialAssistant
             </div>
@@ -83,7 +81,7 @@
                 <ButtonVue class="form_button" :label="label_sigin" :loading="loading"
                   :disabled="validatePasswordMatch">
                 </ButtonVue>
-                <div class="row q-mb-xl" :class="!$q.screen.lg?'justify-evenly':'justify-end'">
+                <div class="row q-mb-xl" :class="!$q.screen.lg ? 'justify-evenly' : 'justify-end'">
                   <span class="account_text" v-if="!$q.screen.lg">Don't Have an Account ?
                     <router-link to="/auth/register" class="sign_link">
                       <span>SIGN UP</span>
@@ -105,39 +103,47 @@ import ButtonVue from "src/components/Button.vue";
 export default {
   name: "PageIndex",
   created() {
-    this.has_logged_in = localStorage.getItem('has_logged_in');
-    this.is_exist_user = localStorage.getItem('is_exist_user');
-    this.user.credential = localStorage.getItem('credential')
+    this.has_logged_in = localStorage.getItem("has_logged_in");
+    this.is_exist_user = localStorage.getItem("is_exist_user");
+    this.user.credential = localStorage.getItem("credential");
   },
   data() {
     return {
       user: {
         password: null,
         password_confirmation: null,
-        credential: localStorage.getItem('credential') !== undefined ? localStorage.getItem('credentail') : null,
+        credential:
+          localStorage.getItem("credential") !== undefined
+            ? localStorage.getItem("credentail")
+            : null,
       },
       check_user: {
-        credential: null
+        credential: null,
       },
       isPwd: true,
       is_pwd_confirm: true,
       label_continue: "CONTINUE",
       label_sigin: "SIGN IN",
       loading: false,
-      is_exist_user: localStorage.getItem('is_exist_user'),
-      has_logged_in: localStorage.getItem('has_logged_in'),
+      is_exist_user: localStorage.getItem("is_exist_user"),
+      has_logged_in: localStorage.getItem("has_logged_in"),
+      roles: [],
     };
   },
   computed: {
     validatePhone() {
-      return (this.check_user.credential == null) ? false : true
+      return this.check_user.credential == null ? false : true;
     },
     validatePasswordMatch() {
-      return (this.user.password === this.user.password_confirmation) ? false : true
+      return this.user.password === this.user.password_confirmation
+        ? false
+        : true;
     },
     validateLogin() {
-      return (this.user.credential !== null && this.user.password !== null) ? false : true
-    }
+      return this.user.credential === null || this.user.password === null
+        ? true
+        : false;
+    },
   },
   methods: {
     goBack() {
@@ -147,24 +153,32 @@ export default {
       this.loading = true;
       let payload = {
         url: "/api/public/auth/login",
-        data: this.user,
+        data: {
+          telephone: this.user.credential,
+          password: this.user.password,
+          email: this.user.credential,
+        },
         msg: "Login Successful",
         color: "default",
         to_on_ok: "Dashboard",
         to_on_fail: "none",
-        error_msg: "Invalid Credentials",
+        error_msg: "Invalid Credentials! Please try again",
         to_be_store_data: {
           required: true,
           has_value: false,
-          data: [
-            { key: 'data', value: null }
-          ]
-        }
-      }
-      this.$store.dispatch("auth/postRequest", payload).then(() => {
-      }).finally(() => {
-        this.loading = false;
-      })
+          data: [{ key: "data", value: null }],
+        },
+      };
+      this.$store
+        .dispatch("auth/postRequest", payload)
+        .then((res) => {
+          if (typeof res !== undefined) {
+            this.$store.dispatch("auth/setRoles", this.setUserRoles(res.data.data.roles));
+          }
+        })
+        .finally(() => {
+          this.loading = false;
+        });
     },
     onCheckUserExist() {
       let payload = {
@@ -179,21 +193,23 @@ export default {
           required: true,
           has_value: true,
           data: [
-            { key: 'is_exist_user', value: true },
-            { key: 'credential', value: this.check_user.credential }
-          ]
-        }
-      }
+            { key: "is_exist_user", value: true },
+            { key: "credential", value: this.check_user.credential },
+          ],
+        },
+      };
       this.loading = true;
-      this.$store.dispatch('auth/postRequest', payload).then((res) => {
-        if (res !== undefined) {
-          this.is_exist_user = true;
-          this.user.credential = this.check_user.credential
-        }
-
-      }).finally(() => {
-        this.loading = false;
-      })
+      this.$store
+        .dispatch("auth/postRequest", payload)
+        .then((res) => {
+          if (res !== undefined) {
+            this.is_exist_user = true;
+            this.user.credential = this.check_user.credential;
+          }
+        })
+        .finally(() => {
+          this.loading = false;
+        });
     },
     onSetPassword() {
       let payload = {
@@ -203,23 +219,31 @@ export default {
         color: "default",
         to_on_ok: "Dashboard",
         to_on_fail: "none",
-        error_msg: "Invalid Credentails",
+        error_msg: "Invalid Credentails! Please try again",
         to_be_store_data: {
           required: true,
           has_value: false,
-          data: [
-            { key: 'data', value: null }
-          ]
-        }
-      }
+          data: [{ key: "data", value: null }],
+        },
+      };
       this.loading = true;
-      this.$store.dispatch("auth/postRequest", payload).then(() => {
-      }).finally(() => {
-        this.loading = false;
+      this.$store
+        .dispatch("auth/postRequest", payload)
+        .then((res) => {
+          if (typeof res !== undefined) {
+            this.$store.dispatch("auth/setRoles", this.setUserRoles(res.data.data.roles))
+          }
+        })
+        .finally(() => {
+          this.loading = false;
+        });
+    },
+    setUserRoles(roles) {
+      roles.forEach(role => {
+        this.roles.push(role.name)
       })
+      return this.roles
     }
-
-
   },
   components: {
     ButtonVue,
@@ -229,7 +253,7 @@ export default {
 
 <style lang="scss" scoped>
 * {
-  box-sizing: border-box
+  box-sizing: border-box;
 }
 
 .page {
@@ -283,8 +307,8 @@ export default {
 
 .form_button {
   width: 100%;
-  margin-top: .5rem;
-  margin-bottom: .1rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.1rem;
 }
 
 .forgot_password {
@@ -298,7 +322,7 @@ export default {
   letter-spacing: 0.005em;
   color: $primary;
   cursor: pointer;
-  margin-top: .2rem;
+  margin-top: 0.2rem;
 }
 
 .sign_link {
@@ -307,7 +331,7 @@ export default {
 }
 
 .account_text {
-  font-family: 'Roboto';
+  font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
   font-size: 10px;
@@ -315,6 +339,5 @@ export default {
   text-transform: uppercase;
   line-height: 37px;
   float: right;
-
 }
 </style>

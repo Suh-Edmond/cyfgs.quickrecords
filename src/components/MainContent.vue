@@ -32,7 +32,7 @@
                       <q-icon name="logout" size="sm" color="red" />
                     </span>
                   </q-item-section>
-                  <q-item-section class="text-center drop_down_text">
+                  <q-item-section class="text-center drop_down_text" @click="logoutUser">
                     <q-item-label>Logout</q-item-label>
                   </q-item-section>
                 </q-item>
@@ -72,6 +72,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   props: {
     item: {
@@ -88,6 +90,7 @@ export default {
       left: false,
       year: new Date().getFullYear(),
       right:false,
+      roles: [],
     }
   },
   methods:{
@@ -98,8 +101,23 @@ export default {
     showLeftDrawer(){
       this.left = !this.left;
       this.$emit('show-left-drawer', this.left)
+    },
+    logoutUser(){
+      let payload = {
+        to_on_ok: "Login",
+        msg: "Logout Successful",
+        color: "default",
+        to_on_fail: "none",
+        error_msg: "default",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      }
+      this.$store.dispatch("auth/logoutUser", payload)
     }
-  }
+  },
 };
 </script>
 

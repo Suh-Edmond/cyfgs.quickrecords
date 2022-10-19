@@ -7,13 +7,13 @@
             <div class="back_arrow_button" v-show="!is_exist_user || !has_logged_in">
               <q-btn class="material-icons back_arrow" icon="arrow_back" @click="goBack" flat />
             </div>
-            <div class="text_h6 text-center q-pt-sm">SIGN IN</div>
-            <div class="text-subtitle2 text-center">
+            <div class="text_h6 text-center q-pt-sm q-pb-sm">SIGN IN</div>
+            <div class="text-subtitle2 text-center q-pb-xs">
               Sign in to continue to FinancialAssistant
             </div>
             <q-form @submit="onSubmit" class="q-gutter-md q-mt-lg q-px-md" v-show="has_logged_in && is_exist_user">
               <div>
-                <label for="credential" class="form_field">Telephone/Email</label>
+                <label for="credential" class="form_field">Telephone or Email</label>
                 <q-input v-model="user.credential" outlined dense type="text" />
               </div>
               <div>
@@ -31,14 +31,14 @@
                 <span class="forgot_password text-right">Forgot Password ?</span>
               </div>
             </q-form>
-            <q-form @submit="onCheckUserExist" class="q-gutter-md q-mt-xl q-px-md"
+            <q-form @submit="onCheckUserExist" class="q-gutter-md q-mt-md q-px-md"
               v-show="!has_logged_in && !is_exist_user">
               <div>
-                <label for="credential" class="form_field">Telephone/Email</label>
+                <label for="credential" class="form_field">Telephone or Email</label>
                 <q-input v-model="check_user.credential" outlined dense type="text" />
               </div>
               <div>
-                <ButtonVue class="form_button" :label="label_continue" :loading="loading" :disabled="!validatePhone">
+                <ButtonVue class="form_button q-mt-md" :label="label_continue" :loading="loading" :disabled="!validatePhone">
                 </ButtonVue>
                 <div class="row q-mb-xl justify-end">
                   <span class="account_text" v-if="!$q.screen.lg">Don't Have an Account ?
@@ -49,10 +49,10 @@
                 </div>
               </div>
             </q-form>
-            <q-form @submit="onSetPassword" class="q-gutter-md q-mt-lg q-px-md"
+            <q-form @submit="onSetPassword" class="q-gutter-md q-mt-md q-px-md"
               v-show="!has_logged_in && is_exist_user">
               <div>
-                <label for="credential" class="form_field">Telephone/Email</label>
+                <label for="credential" class="form_field">Telephone or Email</label>
                 <q-input v-model="user.credential" outlined dense type="text" />
               </div>
               <div>
@@ -147,7 +147,10 @@ export default {
   },
   methods: {
     goBack() {
-      this.is_user_exist = false;
+      this.is_exist_user = false;
+      this.has_logged_in = false
+      localStorage.removeItem('is_exist_user')
+      localStorage.setItem('is_exist_user', false)
     },
     onSubmit() {
       this.loading = true;
@@ -188,7 +191,7 @@ export default {
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
-        error_msg: "User Account does not exist",
+        error_msg: "User Account does not exist! Please try again",
         to_be_store_data: {
           required: true,
           has_value: true,
@@ -275,7 +278,7 @@ export default {
   color: $dark;
   font-family: "Roboto";
   font-style: normal;
-  font-weight: bold;
+  font-weight: 800;
   font-size: 15px;
   line-height: 24px;
   align-items: center;
@@ -287,7 +290,7 @@ export default {
   color: $grey2;
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 500;
+  font-weight: 600;
   font-size: 13px;
   line-height: 18px;
   align-items: center;
@@ -307,7 +310,7 @@ export default {
 
 .form_button {
   width: 100%;
-  margin-top: 0.5rem;
+  // margin-top: 0.2rem;
   margin-bottom: 0.1rem;
 }
 
@@ -316,13 +319,14 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 700;
-  font-size: 10px;
+  font-size: 13px;
   line-height: 24px;
   align-items: center;
   letter-spacing: 0.005em;
   color: $primary;
   cursor: pointer;
-  margin-top: 0.2rem;
+  margin-top: 0.5rem;
+  margin-bottom: .5rem;
 }
 
 .sign_link {

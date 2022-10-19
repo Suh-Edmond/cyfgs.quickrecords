@@ -99,6 +99,7 @@ export function setRoles({ commit }, roles) {
 
 export function logoutUser({ commit }, payload) {
   localStorage.removeItem("data");
+  localStorage.removeItem("credential")
   this.$router.push({
     name: payload.to_on_ok,
   });

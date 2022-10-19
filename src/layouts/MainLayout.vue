@@ -209,6 +209,7 @@
             clickable
             v-ripple
             :active-class="item == 'Logout' ? 'item' : 'item_text'"
+            @click="logoutUser"
           >
             <q-item-section avatar class="item_text">
               <q-icon name="logout" size="xs" />
@@ -283,6 +284,21 @@ export default {
          user_roles.push(role.name)
       });
       return user_roles.includes(tab_roles[0]) || user_roles.includes(tab_roles[1])? true : false;
+    },
+    logoutUser(){
+      let payload = {
+        to_on_ok: "Login",
+        msg: "Logout Successful",
+        color: "default",
+        to_on_fail: "none",
+        error_msg: "default",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      }
+      this.$store.dispatch("auth/logoutUser", payload)
     }
   },
   components: {

@@ -70,9 +70,9 @@ export function postRequest({ commit, dispatch }, payload) {
           data: payload.to_be_store_data.has_value
             ? payload.to_be_store_data.data
             : [
-                { key: "data", value: res.data.data },
-                { key: "has_logged_in", value: true },
-              ],
+              { key: "data", value: res.data.data },
+              { key: "has_logged_in", value: true },
+            ],
         },
       };
       dispatch("handleRequestResponse", handle_response_payload);
@@ -93,15 +93,55 @@ export function postRequest({ commit, dispatch }, payload) {
     });
 }
 
+export function getRequest({commit, dispatch}, payload) {
+  let url = ""
+  if(payload.has_path_val){
+    url = `${API_URL}`+payload.url+`${payload.data}`;
+  }else{
+    url = API_URL + payload.url;
+  }
+  return axios.get(url).then((res) => {
+    let handle_response_payload = {
+      data: res.data,
+      status: payload.status? payload.status:"success",
+      color: payload.color,
+      msg: payload.msg ? payload.msg : "default",
+      to_on_ok: payload.to_on_ok,
+      to_be_store_data: {
+        has_value: payload.to_be_store_data.has_value,
+        required: payload.to_be_store_data.required,
+        data: payload.to_be_store_data.has_value ? payload.to_be_store_data.data : [],
+      },
+    };
+    dispatch("handleRequestResponse", handle_response_payload)
+    return res.data
+  }).catch((error) => {
+    let handle_fail_res_payload = {
+      status: payload.status? payload.status:"fail",
+      color: "negative",
+      to_on_fail: payload.to_on_fail,
+      fail_msg:
+        payload.error_msg != "default"
+          ? payload.error_msg
+          : error.response.data.message,
+      status_code: error.response.status,
+    };
+    dispatch("handleRequestResponse", handle_fail_res_payload)
+  })
+}
+
 export function setRoles({ commit }, roles) {
   commit("SET_ROLES", roles);
 }
 
 export function logoutUser({ commit }, payload) {
   localStorage.removeItem("data");
-  localStorage.removeItem("credential")
+  localStorage.removeItem("credential");
   this.$router.push({
     name: payload.to_on_ok,
   });
   commit("SET_ROLES", []);
+}
+export function setOrganisation({ commit }, data) {
+  commit("SET_ORGANISATION", data);
 }

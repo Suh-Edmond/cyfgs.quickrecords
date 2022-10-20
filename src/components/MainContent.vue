@@ -47,12 +47,18 @@
         <q-card class="card">
           <q-card-section class="content_header">
             <div class="row">
-              <label for="title" class="title"><q-btn round color="primary" icon="arrow_back" flat dense /><span class="q-pl-sm">{{item}}</span></label>
+              <label for="title" class="title">
+                <q-btn round color="primary" icon="arrow_back" flat dense /><span class="q-pl-sm">{{item.name}}</span>
+              </label>
               <q-space />
-              <q-btn color="primary" icon-right="add" label="Add" flat size="md" dense no-caps v-show="requires_add" @click="showRightDrawer"/>
+              <q-btn color="primary" icon-right="add" label="Add" flat size="md" dense no-caps v-show="requires_add"
+                @click="showRightDrawer" />
             </div>
           </q-card-section>
           <q-card-section class="content">
+            <Dashboard v-if="item.selected && item.name == 'Dashboard'"></Dashboard>
+            <OrganisationManagement v-if="item.selected && item.name =='Organisation Management'">
+            </OrganisationManagement>
           </q-card-section>
         </q-card>
       </div>
@@ -72,37 +78,37 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-
+import Dashboard from "src/components/Dashboard.vue"
+import OrganisationManagement from "src/components/OrganisationManagment.vue"
 export default {
   props: {
     item: {
-      type: String,
+      type: Object,
       required: true
     },
     requires_add: {
       type: Boolean,
       required: true,
-    }
+    },
   },
   data() {
     return {
       left: false,
       year: new Date().getFullYear(),
-      right:false,
+      right: false,
       roles: [],
     }
   },
-  methods:{
-    showRightDrawer(){
+  methods: {
+    showRightDrawer() {
       this.right = true;
       this.$emit('show-right-drawer', this.right)
     },
-    showLeftDrawer(){
+    showLeftDrawer() {
       this.left = !this.left;
       this.$emit('show-left-drawer', this.left)
     },
-    logoutUser(){
+    logoutUser() {
       let payload = {
         to_on_ok: "Login",
         msg: "Logout Successful",
@@ -118,6 +124,10 @@ export default {
       this.$store.dispatch("auth/logoutUser", payload)
     }
   },
+  components: {
+    Dashboard,
+    OrganisationManagement
+  }
 };
 </script>
 
@@ -152,11 +162,12 @@ export default {
 
 .content {
   background-color: $white1;
+  width: 100%;
 }
 
 .content_header {
   background-color: $white2;
-  height: 10vh;
+  height: 8vh;
 }
 
 .footer_text {

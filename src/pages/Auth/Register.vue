@@ -49,7 +49,7 @@
                   </q-input>
                 </div>
                 <div class="bottom">
-                  <ButtonVue class="form_button" :label="label_sigup" :loading="loading" :disabled="!validateForm">
+                  <ButtonVue class="form_button" :label="label_sigup" :loading="loading" :disabled="!validateForm" :color="color">
                   </ButtonVue>
                   <div class="account_text" v-if="!$q.screen.lg">
                     Already Have an Account ?<router-link to="/auth/login" class="sign_link">
@@ -86,6 +86,7 @@ export default {
       has_logged_in: false,
       disabled: true,
       is_valid_email: false,
+      color:"primary"
     };
   },
   computed: {

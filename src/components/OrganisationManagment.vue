@@ -6,11 +6,11 @@
     <div>
       <label for="title" class="title">Organisation Information</label>
     </div>
-    <q-form @submit="onSubmit">
-      <div class="row q-py-sm q-px-md">
+    <q-form @submit="onSubmit" :style="$q.screen.lg?'':'margin-bottom:5rem;'">
+      <div class="row q-py-sm q-px-sm" :class="$q.screen.lg? 'q-mb-md':''">
         <div
-          class="col-md-4 col-lg-6 col-xs-12 col-sm-12"
-          :class="$q.screen.lg ? 'q-px-md' : ''"
+          class="col-md-6 col-xs-12 col-sm-12"
+          :class="$q.screen.lg ? 'q-px-md' : 'q-py-sm'"
         >
           <div>
             <label for="credential" class="form_field">Name</label>
@@ -23,7 +23,7 @@
             />
           </div>
         </div>
-        <div class="col-md-4 col-lg-6 col-xs-12 col-sm-12">
+        <div class="col-md-6 col-xs-12 col-sm-12" :class="$q.screen.lg ? 'q-px-md' : 'q-py-sm'">
           <div>
             <label for="credential" class="form_field">Email</label>
             <q-input
@@ -36,10 +36,9 @@
           </div>
         </div>
       </div>
-      <div class="row q-px-md">
+      <div class="row q-px-sm" :class="$q.screen.lg? 'q-mb-md':''">
         <div
-          class="col-md-4 col-lg-6 col-xs-12 col-sm-12"
-          :class="$q.screen.lg ? 'q-px-md' : ''"
+        class="col-md-6 col-xs-12 col-sm-12" :class="$q.screen.lg ? 'q-px-md' : 'q-pb-xs'"
         >
           <div>
             <label for="credential" class="form_field"
@@ -89,7 +88,7 @@
             />
           </div>
         </div>
-        <div class="col-md-4 col-lg-6 col-xs-12 col-sm-12 q-pt-xs">
+        <div class="col-md-6 col-xs-12 col-sm-12" :class="$q.screen.lg ? 'q-px-md' : 'q-py-sm'">
           <div>
             <label for="credential" class="form_field">Address</label>
             <q-input
@@ -102,10 +101,9 @@
           </div>
         </div>
       </div>
-      <div class="row q-py-sm q-px-md">
+      <div class="row q-px-sm" :class="$q.screen.lg? 'q-mb-md':''">
         <div
-          class="col-md-4 col-lg-6 col-xs-12 col-sm-12"
-          :class="$q.screen.lg ? 'q-px-md' : ''"
+        class="col-md-6 col-xs-12 col-sm-12" :class="$q.screen.lg ? 'q-px-md' : 'q-py-sm'"
         >
           <div>
             <label for="credential" class="form_field">Salutation</label>
@@ -118,7 +116,7 @@
             />
           </div>
         </div>
-        <div class="col-md-4 col-lg-6 col-xs-12 col-sm-12">
+        <div class="col-md-6 col-xs-12 col-sm-12" :class="$q.screen.lg ? 'q-px-md' : 'q-py-sm'">
           <div>
             <label for="credential" class="form_field">P.O BOX</label>
             <q-input
@@ -131,10 +129,9 @@
           </div>
         </div>
       </div>
-      <div class="row q-py-sm q-px-md">
+      <div class="row q-px-sm" :class="$q.screen.lg? 'q-mb-md':''">
         <div
-          class="col-md-4 col-lg-6 col-xs-12 col-sm-12"
-          :class="$q.screen.lg ? 'q-px-md' : ''"
+        class="col-md-6 col-xs-12 col-sm-12" :class="$q.screen.lg ? 'q-px-md' : 'q-py-sm'"
         >
           <div>
             <label for="credential" class="form_field">Description</label>
@@ -148,11 +145,11 @@
             />
           </div>
         </div>
-        <div class="col-md-4 col-lg-6 col-xs-12 col-sm-12">
+        <div class="col-md-6 col-xs-12 col-sm-12" :class="$q.screen.lg ? 'q-px-md' : 'q-py-sm'">
           <div>
             <label for="credential" class="form_field">Logo</label>
             <q-uploader
-              style="max-width: 300px"
+              :style="$q.screen.lg?'max-width: 300px':'width: 100%'"
               url="http://localhost:4444/upload"
               label="Restricted to images"
               flat
@@ -164,8 +161,8 @@
           </div>
         </div>
       </div>
-      <div class="row flex flex-center q-pa-lg">
-        <div class="col-md-2 col-xs-12 col-sm-12">
+      <div class="row flex flex-center" :class="$q.screen.lg? 'q-mt-md':''">
+        <div class="col-md-2 col-xs-12 col-sm-12" :class="$q.screen.lg ? '' : 'q-px-sm q-pt-md q-mb-xl'">
           <ButtonVue
             :label="label"
             :loading="loading"

@@ -1,225 +1,287 @@
 <template>
-  <q-layout view="lHr lpR lFr">
-    <q-drawer show-if-above v-model="left" side="left" bordered :width="280">
+  <q-layout view="lHr lpR LFr">
+    <q-drawer show-if-above v-model="left" side="left" bordered :width="280" :breakpoint="500"
+        content-class="bg-grey-3">
       <div>
-        <div class="bg-transparent q-pa-sm flex flex-center">
-          <q-avatar size="70px">
-            <!-- <img src="../assets/UB-Logo.png" /> -->
-            <img src="https://cdn.quasar.dev/logo-v2/svg/logo.svg" />
-          </q-avatar>
+        <div class="bg-white left_drawer">
+          <div class="bg-transparent q-pa-sm flex flex-center">
+            <q-avatar size="70px">
+              <!-- <img src="https://cdn.quasar.dev/logo-v2/svg/logo.svg" /> -->
+            </q-avatar>
+          </div>
+          <div
+            class="text-weight-bold text-center organisation_name q-mb-md q-pa-xs"
+          >
+            Brother’s Corner CYF Great Soppo Buea
+          </div>
         </div>
-        <div
-          class="text-weight-bold text-center organisation_name q-mb-md q-pa-xs"
-        >
-          Brother’s Corner CYF Great Soppo Buea
+        <div class="nav">
+          <q-list padding>
+            <q-item
+              :active="item.name == 'Dashboard'"
+              clickable
+              v-ripple
+              :active-class="item.name == 'Dashboard' ? 'item' : 'item_text'"
+              @click="setItem({ name: 'Dashboard', selected: true }, false)"
+              v-if="checkRole(['PRESIDENT', null])"
+            >
+              <q-item-section
+                avatar
+                :class="item.name == 'Dashboard' ? 'item_icon' : 'item_text'"
+              >
+                <q-icon name="grid_view" size="xs" />
+              </q-item-section>
+
+              <q-item-section class="item_name"> Dashboard </q-item-section>
+            </q-item>
+
+            <q-item
+              clickable
+              v-ripple
+              :active-class="
+                item.name == 'Organisation Management' ? 'item' : 'item_text'
+              "
+              :active="item.name == 'Organisation Management'"
+              @click="
+                setItem(
+                  { name: 'Organisation Management', selected: true },
+                  false
+                )
+              "
+              v-if="checkRole(['PRESIDENT', null])"
+            >
+              <q-item-section
+                avatar
+                :class="
+                  item.name == 'Organisation Management'
+                    ? 'item_icon'
+                    : 'item_text'
+                "
+              >
+                <q-icon name="diversity_3" size="xs" />
+              </q-item-section>
+              <q-item-section class="item_name">
+                Organisation Management
+              </q-item-section>
+            </q-item>
+            <q-item
+              clickable
+              v-ripple
+              :active-class="
+                item.name == 'User Management' ? 'item' : 'item_text'
+              "
+              :active="item.name == 'User Management'"
+              @click="
+                setItem({ name: 'User Management', selected: true }, false)
+              "
+              v-if="checkRole(['PRESIDENT', 'FINANCIAL_SECRETARY'])"
+            >
+              <q-item-section
+                avatar
+                :class="
+                  item.name == 'User Management' ? 'item_icon' : 'item_text'
+                "
+              >
+                <q-icon name="manage_accounts" size="xs" />
+              </q-item-section>
+              <q-item-section class="item_name">
+                User Management
+              </q-item-section>
+            </q-item>
+
+            <q-item
+              clickable
+              v-ripple
+              :active-class="item.name == 'Settings' ? 'item' : 'item_text'"
+              :active="item.name == 'Settings'"
+              @click="setItem({ name: 'Settings', selected: true }, false)"
+              v-if="checkRole(['PRESIDENT', null])"
+            >
+              <q-item-section
+                avatar
+                :class="item.name == 'Settings' ? 'item_icon' : 'item_text'"
+              >
+                <q-icon name="settings" size="xs" />
+              </q-item-section>
+              <q-item-section class="item_name"> Settings Zone </q-item-section>
+            </q-item>
+
+            <q-item
+              clickable
+              v-ripple
+              :active-class="
+                item.name == 'Payment Categories' ? 'item' : 'item_text'
+              "
+              :active="item.name == 'Payment Categories'"
+              @click="
+                setItem({ name: 'Payment Categories', selected: true }, true)
+              "
+              v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER'])"
+            >
+              <q-item-section
+                avatar
+                :class="
+                  item.name == 'Payment Categories' ? 'item_icon' : 'item_text'
+                "
+              >
+                <q-icon name="monetization_on" size="xs" />
+              </q-item-section>
+              <q-item-section class="item_name">
+                Payment Categories
+              </q-item-section>
+            </q-item>
+
+            <q-item
+              clickable
+              v-ripple
+              :active-class="
+                item.name == 'Expenditure Categories' ? 'item' : 'item_text'
+              "
+              :active="item.name == 'Expenditure Categories'"
+              @click="
+                setItem(
+                  { name: 'Expenditure Categories', selected: true },
+                  true
+                )
+              "
+              v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER'])"
+            >
+              <q-item-section
+                avatar
+                :class="
+                  item.name == 'Expenditure Categories'
+                    ? 'item_icon'
+                    : 'item_text'
+                "
+              >
+                <q-icon name="monetization_on" size="xs" />
+              </q-item-section>
+              <q-item-section class="item_name">
+                Expenditure Categories
+              </q-item-section>
+            </q-item>
+
+            <q-item
+              clickable
+              v-ripple
+              :active-class="
+                item.name == 'Member Savings' ? 'item' : 'item_text'
+              "
+              :active="item.name == 'Member Savings'"
+              @click="setItem({ name: 'Member Savings', selected: true }, true)"
+              v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER'])"
+            >
+              <q-item-section
+                avatar
+                :class="
+                  item.name == 'Member Savings' ? 'item_icon' : 'item_text'
+                "
+              >
+                <q-icon name="savings" size="xs" />
+              </q-item-section>
+              <q-item-section class="item_name">
+                Member Savings
+              </q-item-section>
+            </q-item>
+
+            <q-item
+              clickable
+              v-ripple
+              :active-class="
+                item.name == 'Income Activities' ? 'item' : 'item_text'
+              "
+              :active="item.name == 'Income Activities'"
+              @click="
+                setItem({ name: 'Income Activities', selected: true }, true)
+              "
+              v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER'])"
+            >
+              <q-item-section
+                avatar
+                :class="
+                  item.name == 'Income Activities' ? 'item_icon' : 'item_text'
+                "
+              >
+                <q-icon name="local_activity" size="xs" />
+              </q-item-section>
+              <q-item-section class="item_name">
+                Income Activities
+              </q-item-section>
+            </q-item>
+
+            <q-item
+              clickable
+              v-ripple
+              :active-class="
+                item.name == 'Contributions' ? 'item' : 'item_text'
+              "
+              :active="item.name == 'Contributions'"
+              @click="setItem({ name: 'Contributions', selected: true }, true)"
+              v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER'])"
+            >
+              <q-item-section
+                avatar
+                :class="
+                  item.name == 'Contributions' ? 'item_icon' : 'item_text'
+                "
+              >
+                <q-icon name="payments" size="xs" />
+              </q-item-section>
+              <q-item-section class="item_name"> Contributions </q-item-section>
+            </q-item>
+
+            <q-item
+              clickable
+              v-ripple
+              :active-class="
+                item.name == 'Reports Generation' ? 'item' : 'item_text'
+              "
+              :active="item.name == 'Reports Generation'"
+              @click="
+                setItem({ name: 'Reports Generation', selected: true }, false)
+              "
+              v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER'])"
+            >
+              <q-item-section
+                avatar
+                :class="
+                  item.name == 'Reports Generation' ? 'item_icon' : 'item_text'
+                "
+              >
+                <q-icon name="summarize" size="xs" />
+              </q-item-section>
+              <q-item-section class="item_name">
+                Reports Generation
+              </q-item-section>
+            </q-item>
+          </q-list>
+          <q-list padding>
+            <q-item
+              clickable
+              v-ripple
+              :active-class="item.name == 'Logout' ? 'item' : 'item_text'"
+              @click="logoutUser"
+            >
+              <q-item-section avatar class="item_text">
+                <q-icon name="logout" size="xs" />
+              </q-item-section>
+              <q-item-section class="item_name"> Logout </q-item-section>
+            </q-item>
+          </q-list>
         </div>
-      </div>
-      <div class="nav">
-        <q-list padding>
-          <q-item
-            :active="item.name == 'Dashboard'"
-            clickable
-            v-ripple
-            :active-class="item.name == 'Dashboard' ? 'item' : 'item_text'"
-            @click="setItem({name:'Dashboard', selected:true}, false)"
-            v-if="checkRole(['PRESIDENT', null])"
-          >
-            <q-item-section
-              avatar
-              :class="item.name == 'Dashboard' ? 'item_icon' : 'item_text'"
-            >
-              <q-icon name="grid_view" size="xs" />
-            </q-item-section>
-
-            <q-item-section class="item_name"> Dashboard </q-item-section>
-          </q-item>
-
-          <q-item
-            clickable
-            v-ripple
-            :active-class="
-              item.name == 'Organisation Management' ? 'item' : 'item_text'
-            "
-            :active="item.name == 'Organisation Management'"
-            @click="setItem({name:'Organisation Management', selected:true}, false)"
-            v-if="checkRole(['PRESIDENT', null])"
-          >
-            <q-item-section
-              avatar
-              :class="
-                item.name == 'Organisation Management' ? 'item_icon' : 'item_text'
-              "
-            >
-              <q-icon name="diversity_3" size="xs" />
-            </q-item-section>
-            <q-item-section class="item_name">
-              Organisation Management
-            </q-item-section>
-          </q-item>
-          <q-item
-            clickable
-            v-ripple
-            :active-class="item.name == 'User Management' ? 'item' : 'item_text'"
-            :active="item.name == 'User Management'"
-            @click="setItem({name:'User Management', selected:true}, false)"
-            v-if="checkRole(['PRESIDENT', 'FINANCIAL_SECRETARY'])"
-          >
-            <q-item-section
-              avatar
-              :class="item.name == 'User Management' ? 'item_icon' : 'item_text'"
-            >
-              <q-icon name="manage_accounts" size="xs" />
-            </q-item-section>
-            <q-item-section class="item_name"> User Management </q-item-section>
-          </q-item>
-
-          <q-item
-            clickable
-            v-ripple
-            :active-class="item.name == 'Settings' ? 'item' : 'item_text'"
-            :active="item.name == 'Settings'"
-            @click="setItem({name:'Settings', selected:true}, false)"
-            v-if="checkRole(['PRESIDENT', null])"
-          >
-            <q-item-section
-              avatar
-              :class="item.name == 'Settings' ? 'item_icon' : 'item_text'"
-            >
-              <q-icon name="settings" size="xs" />
-            </q-item-section>
-            <q-item-section class="item_name"> Settings Zone </q-item-section>
-          </q-item>
-
-          <q-item
-            clickable
-            v-ripple
-            :active-class="item.name == 'Payment Categories' ? 'item' : 'item_text'"
-            :active="item.name == 'Payment Categories'"
-            @click="setItem({name:'Payment Categories', selected:true}, true)"
-            v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER'])"
-          >
-            <q-item-section
-              avatar
-              :class="item.name == 'Payment Categories' ? 'item_icon' : 'item_text'"
-            >
-              <q-icon name="monetization_on" size="xs" />
-            </q-item-section>
-            <q-item-section class="item_name">
-              Payment Categories
-            </q-item-section>
-          </q-item>
-
-          <q-item
-            clickable
-            v-ripple
-            :active-class="
-              item.name == 'Expenditure Categories' ? 'item' : 'item_text'
-            "
-            :active="item.name == 'Expenditure Categories'"
-            @click="setItem({name:'Expenditure Categories', selected:true}, true)"
-            v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER'])"
-          >
-            <q-item-section
-              avatar
-              :class="
-                item.name == 'Expenditure Categories' ? 'item_icon' : 'item_text'
-              "
-            >
-              <q-icon name="monetization_on" size="xs" />
-            </q-item-section>
-            <q-item-section class="item_name">
-              Expenditure Categories
-            </q-item-section>
-          </q-item>
-
-          <q-item
-            clickable
-            v-ripple
-            :active-class="item.name == 'Member Savings' ? 'item' : 'item_text'"
-            :active="item.name == 'Member Savings'"
-            @click="setItem({name:'Member Savings', selected:true}, true)"
-            v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER'])"
-          >
-            <q-item-section
-              avatar
-              :class="item.name == 'Member Savings' ? 'item_icon' : 'item_text'"
-            >
-              <q-icon name="savings" size="xs" />
-            </q-item-section>
-            <q-item-section class="item_name"> Member Savings </q-item-section>
-          </q-item>
-
-          <q-item
-            clickable
-            v-ripple
-            :active-class="item.name == 'Income Activities' ? 'item' : 'item_text'"
-            :active="item.name == 'Income Activities'"
-            @click="setItem({name:'Income Activities', selected:true}, true)"
-            v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER'])"
-          >
-            <q-item-section
-              avatar
-              :class="item.name == 'Income Activities' ? 'item_icon' : 'item_text'"
-            >
-              <q-icon name="local_activity" size="xs" />
-            </q-item-section>
-            <q-item-section class="item_name">
-              Income Activities
-            </q-item-section>
-          </q-item>
-
-          <q-item
-            clickable
-            v-ripple
-            :active-class="item.name == 'Contributions' ? 'item' : 'item_text'"
-            :active="item.name == 'Contributions'"
-            @click="setItem({name:'Contributions', selected:true}, true)"
-            v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER'])"
-          >
-            <q-item-section
-              avatar
-              :class="item.name == 'Contributions' ? 'item_icon' : 'item_text'"
-            >
-              <q-icon name="payments" size="xs" />
-            </q-item-section>
-            <q-item-section class="item_name"> Contributions </q-item-section>
-          </q-item>
-
-          <q-item
-            clickable
-            v-ripple
-            :active-class="item.name == 'Reports Generation' ? 'item' : 'item_text'"
-            :active="item.name == 'Reports Generation'"
-            @click="setItem({name:'Reports Generation', selected:true}, false)"
-            v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER'])"
-
-          >
-            <q-item-section
-              avatar
-              :class="item.name == 'Reports Generation' ? 'item_icon' : 'item_text'"
-            >
-              <q-icon name="summarize" size="xs" />
-            </q-item-section>
-            <q-item-section class="item_name">
-              Reports Generation
-            </q-item-section>
-          </q-item>
-        </q-list>
-        <q-list padding>
-          <q-item
-            clickable
-            v-ripple
-            :active-class="item.name == 'Logout' ? 'item' : 'item_text'"
-            @click="logoutUser"
-          >
-            <q-item-section avatar class="item_text">
-              <q-icon name="logout" size="xs" />
-            </q-item-section>
-            <q-item-section class="item_name"> Logout </q-item-section>
-          </q-item>
-        </q-list>
       </div>
     </q-drawer>
+
+    <q-page-container class="content">
+      <MainContent
+        :item="item"
+        :requires_add="requires_add"
+        @show-right-drawer="updateRightDrawer"
+        @show-left-drawer="updateLeftDrawer"
+      >
+        <router-view />
+      </MainContent>
+    </q-page-container>
 
     <q-drawer v-model="right" side="right" bordered :width="370">
       <q-page-container>
@@ -242,17 +304,6 @@
         </q-page>
       </q-page-container>
     </q-drawer>
-
-    <q-page-container class="content">
-      <MainContent
-        :item="item"
-        :requires_add="requires_add"
-        @show-right-drawer="updateRightDrawer"
-        @show-left-drawer="updateLeftDrawer"
-      >
-        <router-view />
-      </MainContent>
-    </q-page-container>
   </q-layout>
 </template>
 
@@ -265,8 +316,8 @@ export default {
       right: false,
       year: new Date().getFullYear(),
       item: {
-        name:"Dashboard",
-        selected: true
+        name: "Dashboard",
+        selected: true,
       },
       requires_add: false,
     };
@@ -283,14 +334,17 @@ export default {
     updateLeftDrawer(left) {
       this.left = left;
     },
-    checkRole(tab_roles){
+    checkRole(tab_roles) {
       let user_roles = [];
-      JSON.parse(localStorage.getItem("data")).roles.forEach(role => {
-         user_roles.push(role.name)
+      JSON.parse(localStorage.getItem("data")).roles.forEach((role) => {
+        user_roles.push(role.name);
       });
-      return user_roles.includes(tab_roles[0]) || user_roles.includes(tab_roles[1])? true : false;
+      return user_roles.includes(tab_roles[0]) ||
+        user_roles.includes(tab_roles[1])
+        ? true
+        : false;
     },
-    logoutUser(){
+    logoutUser() {
       let payload = {
         to_on_ok: "Login",
         msg: "Logout Successful",
@@ -302,9 +356,9 @@ export default {
           has_value: false,
           data: [],
         },
-      }
-      this.$store.dispatch("auth/logoutUser", payload)
-    }
+      };
+      this.$store.dispatch("auth/logoutUser", payload);
+    },
   },
   components: {
     MainContent,
@@ -324,7 +378,6 @@ export default {
 
 .content {
   background-color: $grey1;
-  height: 100vh;
 }
 
 .drop_down_text {
@@ -348,10 +401,10 @@ export default {
   font-size: medium;
 }
 
-.nav {
-  background-color: $grey6;
-  height: 77.9vh;
+.left_drawer {
+  height: 160px;
 }
+
 .item_icon {
   color: $white1;
   font-size: 0.8rem;

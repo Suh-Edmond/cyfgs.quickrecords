@@ -1,7 +1,14 @@
 <template>
-  <q-layout view="lHr lpR LFr">
-    <q-drawer show-if-above v-model="left" side="left" bordered :width="280" :breakpoint="500"
-        content-class="bg-grey-3">
+  <q-layout view="lHr lpr LFr">
+    <q-drawer
+      show-if-above
+      v-model="left"
+      side="left"
+      bordered
+      :width="280"
+      :breakpoint="500"
+      content-class="bg-grey-3"
+    >
       <div>
         <div class="bg-white left_drawer">
           <div class="bg-transparent q-pa-sm flex flex-center">
@@ -68,24 +75,24 @@
               clickable
               v-ripple
               :active-class="
-                item.name == 'User Management' ? 'item' : 'item_text'
+                item.name == 'Member Management' ? 'item' : 'item_text'
               "
-              :active="item.name == 'User Management'"
+              :active="item.name == 'Member Management'"
               @click="
-                setItem({ name: 'User Management', selected: true }, false)
+                setItem({ name: 'Member Management', selected: true }, true)
               "
               v-if="checkRole(['PRESIDENT', 'FINANCIAL_SECRETARY'])"
             >
               <q-item-section
                 avatar
                 :class="
-                  item.name == 'User Management' ? 'item_icon' : 'item_text'
+                  item.name == 'Member Management' ? 'item_icon' : 'item_text'
                 "
               >
                 <q-icon name="manage_accounts" size="xs" />
               </q-item-section>
               <q-item-section class="item_name">
-                User Management
+                Member Management
               </q-item-section>
             </q-item>
 
@@ -283,32 +290,45 @@
       </MainContent>
     </q-page-container>
 
-    <q-drawer v-model="right" side="right" bordered :width="370">
-      <q-page-container>
-        <q-page>
-          <q-bar class="bar">
-            <div></div>
-            <q-space />
-            <div>
-              <q-btn
-                dense
-                flat
-                icon="close"
-                v-close-popup
-                @click="updateRightDrawer(false)"
-                size="md"
-              >
-              </q-btn>
-            </div>
-          </q-bar>
-        </q-page>
-      </q-page-container>
+    <q-drawer v-model="right" side="right" bordered :width="right_drawer_width">
+      <q-page>
+        <q-bar class="bar">
+          <div>
+            <q-btn
+              dense
+              color="white"
+              flat
+              icon="arrow_back"
+              v-close-popup
+              @click="goBack()"
+              size="md"
+            >
+            </q-btn>
+          </div>
+          <q-space />
+          <div>
+            <q-btn
+              dense
+              flat
+              color="white"
+              icon="close"
+              v-close-popup
+              @click="closeRightDrawer()"
+              size="md"
+            >
+            </q-btn>
+          </div>
+        </q-bar>
+        <AddMember v-if="current_tab == 'Member Management'" @close-right-drawer="closeRightDrawer"></AddMember>
+      </q-page>
     </q-drawer>
   </q-layout>
 </template>
 
 <script>
 import MainContent from "src/components/MainContent.vue";
+import { SessionStorage } from 'quasar';
+import AddMember from "src/components/AddMember.vue"
 export default {
   data() {
     return {
@@ -320,6 +340,8 @@ export default {
         selected: true,
       },
       requires_add: false,
+      right_drawer_width: 400,
+      current_tab:''
     };
   },
   methods: {
@@ -327,8 +349,10 @@ export default {
       this.item.name = item.name;
       this.requires_add = requires_add;
       this.item.selected = true;
+      SessionStorage.set('tab', item.name);
     },
-    updateRightDrawer(right) {
+    updateRightDrawer({right, current_tab}) {
+      this.current_tab = current_tab
       this.right = right;
     },
     updateLeftDrawer(left) {
@@ -359,9 +383,16 @@ export default {
       };
       this.$store.dispatch("auth/logoutUser", payload);
     },
+    goBack(){
+
+    },
+    closeRightDrawer(){
+      this.right = !this.right
+    }
   },
   components: {
     MainContent,
+    AddMember,
   },
 };
 </script>
@@ -421,8 +452,8 @@ export default {
   font-size: 0.8rem;
 }
 .bar {
-  background-color: $primary;
   color: $white1;
   padding: 0;
+  background-color: $primary;
 }
 </style>

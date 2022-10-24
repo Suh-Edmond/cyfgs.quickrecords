@@ -2,7 +2,14 @@
   <q-page>
     <q-header class="bg-primary text-white header">
       <q-toolbar>
-        <q-btn dense flat round icon="menu" @click="showLeftDrawer" v-if="$q.screen.lt.md" />
+        <q-btn
+          dense
+          flat
+          round
+          icon="menu"
+          @click="showLeftDrawer"
+          v-if="$q.screen.lt.md"
+        />
         <q-toolbar-title class="toolbar_title">
           Welcome President
         </q-toolbar-title>
@@ -30,7 +37,10 @@
                     <q-icon name="logout" size="sm" color="red" />
                   </span>
                 </q-item-section>
-                <q-item-section class="text-center drop_down_text" @click="logoutUser">
+                <q-item-section
+                  class="text-center drop_down_text"
+                  @click="logoutUser"
+                >
                   <q-item-label>Logout</q-item-label>
                 </q-item-section>
               </q-item>
@@ -39,25 +49,48 @@
         </div>
       </q-toolbar>
     </q-header>
-    <div class="main_content" :style="$q.screen.lg ? 'margin-left: .5rem;':''">
-      <q-card class="header_section" >
+    <div
+      class="main_content"
+      :style="$q.screen.lg ? 'margin-left: .5rem;' : ''"
+    >
+      <q-card class="header_section">
         <q-card-section class="content_header">
           <div class="row">
             <label for="title" class="title">
-              <q-btn round color="primary" icon="arrow_back" flat dense /><span class="q-pl-sm">{{ item.name }}</span>
+              <q-btn round color="primary" icon="arrow_back" flat dense /><span
+                class="q-pl-sm"
+                >{{ item.name }}</span
+              >
             </label>
             <q-space />
-            <q-btn color="primary" icon-right="add" label="Add" flat size="md" dense no-caps v-show="requires_add"
-              @click="showRightDrawer" />
+            <q-btn
+              color="primary"
+              icon-right="add"
+              label="Add"
+              flat
+              size="md"
+              dense
+              no-caps
+              v-show="requires_add"
+              @click="showRightDrawer"
+            />
           </div>
         </q-card-section>
       </q-card>
       <q-scroll-area style="height: 90vh">
         <q-card class="card">
           <q-card-section class="content">
-            <Dashboard v-if="item.selected && item.name == 'Dashboard'"></Dashboard>
-            <OrganisationManagement v-if="item.selected && item.name == 'Organisation Management'">
+            <Dashboard
+              v-if="item.selected && item.name == 'Dashboard'"
+            ></Dashboard>
+            <OrganisationManagement
+              v-if="item.selected && item.name == 'Organisation Management'"
+            >
             </OrganisationManagement>
+            <MemberManagement
+              v-if="item.selected && item.name == 'Member Management'"
+              @update-member="showRightDrawer('Edit')"
+            ></MemberManagement>
           </q-card-section>
         </q-card>
       </q-scroll-area>
@@ -78,6 +111,8 @@
 <script>
 import Dashboard from "src/components/Dashboard.vue";
 import OrganisationManagement from "src/components/OrganisationManagment.vue";
+import MemberManagement from "src/components/MemberManagement.vue";
+import { SessionStorage } from "quasar";
 export default {
   props: {
     item: {
@@ -98,9 +133,12 @@ export default {
     };
   },
   methods: {
-    showRightDrawer() {
+    showRightDrawer(edit) {
       this.right = true;
-      this.$emit("show-right-drawer", this.right);
+      this.$emit("show-right-drawer", {
+        'right': this.right,
+        'current_tab': tab_edit !== null? SessionStorage.getItem("tab")+edit : SessionStorage.getItem("tab"),
+      });
     },
     showLeftDrawer() {
       this.left = !this.left;
@@ -124,7 +162,8 @@ export default {
   },
   components: {
     Dashboard,
-    OrganisationManagement
+    OrganisationManagement,
+    MemberManagement,
   },
 };
 </script>

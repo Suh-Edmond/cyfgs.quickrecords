@@ -95,7 +95,7 @@
             color="primary"
             round
             @click="showSearch"
-            class="icon q-pt-sm"
+            class="icon"
             size="sm"
           ></q-icon>
         </div>
@@ -104,7 +104,13 @@
     <!-- table for members -->
     <div class="row q-pt-sm">
       <div class="col-md-12 col-xs-12 col-sm-12">
-        <TableVue :columns="columns" :data="data" :title="table_title" :label="label" @update-member="updateMember"></TableVue>
+        <TableVue
+          :columns="columns"
+          :data="data"
+          :title="table_title"
+          :label="label"
+          @update-member="updateMember"
+        ></TableVue>
       </div>
     </div>
   </q-page>
@@ -126,14 +132,14 @@ export default {
       gender: null,
       search: "",
       start_search: false,
-      label:"Delete",
+      label: "Delete",
       columns: [
-      {
+        {
           name: "counter",
           required: true,
           label: "S/N",
           align: "left",
-          field:"counter"
+          field: "counter",
         },
         {
           name: "name",
@@ -182,7 +188,7 @@ export default {
       ],
       data: [
         {
-          counter:1,
+          counter: 1,
           name: "Frozen Yogurt",
           calories: 159,
           fat: 6.0,
@@ -193,7 +199,7 @@ export default {
           iron: "1%",
         },
         {
-          counter:2,
+          counter: 2,
           name: "Ice cream sandwich",
           calories: 237,
           fat: 9.0,
@@ -204,7 +210,7 @@ export default {
           iron: "1%",
         },
         {
-          counter:3,
+          counter: 3,
           name: "Eclair",
           calories: 262,
           fat: 16.0,
@@ -215,7 +221,7 @@ export default {
           iron: "7%",
         },
         {
-          counter:4,
+          counter: 4,
           name: "Cupcake",
           calories: 305,
           fat: 3.7,
@@ -226,7 +232,7 @@ export default {
           iron: "8%",
         },
         {
-          counter:5,
+          counter: 5,
           name: "Gingerbread",
           calories: 356,
           fat: 16.0,
@@ -237,7 +243,7 @@ export default {
           iron: "16%",
         },
         {
-          counter:6,
+          counter: 6,
           name: "Jelly bean",
           calories: 375,
           fat: 0.0,
@@ -248,7 +254,7 @@ export default {
           iron: "0%",
         },
         {
-          counter:7,
+          counter: 7,
           name: "Lollipop",
           calories: 392,
           fat: 0.2,
@@ -259,7 +265,7 @@ export default {
           iron: "2%",
         },
         {
-          counter:8,
+          counter: 8,
           name: "Honeycomb",
           calories: 408,
           fat: 3.2,
@@ -270,7 +276,7 @@ export default {
           iron: "45%",
         },
         {
-          counter:9,
+          counter: 9,
           name: "Donut",
           calories: 452,
           fat: 25.0,
@@ -281,7 +287,7 @@ export default {
           iron: "22%",
         },
         {
-          counter:10,
+          counter: 10,
           name: "KitKat",
           calories: 518,
           fat: 26.0,
@@ -292,7 +298,7 @@ export default {
           iron: "6%",
         },
       ],
-      table_title:"Registered Members"
+      table_title: "Registered Members",
     };
   },
   computed: {
@@ -307,9 +313,9 @@ export default {
     showSearch() {
       this.start_search = !this.start_search;
     },
-    updateMember(data){
-      this.$emit('update-member', data)
-    }
+    updateMember(data) {
+      this.$emit("update-member", data);
+    },
   },
   components: {
     ButtonVue,

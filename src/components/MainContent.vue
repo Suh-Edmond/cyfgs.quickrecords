@@ -89,7 +89,7 @@
             </OrganisationManagement>
             <MemberManagement
               v-if="item.selected && item.name == 'Member Management'"
-              @update-member="showRightDrawer('Edit')"
+              @update-member="showEditDrawer"
             ></MemberManagement>
           </q-card-section>
         </q-card>
@@ -133,11 +133,11 @@ export default {
     };
   },
   methods: {
-    showRightDrawer(edit) {
+    showRightDrawer() {
       this.right = true;
       this.$emit("show-right-drawer", {
         'right': this.right,
-        'current_tab': tab_edit !== null? SessionStorage.getItem("tab")+edit : SessionStorage.getItem("tab"),
+        'current_tab':SessionStorage.getItem("tab"),
       });
     },
     showLeftDrawer() {
@@ -159,6 +159,14 @@ export default {
       };
       this.$store.dispatch("auth/logoutUser", payload);
     },
+    showEditDrawer(data) {
+      this.right = true;
+      this.$emit("show-right-drawer", {
+        'right': this.right,
+        'current_tab':data.tab,
+        'data': data
+      });
+    }
   },
   components: {
     Dashboard,

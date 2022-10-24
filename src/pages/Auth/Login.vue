@@ -26,7 +26,7 @@
                 </q-input>
               </div>
               <div>
-                <ButtonVue class="form_button" :label="label_sigin" :loading="loading" :disabled="validateLogin" :color="color">
+                <ButtonVue class="form_button" :label="label_sigin" :loading="loading" :disabled="validateLogin" :color="color" :no_caps="no_caps">
                 </ButtonVue>
                 <span class="forgot_password text-right">Forgot Password ?</span>
               </div>
@@ -38,7 +38,7 @@
                 <q-input v-model="check_user.credential" outlined dense type="text" />
               </div>
               <div>
-                <ButtonVue class="form_button q-mt-md" :label="label_continue" :loading="loading" :disabled="!validatePhone" :color="color">
+                <ButtonVue class="form_button q-mt-md" :label="label_continue" :loading="loading" :disabled="!validatePhone" :color="color" :no_caps="no_caps">
                 </ButtonVue>
                 <div class="row q-mb-xl justify-end">
                   <span class="account_text" v-if="!$q.screen.lg">Don't Have an Account ?
@@ -79,7 +79,7 @@
               </div>
               <div>
                 <ButtonVue class="form_button" :label="label_sigin" :loading="loading" :color="color"
-                  :disabled="validatePasswordMatch">
+                  :disabled="validatePasswordMatch" :no_caps="no_caps">
                 </ButtonVue>
                 <div class="row q-mb-xl" :class="!$q.screen.lg ? 'justify-evenly' : 'justify-end'">
                   <span class="account_text" v-if="!$q.screen.lg">Don't Have an Account ?
@@ -128,7 +128,8 @@ export default {
       is_exist_user: localStorage.getItem("is_exist_user"),
       has_logged_in: localStorage.getItem("has_logged_in"),
       roles: [],
-      color:"primary"
+      color:"primary",
+      no_caps:true,
     };
   },
   computed: {

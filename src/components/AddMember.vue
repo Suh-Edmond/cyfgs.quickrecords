@@ -4,97 +4,152 @@
       Add Members to the Organisation
     </div>
     <div>
-      <q-form @submit="onAddMember" class="q-gutter-md q-px-md">
-        <div>
-          <label for="credential" class="form_field"
-            >Name <span class="text-red">*</span></label
-          >
-          <q-input v-model="user.name" outlined dense type="text"  filled/>
-        </div>
-        <div>
-          <label for="credential" class="form_field"
-            >Gender <span class="text-red">*</span></label
-          >
-          <q-select
-            v-model="user.gender"
-            outlined
-            dense
-            :options="gender_options"
-            filled
-          />
-        </div>
-        <div>
-          <label for="credential" class="form_field">Email</label>
-          <q-input v-model="user.email" outlined dense type="email" filled />
-        </div>
-        <div>
-          <label for="credential" class="form_field"
-            >Telephone <span class="text-red">*</span></label
-          >
-          <q-input v-model="user.telephone" outlined dense type="tel" filled />
-        </div>
-        <div>
-          <label for="credential" class="form_field"
-            >Address <span class="text-red">*</span></label
-          >
-          <q-input v-model="user.address" outlined dense type="text" filled />
-        </div>
-        <div>
-          <label for="credential" class="form_field"
-            >Occupation <span class="text-red">*</span></label
-          >
-          <q-input v-model="user.occupation" outlined dense type="text" filled/>
-        </div>
-        <div>
-          <ButtonVue
-            class="form_button"
-            :label="label_sigin"
-            :loading="loading"
-            :color="color"
-            :disabled="validateForm"
-            :no_caps="no_caps"
-          >
-          </ButtonVue>
-        </div>
-      </q-form>
-    </div>
-    <div class="q-mt-lg">
-      <div class="text-center or_option text-subtitle1">OR</div>
-      <q-separator inset />
-      <q-form>
-        <div class="text-subtitle2 text-center q-pa-sm text-primary">
-          Import Members from an Excel File
-          <span class="q-pl-md">
-            <q-btn flat @click="openHelp">
-              <q-icon name="help_outline" size="sm"> </q-icon>
-              <q-tooltip> Help </q-tooltip>
-            </q-btn>
-          </span>
-        </div>
-        <div class="row q-gutter-md flex flex-center q-pt-md">
-          <div class="col-md-8 col-sm-12 col-xs-12">
-            <q-file outlined v-model="file" dense label="Choose file" filled accept="xls, .xlsx,xlsm" counter >
-            <template v-slot:prepend>
-          <q-icon name="attach_file" />
-        </template>
-            </q-file>
-          </div>
-          <div class="col-md-2 col-sm-12 col-xs-12 q-pb-md">
-            <ButtonVue
-              class="form_button"
-              :label="label_upload"
-              :loading="loading"
-              :color="color"
-              :disabled="validateFormUpload"
-              :no_caps="no_caps"
-              @click="uploadFile"
-            >
-            </ButtonVue>
-          </div>
-        </div>
-      </q-form>
-    </div>
+      <q-tabs
+        v-model="tab"
+        dense
+        class="text-grey"
+        active-color="primary"
+        indicator-color="primary"
+        align="justify"
+        narrow-indicator
+      >
+        <q-tab name="Add Member" label="Add Member" no-caps icon="person_add" />
+        <q-tab name="Upload File" label="Upload File" no-caps icon="file_upload" />
+      </q-tabs>
 
+      <q-separator />
+
+      <q-tab-panels v-model="tab" animated>
+        <q-tab-panel name="Add Member">
+          <div>
+            <q-form @submit="onAddMember" class="q-gutter-md">
+              <div class="text-subtitle2 text-left text-primary">
+              Personal Information
+            </div>
+              <div>
+                <label for="credential" class="form_field"
+                  >Name <span class="text-red">*</span></label
+                >
+                <q-input
+                  v-model="user.name"
+                  outlined
+                  dense
+                  type="text"
+                />
+              </div>
+              <div>
+                <label for="credential" class="form_field"
+                  >Gender <span class="text-red">*</span></label
+                >
+                <q-select
+                  v-model="user.gender"
+                  outlined
+                  dense
+                  :options="gender_options"
+                />
+              </div>
+              <div>
+                <label for="credential" class="form_field">Email</label>
+                <q-input
+                  v-model="user.email"
+                  outlined
+                  dense
+                  type="email"
+                />
+              </div>
+              <div>
+                <label for="credential" class="form_field"
+                  >Telephone <span class="text-red">*</span></label
+                >
+                <q-input
+                  v-model="user.telephone"
+                  outlined
+                  dense
+                  type="tel"
+                />
+              </div>
+              <div>
+                <label for="credential" class="form_field"
+                  >Address <span class="text-red">*</span></label
+                >
+                <q-input
+                  v-model="user.address"
+                  outlined
+                  dense
+                  type="text"
+                />
+              </div>
+              <div>
+                <label for="credential" class="form_field"
+                  >Occupation <span class="text-red">*</span></label
+                >
+                <q-input
+                  v-model="user.occupation"
+                  outlined
+                  dense
+                  type="text"
+                />
+              </div>
+              <div class="q-pt-md">
+                <ButtonVue
+                  class="form_button"
+                  :label="label_save"
+                  :loading="loading"
+                  :color="color"
+                  :disabled="validateForm"
+                  :no_caps="no_caps"
+                >
+                </ButtonVue>
+              </div>
+            </q-form>
+          </div>
+        </q-tab-panel>
+        <q-tab-panel name="Upload File">
+          <div>
+            <q-form>
+              <div class="text-subtitle2 text-center text-primary">
+                Import Members from an Excel File
+                <span class="q-pl-md">
+                  <q-btn flat @click="openHelp">
+                    <q-icon name="help_outline" size="sm"> </q-icon>
+                    <q-tooltip> Help </q-tooltip>
+                  </q-btn>
+                </span>
+              </div>
+              <div class="row q-gutter-md flex flex-center q-pt-md">
+                <div class="col-md-8 col-sm-12 col-xs-12">
+                  <q-file
+                    outlined
+                    v-model="file"
+                    dense
+                    label="Choose file"
+
+                    accept="xls, .xlsx,xlsm"
+                    counter
+                  >
+                    <template v-slot:prepend>
+                      <q-icon name="attach_file" />
+                    </template>
+                  </q-file>
+                </div>
+                <div class="col-md-2 col-sm-12 col-xs-12 q-pb-md">
+                  <ButtonVue
+                    class="form_button"
+                    :label="label_upload"
+                    :loading="loading"
+                    :color="color"
+                    :disabled="validateFormUpload"
+                    :no_caps="no_caps"
+                    @click="uploadFile"
+                  >
+                  </ButtonVue>
+                </div>
+              </div>
+            </q-form>
+          </div>
+        </q-tab-panel>
+      </q-tab-panels>
+    </div>
     <q-dialog v-model="dialog" :position="position">
       <q-card style="width: 350px" class="q-ma-md">
         <q-bar>
@@ -128,7 +183,7 @@ import ButtonVue from "src/components/Button.vue";
 export default {
   data() {
     return {
-      label_sigin: "Save",
+      label_save: "Save",
       loading: false,
       color: "primary",
       user: {
@@ -137,14 +192,15 @@ export default {
         telephone: null,
         address: null,
         occupation: null,
-        gender: "MALE",
+        gender: null,
       },
-      gender_options: ["MALE", "FEMALE"],
+      gender_options: ["MALE", "FEMALE", "OTHER"],
       file: null,
       label_upload: "Import",
       position: "right",
       dialog: false,
-      no_caps:true,
+      no_caps: true,
+      tab: "Add Member",
     };
   },
   computed: {
@@ -163,14 +219,14 @@ export default {
   },
   methods: {
     onAddMember() {
-      this.$emit('close-right-drawer')
+      this.$emit("close-right-drawer");
     },
     openHelp() {
       this.dialog = true;
     },
-    uploadFile(){
-      this.$emit('close-right-drawer')
-    }
+    uploadFile() {
+      this.$emit("close-right-drawer");
+    },
   },
   components: {
     ButtonVue,

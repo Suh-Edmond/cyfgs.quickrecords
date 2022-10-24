@@ -57,7 +57,7 @@
                     <q-item
                       clickable
                       v-close-popup
-                      @click="onEditClick(props.row.id)"
+                      @click="onEditClick(props)"
                     >
                       <q-item-section avatar>
                         <span>
@@ -141,10 +141,13 @@ export default {
   },
   methods: {
     onEditClick(data) {
-      this.$emit("update-member", data);
+      let payload = {
+        data: data,
+        tab: "EditMember"
+      }
+      this.$emit("update-member", payload);
     },
     onDeleteClick(id) {
-      console.log(id);
       this.dialog = true;
     },
   },

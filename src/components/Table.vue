@@ -1,22 +1,11 @@
 <template>
   <div class="q-pa-xs">
     <div class="button q-pb-xs">
-      <ButtonVue
-        :label="label_fetch_user"
-        :loading="loading"
-        :color="color"
-        :disabled="false"
-        :no_caps="no_caps"
-        icon_right="print"
-      ></ButtonVue>
+      <ButtonVue :label="label_download" :loading="loading" :color="color" :disabled="false" :no_caps="no_caps"
+        icon_right="print"></ButtonVue>
     </div>
-    <q-table
-      :title="title"
-      :data="data"
-      :columns="columns"
-      row-key="name"
-      :table-header-style="{ backgroundColor: '#5384ae', color: '#FFFFFF' }"
-    >
+    <q-table :title="title" :data="data" :columns="columns" row-key="name"
+      :table-header-style="{ backgroundColor: '#5384ae', color: '#FFFFFF' }">
       <template v-slot:body="props">
         <q-tr :props="props">
           <q-td key="counter" :props="props">
@@ -45,20 +34,10 @@
           </q-td>
           <q-td key="iron" :props="props">
             <q-btn flat round>
-              <q-icon
-                name="more_vert"
-                size="xs"
-                color="primary"
-                class="menu_icon"
-                clickable
-              >
+              <q-icon name="more_vert" size="xs" color="primary" class="menu_icon" clickable>
                 <q-menu>
                   <q-list>
-                    <q-item
-                      clickable
-                      v-close-popup
-                      @click="onEditClick(props)"
-                    >
+                    <q-item clickable v-close-popup @click="onEditClick(props)">
                       <q-item-section avatar>
                         <span>
                           <q-icon name="edit" size="xs" class="edit" />
@@ -69,11 +48,7 @@
                       </q-item-section>
                     </q-item>
                     <q-separator />
-                    <q-item
-                      clickable
-                      v-close-popup
-                      @click="onDeleteClick(props.row)"
-                    >
+                    <q-item clickable v-close-popup @click="onDeleteClick(props.row)">
                       <q-item-section avatar>
                         <span>
                           <q-icon name="delete" size="xs" color="red" />
@@ -91,14 +66,13 @@
         </q-tr>
       </template>
     </q-table>
+
     <!-- confirmation dialog -->
     <q-dialog v-model="dialog">
       <q-card>
         <q-card-section class="row items-center">
           <q-avatar icon="warning" class="warning_image" size="lg" />
-          <span class="q-ml-sm text-dark"
-            >Are you sure you want to delete this Member?</span
-          >
+          <span class="q-ml-sm text-dark">Are you sure you want to delete this Member?</span>
         </q-card-section>
 
         <q-card-actions align="right">
@@ -132,9 +106,9 @@ export default {
   },
   data() {
     return {
-      label_fetch_user: "Print",
+      label_download: "Print",
       loading: false,
-      color: "secondary",
+      color: "positive",
       no_caps: true,
       dialog: false,
     };
@@ -160,15 +134,19 @@ export default {
 .button {
   text-align: end;
 }
+
 .menu_icon {
   cursor: pointer;
 }
+
 .edit {
   color: $grey5;
 }
+
 .warning_image {
   color: $orange;
 }
+
 .text-color {
   color: $grey2;
 }

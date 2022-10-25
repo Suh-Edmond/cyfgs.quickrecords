@@ -321,6 +321,8 @@
         </q-bar>
         <AddMember v-if="current_tab == 'Member Management'" @close-right-drawer="closeRightDrawer"></AddMember>
         <EditMember v-if="current_tab == 'EditMember'"></EditMember>
+        <AddPaymentCategory v-if="current_tab == 'Payment Categories'" @close-right-drawer="closeRightDrawer" :show_title="show_title"></AddPaymentCategory>
+
       </q-page>
     </q-drawer>
   </q-layout>
@@ -331,6 +333,8 @@ import MainContent from "src/components/MainContent.vue";
 import { SessionStorage } from 'quasar';
 import AddMember from "src/components/AddMember.vue";
 import EditMember from "src/components/EditMember.vue";
+import AddPaymentCategory from "src/components/AddPaymentCategory.vue";
+
 
 export default {
   data() {
@@ -347,6 +351,7 @@ export default {
       current_tab:'',
       right_drawer_tab:'',
       data:null,
+      show_title:true,
     };
   },
   methods: {
@@ -356,10 +361,11 @@ export default {
       this.item.selected = true;
       SessionStorage.set('tab', item.name);
     },
-    updateRightDrawer({right, current_tab, data}) {
+    updateRightDrawer({right, current_tab, data, show_title}) {
       this.current_tab = current_tab
       this.right = right;
       this.data = data
+      this.show_title = (show_title == undefined? true: show_title)
     },
     updateLeftDrawer(left) {
       this.left = left;
@@ -399,7 +405,9 @@ export default {
   components: {
     MainContent,
     AddMember,
-    EditMember
+    EditMember,
+    AddPaymentCategory,
+
   },
 };
 </script>

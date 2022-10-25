@@ -91,6 +91,7 @@
               v-if="item.selected && item.name == 'Member Management'"
               @update-member="showEditDrawer"
             ></MemberManagement>
+            <PaymentCategoryManagement v-if="item.selected && item.name == 'Payment Categories'" @update-payment-category="showEditDrawer"></PaymentCategoryManagement>
           </q-card-section>
         </q-card>
       </q-scroll-area>
@@ -113,6 +114,7 @@ import Dashboard from "src/components/Dashboard.vue";
 import OrganisationManagement from "src/components/OrganisationManagment.vue";
 import MemberManagement from "src/components/MemberManagement.vue";
 import { SessionStorage } from "quasar";
+import PaymentCategoryManagement from "src/components/PaymentCategoryManagement.vue"
 export default {
   props: {
     item: {
@@ -164,14 +166,16 @@ export default {
       this.$emit("show-right-drawer", {
         'right': this.right,
         'current_tab':data.tab,
-        'data': data
+        'data': data,
+        'show_title': false
       });
-    }
+    },
   },
   components: {
     Dashboard,
     OrganisationManagement,
     MemberManagement,
+    PaymentCategoryManagement
   },
 };
 </script>

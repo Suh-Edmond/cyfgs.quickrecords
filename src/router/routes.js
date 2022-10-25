@@ -32,7 +32,7 @@ const routes = [
     component: () => import('layouts/MainLayout.vue'),
     meta: {
       middleware: "auth",
-      roles: 'USER'
+      role: 'USER'
     }
   },
 

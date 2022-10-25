@@ -1,6 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import { Notify } from "quasar";
+import { Notify, Platform } from "quasar";
 
 import routes from "./routes";
 
@@ -42,8 +42,8 @@ export default function (
       next({ name: "Login" });
       Notify.create({
         type: "info",
-        position: "top-right",
-        message: `Login is required to view this page`,
+        position: Platform.is.mobile ? "bottom" : "top-right",
+        message: "Login is required to view this page",
       });
     }
 
@@ -51,13 +51,13 @@ export default function (
       data.roles.forEach((role) => {
         roles.push(role.name);
       });
-      if (roles.includes(to.meta.roles)) {
+      if (roles.includes(to.meta.role)) {
         next();
       } else {
         Notify.create({
           type: "info",
-          position: "top-right",
-          message: `Access denied to view this page`,
+          position: Platform.is.mobile ? "bottom" : "top-right",
+          message: "Access denied to view this page",
         });
       }
     }

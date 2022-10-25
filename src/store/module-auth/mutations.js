@@ -1,8 +1,6 @@
-export function LOGIN_USER (state, data) {
-  state.has_logged_in = data
+export function SET_ROLES (state, data) {
+  state.roles = data
 }
-
-export function REGISTER_USER (state, data){
-  state.is_exist_user = data;
-  state.has_logged_in = data;
+export function SET_ORGANISATION(state, data) {
+  state.organisation = data
 }

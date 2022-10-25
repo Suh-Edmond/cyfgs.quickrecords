@@ -10,8 +10,8 @@ if (data !== null) {
 }
 
 axios.interceptors.request.use(function (config) {
-   config.headers.Accept = 'application/json';
-   config.headers.ContentType = "application/json";
-   config.headers.Authorization = token ? `Bearer ${token}` : '';
-   return config
+  config.headers.Accept = "application/json";
+  config.headers.ContentType = "application/json";
+  config.headers.Authorization = token ? `Bearer ${token}` : "";
+  return config;
 });

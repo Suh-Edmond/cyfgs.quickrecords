@@ -1,5 +1,5 @@
 <template>
-  <q-btn color="primary" :label="label"  class="button" type="submit"  :loading="loading" :disable="disabled">
+  <q-btn :color="color" :label="label"  class="button" type="submit"  :loading="loading" :disable="disabled" :no-caps="no_caps" :icon-right="icon_right">
     <template v-slot:loading>
           <q-spinner-ios />
         </template>
@@ -17,6 +17,15 @@ export default {
     },
     disabled: {
       required:true
+    },
+    color:{
+      required:true
+    },
+    no_caps: {
+      required:true
+    },
+    icon_right: {
+      required:false
     }
   },
   data(){

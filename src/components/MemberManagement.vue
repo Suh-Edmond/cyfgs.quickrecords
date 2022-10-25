@@ -1,87 +1,33 @@
 <template>
   <q-page>
     <!-- no members found -->
-    <div
-      class="text-center member_not_found"
-      v-if="getTotalOrganisationMember == 0"
-    >
-      <h6>
-        Ooops!! you don't have any Register Member click the button to add
-        Members
-        <span>
-          <q-icon name="arrow_outward" class="arrow" size="sm"></q-icon>
-        </span>
-      </h6>
-    </div>
-    <!-- table for members -->
-    <div
-      class="row q-ml-xs"
-      v-if="getTotalOrganisationMember > 0"
-      :class="$q.screen.lg ? 'q-gutter-md' : ''"
-      :style="
-        $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-      "
-    >
-      <div
-        class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-mb-md"
-        v-show="!start_search"
-      >
-        <q-select
-          v-model="gender"
-          outlined
-          dense
-          :options="genders"
-          label="Select gender"
-        />
+    <NotFound :message="not_found_msg" v-if="getTotalOrganisationMember == 0"></NotFound>
+    <!-- header for filter members -->
+    <div class="row q-ml-xs" v-if="getTotalOrganisationMember > 0" :class="$q.screen.lg ? 'q-pa-sm' : ''" :style="
+      $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+    ">
+      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12" v-show="!start_search">
+        <q-select v-model="gender" outlined dense :options="genders" label="Select gender" />
       </div>
-      <div
-        class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-mb-md"
-        v-show="!start_search"
-      >
-        <q-select
-          v-model="year"
-          outlined
-          dense
-          :options="years"
-          label="Select year"
-        />
+      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12" v-show="!start_search">
+        <q-select v-model="year" outlined dense :options="years" label="Select year" />
       </div>
-      <div
-        class="col-md-2 col-lg-2 col-xs-12 col-sm-12"
-        :class="!$q.screen.lg ? 'q-mt-md' : ''"
-        v-show="!start_search"
-      >
-        <ButtonVue
-          class="button"
-          :label="label_fetch_user"
-          :loading="loading"
-          :color="color"
-          :disabled="validateFilter"
-          :no_caps="no_caps"
-          icon_right="filter_list"
-        >
+      <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12" :class="!$q.screen.lg ? '' : ''" v-show="!start_search">
+        <ButtonVue class="button" :label="label_fetch_user" :loading="loading" :color="color" :disabled="validateFilter"
+          :no_caps="no_caps" icon_right="filter_list">
         </ButtonVue>
       </div>
-      <div
-        :class="
-          !start_search
-            ? 'col-md-3 col-lg-3 col-xs-12 col-sm-12'
-            : 'col-md-12 col-lg-12 col-xs-12 col-sm-12 q-pr-xl q-pl-sm'
-        "
-      >
-        <q-input
-          v-model="search"
-          dense
-          outlined
-          type="search"
-          placeholder="Type a name to search member..."
-          v-show="start_search"
-          clearable
-        >
+      <div :class="
+        !start_search
+          ? 'col-md-3 col-lg-3 col-xs-12 col-sm-12'
+          : 'col-md-12 col-lg-12 col-xs-12 col-sm-12 q-pr-xl q-pl-sm'
+      ">
+        <q-input v-model="search" dense outlined type="search" placeholder="Type a name to search member..."
+          v-show="start_search" clearable>
           <template v-slot:before>
-            <q-icon name="close" round @click="showSearch" class="icon"
-              ><q-tooltip>Close Search</q-tooltip></q-icon
-            >
+            <q-icon name="close" round @click="showSearch" class="icon">
+              <q-tooltip>Close Search</q-tooltip>
+            </q-icon>
           </template>
           <template v-slot:append>
             <q-icon name="search" />
@@ -89,28 +35,16 @@
         </q-input>
         <q-space />
         <div class="search_icon">
-          <q-icon
-            name="search"
-            v-show="!start_search"
-            color="primary"
-            round
-            @click="showSearch"
-            class="icon"
-            size="sm"
-          ></q-icon>
+          <q-icon name="search" v-show="!start_search" color="primary" round @click="showSearch" class="icon" size="sm">
+          </q-icon>
         </div>
       </div>
     </div>
     <!-- table for members -->
     <div class="row q-pt-sm">
       <div class="col-md-12 col-xs-12 col-sm-12">
-        <TableVue
-          :columns="columns"
-          :data="data"
-          :title="table_title"
-          :label="label"
-          @update-member="updateMember"
-        ></TableVue>
+        <TableVue :columns="columns" :data="data" :title="table_title" :label="label" @update-member="updateMember">
+        </TableVue>
       </div>
     </div>
   </q-page>
@@ -118,6 +52,7 @@
 <script>
 import ButtonVue from "src/components/Button.vue";
 import TableVue from "src/components/Table.vue";
+import NotFound from "src/components/NotFound.vue";
 export default {
   data() {
     return {
@@ -299,6 +234,7 @@ export default {
         },
       ],
       table_title: "Registered Members",
+      not_found_msg: "Ooops!! You don't have any Register Member click the button to add Members."
     };
   },
   computed: {
@@ -320,34 +256,28 @@ export default {
   components: {
     ButtonVue,
     TableVue,
+    NotFound
   },
 };
 </script>
 <style lang="scss" scoped>
-.member_not_found {
-  font-family: "Inter";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 32px;
-  line-height: 39px;
-  align-items: center;
-  text-align: center;
-  letter-spacing: 0.005em;
-  color: $grey5;
-}
 .arrow {
   height: 2rem;
 }
+
 .button {
   width: 100%;
 }
+
 .filter_section {
   background-color: $grey7;
   border-radius: 10px;
 }
+
 .search_icon {
   text-align: end;
 }
+
 .icon {
   cursor: pointer;
 }

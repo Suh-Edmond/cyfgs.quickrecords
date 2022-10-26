@@ -296,7 +296,7 @@
           <div>
             <q-btn
               dense
-              color="white"
+              color="grey"
               flat
               icon="arrow_back"
               v-close-popup
@@ -310,7 +310,7 @@
             <q-btn
               dense
               flat
-              color="white"
+              color="grey"
               icon="close"
               v-close-popup
               @click="closeRightDrawer()"
@@ -322,7 +322,7 @@
         <AddMember v-if="current_tab == 'Member Management'" @close-right-drawer="closeRightDrawer"></AddMember>
         <EditMember v-if="current_tab == 'EditMember'"></EditMember>
         <AddPaymentCategory v-if="current_tab == 'Payment Categories'" @close-right-drawer="closeRightDrawer" :show_title="show_title"></AddPaymentCategory>
-
+        <AddPaymentItem v-if="current_tab == 'Payment Items'" @close-right-drawer="closeRightDrawer"></AddPaymentItem>
       </q-page>
     </q-drawer>
   </q-layout>
@@ -334,7 +334,7 @@ import { SessionStorage } from 'quasar';
 import AddMember from "src/components/AddMember.vue";
 import EditMember from "src/components/EditMember.vue";
 import AddPaymentCategory from "src/components/AddPaymentCategory.vue";
-
+import AddPaymentItem from "src/components/AddPaymentItem.vue";
 
 export default {
   data() {
@@ -407,7 +407,7 @@ export default {
     AddMember,
     EditMember,
     AddPaymentCategory,
-
+    AddPaymentItem
   },
 };
 </script>
@@ -467,8 +467,8 @@ export default {
   font-size: 0.8rem;
 }
 .bar {
-  color: $white1;
+  color: $dark;
   padding: 0;
-  background-color: $primary;
+  background-color: $grey1;
 }
 </style>

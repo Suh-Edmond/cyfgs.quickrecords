@@ -1,10 +1,8 @@
 <template>
   <div class="q-pa-xs">
     <div class="button q-pb-xs">
-      <ButtonVue :label="label_download" :loading="loading" :color="color" :disabled="false" :no_caps="no_caps"
-        icon_right="print"></ButtonVue>
     </div>
-    <q-table :title="title" :data="data" :columns="columns" row-key="name"
+    <q-table :data="data" :columns="columns" row-key="name"
       :table-header-style="{ backgroundColor: '#5384ae', color: '#FFFFFF' }">
       <template v-slot:body="props">
         <q-tr :props="props">
@@ -65,6 +63,15 @@
           </q-td>
         </q-tr>
       </template>
+      <template v-slot:top-right>
+        <q-input outlined dense
+          :class="$q.screen.md ? 'text-h6-sm q-mb-lg q-mt-lg full-width' : 'text-h6-sm'"
+          v-model="filter" placeholder="Type name to search...">
+          <template v-slot:append>
+            <q-icon name="search" />
+          </template>
+        </q-input>
+      </template>
     </q-table>
 
     <!-- confirmation dialog -->
@@ -95,10 +102,6 @@ export default {
       type: Array,
       required: true,
     },
-    title: {
-      required: true,
-      type: String,
-    },
     label: {
       required: true,
       type: String,
@@ -111,6 +114,7 @@ export default {
       color: "positive",
       no_caps: true,
       dialog: false,
+      filter:null,
     };
   },
   methods: {
@@ -126,7 +130,7 @@ export default {
     },
   },
   components: {
-    ButtonVue,
+    // ButtonVue,
   },
 };
 </script>

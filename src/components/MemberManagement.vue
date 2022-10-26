@@ -1,49 +1,79 @@
 <template>
   <q-page>
     <!-- no members found -->
-    <NotFound :message="not_found_msg" v-if="getTotalOrganisationMember == 0"></NotFound>
+    <NotFound
+      :message="not_found_msg"
+      v-if="getTotalOrganisationMember == 0"
+    ></NotFound>
     <!-- header for filter members -->
-    <div class="row q-ml-xs" v-if="getTotalOrganisationMember > 0" :class="$q.screen.lg ? 'q-pa-sm' : ''" :style="
-      $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-    ">
-      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12" v-show="!start_search">
-        <q-select v-model="gender" outlined dense :options="genders" label="Select gender" />
+    <div
+      class="row q-ml-xs"
+      v-if="getTotalOrganisationMember > 0"
+      :class="$q.screen.lg ? 'q-pa-sm' : ''"
+      :style="
+        $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+      "
+    >
+      <div
+        class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+        :class="$q.screen.lg ? 'q-pr-md' : ''"
+      >
+        <q-select
+          v-model="gender"
+          outlined
+          dense
+          :options="genders"
+          label="Select gender"
+        />
       </div>
-      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12" v-show="!start_search">
-        <q-select v-model="year" outlined dense :options="years" label="Select year" />
+      <div
+        class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+        :class="$q.screen.lg ? 'q-pr-md' : ''"
+      >
+        <q-select
+          v-model="year"
+          outlined
+          dense
+          :options="years"
+          label="Select year"
+        />
       </div>
-      <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12" :class="!$q.screen.lg ? '' : ''" v-show="!start_search">
-        <ButtonVue class="button" :label="label_fetch_user" :loading="loading" :color="color" :disabled="validateFilter"
-          :no_caps="no_caps" icon_right="filter_list">
+      <div
+        :class="$q.screen.lg ? 'q-pr-md' : ''"
+      >
+        <ButtonVue
+          :label="label_fetch_user"
+          :loading="loading"
+          :color="color"
+          :disabled="validateFilter"
+          :no_caps="no_caps"
+          icon_right="filter_list"
+        >
         </ButtonVue>
       </div>
-      <div :class="
-        !start_search
-          ? 'col-md-3 col-lg-3 col-xs-12 col-sm-12'
-          : 'col-md-12 col-lg-12 col-xs-12 col-sm-12 q-pr-xl q-pl-sm'
-      ">
-        <q-input v-model="search" dense outlined type="search" placeholder="Type a name to search member..."
-          v-show="start_search" clearable>
-          <template v-slot:before>
-            <q-icon name="close" round @click="showSearch" class="icon">
-              <q-tooltip>Close Search</q-tooltip>
-            </q-icon>
-          </template>
-          <template v-slot:append>
-            <q-icon name="search" />
-          </template>
-        </q-input>
-        <q-space />
-        <div class="search_icon">
-          <q-icon name="search" v-show="!start_search" color="primary" round @click="showSearch" class="icon" size="sm">
-          </q-icon>
-        </div>
+      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12"></div>
+
+      <div :style="$q.screen.lg? 'margin-left:76px':''">
+        <ButtonVue
+          :label="label_print"
+          :loading="loading"
+          :color="color_print"
+          :disabled="false"
+          :no_caps="no_caps"
+          icon_right="print"
+          size="sm"
+        ></ButtonVue>
       </div>
     </div>
     <!-- table for members -->
     <div class="row q-pt-sm">
       <div class="col-md-12 col-xs-12 col-sm-12">
-        <TableVue :columns="columns" :data="data" :title="table_title" :label="label" @update-member="updateMember">
+        <TableVue
+          :columns="columns"
+          :data="data"
+          :label="label"
+          @update-member="updateMember"
+        >
         </TableVue>
       </div>
     </div>
@@ -59,7 +89,7 @@ export default {
       member_total: 1,
       year: null,
       years: ["2020", "2021", "2022", "2023", "2024"],
-      label_fetch_user: "Filter Members",
+      label_fetch_user: "Filter",
       loading: false,
       color: "primary",
       no_caps: true,
@@ -233,8 +263,10 @@ export default {
           iron: "6%",
         },
       ],
-      table_title: "Registered Members",
-      not_found_msg: "Ooops!! You don't have any Register Member click the button to add Members."
+      not_found_msg:
+        "Ooops!! You don't have any Register Member click the button to add Members.",
+      label_print: "Print",
+      color_print: "positive",
     };
   },
   computed: {
@@ -256,7 +288,7 @@ export default {
   components: {
     ButtonVue,
     TableVue,
-    NotFound
+    NotFound,
   },
 };
 </script>
@@ -267,6 +299,7 @@ export default {
 
 .button {
   width: 100%;
+  letter-spacing: 0.01em;
 }
 
 .filter_section {

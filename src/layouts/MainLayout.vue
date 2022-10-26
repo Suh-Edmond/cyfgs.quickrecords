@@ -343,7 +343,7 @@ export default {
       right: false,
       year: new Date().getFullYear(),
       item: {
-        name: "Dashboard",
+        name: SessionStorage.getItem('from_tab'),
         selected: true,
       },
       requires_add: false,
@@ -359,7 +359,8 @@ export default {
       this.item.name = item.name;
       this.requires_add = requires_add;
       this.item.selected = true;
-      SessionStorage.set('tab', item.name);
+      SessionStorage.set('from_tab', SessionStorage.getItem('to_tab'));
+      SessionStorage.set('to_tab', item.name);
     },
     updateRightDrawer({right, current_tab, data, show_title}) {
       this.current_tab = current_tab

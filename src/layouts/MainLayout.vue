@@ -31,6 +31,7 @@
               :active-class="item.name == 'Dashboard' ? 'item' : 'item_text'"
               @click="setItem({ name: 'Dashboard', selected: true }, false)"
               v-if="checkRole(['PRESIDENT', null])"
+              to="/dashboard"
             >
               <q-item-section
                 avatar
@@ -41,7 +42,6 @@
 
               <q-item-section class="item_name"> Dashboard </q-item-section>
             </q-item>
-
             <q-item
               clickable
               v-ripple
@@ -56,6 +56,7 @@
                 )
               "
               v-if="checkRole(['PRESIDENT', null])"
+              to="/dashboard/organisation-management"
             >
               <q-item-section
                 avatar
@@ -82,6 +83,7 @@
                 setItem({ name: 'Member Management', selected: true }, true)
               "
               v-if="checkRole(['PRESIDENT', 'FINANCIAL_SECRETARY'])"
+              to="/dashboard/members"
             >
               <q-item-section
                 avatar
@@ -95,7 +97,6 @@
                 Member Management
               </q-item-section>
             </q-item>
-
             <q-item
               clickable
               v-ripple
@@ -112,7 +113,6 @@
               </q-item-section>
               <q-item-section class="item_name"> Settings Zone </q-item-section>
             </q-item>
-
             <q-item
               clickable
               v-ripple
@@ -124,6 +124,7 @@
                 setItem({ name: 'Payment Categories', selected: true }, true)
               "
               v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER'])"
+              to="/dashboard/payment-categories"
             >
               <q-item-section
                 avatar
@@ -152,6 +153,7 @@
                 )
               "
               v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER'])"
+              to="/dashboard/expenditure-categories"
             >
               <q-item-section
                 avatar
@@ -177,6 +179,7 @@
               :active="item.name == 'Member Savings'"
               @click="setItem({ name: 'Member Savings', selected: true }, true)"
               v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER'])"
+              to="/dashboard/members-savings"
             >
               <q-item-section
                 avatar
@@ -202,6 +205,7 @@
                 setItem({ name: 'Income Activities', selected: true }, true)
               "
               v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER'])"
+              to="/dashboard/income-activities"
             >
               <q-item-section
                 avatar
@@ -286,7 +290,6 @@
         @show-right-drawer="updateRightDrawer"
         @show-left-drawer="updateLeftDrawer"
         @set-tab="setItem"
-        @set-intermediate-tab="setintermediateTab"
       >
         <router-view />
       </MainContent>
@@ -380,9 +383,6 @@ export default {
       SessionStorage.set("from_tab", SessionStorage.getItem("to_tab"));
       SessionStorage.set("to_tab", item.name);
       SessionStorage.set("requires_add", this.requires_add);
-    },
-    setintermediateTab(item){
-      console.log(item);
     },
     updateRightDrawer({ right, current_tab, data, show_title }) {
       this.current_tab = current_tab;

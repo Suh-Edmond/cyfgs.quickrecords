@@ -165,7 +165,7 @@ export default {
         },
         msg: "Login Successful",
         color: "default",
-        to_on_ok: "Dashboard",
+        to_on_ok: "dashboard",
         to_on_fail: "none",
         error_msg: "Invalid Credentials! Please try again",
         to_be_store_data: {
@@ -222,7 +222,7 @@ export default {
         data: this.user,
         msg: "Login Successful",
         color: "default",
-        to_on_ok: "Dashboard",
+        to_on_ok: "dashboard",
         to_on_fail: "none",
         error_msg: "Invalid Credentails! Please try again",
         to_be_store_data: {

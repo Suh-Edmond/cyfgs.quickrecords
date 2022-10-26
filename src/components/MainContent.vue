@@ -91,7 +91,7 @@
               v-if="item.selected && item.name == 'Member Management'"
               @update-member="showEditDrawer"
             ></MemberManagement>
-            <PaymentCategoryManagement v-if="item.selected && item.name == 'Payment Categories'" @update-payment-category="showEditDrawer"></PaymentCategoryManagement>
+            <PaymentCategoryManagement v-if="item.selected && item.name == 'Payment Categories'" @update-payment-category="showEditDrawer" @update-payment-item="updatePaymentItem"></PaymentCategoryManagement>
           </q-card-section>
         </q-card>
       </q-scroll-area>
@@ -165,11 +165,20 @@ export default {
       this.right = true;
       this.$emit("show-right-drawer", {
         'right': this.right,
-        'current_tab':data.tab,
+        'current_tab': data.tab,
         'data': data,
         'show_title': false
       });
     },
+    updatePaymentItem(data){
+      this.right = true;
+      this.$emit("show-right-drawer", {
+        'right': this.right,
+        'current_tab':data.tab,
+        'data': data,
+        'show_title': false
+      });
+    }
   },
   components: {
     Dashboard,

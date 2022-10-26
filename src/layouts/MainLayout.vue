@@ -285,12 +285,20 @@
         :requires_add="requires_add"
         @show-right-drawer="updateRightDrawer"
         @show-left-drawer="updateLeftDrawer"
+        @set-tab="setItem"
+        @set-intermediate-tab="setintermediateTab"
       >
         <router-view />
       </MainContent>
     </q-page-container>
 
-    <q-drawer v-model="right" side="right" bordered :width="right_drawer_width" class="q-ml-lg">
+    <q-drawer
+      v-model="right"
+      side="right"
+      bordered
+      :width="right_drawer_width"
+      class="q-ml-lg"
+    >
       <q-page>
         <q-bar class="bar">
           <div>
@@ -319,10 +327,20 @@
             </q-btn>
           </div>
         </q-bar>
-        <AddMember v-if="current_tab == 'Member Management'" @close-right-drawer="closeRightDrawer"></AddMember>
+        <AddMember
+          v-if="current_tab == 'Member Management'"
+          @close-right-drawer="closeRightDrawer"
+        ></AddMember>
         <EditMember v-if="current_tab == 'EditMember'"></EditMember>
-        <AddPaymentCategory v-if="current_tab == 'Payment Categories'" @close-right-drawer="closeRightDrawer" :show_title="show_title"></AddPaymentCategory>
-        <AddPaymentItem v-if="current_tab == 'Payment Items'" @close-right-drawer="closeRightDrawer"></AddPaymentItem>
+        <AddPaymentCategory
+          v-if="current_tab == 'Payment Categories'"
+          @close-right-drawer="closeRightDrawer"
+          :show_title="show_title"
+        ></AddPaymentCategory>
+        <AddPaymentItem
+          v-if="current_tab == 'Payment Items'"
+          @close-right-drawer="closeRightDrawer"
+        ></AddPaymentItem>
       </q-page>
     </q-drawer>
   </q-layout>
@@ -330,7 +348,7 @@
 
 <script>
 import MainContent from "src/components/MainContent.vue";
-import { SessionStorage } from 'quasar';
+import { SessionStorage } from "quasar";
 import AddMember from "src/components/AddMember.vue";
 import EditMember from "src/components/EditMember.vue";
 import AddPaymentCategory from "src/components/AddPaymentCategory.vue";
@@ -343,15 +361,15 @@ export default {
       right: false,
       year: new Date().getFullYear(),
       item: {
-        name: SessionStorage.getItem('from_tab'),
+        name: SessionStorage.getItem("from_tab"),
         selected: true,
       },
       requires_add: false,
       right_drawer_width: 400,
-      current_tab:'',
-      right_drawer_tab:'',
-      data:null,
-      show_title:true,
+      current_tab: "",
+      right_drawer_tab: "",
+      data: null,
+      show_title: true,
     };
   },
   methods: {
@@ -359,14 +377,18 @@ export default {
       this.item.name = item.name;
       this.requires_add = requires_add;
       this.item.selected = true;
-      SessionStorage.set('from_tab', SessionStorage.getItem('to_tab'));
-      SessionStorage.set('to_tab', item.name);
+      SessionStorage.set("from_tab", SessionStorage.getItem("to_tab"));
+      SessionStorage.set("to_tab", item.name);
+      SessionStorage.set("requires_add", this.requires_add);
     },
-    updateRightDrawer({right, current_tab, data, show_title}) {
-      this.current_tab = current_tab
+    setintermediateTab(item){
+      console.log(item);
+    },
+    updateRightDrawer({ right, current_tab, data, show_title }) {
+      this.current_tab = current_tab;
       this.right = right;
-      this.data = data
-      this.show_title = (show_title == undefined? true: show_title)
+      this.data = data;
+      this.show_title = show_title == undefined ? true : show_title;
     },
     updateLeftDrawer(left) {
       this.left = left;
@@ -396,19 +418,17 @@ export default {
       };
       this.$store.dispatch("auth/logoutUser", payload);
     },
-    goBack(){
-
+    goBack() {},
+    closeRightDrawer() {
+      this.right = !this.right;
     },
-    closeRightDrawer(){
-      this.right = !this.right
-    }
   },
   components: {
     MainContent,
     AddMember,
     EditMember,
     AddPaymentCategory,
-    AddPaymentItem
+    AddPaymentItem,
   },
 };
 </script>

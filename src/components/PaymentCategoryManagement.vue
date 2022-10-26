@@ -94,6 +94,7 @@
 import NotFound from "src/components/NotFound.vue";
 import CategoryTable from "src/components/CategoryTable.vue";
 import ButtonVue from "src/components/Button.vue";
+import { SessionStorage } from 'quasar';
 export default {
   data() {
     return {
@@ -335,6 +336,8 @@ export default {
     showPaymentItems(data) {
       //make request
       this.show_payment_items = !this.show_payment_items;
+      SessionStorage.set("intermediate_tab", "Payment Items")
+      this.$emit("show-payment-items", data);
     },
     updatePaymentItems(data){
       this.$emit("update-payment-item", data);

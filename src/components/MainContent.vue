@@ -57,10 +57,14 @@
         <q-card-section class="content_header">
           <div class="row">
             <label for="title" class="title">
-              <q-btn round color="primary" icon="arrow_back" flat dense /><span
-                class="q-pl-sm"
-                >{{ item.name }}</span
-              >
+              <q-btn
+                round
+                color="primary"
+                icon="arrow_back"
+                flat
+                dense
+                @click="goBack"
+              /><span class="q-pl-sm">{{ item.name }}</span>
             </label>
             <q-space />
             <q-btn
@@ -89,9 +93,15 @@
             </OrganisationManagement>
             <MemberManagement
               v-if="item.selected && item.name == 'Member Management'"
-              @update-member="showEditDrawer"
+              @update-member="showEditMember"
             ></MemberManagement>
-            <PaymentCategoryManagement v-if="item.selected && item.name == 'Payment Categories'" @update-payment-category="showEditDrawer" @update-payment-item="updatePaymentItem"></PaymentCategoryManagement>
+            <PaymentCategoryManagement
+              v-if="item.selected && item.name == 'Payment Categories'"
+              @update-payment-category="showEditPaymentCategory"
+              @update-payment-item="updatePaymentItem"
+              @show-payment-items="showPaymentItem"
+            ></PaymentCategoryManagement>
+            <PaymentItemManagement v-if="item.selected && item.name =='Payment Items'"></PaymentItemManagement>
           </q-card-section>
         </q-card>
       </q-scroll-area>
@@ -114,7 +124,8 @@ import Dashboard from "src/components/Dashboard.vue";
 import OrganisationManagement from "src/components/OrganisationManagment.vue";
 import MemberManagement from "src/components/MemberManagement.vue";
 import { SessionStorage } from "quasar";
-import PaymentCategoryManagement from "src/components/PaymentCategoryManagement.vue"
+import PaymentCategoryManagement from "src/components/PaymentCategoryManagement.vue";
+import PaymentItemManagement from "src/components/PaymentItemManagement.vue";
 export default {
   props: {
     item: {
@@ -138,8 +149,8 @@ export default {
     showRightDrawer() {
       this.right = true;
       this.$emit("show-right-drawer", {
-        'right': this.right,
-        'current_tab':SessionStorage.getItem("tab"),
+        right: this.right,
+        current_tab: SessionStorage.getItem("to_tab"),
       });
     },
     showLeftDrawer() {
@@ -161,30 +172,55 @@ export default {
       };
       this.$store.dispatch("auth/logoutUser", payload);
     },
-    showEditDrawer(data) {
+    showEditMember(data) {
       this.right = true;
       this.$emit("show-right-drawer", {
-        'right': this.right,
-        'current_tab': data.tab,
-        'data': data,
-        'show_title': false
+        right: this.right,
+        current_tab: data.tab,
+        data: data,
+        show_title: false,
       });
     },
-    updatePaymentItem(data){
+    showEditPaymentCategory(data) {
       this.right = true;
       this.$emit("show-right-drawer", {
-        'right': this.right,
-        'current_tab':data.tab,
-        'data': data,
-        'show_title': false
+        right: this.right,
+        current_tab: data.tab,
+        data: data,
+        show_title: false,
       });
+    },
+    updatePaymentItem(data) {
+      this.right = true;
+      this.$emit("show-right-drawer", {
+        right: this.right,
+        current_tab: data.tab,
+        data: data,
+        show_title: false,
+      });
+    },
+    goBack() {
+      let payload = {
+        name: SessionStorage.getItem("from_tab"),
+        selected: true,
+      };
+      this.$emit("set-tab", payload, SessionStorage.getItem("requires_add"));
+    },
+    showPaymentItem(data){
+      let payload = {
+        name: SessionStorage.getItem("intermediate_tab"),
+        selected: true,
+        requires_add:true
+      };
+      this.$emit("set-intermediate-tab", payload);
     }
   },
   components: {
     Dashboard,
     OrganisationManagement,
     MemberManagement,
-    PaymentCategoryManagement
+    PaymentCategoryManagement,
+    PaymentItemManagement
   },
 };
 </script>

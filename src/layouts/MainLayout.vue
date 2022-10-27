@@ -1,14 +1,7 @@
 <template>
   <q-layout view="lHr lpr LFr">
-    <q-drawer
-      show-if-above
-      v-model="left"
-      side="left"
-      bordered
-      :width="280"
-      :breakpoint="500"
-      content-class="bg-grey-3"
-    >
+    <q-drawer show-if-above v-model="left" side="left" bordered :width="280" :breakpoint="500"
+      content-class="bg-grey-3">
       <div>
         <div class="bg-white left_drawer">
           <div class="bg-transparent q-pa-sm flex flex-center">
@@ -16,122 +9,71 @@
               <!-- <img src="https://cdn.quasar.dev/logo-v2/svg/logo.svg" /> -->
             </q-avatar>
           </div>
-          <div
-            class="text-weight-bold text-center organisation_name q-mb-md q-pa-xs"
-          >
+          <div class="text-weight-bold text-center organisation_name q-mb-md q-pa-xs">
             Brother’s Corner CYF Great Soppo Buea
           </div>
         </div>
         <div class="nav">
           <q-list padding>
-            <q-item
-              :active="item.name == 'Dashboard'"
-              clickable
-              v-ripple
+            <q-item :active="item.name == 'Dashboard'" clickable v-ripple
               :active-class="item.name == 'Dashboard' ? 'item' : 'item_text'"
-              @click="setItem({ name: 'Dashboard', selected: true }, false)"
-              v-if="checkRole(['PRESIDENT', null])"
-              to="/dashboard"
-            >
-              <q-item-section
-                avatar
-                :class="item.name == 'Dashboard' ? 'item_icon' : 'item_text'"
-              >
+              @click="setItem({ name: 'Dashboard', selected: true }, false)" v-if="checkRole(['PRESIDENT', null])"
+              to="/dashboard">
+              <q-item-section avatar :class="item.name == 'Dashboard' ? 'item_icon' : 'item_text'">
                 <q-icon name="grid_view" size="xs" />
               </q-item-section>
 
               <q-item-section class="item_name"> Dashboard </q-item-section>
             </q-item>
-            <q-item
-              clickable
-              v-ripple
-              :active-class="
-                item.name == 'Organisation Management' ? 'item' : 'item_text'
-              "
-              :active="item.name == 'Organisation Management'"
-              @click="
-                setItem(
-                  { name: 'Organisation Management', selected: true },
-                  false
-                )
-              "
-              v-if="checkRole(['PRESIDENT', null])"
-              to="/dashboard/organisation-management"
-            >
-              <q-item-section
-                avatar
-                :class="
-                  item.name == 'Organisation Management'
-                    ? 'item_icon'
-                    : 'item_text'
-                "
-              >
+            <q-item clickable v-ripple :active-class="
+              item.name == 'Organisation Management' ? 'item' : 'item_text'
+            " :active="item.name == 'Organisation Management'" @click="
+  setItem(
+    { name: 'Organisation Management', selected: true },
+    false
+  )
+" v-if="checkRole(['PRESIDENT', null])" to="/dashboard/organisation-management">
+              <q-item-section avatar :class="
+                item.name == 'Organisation Management'
+                  ? 'item_icon'
+                  : 'item_text'
+              ">
                 <q-icon name="diversity_3" size="xs" />
               </q-item-section>
               <q-item-section class="item_name">
                 Organisation Management
               </q-item-section>
             </q-item>
-            <q-item
-              clickable
-              v-ripple
-              :active-class="
-                item.name == 'Member Management' ? 'item' : 'item_text'
-              "
-              :active="item.name == 'Member Management'"
-              @click="
-                setItem({ name: 'Member Management', selected: true }, true)
-              "
-              v-if="checkRole(['PRESIDENT', 'FINANCIAL_SECRETARY'])"
-              to="/dashboard/members"
-            >
-              <q-item-section
-                avatar
-                :class="
-                  item.name == 'Member Management' ? 'item_icon' : 'item_text'
-                "
-              >
+            <q-item clickable v-ripple :active-class="
+              item.name == 'Member Management' ? 'item' : 'item_text'
+            " :active="item.name == 'Member Management'" @click="
+  setItem({ name: 'Member Management', selected: true }, true)
+" v-if="checkRole(['PRESIDENT', 'FINANCIAL_SECRETARY'])" to="/dashboard/members">
+              <q-item-section avatar :class="
+                item.name == 'Member Management' ? 'item_icon' : 'item_text'
+              ">
                 <q-icon name="manage_accounts" size="xs" />
               </q-item-section>
               <q-item-section class="item_name">
                 Member Management
               </q-item-section>
             </q-item>
-            <q-item
-              clickable
-              v-ripple
-              :active-class="item.name == 'Settings' ? 'item' : 'item_text'"
-              :active="item.name == 'Settings'"
-              @click="setItem({ name: 'Settings', selected: true }, false)"
-              v-if="checkRole(['PRESIDENT', null])"
-            >
-              <q-item-section
-                avatar
-                :class="item.name == 'Settings' ? 'item_icon' : 'item_text'"
-              >
+            <q-item clickable v-ripple :active-class="item.name == 'Settings' ? 'item' : 'item_text'"
+              :active="item.name == 'Settings'" @click="setItem({ name: 'Settings', selected: true }, false)"
+              v-if="checkRole(['PRESIDENT', null])">
+              <q-item-section avatar :class="item.name == 'Settings' ? 'item_icon' : 'item_text'">
                 <q-icon name="settings" size="xs" />
               </q-item-section>
               <q-item-section class="item_name"> Settings Zone </q-item-section>
             </q-item>
-            <q-item
-              clickable
-              v-ripple
-              :active-class="
-                item.name == 'Payment Categories' ? 'item' : 'item_text'
-              "
-              :active="item.name == 'Payment Categories'"
-              @click="
-                setItem({ name: 'Payment Categories', selected: true }, true)
-              "
-              v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER'])"
-              to="/dashboard/payment-categories"
-            >
-              <q-item-section
-                avatar
-                :class="
-                  item.name == 'Payment Categories' ? 'item_icon' : 'item_text'
-                "
-              >
+            <q-item clickable v-ripple :active-class="
+              item.name == 'Payment Categories' ? 'item' : 'item_text'
+            " :active="item.name == 'Payment Categories'" @click="
+  setItem({ name: 'Payment Categories', selected: true }, true)
+" v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER'])" to="/dashboard/payment-categories">
+              <q-item-section avatar :class="
+                item.name == 'Payment Categories' ? 'item_icon' : 'item_text'
+              ">
                 <q-icon name="monetization_on" size="xs" />
               </q-item-section>
               <q-item-section class="item_name">
@@ -139,30 +81,19 @@
               </q-item-section>
             </q-item>
 
-            <q-item
-              clickable
-              v-ripple
-              :active-class="
-                item.name == 'Expenditure Categories' ? 'item' : 'item_text'
-              "
-              :active="item.name == 'Expenditure Categories'"
-              @click="
-                setItem(
-                  { name: 'Expenditure Categories', selected: true },
-                  true
-                )
-              "
-              v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER'])"
-              to="/dashboard/expenditure-categories"
-            >
-              <q-item-section
-                avatar
-                :class="
-                  item.name == 'Expenditure Categories'
-                    ? 'item_icon'
-                    : 'item_text'
-                "
-              >
+            <q-item clickable v-ripple :active-class="
+              item.name == 'Expenditure Categories' ? 'item' : 'item_text'
+            " :active="item.name == 'Expenditure Categories'" @click="
+  setItem(
+    { name: 'Expenditure Categories', selected: true },
+    true
+  )
+" v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER'])" to="/dashboard/expenditure-categories">
+              <q-item-section avatar :class="
+                item.name == 'Expenditure Categories'
+                  ? 'item_icon'
+                  : 'item_text'
+              ">
                 <q-icon name="monetization_on" size="xs" />
               </q-item-section>
               <q-item-section class="item_name">
@@ -170,23 +101,14 @@
               </q-item-section>
             </q-item>
 
-            <q-item
-              clickable
-              v-ripple
-              :active-class="
-                item.name == 'Member Savings' ? 'item' : 'item_text'
-              "
-              :active="item.name == 'Member Savings'"
+            <q-item clickable v-ripple :active-class="
+              item.name == 'Member Savings' ? 'item' : 'item_text'
+            " :active="item.name == 'Member Savings'"
               @click="setItem({ name: 'Member Savings', selected: true }, true)"
-              v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER'])"
-              to="/dashboard/members-savings"
-            >
-              <q-item-section
-                avatar
-                :class="
-                  item.name == 'Member Savings' ? 'item_icon' : 'item_text'
-                "
-              >
+              v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER'])" to="/dashboard/members-savings">
+              <q-item-section avatar :class="
+                item.name == 'Member Savings' ? 'item_icon' : 'item_text'
+              ">
                 <q-icon name="savings" size="xs" />
               </q-item-section>
               <q-item-section class="item_name">
@@ -194,25 +116,14 @@
               </q-item-section>
             </q-item>
 
-            <q-item
-              clickable
-              v-ripple
-              :active-class="
-                item.name == 'Income Activities' ? 'item' : 'item_text'
-              "
-              :active="item.name == 'Income Activities'"
-              @click="
-                setItem({ name: 'Income Activities', selected: true }, true)
-              "
-              v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER'])"
-              to="/dashboard/income-activities"
-            >
-              <q-item-section
-                avatar
-                :class="
-                  item.name == 'Income Activities' ? 'item_icon' : 'item_text'
-                "
-              >
+            <q-item clickable v-ripple :active-class="
+              item.name == 'Income Activities' ? 'item' : 'item_text'
+            " :active="item.name == 'Income Activities'" @click="
+  setItem({ name: 'Income Activities', selected: true }, true)
+" v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER'])" to="/dashboard/income-activities">
+              <q-item-section avatar :class="
+                item.name == 'Income Activities' ? 'item_icon' : 'item_text'
+              ">
                 <q-icon name="local_activity" size="xs" />
               </q-item-section>
               <q-item-section class="item_name">
@@ -220,45 +131,27 @@
               </q-item-section>
             </q-item>
 
-            <q-item
-              clickable
-              v-ripple
-              :active-class="
-                item.name == 'Contributions' ? 'item' : 'item_text'
-              "
-              :active="item.name == 'Contributions'"
+            <q-item clickable v-ripple :active-class="
+              item.name == 'Contributions' ? 'item' : 'item_text'
+            " :active="item.name == 'Contributions'"
               @click="setItem({ name: 'Contributions', selected: true }, true)"
-              v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER'])"
-            >
-              <q-item-section
-                avatar
-                :class="
-                  item.name == 'Contributions' ? 'item_icon' : 'item_text'
-                "
-              >
+              v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER'])">
+              <q-item-section avatar :class="
+                item.name == 'Contributions' ? 'item_icon' : 'item_text'
+              ">
                 <q-icon name="payments" size="xs" />
               </q-item-section>
               <q-item-section class="item_name"> Contributions </q-item-section>
             </q-item>
 
-            <q-item
-              clickable
-              v-ripple
-              :active-class="
-                item.name == 'Reports Generation' ? 'item' : 'item_text'
-              "
-              :active="item.name == 'Reports Generation'"
-              @click="
-                setItem({ name: 'Reports Generation', selected: true }, false)
-              "
-              v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER'])"
-            >
-              <q-item-section
-                avatar
-                :class="
-                  item.name == 'Reports Generation' ? 'item_icon' : 'item_text'
-                "
-              >
+            <q-item clickable v-ripple :active-class="
+              item.name == 'Reports Generation' ? 'item' : 'item_text'
+            " :active="item.name == 'Reports Generation'" @click="
+  setItem({ name: 'Reports Generation', selected: true }, false)
+" v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER'])">
+              <q-item-section avatar :class="
+                item.name == 'Reports Generation' ? 'item_icon' : 'item_text'
+              ">
                 <q-icon name="summarize" size="xs" />
               </q-item-section>
               <q-item-section class="item_name">
@@ -267,12 +160,7 @@
             </q-item>
           </q-list>
           <q-list padding>
-            <q-item
-              clickable
-              v-ripple
-              :active-class="item.name == 'Logout' ? 'item' : 'item_text'"
-              @click="logoutUser"
-            >
+            <q-item clickable v-ripple :active-class="item.name == 'Logout' ? 'item' : 'item_text'" @click="logoutUser">
               <q-item-section avatar class="item_text">
                 <q-icon name="logout" size="xs" />
               </q-item-section>
@@ -284,68 +172,32 @@
     </q-drawer>
 
     <q-page-container class="content">
-      <MainContent
-        :item="item"
-        :requires_add="requires_add"
-        @show-right-drawer="updateRightDrawer"
-        @show-left-drawer="updateLeftDrawer"
-        :check_intermediate_tab="check_intermediate_tab"
-      >
+      <MainContent :item="item" :requires_add="requires_add" @show-right-drawer="updateRightDrawer"
+        @show-left-drawer="updateLeftDrawer">
         <router-view />
       </MainContent>
     </q-page-container>
 
-    <q-drawer
-      v-model="right"
-      side="right"
-      bordered
-      :width="right_drawer_width"
-      class="q-ml-lg"
-    >
+    <q-drawer v-model="right" side="right" bordered :width="right_drawer_width" class="q-ml-lg">
       <q-page>
         <q-card class="bar">
           <div class="flex">
             <div>
-              <q-btn
-                dense
-                color="white"
-                flat
-                icon="arrow_back"
-                v-close-popup
-                @click="goBack()"
-                size="sm"
-              >
+              <q-btn dense color="white" flat icon="arrow_back" v-close-popup @click="goBack()" size="sm">
               </q-btn>
             </div>
             <q-space />
             <div>
-              <q-btn
-                dense
-                flat
-                color="white"
-                icon="close"
-                v-close-popup
-                @click="closeRightDrawer()"
-                size="sm"
-              >
+              <q-btn dense flat color="white" icon="close" v-close-popup @click="closeRightDrawer()" size="sm">
               </q-btn>
             </div>
           </div>
         </q-card>
-        <AddMember
-          v-if="current_tab == 'Member Management'"
-          @close-right-drawer="closeRightDrawer"
-        ></AddMember>
+        <AddMember v-if="current_tab == 'Member Management'" @close-right-drawer="closeRightDrawer"></AddMember>
         <EditMember v-if="current_tab == 'EditMember'"></EditMember>
-        <AddPaymentCategory
-          v-if="current_tab == 'Payment Categories'"
-          @close-right-drawer="closeRightDrawer"
-        >
+        <AddPaymentCategory v-if="current_tab == 'Payment Categories'" @close-right-drawer="closeRightDrawer">
         </AddPaymentCategory>
-        <AddPaymentItem
-          v-if="current_tab == 'Payment Items'"
-          @close-right-drawer="closeRightDrawer"
-        ></AddPaymentItem>
+        <AddPaymentItem v-if="current_tab == 'Payment Items'" @close-right-drawer="closeRightDrawer"></AddPaymentItem>
       </q-page>
     </q-drawer>
   </q-layout>
@@ -380,8 +232,6 @@ export default {
   },
   methods: {
     setItem(item, requires_add) {
-
-
       this.item.name = item.name;
       this.requires_add = requires_add;
       this.item.selected = true;
@@ -422,10 +272,11 @@ export default {
       };
       this.$store.dispatch("auth/logoutUser", payload);
     },
-    goBack() {},
+    goBack() { },
     closeRightDrawer() {
       this.right = !this.right;
     },
+
   },
   components: {
     MainContent,

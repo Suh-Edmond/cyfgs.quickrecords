@@ -48,10 +48,8 @@
             </label>
             <div class="q-pa-xs">
               <span class="q-pl-sm title">{{ item.name }}</span>
-             <div>
-               <span class="q-pl-sm"> <q-icon size="1.5em" name="chevron_right" color="primary" v-if="has_intermediate_tab"/></span>
+              <span class="q-pl-sm"> <q-icon size="1.5em" name="chevron_right" color="primary" v-if="has_intermediate_tab"/></span>
               <span class="q-pl-sm title" v-if="has_intermediate_tab">{{intermediate_tab }}</span>
-             </div>
             </div>
             <q-space />
             <q-btn color="primary" icon-right="add" label="Add" flat size="md" dense no-caps v-show="requires_add"
@@ -96,10 +94,6 @@ export default {
       type: Boolean,
       required: true,
     },
-    check_intermediate_tab:{
-      type: Boolean,
-      required: true
-    }
   },
   data() {
     return {

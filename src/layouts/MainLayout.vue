@@ -289,7 +289,7 @@
         :requires_add="requires_add"
         @show-right-drawer="updateRightDrawer"
         @show-left-drawer="updateLeftDrawer"
-        @set-tab="setItem"
+        :check_intermediate_tab="check_intermediate_tab"
       >
         <router-view />
       </MainContent>
@@ -303,33 +303,35 @@
       class="q-ml-lg"
     >
       <q-page>
-        <q-bar class="bar">
-          <div>
-            <q-btn
-              dense
-              color="grey"
-              flat
-              icon="arrow_back"
-              v-close-popup
-              @click="goBack()"
-              size="md"
-            >
-            </q-btn>
+        <q-card class="bar">
+          <div class="flex">
+            <div>
+              <q-btn
+                dense
+                color="white"
+                flat
+                icon="arrow_back"
+                v-close-popup
+                @click="goBack()"
+                size="sm"
+              >
+              </q-btn>
+            </div>
+            <q-space />
+            <div>
+              <q-btn
+                dense
+                flat
+                color="white"
+                icon="close"
+                v-close-popup
+                @click="closeRightDrawer()"
+                size="sm"
+              >
+              </q-btn>
+            </div>
           </div>
-          <q-space />
-          <div>
-            <q-btn
-              dense
-              flat
-              color="grey"
-              icon="close"
-              v-close-popup
-              @click="closeRightDrawer()"
-              size="md"
-            >
-            </q-btn>
-          </div>
-        </q-bar>
+        </q-card>
         <AddMember
           v-if="current_tab == 'Member Management'"
           @close-right-drawer="closeRightDrawer"
@@ -338,8 +340,8 @@
         <AddPaymentCategory
           v-if="current_tab == 'Payment Categories'"
           @close-right-drawer="closeRightDrawer"
-          :show_title="show_title"
-        ></AddPaymentCategory>
+        >
+        </AddPaymentCategory>
         <AddPaymentItem
           v-if="current_tab == 'Payment Items'"
           @close-right-drawer="closeRightDrawer"
@@ -373,10 +375,13 @@ export default {
       right_drawer_tab: "",
       data: null,
       show_title: true,
+
     };
   },
   methods: {
     setItem(item, requires_add) {
+
+
       this.item.name = item.name;
       this.requires_add = requires_add;
       this.item.selected = true;
@@ -384,11 +389,10 @@ export default {
       SessionStorage.set("to_tab", item.name);
       SessionStorage.set("requires_add", this.requires_add);
     },
-    updateRightDrawer({ right, current_tab, data, show_title }) {
+    updateRightDrawer({ right, current_tab, data }) {
       this.current_tab = current_tab;
       this.right = right;
       this.data = data;
-      this.show_title = show_title == undefined ? true : show_title;
     },
     updateLeftDrawer(left) {
       this.left = left;
@@ -481,15 +485,19 @@ export default {
   background-color: $primary2;
   color: $white1;
 }
+
 .item_text {
   color: $grey2;
 }
+
 .item_name {
   font-size: 0.8rem;
 }
+
 .bar {
   color: $dark;
   padding: 0;
-  background-color: $grey1;
+  background-color: $primary;
+  height: 3.8rem;
 }
 </style>

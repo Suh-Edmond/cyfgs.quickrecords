@@ -2,14 +2,7 @@
   <q-page>
     <q-header class="bg-primary text-white header">
       <q-toolbar>
-        <q-btn
-          dense
-          flat
-          round
-          icon="menu"
-          @click="showLeftDrawer"
-          v-if="$q.screen.lt.md"
-        />
+        <q-btn dense flat round icon="menu" @click="showLeftDrawer" v-if="$q.screen.lt.md" />
         <q-toolbar-title class="toolbar_title">
           Welcome President
         </q-toolbar-title>
@@ -37,10 +30,7 @@
                     <q-icon name="logout" size="sm" color="red" />
                   </span>
                 </q-item-section>
-                <q-item-section
-                  class="text-center drop_down_text"
-                  @click="logoutUser"
-                >
+                <q-item-section class="text-center drop_down_text" @click="logoutUser">
                   <q-item-label>Logout</q-item-label>
                 </q-item-section>
               </q-item>
@@ -49,42 +39,30 @@
         </div>
       </q-toolbar>
     </q-header>
-    <div
-      class="main_content"
-      :style="$q.screen.lg ? 'margin-left: .5rem;' : ''"
-    >
+    <div class="main_content" :style="$q.screen.lg ? 'margin-left: .5rem;' : ''">
       <q-card class="header_section">
         <q-card-section class="content_header">
           <div class="row">
             <label for="title" class="title">
-              <q-btn
-                round
-                color="primary"
-                icon="arrow_back"
-                flat
-                dense
-                @click="goBack"
-              /><span class="q-pl-sm">{{ item.name }}</span>
+              <q-btn round color="primary" icon="arrow_back" flat dense @click="goBack" />
             </label>
+            <div class="q-pa-xs">
+              <span class="q-pl-sm title">{{ item.name }}</span>
+             <div>
+               <span class="q-pl-sm"> <q-icon size="1.5em" name="chevron_right" color="primary" v-if="has_intermediate_tab"/></span>
+              <span class="q-pl-sm title" v-if="has_intermediate_tab">{{intermediate_tab }}</span>
+             </div>
+            </div>
             <q-space />
-            <q-btn
-              color="primary"
-              icon-right="add"
-              label="Add"
-              flat
-              size="md"
-              dense
-              no-caps
-              v-show="requires_add"
-              @click="showRightDrawer"
-            />
+            <q-btn color="primary" icon-right="add" label="Add" flat size="md" dense no-caps v-show="requires_add"
+              @click="showRightDrawer" />
           </div>
         </q-card-section>
       </q-card>
       <q-scroll-area style="height: 90vh">
         <q-card class="card">
           <q-card-section class="content">
-            <router-view />
+            <router-view @update-member="updateMember" @update-payment-category="updatePaymentCategory" @show-payment-items="showPaymentItems" @update-payment-item="updatePaymentItem"/>
           </q-card-section>
         </q-card>
       </q-scroll-area>
@@ -103,8 +81,12 @@
 </template>
 
 <script>
+import { SessionStorage } from "quasar";
 
 export default {
+  created(){
+
+  },
   props: {
     item: {
       type: Object,
@@ -114,6 +96,10 @@ export default {
       type: Boolean,
       required: true,
     },
+    check_intermediate_tab:{
+      type: Boolean,
+      required: true
+    }
   },
   data() {
     return {
@@ -121,14 +107,17 @@ export default {
       year: new Date().getFullYear(),
       right: false,
       roles: [],
+      intermediate_tab:"",
+      has_intermediate_tab:false,
     };
   },
+
   methods: {
     showRightDrawer() {
       this.right = true;
       this.$emit("show-right-drawer", {
         right: this.right,
-        current_tab: SessionStorage.getItem("to_tab"),
+        current_tab: SessionStorage.getItem("intermediate_tab") == null ? SessionStorage.getItem("to_tab"): SessionStorage.getItem("intermediate_tab"),
       });
     },
     showLeftDrawer() {
@@ -151,17 +140,46 @@ export default {
       this.$store.dispatch("auth/logoutUser", payload);
     },
     goBack() {
-      let payload = {
-        name: SessionStorage.getItem("from_tab"),
-        selected: true,
-      };
-      this.$emit("set-tab", payload, SessionStorage.getItem("requires_add"));
+      history.back();
+      this.has_intermediate_tab = false
+      SessionStorage.set("has_intermediate_tab", false)
+      SessionStorage.remove("intermediate_tab")
     },
-
+    updateMember(data) {
+      this.right = true;
+      this.$emit("show-right-drawer", {
+        right: this.right,
+        current_tab: data.tab,
+        data: data.data,
+      });
+    },
+    updatePaymentCategory(data) {
+      this.updateDrawer(data);
+    },
+    showPaymentItems(data){
+      this.has_intermediate_tab = data.has_intermediate_tab;
+      this.getIntermediateTab();
+    },
+    getIntermediateTab(){
+      this.intermediate_tab = SessionStorage.getItem("intermediate_tab");
+      return this.intermediate_tab;
+    },
+    updatePaymentItem(data){
+      this.updateDrawer(data)
+    },
+    updateDrawer(data){
+      this.right = true;
+      this.$emit("show-right-drawer", {
+        right: this.right,
+        current_tab: data.tab,
+        data: data.data,
+        show_title: data.show_title,
+      });
+    }
   },
-  components: {
+  computed:{
 
-  },
+  }
 };
 </script>
 

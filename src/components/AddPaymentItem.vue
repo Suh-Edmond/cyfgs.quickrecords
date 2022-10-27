@@ -58,7 +58,7 @@
               placeholder="Please provide a description about the category"
             />
           </div>
-          <div class="q-pt-md">
+          <div>
             <ButtonVue
               class="form_button"
               :label="label_save"

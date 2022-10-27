@@ -73,6 +73,7 @@
           :data="data"
           :label="label"
           @update-member="updateMember"
+          :member_name="select_member_name"
         >
         </TableVue>
       </div>
@@ -267,6 +268,7 @@ export default {
         "Ooops!! You don't have any Register Member click the button to add Members.",
       label_print: "Print",
       color_print: "positive",
+      select_member_name:" Suh Edmond Edmond"
     };
   },
   computed: {

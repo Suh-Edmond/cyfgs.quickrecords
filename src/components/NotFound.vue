@@ -3,9 +3,9 @@
     <div class="text-center member_not_found">
       <h6>
         {{message}}
-        <span>
-          <q-icon name="arrow_outward" class="arrow" size="sm"></q-icon>
-        </span>
+        <q-avatar>
+          <img src="../assets/arrow.svg" alt="">
+        </q-avatar>
       </h6>
     </div>
   </q-page>

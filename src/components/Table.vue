@@ -35,7 +35,7 @@
               <q-icon name="more_vert" size="xs" color="primary" class="menu_icon" clickable>
                 <q-menu>
                   <q-list>
-                    <q-item clickable v-close-popup @click="onEditClick(props)">
+                    <q-item clickable v-close-popup @click="onEditMember(props.row)">
                       <q-item-section avatar>
                         <span>
                           <q-icon name="edit" size="xs" class="edit" />
@@ -46,7 +46,7 @@
                       </q-item-section>
                     </q-item>
                     <q-separator />
-                    <q-item clickable v-close-popup @click="onDeleteClick(props.row)">
+                    <q-item clickable v-close-popup @click="onDeleteMember(props.row)">
                       <q-item-section avatar>
                         <span>
                           <q-icon name="delete" size="xs" color="red" />
@@ -77,21 +77,23 @@
     <!-- confirmation dialog -->
     <q-dialog v-model="dialog">
       <q-card>
-        <q-card-section class="row items-center">
-          <q-avatar icon="warning" class="warning_image" size="lg" />
+        <q-card-section>
+         <div>
+          <q-avatar icon="warning" class="warning_image" size="40px" />
           <span class="q-ml-sm text-dark">Are you sure you want to delete this Member?</span>
+         </div>
+         <div class="text-weight-bold text-center">{{member_name}}</div>
         </q-card-section>
-
         <q-card-actions align="right">
-          <q-btn flat label="Cancel" class="text-color" v-close-popup no-caps />
-          <q-btn flat :label="label" color="primary" v-close-popup no-caps />
+          <ButtonVue :label="label_cancel" :color="'primary'" :disabled="false" :loading="loading" :no_caps="false"  :flat="true" v-close-popup></ButtonVue>
+          <ButtonVue :label="label" :color="'primary'" :disabled="false" :loading="loading" :no_caps="false" :flat="true" v-close-popup></ButtonVue>
         </q-card-actions>
       </q-card>
     </q-dialog>
   </div>
 </template>
 <script>
-import ButtonVue from "src/components/Button.vue";
+import ButtonVue from './Button.vue';
 export default {
   props: {
     columns: {
@@ -106,6 +108,10 @@ export default {
       required: true,
       type: String,
     },
+    member_name: {
+      required: true,
+      type: String
+    }
   },
   data() {
     return {
@@ -115,22 +121,23 @@ export default {
       no_caps: true,
       dialog: false,
       filter:null,
+      label_cancel:"Cancel"
     };
   },
   methods: {
-    onEditClick(data) {
+    onEditMember(data) {
       let payload = {
         data: data,
         tab: "EditMember"
       }
       this.$emit("update-member", payload);
     },
-    onDeleteClick(id) {
+    onDeleteMember(data) {
       this.dialog = true;
     },
   },
   components: {
-    // ButtonVue,
+    ButtonVue
   },
 };
 </script>
@@ -148,10 +155,8 @@ export default {
 }
 
 .warning_image {
-  color: $orange;
+  color: yellow;
 }
 
-.text-color {
-  color: $grey2;
-}
+
 </style>

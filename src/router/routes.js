@@ -42,6 +42,7 @@ const routes = [
         meta: {
           middleware: "auth",
           role: "USER",
+          has_intermediate_tab:false
         },
       },
       {
@@ -52,6 +53,7 @@ const routes = [
         meta: {
           middleware: "auth",
           role: "USER",
+          has_intermediate_tab:false
         },
       },
       {
@@ -62,6 +64,7 @@ const routes = [
         meta: {
           middleware: "auth",
           role: "USER",
+          has_intermediate_tab:false
         },
       },
       {
@@ -71,6 +74,7 @@ const routes = [
         meta: {
           middleware: "auth",
           role: "USER",
+          has_intermediate_tab:true
         },
       },
       {
@@ -80,6 +84,7 @@ const routes = [
         meta: {
           middleware: "auth",
           role: "USER",
+          has_intermediate_tab:false
         },
       },
       {
@@ -89,6 +94,7 @@ const routes = [
         meta: {
           middleware: "auth",
           role: "USER",
+          has_intermediate_tab:false
         },
       },
       {
@@ -98,6 +104,7 @@ const routes = [
         meta: {
           middleware: "auth",
           role: "USER",
+          has_intermediate_tab:true
         },
       },
       {
@@ -107,6 +114,7 @@ const routes = [
         meta: {
           middleware: "auth",
           role: "USER",
+          has_intermediate_tab:false
         },
       },
       {
@@ -116,6 +124,7 @@ const routes = [
         meta: {
           middleware: "auth",
           role: "USER",
+          has_intermediate_tab:false
         },
       },
 

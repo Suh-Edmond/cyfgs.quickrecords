@@ -1,9 +1,13 @@
 <template>
   <div class="q-pa-xs">
-    <div class="button q-pb-xs">
-    </div>
-    <q-table :data="data" :columns="columns" row-key="name"
-      :table-header-style="{ backgroundColor: '#5384ae', color: '#FFFFFF' }">
+    <div class="button q-pb-xs"></div>
+    <q-table
+      :data="data"
+      :columns="columns"
+      row-key="name"
+      :table-header-style="{ backgroundColor: '#5384ae', color: '#FFFFFF' }"
+      :filter="filter"
+    >
       <template v-slot:body="props">
         <q-tr :props="props">
           <q-td key="counter" :props="props">
@@ -32,10 +36,20 @@
           </q-td>
           <q-td key="iron" :props="props">
             <q-btn flat round>
-              <q-icon name="more_vert" size="xs" color="primary" class="menu_icon" clickable>
+              <q-icon
+                name="more_vert"
+                size="xs"
+                color="primary"
+                class="menu_icon"
+                clickable
+              >
                 <q-menu>
                   <q-list>
-                    <q-item clickable v-close-popup @click="onEditMember(props.row)">
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onEditMember(props.row)"
+                    >
                       <q-item-section avatar>
                         <span>
                           <q-icon name="edit" size="xs" class="edit" />
@@ -46,7 +60,11 @@
                       </q-item-section>
                     </q-item>
                     <q-separator />
-                    <q-item clickable v-close-popup @click="onDeleteMember(props.row)">
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onDeleteMember(props.row)"
+                    >
                       <q-item-section avatar>
                         <span>
                           <q-icon name="delete" size="xs" color="red" />
@@ -64,9 +82,17 @@
         </q-tr>
       </template>
       <template v-slot:top-right>
-        <q-input outlined dense
-          :class="$q.screen.md ? 'text-h6-sm q-mb-lg q-mt-lg full-width' : 'text-h6-sm'"
-          v-model="filter" placeholder="Type name to search...">
+        <q-input
+          outlined
+          dense
+          :class="
+            $q.screen.md
+              ? 'text-h6-sm q-mb-lg q-mt-lg full-width'
+              : 'text-h6-sm'
+          "
+          v-model="filter"
+          placeholder="Type name to search..."
+        >
           <template v-slot:append>
             <q-icon name="search" />
           </template>
@@ -78,22 +104,40 @@
     <q-dialog v-model="dialog">
       <q-card>
         <q-card-section>
-         <div>
-          <q-avatar icon="warning" class="warning_image" size="40px" />
-          <span class="q-ml-sm text-dark">Are you sure you want to delete this Member?</span>
-         </div>
-         <div class="text-weight-bold text-center">{{member_name}}</div>
+          <div>
+            <q-avatar icon="warning" class="warning_image" size="40px" />
+            <span class="q-ml-sm text-dark"
+              >Are you sure you want to delete this Member?</span
+            >
+          </div>
+          <div class="text-weight-bold text-center">{{ member_name }}</div>
         </q-card-section>
         <q-card-actions align="right">
-          <ButtonVue :label="label_cancel" :color="'primary'" :disabled="false" :loading="loading" :no_caps="false"  :flat="true" v-close-popup></ButtonVue>
-          <ButtonVue :label="label" :color="'primary'" :disabled="false" :loading="loading" :no_caps="false" :flat="true" v-close-popup></ButtonVue>
+          <ButtonVue
+            :label="label_cancel"
+            :color="'primary'"
+            :disabled="false"
+            :loading="loading"
+            :no_caps="false"
+            :flat="true"
+            v-close-popup
+          ></ButtonVue>
+          <ButtonVue
+            :label="label"
+            :color="'primary'"
+            :disabled="false"
+            :loading="loading"
+            :no_caps="false"
+            :flat="true"
+            v-close-popup
+          ></ButtonVue>
         </q-card-actions>
       </q-card>
     </q-dialog>
   </div>
 </template>
 <script>
-import ButtonVue from './Button.vue';
+import ButtonVue from "./Button.vue";
 export default {
   props: {
     columns: {
@@ -110,8 +154,8 @@ export default {
     },
     member_name: {
       required: true,
-      type: String
-    }
+      type: String,
+    },
   },
   data() {
     return {
@@ -120,16 +164,16 @@ export default {
       color: "positive",
       no_caps: true,
       dialog: false,
-      filter:null,
-      label_cancel:"Cancel"
+      filter: null,
+      label_cancel: "Cancel",
     };
   },
   methods: {
     onEditMember(data) {
       let payload = {
         data: data,
-        tab: "EditMember"
-      }
+        tab: "EditMember",
+      };
       this.$emit("update-member", payload);
     },
     onDeleteMember(data) {
@@ -137,7 +181,7 @@ export default {
     },
   },
   components: {
-    ButtonVue
+    ButtonVue,
   },
 };
 </script>
@@ -157,6 +201,4 @@ export default {
 .warning_image {
   color: yellow;
 }
-
-
 </style>

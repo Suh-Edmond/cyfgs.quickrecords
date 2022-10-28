@@ -180,7 +180,7 @@
 
     <q-drawer v-model="right" side="right" bordered :width="right_drawer_width" class="q-ml-lg">
       <q-page>
-        <q-card class="bar">
+        <q-card class="bar" flat>
           <div class="flex">
             <div>
               <q-btn dense color="white" flat icon="arrow_back" v-close-popup @click="goBack()" size="sm">
@@ -198,6 +198,9 @@
         <AddPaymentCategory v-if="current_tab == 'Payment Categories'" @close-right-drawer="closeRightDrawer">
         </AddPaymentCategory>
         <AddPaymentItem v-if="current_tab == 'Payment Items'" @close-right-drawer="closeRightDrawer"></AddPaymentItem>
+        <AddExpenditureCategory  v-if="current_tab == 'Expenditure Categories'"></AddExpenditureCategory>
+        <AddExpenditureItem v-if="current_tab == 'Expenditure Items'"></AddExpenditureItem>
+        <ViewExpenditureItem v-if="current_tab == 'View Expenditure Item'"></ViewExpenditureItem>
       </q-page>
     </q-drawer>
   </q-layout>
@@ -210,6 +213,9 @@ import AddMember from "src/components/AddMember.vue";
 import EditMember from "src/components/EditMember.vue";
 import AddPaymentCategory from "src/components/AddPaymentCategory.vue";
 import AddPaymentItem from "src/components/AddPaymentItem.vue";
+import AddExpenditureCategory from "src/components/AddExpenditureCategory.vue";
+import AddExpenditureItem from "src/components/AddExpenditureItem.vue";
+import ViewExpenditureItem from "src/components/ViewExpenditureItem.vue";
 
 export default {
   data() {
@@ -284,6 +290,9 @@ export default {
     EditMember,
     AddPaymentCategory,
     AddPaymentItem,
+    AddExpenditureCategory,
+    AddExpenditureItem,
+    ViewExpenditureItem
   },
 };
 </script>
@@ -350,5 +359,9 @@ export default {
   padding: 0;
   background-color: $primary;
   height: 3.8rem;
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
 }
 </style>

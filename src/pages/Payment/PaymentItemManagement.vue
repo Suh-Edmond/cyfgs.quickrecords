@@ -43,11 +43,14 @@
           :label="label"
           :message="message"
           :name="name"
+          :title="title"
           @show-payment-items="showPaymentItems"
           @update-payment-category="updatePaymentCategory"
           :show_payment_category="false"
           :show_payment_item="true"
-          @update-payment-item="updatePaymentItem"
+          @update-payment-item="updatePaymentItems"
+          :show_expenditure_category="false"
+          :show_expenditure_item="false"
         >
         </CategoryTable>
       </div>
@@ -73,6 +76,7 @@ export default {
       loading: false,
       label_download: "Print",
       color_print: "positive",
+      title:"Harvest ThanksGiven",// this title should be the category name
       columns: [
         {
           name: "counter",
@@ -192,9 +196,6 @@ export default {
     updatePaymentItems(data) {
       this.$emit("update-payment-item", data);
     },
-    updatePaymentItem(data){
-      this.$emit("update-payment-item", data);
-    }
   },
   components: {
     NotFound,

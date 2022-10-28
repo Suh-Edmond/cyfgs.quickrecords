@@ -47,6 +47,8 @@
           @update-payment-category="updatePaymentCategory"
           :show_payment_category="true"
           :show_payment_item="false"
+          :show_expenditure_category="false"
+          :show_expenditure_item="false"
         >
         </CategoryTable>
       </div>

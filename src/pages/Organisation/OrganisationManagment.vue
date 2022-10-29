@@ -169,6 +169,7 @@
             :disabled="validateForm"
             class="button"
             :color="color"
+            :no_caps="false"
           >
           </ButtonVue>
         </div>
@@ -319,7 +320,6 @@ export default {
     },
 
     setOrganisationInfo(data) {
-      console.log(data);
       this.organisation.address = data.address;
       this.organisation.name = data.name;
       this.organisation.email = data.email;

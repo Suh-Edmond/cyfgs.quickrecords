@@ -57,11 +57,38 @@
         <q-card-section class="content_header">
           <div class="row">
             <label for="title" class="title">
-              <q-btn round color="primary" icon="arrow_back" flat dense /><span
-                class="q-pl-sm"
-                >{{ item.name }}</span
-              >
+              <q-btn
+                round
+                color="primary"
+                icon="arrow_back"
+                flat
+                dense
+                @click="goBack"
+              />
             </label>
+            <div class="q-pa-xs">
+              <span class="q-pl-sm title">{{ item.name }}</span>
+              <span class="q-pl-sm">
+                <q-icon
+                  size="1.5em"
+                  name="chevron_right"
+                  color="primary"
+                  v-if="has_intermediate_tab"
+              /></span>
+              <span class="q-pl-sm title" v-if="has_intermediate_tab">{{
+                intermediate_tab
+              }}</span>
+              <span class="q-pl-sm">
+                <q-icon
+                  size="1.5em"
+                  name="chevron_right"
+                  color="primary"
+                  v-if="has_intermediate_tab2"
+              /></span>
+              <span class="q-pl-sm title" v-if="has_intermediate_tab2">{{
+                intermediate_tab2
+              }}</span>
+            </div>
             <q-space />
             <q-btn
               color="primary"
@@ -80,18 +107,18 @@
       <q-scroll-area style="height: 90vh">
         <q-card class="card">
           <q-card-section class="content">
-            <Dashboard
-              v-if="item.selected && item.name == 'Dashboard'"
-            ></Dashboard>
-            <OrganisationManagement
-              v-if="item.selected && item.name == 'Organisation Management'"
-            >
-            </OrganisationManagement>
-            <MemberManagement
-              v-if="item.selected && item.name == 'Member Management'"
-              @update-member="showEditDrawer"
-            ></MemberManagement>
-            <PaymentCategoryManagement v-if="item.selected && item.name == 'Payment Categories'" @update-payment-category="showEditDrawer" @update-payment-item="updatePaymentItem"></PaymentCategoryManagement>
+            <router-view
+              @update-member="updateMember"
+              @update-payment-category="updatePaymentCategory"
+              @show-payment-items="showPaymentItems"
+              @update-payment-item="updatePaymentItem"
+              @update-expenditure-category="updateExpenditureCategory"
+              @show-expenditure-items="showExpenditureItems"
+              @edit-expenditure-item="editExpenditureItem"
+              @show-expenditure-item-details="showExpenditureItemDetails"
+              @edit-expenditure-item-detail="editExpenditureItemDetail"
+              @edit-member-saving="editMemberSaving"
+            />
           </q-card-section>
         </q-card>
       </q-scroll-area>
@@ -110,12 +137,10 @@
 </template>
 
 <script>
-import Dashboard from "src/components/Dashboard.vue";
-import OrganisationManagement from "src/components/OrganisationManagment.vue";
-import MemberManagement from "src/components/MemberManagement.vue";
 import { SessionStorage } from "quasar";
-import PaymentCategoryManagement from "src/components/PaymentCategoryManagement.vue"
+
 export default {
+  created() {},
   props: {
     item: {
       type: Object,
@@ -132,14 +157,20 @@ export default {
       year: new Date().getFullYear(),
       right: false,
       roles: [],
+      intermediate_tab: "",
+      has_intermediate_tab: false,
+      intermediate_tab2: "",
+      has_intermediate_tab2:false
     };
   },
+
   methods: {
     showRightDrawer() {
       this.right = true;
+
       this.$emit("show-right-drawer", {
-        'right': this.right,
-        'current_tab':SessionStorage.getItem("tab"),
+        right: this.right,
+        current_tab: this.getCurrentRightDrawerTab(),
       });
     },
     showLeftDrawer() {
@@ -161,31 +192,86 @@ export default {
       };
       this.$store.dispatch("auth/logoutUser", payload);
     },
-    showEditDrawer(data) {
+    goBack() {
+      history.back();
+     if(SessionStorage.getItem("has_intermediate_tab2")){
+      this.has_intermediate_tab2 = false;
+      SessionStorage.set("has_intermediate_tab2", false);
+      SessionStorage.remove("intermediate_tab2");
+     }else {
+      this.has_intermediate_tab = false;
+      SessionStorage.set("has_intermediate_tab", false);
+      SessionStorage.remove("intermediate_tab");
+     }
+    },
+    updateMember(data) {
       this.right = true;
       this.$emit("show-right-drawer", {
-        'right': this.right,
-        'current_tab': data.tab,
-        'data': data,
-        'show_title': false
+        right: this.right,
+        current_tab: data.tab,
+        data: data.data,
       });
     },
-    updatePaymentItem(data){
+    updatePaymentCategory(data) {
+      this.updateDrawer(data);
+    },
+    showPaymentItems(data) {
+      this.has_intermediate_tab = data.has_intermediate_tab;
+      this.getIntermediateTab();
+    },
+    getIntermediateTab() {
+      this.intermediate_tab = SessionStorage.getItem("intermediate_tab");
+      this.intermediate_tab2 = SessionStorage.getItem("intermediate_tab2") !== "undefined" ? SessionStorage.getItem("intermediate_tab2"): ""
+      return this.intermediate_tab;
+    },
+    updatePaymentItem(data) {
+      this.updateDrawer(data);
+    },
+    updateDrawer(data) {
       this.right = true;
       this.$emit("show-right-drawer", {
-        'right': this.right,
-        'current_tab':data.tab,
-        'data': data,
-        'show_title': false
+        right: this.right,
+        current_tab: data.tab,
+        data: data.data,
       });
+    },
+    updateExpenditureCategory(data) {
+      this.updateDrawer(data);
+    },
+    showExpenditureItems(data) {
+      this.has_intermediate_tab = data.has_intermediate_tab;
+      this.getIntermediateTab();
+    },
+    editExpenditureItem(data) {
+      this.updateDrawer(data);
+    },
+    showExpenditureItemDetails(data) {
+      this.has_intermediate_tab = data.has_intermediate_tab;
+      this.has_intermediate_tab2 = SessionStorage.getItem("has_intermediate_tab2");
+      this.getIntermediateTab();
+    },
+    editExpenditureItemDetail(data){
+      this.updateDrawer(data)
+    },
+    getCurrentRightDrawerTab(){
+      let tab = "";
+      if(SessionStorage.getItem("intermediate_tab") === null && SessionStorage.getItem("intermediate_tab2") === null){
+        tab = SessionStorage.getItem("to_tab");
+      }
+      if(SessionStorage.getItem("intermediate_tab") !== null && SessionStorage.getItem("intermediate_tab2") === null){
+        tab = SessionStorage.getItem("intermediate_tab");
+      }
+      if(SessionStorage.getItem("intermediate_tab2") !== null){
+        tab = SessionStorage.getItem("intermediate_tab2");
+      }
+
+      return tab;
+    },
+    editMemberSaving(data){
+      this.updateDrawer(data)
     }
   },
-  components: {
-    Dashboard,
-    OrganisationManagement,
-    MemberManagement,
-    PaymentCategoryManagement
-  },
+  computed: {},
 };
 </script>
 

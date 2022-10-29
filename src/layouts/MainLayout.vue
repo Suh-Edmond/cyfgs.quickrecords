@@ -31,6 +31,7 @@
               :active-class="item.name == 'Dashboard' ? 'item' : 'item_text'"
               @click="setItem({ name: 'Dashboard', selected: true }, false)"
               v-if="checkRole(['PRESIDENT', null])"
+              to="/dashboard"
             >
               <q-item-section
                 avatar
@@ -41,7 +42,6 @@
 
               <q-item-section class="item_name"> Dashboard </q-item-section>
             </q-item>
-
             <q-item
               clickable
               v-ripple
@@ -56,6 +56,7 @@
                 )
               "
               v-if="checkRole(['PRESIDENT', null])"
+              to="/dashboard/organisation-management"
             >
               <q-item-section
                 avatar
@@ -82,6 +83,7 @@
                 setItem({ name: 'Member Management', selected: true }, true)
               "
               v-if="checkRole(['PRESIDENT', 'FINANCIAL_SECRETARY'])"
+              to="/dashboard/members"
             >
               <q-item-section
                 avatar
@@ -95,7 +97,6 @@
                 Member Management
               </q-item-section>
             </q-item>
-
             <q-item
               clickable
               v-ripple
@@ -112,7 +113,6 @@
               </q-item-section>
               <q-item-section class="item_name"> Settings Zone </q-item-section>
             </q-item>
-
             <q-item
               clickable
               v-ripple
@@ -124,6 +124,7 @@
                 setItem({ name: 'Payment Categories', selected: true }, true)
               "
               v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER'])"
+              to="/dashboard/payment-categories"
             >
               <q-item-section
                 avatar
@@ -152,6 +153,7 @@
                 )
               "
               v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER'])"
+              to="/dashboard/expenditure-categories"
             >
               <q-item-section
                 avatar
@@ -177,6 +179,7 @@
               :active="item.name == 'Member Savings'"
               @click="setItem({ name: 'Member Savings', selected: true }, true)"
               v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER'])"
+              to="/dashboard/members-savings"
             >
               <q-item-section
                 avatar
@@ -202,6 +205,7 @@
                 setItem({ name: 'Income Activities', selected: true }, true)
               "
               v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER'])"
+              to="/dashboard/income-activities"
             >
               <q-item-section
                 avatar
@@ -290,39 +294,67 @@
       </MainContent>
     </q-page-container>
 
-    <q-drawer v-model="right" side="right" bordered :width="right_drawer_width" class="q-ml-lg">
+    <q-drawer
+      v-model="right"
+      side="right"
+      bordered
+      :width="right_drawer_width"
+      class="q-ml-lg"
+    >
       <q-page>
-        <q-bar class="bar">
-          <div>
-            <q-btn
-              dense
-              color="grey"
-              flat
-              icon="arrow_back"
-              v-close-popup
-              @click="goBack()"
-              size="md"
-            >
-            </q-btn>
+        <q-card class="bar" flat>
+          <div class="flex">
+            <div>
+              <q-btn
+                dense
+                color="white"
+                flat
+                icon="arrow_back"
+                v-close-popup
+                @click="goBack()"
+                size="sm"
+              >
+              </q-btn>
+            </div>
+            <q-space />
+            <div>
+              <q-btn
+                dense
+                flat
+                color="white"
+                icon="close"
+                v-close-popup
+                @click="closeRightDrawer()"
+                size="sm"
+              >
+              </q-btn>
+            </div>
           </div>
-          <q-space />
-          <div>
-            <q-btn
-              dense
-              flat
-              color="grey"
-              icon="close"
-              v-close-popup
-              @click="closeRightDrawer()"
-              size="md"
-            >
-            </q-btn>
-          </div>
-        </q-bar>
-        <AddMember v-if="current_tab == 'Member Management'" @close-right-drawer="closeRightDrawer"></AddMember>
+        </q-card>
+        <AddMember
+          v-if="current_tab == 'Member Management'"
+          @close-right-drawer="closeRightDrawer"
+        ></AddMember>
         <EditMember v-if="current_tab == 'EditMember'"></EditMember>
-        <AddPaymentCategory v-if="current_tab == 'Payment Categories'" @close-right-drawer="closeRightDrawer" :show_title="show_title"></AddPaymentCategory>
-        <AddPaymentItem v-if="current_tab == 'Payment Items'" @close-right-drawer="closeRightDrawer"></AddPaymentItem>
+        <AddPaymentCategory
+          v-if="current_tab == 'Payment Categories'"
+          @close-right-drawer="closeRightDrawer"
+        >
+        </AddPaymentCategory>
+        <AddPaymentItem
+          v-if="current_tab == 'Payment Items'"
+          @close-right-drawer="closeRightDrawer"
+        ></AddPaymentItem>
+        <AddExpenditureCategory
+          v-if="current_tab == 'Expenditure Categories'"
+        ></AddExpenditureCategory>
+        <AddExpenditureItem
+          v-if="current_tab == 'Expenditure Items'"
+        ></AddExpenditureItem>
+        <AddExpenditureItemDetail
+          v-if="current_tab == 'Expenditure Item Details'"
+        ></AddExpenditureItemDetail>
+        <AddMemberSavingVue v-if="current_tab == 'Member Savings'"></AddMemberSavingVue>
       </q-page>
     </q-drawer>
   </q-layout>
@@ -330,11 +362,15 @@
 
 <script>
 import MainContent from "src/components/MainContent.vue";
-import { SessionStorage } from 'quasar';
+import { SessionStorage } from "quasar";
 import AddMember from "src/components/AddMember.vue";
 import EditMember from "src/components/EditMember.vue";
 import AddPaymentCategory from "src/components/AddPaymentCategory.vue";
 import AddPaymentItem from "src/components/AddPaymentItem.vue";
+import AddExpenditureCategory from "src/components/AddExpenditureCategory.vue";
+import AddExpenditureItem from "src/components/AddExpenditureItem.vue";
+import AddExpenditureItemDetail from "src/components/AddExpenditureItemDetail.vue";
+import AddMemberSavingVue from "src/components/AddMemberSaving.vue";
 
 export default {
   data() {
@@ -343,15 +379,14 @@ export default {
       right: false,
       year: new Date().getFullYear(),
       item: {
-        name: "Dashboard",
+        name: SessionStorage.getItem("from_tab"),
         selected: true,
       },
       requires_add: false,
       right_drawer_width: 400,
-      current_tab:'',
-      right_drawer_tab:'',
-      data:null,
-      show_title:true,
+      current_tab: "",
+      right_drawer_tab: "",
+      data: null,
     };
   },
   methods: {
@@ -359,13 +394,14 @@ export default {
       this.item.name = item.name;
       this.requires_add = requires_add;
       this.item.selected = true;
-      SessionStorage.set('tab', item.name);
+      SessionStorage.set("from_tab", SessionStorage.getItem("to_tab"));
+      SessionStorage.set("to_tab", item.name);
+      SessionStorage.set("requires_add", this.requires_add);
     },
-    updateRightDrawer({right, current_tab, data, show_title}) {
-      this.current_tab = current_tab
+    updateRightDrawer({ right, current_tab, data }) {
+      this.current_tab = current_tab;
       this.right = right;
-      this.data = data
-      this.show_title = (show_title == undefined? true: show_title)
+      this.data = data;
     },
     updateLeftDrawer(left) {
       this.left = left;
@@ -395,19 +431,21 @@ export default {
       };
       this.$store.dispatch("auth/logoutUser", payload);
     },
-    goBack(){
-
+    goBack() {},
+    closeRightDrawer() {
+      this.right = !this.right;
     },
-    closeRightDrawer(){
-      this.right = !this.right
-    }
   },
   components: {
     MainContent,
     AddMember,
     EditMember,
     AddPaymentCategory,
-    AddPaymentItem
+    AddPaymentItem,
+    AddExpenditureCategory,
+    AddExpenditureItem,
+    AddExpenditureItemDetail,
+    AddMemberSavingVue
   },
 };
 </script>
@@ -460,15 +498,23 @@ export default {
   background-color: $primary2;
   color: $white1;
 }
+
 .item_text {
   color: $grey2;
 }
+
 .item_name {
   font-size: 0.8rem;
 }
+
 .bar {
   color: $dark;
   padding: 0;
-  background-color: $grey1;
+  background-color: $primary;
+  height: 3.8rem;
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div class="q-pa-sm">
-    <div class="text_h6 text-center q-pt-xs q-pb-md add_member_title">
+    <div class="text_h6 text-center q-pt-xs q-pb-sm add_member_title">
       Add Members to the Organisation
     </div>
     <div>
@@ -90,7 +90,7 @@
                   type="text"
                 />
               </div>
-              <div class="q-pt-md">
+              <div>
                 <ButtonVue
                   class="form_button"
                   :label="label_save"
@@ -245,7 +245,6 @@ export default {
   text-align: center;
   letter-spacing: 0.01em;
   color: #5384ae;
-  text-transform: capitalize;
 }
 .button {
   width: 100%;

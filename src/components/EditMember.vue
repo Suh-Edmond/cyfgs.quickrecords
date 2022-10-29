@@ -92,7 +92,7 @@
                   type="text"
                 />
               </div>
-              <div class="col-md-2 col-sm-12 col-xs-12 q-pt-md">
+              <div class="col-md-2 col-sm-12 col-xs-12">
                 <ButtonVue
                   class="form_button"
                   :label="label_save"
@@ -171,7 +171,7 @@
     <q-dialog v-model="show_dialog" :position="position">
       <q-card>
         <q-card-section class="row items-center">
-          <q-avatar icon="warning" class="warning_image" size="lg" />
+          <q-avatar icon="warning" class="warning_image" size="40px" />
           <span class="q-ml-sm text-dark"
             >Are you sure you want to remove this role ?</span
           >
@@ -273,7 +273,7 @@ export default {
 }
 
 .warning_image {
-  color: $orange;
+  color: yellow;
 }
 .text-color {
   color: $grey2;

@@ -73,6 +73,9 @@
           :data="data"
           :label="label"
           @update-member="updateMember"
+          :member_name="select_member_name"
+          :message="message"
+          :show_savings="false"
         >
         </TableVue>
       </div>
@@ -97,14 +100,15 @@ export default {
       gender: null,
       search: "",
       start_search: false,
+      message:"Are you sure you want to delete this Member?",
       label: "Delete",
       columns: [
         {
-          name: "counter",
+          name: "id",
           required: true,
           label: "S/N",
           align: "left",
-          field: "counter",
+          field: "id",
         },
         {
           name: "name",
@@ -153,7 +157,7 @@ export default {
       ],
       data: [
         {
-          counter: 1,
+          id: 1,
           name: "Frozen Yogurt",
           calories: 159,
           fat: 6.0,
@@ -164,7 +168,7 @@ export default {
           iron: "1%",
         },
         {
-          counter: 2,
+          id: 2,
           name: "Ice cream sandwich",
           calories: 237,
           fat: 9.0,
@@ -175,7 +179,7 @@ export default {
           iron: "1%",
         },
         {
-          counter: 3,
+          id: 3,
           name: "Eclair",
           calories: 262,
           fat: 16.0,
@@ -186,7 +190,7 @@ export default {
           iron: "7%",
         },
         {
-          counter: 4,
+          id: 4,
           name: "Cupcake",
           calories: 305,
           fat: 3.7,
@@ -197,7 +201,7 @@ export default {
           iron: "8%",
         },
         {
-          counter: 5,
+          id: 5,
           name: "Gingerbread",
           calories: 356,
           fat: 16.0,
@@ -208,7 +212,7 @@ export default {
           iron: "16%",
         },
         {
-          counter: 6,
+          id: 6,
           name: "Jelly bean",
           calories: 375,
           fat: 0.0,
@@ -219,7 +223,7 @@ export default {
           iron: "0%",
         },
         {
-          counter: 7,
+          id: 7,
           name: "Lollipop",
           calories: 392,
           fat: 0.2,
@@ -230,7 +234,7 @@ export default {
           iron: "2%",
         },
         {
-          counter: 8,
+          id: 8,
           name: "Honeycomb",
           calories: 408,
           fat: 3.2,
@@ -241,7 +245,7 @@ export default {
           iron: "45%",
         },
         {
-          counter: 9,
+          id: 9,
           name: "Donut",
           calories: 452,
           fat: 25.0,
@@ -252,7 +256,7 @@ export default {
           iron: "22%",
         },
         {
-          counter: 10,
+          id: 10,
           name: "KitKat",
           calories: 518,
           fat: 26.0,
@@ -267,6 +271,7 @@ export default {
         "Ooops!! You don't have any Register Member click the button to add Members.",
       label_print: "Print",
       color_print: "positive",
+      select_member_name:" Suh Edmond Edmond"
     };
   },
   computed: {

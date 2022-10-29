@@ -117,7 +117,6 @@
 import NotFound from "src/components/NotFound.vue";
 import TableVue from "src/components/Table.vue";
 import ButtonVue from "src/components/Button.vue";
-import { SessionStorage } from "quasar";
 export default {
   data() {
     return {

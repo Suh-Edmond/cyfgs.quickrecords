@@ -8,6 +8,11 @@
       :table-header-style="{ backgroundColor: '#5384ae', color: '#FFFFFF' }"
       :filter="filter"
     >
+    <template v-slot:top-left>
+      <div class="text-h6 title" v-show="show_member_savings">
+         All Savings for: {{ title }}
+        </div>
+    </template>
       <template v-slot:body="props">
         <q-tr :props="props">
           <q-td key="id" :props="props">
@@ -51,8 +56,11 @@
           <q-td key="telephone" :props="props" v-show="show_savings">
             {{ props.row.telephone }}
           </q-td>
-          <q-td key="amount_deposited" :props="props" v-show="show_savings">
+          <q-td key="amount_deposited" :props="props" v-show="show_savings || show_member_savings">
             {{ props.row.amount_deposited }}
+          </q-td>
+          <q-td key="date" :props="props" v-show="show_savings || show_member_savings">
+            {{ props.row.date }}
           </q-td>
           <q-td key="action" :props="props">
             <q-btn flat round>
@@ -199,6 +207,14 @@ export default {
     message: {
       type: String,
       required: true
+    },
+    show_member_savings:{
+      required: false,
+      type: Boolean
+    },
+    title:{
+      required: false,
+      type: String
     }
   },
   data() {

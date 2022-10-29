@@ -11,7 +11,7 @@
             </label>
             <q-input outlined dense v-model="saving.user_id" placeholder="Type name to search..." :loading="startSearch">
               <template v-slot:append v-if="!startSearch">
-                <q-icon name="search" color="primary" />
+                <q-icon name="search"  />
               </template>
             </q-input>
           </div>

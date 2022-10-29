@@ -2,12 +2,12 @@
   <q-page>
     <NotFound
       :message="not_found_msg"
-      v-if="payment_items.length == 0"
+      v-if="expenditure_items.length == 0"
     ></NotFound>
     <!-- header for filter categories -->
     <div
       class="row q-ml-xs q-pt-xs"
-      v-if="payment_items.length > 0"
+      v-if="expenditure_items.length > 0"
       :class="$q.screen.lg ? 'q-pa-sm' : ''"
       :style="
         $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
@@ -49,7 +49,8 @@
           :show_expenditure_category="false"
           :show_expenditure_item="true"
           @show-expenditure-items="showExpenditureItem"
-          @view-expenditure-items="viewExpenditureItem"
+          @edit-expenditure-item="editExpenditureItem"
+          @show-expenditure-item-details="showExpenditureItemDetails"
         >
         </CategoryTable>
       </div>
@@ -66,8 +67,8 @@ export default {
   data() {
     return {
       not_found_msg:
-        "Ooops!! No Payment Items found for this Payment Category. click the add button to add Payment Items.",
-      payment_items: [{"id":1}],
+        "Ooops!! No Expenditure Item found for this Expenditure Category. click the add button to add Expenditure Items.",
+      expenditure_items: [{"id":1}],
       search: null,
       label_fetch: "Filter",
       color: "primary",
@@ -78,11 +79,11 @@ export default {
       title:"Harvest ThanksGiven",// this title should be the category name
       columns: [
         {
-          name: "counter",
+          name: "id",
           required: true,
           label: "S/N",
           align: "left",
-          field: "counter",
+          field: "id",
         },
         {
           name: "name",
@@ -124,7 +125,7 @@ export default {
       ],
       data: [
         {
-          counter: 1,
+          id: 1,
           name: "Frozen Yogurt",
           amount: 50000,
           venue:"Sandpit Bakweri Town",
@@ -132,7 +133,7 @@ export default {
           action: "",
         },
         {
-          counter: 2,
+          id: 2,
           name: "Ice cream sandwich",
           amount: 60000,
           venue:"Sandpit Bakweri Town",
@@ -140,7 +141,7 @@ export default {
           action: "",
         },
         {
-          counter: 3,
+          id: 3,
           name: "Eclair",
           amount: 70000,
           venue:"Sandpit Bakweri Town",
@@ -148,7 +149,7 @@ export default {
           action: "",
         },
         {
-          counter: 4,
+          id: 4,
           name: "Cupcake",
           amount: 50000,
           venue:"Sandpit Bakweri Town",
@@ -156,7 +157,7 @@ export default {
           action: "",
         },
         {
-          counter: 5,
+          id: 5,
           name: "Gingerbread",
           amount: 20000,
           venue:"Sandpit Bakweri Town",
@@ -164,7 +165,7 @@ export default {
           action: "",
         },
         {
-          counter: 6,
+          id: 6,
           name: "Jelly bean",
           amount: 50000,
           venue:"Sandpit Bakweri Town",
@@ -172,7 +173,7 @@ export default {
           action: "",
         },
         {
-          counter: 7,
+          id: 7,
           name: "Lollipop",
           amount: 50000,
           venue:"Sandpit Bakweri Town",
@@ -180,7 +181,7 @@ export default {
           action: "",
         },
         {
-          counter: 8,
+          id: 8,
           name: "Honeycomb",
           amount: 50000,
           venue:"Sandpit Bakweri Town",
@@ -188,7 +189,7 @@ export default {
           action: "",
         },
         {
-          counter: 9,
+          id: 9,
           name: "Donut",
           amount: 50000,
           venue:"Sandpit Bakweri Town",
@@ -196,7 +197,7 @@ export default {
           action: "",
         },
         {
-          counter: 10,
+          id: 10,
           name: "KitKat",
           amount: 50000,
           venue:"Sandpit Bakweri Town",
@@ -219,8 +220,13 @@ export default {
       SessionStorage.set("has_intermediate_tab", true);
       this.$emit("show-expenditure-items", data);
     },
-    viewExpenditureItem(data) {
-      this.$emit("view-expenditure-item", data)
+    editExpenditureItem(data) {
+      this.$emit("edit-expenditure-item", data)
+    },
+    showExpenditureItemDetails(data){
+      SessionStorage.set("intermediate_tab2", "Expenditure Item Details");
+      SessionStorage.set("has_intermediate_tab2", true);
+      this.$emit("show-expenditure-item-details", data);
     }
   },
   components: {

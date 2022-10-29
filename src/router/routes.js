@@ -108,6 +108,16 @@ const routes = [
         },
       },
       {
+        name: "expenditure_item_details",
+        path: "/dashboard/expenditure-categories/:id/items/:item_id/details",
+        component: () => import("src/pages/Expenditure/ExpenditureItemDetail.vue"),
+        meta: {
+          middleware: "auth",
+          role: "USER",
+          has_intermediate_tab:true
+        },
+      },
+      {
         name: "income_activity",
         path: "/dashboard/income-activities",
         component: () => import("src/pages/IncomeActivity/IncomeActivity.vue"),

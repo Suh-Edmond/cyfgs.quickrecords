@@ -78,6 +78,16 @@
               <span class="q-pl-sm title" v-if="has_intermediate_tab">{{
                 intermediate_tab
               }}</span>
+              <span class="q-pl-sm">
+                <q-icon
+                  size="1.5em"
+                  name="chevron_right"
+                  color="primary"
+                  v-if="has_intermediate_tab2"
+              /></span>
+              <span class="q-pl-sm title" v-if="has_intermediate_tab2">{{
+                intermediate_tab2
+              }}</span>
             </div>
             <q-space />
             <q-btn
@@ -104,7 +114,9 @@
               @update-payment-item="updatePaymentItem"
               @update-expenditure-category="updateExpenditureCategory"
               @show-expenditure-items="showExpenditureItems"
-              @view-expenditure-item="viewExpenditureItem"
+              @edit-expenditure-item="editExpenditureItem"
+              @show-expenditure-item-details="showExpenditureItemDetails"
+              @edit-expenditure-item-detail="editExpenditureItemDetail"
             />
           </q-card-section>
         </q-card>
@@ -146,18 +158,18 @@ export default {
       roles: [],
       intermediate_tab: "",
       has_intermediate_tab: false,
+      intermediate_tab2: "",
+      has_intermediate_tab2:false
     };
   },
 
   methods: {
     showRightDrawer() {
       this.right = true;
+
       this.$emit("show-right-drawer", {
         right: this.right,
-        current_tab:
-          SessionStorage.getItem("intermediate_tab") == null
-            ? SessionStorage.getItem("to_tab")
-            : SessionStorage.getItem("intermediate_tab"),
+        current_tab: this.getCurrentRightDrawerTab(),
       });
     },
     showLeftDrawer() {
@@ -181,9 +193,15 @@ export default {
     },
     goBack() {
       history.back();
+     if(SessionStorage.getItem("has_intermediate_tab2")){
+      this.has_intermediate_tab2 = false;
+      SessionStorage.set("has_intermediate_tab2", false);
+      SessionStorage.remove("intermediate_tab2");
+     }else {
       this.has_intermediate_tab = false;
       SessionStorage.set("has_intermediate_tab", false);
       SessionStorage.remove("intermediate_tab");
+     }
     },
     updateMember(data) {
       this.right = true;
@@ -202,6 +220,7 @@ export default {
     },
     getIntermediateTab() {
       this.intermediate_tab = SessionStorage.getItem("intermediate_tab");
+      this.intermediate_tab2 = SessionStorage.getItem("intermediate_tab2") !== "undefined" ? SessionStorage.getItem("intermediate_tab2"): ""
       return this.intermediate_tab;
     },
     updatePaymentItem(data) {
@@ -213,18 +232,39 @@ export default {
         right: this.right,
         current_tab: data.tab,
         data: data.data,
-        show_title: data.show_title,
       });
     },
     updateExpenditureCategory(data) {
       this.updateDrawer(data);
     },
-    showExpenditureItems(data){
+    showExpenditureItems(data) {
       this.has_intermediate_tab = data.has_intermediate_tab;
       this.getIntermediateTab();
     },
-    viewExpenditureItem(data){
+    editExpenditureItem(data) {
+      this.updateDrawer(data);
+    },
+    showExpenditureItemDetails(data) {
+      this.has_intermediate_tab = data.has_intermediate_tab;
+      this.has_intermediate_tab2 = SessionStorage.getItem("has_intermediate_tab2");
+      this.getIntermediateTab();
+    },
+    editExpenditureItemDetail(data){
       this.updateDrawer(data)
+    },
+    getCurrentRightDrawerTab(){
+      let tab = "";
+      if(SessionStorage.getItem("intermediate_tab") === null && SessionStorage.getItem("intermediate_tab2") === null){
+        tab = SessionStorage.getItem("to_tab");
+      }
+      if(SessionStorage.getItem("intermediate_tab") !== null && SessionStorage.getItem("intermediate_tab2") === null){
+        tab = SessionStorage.getItem("intermediate_tab");
+      }
+      if(SessionStorage.getItem("intermediate_tab2") !== null){
+        tab = SessionStorage.getItem("intermediate_tab2");
+      }
+
+      return tab;
     }
   },
   computed: {},

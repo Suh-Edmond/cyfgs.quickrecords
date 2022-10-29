@@ -4,15 +4,15 @@
     <q-table
       :data="data"
       :columns="columns"
-      row-key="counter"
+      row-key="id"
       :table-header-style="{ backgroundColor: '#5384ae', color: '#FFFFFF' }"
       class="col-xs-12"
       :filter="filter"
     >
       <template v-slot:body="props">
         <q-tr :props="props">
-          <q-td key="counter" :props="props">
-            {{ props.row.counter }}
+          <q-td key="id" :props="props">
+            {{ props.row.id }}
           </q-td>
           <q-td key="name" :props="props">
             {{ props.row.name }}
@@ -22,7 +22,7 @@
               flat
               class="view_items"
               @click="showPaymentItems(props.row)"
-              :to="{ name: 'payment_items', params: { id: props.row.counter } }"
+              :to="{ name: 'payment_items', params: { id: props.row.id } }"
             >
               {{ props.row.item }}
             </q-btn>
@@ -38,7 +38,7 @@
               @click="showExpenditureItems(props.row)"
               :to="{
                 name: 'expenditure_items',
-                params: { id: props.row.counter },
+                params: { id: props.row.id },
               }"
             >
               {{ props.row.expenditure_category }}
@@ -46,6 +46,15 @@
           </q-td>
           <q-td key="amount" :props="props" v-if="show_payment_item || show_expenditure_item">
             {{ props.row.amount }}
+          </q-td>
+          <q-td key="amount_given" :props="props" v-if="show_expenditure_item_detail">
+            {{ props.row.amount_given }}
+          </q-td>
+          <q-td key="amount_spent" :props="props" v-if="show_expenditure_item_detail">
+            {{ props.row.amount_spent }}
+          </q-td>
+          <q-td key="balance" :props="props" v-if="show_expenditure_item_detail">
+            {{ props.row.balance }}
           </q-td>
           <q-td key="venue" :props="props" v-if="show_expenditure_item">
             {{ props.row.venue }}
@@ -112,7 +121,23 @@
                     <q-item
                       clickable
                       v-close-popup
-                      @click="onViewExpenditureItem(props.row)"
+                      @click="onEditExpenditureItem(props.row)"
+                      v-if="show_expenditure_item"
+                    >
+                      <q-item-section avatar>
+                        <span>
+                          <q-icon name="edit" size="xs" class="details" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="details">Edit</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <q-separator />
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onViewExpenditureItemDetail(props.row)"
                       v-if="show_expenditure_item"
                     >
                       <q-item-section avatar>
@@ -122,6 +147,21 @@
                       </q-item-section>
                       <q-item-section>
                         <q-item-label class="details">Details</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onEditExpenditureItemDetail(props.row)"
+                      v-if="show_expenditure_item_detail"
+                    >
+                      <q-item-section avatar>
+                        <span>
+                          <q-icon name="edit" size="xs" class="details" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="details">Edit</q-item-label>
                       </q-item-section>
                     </q-item>
                     <q-separator />
@@ -147,8 +187,14 @@
         </q-tr>
       </template>
       <template v-slot:top-left>
-        <div class="text-h6 title">
-          {{ title }}
+        <div class="text-h6 title" v-show="show_payment_item">
+         Category Name: {{ title }}
+        </div>
+        <div class="text-h6 title" v-show="show_expenditure_item">
+          Category Name: {{ title }}
+        </div>
+        <div class="text-h6 title" v-show="show_expenditure_item_detail">
+          Item Name: {{ title }}
         </div>
       </template>
       <template v-slot:top-right>
@@ -206,6 +252,7 @@
   </div>
 </template>
 <script>
+import { SessionStorage } from 'quasar';
 import ButtonVue from "./Button.vue";
 export default {
   props: {
@@ -249,6 +296,10 @@ export default {
       type: Boolean,
       required: true,
     },
+    show_expenditure_item_detail:{
+      type: Boolean,
+      required: false
+    }
   },
   data() {
     return {
@@ -261,6 +312,11 @@ export default {
       label_cancel: "Cancel",
       filter: "",
     };
+  },
+  computed:{
+    getSelectedCategory(){
+      return SessionStorage.getItem("selected_category");
+    }
   },
   methods: {
     onViewCategory(data) {
@@ -286,14 +342,15 @@ export default {
     },
     showExpenditureItems(data){
       let has_intermediate_tab = true;
+      SessionStorage.set("selected_category", data.id)
       this.$emit("show-expenditure-items", { data, has_intermediate_tab });
+
     },
-    onViewExpenditureItem(data) {
-      let payload = {
-        data: data,
-        tab: "View Expenditure Item",
-      };
-      this.$emit("view-expenditure-items", payload);
+    onViewExpenditureItemDetail(data) {
+      let has_intermediate_tab = true;
+      let selected_category = SessionStorage.getItem("selected_category");
+      this.$router.push({ name: 'expenditure_item_details', params:{ "id": selected_category, "item_id":data.id } })
+      this.$emit("show-expenditure-item-details", {data, has_intermediate_tab})
     },
     onViewExpenditureCategory(data) {
       let payload = {
@@ -302,6 +359,20 @@ export default {
       };
       this.$emit("update-expenditure-category", payload);
     },
+    onEditExpenditureItem(data){
+      let payload = {
+        data: data,
+        tab: "Expenditure Items",
+      };
+      this.$emit("edit-expenditure-item", payload);
+    },
+    onEditExpenditureItemDetail(data){
+      let payload = {
+        data: data,
+        tab: "Expenditure Item Details",
+      };
+      this.$emit("edit-expenditure-item-detail", payload);
+    }
   },
   components: {
     ButtonVue,

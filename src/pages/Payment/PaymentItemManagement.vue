@@ -79,11 +79,11 @@ export default {
       title:"Harvest ThanksGiven",// this title should be the category name
       columns: [
         {
-          name: "counter",
+          name: "id",
           required: true,
           label: "S/N",
           align: "left",
-          field: "counter",
+          field: "id",
         },
         {
           name: "name",
@@ -111,61 +111,61 @@ export default {
       ],
       data: [
         {
-          counter: 1,
+          id: 1,
           name: "Frozen Yogurt",
           amount: 50000,
           action: "",
         },
         {
-          counter: 2,
+          id: 2,
           name: "Ice cream sandwich",
           amount: 60000,
           action: "",
         },
         {
-          counter: 3,
+          id: 3,
           name: "Eclair",
           amount: 70000,
           action: "",
         },
         {
-          counter: 4,
+          id: 4,
           name: "Cupcake",
           amount: 50000,
           action: "",
         },
         {
-          counter: 5,
+          id: 5,
           name: "Gingerbread",
           amount: 20000,
           action: "",
         },
         {
-          counter: 6,
+          id: 6,
           name: "Jelly bean",
           amount: 50000,
           action: "",
         },
         {
-          counter: 7,
+          id: 7,
           name: "Lollipop",
           amount: 50000,
           action: "",
         },
         {
-          counter: 8,
+          id: 8,
           name: "Honeycomb",
           amount: 50000,
           action: "",
         },
         {
-          counter: 9,
+          id: 9,
           name: "Donut",
           amount: 50000,
           action: "",
         },
         {
-          counter: 10,
+          id: 10,
           name: "KitKat",
           amount: 50000,
           action: "",

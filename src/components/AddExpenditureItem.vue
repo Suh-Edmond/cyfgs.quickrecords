@@ -8,7 +8,7 @@
         <q-form @submit="onAddExpenditureItem" class="q-gutter-sm">
           <div>
             <label for="credential" class="form_field">Expenditure Category <span class="text-red">*</span></label>
-            <q-select v-model="expenditure_item.expenditure_category_id" outlined dense value=""
+            <q-select v-model="expenditure_item.expenditure_category_id" outlined dense :disabled="checkIfExistExpenditureItem"
               :options="expenditure_categories" />
           </div>
           <div>
@@ -59,6 +59,7 @@
 <script>
 import ButtonVue from "src/components/Button.vue";
 export default {
+
   data() {
     return {
       label_save: "Save",
@@ -70,6 +71,7 @@ export default {
         date: null,
         name: null,
         comment: null,
+        amount: null
       },
       position: "right",
       dialog: false,
@@ -79,8 +81,11 @@ export default {
   },
   computed: {
     validateForm() {
-      return this.expenditure_item.name === null || this.expenditure_item.expenditure_category_id === null || this.expenditure_item.date === null || this.expenditure_item.venue ? true : false;
+      return this.expenditure_item.amount === null || this.expenditure_item.name === null || this.expenditure_item.expenditure_category_id === null || this.expenditure_item.date === null || this.expenditure_item.venue ? true : false;
     },
+    checkIfExistExpenditureItem(){
+      return this.expenditure_item.expenditure_category_id !== null && this.expenditure_item.name !== null && this.expenditure_item.amount ? true : false
+    }
   },
   methods: {
     onAddExpenditureItem() {

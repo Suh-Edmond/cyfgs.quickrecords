@@ -4,16 +4,27 @@
     <q-table
       :data="data"
       :columns="columns"
-      row-key="name"
+      row-key="id"
       :table-header-style="{ backgroundColor: '#5384ae', color: '#FFFFFF' }"
       :filter="filter"
     >
       <template v-slot:body="props">
         <q-tr :props="props">
-          <q-td key="counter" :props="props">
-            {{ props.row.counter }}
+          <q-td key="id" :props="props">
+            {{ props.row.id }}
           </q-td>
-          <q-td key="name" :props="props">
+          <q-td key="name" :props="props" v-show="show_savings">
+            <q-btn
+              flat
+              class="view_items"
+              @click="showMemberSavings(props.row)"
+              :to="{ name: 'user_savings', params: { id: props.row.id } }"
+            >
+            {{ props.row.name }}
+              <q-tooltip>View All Savings</q-tooltip>
+            </q-btn>
+          </q-td>
+          <q-td key="name" :props="props" v-show="!show_savings">
             {{ props.row.name }}
           </q-td>
           <q-td key="calories" :props="props">
@@ -34,7 +45,16 @@
           <q-td key="calcium" :props="props">
             {{ props.row.calcium }}
           </q-td>
-          <q-td key="iron" :props="props">
+          <q-td key="email" :props="props" v-show="show_savings">
+            {{ props.row.email }}
+          </q-td>
+          <q-td key="telephone" :props="props" v-show="show_savings">
+            {{ props.row.telephone }}
+          </q-td>
+          <q-td key="amount_deposited" :props="props" v-show="show_savings">
+            {{ props.row.amount_deposited }}
+          </q-td>
+          <q-td key="action" :props="props">
             <q-btn flat round>
               <q-icon
                 name="more_vert"
@@ -49,6 +69,22 @@
                       clickable
                       v-close-popup
                       @click="onEditMember(props.row)"
+                      v-show="!show_savings"
+                    >
+                      <q-item-section avatar>
+                        <span>
+                          <q-icon name="edit" size="xs" class="edit" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="edit">Edit</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onEditMemberSaving(props.row)"
+                      v-show="show_savings"
                     >
                       <q-item-section avatar>
                         <span>
@@ -107,7 +143,7 @@
           <div>
             <q-avatar icon="warning" class="warning_image" size="40px" />
             <span class="q-ml-sm text-dark"
-              >Are you sure you want to delete this Member?</span
+              >{{message}}</span
             >
           </div>
           <div class="text-weight-bold text-center">{{ member_name }}</div>
@@ -153,9 +189,17 @@ export default {
       type: String,
     },
     member_name: {
-      required: true,
+      required: false,
       type: String,
     },
+    show_savings: {
+      required: false,
+      type: Boolean
+    },
+    message: {
+      type: String,
+      required: true
+    }
   },
   data() {
     return {
@@ -179,6 +223,16 @@ export default {
     onDeleteMember(data) {
       this.dialog = true;
     },
+    showMemberSavings(data){
+      console.log(data);
+    },
+    onEditMemberSaving(data){
+      let payload = {
+        data: data,
+        tab: "Member Savings",
+      };
+      this.$emit("edit-member-saving", payload);
+    }
   },
   components: {
     ButtonVue,
@@ -200,5 +254,16 @@ export default {
 
 .warning_image {
   color: yellow;
+}
+.view_items {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 25px;
+  align-items: left;
+  letter-spacing: 0.01em;
+  text-transform: capitalize;
+  color: $primary;
 }
 </style>

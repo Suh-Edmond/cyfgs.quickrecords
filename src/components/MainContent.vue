@@ -117,6 +117,7 @@
               @edit-expenditure-item="editExpenditureItem"
               @show-expenditure-item-details="showExpenditureItemDetails"
               @edit-expenditure-item-detail="editExpenditureItemDetail"
+              @edit-member-saving="editMemberSaving"
             />
           </q-card-section>
         </q-card>
@@ -265,6 +266,9 @@ export default {
       }
 
       return tab;
+    },
+    editMemberSaving(data){
+      this.updateDrawer(data)
     }
   },
   computed: {},

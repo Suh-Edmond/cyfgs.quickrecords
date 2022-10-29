@@ -137,6 +137,16 @@ const routes = [
           has_intermediate_tab:false
         },
       },
+      {
+        name: "user_savings",
+        path: "/dashboard/members-savings/users/:id",
+        component: () => import("src/pages/Saving/UserSavings.vue"),
+        meta: {
+          middleware: "auth",
+          role: "USER",
+          has_intermediate_tab:false
+        },
+      },
 
     ],
   },

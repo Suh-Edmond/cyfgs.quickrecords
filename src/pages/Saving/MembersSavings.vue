@@ -105,6 +105,8 @@
           :message="message"
           :name="name"
           :show_savings="true"
+          :show_income_activity="false"
+          :show_members="false"
           @edit-member-saving="editMemberSaving"
         >
         </TableVue>
@@ -181,7 +183,7 @@ export default {
         {
           name: "amount_deposited",
           align: "left",
-          label: "Amount Deposited",
+          label: "Amount Deposited (XAF)",
           field: "amount_deposited",
         },
         {
@@ -309,7 +311,7 @@ export default {
       });
     },
     editMemberSaving(data){
-      this.$emit('edit-member-saving', data)
+      this.$emit("edit-member-saving", data)
     }
   },
   components: {

@@ -18,19 +18,18 @@
           <q-td key="id" :props="props">
             {{ props.row.id }}
           </q-td>
-          <q-td key="name" :props="props" v-show="show_savings">
+          <q-td key="name" :props="props">
             <q-btn
               flat
-              class="view_items"
+              class="view_savings"
               @click="showMemberSavings(props.row)"
               :to="{ name: 'user_savings', params: { id: props.row.id } }"
+              v-show="show_savings"
             >
             {{ props.row.name }}
               <q-tooltip>View All Savings</q-tooltip>
             </q-btn>
-          </q-td>
-          <q-td key="name" :props="props" v-show="!show_savings">
-            {{ props.row.name }}
+            <span v-if="!show_savings || show_income_activity">{{ props.row.name }}</span>
           </q-td>
           <q-td key="calories" :props="props">
             {{ props.row.calories }}
@@ -59,8 +58,14 @@
           <q-td key="amount_deposited" :props="props" v-show="show_savings || show_member_savings">
             {{ props.row.amount_deposited }}
           </q-td>
-          <q-td key="date" :props="props" v-show="show_savings || show_member_savings">
+          <q-td key="amount" :props="props" v-show="show_income_activity">
+            {{ props.row.amount }}
+          </q-td>
+          <q-td key="date" :props="props" v-show="show_savings || show_member_savings || show_income_activity">
             {{ props.row.date }}
+          </q-td>
+          <q-td key="venue" :props="props" v-show="show_income_activity">
+            {{ props.row.venue }}
           </q-td>
           <q-td key="action" :props="props">
             <q-btn flat round>
@@ -77,7 +82,7 @@
                       clickable
                       v-close-popup
                       @click="onEditMember(props.row)"
-                      v-show="!show_savings"
+                      v-show="show_members"
                     >
                       <q-item-section avatar>
                         <span>
@@ -101,6 +106,38 @@
                       </q-item-section>
                       <q-item-section>
                         <q-item-label class="edit">Edit</q-item-label>
+                      </q-item-section>
+                    </q-item>
+
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onEditIncomeActivity(props.row)"
+                      v-show="show_income_activity"
+                    >
+                      <q-item-section avatar>
+                        <span>
+                          <q-icon name="edit" size="xs" class="edit" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="edit">Edit</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <q-separator />
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onViewIncomeActivity(props.row)"
+                      v-show="show_income_activity"
+                    >
+                      <q-item-section avatar>
+                        <span>
+                          <q-icon name="info" size="xs" class="edit" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="edit">Details</q-item-label>
                       </q-item-section>
                     </q-item>
                     <q-separator />
@@ -200,8 +237,12 @@ export default {
       required: false,
       type: String,
     },
+    show_members:{
+      required: true,
+      type: Boolean
+    },
     show_savings: {
-      required: false,
+      required: true,
       type: Boolean
     },
     message: {
@@ -215,6 +256,10 @@ export default {
     title:{
       required: false,
       type: String
+    },
+    show_income_activity: {
+      type:Boolean,
+      required: true
     }
   },
   data() {
@@ -243,11 +288,27 @@ export default {
       console.log(data);
     },
     onEditMemberSaving(data){
+      console.log(data);
       let payload = {
         data: data,
         tab: "Member Savings",
       };
       this.$emit("edit-member-saving", payload);
+    },
+    onEditIncomeActivity(data){
+      let payload = {
+        data: data,
+        tab: "Income Activities",
+      };
+      this.$emit("edit-income-activity", payload);
+    },
+    onViewIncomeActivity(data){
+      console.log(data);
+      let payload = {
+        data: data,
+        tab: "View Income Activity",
+      };
+      this.$emit("view-income-activity", payload);
     }
   },
   components: {
@@ -271,7 +332,7 @@ export default {
 .warning_image {
   color: yellow;
 }
-.view_items {
+.view_savings {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;

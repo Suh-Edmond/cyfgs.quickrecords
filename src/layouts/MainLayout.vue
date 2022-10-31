@@ -354,7 +354,15 @@
         <AddExpenditureItemDetail
           v-if="current_tab == 'Expenditure Item Details'"
         ></AddExpenditureItemDetail>
-        <AddMemberSavingVue v-if="current_tab == 'Member Savings'"></AddMemberSavingVue>
+        <AddMemberSavingVue
+          v-if="current_tab == 'Member Savings'"
+        ></AddMemberSavingVue>
+        <AddIncomeActivity
+          v-if="current_tab == 'Income Activities'"
+        ></AddIncomeActivity>
+        <ViewIncomeActivity
+          v-if="current_tab == 'View Income Activity'"
+        ></ViewIncomeActivity>
       </q-page>
     </q-drawer>
   </q-layout>
@@ -371,6 +379,8 @@ import AddExpenditureCategory from "src/components/AddExpenditureCategory.vue";
 import AddExpenditureItem from "src/components/AddExpenditureItem.vue";
 import AddExpenditureItemDetail from "src/components/AddExpenditureItemDetail.vue";
 import AddMemberSavingVue from "src/components/AddMemberSaving.vue";
+import AddIncomeActivity from "src/components/AddIncomeActivity.vue";
+import ViewIncomeActivity from "src/components/ViewIncomeActivity.vue";
 
 export default {
   data() {
@@ -445,7 +455,9 @@ export default {
     AddExpenditureCategory,
     AddExpenditureItem,
     AddExpenditureItemDetail,
-    AddMemberSavingVue
+    AddMemberSavingVue,
+    AddIncomeActivity,
+    ViewIncomeActivity,
   },
 };
 </script>

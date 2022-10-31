@@ -118,6 +118,10 @@
               @show-expenditure-item-details="showExpenditureItemDetails"
               @edit-expenditure-item-detail="editExpenditureItemDetail"
               @edit-member-saving="editMemberSaving"
+              @edit-income-activity="editIncomeActivity"
+              @view-income-activity="viewIncomeActivity"
+              @view-contribution="viewContribution"
+              @edit-contribution="editContribution"
             />
           </q-card-section>
         </q-card>
@@ -269,6 +273,19 @@ export default {
     },
     editMemberSaving(data){
       this.updateDrawer(data)
+    },
+    editIncomeActivity(data){
+      this.updateDrawer(data)
+    },
+    viewIncomeActivity(data){
+      console.log(data);
+      this.updateDrawer(data)
+    },
+    viewContribution(data){
+      this.updateDrawer(data)
+    },
+    editContribution(data){
+      this.updateDrawer(data);
     }
   },
   computed: {},

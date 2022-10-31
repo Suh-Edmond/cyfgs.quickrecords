@@ -76,6 +76,9 @@
           :member_name="select_member_name"
           :message="message"
           :show_savings="false"
+          :show_income_activity="false"
+          :show_members="true"
+          :show_contribution="false"
         >
         </TableVue>
       </div>
@@ -99,7 +102,6 @@ export default {
       genders: ["MALE", "FEMALE", "ALL", "OTHER"],
       gender: null,
       search: "",
-      start_search: false,
       message:"Are you sure you want to delete this Member?",
       label: "Delete",
       columns: [
@@ -148,9 +150,9 @@ export default {
           sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
         },
         {
-          name: "iron",
-          label: "Iron (%)",
-          field: "iron",
+          name: "action",
+          label: "Action",
+          field: "action",
           sortable: true,
           sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
         },
@@ -165,7 +167,7 @@ export default {
           protein: 4.0,
           sodium: 87,
           calcium: "14%",
-          iron: "1%",
+          action: "",
         },
         {
           id: 2,
@@ -176,7 +178,7 @@ export default {
           protein: 4.3,
           sodium: 129,
           calcium: "8%",
-          iron: "1%",
+          action: "",
         },
         {
           id: 3,
@@ -187,7 +189,7 @@ export default {
           protein: 6.0,
           sodium: 337,
           calcium: "6%",
-          iron: "7%",
+          action: "",
         },
         {
           id: 4,
@@ -198,7 +200,7 @@ export default {
           protein: 4.3,
           sodium: 413,
           calcium: "3%",
-          iron: "8%",
+          action: "",
         },
         {
           id: 5,
@@ -209,7 +211,7 @@ export default {
           protein: 3.9,
           sodium: 327,
           calcium: "7%",
-          iron: "16%",
+          action: "",
         },
         {
           id: 6,
@@ -220,7 +222,7 @@ export default {
           protein: 0.0,
           sodium: 50,
           calcium: "0%",
-          iron: "0%",
+          action: "",
         },
         {
           id: 7,
@@ -231,7 +233,7 @@ export default {
           protein: 0,
           sodium: 38,
           calcium: "0%",
-          iron: "2%",
+          action: "",
         },
         {
           id: 8,
@@ -242,7 +244,7 @@ export default {
           protein: 6.5,
           sodium: 562,
           calcium: "0%",
-          iron: "45%",
+          action: "",
         },
         {
           id: 9,
@@ -253,7 +255,7 @@ export default {
           protein: 4.9,
           sodium: 326,
           calcium: "2%",
-          iron: "22%",
+          action: "",
         },
         {
           id: 10,
@@ -264,7 +266,7 @@ export default {
           protein: 7,
           sodium: 54,
           calcium: "12%",
-          iron: "6%",
+          action: "",
         },
       ],
       not_found_msg:
@@ -283,9 +285,6 @@ export default {
     },
   },
   methods: {
-    showSearch() {
-      this.start_search = !this.start_search;
-    },
     updateMember(data) {
       this.$emit("update-member", data);
     },

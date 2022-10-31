@@ -12,25 +12,27 @@
       <div class="text-h6 title" v-show="show_member_savings">
          All Savings for: {{ title }}
         </div>
+        <div class="text-h6 title" v-show="show_member_contribution">
+        {{ title }}
+        </div>
     </template>
       <template v-slot:body="props">
         <q-tr :props="props">
           <q-td key="id" :props="props">
             {{ props.row.id }}
           </q-td>
-          <q-td key="name" :props="props" v-show="show_savings">
+          <q-td key="name" :props="props">
             <q-btn
               flat
-              class="view_items"
+              class="view_savings"
               @click="showMemberSavings(props.row)"
               :to="{ name: 'user_savings', params: { id: props.row.id } }"
+              v-show="show_savings"
             >
             {{ props.row.name }}
               <q-tooltip>View All Savings</q-tooltip>
             </q-btn>
-          </q-td>
-          <q-td key="name" :props="props" v-show="!show_savings">
-            {{ props.row.name }}
+            <span v-if="!show_savings || show_income_activity || show_contribution">{{ props.row.name }}</span>
           </q-td>
           <q-td key="calories" :props="props">
             {{ props.row.calories }}
@@ -59,8 +61,17 @@
           <q-td key="amount_deposited" :props="props" v-show="show_savings || show_member_savings">
             {{ props.row.amount_deposited }}
           </q-td>
-          <q-td key="date" :props="props" v-show="show_savings || show_member_savings">
+          <q-td key="amount" :props="props" v-show="show_income_activity || show_contribution">
+            {{ props.row.amount }}
+          </q-td>
+          <q-td key="status" :props="props" v-show="show_contribution">
+            {{ props.row.status }}
+          </q-td>
+          <q-td key="date" :props="props" v-show="show_savings || show_member_savings || show_income_activity || show_contribution">
             {{ props.row.date }}
+          </q-td>
+          <q-td key="venue" :props="props" v-show="show_income_activity">
+            {{ props.row.venue }}
           </q-td>
           <q-td key="action" :props="props">
             <q-btn flat round>
@@ -77,7 +88,7 @@
                       clickable
                       v-close-popup
                       @click="onEditMember(props.row)"
-                      v-show="!show_savings"
+                      v-show="show_members"
                     >
                       <q-item-section avatar>
                         <span>
@@ -88,6 +99,7 @@
                         <q-item-label class="edit">Edit</q-item-label>
                       </q-item-section>
                     </q-item>
+                    <q-separator />
                     <q-item
                       clickable
                       v-close-popup
@@ -104,6 +116,86 @@
                       </q-item-section>
                     </q-item>
                     <q-separator />
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onEditIncomeActivity(props.row)"
+                      v-show="show_income_activity"
+                    >
+                      <q-item-section avatar>
+                        <span>
+                          <q-icon name="edit" size="xs" class="edit" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="edit">Edit</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <q-separator />
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onViewIncomeActivity(props.row)"
+                      v-show="show_income_activity"
+                    >
+                      <q-item-section avatar>
+                        <span>
+                          <q-icon name="info" size="xs" class="edit" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="edit">Details</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <q-separator />
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onEditContribution(props.row)"
+                      v-show="show_contribution"
+                    >
+                      <q-item-section avatar>
+                        <span>
+                          <q-icon name="edit" size="xs" class="edit" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="edit">Edit</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <q-separator />
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onViewContribution(props.row)"
+                      v-show="show_contribution"
+                    >
+                      <q-item-section avatar>
+                        <span>
+                          <q-icon name="info" size="xs" class="edit" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="edit">Details</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <q-separator />
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onAllContribution(props.row)"
+                      v-show="show_contribution"
+                    >
+                      <q-item-section avatar>
+                        <span>
+                          <q-icon name="eye" size="xs" class="edit" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="edit">All Contributions</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <q-separator v-if="show_contribution && !show_member_contribution" />
                     <q-item
                       clickable
                       v-close-popup
@@ -200,8 +292,12 @@ export default {
       required: false,
       type: String,
     },
+    show_members:{
+      required: true,
+      type: Boolean
+    },
     show_savings: {
-      required: false,
+      required: true,
       type: Boolean
     },
     message: {
@@ -215,6 +311,18 @@ export default {
     title:{
       required: false,
       type: String
+    },
+    show_income_activity: {
+      type:Boolean,
+      required: true
+    },
+    show_contribution:{
+      type:Boolean,
+      required: true
+    },
+    show_member_contribution:{
+      required: false,
+      type: Boolean
     }
   },
   data() {
@@ -243,11 +351,44 @@ export default {
       console.log(data);
     },
     onEditMemberSaving(data){
+      console.log(data);
       let payload = {
         data: data,
         tab: "Member Savings",
       };
       this.$emit("edit-member-saving", payload);
+    },
+    onEditIncomeActivity(data){
+      let payload = {
+        data: data,
+        tab: "Income Activities",
+      };
+      this.$emit("edit-income-activity", payload);
+    },
+    onViewIncomeActivity(data){
+      console.log(data);
+      let payload = {
+        data: data,
+        tab: "View Income Activity",
+      };
+      this.$emit("view-income-activity", payload);
+    },
+    onViewContribution(data){
+      let payload = {
+        data: data,
+        tab: "View Contribution",
+      };
+      this.$emit("view-contribution", payload);
+    },
+    onEditContribution(data){
+      let payload = {
+        data: data,
+        tab: "Members Contributions",
+      };
+      this.$emit("edit-contribution", payload);
+    },
+    onAllContribution(data){
+      this.$router.push({name:'member_contributions', params:{id:data.id}})
     }
   },
   components: {
@@ -265,13 +406,13 @@ export default {
 }
 
 .edit {
-  color: $grey5;
+  color: $dark;
 }
 
 .warning_image {
   color: yellow;
 }
-.view_items {
+.view_savings {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
@@ -281,5 +422,9 @@ export default {
   letter-spacing: 0.01em;
   text-transform: capitalize;
   color: $primary;
+}
+
+.title {
+  font-size: small;
 }
 </style>

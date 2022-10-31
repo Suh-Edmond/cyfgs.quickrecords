@@ -167,7 +167,7 @@
             </div>
             <div>
               <q-img
-                src="../assets/UB-Logo.png"
+                src="https://cdn.quasar.dev/img/mountains.jpg"
                 spinner-color="white"
                 style="height: 100%; width: 100%px"
               />

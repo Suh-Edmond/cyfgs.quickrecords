@@ -95,7 +95,7 @@
         </div>
       </div>
     </div>
-    <!-- table for categories -->
+    <!-- table for savings -->
     <div class="row q-pt-sm">
       <div class="col-md-12 col-xs-12 col-sm-12">
         <TableVue
@@ -105,6 +105,9 @@
           :message="message"
           :name="name"
           :show_savings="true"
+          :show_income_activity="false"
+          :show_members="false"
+          :show_contribution="false"
           @edit-member-saving="editMemberSaving"
         >
         </TableVue>
@@ -181,7 +184,7 @@ export default {
         {
           name: "amount_deposited",
           align: "left",
-          label: "Amount Deposited",
+          label: "Amount Deposited (XAF)",
           field: "amount_deposited",
         },
         {
@@ -309,7 +312,7 @@ export default {
       });
     },
     editMemberSaving(data){
-      this.$emit('edit-member-saving', data)
+      this.$emit("edit-member-saving", data)
     }
   },
   components: {

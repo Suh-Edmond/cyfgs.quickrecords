@@ -46,6 +46,10 @@
           :title="title"
           :show_savings="false"
           :show_member_savings="true"
+          :show_income_activity="false"
+          :show_members="false"
+          :show_contribution="false"
+          @edit-member-saving="editMemberSaving"
         >
         </TableVue>
       </div>
@@ -82,7 +86,7 @@ export default {
         {
           name: "amount_deposited",
           align: "left",
-          label: "Amount Deposited",
+          label: "Amount Deposited (XAF)",
           field: "amount_deposited",
         },
         {
@@ -183,9 +187,10 @@ export default {
   computed: {
   },
   methods: {
-    editExpenditureItemDetail(data) {
-      this.$emit("edit-expenditure-item-detail", data)
-    },
+    editMemberSaving(data){
+      console.log(data);
+      this.$emit('edit-member-saving', data)
+    }
   },
   components: {
     NotFound,

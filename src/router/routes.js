@@ -147,6 +147,26 @@ const routes = [
           has_intermediate_tab:false
         },
       },
+      {
+        name: "members_contributions",
+        path: "/dashboard/contributions",
+        component: () => import("src/pages/Contribution/Contributions.vue"),
+        meta: {
+          middleware: "auth",
+          role: "USER",
+          has_intermediate_tab:false
+        },
+      },
+      {
+        name: "member_contributions",
+        path: "/dashboard/contributions/members/:id",
+        component: () => import("src/pages/Contribution/MemberContributions.vue"),
+        meta: {
+          middleware: "auth",
+          role: "USER",
+          has_intermediate_tab:false
+        },
+      },
 
     ],
   },

@@ -32,9 +32,10 @@
           quibusdam nihil, molestias ea soluta nam reiciendis. Repudiandae itaque consectetur laboriosam eum maxime, vel
           maiores quidem ipsa.</p>
       </div>
+
       <div class="flex">
         <q-card class="image_card" @click="show_image = true">
-          <q-img src="../assets/UB-Logo.png" basic>
+          <q-img src="https://cdn.quasar.dev/img/mountains.jpg" basic>
             <div class="absolute-bottom text-caption text-center">
               Uploaded Image
             </div>
@@ -53,7 +54,7 @@
         </q-bar>
         <q-card-section>
           <div>
-            <q-img src="../assets/UB-Logo.png" spinner-color="white" style="height: 100%; width: 100%px" />
+            <q-img src="https://cdn.quasar.dev/img/mountains.jpg" spinner-color="white" style="height: 100%; width: 100%px" />
           </div>
         </q-card-section>
       </q-card>
@@ -70,6 +71,12 @@ export default {
       position: "right",
     };
   },
+  computed:{
+
+  },
+  methods:{
+
+  }
 };
 </script>
 

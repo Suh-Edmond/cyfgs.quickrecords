@@ -120,6 +120,8 @@
               @edit-member-saving="editMemberSaving"
               @edit-income-activity="editIncomeActivity"
               @view-income-activity="viewIncomeActivity"
+              @view-contribution="viewContribution"
+              @edit-contribution="editContribution"
             />
           </q-card-section>
         </q-card>
@@ -278,6 +280,12 @@ export default {
     viewIncomeActivity(data){
       console.log(data);
       this.updateDrawer(data)
+    },
+    viewContribution(data){
+      this.updateDrawer(data)
+    },
+    editContribution(data){
+      this.updateDrawer(data);
     }
   },
   computed: {},

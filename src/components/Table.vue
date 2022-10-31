@@ -12,6 +12,9 @@
       <div class="text-h6 title" v-show="show_member_savings">
          All Savings for: {{ title }}
         </div>
+        <div class="text-h6 title" v-show="show_member_contribution">
+        {{ title }}
+        </div>
     </template>
       <template v-slot:body="props">
         <q-tr :props="props">
@@ -29,7 +32,7 @@
             {{ props.row.name }}
               <q-tooltip>View All Savings</q-tooltip>
             </q-btn>
-            <span v-if="!show_savings || show_income_activity">{{ props.row.name }}</span>
+            <span v-if="!show_savings || show_income_activity || show_contribution">{{ props.row.name }}</span>
           </q-td>
           <q-td key="calories" :props="props">
             {{ props.row.calories }}
@@ -58,10 +61,13 @@
           <q-td key="amount_deposited" :props="props" v-show="show_savings || show_member_savings">
             {{ props.row.amount_deposited }}
           </q-td>
-          <q-td key="amount" :props="props" v-show="show_income_activity">
+          <q-td key="amount" :props="props" v-show="show_income_activity || show_contribution">
             {{ props.row.amount }}
           </q-td>
-          <q-td key="date" :props="props" v-show="show_savings || show_member_savings || show_income_activity">
+          <q-td key="status" :props="props" v-show="show_contribution">
+            {{ props.row.status }}
+          </q-td>
+          <q-td key="date" :props="props" v-show="show_savings || show_member_savings || show_income_activity || show_contribution">
             {{ props.row.date }}
           </q-td>
           <q-td key="venue" :props="props" v-show="show_income_activity">
@@ -93,6 +99,7 @@
                         <q-item-label class="edit">Edit</q-item-label>
                       </q-item-section>
                     </q-item>
+                    <q-separator />
                     <q-item
                       clickable
                       v-close-popup
@@ -108,7 +115,7 @@
                         <q-item-label class="edit">Edit</q-item-label>
                       </q-item-section>
                     </q-item>
-
+                    <q-separator />
                     <q-item
                       clickable
                       v-close-popup
@@ -141,6 +148,54 @@
                       </q-item-section>
                     </q-item>
                     <q-separator />
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onEditContribution(props.row)"
+                      v-show="show_contribution"
+                    >
+                      <q-item-section avatar>
+                        <span>
+                          <q-icon name="edit" size="xs" class="edit" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="edit">Edit</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <q-separator />
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onViewContribution(props.row)"
+                      v-show="show_contribution"
+                    >
+                      <q-item-section avatar>
+                        <span>
+                          <q-icon name="info" size="xs" class="edit" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="edit">Details</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <q-separator />
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onAllContribution(props.row)"
+                      v-show="show_contribution"
+                    >
+                      <q-item-section avatar>
+                        <span>
+                          <q-icon name="eye" size="xs" class="edit" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="edit">All Contributions</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <q-separator v-if="show_contribution && !show_member_contribution" />
                     <q-item
                       clickable
                       v-close-popup
@@ -260,6 +315,14 @@ export default {
     show_income_activity: {
       type:Boolean,
       required: true
+    },
+    show_contribution:{
+      type:Boolean,
+      required: true
+    },
+    show_member_contribution:{
+      required: false,
+      type: Boolean
     }
   },
   data() {
@@ -309,6 +372,23 @@ export default {
         tab: "View Income Activity",
       };
       this.$emit("view-income-activity", payload);
+    },
+    onViewContribution(data){
+      let payload = {
+        data: data,
+        tab: "View Contribution",
+      };
+      this.$emit("view-contribution", payload);
+    },
+    onEditContribution(data){
+      let payload = {
+        data: data,
+        tab: "Members Contributions",
+      };
+      this.$emit("edit-contribution", payload);
+    },
+    onAllContribution(data){
+      this.$router.push({name:'member_contributions', params:{id:data.id}})
     }
   },
   components: {
@@ -326,7 +406,7 @@ export default {
 }
 
 .edit {
-  color: $grey5;
+  color: $dark;
 }
 
 .warning_image {
@@ -342,5 +422,9 @@ export default {
   letter-spacing: 0.01em;
   text-transform: capitalize;
   color: $primary;
+}
+
+.title {
+  font-size: small;
 }
 </style>

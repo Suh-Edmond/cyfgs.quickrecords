@@ -46,9 +46,10 @@
           :title="title"
           :show_savings="false"
           :show_member_savings="true"
-          @edit-member-saving="editMemberSaving"
           :show_income_activity="false"
           :show_members="false"
+          :show_contribution="false"
+          @edit-member-saving="editMemberSaving"
         >
         </TableVue>
       </div>

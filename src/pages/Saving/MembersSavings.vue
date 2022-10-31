@@ -95,7 +95,7 @@
         </div>
       </div>
     </div>
-    <!-- table for categories -->
+    <!-- table for savings -->
     <div class="row q-pt-sm">
       <div class="col-md-12 col-xs-12 col-sm-12">
         <TableVue
@@ -107,6 +107,7 @@
           :show_savings="true"
           :show_income_activity="false"
           :show_members="false"
+          :show_contribution="false"
           @edit-member-saving="editMemberSaving"
         >
         </TableVue>

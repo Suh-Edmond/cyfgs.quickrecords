@@ -78,6 +78,7 @@
           :show_savings="false"
           :show_income_activity="false"
           :show_members="true"
+          :show_contribution="false"
         >
         </TableVue>
       </div>
@@ -101,7 +102,6 @@ export default {
       genders: ["MALE", "FEMALE", "ALL", "OTHER"],
       gender: null,
       search: "",
-      start_search: false,
       message:"Are you sure you want to delete this Member?",
       label: "Delete",
       columns: [
@@ -285,9 +285,6 @@ export default {
     },
   },
   methods: {
-    showSearch() {
-      this.start_search = !this.start_search;
-    },
     updateMember(data) {
       this.$emit("update-member", data);
     },

@@ -1,13 +1,16 @@
 <template>
   <q-page class="q-pa-xs">
-    <div class="flex flex-center" v-if="req_loader">
+    <!-- <div class="flex flex-center" v-if="req_loader">
       <q-spinner color="dark" size="2em" :thickness="2"/>
-    </div>
+    </div> -->
     <div>
       <label for="title" class="title">Organisation Information</label>
     </div>
-    <q-form @submit="onSubmit" :style="$q.screen.lg?'':'margin-bottom:5rem;'">
-      <div class="row q-py-sm q-px-sm" :class="$q.screen.lg? 'q-mb-md':''">
+    <q-form
+      @submit="onSubmit"
+      :style="$q.screen.lg ? '' : 'margin-bottom:5rem;'"
+    >
+      <div class="row q-py-sm q-px-sm" :class="$q.screen.lg ? 'q-mb-md' : ''">
         <div
           class="col-md-6 col-xs-12 col-sm-12"
           :class="$q.screen.lg ? 'q-px-md' : 'q-py-sm'"
@@ -23,7 +26,10 @@
             />
           </div>
         </div>
-        <div class="col-md-6 col-xs-12 col-sm-12" :class="$q.screen.lg ? 'q-px-md' : 'q-py-sm'">
+        <div
+          class="col-md-6 col-xs-12 col-sm-12"
+          :class="$q.screen.lg ? 'q-px-md' : 'q-py-sm'"
+        >
           <div>
             <label for="credential" class="form_field">Email</label>
             <q-input
@@ -36,38 +42,14 @@
           </div>
         </div>
       </div>
-      <div class="row q-px-sm" :class="$q.screen.lg? 'q-mb-md':''">
+      <div class="row q-px-sm" :class="$q.screen.lg ? 'q-mb-md' : ''">
         <div
-        class="col-md-6 col-xs-12 col-sm-12" :class="$q.screen.lg ? 'q-px-md' : 'q-pb-xs'"
+          class="col-md-6 col-xs-12 col-sm-12"
+          :class="$q.screen.lg ? 'q-px-md' : ''"
         >
           <div>
             <label for="credential" class="form_field"
-              >Telephone Number
-              <q-space />
-              <small v-if="!showTelBtn">
-                <q-btn
-                  flat
-                  color="primary"
-                  round
-                  icon="add_circle"
-                  @click="addTelephoneField"
-                  size="sm"
-                  v-if="!show_telephone2"
-                >
-                  <q-tooltip> Add Telephone Number </q-tooltip>
-                </q-btn>
-                <q-btn
-                  flat
-                  color="primary"
-                  round
-                  icon="close"
-                  @click="removeTelephoneField"
-                  size="sm"
-                  v-if="show_telephone2"
-                >
-                  <q-tooltip> Remove </q-tooltip>
-                </q-btn>
-              </small>
+              >Telephone Number(s)
             </label>
             <q-input
               v-model="organisation.telephone"
@@ -83,12 +65,15 @@
               dense
               type="tel"
               filled
-              class="q-mt-sm"
-              v-show="show_telephone2"
+              class="q-mt-xs"
+              v-if="show_telephone2"
             />
           </div>
         </div>
-        <div class="col-md-6 col-xs-12 col-sm-12" :class="$q.screen.lg ? 'q-px-md' : 'q-py-sm'">
+        <div
+          class="col-md-6 col-xs-12 col-sm-12"
+          :class="$q.screen.lg ? 'q-px-md' : 'q-py-sm'"
+        >
           <div>
             <label for="credential" class="form_field">Address</label>
             <q-input
@@ -101,9 +86,10 @@
           </div>
         </div>
       </div>
-      <div class="row q-px-sm" :class="$q.screen.lg? 'q-mb-md':''">
+      <div class="row q-px-sm" :class="$q.screen.lg ? 'q-mb-md' : ''">
         <div
-        class="col-md-6 col-xs-12 col-sm-12" :class="$q.screen.lg ? 'q-px-md' : 'q-py-sm'"
+          class="col-md-6 col-xs-12 col-sm-12"
+          :class="$q.screen.lg ? 'q-px-md' : 'q-py-sm'"
         >
           <div>
             <label for="credential" class="form_field">Salutation</label>
@@ -116,7 +102,10 @@
             />
           </div>
         </div>
-        <div class="col-md-6 col-xs-12 col-sm-12" :class="$q.screen.lg ? 'q-px-md' : 'q-py-sm'">
+        <div
+          class="col-md-6 col-xs-12 col-sm-12"
+          :class="$q.screen.lg ? 'q-px-md' : 'q-py-sm'"
+        >
           <div>
             <label for="credential" class="form_field">P.O BOX</label>
             <q-input
@@ -129,9 +118,10 @@
           </div>
         </div>
       </div>
-      <div class="row q-px-sm" :class="$q.screen.lg? 'q-mb-md':''">
+      <div class="row q-px-sm" :class="$q.screen.lg ? 'q-mb-md' : ''">
         <div
-        class="col-md-6 col-xs-12 col-sm-12" :class="$q.screen.lg ? 'q-px-md' : 'q-py-sm'"
+          class="col-md-6 col-xs-12 col-sm-12"
+          :class="$q.screen.lg ? 'q-px-md' : 'q-py-sm'"
         >
           <div>
             <label for="credential" class="form_field">Description</label>
@@ -145,24 +135,25 @@
             />
           </div>
         </div>
-        <div class="col-md-6 col-xs-12 col-sm-12" :class="$q.screen.lg ? 'q-px-md' : 'q-py-sm'">
+        <div
+          class="col-md-6 col-xs-12 col-sm-12"
+          :class="$q.screen.lg ? 'q-px-md' : 'q-py-sm'"
+        >
           <div>
             <label for="credential" class="form_field">Logo</label>
-            <q-uploader
-              :style="$q.screen.lg?'max-width: 300px':'width: 100%'"
-              url="http://localhost:4444/upload"
-              label="Restricted to images"
-              flat
-              bordered
-              multiple
-              accept="image/jpg, image/png,image/jpeg"
-              @rejected="onRejected"
-            />
+            <q-file outlined v-model="logo" dense filled label="Select logo to upload">
+              <template v-slot:prepend>
+                <q-icon name="attach_file" />
+              </template>
+            </q-file>
           </div>
         </div>
       </div>
-      <div class="row flex flex-center" :class="$q.screen.lg? 'q-mt-md':''">
-        <div class="col-md-2 col-xs-12 col-sm-12" :class="$q.screen.lg ? '' : 'q-px-sm q-pt-md q-mb-xl'">
+      <div class="row flex flex-center" :class="$q.screen.lg ? 'q-mt-md' : ''">
+        <div
+          class="col-md-2 col-xs-12 col-sm-12"
+          :class="$q.screen.lg ? '' : 'q-px-sm q-pt-md q-mb-xl'"
+        >
           <ButtonVue
             :label="label"
             :loading="loading"
@@ -186,6 +177,7 @@ export default {
   },
   data() {
     return {
+      logo: null,
       organisation: {
         name: null,
         email: null,
@@ -199,18 +191,12 @@ export default {
       },
       label: "Save",
       loading: false,
-      req_loader: false,
+      show_loading: false,
       color: "primary",
-      show_telephone2: false,
-
+      show_telephone2: true,
     };
   },
   computed: {
-    validateSecondTel() {
-      return this.show_telephone2 && this.organisation.telephone2 == null
-        ? true
-        : false;
-    },
     validateForm() {
       return (this.organisation.name == null &&
         this.organisation.email == null &&
@@ -219,39 +205,28 @@ export default {
         (this.organisation.name == null &&
           this.organisation.email == null &&
           this.organisation.telephone == null &&
-          this.organisation.address == null &&
-          this.validateSecondTel)
+          this.organisation.address == null)
         ? true
         : false;
     },
-    showTelBtn(){
-      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-      this.show_telephone2 = true;
-      return (this.organisation.telephone2 !== null)? true : false;
-    }
   },
   methods: {
-    onRejected() {},
-    addTelephoneField() {
-      return (this.show_telephone2 = true);
-    },
-    removeTelephoneField() {
-      return (this.show_telephone2 = false);
-    },
+
     onSubmit() {
       let payload = {
         data: {
           name: this.organisation.name,
           email: this.organisation.email,
           telephone:
-            this.organisation.telephone2 !== null
+            this.organisation.telephone2 !== null ||
+            this.organisation.telephone2 !== ""
               ? this.organisation.telephone + "/" + this.organisation.telephone2
               : this.organisation.telephone,
           address: this.organisation.address,
           description: this.organisation.description,
           box_number: this.organisation.box_number,
           salutation: this.organisation.salutation,
-          id: this.organisation.id
+          id: this.organisation.id,
         },
         url: "/api/protected/organisations",
         msg: "Organisation saved successfully",
@@ -306,15 +281,18 @@ export default {
         to_on_ok: "none",
         to_on_fail: "none",
         error_msg: "default",
+        commit:"SET_ORGANISATION",
         to_be_store_data: {
           required: false,
           has_value: false,
           data: [],
         },
       };
-      this.req_loader = true;
+      this.show_loading = true;
+      this.$emit("start-loading", this.show_loading);
       this.$store.dispatch("auth/getRequest", payload).then((res) => {
-        this.req_loader = false
+        this.show_loading = false;
+        this.$emit("start-loading", this.show_loading);
         this.setOrganisationInfo(res.data);
       });
     },
@@ -323,8 +301,8 @@ export default {
       this.organisation.address = data.address;
       this.organisation.name = data.name;
       this.organisation.email = data.email;
-      this.organisation.telephone = data.telephone.split('/')[0];
-      this.organisation.telephone2 = data.telephone.split('/')[1]
+      this.organisation.telephone = data.telephone.split("/")[0];
+      this.organisation.telephone2 = data.telephone.split("/")[1];
       this.organisation.salutation = data.salutation;
       this.organisation.description = data.description;
       this.organisation.box_number = data.box_number;
@@ -332,7 +310,6 @@ export default {
 
       return this.organisation;
     },
-
   },
   components: {
     ButtonVue,
@@ -350,7 +327,7 @@ export default {
   align-items: center;
   text-align: center;
   letter-spacing: 0.01em;
-  color: #5384ae;
+  color: $primary;
 }
 
 .form_field {

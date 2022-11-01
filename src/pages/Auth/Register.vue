@@ -49,7 +49,7 @@
                   </q-input>
                 </div>
                 <div class="bottom">
-                  <ButtonVue class="form_button" :label="label_sigup" :loading="loading" :disabled="!validateForm" :color="color">
+                  <ButtonVue class="form_button" :label="label_sigup" :loading="loading" :disabled="!validateForm" :color="color" :no_caps="true">
                   </ButtonVue>
                   <div class="account_text" v-if="!$q.screen.lg">
                     Already Have an Account ?<router-link to="/auth/login" class="sign_link">

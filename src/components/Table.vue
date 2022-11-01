@@ -34,29 +34,20 @@
             </q-btn>
             <span v-if="!show_savings || show_income_activity || show_contribution">{{ props.row.name }}</span>
           </q-td>
-          <q-td key="calories" :props="props">
-            {{ props.row.calories }}
-          </q-td>
-          <q-td key="fat" :props="props">
-            {{ props.row.fat }}
-          </q-td>
-          <q-td key="carbs" :props="props">
-            {{ props.row.carbs }}
-          </q-td>
-          <q-td key="protein" :props="props">
-            {{ props.row.protein }}
-          </q-td>
-          <q-td key="sodium" :props="props">
-            {{ props.row.sodium }}
-          </q-td>
-          <q-td key="calcium" :props="props">
-            {{ props.row.calcium }}
-          </q-td>
-          <q-td key="email" :props="props" v-show="show_savings">
+          <q-td key="email" :props="props" v-show="show_savings || show_members">
             {{ props.row.email }}
           </q-td>
-          <q-td key="telephone" :props="props" v-show="show_savings">
+          <q-td key="gender" :props="props" v-show="show_members">
+            {{ props.row.gender }}
+          </q-td>
+          <q-td key="telephone" :props="props" v-show="show_savings || show_members">
             {{ props.row.telephone }}
+          </q-td>
+          <q-td key="address" :props="props" v-show="show_members">
+            {{ props.row.address }}
+          </q-td>
+          <q-td key="occupation" :props="props" v-show="show_members">
+            {{ props.row.occupation }}
           </q-td>
           <q-td key="amount_deposited" :props="props" v-show="show_savings || show_member_savings">
             {{ props.row.amount_deposited }}

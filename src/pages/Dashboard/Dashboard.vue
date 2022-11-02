@@ -74,40 +74,40 @@
           </span>
           <div class="row">
             <q-card class="card_statistics_info q-mx-sm text-center q-mt-md" flat bordered>
-            <div class="text-subtitle2 absolute-top text-center amount">
-              5
-            </div>
-          </q-card>
-          <q-card class="card_statistics_info q-mx-sm text-center q-mt-md" flat bordered>
-            <div class="text-subtitle2 absolute-top text-center amount">
-              5
-            </div>
-          </q-card>
-          <q-card class="card_statistics_info q-mx-sm text-center q-mt-md" flat bordered>
-            <div class="text-subtitle2 absolute-top text-center amount">
-              5
-            </div>
-          </q-card>
-          <q-card class="card_statistics_info q-mx-sm text-center q-mt-md" flat bordered>
-            <div class="text-subtitle2 absolute-top text-center amount">
-              5
-            </div>
-          </q-card>
-          <q-card class="card_statistics_info q-mx-sm text-center q-mt-md" flat bordered>
-            <div class="text-subtitle2 absolute-top text-center amount">
-              5
-            </div>
-          </q-card>
-          <q-card class="card_statistics_info q-mx-sm text-center q-mt-md" flat bordered>
-            <div class="text-subtitle2 absolute-top text-center amount">
-              5
-            </div>
-          </q-card>
-          <q-card class="card_statistics_info q-mx-sm text-center q-mt-md" flat bordered>
-            <div class="text-subtitle2 absolute-top text-center amount">
-              5
-            </div>
-          </q-card>
+              <div class="text-subtitle2 absolute-top text-center amount">
+                5
+              </div>
+            </q-card>
+            <q-card class="card_statistics_info q-mx-sm text-center q-mt-md" flat bordered>
+              <div class="text-subtitle2 absolute-top text-center amount">
+                5
+              </div>
+            </q-card>
+            <q-card class="card_statistics_info q-mx-sm text-center q-mt-md" flat bordered>
+              <div class="text-subtitle2 absolute-top text-center amount">
+                5
+              </div>
+            </q-card>
+            <q-card class="card_statistics_info q-mx-sm text-center q-mt-md" flat bordered>
+              <div class="text-subtitle2 absolute-top text-center amount">
+                5
+              </div>
+            </q-card>
+            <q-card class="card_statistics_info q-mx-sm text-center q-mt-md" flat bordered>
+              <div class="text-subtitle2 absolute-top text-center amount">
+                5
+              </div>
+            </q-card>
+            <q-card class="card_statistics_info q-mx-sm text-center q-mt-md" flat bordered>
+              <div class="text-subtitle2 absolute-top text-center amount">
+                5
+              </div>
+            </q-card>
+            <q-card class="card_statistics_info q-mx-sm text-center q-mt-md" flat bordered>
+              <div class="text-subtitle2 absolute-top text-center amount">
+                5
+              </div>
+            </q-card>
           </div>
 
         </q-card>
@@ -117,7 +117,43 @@
 </template>
 <script>
 export default {
-
+  created() {
+    this.getOrganisationInfo()
+  },
+  data() {
+    return {
+      show_loading: false,
+    }
+  },
+  methods: {
+    getOrganisationInfo() {
+      let payload = {
+        data: "",
+        status: "none",
+        url: "/api/protected/organisation-info",
+        has_path_val: true,
+        show_feedback: false,
+        msg: "default",
+        color: "default",
+        to_on_ok: "none",
+        to_on_fail: "none",
+        error_msg: "default",
+        commit: "SET_ORGANISATION",
+        has_commit: true,
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.show_loading = true;
+      this.$emit("start-loading", this.show_loading);
+      this.$store.dispatch("getRequest", payload).then((res) => {
+        this.show_loading = false;
+        this.$emit("start-loading", this.show_loading);
+      });
+    },
+  }
 }
 </script>
 <style lang="scss" scoped>

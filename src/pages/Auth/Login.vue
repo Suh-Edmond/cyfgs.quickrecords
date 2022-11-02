@@ -175,10 +175,10 @@ export default {
         },
       };
       this.$store
-        .dispatch("auth/postRequest", payload)
+        .dispatch("postRequest", payload)
         .then((res) => {
           if (typeof res !== undefined) {
-            this.$store.dispatch("auth/setRoles", this.setUserRoles(res.data.data.roles));
+            this.$store.dispatch("setRoles", this.setUserRoles(res.data.data.roles));
           }
         })
         .finally(() => {
@@ -205,7 +205,7 @@ export default {
       };
       this.loading = true;
       this.$store
-        .dispatch("auth/postRequest", payload)
+        .dispatch("postRequest", payload)
         .then((res) => {
           if (res !== undefined) {
             this.is_exist_user = true;
@@ -233,10 +233,10 @@ export default {
       };
       this.loading = true;
       this.$store
-        .dispatch("auth/postRequest", payload)
+        .dispatch("postRequest", payload)
         .then((res) => {
           if (typeof res !== undefined) {
-            this.$store.dispatch("auth/setRoles", this.setUserRoles(res.data.data.roles))
+            this.$store.dispatch("setRoles", this.setUserRoles(res.data.data.roles))
           }
         })
         .finally(() => {

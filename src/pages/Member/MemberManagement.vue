@@ -3,12 +3,12 @@
     <!-- no members found -->
     <NotFound
       :message="not_found_msg"
-      v-if="getTotalOrganisationMember == 0"
+      v-if="data.length == 0"
     ></NotFound>
     <!-- header for filter members -->
     <div
       class="row q-ml-xs"
-      v-if="getTotalOrganisationMember > 0"
+      v-if="data.length > 0"
       :class="$q.screen.lg ? 'q-pa-sm' : ''"
       :style="
         $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
@@ -38,9 +38,7 @@
           label="Select year"
         />
       </div>
-      <div
-        :class="$q.screen.lg ? 'q-pr-md' : ''"
-      >
+      <div :class="$q.screen.lg ? 'q-pr-md' : ''">
         <ButtonVue
           :label="label_fetch_user"
           :loading="loading"
@@ -53,7 +51,7 @@
       </div>
       <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12"></div>
 
-      <div :style="$q.screen.lg? 'margin-left:76px':''">
+      <div :style="$q.screen.lg ? 'margin-left:76px' : ''">
         <ButtonVue
           :label="label_print"
           :loading="loading"
@@ -70,7 +68,7 @@
       <div class="col-md-12 col-xs-12 col-sm-12">
         <TableVue
           :columns="columns"
-          :data="data"
+          :data="getMembers"
           :label="label"
           @update-member="updateMember"
           :member_name="select_member_name"
@@ -90,9 +88,14 @@ import ButtonVue from "src/components/Button.vue";
 import TableVue from "src/components/Table.vue";
 import NotFound from "src/components/NotFound.vue";
 export default {
+  mounted(){
+    let id = this.$store.getters.getOrganisation.id
+    this.getOrganisationMembers(id)
+  },
   data() {
     return {
-      member_total: 1,
+      organisation:null,
+      member_total: 0,
       year: null,
       years: ["2020", "2021", "2022", "2023", "2024"],
       label_fetch_user: "Filter",
@@ -102,7 +105,7 @@ export default {
       genders: ["MALE", "FEMALE", "ALL", "OTHER"],
       gender: null,
       search: "",
-      message:"Are you sure you want to delete this Member?",
+      message: "Are you sure you want to delete this Member?",
       label: "Delete",
       columns: [
         {
@@ -115,39 +118,34 @@ export default {
         {
           name: "name",
           required: true,
-          label: "Dessert (100g serving)",
+          label: "Name",
           align: "left",
           field: (row) => row.name,
           format: (val) => `${val}`,
           sortable: true,
         },
         {
-          name: "calories",
-          align: "center",
-          label: "Calories",
-          field: "calories",
+          name: "email",
+          align: "left",
+          label: "Email",
+          field: "email",
           sortable: true,
         },
-        { name: "fat", label: "Fat (g)", field: "fat", sortable: true },
-        { name: "carbs", label: "Carbs (g)", field: "carbs", sortable: true },
+        { name: "gender",align: "left", label: "Gender", field: "gender", sortable: true },
         {
-          name: "protein",
-          label: "Protein (g)",
-          field: "protein",
+          name: "telephone",
+          align: "left",
+          label: "Telephone",
+          field: "telephone",
           sortable: true,
         },
+        { name: "address", align: "left",label: "Address", field: "address", sortable: true },
         {
-          name: "sodium",
-          label: "Sodium (mg)",
-          field: "sodium",
+          name: "occupation",
+          align: "left",
+          label: "Occupation",
+          field: "occupation",
           sortable: true,
-        },
-        {
-          name: "calcium",
-          label: "Calcium (%)",
-          field: "calcium",
-          sortable: true,
-          sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
         },
         {
           name: "action",
@@ -157,138 +155,52 @@ export default {
           sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
         },
       ],
-      data: [
-        {
-          id: 1,
-          name: "Frozen Yogurt",
-          calories: 159,
-          fat: 6.0,
-          carbs: 24,
-          protein: 4.0,
-          sodium: 87,
-          calcium: "14%",
-          action: "",
-        },
-        {
-          id: 2,
-          name: "Ice cream sandwich",
-          calories: 237,
-          fat: 9.0,
-          carbs: 37,
-          protein: 4.3,
-          sodium: 129,
-          calcium: "8%",
-          action: "",
-        },
-        {
-          id: 3,
-          name: "Eclair",
-          calories: 262,
-          fat: 16.0,
-          carbs: 23,
-          protein: 6.0,
-          sodium: 337,
-          calcium: "6%",
-          action: "",
-        },
-        {
-          id: 4,
-          name: "Cupcake",
-          calories: 305,
-          fat: 3.7,
-          carbs: 67,
-          protein: 4.3,
-          sodium: 413,
-          calcium: "3%",
-          action: "",
-        },
-        {
-          id: 5,
-          name: "Gingerbread",
-          calories: 356,
-          fat: 16.0,
-          carbs: 49,
-          protein: 3.9,
-          sodium: 327,
-          calcium: "7%",
-          action: "",
-        },
-        {
-          id: 6,
-          name: "Jelly bean",
-          calories: 375,
-          fat: 0.0,
-          carbs: 94,
-          protein: 0.0,
-          sodium: 50,
-          calcium: "0%",
-          action: "",
-        },
-        {
-          id: 7,
-          name: "Lollipop",
-          calories: 392,
-          fat: 0.2,
-          carbs: 98,
-          protein: 0,
-          sodium: 38,
-          calcium: "0%",
-          action: "",
-        },
-        {
-          id: 8,
-          name: "Honeycomb",
-          calories: 408,
-          fat: 3.2,
-          carbs: 87,
-          protein: 6.5,
-          sodium: 562,
-          calcium: "0%",
-          action: "",
-        },
-        {
-          id: 9,
-          name: "Donut",
-          calories: 452,
-          fat: 25.0,
-          carbs: 51,
-          protein: 4.9,
-          sodium: 326,
-          calcium: "2%",
-          action: "",
-        },
-        {
-          id: 10,
-          name: "KitKat",
-          calories: 518,
-          fat: 26.0,
-          carbs: 65,
-          protein: 7,
-          sodium: 54,
-          calcium: "12%",
-          action: "",
-        },
-      ],
+      data: [],
       not_found_msg:
         "Ooops!! You don't have any Register Member click the button to add Members.",
       label_print: "Print",
       color_print: "positive",
-      select_member_name:" Suh Edmond Edmond"
+      select_member_name: " Suh Edmond Edmond",
     };
   },
   computed: {
-    getTotalOrganisationMember() {
-      return this.member_total;
-    },
     validateFilter() {
       return this.year == null && this.gender == null ? true : false;
     },
+    getMembers(){
+      return this.$store.getters.getMembers;
+    }
   },
   methods: {
     updateMember(data) {
       this.$emit("update-member", data);
     },
+    getOrganisationMembers(id) {
+      let payload = {
+        url: `/api/protected/organisations/${id}/users`,
+        msg: "none",
+        color: "default",
+        to_on_ok: "none",
+        status:"none",
+        to_on_fail: "none",
+        error_msg: "An Error occurred! Please try again",
+        has_commit:true,
+        commit:"SET_MEMBERS",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.$emit("start-loading", true);
+      this.$store.dispatch("getRequest", payload).then((res) => {
+        this.data = res.data
+      }).finally(() => {
+        this.$emit("start-loading", false);
+      })
+    }
   },
+
   components: {
     ButtonVue,
     TableVue,

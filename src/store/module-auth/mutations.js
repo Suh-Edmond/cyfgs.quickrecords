@@ -4,3 +4,7 @@ export function SET_ROLES (state, data) {
 export function SET_ORGANISATION(state, data) {
   state.organisation = data
 }
+
+export function SET_MEMBERS(state, data){
+  state.members = data
+}

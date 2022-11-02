@@ -1,4 +1,5 @@
 <template>
+
   <q-page>
     <q-header class="bg-primary text-white header">
       <q-toolbar>
@@ -53,6 +54,7 @@
       class="main_content"
       :style="$q.screen.lg ? 'margin-left: .5rem;' : ''"
     >
+    <q-linear-progress  indeterminate  color="white" size="5px" v-if="loading"/>
       <q-card class="header_section">
         <q-card-section class="content_header">
           <div class="row">
@@ -108,6 +110,7 @@
         <q-card class="card">
           <q-card-section class="content">
             <router-view
+              @start-loading="startLoading"
               @update-member="updateMember"
               @update-payment-category="updatePaymentCategory"
               @show-payment-items="showPaymentItems"
@@ -164,11 +167,15 @@ export default {
       intermediate_tab: "",
       has_intermediate_tab: false,
       intermediate_tab2: "",
-      has_intermediate_tab2:false
+      has_intermediate_tab2:false,
+      loading:false,
     };
   },
 
   methods: {
+    startLoading(data){
+      this.loading = data;
+    },
     showRightDrawer() {
       this.right = true;
 
@@ -209,6 +216,7 @@ export default {
      }
     },
     updateMember(data) {
+      console.log(data);
       this.right = true;
       this.$emit("show-right-drawer", {
         right: this.right,

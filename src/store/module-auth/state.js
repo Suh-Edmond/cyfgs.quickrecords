@@ -1,6 +1,7 @@
 export default function () {
   return {
     roles: [],
-    organisation:null
+    organisation:null,
+    members:[]
   };
 }

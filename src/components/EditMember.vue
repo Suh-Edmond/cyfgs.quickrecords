@@ -32,12 +32,7 @@
                 <label for="credential" class="form_field"
                   >Name <span class="text-red">*</span></label
                 >
-                <q-input
-                  v-model="user.name"
-                  outlined
-                  dense
-                  type="text"
-                />
+                <q-input v-model="user.name" outlined dense type="text" />
               </div>
               <div>
                 <label for="credential" class="form_field"
@@ -52,45 +47,25 @@
               </div>
               <div>
                 <label for="credential" class="form_field">Email</label>
-                <q-input
-                  v-model="user.email"
-                  outlined
-                  dense
-                  type="email"
-                />
+                <q-input v-model="user.email" outlined dense type="email" />
               </div>
               <div>
                 <label for="credential" class="form_field"
                   >Telephone <span class="text-red">*</span></label
                 >
-                <q-input
-                  v-model="user.telephone"
-                  outlined
-                  dense
-                  type="tel"
-                />
+                <q-input v-model="user.telephone" outlined dense type="tel" />
               </div>
               <div>
                 <label for="credential" class="form_field"
                   >Address <span class="text-red">*</span></label
                 >
-                <q-input
-                  v-model="user.address"
-                  outlined
-                  dense
-                  type="text"
-                />
+                <q-input v-model="user.address" outlined dense type="text" />
               </div>
               <div>
                 <label for="credential" class="form_field"
                   >Occupation <span class="text-red">*</span></label
                 >
-                <q-input
-                  v-model="user.occupation"
-                  outlined
-                  dense
-                  type="text"
-                />
+                <q-input v-model="user.occupation" outlined dense type="text" />
               </div>
               <div class="col-md-2 col-sm-12 col-xs-12">
                 <ButtonVue
@@ -115,9 +90,9 @@
               <q-space />
               <div>
                 <q-btn flat round @click="removeRole">
-                  <q-icon name="close" color="negative"
-                    ><q-tooltip>Remove</q-tooltip></q-icon
-                  >
+                  <q-icon name="close" color="negative">
+                    <q-tooltip>Remove</q-tooltip>
+                  </q-icon>
                 </q-btn>
               </div>
             </div>
@@ -129,8 +104,8 @@
               <q-space />
               <div>
                 <q-btn flat round @click="removeRole">
-                  <q-icon name="close" color="negative"
-                    ><q-tooltip>Remove</q-tooltip>
+                  <q-icon name="close" color="negative">
+                    <q-tooltip>Remove</q-tooltip>
                   </q-icon>
                 </q-btn>
               </div>
@@ -176,7 +151,6 @@
             >Are you sure you want to remove this role ?</span
           >
         </q-card-section>
-
         <q-card-actions align="right">
           <q-btn flat label="Cancel" class="text-color" v-close-popup no-caps />
           <q-btn flat :label="label" color="primary" v-close-popup no-caps />
@@ -190,6 +164,15 @@
 import ButtonVue from "src/components/Button.vue";
 
 export default {
+  props: {
+    data: {
+      type: Object,
+      required: true,
+    },
+  },
+  mounted() {
+    this.setFormField();
+  },
   data() {
     return {
       label_save: "Save",
@@ -217,18 +200,98 @@ export default {
   },
   computed: {
     validateForm() {
-      return true;
+      return this.user.name === null ||
+        this.user.telephone === null ||
+        this.user.address === null ||
+        this.user.address === null ||
+        this.user.occupation === null ||
+        this.user.gender === null
+        ? true
+        : false;
     },
     validateAddRoleForm() {
       return this.role == null ? true : false;
     },
   },
   methods: {
-    onUpdateMember() {},
+    onUpdateMember() {
+      let payload = {
+        url: `/api/protected/users/${this.data.id}`,
+        data: this.user,
+        msg: "Member information updated Successfully",
+        color: "default",
+        to_on_ok: "none",
+        to_on_fail: "none",
+        error_msg: "An Error occurred! Please try again",
+        has_commit: false,
+        commit: "none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      let organisation_id = this.$store.getters.getOrganisation.id
+      this.loading = true;
+
+      this.$store.dispatch("putRequest", payload).then((res) => {
+        this.getOrganisationMembers(organisation_id);
+        this.resetForm();
+      }).finally(() => {
+        this.loading = false;
+        this.$emit("close-right-drawer");
+      })
+    },
     addRole() {},
     removeRole() {
       this.show_dialog = true;
     },
+    setFormField() {
+      (this.user.name = this.data.name), (this.user.email = this.data.email);
+      this.user.telephone = this.data.telephone;
+      this.user.address = this.data.address;
+      this.user.occupation = this.data.occupation;
+      this.user.gender = this.data.gender;
+
+      return this.user;
+    },
+
+    getOrganisationMembers(id) {
+      console.log(id);
+      let payload = {
+        url: `/api/protected/organisations/${id}/users`,
+        msg: "none",
+        color: "default",
+        to_on_ok: "none",
+        status:"none",
+        to_on_fail: "none",
+        error_msg: "An Error occurred! Please try again",
+        has_commit:true,
+        commit:"SET_MEMBERS",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.$emit("start-loading", true);
+      this.$store.dispatch("getRequest", payload).then((res) => {
+      }).finally(() => {
+        this.$emit("start-loading", false);
+      })
+    },
+    resetForm() {
+      this.user.name = null;
+      this.user.email = null;
+      this.user.telephone = null;
+      this.user.address = null;
+      this.user.occupation = null;
+      this.user.gender = null;
+
+      return this.user
+    },
+
+
   },
   components: {
     ButtonVue,
@@ -248,6 +311,7 @@ export default {
   color: #5384ae;
   text-transform: capitalize;
 }
+
 .form_field {
   font-family: "Roboto";
   font-style: normal;
@@ -257,6 +321,7 @@ export default {
   letter-spacing: 0.01em;
   color: $grey2;
 }
+
 .form_button {
   width: 100%;
 }
@@ -275,6 +340,7 @@ export default {
 .warning_image {
   color: yellow;
 }
+
 .text-color {
   color: $grey2;
 }

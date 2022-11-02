@@ -4,9 +4,10 @@
     <q-table
       :data="data"
       :columns="columns"
-      row-key="id"
+      row-key="index"
       :table-header-style="{ backgroundColor: '#5384ae', color: '#FFFFFF' }"
       :filter="filter"
+
     >
     <template v-slot:top-left>
       <div class="text-h6 title" v-show="show_member_savings">
@@ -19,7 +20,7 @@
       <template v-slot:body="props">
         <q-tr :props="props">
           <q-td key="id" :props="props">
-            {{ props.row.id }}
+            {{props.row.count}}
           </q-td>
           <q-td key="name" :props="props">
             <q-btn
@@ -34,29 +35,20 @@
             </q-btn>
             <span v-if="!show_savings || show_income_activity || show_contribution">{{ props.row.name }}</span>
           </q-td>
-          <q-td key="calories" :props="props">
-            {{ props.row.calories }}
-          </q-td>
-          <q-td key="fat" :props="props">
-            {{ props.row.fat }}
-          </q-td>
-          <q-td key="carbs" :props="props">
-            {{ props.row.carbs }}
-          </q-td>
-          <q-td key="protein" :props="props">
-            {{ props.row.protein }}
-          </q-td>
-          <q-td key="sodium" :props="props">
-            {{ props.row.sodium }}
-          </q-td>
-          <q-td key="calcium" :props="props">
-            {{ props.row.calcium }}
-          </q-td>
-          <q-td key="email" :props="props" v-show="show_savings">
+          <q-td key="email" :props="props" v-show="show_savings || show_members">
             {{ props.row.email }}
           </q-td>
-          <q-td key="telephone" :props="props" v-show="show_savings">
+          <q-td key="gender" :props="props" v-show="show_members">
+            {{ props.row.gender }}
+          </q-td>
+          <q-td key="telephone" :props="props" v-show="show_savings || show_members">
             {{ props.row.telephone }}
+          </q-td>
+          <q-td key="address" :props="props" v-show="show_members">
+            {{ props.row.address }}
+          </q-td>
+          <q-td key="occupation" :props="props" v-show="show_members">
+            {{ props.row.occupation }}
           </q-td>
           <q-td key="amount_deposited" :props="props" v-show="show_savings || show_member_savings">
             {{ props.row.amount_deposited }}
@@ -99,7 +91,6 @@
                         <q-item-label class="edit">Edit</q-item-label>
                       </q-item-section>
                     </q-item>
-                    <q-separator />
                     <q-item
                       clickable
                       v-close-popup
@@ -115,7 +106,7 @@
                         <q-item-label class="edit">Edit</q-item-label>
                       </q-item-section>
                     </q-item>
-                    <q-separator />
+                    <!-- <q-separator /> -->
                     <q-item
                       clickable
                       v-close-popup
@@ -131,7 +122,7 @@
                         <q-item-label class="edit">Edit</q-item-label>
                       </q-item-section>
                     </q-item>
-                    <q-separator />
+                    <!-- <q-separator /> -->
                     <q-item
                       clickable
                       v-close-popup
@@ -147,7 +138,7 @@
                         <q-item-label class="edit">Details</q-item-label>
                       </q-item-section>
                     </q-item>
-                    <q-separator />
+                    <!-- <q-separator /> -->
                     <q-item
                       clickable
                       v-close-popup
@@ -163,7 +154,7 @@
                         <q-item-label class="edit">Edit</q-item-label>
                       </q-item-section>
                     </q-item>
-                    <q-separator />
+                    <!-- <q-separator /> -->
                     <q-item
                       clickable
                       v-close-popup
@@ -179,7 +170,7 @@
                         <q-item-label class="edit">Details</q-item-label>
                       </q-item-section>
                     </q-item>
-                    <q-separator />
+                    <!-- <q-separator /> -->
                     <q-item
                       clickable
                       v-close-popup
@@ -195,7 +186,7 @@
                         <q-item-label class="edit">All Contributions</q-item-label>
                       </q-item-section>
                     </q-item>
-                    <q-separator v-if="show_contribution && !show_member_contribution" />
+                    <q-separator />
                     <q-item
                       clickable
                       v-close-popup
@@ -339,10 +330,26 @@ export default {
   methods: {
     onEditMember(data) {
       let payload = {
-        data: data,
-        tab: "EditMember",
+        url: `/api/protected/organisations/users/${data.id}`,
+        data: this.user,
+        msg: "none",
+        status:"none",
+        color: "default",
+        to_on_ok: "none",
+        to_on_fail: "none",
+        error_msg: "An Error occurred! Please try again",
+        has_commit: false,
+        commit: "none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
       };
-      this.$emit("update-member", payload);
+      this.$store.dispatch("getRequest", payload).then((res) => {
+        this.$emit("update-member", {"data":res.data, "tab":"EditMember"});
+      })
+
     },
     onDeleteMember(data) {
       this.dialog = true;

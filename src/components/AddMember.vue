@@ -53,7 +53,7 @@
         </q-tab-panel>
         <q-tab-panel name="Upload File">
           <div>
-            <q-form>
+            <q-form @submit="uploadFile">
               <div class="text-subtitle2 text-center text-primary">
                 Import Members from an Excel File
                 <span class="q-pl-md">
@@ -65,7 +65,7 @@
               </div>
               <div class="row q-gutter-md flex flex-center q-pt-md">
                 <div class="col-md-8 col-sm-12 col-xs-12">
-                  <q-file outlined v-model="file" dense label="Choose file" accept="xls, .xlsx,xlsm" counter>
+                  <q-file outlined v-model="file" dense label="Choose file" accept="xls, .xlsx, .xlsm, .csv" counter>
                     <template v-slot:prepend>
                       <q-icon name="attach_file" />
                     </template>
@@ -73,7 +73,7 @@
                 </div>
                 <div class="col-md-2 col-sm-12 col-xs-12 q-pb-md">
                   <ButtonVue class="form_button" :label="label_upload" :loading="loading" :color="color"
-                    :disabled="validateFormUpload" :no_caps="no_caps" @click="uploadFile">
+                    :disabled="validateFormUpload" :no_caps="no_caps">
                   </ButtonVue>
                 </div>
               </div>
@@ -83,7 +83,7 @@
       </q-tab-panels>
     </div>
     <q-dialog v-model="dialog" :position="position">
-      <q-card style="width: 350px" class="q-ma-md">
+      <q-card style="width: 370px" class="q-ma-md">
         <q-bar>
           <div></div>
           <q-space />
@@ -98,8 +98,8 @@
               Below is an Eample of an Excel file to be upload
             </div>
             <div>
-              <q-img src="https://cdn.quasar.dev/img/mountains.jpg" spinner-color="white"
-                style="height: 100%; width: 100%px" />
+              <q-img src="../assets/example_csv_upload.png" spinner-color="white"
+                style="height: 100%; width: 100%" />
             </div>
           </div>
         </q-card-section>
@@ -110,6 +110,9 @@
 <script>
 import ButtonVue from "src/components/Button.vue";
 export default {
+  mounted(){
+    this.organisation_id = this.$store.getters.getOrganisation.id
+  },
   data() {
     return {
       label_save: "Save",
@@ -145,6 +148,9 @@ export default {
     validateFormUpload() {
       return this.file == null ? true : false;
     },
+    getOrganisationId(){
+      return this.organisation_id;
+    }
   },
   methods: {
     onAddMember() {
@@ -177,8 +183,36 @@ export default {
     openHelp() {
       this.dialog = true;
     },
-    uploadFile() {
-      this.$emit("close-right-drawer");
+
+    uploadFile(event) {
+      const formData = new FormData()
+      formData.append("file", this.file);
+      let id = this.$store.getters.getOrganisation.id;
+      let payload = {
+        url: `/api/protected/organisations/${id}/import-users`,
+        msg: "Members uploaded successfully",
+        data: formData,
+        color: "default",
+        to_on_ok: "none",
+        status: "none",
+        to_on_fail: "none",
+        error_msg: "An Error occurred! Please try again",
+        has_commit: false,
+        commit: "SET_MEMBERS",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.loading = true;
+      this.$store.dispatch("uploadFileRequest", payload).then((res) => {
+        this.getOrganisationMembers(id);
+      }).finally(() => {
+        this.loading = false;
+        this.$emit("close-right-drawer");
+      })
+
     },
 
     getOrganisationMembers(id) {

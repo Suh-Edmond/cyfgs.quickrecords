@@ -4,9 +4,10 @@
     <q-table
       :data="data"
       :columns="columns"
-      row-key="id"
+      row-key="index"
       :table-header-style="{ backgroundColor: '#5384ae', color: '#FFFFFF' }"
       :filter="filter"
+
     >
     <template v-slot:top-left>
       <div class="text-h6 title" v-show="show_member_savings">
@@ -19,7 +20,7 @@
       <template v-slot:body="props">
         <q-tr :props="props">
           <q-td key="id" :props="props">
-            {{ props.row.id }}
+            {{props.row.count}}
           </q-td>
           <q-td key="name" :props="props">
             <q-btn
@@ -90,7 +91,6 @@
                         <q-item-label class="edit">Edit</q-item-label>
                       </q-item-section>
                     </q-item>
-                    <q-separator />
                     <q-item
                       clickable
                       v-close-popup
@@ -106,7 +106,7 @@
                         <q-item-label class="edit">Edit</q-item-label>
                       </q-item-section>
                     </q-item>
-                    <q-separator />
+                    <!-- <q-separator /> -->
                     <q-item
                       clickable
                       v-close-popup
@@ -122,7 +122,7 @@
                         <q-item-label class="edit">Edit</q-item-label>
                       </q-item-section>
                     </q-item>
-                    <q-separator />
+                    <!-- <q-separator /> -->
                     <q-item
                       clickable
                       v-close-popup
@@ -138,7 +138,7 @@
                         <q-item-label class="edit">Details</q-item-label>
                       </q-item-section>
                     </q-item>
-                    <q-separator />
+                    <!-- <q-separator /> -->
                     <q-item
                       clickable
                       v-close-popup
@@ -154,7 +154,7 @@
                         <q-item-label class="edit">Edit</q-item-label>
                       </q-item-section>
                     </q-item>
-                    <q-separator />
+                    <!-- <q-separator /> -->
                     <q-item
                       clickable
                       v-close-popup
@@ -170,7 +170,7 @@
                         <q-item-label class="edit">Details</q-item-label>
                       </q-item-section>
                     </q-item>
-                    <q-separator />
+                    <!-- <q-separator /> -->
                     <q-item
                       clickable
                       v-close-popup
@@ -186,7 +186,7 @@
                         <q-item-label class="edit">All Contributions</q-item-label>
                       </q-item-section>
                     </q-item>
-                    <q-separator v-if="show_contribution && !show_member_contribution" />
+                    <q-separator />
                     <q-item
                       clickable
                       v-close-popup
@@ -330,10 +330,26 @@ export default {
   methods: {
     onEditMember(data) {
       let payload = {
-        data: data,
-        tab: "EditMember",
+        url: `/api/protected/organisations/users/${data.id}`,
+        data: this.user,
+        msg: "none",
+        status:"none",
+        color: "default",
+        to_on_ok: "none",
+        to_on_fail: "none",
+        error_msg: "An Error occurred! Please try again",
+        has_commit: false,
+        commit: "none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
       };
-      this.$emit("update-member", payload);
+      this.$store.dispatch("getRequest", payload).then((res) => {
+        this.$emit("update-member", {"data":res.data, "tab":"EditMember"});
+      })
+
     },
     onDeleteMember(data) {
       this.dialog = true;

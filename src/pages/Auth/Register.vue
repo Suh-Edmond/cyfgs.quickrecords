@@ -123,7 +123,7 @@ export default {
         },
       };
       this.loading = true;
-      this.$store.dispatch("auth/postRequest", payload).then(() => {
+      this.$store.dispatch("postRequest", payload).then(() => {
         this.loading = false;
       });
     },

@@ -342,7 +342,7 @@
           v-if="current_tab == 'Member Management'"
           @close-right-drawer="closeRightDrawer"
         ></AddMember>
-        <EditMember v-if="current_tab == 'EditMember'"></EditMember>
+        <EditMember v-if="current_tab == 'EditMember'" :data="data"  @close-right-drawer="closeRightDrawer"></EditMember>
         <AddPaymentCategory
           v-if="current_tab == 'Payment Categories'"
           @close-right-drawer="closeRightDrawer"
@@ -431,6 +431,7 @@ export default {
       this.current_tab = current_tab;
       this.right = right;
       this.data = data;
+
     },
     updateLeftDrawer(left) {
       this.left = left;
@@ -464,6 +465,8 @@ export default {
     closeRightDrawer() {
       this.right = !this.right;
     },
+
+
   },
   components: {
     MainContent,

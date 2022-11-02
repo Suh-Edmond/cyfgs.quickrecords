@@ -80,6 +80,7 @@ export function postRequest({ commit, dispatch }, payload) {
         },
       };
       dispatch("handleRequestResponse", handle_response_payload);
+
       return res;
     })
     .catch((error) => {
@@ -98,9 +99,8 @@ export function postRequest({ commit, dispatch }, payload) {
 }
 
 export function getRequest({ commit, dispatch }, payload) {
-  let url = getUrl(payload);
   return axios
-    .get(url)
+    .get(API_URL+payload.url)
     .then((res) => {
       let handle_response_payload = {
         data: res.data,
@@ -116,11 +116,15 @@ export function getRequest({ commit, dispatch }, payload) {
             : [],
         },
       };
-      commit(payload.commit, res.data.data)
+      if(payload.has_commit){
+        console.log(res.data.data);
+        commit(payload.commit, res.data.data)
+      }
       dispatch("handleRequestResponse", handle_response_payload);
       return res.data;
     })
     .catch((error) => {
+      console.log(error);
       let handle_fail_res_payload = {
         status: payload.status ? payload.status : "fail",
         color: "negative",
@@ -129,16 +133,15 @@ export function getRequest({ commit, dispatch }, payload) {
           payload.error_msg != "default"
             ? payload.error_msg
             : error.response.data.message,
-        status_code: error.response.status,
+        status_code: error.response.data.status,
       };
       dispatch("handleRequestResponse", handle_fail_res_payload);
     });
 }
 
-export function putRequest({ commit }, payload) {
-  let url = getUrl(payload);
+export function putRequest({ commit, dispatch }, payload) {
   return axios
-    .put(url)
+    .put(API_URL+payload.url, payload.data)
     .then((res) => {
       let handle_response_payload = {
         data: res.data,
@@ -173,10 +176,8 @@ export function putRequest({ commit }, payload) {
 }
 
 export function deleteRequest({ commit }, payload) {
-  let url = getUrl(payload);
-
   return axios
-    .delete(url)
+    .delete(API_URL+payload.url)
     .then((res) => {
       let handle_response_payload = {
         data: res.data,
@@ -227,13 +228,4 @@ export function setOrganisation({ commit }, data) {
   commit("SET_ORGANISATION", data);
 }
 
-function getUrl(payload) {
-  let url = "";
-  if (payload.has_path_val) {
-    url = `${API_URL}` + payload.url + `${payload.data}`;
-  } else {
-    url = API_URL + payload.url;
-  }
 
-  return url;
-}

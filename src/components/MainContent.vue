@@ -216,6 +216,7 @@ export default {
      }
     },
     updateMember(data) {
+      console.log(data);
       this.right = true;
       this.$emit("show-right-drawer", {
         right: this.right,

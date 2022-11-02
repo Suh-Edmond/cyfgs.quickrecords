@@ -3,12 +3,12 @@
     <!-- no members found -->
     <NotFound
       :message="not_found_msg"
-      v-if="getTotalOrganisationMember == 0"
+      v-if="data.length == 0"
     ></NotFound>
     <!-- header for filter members -->
     <div
       class="row q-ml-xs"
-      v-if="getTotalOrganisationMember > 0"
+      v-if="data.length > 0"
       :class="$q.screen.lg ? 'q-pa-sm' : ''"
       :style="
         $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
@@ -68,7 +68,7 @@
       <div class="col-md-12 col-xs-12 col-sm-12">
         <TableVue
           :columns="columns"
-          :data="data"
+          :data="getMembers"
           :label="label"
           @update-member="updateMember"
           :member_name="select_member_name"
@@ -88,13 +88,14 @@ import ButtonVue from "src/components/Button.vue";
 import TableVue from "src/components/Table.vue";
 import NotFound from "src/components/NotFound.vue";
 export default {
-  created(){
-    console.log(this.$store.getters.auth);
+  mounted(){
+    let id = this.$store.getters.getOrganisation.id
+    this.getOrganisationMembers(id)
   },
   data() {
     return {
       organisation:null,
-      member_total: 1,
+      member_total: 0,
       year: null,
       years: ["2020", "2021", "2022", "2023", "2024"],
       label_fetch_user: "Filter",
@@ -117,7 +118,7 @@ export default {
         {
           name: "name",
           required: true,
-          label: "Dessert (100g serving)",
+          label: "Name",
           align: "left",
           field: (row) => row.name,
           format: (val) => `${val}`,
@@ -125,21 +126,23 @@ export default {
         },
         {
           name: "email",
-          align: "center",
+          align: "left",
           label: "Email",
           field: "email",
           sortable: true,
         },
-        { name: "gender", label: "Gender", field: "gender", sortable: true },
+        { name: "gender",align: "left", label: "Gender", field: "gender", sortable: true },
         {
           name: "telephone",
+          align: "left",
           label: "Telephone",
           field: "telephone",
           sortable: true,
         },
-        { name: "address", label: "Address", field: "address", sortable: true },
+        { name: "address", align: "left",label: "Address", field: "address", sortable: true },
         {
           name: "occupation",
+          align: "left",
           label: "Occupation",
           field: "occupation",
           sortable: true,
@@ -152,108 +155,7 @@ export default {
           sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
         },
       ],
-      data: [
-        {
-          id: 1,
-          name: "Frozen Yogurt",
-          email: "frozen@gmail.com",
-          telephone: "673889903",
-          gender: "MALE",
-          address: "Molyko Buea",
-          occupation: "Student",
-          action: "",
-        },
-        {
-          id: 2,
-          name: "Ice cream sandwich",
-          email: "frozen@gmail.com",
-          telephone: "673889903",
-          gender: "MALE",
-          address: "Molyko Buea",
-          occupation: "Student",
-          action: "",
-        },
-        {
-          id: 3,
-          name: "Eclair",
-          email: "frozen@gmail.com",
-          telephone: "673889903",
-          gender: "MALE",
-          address: "Molyko Buea",
-          occupation: "Student",
-          action: "",
-        },
-        {
-          id: 4,
-          name: "Cupcake",
-          email: "frozen@gmail.com",
-          telephone: "673889903",
-          gender: "MALE",
-          address: "Molyko Buea",
-          occupation: "Student",
-          action: "",
-        },
-        {
-          id: 5,
-          name: "Gingerbread",
-          email: "frozen@gmail.com",
-          telephone: "673889903",
-          gender: "MALE",
-          address: "Molyko Buea",
-          occupation: "Student",
-          action: "",
-        },
-        {
-          id: 6,
-          name: "Jelly bean",
-          email: "frozen@gmail.com",
-          telephone: "673889903",
-          gender: "MALE",
-          address: "Molyko Buea",
-          occupation: "Student",
-          action: "",
-        },
-        {
-          id: 7,
-          name: "Lollipop",
-          email: "frozen@gmail.com",
-          telephone: "673889903",
-          gender: "MALE",
-          address: "Molyko Buea",
-          occupation: "Student",
-          action: "",
-        },
-        {
-          id: 8,
-          name: "Honeycomb",
-          email: "frozen@gmail.com",
-          telephone: "673889903",
-          gender: "MALE",
-          address: "Molyko Buea",
-          occupation: "Student",
-          action: "",
-        },
-        {
-          id: 9,
-          name: "Donut",
-          email: "frozen@gmail.com",
-          telephone: "673889903",
-          gender: "MALE",
-          address: "Molyko Buea",
-          occupation: "Student",
-          action: "",
-        },
-        {
-          id: 10,
-          name: "KitKat",
-          email: "frozen@gmail.com",
-          telephone: "673889903",
-          gender: "MALE",
-          address: "Molyko Buea",
-          occupation: "Student",
-          action: "",
-        },
-      ],
+      data: [],
       not_found_msg:
         "Ooops!! You don't have any Register Member click the button to add Members.",
       label_print: "Print",
@@ -262,37 +164,43 @@ export default {
     };
   },
   computed: {
-    getTotalOrganisationMember() {
-      return this.member_total;
-    },
     validateFilter() {
       return this.year == null && this.gender == null ? true : false;
     },
+    getMembers(){
+      return this.$store.getters.getMembers;
+    }
   },
   methods: {
     updateMember(data) {
       this.$emit("update-member", data);
     },
-    getOrganisationMembers(){
+    getOrganisationMembers(id) {
       let payload = {
-        data: "",
-        status: "none",
-        url: "/api/protected/organisation-info",
-        has_path_val: true,
-        show_feedback: false,
-        msg: "default",
+        url: `/api/protected/organisations/${id}/users`,
+        msg: "none",
         color: "default",
         to_on_ok: "none",
+        status:"none",
         to_on_fail: "none",
-        error_msg: "default",
+        error_msg: "An Error occurred! Please try again",
+        has_commit:true,
+        commit:"SET_MEMBERS",
         to_be_store_data: {
           required: false,
           has_value: false,
           data: [],
         },
       };
+      this.$emit("start-loading", true);
+      this.$store.dispatch("getRequest", payload).then((res) => {
+        this.data = res.data
+      }).finally(() => {
+        this.$emit("start-loading", false);
+      })
     }
   },
+
   components: {
     ButtonVue,
     TableVue,

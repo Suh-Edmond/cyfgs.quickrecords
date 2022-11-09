@@ -83,9 +83,9 @@
         </q-tab-panel>
         <q-tab-panel name="Member Roles">
           <div>
-            <div class="flex">
+            <div class="flex" v-for="role in userRoles" :key="role.id">
               <div>
-                <label for="role" class="role"> PRESIDENT </label>
+                <label for="role" class="role"> {{role.name}} </label>
               </div>
               <q-space />
               <div>
@@ -96,21 +96,6 @@
                 </q-btn>
               </div>
             </div>
-
-            <div class="flex">
-              <div>
-                <label for="role" class="role"> FINANCIAL_SECRETARY </label>
-              </div>
-              <q-space />
-              <div>
-                <q-btn flat round @click="removeRole">
-                  <q-icon name="close" color="negative">
-                    <q-tooltip>Remove</q-tooltip>
-                  </q-icon>
-                </q-btn>
-              </div>
-            </div>
-
             <q-separator spaced />
             <div>
               <div class="row q-gutter-sm q-pt-md">
@@ -172,6 +157,7 @@ export default {
   },
   mounted() {
     this.setFormField();
+    this.getUserRoles(this.data.id);
   },
   data() {
     return {
@@ -196,6 +182,7 @@ export default {
       position: "right",
       message: "Are you sure  you want to remove this role ?",
       show_dialog: false,
+      user_roles:[],
     };
   },
   computed: {
@@ -212,6 +199,9 @@ export default {
     validateAddRoleForm() {
       return this.role == null ? true : false;
     },
+    userRoles(){
+      return this.user_roles;
+    }
   },
   methods: {
     onUpdateMember() {
@@ -242,7 +232,30 @@ export default {
         this.$emit("close-right-drawer");
       })
     },
-    addRole() {},
+    addRole() {
+      let payload = {
+        url: `/api/protected/roles`,
+        msg: "Role added successfully",
+        data:{user_id:this.data.id, role:this.role.value},
+        color: "default",
+        to_on_ok: "none",
+        status:"none",
+        to_on_fail: "none",
+        error_msg: "An Error occurred! Please try again",
+        has_commit:false,
+        commit:"none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      }
+      this.loading = true;
+      this.$store.dispatch("postRequest", payload).then(() => {
+        this.loading = false;
+        this.getUserRoles(this.data.id);
+      });
+    },
     removeRole() {
       this.show_dialog = true;
     },
@@ -290,7 +303,27 @@ export default {
 
       return this.user
     },
-
+    getUserRoles(id){
+      let payload = {
+        url: `/api/protected/users/${id}`,
+        msg: "none",
+        color: "default",
+        to_on_ok: "none",
+        status:"none",
+        to_on_fail: "none",
+        error_msg: "An Error occurred! Please try again",
+        has_commit:false,
+        commit:"none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      }
+      this.$store.dispatch("getRequest", payload).then((res) => {
+        this.user_roles = res.data
+      })
+    }
 
   },
   components: {

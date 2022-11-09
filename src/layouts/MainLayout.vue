@@ -472,7 +472,7 @@ export default {
           data: [],
         },
       };
-      this.$store.dispatch("auth/logoutUser", payload);
+      this.$store.dispatch("logoutUser", payload);
     },
     goBack() {},
     closeRightDrawer() {

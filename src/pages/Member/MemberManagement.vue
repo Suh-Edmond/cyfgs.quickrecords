@@ -1,86 +1,47 @@
 <template>
   <q-page>
+    <div class="flex flex-center" v-if="is_fetching">
+      <q-spinner-ios color="primary" size="2.5em" />
+    </div>
     <!-- no members found -->
-    <NotFound
-      :message="not_found_msg"
-      v-if="data.length == 0"
-    ></NotFound>
-    <!-- header for filter members -->
-    <div
-      class="row q-ml-xs"
-      v-if="data.length > 0"
-      :class="$q.screen.lg ? 'q-pa-sm' : ''"
-      :style="
-        $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-      "
-    >
-      <div
-        class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
-        :class="$q.screen.lg ? 'q-pr-md' : ''"
-      >
-        <q-select
-          v-model="gender"
-          outlined
-          dense
-          :options="genders"
-          label="Select gender"
-        />
-      </div>
-      <div
-        class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
-        :class="$q.screen.lg ? 'q-pr-md' : ''"
-      >
-        <q-select
-          v-model="year"
-          outlined
-          dense
-          :options="years"
-          label="Select year"
-        />
-      </div>
-      <div :class="$q.screen.lg ? 'q-pr-md' : ''">
-        <ButtonVue
-          :label="label_fetch_user"
-          :loading="loading"
-          :color="color"
-          :disabled="validateFilter"
-          :no_caps="no_caps"
-          icon_right="filter_list"
-        >
-        </ButtonVue>
-      </div>
-      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12"></div>
+    <div v-if="!is_fetching">
+      <NotFound :message="not_found_msg" v-if="data.length == 0"></NotFound>
+    </div>
 
-      <div :style="$q.screen.lg ? 'margin-left:76px' : ''">
-        <ButtonVue
-          :label="label_print"
-          :loading="loading"
-          :color="color_print"
-          :disabled="false"
-          :no_caps="no_caps"
-          icon_right="print"
-          size="sm"
-        ></ButtonVue>
+    <div v-if="!is_fetching">
+      <!-- header for filter members -->
+      <div class="row q-ml-xs" v-if="data.length > 0" :class="$q.screen.lg ? 'q-pa-sm' : ''" :style="
+        $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+      ">
+        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12" :class="$q.screen.lg ? 'q-pr-md' : ''">
+          <q-select v-model="gender" outlined dense :options="genders" label="Select gender" />
+        </div>
+        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12" :class="$q.screen.lg ? 'q-pr-md' : ''">
+          <q-select v-model="year" outlined dense :options="years" label="Select year" />
+        </div>
+        <div :class="$q.screen.lg ? 'q-pr-md' : ''">
+          <ButtonVue :label="label_fetch_user" :loading="loading" :color="color" :disabled="validateFilter"
+            :no_caps="no_caps" icon_right="filter_list">
+          </ButtonVue>
+        </div>
+        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12"></div>
+
+        <div :style="$q.screen.lg ? 'margin-left:76px' : ''">
+          <ButtonVue :label="label_print" :loading="loading" :color="color_print" :disabled="false" :no_caps="no_caps"
+            icon_right="print" size="sm"></ButtonVue>
+        </div>
+      </div>
+      <!-- table for members -->
+      <div class="row q-pt-sm">
+        <div class="col-md-12 col-xs-12 col-sm-12">
+          <TableVue :columns="columns" :data="getMembers" :label="label" @update-member="updateMember"
+            :member_name="select_member_name" :message="message" :show_savings="false" :show_income_activity="false"
+            :show_members="true" :show_contribution="false">
+          </TableVue>
+        </div>
       </div>
     </div>
-    <!-- table for members -->
-    <div class="row q-pt-sm">
-      <div class="col-md-12 col-xs-12 col-sm-12">
-        <TableVue
-          :columns="columns"
-          :data="getMembers"
-          :label="label"
-          @update-member="updateMember"
-          :member_name="select_member_name"
-          :message="message"
-          :show_savings="false"
-          :show_income_activity="false"
-          :show_members="true"
-          :show_contribution="false"
-        >
-        </TableVue>
-      </div>
-    </div>
+
   </q-page>
 </template>
 <script>
@@ -88,13 +49,13 @@ import ButtonVue from "src/components/Button.vue";
 import TableVue from "src/components/Table.vue";
 import NotFound from "src/components/NotFound.vue";
 export default {
-  mounted(){
+  mounted() {
     let id = this.$store.getters.getOrganisation.id
     this.getOrganisationMembers(id)
   },
   data() {
     return {
-      organisation:null,
+      organisation: null,
       member_total: 0,
       year: null,
       years: ["2020", "2021", "2022", "2023", "2024"],
@@ -107,6 +68,7 @@ export default {
       search: "",
       message: "Are you sure you want to delete this Member?",
       label: "Delete",
+      is_fetching: true,
       columns: [
         {
           name: "id",
@@ -131,7 +93,7 @@ export default {
           field: "email",
           sortable: true,
         },
-        { name: "gender",align: "left", label: "Gender", field: "gender", sortable: true },
+        { name: "gender", align: "left", label: "Gender", field: "gender", sortable: true },
         {
           name: "telephone",
           align: "left",
@@ -139,7 +101,7 @@ export default {
           field: "telephone",
           sortable: true,
         },
-        { name: "address", align: "left",label: "Address", field: "address", sortable: true },
+        { name: "address", align: "left", label: "Address", field: "address", sortable: true },
         {
           name: "occupation",
           align: "left",
@@ -167,7 +129,7 @@ export default {
     validateFilter() {
       return this.year == null && this.gender == null ? true : false;
     },
-    getMembers(){
+    getMembers() {
       return this.$store.getters.getMembers;
     }
   },
@@ -181,11 +143,11 @@ export default {
         msg: "none",
         color: "default",
         to_on_ok: "none",
-        status:"none",
+        status: "none",
         to_on_fail: "none",
         error_msg: "An Error occurred! Please try again",
-        has_commit:true,
-        commit:"SET_MEMBERS",
+        has_commit: true,
+        commit: "SET_MEMBERS",
         to_be_store_data: {
           required: false,
           has_value: false,
@@ -194,7 +156,8 @@ export default {
       };
       this.$emit("start-loading", true);
       this.$store.dispatch("getRequest", payload).then((res) => {
-        this.data = res.data
+        this.is_fetching = false;
+        this.data = res.data;
       }).finally(() => {
         this.$emit("start-loading", false);
       })

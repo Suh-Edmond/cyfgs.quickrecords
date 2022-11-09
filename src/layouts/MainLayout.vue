@@ -12,9 +12,20 @@
       <div>
         <div class="bg-white left_drawer">
           <div class="bg-transparent q-pa-sm flex flex-center">
-            <q-avatar size="70px">
-              <!-- <img src="https://cdn.quasar.dev/logo-v2/svg/logo.svg" /> -->
+            <q-avatar size="90px" v-if="has_image">
+              <q-img src="../assets/UB-Logo.png">
+                <div class="absolute-bottom-right">
+                  <q-icon name="photo_camera"></q-icon>
+                </div>
+              </q-img>
             </q-avatar>
+            <q-avatar size="90px" v-if="!has_image" font-size="52px" color="grey">
+            </q-avatar>
+            <div class="q-mt-xl logo">
+              <q-icon name="photo_camera" size="xs" class="q-mt-sm q-pr-lg">
+                <input type="file" accept="image/x-png,image/jpg,image/jpeg"   style="display:none;" />
+              </q-icon>
+            </div>
           </div>
           <div
             class="text-weight-bold text-center organisation_name q-mb-md q-pa-xs"
@@ -342,7 +353,11 @@
           v-if="current_tab == 'Member Management'"
           @close-right-drawer="closeRightDrawer"
         ></AddMember>
-        <EditMember v-if="current_tab == 'EditMember'" :data="data"  @close-right-drawer="closeRightDrawer"></EditMember>
+        <EditMember
+          v-if="current_tab == 'EditMember'"
+          :data="data"
+          @close-right-drawer="closeRightDrawer"
+        ></EditMember>
         <AddPaymentCategory
           v-if="current_tab == 'Payment Categories'"
           @close-right-drawer="closeRightDrawer"
@@ -402,6 +417,7 @@ import AddContribution from "src/components/AddContribution.vue";
 export default {
   data() {
     return {
+      has_image: false,
       left: false,
       right: false,
       year: new Date().getFullYear(),
@@ -414,7 +430,6 @@ export default {
       current_tab: "",
       right_drawer_tab: "",
       data: null,
-
     };
   },
   methods: {
@@ -425,13 +440,11 @@ export default {
       SessionStorage.set("from_tab", SessionStorage.getItem("to_tab"));
       SessionStorage.set("to_tab", item.name);
       SessionStorage.set("requires_add", this.requires_add);
-
     },
     updateRightDrawer({ right, current_tab, data }) {
       this.current_tab = current_tab;
       this.right = right;
       this.data = data;
-
     },
     updateLeftDrawer(left) {
       this.left = left;
@@ -465,8 +478,9 @@ export default {
     closeRightDrawer() {
       this.right = !this.right;
     },
+    uploadLogo(event){
 
-
+    }
   },
   components: {
     MainContent,
@@ -553,4 +567,9 @@ export default {
   border-top-left-radius: 0px;
   border-top-right-radius: 0px;
 }
+
+.logo {
+  cursor: pointer;
+}
+
 </style>

@@ -1,19 +1,182 @@
-
 const routes = [
   {
-    path: '/',
-    component: () => import('layouts/MainLayout.vue'),
+    path: "/",
+    component: () => import("layouts/AuthLayout.vue"),
+    redirect: "/auth/login",
+    meta: {
+      middleware: "guest",
+      firstTimer: true,
+    },
     children: [
-      { path: '', component: () => import('pages/Index.vue') }
-    ]
+      {
+        name: "Login",
+        path: "auth/login",
+        component: () => import("src/pages/Auth/Login.vue"),
+        meta: {
+          middleware: "guest",
+          firstTimer: true,
+        },
+      },
+      {
+        name: "Register",
+        path: "auth/register",
+        component: () => import("src/pages/Auth/Register.vue"),
+        meta: {
+          middleware: "guest",
+        },
+      },
+    ],
+  },
+  {
+    path: "/dashboard",
+    component: () => import("layouts/MainLayout.vue"),
+    meta: {
+      middleware: "auth",
+      role: "USER",
+    },
+    children: [
+      {
+        path: "/dashboard",
+        name: "dashboard",
+        component: () => import("src/pages/Dashboard/Dashboard.vue"),
+        meta: {
+          middleware: "auth",
+          role: "USER",
+          has_intermediate_tab:false
+        },
+      },
+      {
+        name: "organisation",
+        path: "/dashboard/organisation-management",
+        component: () =>
+          import("src/pages/Organisation/OrganisationManagment.vue"),
+        meta: {
+          middleware: "auth",
+          role: "USER",
+          has_intermediate_tab:false
+        },
+      },
+      {
+        name: "payment_category",
+        path: "/dashboard/payment-categories",
+        component: () =>
+          import("src/pages/Payment/PaymentCategoryManagement.vue"),
+        meta: {
+          middleware: "auth",
+          role: "USER",
+          has_intermediate_tab:false
+        },
+      },
+      {
+        name: "payment_items",
+        path: "/dashboard/payment-categories/:id/items",
+        component: () => import("src/pages/Payment/PaymentItemManagement.vue"),
+        meta: {
+          middleware: "auth",
+          role: "USER",
+          has_intermediate_tab:true
+        },
+      },
+      {
+        name: "members",
+        path: "/dashboard/members",
+        component: () => import("src/pages/Member/MemberManagement.vue"),
+        meta: {
+          middleware: "auth",
+          role: "USER",
+          has_intermediate_tab:false
+        },
+      },
+      {
+        name: "expenditure_category",
+        path: "/dashboard/expenditure-categories",
+        component: () => import("src/pages/Expenditure/ExpenditureCategory.vue"),
+        meta: {
+          middleware: "auth",
+          role: "USER",
+          has_intermediate_tab:false
+        },
+      },
+      {
+        name: "expenditure_items",
+        path: "/dashboard/expenditure-categories/:id/items",
+        component: () => import("src/pages/Expenditure/ExpenditureItems.vue"),
+        meta: {
+          middleware: "auth",
+          role: "USER",
+          has_intermediate_tab:true
+        },
+      },
+      {
+        name: "expenditure_item_details",
+        path: "/dashboard/expenditure-categories/:id/items/:item_id/details",
+        component: () => import("src/pages/Expenditure/ExpenditureItemDetail.vue"),
+        meta: {
+          middleware: "auth",
+          role: "USER",
+          has_intermediate_tab:true
+        },
+      },
+      {
+        name: "income_activity",
+        path: "/dashboard/income-activities",
+        component: () => import("src/pages/IncomeActivity/IncomeActivity.vue"),
+        meta: {
+          middleware: "auth",
+          role: "USER",
+          has_intermediate_tab:false
+        },
+      },
+      {
+        name: "savings",
+        path: "/dashboard/members-savings",
+        component: () => import("src/pages/Saving/MembersSavings.vue"),
+        meta: {
+          middleware: "auth",
+          role: "USER",
+          has_intermediate_tab:false
+        },
+      },
+      {
+        name: "user_savings",
+        path: "/dashboard/members-savings/users/:id",
+        component: () => import("src/pages/Saving/UserSavings.vue"),
+        meta: {
+          middleware: "auth",
+          role: "USER",
+          has_intermediate_tab:false
+        },
+      },
+      {
+        name: "members_contributions",
+        path: "/dashboard/contributions",
+        component: () => import("src/pages/Contribution/Contributions.vue"),
+        meta: {
+          middleware: "auth",
+          role: "USER",
+          has_intermediate_tab:false
+        },
+      },
+      {
+        name: "member_contributions",
+        path: "/dashboard/contributions/members/:id",
+        component: () => import("src/pages/Contribution/MemberContributions.vue"),
+        meta: {
+          middleware: "auth",
+          role: "USER",
+          has_intermediate_tab:false
+        },
+      },
+
+    ],
   },
 
   // Always leave this as last one,
   // but you can also remove it
   {
-    path: '*',
-    component: () => import('pages/Error404.vue')
-  }
-]
+    path: "*",
+    component: () => import("pages/Error404.vue"),
+  },
+];
 
-export default routes
+export default routes;

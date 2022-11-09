@@ -1,108 +1,174 @@
 <template>
   <q-page class="q-pa-xs">
-
     <div>
       <label for="title" class="title">Organisation Information</label>
     </div>
-    <q-form @submit="onSubmit" :style="$q.screen.lg ? '' : 'margin-bottom:5rem;'" v-show="!exist_organisation">
-      <div class="row q-py-sm q-px-sm" :class="$q.screen.lg ? 'q-mb-md' : ''">
-        <div class="col-md-6 col-xs-12 col-sm-12" :class="$q.screen.lg ? 'q-px-md' : 'q-py-sm'">
+    <q-form
+      @submit="onSubmit"
+      :style="$q.screen.lg ? '' : 'margin-bottom:5rem;'"
+    >
+      <div
+        class="row q-py-sm"
+        :class="$q.screen.lg ? 'q-mb-sm q-px-xl' : ' q-px-sm'"
+      >
+        <div
+          class="col-md-6 col-xs-12 col-sm-12"
+          :class="$q.screen.lg ? 'q-px-md' : 'q-py-sm'"
+        >
           <div>
             <label for="credential" class="form_field">Name</label>
-            <q-input v-model="organisation.name" outlined dense type="text" filled />
+            <q-input
+              v-model="organisation.name"
+              outlined
+              type="text"
+              filled
+              dense
+            />
           </div>
         </div>
-        <div class="col-md-6 col-xs-12 col-sm-12" :class="$q.screen.lg ? 'q-px-md' : 'q-py-sm'">
+        <div
+          class="col-md-6 col-xs-12 col-sm-12"
+          :class="$q.screen.lg ? 'q-px-md' : 'q-py-sm'"
+        >
           <div>
             <label for="credential" class="form_field">Email</label>
-            <q-input v-model="organisation.email" outlined dense type="email" filled />
+            <q-input
+              dense
+              v-model="organisation.email"
+              outlined
+              type="email"
+              filled
+            />
           </div>
         </div>
       </div>
-      <div class="row q-px-sm" :class="$q.screen.lg ? 'q-mb-md' : ''">
-        <div class="col-md-6 col-xs-12 col-sm-12" :class="$q.screen.lg ? 'q-px-md' : ''">
+      <div class="row" :class="$q.screen.lg ? 'q-mb-md q-px-xl' : 'q-px-sm'">
+        <div
+          class="col-md-6 col-xs-12 col-sm-12"
+          :class="$q.screen.lg ? 'q-px-md' : ''"
+        >
           <div>
-            <label for="credential" class="form_field">Telephone Number(s)
+            <label for="credential" class="form_field"
+              >Telephone Number(s)
             </label>
-            <q-input v-model="organisation.telephone" outlined dense type="tel" filled>
+            <q-input
+              v-model="organisation.telephone"
+              outlined
+              type="tel"
+              filled
+              dense
+            >
             </q-input>
-            <q-input v-model="organisation.telephone2" outlined dense type="tel" filled class="q-mt-xs"
-              v-if="show_telephone2" />
+            <q-input
+              v-model="organisation.telephone2"
+              outlined
+              dense
+              type="tel"
+              filled
+              class="q-mt-xs"
+              v-if="show_telephone2"
+            />
           </div>
         </div>
-        <div class="col-md-6 col-xs-12 col-sm-12" :class="$q.screen.lg ? 'q-px-md' : 'q-py-sm'">
+        <div
+          class="col-md-6 col-xs-12 col-sm-12"
+          :class="$q.screen.lg ? 'q-px-md' : 'q-py-sm'"
+        >
           <div>
             <label for="credential" class="form_field">Address</label>
-            <q-input v-model="organisation.address" outlined dense type="text" filled />
+            <q-input
+              v-model="organisation.address"
+              outlined
+              type="text"
+              filled
+              dense
+            />
           </div>
         </div>
       </div>
-      <div class="row q-px-sm" :class="$q.screen.lg ? 'q-mb-md' : ''">
-        <div class="col-md-6 col-xs-12 col-sm-12" :class="$q.screen.lg ? 'q-px-md' : 'q-py-sm'">
+      <div class="row" :class="$q.screen.lg ? 'q-mb-md q-px-xl' : 'q-px-sm'">
+        <div
+          class="col-md-6 col-xs-12 col-sm-12"
+          :class="$q.screen.lg ? 'q-px-md' : 'q-py-sm'"
+        >
           <div>
             <label for="credential" class="form_field">Salutation</label>
-            <q-input v-model="organisation.salutation" outlined dense type="text" filled />
+            <q-input
+              v-model="organisation.salutation"
+              outlined
+              type="text"
+              filled
+              dense
+            />
           </div>
         </div>
-        <div class="col-md-6 col-xs-12 col-sm-12" :class="$q.screen.lg ? 'q-px-md' : 'q-py-sm'">
+        <div
+          class="col-md-6 col-xs-12 col-sm-12"
+          :class="$q.screen.lg ? 'q-px-md' : 'q-py-sm'"
+        >
           <div>
             <label for="credential" class="form_field">P.O BOX</label>
-            <q-input v-model="organisation.box_number" outlined dense type="number" filled />
+            <q-input
+              v-model="organisation.box_number"
+              outlined
+              type="number"
+              filled
+              dense
+            />
           </div>
         </div>
       </div>
-      <div class="row q-px-sm" :class="$q.screen.lg ? 'q-mb-md' : ''">
-        <div class="col-md-6 col-xs-12 col-sm-12" :class="$q.screen.lg ? 'q-px-md' : 'q-py-sm'">
+      <div class="row" :class="$q.screen.lg ? 'q-mb-md q-px-xl' : 'q-px-sm'">
+        <div
+          class="col-md-6 col-xs-12 col-sm-12"
+          :class="$q.screen.lg ? 'q-px-md' : 'q-py-sm'"
+        >
           <div>
             <label for="credential" class="form_field">Description</label>
-            <q-input v-model="organisation.description" outlined dense type="textarea"
-              placeholder="Please provide a description about your organisation" filled />
+            <q-input
+              v-model="organisation.description"
+              outlined
+              dense
+              type="textarea"
+              placeholder="Please provide a description about your organisation"
+              filled
+            />
           </div>
         </div>
-        <div class="col-md-6 col-xs-12 col-sm-12" :class="$q.screen.lg ? 'q-px-md' : 'q-py-sm'">
+        <div
+          class="col-md-6 col-xs-12 col-sm-12"
+          :class="$q.screen.lg ? 'q-px-md' : 'q-py-sm'"
+        >
           <div>
-            <label for="credential" class="form_field">Logo</label>
-            <q-file outlined v-model="logo" dense filled label="Select logo to upload">
-              <template v-slot:prepend>
-                <q-icon name="attach_file" />
-              </template>
-            </q-file>
+            <label for="credential" class="form_field">Region</label>
+            <q-select
+              v-model="organisation.region"
+              outlined
+              type="text"
+              filled
+              dense
+              :options="regionOptions"
+            />
           </div>
         </div>
       </div>
       <div class="row flex flex-center" :class="$q.screen.lg ? 'q-mt-md' : ''">
-        <div class="col-md-2 col-xs-12 col-sm-12" :class="$q.screen.lg ? '' : 'q-px-sm q-pt-md q-mb-xl'">
-          <ButtonVue :label="label" :loading="loading" :disabled="validateForm" class="button" :color="color"
-            :no_caps="false">
+        <div
+          class="col-md-2 col-xs-12 col-sm-12"
+          :class="$q.screen.lg ? '' : 'q-px-sm q-pt-md q-mb-xl'"
+        >
+          <ButtonVue
+            :label="label"
+            :loading="loading"
+            :disabled="validateForm"
+            class="button"
+            :color="color"
+            :no_caps="false"
+          >
           </ButtonVue>
         </div>
       </div>
     </q-form>
-    <div v-show="exist_organisation" class="q-pa-md">
-      <div class="q-my-md">
-        <q-icon name="house" size="md" class="icon"></q-icon> <label for="name" class="label"> Brother’s Corner CYF
-          Great Soppo Buea</label>
-      </div>
-      <div class="q-my-md">
-        <q-icon name="house" size="md" class="icon"></q-icon> <label for="name" class="label"> Brothers We Lead the Way. In Chrsit we head the Tray</label>
-      </div>
-      <div class="q-my-md">
-        <q-icon name="email" size="sm" class="icon"></q-icon> <label for="name" class="label">
-          brothercornercyfgreatsoppobuea@gmail.com</label>
-      </div>
-      <div class="q-my-md">
-        <q-icon name="phone" size="sm" class="icon"></q-icon> <label for="name" class="label">
-          456824562390452/54624624523</label>
-      </div>
-      <div class="q-my-md">
-        <q-icon name="location_city" size="sm" class="icon"></q-icon> <label for="name" class="label">
-          Great Soppo Buea</label>
-      </div>
-      <div class="q-my-md">
-        <q-icon name="location_city" size="sm" class="icon"></q-icon> <label for="name" class="label">
-          65734</label>
-      </div>
-    </div>
   </q-page>
 </template>
 
@@ -119,6 +185,7 @@ export default {
       organisation: {
         name: null,
         email: null,
+        region: null,
         telephone: null,
         address: null,
         description: null,
@@ -132,6 +199,7 @@ export default {
       show_loading: false,
       color: "primary",
       show_telephone2: true,
+      regions: ["SouthWest", "NorthWest"],
     };
   },
   computed: {
@@ -147,9 +215,18 @@ export default {
         ? true
         : false;
     },
+    regionOptions() {
+      var regions = [];
+      this.regions.forEach((region) => {
+        regions.push({
+          value: region,
+          label: region,
+        });
+      });
+      return regions;
+    },
   },
   methods: {
-
     onSubmit() {
       let payload = {
         data: {
@@ -157,14 +234,14 @@ export default {
           email: this.organisation.email,
           telephone:
             this.organisation.telephone2 !== null ||
-              this.organisation.telephone2 !== ""
+            this.organisation.telephone2 !== ""
               ? this.organisation.telephone + "/" + this.organisation.telephone2
               : this.organisation.telephone,
           address: this.organisation.address,
           description: this.organisation.description,
           box_number: this.organisation.box_number,
           salutation: this.organisation.salutation,
-
+          region: this.organisation.region.value,
         },
         url: "/api/protected/organisations",
         msg: "Organisation saved successfully",
@@ -194,7 +271,7 @@ export default {
             to_on_fail: "none",
             error_msg: "default",
           };
-          this.$store.dispatch("auth/getRequest", payload).then((res) => {
+          this.$store.dispatch("getRequest", payload).then((res) => {
             this.setOrganisationInfo(res.data);
           });
         })
@@ -232,22 +309,19 @@ export default {
     },
 
     setOrganisationInfo(data) {
-      if (data != null) {
-        this.exist_organisation = true
-        this.organisation.address = data.address;
-        this.organisation.name = data.name;
-        this.organisation.email = data.email;
-        this.organisation.telephone = data.telephone.split("/")[0];
-        this.organisation.telephone2 = data.telephone.split("/")[1];
-        this.organisation.salutation = data.salutation;
-        this.organisation.description = data.description;
-        this.organisation.box_number = data.box_number;
-        this.organisation.id = data.id;
+      this.exist_organisation = true;
+      this.organisation.address = data.address;
+      this.organisation.name = data.name;
+      this.organisation.email = data.email;
+      this.organisation.telephone = data.telephone.split("/")[0];
+      this.organisation.telephone2 = data.telephone.split("/")[1];
+      this.organisation.salutation = data.salutation;
+      this.organisation.description = data.description;
+      this.organisation.box_number = data.box_number;
+      this.organisation.id = data.id;
+      this.organisation.region = data.region;
 
-        return this.organisation;
-      } else {
-        this.exist_organisation = false
-      }
+      return this.organisation;
     },
   },
   components: {
@@ -287,7 +361,7 @@ export default {
 .form_field {
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 400;
+  font-weight: 500;
   font-size: 13px;
   line-height: 24px;
   display: flex;

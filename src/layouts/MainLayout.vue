@@ -385,7 +385,7 @@
 
 <script>
 import MainContent from "src/components/MainContent.vue";
-import { SessionStorage } from "quasar";
+import { LocalStorage, SessionStorage } from "quasar";
 import AddMember from "src/components/AddMember.vue";
 import EditMember from "src/components/EditMember.vue";
 import AddPaymentCategory from "src/components/AddPaymentCategory.vue";
@@ -438,7 +438,7 @@ export default {
     },
     checkRole(tab_roles) {
       let user_roles = [];
-      JSON.parse(localStorage.getItem("data")).roles.forEach((role) => {
+      LocalStorage.getItem("data").roles.forEach((role) => {
         user_roles.push(role.name);
       });
       return user_roles.includes(tab_roles[0]) ||

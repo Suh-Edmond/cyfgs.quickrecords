@@ -1,7 +1,8 @@
-import { Notify, Platform } from "quasar";
-import axios from "axios";
+import { LocalStorage, Notify, Platform } from "quasar";
+import { axios } from "src/boot/axios";
 
 const API_URL = process.env.BASE_URL[0];
+
 export function handleRequestResponse({ commit }, payload) {
   if (payload.status == "success") {
     if (payload.msg == "default") {
@@ -22,9 +23,9 @@ export function handleRequestResponse({ commit }, payload) {
     if (payload.to_be_store_data.required) {
       payload.to_be_store_data.data.forEach((element) => {
         if (payload.to_be_store_data.has_value) {
-          localStorage.setItem(element.key, element.value);
+          LocalStorage.set(element.key, element.value);
         } else {
-          localStorage.setItem(element.key, JSON.stringify(element.value));
+          LocalStorage.set(element.key, element.value);
         }
       });
     }
@@ -242,8 +243,8 @@ export function setRoles({ commit }, roles) {
 }
 
 export function logoutUser({ commit }, payload) {
-  localStorage.removeItem("data");
-  localStorage.removeItem("credential");
+  LocalStorage.remove("data");
+  LocalStorage.remove("credential");
   this.$router.push({
     name: payload.to_on_ok,
   });

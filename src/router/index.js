@@ -1,6 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import { Notify, Platform } from "quasar";
+import { LocalStorage, Notify, Platform } from "quasar";
 
 import routes from "./routes";
 
@@ -32,7 +32,7 @@ export default function (
   });
 
   Router.beforeEach((to, from, next) => {
-    const data = JSON.parse(localStorage.getItem("data"));
+    const data = LocalStorage.getItem("data");
     let roles = [];
 
     if (from.meta.middleware === "guest" || to.meta.middleware === "guest") {

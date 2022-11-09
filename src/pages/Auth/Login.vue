@@ -100,12 +100,13 @@
 
 <script>
 import ButtonVue from "src/components/Button.vue";
+import { LocalStorage } from 'quasar';
 export default {
   name: "PageIndex",
   created() {
-    this.has_logged_in = localStorage.getItem("has_logged_in");
-    this.is_exist_user = localStorage.getItem("is_exist_user");
-    this.user.credential = localStorage.getItem("credential");
+    this.has_logged_in = LocalStorage.getItem("has_logged_in");
+    this.is_exist_user = LocalStorage.getItem("is_exist_user");
+    this.user.credential = LocalStorage.getItem("credential");
   },
   data() {
     return {
@@ -113,8 +114,8 @@ export default {
         password: null,
         password_confirmation: null,
         credential:
-          localStorage.getItem("credential") !== undefined
-            ? localStorage.getItem("credentail")
+          LocalStorage.getItem("credential") !== undefined
+            ? LocalStorage.getItem("credentail")
             : null,
       },
       check_user: {
@@ -125,8 +126,8 @@ export default {
       label_continue: "CONTINUE",
       label_sigin: "SIGN IN",
       loading: false,
-      is_exist_user: localStorage.getItem("is_exist_user"),
-      has_logged_in: localStorage.getItem("has_logged_in"),
+      is_exist_user: LocalStorage.getItem("is_exist_user"),
+      has_logged_in: LocalStorage.getItem("has_logged_in"),
       roles: [],
       color:"primary",
       no_caps:true,
@@ -151,8 +152,8 @@ export default {
     goBack() {
       this.is_exist_user = false;
       this.has_logged_in = false
-      localStorage.removeItem('is_exist_user')
-      localStorage.setItem('is_exist_user', false)
+      LocalStorage.remove('is_exist_user')
+      LocalStorage.set('is_exist_user', false)
     },
     onSubmit() {
       this.loading = true;

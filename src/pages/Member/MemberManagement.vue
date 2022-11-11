@@ -48,10 +48,15 @@
 import ButtonVue from "src/components/Button.vue";
 import TableVue from "src/components/Table.vue";
 import NotFound from "src/components/NotFound.vue";
+import memberMixin from "src/mixins/memberMixin.vue";
+import organisationMixinVue from "src/mixins/organisationMixin.vue";
+
 export default {
+  mixins: [memberMixin, organisationMixinVue],
+
   mounted() {
-    let id = this.$store.getters.getOrganisation.id
-    this.getOrganisationMembers(id)
+    let id = this.getOrganisationId
+    // this.getOrganisationMembers(id)
   },
   data() {
     return {
@@ -137,31 +142,7 @@ export default {
     updateMember(data) {
       this.$emit("update-member", data);
     },
-    getOrganisationMembers(id) {
-      let payload = {
-        url: `/api/protected/organisations/${id}/users`,
-        msg: "none",
-        color: "default",
-        to_on_ok: "none",
-        status: "none",
-        to_on_fail: "none",
-        error_msg: "An Error occurred! Please try again",
-        has_commit: true,
-        commit: "SET_MEMBERS",
-        to_be_store_data: {
-          required: false,
-          has_value: false,
-          data: [],
-        },
-      };
-      this.$emit("start-loading", true);
-      this.$store.dispatch("getRequest", payload).then((res) => {
-        this.is_fetching = false;
-        this.data = res.data;
-      }).finally(() => {
-        this.$emit("start-loading", false);
-      })
-    }
+
   },
 
   components: {

@@ -96,12 +96,13 @@
               color="primary"
               icon-right="add"
               label="Add"
-              flat
+              outline
               size="md"
               dense
               no-caps
               v-show="requires_add"
               @click="showRightDrawer"
+              class="q-pa-xs"
             />
           </div>
         </q-card-section>

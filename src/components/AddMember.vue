@@ -109,9 +109,13 @@
 </template>
 <script>
 import ButtonVue from "src/components/Button.vue";
+import memberMixinVue from "src/mixins/memberMixin.vue";
+import organisationMixinVue  from "src/mixins/organisationMixin.vue";
+
 export default {
+  mixins: [memberMixinVue, organisationMixinVue],
   mounted(){
-    this.organisation_id = this.$store.getters.getOrganisation.id
+    this.organisation_id = this.getOrganisationId;
   },
   data() {
     return {
@@ -154,7 +158,7 @@ export default {
   },
   methods: {
     onAddMember() {
-      let id = this.$store.getters.getOrganisation.id
+      let id = this.getOrganisationId
       this.loading = true;
       let payload = {
         url: `/api/protected/organisations/${id}/add-users`,
@@ -173,10 +177,11 @@ export default {
         },
       };
       this.$store.dispatch("postRequest", payload).then((res) => {
-        this.getOrganisationMembers(id);
-        this.resetForm();
+        this.$emit("start-fetching-users", true);
+        this.getOrganisationMembers(id, true);
       }).finally(() => {
         this.loading = false;
+        this.resetForm();
         this.$emit("close-right-drawer");
       })
     },
@@ -187,7 +192,7 @@ export default {
     uploadFile(event) {
       const formData = new FormData()
       formData.append("file", this.file);
-      let id = this.$store.getters.getOrganisation.id;
+      let id = this.getOrganisationId;
       let payload = {
         url: `/api/protected/organisations/${id}/import-users`,
         msg: "Members uploaded successfully",
@@ -213,30 +218,6 @@ export default {
         this.$emit("close-right-drawer");
       })
 
-    },
-
-    getOrganisationMembers(id) {
-      let payload = {
-        url: `/api/protected/organisations/${id}/users`,
-        msg: "none",
-        color: "default",
-        to_on_ok: "none",
-        status: "none",
-        to_on_fail: "none",
-        error_msg: "An Error occurred! Please try again",
-        has_commit: true,
-        commit: "SET_MEMBERS",
-        to_be_store_data: {
-          required: false,
-          has_value: false,
-          data: [],
-        },
-      };
-      this.$emit("start-loading", true);
-      this.$store.dispatch("getRequest", payload).then((res) => {
-      }).finally(() => {
-        this.$emit("start-loading", false);
-      })
     },
 
     resetForm() {

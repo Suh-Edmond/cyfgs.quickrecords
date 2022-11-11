@@ -146,9 +146,13 @@
 </template>
 
 <script>
+
 import ButtonVue from "src/components/Button.vue";
+import organisationMixin from "src/mixins/organisationMixin.vue";
+import memberMixin from "src/mixins/memberMixin.vue";
 
 export default {
+  mixins:[organisationMixin, memberMixin],
   props: {
     data: {
       type: Object,
@@ -221,10 +225,11 @@ export default {
           data: [],
         },
       };
-      let organisation_id = this.$store.getters.getOrganisation.id
+      let organisation_id = this.getOrganisationId;
       this.loading = true;
 
       this.$store.dispatch("putRequest", payload).then((res) => {
+        console.log(organisation_id);
         this.getOrganisationMembers(organisation_id);
         this.resetForm();
       }).finally(() => {
@@ -305,7 +310,7 @@ export default {
     },
     getUserRoles(id){
       let payload = {
-        url: `/api/protected/users/${id}`,
+        url: `/api/protected/roles/users/${id}`,
         msg: "none",
         color: "default",
         to_on_ok: "none",

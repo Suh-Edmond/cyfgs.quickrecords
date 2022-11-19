@@ -19,8 +19,8 @@
     </template>
       <template v-slot:body="props">
         <q-tr :props="props">
-          <q-td key="id" :props="props">
-            {{props.row.count}}
+          <q-td key="counter" :props="props">
+            {{props.row.counter}}
           </q-td>
           <q-td key="name" :props="props">
             <q-btn
@@ -347,6 +347,7 @@ export default {
         },
       };
       this.$store.dispatch("getRequest", payload).then((res) => {
+        console.log(res.data);
         this.$emit("update-member", {"data":res.data, "tab":"EditMember"});
       })
 

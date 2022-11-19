@@ -355,7 +355,6 @@
         ></AddMember>
         <EditMember
           v-if="current_tab == 'EditMember'"
-          :data="data"
           @close-right-drawer="closeRightDrawer"
         ></EditMember>
         <AddPaymentCategory
@@ -440,6 +439,7 @@ export default {
       SessionStorage.set("from_tab", SessionStorage.getItem("to_tab"));
       SessionStorage.set("to_tab", item.name);
       SessionStorage.set("requires_add", this.requires_add);
+      // this.$store.dispatch("setFetchingState", true);
     },
     updateRightDrawer({ right, current_tab, data }) {
       this.current_tab = current_tab;

@@ -1,9 +1,11 @@
 <script>
+import { LocalStorage } from 'quasar';
+
 export default {
   data() {},
   computed: {
     getOrganisationId() {
-      return this.$store.getters.getOrganisation.id
+      return LocalStorage.getItem("organisation").id
     },
   },
 };

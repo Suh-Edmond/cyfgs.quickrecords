@@ -115,7 +115,6 @@ import organisationMixinVue  from "src/mixins/organisationMixin.vue";
 export default {
   mixins: [memberMixinVue, organisationMixinVue],
   mounted(){
-    this.organisation_id = this.getOrganisationId;
   },
   data() {
     return {
@@ -152,9 +151,6 @@ export default {
     validateFormUpload() {
       return this.file == null ? true : false;
     },
-    getOrganisationId(){
-      return this.organisation_id;
-    }
   },
   methods: {
     onAddMember() {
@@ -168,8 +164,8 @@ export default {
         to_on_ok: "none",
         to_on_fail: "none",
         error_msg: "An Error occurred! Please try again",
-        has_commit: true,
-        commit: "SET_MEMBERS",
+        has_commit: false,
+        commit: "none",
         to_be_store_data: {
           required: false,
           has_value: false,
@@ -177,8 +173,7 @@ export default {
         },
       };
       this.$store.dispatch("postRequest", payload).then((res) => {
-        this.$emit("start-fetching-users", true);
-        this.getOrganisationMembers(id, true);
+        this.getOrganisationMembers(id);
       }).finally(() => {
         this.loading = false;
         this.resetForm();
@@ -192,18 +187,18 @@ export default {
     uploadFile(event) {
       const formData = new FormData()
       formData.append("file", this.file);
-      let id = this.getOrganisationId;
+      let id = this.getOrganisationId
       let payload = {
         url: `/api/protected/organisations/${id}/import-users`,
         msg: "Members uploaded successfully",
         data: formData,
         color: "default",
+        status:"success",
         to_on_ok: "none",
-        status: "none",
         to_on_fail: "none",
         error_msg: "An Error occurred! Please try again",
         has_commit: false,
-        commit: "SET_MEMBERS",
+        commit: "none",
         to_be_store_data: {
           required: false,
           has_value: false,
@@ -211,10 +206,11 @@ export default {
         },
       };
       this.loading = true;
-      this.$store.dispatch("uploadFileRequest", payload).then((res) => {
-        this.getOrganisationMembers(id);
+      this.$store.dispatch("uploadFileRequest", payload).then(() => {
       }).finally(() => {
+        this.getOrganisationMembers(id);
         this.loading = false;
+        this.file = null
         this.$emit("close-right-drawer");
       })
 

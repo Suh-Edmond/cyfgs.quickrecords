@@ -2,6 +2,8 @@ export default function () {
   return {
     roles: [],
     organisation:null,
-    members:[]
+    members:[],
+    is_fetching: true,
+    updated_member: null
   };
 }

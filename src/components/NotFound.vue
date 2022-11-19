@@ -4,7 +4,7 @@
       <h6>
         {{message}}
         <q-avatar>
-          <img src="../assets/arrow.png" alt="">
+          <img src="../assets/arrow.png" alt="" width="200px">
         </q-avatar>
       </h6>
     </div>

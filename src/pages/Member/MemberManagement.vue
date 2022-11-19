@@ -1,16 +1,13 @@
 <template>
   <q-page>
-    <div class="flex flex-center" v-if="is_fetching">
-      <q-spinner-ios color="primary" size="2.5em" />
-    </div>
     <!-- no members found -->
-    <div v-if="!is_fetching">
-      <NotFound :message="not_found_msg" v-if="data.length == 0"></NotFound>
+    <div>
+      <NotFound :message="not_found_msg" v-if="getMembers.length == 0"></NotFound>
     </div>
 
-    <div v-if="!is_fetching">
+    <div v-if="getMembers.length > 0">
       <!-- header for filter members -->
-      <div class="row q-ml-xs" v-if="data.length > 0" :class="$q.screen.lg ? 'q-pa-sm' : ''" :style="
+      <div class="row q-ml-xs" :class="$q.screen.lg ? 'q-pa-sm' : ''" :style="
         $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
       ">
         <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12" :class="$q.screen.lg ? 'q-pr-md' : ''">
@@ -56,7 +53,7 @@ export default {
 
   mounted() {
     let id = this.getOrganisationId
-    // this.getOrganisationMembers(id)
+    this.getOrganisationMembers(id)
   },
   data() {
     return {
@@ -73,14 +70,14 @@ export default {
       search: "",
       message: "Are you sure you want to delete this Member?",
       label: "Delete",
-      is_fetching: true,
+      is_fetching: false,
       columns: [
         {
-          name: "id",
+          name: "counter",
           required: true,
           label: "S/N",
           align: "left",
-          field: "id",
+          field: "counter",
         },
         {
           name: "name",
@@ -122,7 +119,6 @@ export default {
           sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
         },
       ],
-      data: [],
       not_found_msg:
         "Ooops!! You don't have any Register Member click the button to add Members.",
       label_print: "Print",
@@ -135,12 +131,26 @@ export default {
       return this.year == null && this.gender == null ? true : false;
     },
     getMembers() {
-      return this.$store.getters.getMembers;
+      var data = [];
+      this.$store.getters.getMembers.forEach(member => {
+        data.push({
+          counter: this.$store.getters.getMembers.indexOf(member) + 1,
+          name: member.name,
+          telephone: member.telephone,
+          gender: member.gender,
+          address: member.address,
+          occupation: member.occupation,
+          id: member.id,
+          email: member.email,
+        })
+      })
+      return data;
     }
   },
   methods: {
     updateMember(data) {
       this.$emit("update-member", data);
+      this.$store.dispatch("updateMember", data.data);
     },
 
   },

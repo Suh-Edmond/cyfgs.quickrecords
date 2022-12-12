@@ -425,7 +425,7 @@ export default {
         selected: true,
       },
       requires_add: false,
-      right_drawer_width: 400,
+      right_drawer_width: 450,
       current_tab: "",
       right_drawer_tab: "",
       data: null,

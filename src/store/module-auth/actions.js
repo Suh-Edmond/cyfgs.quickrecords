@@ -38,19 +38,19 @@ export function handleRequestResponse({ commit }, payload) {
     }
   }
   if (payload.status == "fail") {
-    console.log("error state");
+
     if (payload.fail_msg == "default") {
       Notify.create({
-        color: payload.color != "default" ? payload.color : "negative",
-        type: "negative",
+        color: payload.color != "default" ? payload.color : "info",
+        type: "info",
         message: "Action did not complete successfully",
         position: Platform.is.mobile ? "bottom" : "top-right",
       });
     } else if (payload.fail_msg) {
       Notify.create({
-        color: payload.color != "default" ? payload.color : "negative",
+        color: payload.color != "default" ? payload.color : "info",
         message: payload.fail_msg,
-        type: "negative",
+        type: "info",
         position: Platform.is.mobile ? "bottom" : "top-right",
       });
     }

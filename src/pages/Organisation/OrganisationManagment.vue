@@ -243,10 +243,10 @@
     <div v-if="exist_organisation">
       <div class="row flex flex-center">
         <div class="col-8 col-sm-12 col-xs-12 col-md-8">
-          <q-card class="card text-dark">
+          <q-card class="card text-dark" flat>
             <q-card-section class="flex flex-center">
-              <q-avatar size="140px" font-size="52px">
-                <img src="../../assets/UB-Logo.png" alt="" width="200px" />
+              <q-avatar size="100px" font-size="52px">
+                <img src="../../assets/UB-Logo.png" alt="" width="100px" />
               </q-avatar>
             </q-card-section>
             <q-card-section>

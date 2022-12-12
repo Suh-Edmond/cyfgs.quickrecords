@@ -26,7 +26,7 @@
 
       <q-tab-panels v-model="tab" animated>
         <q-tab-panel name="Personal Information">
-          <div>
+          <div class="q-mx-lg">
             <q-form @submit="onUpdateMember" class="q-gutter-md">
               <div>
                 <label for="credential" class="form_field"
@@ -53,7 +53,16 @@
                 <label for="credential" class="form_field"
                   >Telephone <span class="text-red">*</span></label
                 >
-                <q-input v-model="user.telephone" outlined dense type="tel" />
+                <q-input
+                  v-model="user.telephone"
+                  outlined
+                  dense
+                  type="tel"
+                  mask="(+###) ### - ### - ###"
+                  unmasked-value
+                  disable
+                  readonly
+                />
               </div>
               <div>
                 <label for="credential" class="form_field"
@@ -67,7 +76,7 @@
                 >
                 <q-input v-model="user.occupation" outlined dense type="text" />
               </div>
-              <div class="col-md-2 col-sm-12 col-xs-12">
+              <div class="col-md-2 col-sm-12 col-xs-12 q-mt-lg">
                 <ButtonVue
                   class="form_button"
                   :label="label_save"
@@ -82,20 +91,62 @@
           </div>
         </q-tab-panel>
         <q-tab-panel name="Member Roles">
-          <div>
-            <div class="flex" v-for="role in user_roles" :key="role.name">
-              <div>
-                <label for="role" class="role"> {{ role.name }} </label>
-              </div>
-              <q-space />
-              <div>
-                <q-btn flat round @click="showRemoveRoleDialog(role)">
-                  <q-icon name="close" color="negative">
-                    <q-tooltip>Remove</q-tooltip>
-                  </q-icon>
-                </q-btn>
-              </div>
-            </div>
+          <div class="q-mx-sm">
+            <q-list>
+              <q-item
+                v-for="role in user_roles"
+                :key="role.name"
+                class="q-my-sm"
+                v-ripple
+              >
+                <q-item-section avatar v-if="role.name == 'PRESIDENT'">
+                  <q-avatar color="primary" text-color="white" size="30px">
+                    PP
+                  </q-avatar>
+                </q-item-section>
+                <q-item-section
+                  avatar
+                  v-if="role.name == 'FINANCIAL_SECRETARY'"
+                >
+                  <q-avatar color="primary" text-color="white" size="30px">
+                    FS
+                  </q-avatar>
+                </q-item-section>
+                <q-item-section avatar v-if="role.name == 'TREASURER'">
+                  <q-avatar color="primary" text-color="white" size="30px">
+                    TR
+                  </q-avatar>
+                </q-item-section>
+                <q-item-section avatar v-if="role.name == 'AUDITOR'">
+                  <q-avatar color="primary" text-color="white" size="30px">
+                    AU
+                  </q-avatar>
+                </q-item-section>
+                <q-item-section avatar v-if="role.name == 'USER'">
+                  <q-avatar color="primary" text-color="white" size="30px">
+                    U</q-avatar
+                  >
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label>{{ role.name }}</q-item-label>
+                  <q-item-label caption lines="1" class="text-sm"
+                    >Updated by:  <span class="q-pl-sm"> {{ role.updated_by }}</span></q-item-label
+                  >
+                  <q-item-label caption lines="2"
+                    >Updated on: <span class="q-pl-sm">{{ formDateTime(role.updated_at) }} </span></q-item-label
+                  >
+                </q-item-section>
+
+                <q-item-section side v-if="role.name !== 'USER'">
+                  <q-btn flat round @click="showRemoveRoleDialog(role)">
+                    <q-icon name="close" color="negative">
+                      <q-tooltip>Remove</q-tooltip>
+                    </q-icon>
+                  </q-btn>
+                </q-item-section>
+              </q-item>
+            </q-list>
+
             <q-separator spaced />
             <div>
               <q-form @submit="addRole">
@@ -134,12 +185,21 @@
       <q-card>
         <q-card-section>
           <div>
-            <q-avatar icon="warning" class="warning_image" size="30px" color="yellow" text-color="white"/>
+            <q-avatar
+              icon="warning"
+              class="warning_image"
+              size="30px"
+              color="yellow"
+              text-color="white"
+            />
             <span class="q-ml-sm text-dark warning_text"
               >Are you sure you want to remove this role ?</span
             >
           </div>
-          <div class="text-weight-medium text-center diaglog_info" v-if="show_dialog">
+          <div
+            class="text-weight-medium text-center diaglog_info"
+            v-if="show_dialog"
+          >
             {{ role_deleted.name }}
           </div>
         </q-card-section>
@@ -173,6 +233,7 @@ import organisationMixin from "src/mixins/organisationMixin.vue";
 import memberMixin from "src/mixins/memberMixin.vue";
 import { Notify, Platform } from "quasar";
 import roleMixinVue from "src/mixins/roleMixin.vue";
+import moment from 'moment';
 
 export default {
   mixins: [organisationMixin, memberMixin, roleMixinVue],
@@ -296,7 +357,7 @@ export default {
           to_on_ok: "none",
           status: "none",
           to_on_fail: "none",
-          error_msg: "An Error occurred! Please try again",
+          error_msg: "Only two(02) members of your organisation are allowed to have this Role",
           has_commit: false,
           commit: "none",
           to_be_store_data: {
@@ -355,7 +416,6 @@ export default {
         },
       };
       this.$store.dispatch("deleteRequest", payload).then(() => {
-        console.log("deleted");
         this.getUserRoles(user_id);
       });
     },
@@ -371,7 +431,7 @@ export default {
       this.user.address = data.address;
       this.user.occupation = data.occupation;
       this.user.gender = data.gender;
-      this.user_roles = data.roles;
+      this.getUserRoles(data.id)
 
       return this.user;
     },
@@ -390,6 +450,9 @@ export default {
     getUpdatedMemberFromState() {
       return this.$store.getters.getUpdatedMember;
     },
+    formDateTime(date){
+      return moment(String(date)).format('MM/DD/YYYY')
+    }
   },
   components: {
     ButtonVue,

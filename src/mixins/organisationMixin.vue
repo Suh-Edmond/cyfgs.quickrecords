@@ -14,7 +14,7 @@ export default {
         url: "/api/protected/organisation-info",
         has_path_val: true,
         show_feedback: false,
-        msg: "default",
+        msg: "none",
         color: "default",
         error_msg: "default",
         commit: "SET_ORGANISATION",

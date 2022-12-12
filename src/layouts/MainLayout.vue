@@ -19,11 +19,20 @@
                 </div>
               </q-img>
             </q-avatar>
-            <q-avatar size="90px" v-if="!has_image" font-size="52px" color="grey">
+            <q-avatar
+              size="90px"
+              v-if="!has_image"
+              font-size="52px"
+              color="grey"
+            >
             </q-avatar>
             <div class="q-mt-xl logo">
               <q-icon name="photo_camera" size="xs" class="q-mt-sm q-pr-lg">
-                <input type="file" accept="image/x-png,image/jpg,image/jpeg"   style="display:none;" />
+                <input
+                  type="file"
+                  accept="image/x-png,image/jpg,image/jpeg"
+                  style="display: none"
+                />
               </q-icon>
             </div>
           </div>
@@ -321,7 +330,7 @@
     >
       <q-page>
         <q-card class="bar" flat>
-          <div class="flex">
+          <div class="flex q-pa-xs">
             <div>
               <q-btn
                 dense
@@ -330,11 +339,16 @@
                 icon="arrow_back"
                 v-close-popup
                 @click="goBack()"
-                size="sm"
+                size="md"
               >
               </q-btn>
             </div>
-            <q-space />
+            <div class="flex flex-center">
+              <label for="heading" class="heading text-white  q-pl-lg text_h6">{{
+                heading
+              }}</label>
+            </div>
+            <q-space/>
             <div>
               <q-btn
                 dense
@@ -343,7 +357,7 @@
                 icon="close"
                 v-close-popup
                 @click="closeRightDrawer()"
-                size="sm"
+                size="md"
               >
               </q-btn>
             </div>
@@ -352,10 +366,12 @@
         <AddMember
           v-if="current_tab == 'Member Management'"
           @close-right-drawer="closeRightDrawer"
+          @set-heading="setHeading"
         ></AddMember>
         <EditMember
           v-if="current_tab == 'EditMember'"
           @close-right-drawer="closeRightDrawer"
+          @set-heading="setHeading"
         ></EditMember>
         <AddPaymentCategory
           v-if="current_tab == 'Payment Categories'"
@@ -429,6 +445,7 @@ export default {
       current_tab: "",
       right_drawer_tab: "",
       data: null,
+      heading: "",
     };
   },
   methods: {
@@ -439,7 +456,6 @@ export default {
       SessionStorage.set("from_tab", SessionStorage.getItem("to_tab"));
       SessionStorage.set("to_tab", item.name);
       SessionStorage.set("requires_add", this.requires_add);
-      // this.$store.dispatch("setFetchingState", true);
     },
     updateRightDrawer({ right, current_tab, data }) {
       this.current_tab = current_tab;
@@ -474,12 +490,14 @@ export default {
       };
       this.$store.dispatch("logoutUser", payload);
     },
-    goBack() {},
+    goBack() {
+      this.right = !this.right;
+    },
     closeRightDrawer() {
       this.right = !this.right;
     },
-    uploadLogo(event){
-
+    setHeading(data){
+      this.heading = data;
     }
   },
   components: {
@@ -572,4 +590,11 @@ export default {
   cursor: pointer;
 }
 
+.heading {
+  font-family: "Roboto";
+  font-size: medium;
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
 </style>

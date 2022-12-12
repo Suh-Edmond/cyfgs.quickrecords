@@ -6,7 +6,6 @@
 
 <script>
 import { SessionStorage } from 'quasar'
-import moment from 'moment';
 export default {
   name: 'App',
 

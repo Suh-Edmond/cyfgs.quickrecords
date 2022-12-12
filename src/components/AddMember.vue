@@ -1,13 +1,10 @@
 <template>
   <div class="q-pa-sm">
-    <div class="text_h6 text-center q-pt-xs q-pb-sm add_member_title">
-      Add Members to the Organisation
-    </div>
     <div>
       <q-tabs
         v-model="tab"
         dense
-        class="text-grey"
+        class="text-grey q-pt-xs"
         active-color="primary"
         indicator-color="primary"
         align="justify"
@@ -26,9 +23,9 @@
 
       <q-tab-panels v-model="tab" animated>
         <q-tab-panel name="Add Member">
-          <div class="q-mx-lg">
+          <div class="q-mx-md">
             <q-form @submit="onAddMember" class="q-gutter-md">
-              <div class="text-subtitle2 text-left text-primary">
+              <div class="text-subtitle2 text-left text-primary q-pt-lg">
                 Personal Information
               </div>
               <div>
@@ -78,9 +75,9 @@
                 >
                 <q-input v-model="user.occupation" outlined dense type="text" />
               </div>
-              <div class="q-mt-md">
+              <div class="row q-mt-lg justify-end">
+                <div class="col-md-2 col-sm-2 col-xs-2">
                 <ButtonVue
-                  class="form_button"
                   :label="label_save"
                   :loading="loading"
                   :color="color"
@@ -88,6 +85,7 @@
                   :no_caps="no_caps"
                 >
                 </ButtonVue>
+                </div>
               </div>
             </q-form>
           </div>
@@ -171,7 +169,10 @@ import organisationMixinVue from "src/mixins/organisationMixin.vue";
 
 export default {
   mixins: [memberMixinVue, organisationMixinVue],
-  mounted() {},
+  created() {
+    let heading = "Add Members to the Organisation";
+    this.$emit("set-heading", heading);
+  },
   data() {
     return {
       label_save: "Save",

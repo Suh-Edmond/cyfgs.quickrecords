@@ -1,13 +1,10 @@
 <template>
   <div class="q-pa-xs">
-    <div class="text_h6 text-center q-pt-xs q-pb-md add_member_title">
-      Update Member Information
-    </div>
     <div>
       <q-tabs
         v-model="tab"
         dense
-        class="text-grey"
+        class="text-grey q-pt-sm"
         active-color="primary"
         indicator-color="primary"
         align="justify"
@@ -26,7 +23,7 @@
 
       <q-tab-panels v-model="tab" animated>
         <q-tab-panel name="Personal Information">
-          <div class="q-mx-lg">
+          <div class="q-mx-lg q-pt-md">
             <q-form @submit="onUpdateMember" class="q-gutter-md">
               <div>
                 <label for="credential" class="form_field"
@@ -76,7 +73,8 @@
                 >
                 <q-input v-model="user.occupation" outlined dense type="text" />
               </div>
-              <div class="col-md-2 col-sm-12 col-xs-12 q-mt-lg">
+              <div class="row q-mt-lg justify-end">
+              <div class="col-md-2 col-sm-2 col-xs-2 q-mt-xs">
                 <ButtonVue
                   class="form_button"
                   :label="label_save"
@@ -86,6 +84,7 @@
                   :no_caps="no_caps"
                 >
                 </ButtonVue>
+              </div>
               </div>
             </q-form>
           </div>
@@ -237,6 +236,10 @@ import moment from 'moment';
 
 export default {
   mixins: [organisationMixin, memberMixin, roleMixinVue],
+  created(){
+    let heading = "Update Member Information";
+    this.$emit("set-heading", heading);
+  },
   mounted() {
     this.getAllRoles();
   },

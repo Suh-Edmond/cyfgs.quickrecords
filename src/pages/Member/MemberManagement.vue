@@ -32,8 +32,8 @@
       <div class="row q-pt-sm">
         <div class="col-md-12 col-xs-12 col-sm-12">
           <TableVue :columns="columns" :data="getMembers" :label="label" @update-member="updateMember"
-            :member_name="select_member_name" :message="message" :show_savings="false" :show_income_activity="false"
-            :show_members="true" :show_contribution="false">
+             :message="message" :show_savings="false" :show_income_activity="false"
+            :show_members="true" :show_contribution="false" @fetch-members="getOrganisationMembers">
           </TableVue>
         </div>
       </div>
@@ -123,7 +123,7 @@ export default {
         "Ooops!! You don't have any Register Member click the button to add Members.",
       label_print: "Print",
       color_print: "positive",
-      select_member_name: " Suh Edmond Edmond",
+      select_member_name: "Suh Edmond Edmond",
     };
   },
   computed: {
@@ -142,6 +142,7 @@ export default {
           occupation: member.occupation,
           id: member.id,
           email: member.email,
+          organisation_id: member.organisation_id
         })
       })
       return data;

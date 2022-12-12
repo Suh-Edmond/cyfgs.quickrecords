@@ -231,7 +231,6 @@ export default {
         .filter(
           (role) =>
             role.name === "TREASURER" ||
-            role.name === "PRESIDENT" ||
             role.name === "FINANCIAL_SECRETARY" ||
             role.name == "AUDITOR"
         )

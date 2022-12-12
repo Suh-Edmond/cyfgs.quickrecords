@@ -4,6 +4,7 @@ import { axios } from "src/boot/axios";
 const API_URL = process.env.BASE_URL[0];
 const FILE_UPLOAD_URL = "https://file-storage-web-api.herokuapp.com";
 
+
 export function handleRequestResponse({ commit }, payload) {
   if (payload.status == "success") {
     if (payload.msg == "default") {
@@ -137,33 +138,21 @@ export function uploadFileRequest({ commit, dispatch }, payload) {
 }
 
 export function uploadLogo({ commit, dispatch }, payload) {
+
   return axios
-    .post(FILE_UPLOAD_URL + payload.url, payload.data, {
+    .post(API_URL + payload.url, payload.data, {
       "Content-Type": "multipart/form-data",
     })
     .then((res) => {
       let handle_response_payload = {
-        data: res.data,
-        status: "success",
-        color: payload.color,
-        msg: payload.msg ? payload.msg : "default",
-        to_on_ok: payload.to_on_ok,
+
       };
-      dispatch("handleRequestResponse", handle_response_payload);
       return res;
     })
     .catch((error) => {
       let handle_response_payload = {
-        status: "fail",
-        color: "negative",
-        to_on_fail: payload.to_on_fail,
-        fail_msg:
-          payload.error_msg != "default"
-            ? payload.error_msg
-            : error.response.data.message,
-        status_code: error.response.status,
+
       };
-      dispatch("handleRequestResponse", handle_response_payload);
     });
 }
 
@@ -286,9 +275,10 @@ export function setRoles({ commit }, roles) {
   commit("SET_ROLES", roles);
 }
 
-export function logoutUser({ commit }, payload) {
+export function logoutUser({  }, payload) {
   LocalStorage.remove("data");
   LocalStorage.remove("credential");
+  LocalStorage.remove("organisation");
   this.$router.push({
     name: payload.to_on_ok,
   });

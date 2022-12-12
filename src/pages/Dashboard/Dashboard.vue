@@ -118,7 +118,7 @@
 <script>
 export default {
   created() {
-    this.getOrganisationInfo()
+    // this.getOrganisationInfo()
   },
   data() {
     return {
@@ -126,33 +126,8 @@ export default {
     }
   },
   methods: {
-    getOrganisationInfo() {
-      let payload = {
-        data: "",
-        status: "none",
-        url: "/api/protected/organisation-info",
-        has_path_val: true,
-        show_feedback: false,
-        msg: "default",
-        color: "default",
-        to_on_ok: "none",
-        to_on_fail: "none",
-        error_msg: "default",
-        commit: "SET_ORGANISATION",
-        has_commit: true,
-        to_be_store_data: {
-          required: false,
-          has_value: false,
-          data: [],
-        },
-      };
-      this.show_loading = true;
-      this.$emit("start-loading", this.show_loading);
-      this.$store.dispatch("getRequest", payload).then((res) => {
-        this.show_loading = false;
-        this.$emit("start-loading", this.show_loading);
-      });
-    },
+
+
   }
 }
 </script>

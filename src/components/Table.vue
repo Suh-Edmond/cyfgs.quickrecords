@@ -7,7 +7,7 @@
       row-key="index"
       :table-header-style="{ backgroundColor: '#5384ae', color: '#FFFFFF' }"
       :filter="filter"
-
+      :pagination.sync="pagination"
     >
     <template v-slot:top-left>
       <div class="text-h6 title" v-show="show_member_savings">
@@ -325,6 +325,9 @@ export default {
       dialog: false,
       filter: null,
       label_cancel: "Cancel",
+      pagination: {
+        rowsPerPage: 15 // current rows per page being displayed
+      },
     };
   },
   methods: {

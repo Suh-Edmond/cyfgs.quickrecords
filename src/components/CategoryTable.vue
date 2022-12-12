@@ -8,6 +8,7 @@
       :table-header-style="{ backgroundColor: '#5384ae', color: '#FFFFFF' }"
       class="col-xs-12"
       :filter="filter"
+      :pagination.sync="pagination"
     >
       <template v-slot:body="props">
         <q-tr :props="props">
@@ -311,6 +312,9 @@ export default {
       showTable: true,
       label_cancel: "Cancel",
       filter: "",
+      pagination: {
+        rowsPerPage:15 // current rows per page being displayed
+      },
     };
   },
   computed:{

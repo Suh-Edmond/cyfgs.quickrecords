@@ -3,8 +3,8 @@
     <div class="text-center member_not_found">
       <h6>
         {{message}}
-        <q-avatar>
-          <img src="../assets/arrow.svg" alt="">
+        <q-avatar size="100px" font-size="90px">
+          <img src="../assets/arrow.png" alt="" >
         </q-avatar>
       </h6>
     </div>

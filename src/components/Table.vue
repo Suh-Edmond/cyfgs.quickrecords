@@ -7,7 +7,7 @@
       row-key="index"
       :table-header-style="{ backgroundColor: '#5384ae', color: '#FFFFFF' }"
       :filter="filter"
-
+      :pagination.sync="pagination"
     >
     <template v-slot:top-left>
       <div class="text-h6 title" v-show="show_member_savings">
@@ -19,8 +19,8 @@
     </template>
       <template v-slot:body="props">
         <q-tr :props="props">
-          <q-td key="id" :props="props">
-            {{props.row.count}}
+          <q-td key="counter" :props="props">
+            {{props.row.counter}}
           </q-td>
           <q-td key="name" :props="props">
             <q-btn
@@ -228,43 +228,51 @@
     </q-table>
 
     <!-- confirmation dialog -->
-    <q-dialog v-model="dialog">
+    <q-dialog v-model="dialog" v-if="dialog" >
       <q-card>
         <q-card-section>
           <div>
-            <q-avatar icon="warning" class="warning_image" size="40px" />
+            <q-avatar
+              icon="warning"
+              class="warning_image"
+              size="30px"
+              color="yellow"
+              text-color="white"
+            />
             <span class="q-ml-sm text-dark"
               >{{message}}</span
             >
           </div>
-          <div class="text-weight-bold text-center">{{ member_name }}</div>
+          <div class="text-weight-bold text-center">{{ deleted_row.name }}</div>
         </q-card-section>
         <q-card-actions align="right">
-          <ButtonVue
+          <q-btn
             :label="label_cancel"
             :color="'primary'"
             :disabled="false"
             :loading="loading"
-            :no_caps="false"
+            :no_caps="true"
             :flat="true"
+            class="dialog_button"
             v-close-popup
-          ></ButtonVue>
-          <ButtonVue
+          ></q-btn>
+          <q-btn
             :label="label"
             :color="'primary'"
+            class="dialog_button"
             :disabled="false"
             :loading="loading"
             :no_caps="false"
             :flat="true"
             v-close-popup
-          ></ButtonVue>
+            @click="deleteRow(deleted_row)"
+          ></q-btn>
         </q-card-actions>
       </q-card>
     </q-dialog>
   </div>
 </template>
 <script>
-import ButtonVue from "./Button.vue";
 export default {
   props: {
     columns: {
@@ -281,7 +289,7 @@ export default {
     },
     member_name: {
       required: false,
-      type: String,
+      type: Object,
     },
     show_members:{
       required: true,
@@ -325,6 +333,10 @@ export default {
       dialog: false,
       filter: null,
       label_cancel: "Cancel",
+      pagination: {
+        rowsPerPage: 15 // current rows per page being displayed
+      },
+      deleted_row: null,
     };
   },
   methods: {
@@ -351,7 +363,29 @@ export default {
       })
 
     },
+    deleteRow(data){
+      let payload = {
+        url: `/api/protected/users/${data.id}`,
+        msg: "Member successfully deleted",
+        status:"success",
+        color: "default",
+        to_on_ok: "none",
+        to_on_fail: "none",
+        error_msg: "An Error occurred! Please try again",
+        has_commit: false,
+        commit: "none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.$store.dispatch("deleteRequest", payload).then(() => {
+        this.$emit("fetch-members", data.organisation_id);
+      })
+    },
     onDeleteMember(data) {
+      this.deleted_row = data;
       this.dialog = true;
     },
     showMemberSavings(data){
@@ -399,7 +433,7 @@ export default {
     }
   },
   components: {
-    ButtonVue,
+
   },
 };
 </script>
@@ -433,5 +467,10 @@ export default {
 
 .title {
   font-size: small;
+}
+
+.dialog_button {
+  font-size: small;
+  font-weight: 500;
 }
 </style>

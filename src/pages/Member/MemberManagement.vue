@@ -1,100 +1,63 @@
 <template>
   <q-page>
     <!-- no members found -->
-    <NotFound
-      :message="not_found_msg"
-      v-if="data.length == 0"
-    ></NotFound>
-    <!-- header for filter members -->
-    <div
-      class="row q-ml-xs"
-      v-if="data.length > 0"
-      :class="$q.screen.lg ? 'q-pa-sm' : ''"
-      :style="
-        $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-      "
-    >
-      <div
-        class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
-        :class="$q.screen.lg ? 'q-pr-md' : ''"
-      >
-        <q-select
-          v-model="gender"
-          outlined
-          dense
-          :options="genders"
-          label="Select gender"
-        />
-      </div>
-      <div
-        class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
-        :class="$q.screen.lg ? 'q-pr-md' : ''"
-      >
-        <q-select
-          v-model="year"
-          outlined
-          dense
-          :options="years"
-          label="Select year"
-        />
-      </div>
-      <div :class="$q.screen.lg ? 'q-pr-md' : ''">
-        <ButtonVue
-          :label="label_fetch_user"
-          :loading="loading"
-          :color="color"
-          :disabled="validateFilter"
-          :no_caps="no_caps"
-          icon_right="filter_list"
-        >
-        </ButtonVue>
-      </div>
-      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12"></div>
+    <div>
+      <NotFound :message="not_found_msg" v-if="getMembers.length == 0"></NotFound>
+    </div>
 
-      <div :style="$q.screen.lg ? 'margin-left:76px' : ''">
-        <ButtonVue
-          :label="label_print"
-          :loading="loading"
-          :color="color_print"
-          :disabled="false"
-          :no_caps="no_caps"
-          icon_right="print"
-          size="sm"
-        ></ButtonVue>
+    <div v-if="getMembers.length > 0">
+      <!-- header for filter members -->
+      <div class="row q-ml-xs" :class="$q.screen.lg ? 'q-pa-sm' : ''" :style="
+        $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+      ">
+        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12" :class="$q.screen.lg ? 'q-pr-md' : ''">
+          <q-select v-model="gender" outlined dense :options="genders" label="Select gender" />
+        </div>
+        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12" :class="$q.screen.lg ? 'q-pr-md' : ''">
+          <q-select v-model="year" outlined dense :options="years" label="Select year" />
+        </div>
+        <div :class="$q.screen.lg ? 'q-pr-md' : ''">
+          <ButtonVue :label="label_fetch_user" :loading="loading" :color="color" :disabled="validateFilter"
+            :no_caps="no_caps" icon_right="filter_list">
+          </ButtonVue>
+        </div>
+        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12"></div>
+
+        <div :style="$q.screen.lg ? 'margin-left:76px' : ''">
+          <ButtonVue :label="label_print" :loading="loading" :color="color_print" :disabled="false" :no_caps="no_caps"
+            icon_right="print" size="sm"></ButtonVue>
+        </div>
+      </div>
+      <!-- table for members -->
+      <div class="row q-pt-sm">
+        <div class="col-md-12 col-xs-12 col-sm-12">
+          <TableVue :columns="columns" :data="getMembers" :label="label" @update-member="updateMember"
+             :message="message" :show_savings="false" :show_income_activity="false"
+            :show_members="true" :show_contribution="false" @fetch-members="getOrganisationMembers">
+          </TableVue>
+        </div>
       </div>
     </div>
-    <!-- table for members -->
-    <div class="row q-pt-sm">
-      <div class="col-md-12 col-xs-12 col-sm-12">
-        <TableVue
-          :columns="columns"
-          :data="getMembers"
-          :label="label"
-          @update-member="updateMember"
-          :member_name="select_member_name"
-          :message="message"
-          :show_savings="false"
-          :show_income_activity="false"
-          :show_members="true"
-          :show_contribution="false"
-        >
-        </TableVue>
-      </div>
-    </div>
+
   </q-page>
 </template>
 <script>
 import ButtonVue from "src/components/Button.vue";
 import TableVue from "src/components/Table.vue";
 import NotFound from "src/components/NotFound.vue";
+import memberMixin from "src/mixins/memberMixin.vue";
+import organisationMixinVue from "src/mixins/organisationMixin.vue";
+
 export default {
-  mounted(){
-    let id = this.$store.getters.getOrganisation.id
+  mixins: [memberMixin, organisationMixinVue],
+
+  mounted() {
+    let id = this.getOrganisationId
     this.getOrganisationMembers(id)
   },
   data() {
     return {
-      organisation:null,
+      organisation: null,
       member_total: 0,
       year: null,
       years: ["2020", "2021", "2022", "2023", "2024"],
@@ -107,13 +70,14 @@ export default {
       search: "",
       message: "Are you sure you want to delete this Member?",
       label: "Delete",
+      is_fetching: false,
       columns: [
         {
-          name: "id",
+          name: "counter",
           required: true,
           label: "S/N",
           align: "left",
-          field: "id",
+          field: "counter",
         },
         {
           name: "name",
@@ -131,7 +95,7 @@ export default {
           field: "email",
           sortable: true,
         },
-        { name: "gender",align: "left", label: "Gender", field: "gender", sortable: true },
+        { name: "gender", align: "left", label: "Gender", field: "gender", sortable: true },
         {
           name: "telephone",
           align: "left",
@@ -139,7 +103,7 @@ export default {
           field: "telephone",
           sortable: true,
         },
-        { name: "address", align: "left",label: "Address", field: "address", sortable: true },
+        { name: "address", align: "left", label: "Address", field: "address", sortable: true },
         {
           name: "occupation",
           align: "left",
@@ -155,50 +119,41 @@ export default {
           sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
         },
       ],
-      data: [],
       not_found_msg:
         "Ooops!! You don't have any Register Member click the button to add Members.",
       label_print: "Print",
       color_print: "positive",
-      select_member_name: " Suh Edmond Edmond",
+      select_member_name: "Suh Edmond Edmond",
     };
   },
   computed: {
     validateFilter() {
       return this.year == null && this.gender == null ? true : false;
     },
-    getMembers(){
-      return this.$store.getters.getMembers;
+    getMembers() {
+      var data = [];
+      this.$store.getters.getMembers.forEach(member => {
+        data.push({
+          counter: this.$store.getters.getMembers.indexOf(member) + 1,
+          name: member.name,
+          telephone: member.telephone,
+          gender: member.gender,
+          address: member.address,
+          occupation: member.occupation,
+          id: member.id,
+          email: member.email,
+          organisation_id: member.organisation_id
+        })
+      })
+      return data;
     }
   },
   methods: {
     updateMember(data) {
       this.$emit("update-member", data);
+      this.$store.dispatch("updateMember", data.data);
     },
-    getOrganisationMembers(id) {
-      let payload = {
-        url: `/api/protected/organisations/${id}/users`,
-        msg: "none",
-        color: "default",
-        to_on_ok: "none",
-        status:"none",
-        to_on_fail: "none",
-        error_msg: "An Error occurred! Please try again",
-        has_commit:true,
-        commit:"SET_MEMBERS",
-        to_be_store_data: {
-          required: false,
-          has_value: false,
-          data: [],
-        },
-      };
-      this.$emit("start-loading", true);
-      this.$store.dispatch("getRequest", payload).then((res) => {
-        this.data = res.data
-      }).finally(() => {
-        this.$emit("start-loading", false);
-      })
-    }
+
   },
 
   components: {

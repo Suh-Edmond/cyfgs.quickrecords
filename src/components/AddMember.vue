@@ -1,52 +1,91 @@
 <template>
   <div class="q-pa-sm">
-    <div class="text_h6 text-center q-pt-xs q-pb-sm add_member_title">
-      Add Members to the Organisation
-    </div>
     <div>
-      <q-tabs v-model="tab" dense class="text-grey" active-color="primary" indicator-color="primary" align="justify"
-        narrow-indicator>
+      <q-tabs
+        v-model="tab"
+        dense
+        class="text-grey q-pt-xs"
+        active-color="primary"
+        indicator-color="primary"
+        align="justify"
+        narrow-indicator
+      >
         <q-tab name="Add Member" label="Add Member" no-caps icon="person_add" />
-        <q-tab name="Upload File" label="Upload File" no-caps icon="file_upload" />
+        <q-tab
+          name="Upload File"
+          label="Upload File"
+          no-caps
+          icon="file_upload"
+        />
       </q-tabs>
 
       <q-separator />
 
       <q-tab-panels v-model="tab" animated>
         <q-tab-panel name="Add Member">
-          <div>
+          <div class="q-mx-md">
             <q-form @submit="onAddMember" class="q-gutter-md">
-              <div class="text-subtitle2 text-left text-primary">
+              <div class="text-subtitle2 text-left text-primary q-pt-lg">
                 Personal Information
               </div>
               <div>
-                <label for="credential" class="form_field">Name <span class="text-red">*</span></label>
+                <label for="credential" class="form_field"
+                  >Name <span class="text-red">*</span></label
+                >
                 <q-input v-model="user.name" outlined dense type="text" />
               </div>
               <div>
-                <label for="credential" class="form_field">Gender <span class="text-red">*</span></label>
-                <q-select v-model="user.gender" outlined dense :options="gender_options" />
+                <label for="credential" class="form_field"
+                  >Gender <span class="text-red">*</span></label
+                >
+                <q-select
+                  v-model="user.gender"
+                  outlined
+                  dense
+                  :options="gender_options"
+                />
               </div>
               <div>
                 <label for="credential" class="form_field">Email</label>
                 <q-input v-model="user.email" outlined dense type="email" />
               </div>
               <div>
-                <label for="credential" class="form_field">Telephone <span class="text-red">*</span></label>
-                <q-input v-model="user.telephone" outlined dense type="tel" />
+                <label for="credential" class="form_field"
+                  >Telephone <span class="text-red">*</span></label
+                >
+                <q-input
+                  v-model="user.telephone"
+                  outlined
+                  dense
+                  type="tel"
+                  mask="(+###) ### - ### - ###"
+                  unmasked-value
+                  hint="Example: (+237) ### - ### - ###"
+                />
               </div>
               <div>
-                <label for="credential" class="form_field">Address <span class="text-red">*</span></label>
+                <label for="credential" class="form_field"
+                  >Address <span class="text-red">*</span></label
+                >
                 <q-input v-model="user.address" outlined dense type="text" />
               </div>
               <div>
-                <label for="credential" class="form_field">Occupation <span class="text-red">*</span></label>
+                <label for="credential" class="form_field"
+                  >Occupation <span class="text-red">*</span></label
+                >
                 <q-input v-model="user.occupation" outlined dense type="text" />
               </div>
-              <div>
-                <ButtonVue class="form_button" :label="label_save" :loading="loading" :color="color"
-                  :disabled="validateForm" :no_caps="no_caps">
+              <div class="row q-mt-lg justify-end">
+                <div class="col-md-2 col-sm-2 col-xs-2">
+                <ButtonVue
+                  :label="label_save"
+                  :loading="loading"
+                  :color="color"
+                  :disabled="validateForm"
+                  :no_caps="no_caps"
+                >
                 </ButtonVue>
+                </div>
               </div>
             </q-form>
           </div>
@@ -65,15 +104,28 @@
               </div>
               <div class="row q-gutter-md flex flex-center q-pt-md">
                 <div class="col-md-8 col-sm-12 col-xs-12">
-                  <q-file outlined v-model="file" dense label="Choose file" accept="xls, .xlsx, .xlsm, .csv" counter>
+                  <q-file
+                    outlined
+                    v-model="file"
+                    dense
+                    label="Choose file"
+                    accept="xls, .xlsx, .xlsm, .csv"
+                    counter
+                  >
                     <template v-slot:prepend>
                       <q-icon name="attach_file" />
                     </template>
                   </q-file>
                 </div>
                 <div class="col-md-2 col-sm-12 col-xs-12 q-pb-md">
-                  <ButtonVue class="form_button" :label="label_upload" :loading="loading" :color="color"
-                    :disabled="validateFormUpload" :no_caps="no_caps">
+                  <ButtonVue
+                    class="form_button"
+                    :label="label_upload"
+                    :loading="loading"
+                    :color="color"
+                    :disabled="validateFormUpload"
+                    :no_caps="no_caps"
+                  >
                   </ButtonVue>
                 </div>
               </div>
@@ -98,8 +150,11 @@
               Below is an Eample of an Excel file to be upload
             </div>
             <div>
-              <q-img src="../assets/example_csv_upload.png" spinner-color="white"
-                style="height: 100%; width: 100%" />
+              <q-img
+                src="../assets/example_csv_upload.png"
+                spinner-color="white"
+                style="height: 100%; width: 100%"
+              />
             </div>
           </div>
         </q-card-section>
@@ -109,9 +164,14 @@
 </template>
 <script>
 import ButtonVue from "src/components/Button.vue";
+import memberMixinVue from "src/mixins/memberMixin.vue";
+import organisationMixinVue from "src/mixins/organisationMixin.vue";
+
 export default {
-  mounted(){
-    this.organisation_id = this.$store.getters.getOrganisation.id
+  mixins: [memberMixinVue, organisationMixinVue],
+  created() {
+    let heading = "Add Members to the Organisation";
+    this.$emit("set-heading", heading);
   },
   data() {
     return {
@@ -148,13 +208,10 @@ export default {
     validateFormUpload() {
       return this.file == null ? true : false;
     },
-    getOrganisationId(){
-      return this.organisation_id;
-    }
   },
   methods: {
     onAddMember() {
-      let id = this.$store.getters.getOrganisation.id
+      let id = this.getOrganisationId;
       this.loading = true;
       let payload = {
         url: `/api/protected/organisations/${id}/add-users`,
@@ -164,41 +221,44 @@ export default {
         to_on_ok: "none",
         to_on_fail: "none",
         error_msg: "An Error occurred! Please try again",
-        has_commit: true,
-        commit: "SET_MEMBERS",
+        has_commit: false,
+        commit: "none",
         to_be_store_data: {
           required: false,
           has_value: false,
           data: [],
         },
       };
-      this.$store.dispatch("postRequest", payload).then((res) => {
-        this.getOrganisationMembers(id);
-        this.resetForm();
-      }).finally(() => {
-        this.loading = false;
-        this.$emit("close-right-drawer");
-      })
+      this.$store
+        .dispatch("postRequest", payload)
+        .then((res) => {
+          this.getOrganisationMembers(id);
+        })
+        .finally(() => {
+          this.loading = false;
+          this.resetForm();
+          this.$emit("close-right-drawer");
+        });
     },
     openHelp() {
       this.dialog = true;
     },
 
     uploadFile(event) {
-      const formData = new FormData()
+      const formData = new FormData();
       formData.append("file", this.file);
-      let id = this.$store.getters.getOrganisation.id;
+      let id = this.getOrganisationId;
       let payload = {
         url: `/api/protected/organisations/${id}/import-users`,
         msg: "Members uploaded successfully",
         data: formData,
         color: "default",
+        status: "success",
         to_on_ok: "none",
-        status: "none",
         to_on_fail: "none",
         error_msg: "An Error occurred! Please try again",
         has_commit: false,
-        commit: "SET_MEMBERS",
+        commit: "none",
         to_be_store_data: {
           required: false,
           has_value: false,
@@ -206,37 +266,15 @@ export default {
         },
       };
       this.loading = true;
-      this.$store.dispatch("uploadFileRequest", payload).then((res) => {
-        this.getOrganisationMembers(id);
-      }).finally(() => {
-        this.loading = false;
-        this.$emit("close-right-drawer");
-      })
-
-    },
-
-    getOrganisationMembers(id) {
-      let payload = {
-        url: `/api/protected/organisations/${id}/users`,
-        msg: "none",
-        color: "default",
-        to_on_ok: "none",
-        status: "none",
-        to_on_fail: "none",
-        error_msg: "An Error occurred! Please try again",
-        has_commit: true,
-        commit: "SET_MEMBERS",
-        to_be_store_data: {
-          required: false,
-          has_value: false,
-          data: [],
-        },
-      };
-      this.$emit("start-loading", true);
-      this.$store.dispatch("getRequest", payload).then((res) => {
-      }).finally(() => {
-        this.$emit("start-loading", false);
-      })
+      this.$store
+        .dispatch("uploadFileRequest", payload)
+        .then(() => {})
+        .finally(() => {
+          this.getOrganisationMembers(id);
+          this.loading = false;
+          this.file = null;
+          this.$emit("close-right-drawer");
+        });
     },
 
     resetForm() {
@@ -247,7 +285,7 @@ export default {
       this.user.occupation = null;
       this.user.gender = null;
 
-      return this.user
+      return this.user;
     },
   },
   components: {

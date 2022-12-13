@@ -12,5 +12,7 @@ export default {
   created(){
     SessionStorage.set('from_tab', 'Dashboard')
   }
+
+  
 }
 </script>

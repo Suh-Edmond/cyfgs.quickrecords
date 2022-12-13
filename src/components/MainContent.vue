@@ -1,5 +1,4 @@
 <template>
-
   <q-page>
     <q-header class="bg-primary text-white header">
       <q-toolbar>
@@ -54,8 +53,15 @@
       class="main_content"
       :style="$q.screen.lg ? 'margin-left: .5rem;' : ''"
     >
-    <q-linear-progress  indeterminate  color="white" size="5px" v-if="loading"/>
       <q-card class="header_section">
+        <div class="col-12">
+          <q-linear-progress
+            indeterminate
+            color="primary"
+            size="5px"
+            v-if="is_fetching"
+          />
+        </div>
         <q-card-section class="content_header">
           <div class="row">
             <label for="title" class="title">
@@ -96,15 +102,19 @@
               color="primary"
               icon-right="add"
               label="Add"
-              flat
+              outline
               size="md"
               dense
               no-caps
               v-show="requires_add"
               @click="showRightDrawer"
+              class="q-pa-xs"
             />
           </div>
         </q-card-section>
+        <div class="flex flex-center q-mt-sm" v-if="is_fetching" >
+          <q-spinner-ios color="primary" size="2.5em" />
+        </div>
       </q-card>
       <q-scroll-area style="height: 90vh">
         <q-card class="card">
@@ -145,6 +155,7 @@
 
 <script>
 import { SessionStorage } from "quasar";
+import { mapGetters } from "vuex";
 
 export default {
   created() {},
@@ -160,6 +171,7 @@ export default {
   },
   data() {
     return {
+      is_fetching: false,
       left: false,
       year: new Date().getFullYear(),
       right: false,
@@ -167,13 +179,19 @@ export default {
       intermediate_tab: "",
       has_intermediate_tab: false,
       intermediate_tab2: "",
-      has_intermediate_tab2:false,
-      loading:false,
+      has_intermediate_tab2: false,
+      loading: false,
     };
+  },
+  watch:{
+    ...mapGetters({ is_fetching: "getFetchingState" }),
+  },
+  computed: {
+    ...mapGetters({ is_fetching: "getFetchingState" }),
   },
 
   methods: {
-    startLoading(data){
+    startLoading(data) {
       this.loading = data;
     },
     showRightDrawer() {
@@ -205,18 +223,17 @@ export default {
     },
     goBack() {
       history.back();
-     if(SessionStorage.getItem("has_intermediate_tab2")){
-      this.has_intermediate_tab2 = false;
-      SessionStorage.set("has_intermediate_tab2", false);
-      SessionStorage.remove("intermediate_tab2");
-     }else {
-      this.has_intermediate_tab = false;
-      SessionStorage.set("has_intermediate_tab", false);
-      SessionStorage.remove("intermediate_tab");
-     }
+      if (SessionStorage.getItem("has_intermediate_tab2")) {
+        this.has_intermediate_tab2 = false;
+        SessionStorage.set("has_intermediate_tab2", false);
+        SessionStorage.remove("intermediate_tab2");
+      } else {
+        this.has_intermediate_tab = false;
+        SessionStorage.set("has_intermediate_tab", false);
+        SessionStorage.remove("intermediate_tab");
+      }
     },
     updateMember(data) {
-      console.log(data);
       this.right = true;
       this.$emit("show-right-drawer", {
         right: this.right,
@@ -233,7 +250,10 @@ export default {
     },
     getIntermediateTab() {
       this.intermediate_tab = SessionStorage.getItem("intermediate_tab");
-      this.intermediate_tab2 = SessionStorage.getItem("intermediate_tab2") !== "undefined" ? SessionStorage.getItem("intermediate_tab2"): ""
+      this.intermediate_tab2 =
+        SessionStorage.getItem("intermediate_tab2") !== "undefined"
+          ? SessionStorage.getItem("intermediate_tab2")
+          : "";
       return this.intermediate_tab;
     },
     updatePaymentItem(data) {
@@ -259,42 +279,50 @@ export default {
     },
     showExpenditureItemDetails(data) {
       this.has_intermediate_tab = data.has_intermediate_tab;
-      this.has_intermediate_tab2 = SessionStorage.getItem("has_intermediate_tab2");
+      this.has_intermediate_tab2 = SessionStorage.getItem(
+        "has_intermediate_tab2"
+      );
       this.getIntermediateTab();
     },
-    editExpenditureItemDetail(data){
-      this.updateDrawer(data)
+    editExpenditureItemDetail(data) {
+      this.updateDrawer(data);
     },
-    getCurrentRightDrawerTab(){
+    getCurrentRightDrawerTab() {
       let tab = "";
-      if(SessionStorage.getItem("intermediate_tab") === null && SessionStorage.getItem("intermediate_tab2") === null){
+      if (
+        SessionStorage.getItem("intermediate_tab") === null &&
+        SessionStorage.getItem("intermediate_tab2") === null
+      ) {
         tab = SessionStorage.getItem("to_tab");
       }
-      if(SessionStorage.getItem("intermediate_tab") !== null && SessionStorage.getItem("intermediate_tab2") === null){
+      if (
+        SessionStorage.getItem("intermediate_tab") !== null &&
+        SessionStorage.getItem("intermediate_tab2") === null
+      ) {
         tab = SessionStorage.getItem("intermediate_tab");
       }
-      if(SessionStorage.getItem("intermediate_tab2") !== null){
+      if (SessionStorage.getItem("intermediate_tab2") !== null) {
         tab = SessionStorage.getItem("intermediate_tab2");
       }
 
       return tab;
     },
-    editMemberSaving(data){
-      this.updateDrawer(data)
-    },
-    editIncomeActivity(data){
-      this.updateDrawer(data)
-    },
-    viewIncomeActivity(data){
-      console.log(data);
-      this.updateDrawer(data)
-    },
-    viewContribution(data){
-      this.updateDrawer(data)
-    },
-    editContribution(data){
+    editMemberSaving(data) {
       this.updateDrawer(data);
-    }
+    },
+    editIncomeActivity(data) {
+      this.updateDrawer(data);
+    },
+    viewIncomeActivity(data) {
+      console.log(data);
+      this.updateDrawer(data);
+    },
+    viewContribution(data) {
+      this.updateDrawer(data);
+    },
+    editContribution(data) {
+      this.updateDrawer(data);
+    },
   },
   computed: {},
 };
@@ -374,5 +402,9 @@ export default {
   color: $primary;
   font-weight: 500;
   font-size: smaller;
+}
+
+.spinner {
+  // z-index: 1000;
 }
 </style>

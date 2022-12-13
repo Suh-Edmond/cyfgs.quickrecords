@@ -120,7 +120,6 @@ export function uploadFileRequest({ commit, dispatch }, payload) {
     })
     .catch((error) => {
       if(error.response != "undefined"){
-        log
         let handle_error_payload = {
           status: "fail",
           color: "negative",
@@ -137,24 +136,24 @@ export function uploadFileRequest({ commit, dispatch }, payload) {
     });
 }
 
-export function uploadLogo({ commit, dispatch }, payload) {
+// export function uploadLogo({ commit, dispatch }, payload) {
 
-  return axios
-    .post(API_URL + payload.url, payload.data, {
-      "Content-Type": "multipart/form-data",
-    })
-    .then((res) => {
-      let handle_response_payload = {
+//   return axios
+//     .post(API_URL + payload.url, payload.data, {
+//       "Content-Type": "multipart/form-data",
+//     })
+//     .then((res) => {
+//       let handle_response_payload = {
 
-      };
-      return res;
-    })
-    .catch((error) => {
-      let handle_response_payload = {
+//       };
+//       return res;
+//     })
+//     .catch((error) => {
+//       let handle_response_payload = {
 
-      };
-    });
-}
+//       };
+//     });
+// }
 
 export function getRequest({ commit, dispatch }, payload) {
   return axios
@@ -267,6 +266,19 @@ export function deleteRequest({ dispatch }, payload) {
     });
 }
 
+export function downloadPdf({}, payload){
+  return axios.get(API_URL + payload.url, {
+    "Content-Type":"application/pdf"
+  }).then((res) => {
+    var fileURL = window.URL.createObjectURL(new Blob([res.data]));
+     var fileLink = document.createElement('a');
+     fileLink.href = fileURL;
+     fileLink.setAttribute('download', 'file.pdf');
+     document.body.appendChild(fileLink);
+     fileLink.click();
+  })
+}
+
 export function setFetchingState({ commit }, payload) {
   commit("SET_IS_FETCHING", payload);
 }
@@ -285,10 +297,10 @@ export function logoutUser({  }, payload) {
 
 }
 
-export function setOrganisation({ commit }, data) {
-  commit("SET_ORGANISATION", data);
-}
+// export function setOrganisation({ commit }, data) {
+//   commit("SET_ORGANISATION", data);
+// }
 
-export function updateMember({commit}, data) {
-  commit("UPDATE_MEMBER", data);
-}
+// export function updateMember({commit}, data) {
+//   commit("UPDATE_MEMBER", data);
+// }

@@ -17,23 +17,23 @@
           <q-select v-model="year" outlined dense :options="years" label="Select year" />
         </div>
         <div :class="$q.screen.lg ? 'q-pr-md' : ''">
-          <ButtonVue :label="label_fetch_user" :loading="loading" :color="color" :disabled="validateFilter"
-            :no_caps="no_caps" icon_right="filter_list">
-          </ButtonVue>
+          <q-btn :label="label_fetch_user" :loading="loading" :color="color" :disabled="validateFilter"
+            @click="filterMembers" no-caps icon-right="filter_list">
+          </q-btn>
         </div>
         <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12"></div>
 
         <div :style="$q.screen.lg ? 'margin-left:76px' : ''">
-          <ButtonVue :label="label_print" :loading="loading" :color="color_print" :disabled="false" :no_caps="no_caps"
-            icon_right="print" size="sm"></ButtonVue>
+          <q-btn :label="label_print" :loading="loading_print" :color="color_print" :disabled="false" no-caps
+            icon-right="print" @click="downloadPdf"></q-btn>
         </div>
       </div>
       <!-- table for members -->
       <div class="row q-pt-sm">
         <div class="col-md-12 col-xs-12 col-sm-12">
           <TableVue :columns="columns" :data="getMembers" :label="label" @update-member="updateMember"
-             :message="message" :show_savings="false" :show_income_activity="false"
-            :show_members="true" :show_contribution="false" @fetch-members="getOrganisationMembers">
+            :message="message" :show_savings="false" :show_income_activity="false" :show_members="true"
+            :show_contribution="false" @fetch-members="getOrganisationMembers">
           </TableVue>
         </div>
       </div>
@@ -42,7 +42,6 @@
   </q-page>
 </template>
 <script>
-import ButtonVue from "src/components/Button.vue";
 import TableVue from "src/components/Table.vue";
 import NotFound from "src/components/NotFound.vue";
 import memberMixin from "src/mixins/memberMixin.vue";
@@ -123,7 +122,7 @@ export default {
         "Ooops!! You don't have any Register Member click the button to add Members.",
       label_print: "Print",
       color_print: "positive",
-      select_member_name: "Suh Edmond Edmond",
+      loading_print: false
     };
   },
   computed: {
@@ -131,7 +130,8 @@ export default {
       return this.year == null && this.gender == null ? true : false;
     },
     getMembers() {
-      var data = [];
+      let data = [];
+
       this.$store.getters.getMembers.forEach(member => {
         data.push({
           counter: this.$store.getters.getMembers.indexOf(member) + 1,
@@ -146,7 +146,7 @@ export default {
         })
       })
       return data;
-    }
+    },
   },
   methods: {
     updateMember(data) {
@@ -154,10 +154,59 @@ export default {
       this.$store.dispatch("updateMember", data.data);
     },
 
+    filterMembers() {
+      let id = this.getOrganisationId;
+      let payload = {
+        status: "none",
+        url: `/api/protected/organisations/filter-users?organisation_id=${id}&gender=${this.gender}&year=${this.year}`,
+        has_path_val: true,
+        show_feedback: false,
+        msg: "none",
+        color: "default",
+        error_msg: "default",
+        commit: "SET_MEMBERS",
+        has_commit: true,
+        to_be_store_data: {
+          required: true,
+          has_value: false,
+          data: null,
+        },
+      };
+      this.loading = true
+      this.$store.dispatch("getRequest", payload).then(() => {
+        this.loading = false
+        this.getMembers
+      })
+    },
+
+    downloadPdf() {
+      let id = this.getOrganisationId;
+      let payload = {
+        status: "none",
+        url: `/api/protected/organisations/download-users?organisation_id=${id}&gender=${this.gender}&year=${this.year}`,
+        has_path_val: true,
+        show_feedback: false,
+        msg: "none",
+        file_name: "Organisation_Members.pdf",
+        color: "default",
+        error_msg: "default",
+        commit: "none",
+        has_commit: false,
+        to_be_store_data: {
+          required: true,
+          has_value: false,
+          data: null,
+        },
+      };
+
+      this.loading_print = true
+      this.$store.dispatch("downloadPdf", payload).then(() => {
+        this.loading_print = false
+      })
+    }
   },
 
   components: {
-    ButtonVue,
     TableVue,
     NotFound,
   },

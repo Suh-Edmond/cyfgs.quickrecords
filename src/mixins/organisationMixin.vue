@@ -1,10 +1,14 @@
 <script>
 
 export default {
-  data() {},
+  data() { },
   computed: {
     getOrganisationId() {
-      return this.$store.getters.getOrganisation.id
+      let id = "";
+      if (this.$store.getters.getOrganisation !== null) {
+        id = this.$store.getters.getOrganisation.id
+      }
+      return id
     },
   },
   methods: {

@@ -15,8 +15,9 @@ export default {
         msg: "none",
         color: "default",
         status:"none",
-        error_msg: "An Error occurred! Please try again",
+        error_msg: "An Error occurred! Could not fetch users",
         has_commit: true,
+        show_feedback:false,
         commit: "SET_MEMBERS",
         to_be_store_data: {
           required: false,

@@ -344,9 +344,10 @@ export default {
       let payload = {
         url: `/api/protected/organisations/users/${data.id}`,
         data: this.user,
-        msg: "none",
+        msg: "Member information updated successfully",
         status:"none",
         color: "default",
+        show_feedback:true,
         to_on_ok: "none",
         to_on_fail: "none",
         error_msg: "An Error occurred! Please try again",
@@ -370,6 +371,7 @@ export default {
         status:"success",
         color: "default",
         to_on_ok: "none",
+        show_feedback:true,
         to_on_fail: "none",
         error_msg: "An Error occurred! Please try again",
         has_commit: false,
@@ -389,10 +391,8 @@ export default {
       this.dialog = true;
     },
     showMemberSavings(data){
-      console.log(data);
     },
     onEditMemberSaving(data){
-      console.log(data);
       let payload = {
         data: data,
         tab: "Member Savings",
@@ -407,7 +407,6 @@ export default {
       this.$emit("edit-income-activity", payload);
     },
     onViewIncomeActivity(data){
-      console.log(data);
       let payload = {
         data: data,
         tab: "View Income Activity",

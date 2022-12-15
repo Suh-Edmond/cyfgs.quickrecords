@@ -58,7 +58,7 @@
               </div>
               <div class="q-mt-lg">
                 <ButtonVue
-                  class="form_button"
+                  class="form_button q-pa-xs"
                   :label="label_sigin"
                   :loading="loading"
                   :disabled="validateLogin"
@@ -73,7 +73,7 @@
             </q-form>
             <q-form
               @submit="onCheckUserExist"
-              class="q-gutter-md q-mt-md q-px-md"
+              class="q-gutter-md q-mt-md q-px-xs"
               v-show="!has_logged_in && !is_exist_user"
             >
               <div>
@@ -90,7 +90,7 @@
               </div>
               <div>
                 <ButtonVue
-                  class="form_button q-mt-md"
+                  class="form_button q-mt-md q-pa-xs"
                   :label="label_continue"
                   :loading="loading"
                   :disabled="!validatePhone"
@@ -167,7 +167,7 @@
               </div>
               <div>
                 <ButtonVue
-                  class="form_button"
+                  class="form_button q-pa-xs"
                   :label="label_sigin"
                   :loading="loading"
                   :color="color"
@@ -266,6 +266,7 @@ export default {
         color: "default",
         to_on_ok: "dashboard",
         to_on_fail: "none",
+        show_feedback:true,
         error_msg: "Invalid Credentials! Please try again",
         to_be_store_data: {
           required: true,
@@ -293,6 +294,7 @@ export default {
         data: this.check_user,
         msg: "Success! please provide a password to Login",
         color: "default",
+        show_feedback:true,
         to_on_ok: "none",
         to_on_fail: "none",
         error_msg: "User Account does not exist! Please try again",
@@ -326,6 +328,7 @@ export default {
         color: "default",
         to_on_ok: "dashboard",
         to_on_fail: "none",
+        show_feedback:true,
         error_msg: "Invalid Credentails! Please try again",
         to_be_store_data: {
           required: true,

@@ -4,8 +4,8 @@ import { axios } from "src/boot/axios";
 const API_URL = process.env.BASE_URL[0];
 const FILE_UPLOAD_URL = "http://127.0.0.1:9000";
 
-export function handleRequestResponse({ commit }, payload) {
-  if (payload.status == "success") {
+export function handleRequestResponse({ }, payload) {
+  if (payload.status == "success" && payload.show_feedback) {
     if (payload.msg == "default") {
       Notify.create({
         type: "positive",
@@ -36,7 +36,7 @@ export function handleRequestResponse({ commit }, payload) {
       });
     }
   }
-  if (payload.status == "fail") {
+  if (payload.status == "fail" && payload.show_feedback) {
     if (payload.fail_msg == "default") {
       Notify.create({
         color: payload.color != "default" ? payload.color : "info",
@@ -67,6 +67,7 @@ export function postRequest({ commit, dispatch }, payload) {
       let handle_response_payload = {
         data: res.data,
         status: "success",
+        show_feedback: payload.show_feedback,
         color: payload.color,
         msg: payload.msg ? payload.msg : "default",
         to_on_ok: payload.to_on_ok,
@@ -88,6 +89,7 @@ export function postRequest({ commit, dispatch }, payload) {
     .catch((error) => {
       let handle_error_payload = {
         status: "fail",
+        show_feedback:payload.show_feedback,
         color: "negative",
         to_on_fail: payload.to_on_fail,
         fail_msg:
@@ -101,7 +103,7 @@ export function postRequest({ commit, dispatch }, payload) {
 }
 
 //upload excel files for users
-export function uploadFileRequest({ commit, dispatch }, payload) {
+export function uploadFileRequest({ dispatch }, payload) {
   return axios
     .post(API_URL + payload.url, payload.data, {
       "Content-Type": "multipart/form-data",
@@ -109,6 +111,7 @@ export function uploadFileRequest({ commit, dispatch }, payload) {
     .then((res) => {
       let handle_response_payload = {
         data: "",
+        show_feedback:payload.show_feedback,
         status: payload.status,
         color: payload.color,
         msg: payload.msg ? payload.msg : "default",
@@ -123,6 +126,7 @@ export function uploadFileRequest({ commit, dispatch }, payload) {
           status: "fail",
           color: "negative",
           to_on_fail: "none",
+          show_feedback:payload.show_feedback,
           fail_msg:
             payload.error_msg != "default"
               ? payload.error_msg
@@ -141,6 +145,7 @@ export function getRequest({ commit, dispatch }, payload) {
       let handle_response_payload = {
         data: res.data,
         status: payload.status ? payload.status : "success",
+        show_feedback:payload.show_feedback,
         color: payload.color,
         msg: payload.msg ? payload.msg : "default",
         to_on_ok: payload.to_on_ok,
@@ -163,6 +168,7 @@ export function getRequest({ commit, dispatch }, payload) {
         status: "fail",
         color: "negative",
         to_on_fail: payload.to_on_fail,
+        show_feedback:payload.show_feedback,
         fail_msg:
           payload.error_msg != "default"
             ? payload.error_msg
@@ -180,6 +186,7 @@ export function putRequest({ dispatch }, payload) {
       let handle_response_payload = {
         data: res.data,
         status: payload.status ? payload.status : "success",
+        show_feedback:payload.show_feedback,
         color: payload.color,
         msg: payload.msg ? payload.msg : "default",
         to_on_ok: payload.to_on_ok,
@@ -199,6 +206,7 @@ export function putRequest({ dispatch }, payload) {
         status: payload.status ? payload.status : "fail",
         color: "negative",
         to_on_fail: payload.to_on_fail,
+        show_feedback:payload.show_feedback,
         fail_msg:
           payload.error_msg != "default"
             ? payload.error_msg
@@ -219,6 +227,7 @@ export function deleteRequest({ dispatch }, payload) {
         msg: payload.msg ? payload.msg : "default",
         to_on_ok: payload.to_on_ok,
         to_on_fail: payload.to_on_fail,
+        show_feedback:payload.show_feedback,
         to_be_store_data: {
           has_value: payload.to_be_store_data.has_value,
           required: payload.to_be_store_data.required,
@@ -234,6 +243,7 @@ export function deleteRequest({ dispatch }, payload) {
       let handle_fail_res_payload = {
         status: payload.status ? payload.status : "fail",
         color: "negative",
+        show_feedback:payload.show_feedback,
         to_on_fail: payload.to_on_fail,
         fail_msg:
           payload.error_msg != "default"
@@ -258,6 +268,8 @@ export function downloadPdf({}, payload) {
       fileLink.setAttribute("download", payload.file_name);
       document.body.appendChild(fileLink);
       fileLink.click();
+    }).catch((error) => {
+      return error
     });
 }
 

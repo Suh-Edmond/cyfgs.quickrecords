@@ -30,8 +30,16 @@
       </div>
       <!-- table for members -->
       <div class="row q-pt-sm">
-        <div class="col-md-12 col-xs-12 col-sm-12">
+        <div class="col-md-12 col-xs-12 col-sm-12" v-show="!start_filter">
           <TableVue :columns="columns" :data="getMembers" :label="label" @update-member="updateMember"
+            :message="message" :show_savings="false" :show_income_activity="false" :show_members="true"
+            :show_contribution="false" @fetch-members="getOrganisationMembers">
+          </TableVue>
+        </div>
+
+        <!-- Table to be display when members are filtered -->
+        <div class="col-md-12 col-xs-12 col-sm-12" v-show="start_filter">
+          <TableVue :columns="columns" :data="filteredMembers" :label="label" @update-member="updateMember"
             :message="message" :show_savings="false" :show_income_activity="false" :show_members="true"
             :show_contribution="false" @fetch-members="getOrganisationMembers">
           </TableVue>
@@ -46,6 +54,7 @@ import TableVue from "src/components/Table.vue";
 import NotFound from "src/components/NotFound.vue";
 import memberMixin from "src/mixins/memberMixin.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
+import { Notify, Platform } from "quasar";
 
 export default {
   mixins: [memberMixin, organisationMixinVue],
@@ -62,6 +71,7 @@ export default {
       years: ["2020", "2021", "2022", "2023", "2024"],
       label_fetch_user: "Filter",
       loading: false,
+      start_filter: false,
       color: "primary",
       no_caps: true,
       genders: ["MALE", "FEMALE", "ALL", "OTHER"],
@@ -122,7 +132,8 @@ export default {
         "Ooops!! You don't have any Register Member click the button to add Members.",
       label_print: "Print",
       color_print: "positive",
-      loading_print: false
+      loading_print: false,
+      filteredMembers: [],
     };
   },
   computed: {
@@ -155,6 +166,7 @@ export default {
     },
 
     filterMembers() {
+      this.filteredMembers =[];
       let id = this.getOrganisationId;
       let payload = {
         status: "none",
@@ -164,8 +176,8 @@ export default {
         msg: "none",
         color: "default",
         error_msg: "default",
-        commit: "SET_MEMBERS",
-        has_commit: true,
+        commit: "none",
+        has_commit: false,
         to_be_store_data: {
           required: true,
           has_value: false,
@@ -173,9 +185,22 @@ export default {
         },
       };
       this.loading = true
-      this.$store.dispatch("getRequest", payload).then(() => {
+      this.$store.dispatch("getRequest", payload).then((res) => {
         this.loading = false
-        this.getMembers
+        this.start_filter = true;
+        res.data.forEach((member) => {
+          this.filteredMembers.push({
+            counter: res.data.indexOf(member) + 1,
+            name: member.name,
+            telephone: member.telephone,
+            gender: member.gender,
+            address: member.address,
+            occupation: member.occupation,
+            id: member.id,
+            email: member.email,
+            organisation_id: member.organisation_id
+          })
+        })
       })
     },
 
@@ -185,11 +210,11 @@ export default {
         status: "none",
         url: `/api/protected/organisations/download-users?organisation_id=${id}&gender=${this.gender}&year=${this.year}`,
         has_path_val: true,
-        show_feedback: false,
+        show_feedback: true,
         msg: "none",
         file_name: "Organisation_Members.pdf",
         color: "default",
-        error_msg: "default",
+        error_msg: "Could not download pdf file",
         commit: "none",
         has_commit: false,
         to_be_store_data: {
@@ -202,6 +227,12 @@ export default {
       this.loading_print = true
       this.$store.dispatch("downloadPdf", payload).then(() => {
         this.loading_print = false
+      }).catch((error) => {
+        Notify.create({
+          type:"info",
+          message:"Could not download pdf file",
+          position:Platform.is.mobile ? "bottom-left":"top-right"
+        })
       })
     }
   },

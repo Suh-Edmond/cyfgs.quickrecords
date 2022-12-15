@@ -339,3 +339,11 @@ export function setOrganisation({ commit }, data) {
 export function updateMember({ commit }, data) {
   commit("UPDATE_MEMBER", data);
 }
+
+export function setPayCategories({commit}, data) {
+  commit("SET_PAYMENT_CATEGORIES", data)
+}
+
+export function setUpdatedPayCategories({commit}, data) {
+  commit("UPDATE_PAYMENT_CATEGORY", data)
+}

@@ -17,3 +17,11 @@ export function SET_IS_FETCHING(state, data) {
 export function UPDATE_MEMBER(state, data) {
   state.updated_member = data
 }
+
+export function SET_PAYMENT_CATEGORIES(state, data) {
+  state.payment_categories = data
+}
+
+export function UPDATE_PAYMENT_CATEGORY(state, data) {
+  state.updated_payment_category = data
+}

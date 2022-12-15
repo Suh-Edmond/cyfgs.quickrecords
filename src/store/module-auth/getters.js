@@ -17,3 +17,10 @@ export function getUpdatedMember(state) {
   return state.updated_member
 }
 
+export function getPaymentCategories(state) {
+  return state.payment_categories;
+}
+
+export function getUpdatedPaymentCategory(state) {
+  return state.updated_payment_category;
+}

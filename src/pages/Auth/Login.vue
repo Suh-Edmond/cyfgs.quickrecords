@@ -339,13 +339,7 @@ export default {
       this.loading = true;
       this.$store
         .dispatch("postRequest", payload)
-        .then((res) => {
-          if (typeof res !== undefined) {
-            this.$store.dispatch(
-              "setRoles",
-              this.setUserRoles(res.data.data.roles)
-            );
-          }
+        .then(() => {
         })
         .finally(() => {
           this.loading = false;

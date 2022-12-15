@@ -2,12 +2,12 @@
   <q-page>
     <NotFound
       :message="not_found_msg"
-      v-if="payment_categories.length == 0"
+      v-if="getPaymentCategories.length == 0"
     ></NotFound>
     <!-- header for filter categories -->
     <div
       class="row q-ml-xs q-pt-xs"
-      v-if="payment_categories.length > 0"
+      v-if="getPaymentCategories.length > 0"
       :class="$q.screen.lg ? 'q-pa-sm' : ''"
       :style="
         $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
@@ -39,7 +39,7 @@
       <div class="col-md-12 col-xs-12 col-sm-12">
         <CategoryTable
           :columns="columns"
-          :data="data"
+          :data="getPaymentCategories"
           :label="label"
           :message="message"
           :name="name"
@@ -61,12 +61,17 @@ import NotFound from "src/components/NotFound.vue";
 import CategoryTable from "src/components/CategoryTable.vue";
 import ButtonVue from "src/components/Button.vue";
 import { SessionStorage } from 'quasar';
+import PaymentCategoryMixinVue from "src/mixins/PaymentCategoryMixin.vue";
+
 export default {
+  mixins:[PaymentCategoryMixinVue],
+  mounted() {
+    this.fetchCategories()
+  },
   data() {
     return {
       not_found_msg:
         "Ooops!! No Payment Categories found. click the add button to add Payment Categories.",
-      payment_categories: [{ id: "1" }],
       year: null,
       years: ["2020", "2021", "2022", "2023", "2024"],
       search: null,
@@ -78,11 +83,11 @@ export default {
       color_print:"positive",
       columns: [
         {
-          name: "id",
+          name: "counter",
           required: true,
           label: "S/N",
           align: "left",
-          field: "id",
+          field: "counter",
         },
         {
           name: "name",
@@ -105,68 +110,6 @@ export default {
           field: "action",
         },
       ],
-      data: [
-        {
-          id: 1,
-          name: "Frozen Yogurt",
-          item: "View Payment Items",
-          action: "",
-        },
-        {
-          id: 2,
-          name: "Ice cream sandwich",
-          item: "View Payment Items",
-          action: "",
-        },
-        {
-          id: 3,
-          name: "Eclair",
-          item: "View Payment Items",
-          action: "",
-        },
-        {
-          id: 4,
-          name: "Cupcake",
-          item: "View Payment Items",
-          action: "",
-        },
-        {
-          id: 5,
-          name: "Gingerbread",
-          item: "View Payment Items",
-          action: "",
-        },
-        {
-          id: 6,
-          name: "Jelly bean",
-          item: "View Payment Items",
-          action: "",
-        },
-        {
-          id: 7,
-          name: "Lollipop",
-          item: "View Payment Items",
-          action: "",
-        },
-        {
-          id: 8,
-          name: "Honeycomb",
-          item: "View Payment Items",
-          action: "",
-        },
-        {
-          id: 9,
-          name: "Donut",
-          item: "View Payment Items",
-          action: "",
-        },
-        {
-          id: 10,
-          name: "KitKat",
-          item: "View Payment Items",
-          action: "",
-        },
-      ],
       label: "Delete",
       message: "Are you sure you want to delete this Payment Category?",
       name:"Harvest ThanksGiven"
@@ -186,9 +129,13 @@ export default {
       }
       return this.title;
     },
+    getPaymentCategories() {
+      return this.$store.getters.getPaymentCategories;
+    }
   },
   methods: {
     updatePaymentCategory(data) {
+      this.$store.dispatch("setUpdatedPayCategories", data.data)
       this.$emit("update-payment-category", data);
     },
     showPaymentItems(data) {

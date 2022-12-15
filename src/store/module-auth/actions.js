@@ -96,7 +96,7 @@ export function postRequest({ commit, dispatch }, payload) {
           payload.error_msg != "default"
             ? payload.error_msg
             : error.response.data.message,
-        status_code: error.response.status,
+        status_code: 404,
       };
       dispatch("handleRequestResponse", handle_error_payload);
     });

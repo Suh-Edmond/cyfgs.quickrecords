@@ -2,22 +2,15 @@
   <q-page>
     <q-header class="bg-primary text-white header">
       <q-toolbar>
-        <q-btn
-          dense
-          flat
-          round
-          icon="menu"
-          @click="showLeftDrawer"
-          v-if="$q.screen.lt.md"
-        />
+        <q-btn dense flat round icon="menu" @click="showLeftDrawer" v-if="$q.screen.lt.md" />
         <q-toolbar-title class="toolbar_title">
-          Welcome President
+          Welcome {{ auth_user_role }}
         </q-toolbar-title>
         <div>
           <q-avatar size="xl">
             <span class="material-icons"> account_circle </span>
           </q-avatar>
-          {{auth_name}}
+          {{ auth_name }}
           <q-btn-dropdown flat>
             <q-list>
               <q-item clickable v-close-popup>
@@ -37,10 +30,7 @@
                     <q-icon name="logout" size="sm" color="red" />
                   </span>
                 </q-item-section>
-                <q-item-section
-                  class="text-center drop_down_text"
-                  @click="logoutUser"
-                >
+                <q-item-section class="text-center drop_down_text" @click="logoutUser">
                   <q-item-label>Logout</q-item-label>
                 </q-item-section>
               </q-item>
@@ -49,82 +39,43 @@
         </div>
       </q-toolbar>
     </q-header>
-    <div
-      class="main_content"
-      :style="$q.screen.lg ? 'margin-left: .5rem;' : ''"
-    >
+    <div class="main_content" :style="$q.screen.lg ? 'margin-left: .5rem;' : ''">
       <q-card class="header_section">
         <q-card-section class="content_header">
           <div class="row">
             <label for="title" class="title">
-              <q-btn
-                round
-                color="primary"
-                icon="arrow_back"
-                flat
-                dense
-                @click="goBack"
-              />
+              <q-btn round color="primary" icon="arrow_back" flat dense @click="goBack" />
             </label>
             <div class="q-pa-xs">
               <span class="q-pl-sm title">{{ item.name }}</span>
               <span class="q-pl-sm">
-                <q-icon
-                  size="1.5em"
-                  name="chevron_right"
-                  color="primary"
-                  v-if="has_intermediate_tab"
-              /></span>
+                <q-icon size="1.5em" name="chevron_right" color="primary" v-if="has_intermediate_tab" /></span>
               <span class="q-pl-sm title" v-if="has_intermediate_tab">{{
-                intermediate_tab
+                  intermediate_tab
               }}</span>
               <span class="q-pl-sm">
-                <q-icon
-                  size="1.5em"
-                  name="chevron_right"
-                  color="primary"
-                  v-if="has_intermediate_tab2"
-              /></span>
+                <q-icon size="1.5em" name="chevron_right" color="primary" v-if="has_intermediate_tab2" /></span>
               <span class="q-pl-sm title" v-if="has_intermediate_tab2">{{
-                intermediate_tab2
+                  intermediate_tab2
               }}</span>
             </div>
             <q-space />
-            <q-btn
-              color="primary"
-              icon-right="add"
-              label="Add"
-              outline
-              size="md"
-              dense
-              no-caps
-              v-show="requires_add"
-              @click="showRightDrawer"
-              class="q-pa-xs"
-            />
+            <q-btn color="primary" icon-right="add" label="Add" outline size="md" dense no-caps v-show="requires_add"
+              @click="showRightDrawer" class="q-pa-xs" />
           </div>
         </q-card-section>
       </q-card>
       <q-scroll-area style="height: 90vh">
         <q-card class="card">
           <q-card-section class="content">
-            <router-view
-              @start-loading="startLoading"
-              @update-member="updateMember"
-              @update-payment-category="updatePaymentCategory"
-              @show-payment-items="showPaymentItems"
-              @update-payment-item="updatePaymentItem"
-              @update-expenditure-category="updateExpenditureCategory"
-              @show-expenditure-items="showExpenditureItems"
-              @edit-expenditure-item="editExpenditureItem"
+            <router-view @start-loading="startLoading" @update-member="updateMember"
+              @update-payment-category="updatePaymentCategory" @show-payment-items="showPaymentItems"
+              @update-payment-item="updatePaymentItem" @update-expenditure-category="updateExpenditureCategory"
+              @show-expenditure-items="showExpenditureItems" @edit-expenditure-item="editExpenditureItem"
               @show-expenditure-item-details="showExpenditureItemDetails"
-              @edit-expenditure-item-detail="editExpenditureItemDetail"
-              @edit-member-saving="editMemberSaving"
-              @edit-income-activity="editIncomeActivity"
-              @view-income-activity="viewIncomeActivity"
-              @view-contribution="viewContribution"
-              @edit-contribution="editContribution"
-            />
+              @edit-expenditure-item-detail="editExpenditureItemDetail" @edit-member-saving="editMemberSaving"
+              @edit-income-activity="editIncomeActivity" @view-income-activity="viewIncomeActivity"
+              @view-contribution="viewContribution" @edit-contribution="editContribution" />
           </q-card-section>
         </q-card>
       </q-scroll-area>
@@ -148,6 +99,8 @@ import { LocalStorage, SessionStorage } from "quasar";
 export default {
   mounted() {
     this.auth_name = LocalStorage.getItem('data').name;
+    this.auth_user_role = this.formatUserRole(LocalStorage.getItem('data').roles.find(role => role.name !== "USER").name);
+
   },
   props: {
     item: {
@@ -162,6 +115,7 @@ export default {
   data() {
     return {
       auth_name: LocalStorage.getItem('data').name,
+      auth_user_role: null,
       left: false,
       year: new Date().getFullYear(),
       right: false,
@@ -199,14 +153,14 @@ export default {
         color: "default",
         to_on_fail: "none",
         error_msg: "default",
-        show_feedback:true,
+        show_feedback: true,
         to_be_store_data: {
           required: false,
           has_value: false,
           data: [],
         },
       };
-      this.$store.dispatch("auth/logoutUser", payload);
+      this.$store.dispatch("logoutUser", payload);
     },
     goBack() {
       history.back();
@@ -311,6 +265,22 @@ export default {
     editContribution(data) {
       this.updateDrawer(data);
     },
+    formatUserRole(role) {
+      let user_role =null;
+      if (role === "FINANCIAL_SECRETARY") {
+        user_role = "Financial Secretary"
+      }
+      if (role === "TREASURER") {
+        user_role = "Treasurer"
+      }
+      if (role === "PRESIDENT") {
+        user_role = "President"
+      }
+      if (role === "AUDITOR") {
+        user_role = "Auditor"
+      }
+      return user_role
+    }
   },
 };
 </script>

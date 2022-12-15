@@ -4,7 +4,7 @@
       <q-tabs v-model="tab" dense class="text-grey q-pt-sm" active-color="primary" indicator-color="primary"
         align="justify" narrow-indicator>
         <q-tab name="Personal Information" label="Personal Information" no-caps icon="person" />
-        <q-tab name="Member Roles" label="Member Roles" no-caps icon="person" />
+        <q-tab name="Member Roles" label="Member Roles" no-caps icon="person" v-if="can_edit_user_role" />
       </q-tabs>
 
       <q-separator />
@@ -19,7 +19,7 @@
               </div>
               <div>
                 <label for="credential" class="form_field">Gender <span class="text-red">*</span></label>
-                <q-select v-model="user.gender" outlined dense :options="gender_options"  disable readonly/>
+                <q-select v-model="user.gender" outlined dense :options="gender_options" disable readonly />
               </div>
               <div>
                 <label for="credential" class="form_field">Email</label>
@@ -140,7 +140,7 @@
 import ButtonVue from "src/components/Button.vue";
 import organisationMixin from "src/mixins/organisationMixin.vue";
 import memberMixin from "src/mixins/memberMixin.vue";
-import { Notify, Platform } from "quasar";
+import { LocalStorage, Notify, Platform } from "quasar";
 import roleMixinVue from "src/mixins/roleMixin.vue";
 import moment from 'moment';
 
@@ -151,7 +151,10 @@ export default {
     this.$emit("set-heading", heading);
   },
   mounted() {
-    this.getAllRoles();
+    this.can_edit_user_role = this.checkCanEditUserRole();
+    if(this.can_edit_user_role){
+      this.getAllRoles();
+    }
   },
   data() {
     return {
@@ -159,6 +162,7 @@ export default {
       label_cancel: "Cancel",
       loading: false,
       color: "primary",
+      can_edit_user_role: true,
       no_caps: true,
       user: {
         name: null,
@@ -230,7 +234,7 @@ export default {
         to_on_fail: "none",
         error_msg: "An Error occurred! Please try again",
         has_commit: false,
-        show_feedback:true,
+        show_feedback: true,
         commit: "none",
         to_be_store_data: {
           required: false,
@@ -269,7 +273,7 @@ export default {
           data: { user_id: user_id, role: this.role.value },
           color: "default",
           to_on_ok: "none",
-          show_feedback:true,
+          show_feedback: true,
           status: "none",
           to_on_fail: "none",
           error_msg: "Only one(01) member of your organisation are allowed to have this Role",
@@ -285,7 +289,7 @@ export default {
         this.$store.dispatch("postRequest", payload).then(() => {
           this.loading = false;
           this.role = null;
-          this.getUserRoles(user_id);
+            this.getUserRoles(user_id);
         });
       }
     },
@@ -307,9 +311,12 @@ export default {
           data: [],
         },
       };
-      this.$store.dispatch("getRequest", payload).then((res) => {
+      this.can_edit_user_role = this.checkCanEditUserRole();
+      if(this.can_edit_user_role){
+        this.$store.dispatch("getRequest", payload).then((res) => {
         this.user_roles = res.data;
       });
+      }
     },
 
     removeUserRole() {
@@ -321,7 +328,7 @@ export default {
         to_on_ok: "none",
         status: "success",
         to_on_fail: "none",
-        show_feedback:true,
+        show_feedback: true,
         error_msg: "An Error occurred! Please try again",
         has_commit: false,
         commit: "none",
@@ -332,7 +339,7 @@ export default {
         },
       };
       this.$store.dispatch("deleteRequest", payload).then(() => {
-        this.getUserRoles(user_id);
+          this.getUserRoles(user_id);
       });
     },
 
@@ -347,7 +354,9 @@ export default {
       this.user.address = data.address;
       this.user.occupation = data.occupation;
       this.user.gender = data.gender;
+
       this.getUserRoles(data.id)
+
 
       return this.user;
     },
@@ -368,6 +377,10 @@ export default {
     },
     formDateTime(date) {
       return moment(String(date)).format('MM/DD/YYYY')
+    },
+    checkCanEditUserRole() {
+      let has_president_role = LocalStorage.getItem('data').roles.find(role => role.name === 'PRESIDENT');
+      return (has_president_role === "undefiend");
     }
   },
   components: {

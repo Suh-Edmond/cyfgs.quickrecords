@@ -124,6 +124,22 @@
             <q-item
               clickable
               v-ripple
+              :active-class="item.name == 'Invite Members' ? 'item' : 'item_text'"
+              :active="item.name == 'Invite Members'"
+              @click="setItem({ name: 'Invite Members', selected: true }, false)"
+              v-if="checkRole(['PRESIDENT', null])"
+            >
+              <q-item-section
+                avatar
+                :class="item.name == 'Invite Members' ? 'item_icon' : 'item_text'"
+              >
+                <q-icon name="share" size="xs" />
+              </q-item-section>
+              <q-item-section class="item_name"> Invite Members </q-item-section>
+            </q-item>
+            <q-item
+              clickable
+              v-ripple
               :active-class="
                 item.name == 'Payment Categories' ? 'item' : 'item_text'
               "

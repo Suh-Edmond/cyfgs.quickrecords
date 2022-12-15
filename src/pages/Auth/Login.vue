@@ -326,7 +326,7 @@ export default {
         data: this.user,
         msg: "Login Successful",
         color: "default",
-        to_on_ok: "dashboard",
+        to_on_ok: "members",
         to_on_fail: "none",
         show_feedback:true,
         error_msg: "Invalid Credentails! Please try again",

@@ -2,11 +2,10 @@ import { LocalStorage, Notify, Platform } from "quasar";
 import { axios } from "src/boot/axios";
 
 const API_URL = process.env.BASE_URL[0];
-const FILE_UPLOAD_URL = "https://file-storage-web-api.herokuapp.com";
+const FILE_UPLOAD_URL = "http://127.0.0.1:9000";
 
-
-export function handleRequestResponse({ commit }, payload) {
-  if (payload.status == "success") {
+export function handleRequestResponse({ }, payload) {
+  if (payload.status == "success" && payload.show_feedback) {
     if (payload.msg == "default") {
       Notify.create({
         type: "positive",
@@ -37,8 +36,7 @@ export function handleRequestResponse({ commit }, payload) {
       });
     }
   }
-  if (payload.status == "fail") {
-
+  if (payload.status == "fail" && payload.show_feedback) {
     if (payload.fail_msg == "default") {
       Notify.create({
         color: payload.color != "default" ? payload.color : "info",
@@ -69,6 +67,7 @@ export function postRequest({ commit, dispatch }, payload) {
       let handle_response_payload = {
         data: res.data,
         status: "success",
+        show_feedback: payload.show_feedback,
         color: payload.color,
         msg: payload.msg ? payload.msg : "default",
         to_on_ok: payload.to_on_ok,
@@ -90,6 +89,7 @@ export function postRequest({ commit, dispatch }, payload) {
     .catch((error) => {
       let handle_error_payload = {
         status: "fail",
+        show_feedback:payload.show_feedback,
         color: "negative",
         to_on_fail: payload.to_on_fail,
         fail_msg:
@@ -102,7 +102,8 @@ export function postRequest({ commit, dispatch }, payload) {
     });
 }
 
-export function uploadFileRequest({ commit, dispatch }, payload) {
+//upload excel files for users
+export function uploadFileRequest({ dispatch }, payload) {
   return axios
     .post(API_URL + payload.url, payload.data, {
       "Content-Type": "multipart/form-data",
@@ -110,6 +111,7 @@ export function uploadFileRequest({ commit, dispatch }, payload) {
     .then((res) => {
       let handle_response_payload = {
         data: "",
+        show_feedback:payload.show_feedback,
         status: payload.status,
         color: payload.color,
         msg: payload.msg ? payload.msg : "default",
@@ -119,11 +121,12 @@ export function uploadFileRequest({ commit, dispatch }, payload) {
       return res;
     })
     .catch((error) => {
-      if(error.response != "undefined"){
+      if (error.response != "undefined") {
         let handle_error_payload = {
           status: "fail",
           color: "negative",
           to_on_fail: "none",
+          show_feedback:payload.show_feedback,
           fail_msg:
             payload.error_msg != "default"
               ? payload.error_msg
@@ -132,28 +135,8 @@ export function uploadFileRequest({ commit, dispatch }, payload) {
         };
         dispatch("handleRequestResponse", handle_error_payload);
       }
-
     });
 }
-
-// export function uploadLogo({ commit, dispatch }, payload) {
-
-//   return axios
-//     .post(API_URL + payload.url, payload.data, {
-//       "Content-Type": "multipart/form-data",
-//     })
-//     .then((res) => {
-//       let handle_response_payload = {
-
-//       };
-//       return res;
-//     })
-//     .catch((error) => {
-//       let handle_response_payload = {
-
-//       };
-//     });
-// }
 
 export function getRequest({ commit, dispatch }, payload) {
   return axios
@@ -161,7 +144,8 @@ export function getRequest({ commit, dispatch }, payload) {
     .then((res) => {
       let handle_response_payload = {
         data: res.data,
-        status:payload.status? payload.status : "success",
+        status: payload.status ? payload.status : "success",
+        show_feedback:payload.show_feedback,
         color: payload.color,
         msg: payload.msg ? payload.msg : "default",
         to_on_ok: payload.to_on_ok,
@@ -184,6 +168,7 @@ export function getRequest({ commit, dispatch }, payload) {
         status: "fail",
         color: "negative",
         to_on_fail: payload.to_on_fail,
+        show_feedback:payload.show_feedback,
         fail_msg:
           payload.error_msg != "default"
             ? payload.error_msg
@@ -194,13 +179,14 @@ export function getRequest({ commit, dispatch }, payload) {
     });
 }
 
-export function putRequest({ commit, dispatch }, payload) {
+export function putRequest({ dispatch }, payload) {
   return axios
     .put(API_URL + payload.url, payload.data)
     .then((res) => {
       let handle_response_payload = {
         data: res.data,
         status: payload.status ? payload.status : "success",
+        show_feedback:payload.show_feedback,
         color: payload.color,
         msg: payload.msg ? payload.msg : "default",
         to_on_ok: payload.to_on_ok,
@@ -220,11 +206,12 @@ export function putRequest({ commit, dispatch }, payload) {
         status: payload.status ? payload.status : "fail",
         color: "negative",
         to_on_fail: payload.to_on_fail,
+        show_feedback:payload.show_feedback,
         fail_msg:
           payload.error_msg != "default"
             ? payload.error_msg
             : error.response.data.message,
-        status_code: error.response.status,
+        status_code: 404,
       };
       dispatch("handleRequestResponse", handle_fail_res_payload);
     });
@@ -238,8 +225,9 @@ export function deleteRequest({ dispatch }, payload) {
         status: payload.status ? payload.status : "success",
         color: payload.color,
         msg: payload.msg ? payload.msg : "default",
-        to_on_ok:payload.to_on_ok,
-        to_on_fail:payload.to_on_fail,
+        to_on_ok: payload.to_on_ok,
+        to_on_fail: payload.to_on_fail,
+        show_feedback:payload.show_feedback,
         to_be_store_data: {
           has_value: payload.to_be_store_data.has_value,
           required: payload.to_be_store_data.required,
@@ -255,6 +243,7 @@ export function deleteRequest({ dispatch }, payload) {
       let handle_fail_res_payload = {
         status: payload.status ? payload.status : "fail",
         color: "negative",
+        show_feedback:payload.show_feedback,
         to_on_fail: payload.to_on_fail,
         fail_msg:
           payload.error_msg != "default"
@@ -266,17 +255,64 @@ export function deleteRequest({ dispatch }, payload) {
     });
 }
 
-export function downloadPdf({}, payload){
-  return axios.get(API_URL + payload.url, {
-    "Content-Type":"application/pdf"
-  }).then((res) => {
-    var fileURL = window.URL.createObjectURL(new Blob([res.data]));
-     var fileLink = document.createElement('a');
-     fileLink.href = fileURL;
-     fileLink.setAttribute('download', 'file.pdf');
-     document.body.appendChild(fileLink);
-     fileLink.click();
-  })
+export function downloadPdf({}, payload) {
+  return axios
+    .get(API_URL + payload.url, {
+      "Content-Type": "application/pdf",
+      responseType: "blob",
+    })
+    .then((res) => {
+      var fileURL = window.URL.createObjectURL(new Blob([res.data]));
+      var fileLink = document.createElement("a");
+      fileLink.href = fileURL;
+      fileLink.setAttribute("download", payload.file_name);
+      document.body.appendChild(fileLink);
+      fileLink.click();
+    }).catch((error) => {
+      return error
+    });
+}
+
+//upload any other files being used in the system
+export async function uploadImageRequest({ commit, dispatch }, payload) {
+  return axios
+    .post(FILE_UPLOAD_URL + payload.url, payload.data, {
+      withCredentials: false,
+    })
+    .then((res) => {
+      let handle_response_payload = {
+        data: "",
+        status: payload.status,
+        color: payload.color,
+        msg: payload.msg ? payload.msg : "default",
+        to_on_ok: "none",
+      };
+      dispatch("handleRequestResponse", handle_response_payload);
+      return res;
+    })
+    .catch((error) => {
+      if (error.response != "undefined") {
+        let handle_error_payload = {
+          status: "fail",
+          color: "negative",
+          to_on_fail: "none",
+          fail_msg:
+            payload.error_msg != "default"
+              ? payload.error_msg
+              : error.response.data.message,
+          status_code: 404,
+        };
+        dispatch("handleRequestResponse", handle_error_payload);
+      }
+    });
+}
+
+//fetch uploaded files
+export async function fetchUploadedImageRequest({}, payload) {
+  const res = await axios.get(FILE_UPLOAD_URL + payload.url, {
+    withCredentials: false,
+  });
+  return res;
 }
 
 export function setFetchingState({ commit }, payload) {
@@ -287,20 +323,19 @@ export function setRoles({ commit }, roles) {
   commit("SET_ROLES", roles);
 }
 
-export function logoutUser({  }, payload) {
+export function logoutUser({}, payload) {
   LocalStorage.remove("data");
   LocalStorage.remove("credential");
   LocalStorage.remove("organisation");
   this.$router.push({
     name: payload.to_on_ok,
   });
-
 }
 
-// export function setOrganisation({ commit }, data) {
-//   commit("SET_ORGANISATION", data);
-// }
+export function setOrganisation({ commit }, data) {
+  commit("SET_ORGANISATION", data);
+}
 
-// export function updateMember({commit}, data) {
-//   commit("UPDATE_MEMBER", data);
-// }
+export function updateMember({ commit }, data) {
+  commit("UPDATE_MEMBER", data);
+}

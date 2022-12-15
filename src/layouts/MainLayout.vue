@@ -12,34 +12,22 @@
       <div>
         <div class="bg-white left_drawer">
           <div class="bg-transparent q-pa-sm flex flex-center">
-            <q-avatar size="90px" v-if="has_image">
-              <q-img src="../assets/UB-Logo.png">
-                <div class="absolute-bottom-right">
-                  <q-icon name="photo_camera"></q-icon>
-                </div>
-              </q-img>
+            <q-avatar size="90px" v-if="getOrganisation !== null">
+              <q-img :src="getOrganisation.logo"> </q-img>
             </q-avatar>
             <q-avatar
               size="90px"
-              v-if="!has_image"
+              v-if="getOrganisation == null"
               font-size="52px"
               color="grey"
             >
             </q-avatar>
-            <div class="q-mt-xl logo">
-              <q-icon name="photo_camera" size="xs" class="q-mt-sm q-pr-lg">
-                <input
-                  type="file"
-                  accept="image/x-png,image/jpg,image/jpeg"
-                  style="display: none"
-                />
-              </q-icon>
-            </div>
           </div>
           <div
             class="text-weight-bold text-center organisation_name q-mb-md q-pa-xs"
+            v-if="getOrganisation != null"
           >
-            Brother’s Corner CYF Great Soppo Buea
+            {{ getOrganisation.name }}
           </div>
         </div>
         <div class="nav">
@@ -344,11 +332,11 @@
               </q-btn>
             </div>
             <div class="flex flex-center">
-              <label for="heading" class="heading text-white  q-pl-lg text_h6">{{
+              <label for="heading" class="heading text-white q-pl-lg text_h6">{{
                 heading
               }}</label>
             </div>
-            <q-space/>
+            <q-space />
             <div>
               <q-btn
                 dense
@@ -372,7 +360,8 @@
           v-if="current_tab == 'EditMember'"
           @close-right-drawer="closeRightDrawer"
           @set-heading="setHeading"
-        ></EditMember>
+        >
+        </EditMember>
         <AddPaymentCategory
           v-if="current_tab == 'Payment Categories'"
           @close-right-drawer="closeRightDrawer"
@@ -428,11 +417,15 @@ import AddIncomeActivity from "src/components/AddIncomeActivity.vue";
 import ViewIncomeActivity from "src/components/ViewIncomeActivity.vue";
 import ViewContribution from "src/components/ViewContribution.vue";
 import AddContribution from "src/components/AddContribution.vue";
+import organisationMixinVue from "src/mixins/organisationMixin.vue";
 
 export default {
+  mixins: [organisationMixinVue],
+  mounted() {
+    this.getOrganisationInfo();
+  },
   data() {
     return {
-      has_image: false,
       left: false,
       right: false,
       year: new Date().getFullYear(),
@@ -448,6 +441,16 @@ export default {
       heading: "",
     };
   },
+  computed: {
+    getOrganisation() {
+      return this.$store.getters.getOrganisation;
+    },
+  },
+  watch: {
+    getOrganisation() {
+      return this.$store.getters.getOrganisation;
+    },
+  },
   methods: {
     setItem(item, requires_add) {
       this.item.name = item.name;
@@ -456,6 +459,7 @@ export default {
       SessionStorage.set("from_tab", SessionStorage.getItem("to_tab"));
       SessionStorage.set("to_tab", item.name);
       SessionStorage.set("requires_add", this.requires_add);
+      this.$store.dispatch("setFetchingState", true)
     },
     updateRightDrawer({ right, current_tab, data }) {
       this.current_tab = current_tab;
@@ -481,6 +485,7 @@ export default {
         msg: "Logout Successful",
         color: "default",
         to_on_fail: "none",
+        show_feedback:false,
         error_msg: "default",
         to_be_store_data: {
           required: false,
@@ -496,9 +501,9 @@ export default {
     closeRightDrawer() {
       this.right = !this.right;
     },
-    setHeading(data){
+    setHeading(data) {
       this.heading = data;
-    }
+    },
   },
   components: {
     MainContent,
@@ -584,17 +589,5 @@ export default {
   border-bottom-right-radius: 0px;
   border-top-left-radius: 0px;
   border-top-right-radius: 0px;
-}
-
-.logo {
-  cursor: pointer;
-}
-
-.heading {
-  font-family: "Roboto";
-  font-size: medium;
-  font-style: normal;
-  font-weight: 400;
-  letter-spacing: 0.01em;
 }
 </style>

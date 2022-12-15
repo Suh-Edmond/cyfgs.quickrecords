@@ -17,7 +17,7 @@
           <q-avatar size="xl">
             <span class="material-icons"> account_circle </span>
           </q-avatar>
-          Suh Edmond
+          {{auth_name}}
           <q-btn-dropdown flat>
             <q-list>
               <q-item clickable v-close-popup>
@@ -54,14 +54,6 @@
       :style="$q.screen.lg ? 'margin-left: .5rem;' : ''"
     >
       <q-card class="header_section">
-        <div class="col-12">
-          <q-linear-progress
-            indeterminate
-            color="primary"
-            size="5px"
-            v-if="is_fetching"
-          />
-        </div>
         <q-card-section class="content_header">
           <div class="row">
             <label for="title" class="title">
@@ -112,9 +104,6 @@
             />
           </div>
         </q-card-section>
-        <div class="flex flex-center q-mt-sm" v-if="is_fetching" >
-          <q-spinner-ios color="primary" size="2.5em" />
-        </div>
       </q-card>
       <q-scroll-area style="height: 90vh">
         <q-card class="card">
@@ -154,11 +143,12 @@
 </template>
 
 <script>
-import { SessionStorage } from "quasar";
-import { mapGetters } from "vuex";
+import { LocalStorage, SessionStorage } from "quasar";
 
 export default {
-  created() {},
+  mounted() {
+    this.auth_name = LocalStorage.getItem('data').name;
+  },
   props: {
     item: {
       type: Object,
@@ -171,7 +161,7 @@ export default {
   },
   data() {
     return {
-      is_fetching: false,
+      auth_name: LocalStorage.getItem('data').name,
       left: false,
       year: new Date().getFullYear(),
       right: false,
@@ -183,11 +173,7 @@ export default {
       loading: false,
     };
   },
-  watch:{
-    ...mapGetters({ is_fetching: "getFetchingState" }),
-  },
   computed: {
-    ...mapGetters({ is_fetching: "getFetchingState" }),
   },
 
   methods: {
@@ -213,6 +199,7 @@ export default {
         color: "default",
         to_on_fail: "none",
         error_msg: "default",
+        show_feedback:true,
         to_be_store_data: {
           required: false,
           has_value: false,
@@ -266,6 +253,7 @@ export default {
         current_tab: data.tab,
         data: data.data,
       });
+
     },
     updateExpenditureCategory(data) {
       this.updateDrawer(data);
@@ -324,7 +312,6 @@ export default {
       this.updateDrawer(data);
     },
   },
-  computed: {},
 };
 </script>
 

@@ -3,7 +3,7 @@ export default function () {
     roles: [],
     organisation:null,
     members:[],
-    is_fetching: true,
+    is_fetching: false,
     updated_member: null
   };
 }

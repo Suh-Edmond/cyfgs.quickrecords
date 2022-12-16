@@ -100,7 +100,6 @@ export default {
           data: [],
         },
       };
-      console.log(payload.data);
       this.loading = true;
       this.$store
         .dispatch("postRequest", payload)

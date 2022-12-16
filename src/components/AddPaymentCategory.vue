@@ -3,18 +3,33 @@
     <div class="q-mt-lg q-mx-sm">
       <q-form @submit="onAddPaymentCategory" class="q-gutter-md">
         <div>
-          <label for="credential" class="form_field">Name <span class="text-red">*</span></label>
+          <label for="credential" class="form_field"
+            >Name <span class="text-red">*</span></label
+          >
           <q-input v-model="payment_category.name" outlined dense type="text" />
         </div>
         <div>
-          <label for="credential" class="form_field">Description <span class="text-red">*</span></label>
-          <q-input v-model="payment_category.description" outlined dense type="textarea"
-            placeholder="Please provide a description about the category" />
+          <label for="credential" class="form_field"
+            >Description <span class="text-red">*</span></label
+          >
+          <q-input
+            v-model="payment_category.description"
+            outlined
+            dense
+            type="textarea"
+            placeholder="Please provide a description about the category"
+          />
         </div>
         <div class="row q-mt-lg justify-end">
           <div class="col-md-2 col-sm-2 col-xs-2">
-            <ButtonVue class="form_button" :label="label_save" :loading="loading" :color="color"
-              :disabled="validateForm" :no_caps="no_caps">
+            <ButtonVue
+              class="form_button"
+              :label="label_save"
+              :loading="loading"
+              :color="color"
+              :disabled="validateForm"
+              :no_caps="no_caps"
+            >
             </ButtonVue>
           </div>
         </div>
@@ -23,17 +38,15 @@
   </div>
 </template>
 <script>
-
 import ButtonVue from "src/components/Button.vue";
-import organisationMixinVue from 'src/mixins/organisationMixin.vue';
-import PaymentCategoryMixinVue from 'src/mixins/PaymentCategoryMixin.vue';
+import organisationMixinVue from "src/mixins/organisationMixin.vue";
+import PaymentCategoryMixinVue from "src/mixins/PaymentCategoryMixin.vue";
 
 export default {
   mixins: [organisationMixinVue, PaymentCategoryMixinVue],
   created() {
-    let heading = "Add Payment Category";
+    let heading = "Payment Category Information";
     this.$emit("set-heading", heading);
-
   },
   data() {
     return {
@@ -43,7 +56,7 @@ export default {
       payment_category: {
         name: null,
         description: null,
-        id: null
+        id: null,
       },
       position: "right",
       dialog: false,
@@ -56,7 +69,7 @@ export default {
     },
     getUpdatedCategory() {
       return this.setFormField(this.getUpdatedPaymentCategoryFromState());
-    }
+    },
   },
   watch: {
     getUpdatedCategory() {
@@ -68,7 +81,11 @@ export default {
       let id = this.getOrganisationId;
       let payload = {
         url: `/api/protected/organisations/${id}/payment-categories`,
-        data: this.payment_category,
+        data: {
+          name: this.payment_category.name,
+          description: this.payment_category.description,
+          id: this.getUpdatedPaymentCategoryFromState().id,
+        },
         msg: "Payment category save Successfully",
         color: "default",
         to_on_ok: "none",
@@ -83,6 +100,7 @@ export default {
           data: [],
         },
       };
+      console.log(payload.data);
       this.loading = true;
       this.$store
         .dispatch("postRequest", payload)
@@ -99,7 +117,6 @@ export default {
     resetForm() {
       this.payment_category.description = null;
       this.payment_category.name = null;
-      this.$store.dispatch("setUpdatedPayCategories", null)
       return this.payment_category;
     },
 
@@ -108,12 +125,13 @@ export default {
     },
 
     setFormField(data) {
-      this.payment_category.name = data.name,
-        this.payment_category.description = data.description,
-        this.id = data.id
+      (this.payment_category.name = data == null ? null : data.name),
+        (this.payment_category.description =
+          data == null ? null : data.description),
+        (this.id = data == null ? null : data.id);
+
       return this.payment_category;
     },
-
   },
   components: {
     ButtonVue,

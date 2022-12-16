@@ -60,7 +60,7 @@ export function handleRequestResponse({ }, payload) {
   }
 }
 
-export function postRequest({ commit, dispatch }, payload) {
+export function postRequest({dispatch }, payload) {
   return axios
     .post(API_URL + payload.url, payload.data, payload.headers)
     .then((res) => {

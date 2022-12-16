@@ -130,7 +130,19 @@ export default {
       return this.title;
     },
     getPaymentCategories() {
-      return this.$store.getters.getPaymentCategories;
+      let data = [];
+      this.$store.getters.getPaymentCategories.forEach((element) => {
+          data.push({
+            counter: this.$store.getters.getPaymentCategories.indexOf(element) + 1,
+            name: element.name,
+            item: "View Payment Items",
+            id: element.id,
+            description: element.description,
+            type: "PAYMENT_CATEGORY",
+            organisation_id: element.organisation_id,
+          });
+        });
+      return data
     }
   },
   methods: {

@@ -382,7 +382,6 @@
           v-if="current_tab == 'Payment Categories'"
           @close-right-drawer="closeRightDrawer"
           @set-heading="setHeading"
-          :updatedCategory="data"
         >
         </AddPaymentCategory>
         <AddPaymentItem

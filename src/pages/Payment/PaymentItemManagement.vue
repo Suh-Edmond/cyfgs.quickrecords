@@ -6,18 +6,27 @@
       $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
     ">
       <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
-        <q-select v-model="status" outlined dense :options="statuses" label="Select Status" />
+        <q-select v-model="is_complusory" outlined dense :options="statuses" label="Select Status"
+          @input="filterPaymentItems" />
       </div>
       <q-space />
       <div class="button q-pb-xs">
-        <ButtonVue :label="label_download" :loading="loading" :color="color_print" :disabled="false" :no_caps="no_caps"
-          icon_right="print"></ButtonVue>
+        <q-btn :label="label_download" :loading="loading" :color="color_print" :disabled="false" no-caps
+          icon-right="print" @click="downloadItems"></q-btn>
       </div>
     </div>
     <!-- table for categories -->
     <div class="row q-pt-sm" v-show="getPaymentItems.length > 0">
-      <div class="col-md-12 col-xs-12 col-sm-12">
-        <CategoryTable :columns="columns" :data="getPaymentItems" :label="label" :message="message" :name="name"
+      <div class="col-md-12 col-xs-12 col-sm-12" v-show="!start_filter">
+        <CategoryTable :columns="columns" :data="getPaymentItems" :label="label" :message="message"
+          :title="getPaymentCategoryName" @show-payment-items="showPaymentItems"
+          @update-payment-category="updatePaymentCategory" :show_payment_category="false" :show_payment_item="true"
+          @update-payment-item="updatePaymentItems" :show_expenditure_category="false" :show_expenditure_item="false">
+        </CategoryTable>
+      </div>
+
+      <div class="col-md-12 col-xs-12 col-sm-12" v-show="start_filter">
+        <CategoryTable :columns="columns" :data="filteredPaymentItems" :label="label" :message="message"
           :title="getPaymentCategoryName" @show-payment-items="showPaymentItems"
           @update-payment-category="updatePaymentCategory" :show_payment_category="false" :show_payment_item="true"
           @update-payment-item="updatePaymentItems" :show_expenditure_category="false" :show_expenditure_item="false">
@@ -30,16 +39,16 @@
 <script>
 import NotFound from "src/components/NotFound.vue";
 import CategoryTable from "src/components/CategoryTable.vue";
-import ButtonVue from "src/components/Button.vue";
 
 export default {
   mounted() {
-    this.getPaymentItemsFromState()
+    this.getPaymentItemsFromState();
   },
   data() {
     return {
-      not_found_msg:"",
+      not_found_msg: "",
       search: null,
+      start_filter: false,
       label_fetch: "Filter",
       color: "primary",
       no_caps: true,
@@ -78,13 +87,12 @@ export default {
           sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
         },
       ],
-      data: [
-      ],
+      data: [],
       label: "Delete",
       message: "Are you sure you want to delete this Payment Item?",
       statuses: ["COMPLUSORY", "NOT COMPLUSORY"],
-      status: null,
-      name: "Harvest of Joyful Celebration 2022",
+      is_complusory: null,
+      filteredPaymentItems: [],
     };
   },
   computed: {
@@ -94,13 +102,12 @@ export default {
     },
 
     getPaymentCategoryName() {
-      return this.$store.getters.getCurrentPaymentCategory.name
+      return this.$store.getters.getCurrentPaymentCategory.name;
     },
 
     getNotFoundMsgForPaymentItems() {
       return `Ooops!! No Payment Items found for Category ${this.$store.getters.getCurrentPaymentCategory.name}. Click the add button to add Payment Items.`;
-    }
-
+    },
   },
 
   methods: {
@@ -108,11 +115,9 @@ export default {
       this.$emit("update-payment-category", data);
     },
 
-
     showSearch() {
       this.start_search = !this.start_search;
     },
-
 
     showPaymentItems(data) {
       SessionStorage.set("intermediate_tab", "Payment Items");
@@ -130,8 +135,80 @@ export default {
     getPaymentItemsFromState() {
       let items = [];
       this.$store.getters.getPaymentItems.data?.forEach((ele) => {
-          items.push({
-            counter: this.$store.getters.getPaymentItems.data?.indexOf(ele) + 1,
+        items.push({
+          counter: this.$store.getters.getPaymentItems.data?.indexOf(ele) + 1,
+          name: ele.name,
+          amount: ele.amount,
+          id: ele.id,
+          complusory: ele.complusory,
+          payment_category_id: ele.payment_category_id,
+          description: ele.description,
+          payment_category_name: ele.payment_category_name,
+          type: "PAYMENT_ITEMS",
+        });
+      });
+      return items;
+    },
+
+    downloadItems() {
+      let id = this.$store.getters.getCurrentPaymentCategory.id;
+      let payload = {
+        status: "none",
+        url: `/api/protected/download-payment-items?payment_category_id=${id}`,
+        has_path_val: true,
+        show_feedback: true,
+        msg: "none",
+        file_name: "Payment_Items.pdf",
+        color: "default",
+        error_msg: "Could not download pdf file",
+        commit: "none",
+        has_commit: false,
+        to_be_store_data: {
+          required: true,
+          has_value: false,
+          data: null,
+        },
+      };
+
+      this.loading = true;
+      this.$store
+        .dispatch("downloadPdf", payload)
+        .then(() => {
+          this.loading = false;
+        })
+        .catch(() => {
+          Notify.create({
+            type: "info",
+            message: "Could not download pdf file",
+            position: Platform.is.mobile ? "bottom-left" : "top-right",
+          });
+        });
+    },
+
+    filterPaymentItems() {
+      this.filteredPaymentItems = [];
+      let id = this.$store.getters.getCurrentPaymentCategory.id;
+      let is_complusory = this.is_complusory == "COMPLUSORY" ? 1 : 0; //1 means true and 0 means false
+      let payload = {
+        url: `/api/protected/filter-payment-items?payment_category_id=${id}&complusory=${is_complusory}`,
+        msg: "none",
+        color: "default",
+        status: "none",
+        error_msg: "An Error occurred! Could not fetch payment categories",
+        has_commit: false,
+        show_feedback: false,
+        commit: "none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.$store.dispatch("getRequest", payload).then((res) => {
+        this.start_filter = true;
+        res.data.data.forEach((ele) => {
+          this.filteredPaymentItems.push({
+            counter: res.data.data.indexOf(ele) + 1,
             name: ele.name,
             amount: ele.amount,
             id: ele.id,
@@ -139,16 +216,15 @@ export default {
             payment_category_id: ele.payment_category_id,
             description: ele.description,
             payment_category_name: ele.payment_category_name,
-            type: 'PAYMENT_ITEMS'
-          })
-        })
-      return items;
-    }
+            type: "PAYMENT_ITEMS",
+          });
+        });
+      });
+    },
   },
   components: {
     NotFound,
     CategoryTable,
-    ButtonVue,
   },
 };
 </script>

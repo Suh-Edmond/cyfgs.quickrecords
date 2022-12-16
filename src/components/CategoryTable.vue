@@ -1,15 +1,9 @@
 <template>
   <div class="q-pa-xs">
     <!-- table element -->
-    <q-table
-      :data="data"
-      :columns="columns"
-      row-key="id"
-      :table-header-style="{ backgroundColor: '#5384ae', color: '#FFFFFF' }"
-      class="col-xs-12"
-      :filter="filter"
-      :pagination.sync="pagination"
-    >
+    <q-table :data="data" :columns="columns" row-key="id"
+      :table-header-style="{ backgroundColor: '#5384ae', color: '#FFFFFF' }" class="col-xs-12" :filter="filter"
+      :pagination.sync="pagination">
       <template v-slot:body="props">
         <q-tr :props="props">
           <q-td key="counter" :props="props">
@@ -19,29 +13,16 @@
             {{ props.row.name }}
           </q-td>
           <q-td key="item" :props="props" v-if="show_payment_category">
-            <q-btn
-              flat
-              class="view_items"
-              @click="showPaymentItems(props.row)"
-              :to="{ name: 'payment_items', params: { id: props.row.id } }"
-            >
+            <q-btn flat class="view_items" @click="showPaymentItems(props.row)"
+              :to="{ name: 'payment_items', params: { id: props.row.id } }">
               {{ props.row.item }}
             </q-btn>
           </q-td>
-          <q-td
-            key="expenditure_category"
-            :props="props"
-            v-if="show_expenditure_category"
-          >
-            <q-btn
-              flat
-              class="view_items"
-              @click="showExpenditureItems(props.row)"
-              :to="{
-                name: 'expenditure_items',
-                params: { id: props.row.id },
-              }"
-            >
+          <q-td key="expenditure_category" :props="props" v-if="show_expenditure_category">
+            <q-btn flat class="view_items" @click="showExpenditureItems(props.row)" :to="{
+              name: 'expenditure_items',
+              params: { id: props.row.id },
+            }">
               {{ props.row.expenditure_category }}
             </q-btn>
           </q-td>
@@ -65,21 +46,10 @@
           </q-td>
           <q-td key="action" :props="props">
             <q-btn flat round>
-              <q-icon
-                name="more_vert"
-                size="xs"
-                color="primary"
-                class="menu_icon"
-                clickable
-              >
+              <q-icon name="more_vert" size="xs" color="primary" class="menu_icon" clickable>
                 <q-menu>
                   <q-list>
-                    <q-item
-                      clickable
-                      v-close-popup
-                      @click="onViewCategory(props.row)"
-                      v-if="show_payment_category"
-                    >
+                    <q-item clickable v-close-popup @click="onViewCategory(props.row)" v-if="show_payment_category">
                       <q-item-section avatar>
                         <span>
                           <q-icon name="visibility" size="xs" class="details" />
@@ -89,12 +59,7 @@
                         <q-item-label class="details">View</q-item-label>
                       </q-item-section>
                     </q-item>
-                    <q-item
-                      clickable
-                      v-close-popup
-                      @click="onViewPaymentItem(props.row)"
-                      v-if="show_payment_item"
-                    >
+                    <q-item clickable v-close-popup @click="onViewPaymentItem(props.row)" v-if="show_payment_item">
                       <q-item-section avatar>
                         <span>
                           <q-icon name="visibility" size="xs" class="details" />
@@ -104,27 +69,19 @@
                         <q-item-label class="details">View</q-item-label>
                       </q-item-section>
                     </q-item>
-                    <q-item
-                      clickable
-                      v-close-popup
-                      @click="onViewExpenditureCategory(props.row)"
-                      v-if="show_expenditure_category"
-                    >
+                    <q-item clickable v-close-popup @click="onViewExpenditureCategory(props.row)"
+                      v-if="show_expenditure_category">
                       <q-item-section avatar>
                         <span>
                           <q-icon name="visibility" size="xs" class="details" />
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="details">View</q-item-label>
+                        <q-item-label class="details">Details</q-item-label>
                       </q-item-section>
                     </q-item>
-                    <q-item
-                      clickable
-                      v-close-popup
-                      @click="onEditExpenditureItem(props.row)"
-                      v-if="show_expenditure_item"
-                    >
+                    <q-item clickable v-close-popup @click="onEditExpenditureItem(props.row)"
+                      v-if="show_expenditure_item">
                       <q-item-section avatar>
                         <span>
                           <q-icon name="edit" size="xs" class="details" />
@@ -134,27 +91,19 @@
                         <q-item-label class="details">Edit</q-item-label>
                       </q-item-section>
                     </q-item>
-                    <q-item
-                      clickable
-                      v-close-popup
-                      @click="onViewExpenditureItemDetail(props.row)"
-                      v-if="show_expenditure_item"
-                    >
+                    <q-item clickable v-close-popup @click="onViewExpenditureItemDetail(props.row)"
+                      v-if="show_expenditure_item">
                       <q-item-section avatar>
                         <span>
                           <q-icon name="visibility" size="xs" class="details" />
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="details">View</q-item-label>
+                        <q-item-label class="details">Details</q-item-label>
                       </q-item-section>
                     </q-item>
-                    <q-item
-                      clickable
-                      v-close-popup
-                      @click="onEditExpenditureItemDetail(props.row)"
-                      v-if="show_expenditure_item_detail"
-                    >
+                    <q-item clickable v-close-popup @click="onEditExpenditureItemDetail(props.row)"
+                      v-if="show_expenditure_item_detail">
                       <q-item-section avatar>
                         <span>
                           <q-icon name="edit" size="xs" class="details" />
@@ -164,12 +113,8 @@
                         <q-item-label class="details">Edit</q-item-label>
                       </q-item-section>
                     </q-item>
-                    <q-separator/>
-                    <q-item
-                      clickable
-                      v-close-popup
-                      @click="onDelete(props.row)"
-                    >
+                    <q-separator />
+                    <q-item clickable v-close-popup @click="onDelete(props.row)">
                       <q-item-section avatar>
                         <span>
                           <q-icon name="delete" size="xs" color="red" />
@@ -188,7 +133,7 @@
       </template>
       <template v-slot:top-left>
         <div class="text-h6 title" v-show="show_payment_item">
-         Category Name: {{ title }}
+          Category Name: {{ title }}
         </div>
         <div class="text-h6 title" v-show="show_expenditure_item">
           Category Name: {{ title }}
@@ -198,17 +143,11 @@
         </div>
       </template>
       <template v-slot:top-right>
-        <q-input
-          outlined
-          dense
-          :class="
-            $q.screen.md
-              ? 'text-h6-sm q-mb-sm q-mt-sm full-width'
-              : 'text-h6-sm'
-          "
-          v-model="filter"
-          placeholder="Search category..."
-        >
+        <q-input outlined dense :class="
+          $q.screen.md
+            ? 'text-h6-sm q-mb-sm q-mt-sm full-width'
+            : 'text-h6-sm'
+        " v-model="filter" placeholder="Search category...">
           <template v-slot:append>
             <q-icon name="search" />
           </template>
@@ -221,48 +160,29 @@
       <q-card>
         <q-card-section>
           <div>
-            <q-avatar
-              icon="warning"
-              class="warning_image"
-              size="30px"
-              color="yellow"
-              text-color="white"
-            />
+            <q-avatar icon="warning" class="warning_image" size="30px" color="yellow" text-color="white" />
             <span class="q-ml-sm text-dark">{{ message }}</span>
           </div>
           <div class="text-weight-bold text-center">{{ deleted_row.name }}</div>
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn
-            :label="label_cancel"
-            :color="'primary'"
-            :disabled="false"
-            :loading="loading"
-            :no_caps="false"
-            v-close-popup
-            :flat="true"
-          ></q-btn>
-          <q-btn
-            :label="label"
-            :color="'primary'"
-            :disabled="false"
-            :loading="loading"
-            :no_caps="false"
-            v-close-popup
-            @click="deletedRow(deleted_row)"
-            :flat="true"
-          ></q-btn>
+          <q-btn :label="label_cancel" :color="'primary'" :disabled="false" :loading="loading" :no_caps="false"
+            v-close-popup :flat="true"></q-btn>
+          <q-btn :label="label" :color="'primary'" :disabled="false" :loading="loading" :no_caps="false" v-close-popup
+            @click="deletedRow(deleted_row)" :flat="true"></q-btn>
         </q-card-actions>
       </q-card>
     </q-dialog>
   </div>
 </template>
 <script>
-import { SessionStorage } from 'quasar';
-import PaymentCategoryMixinVue from 'src/mixins/PaymentCategoryMixin.vue';
+import { SessionStorage } from "quasar";
+import PaymentCategoryMixinVue from "src/mixins/PaymentCategoryMixin.vue";
+
+
 export default {
-  mixins:[PaymentCategoryMixinVue],
+  mixins: [PaymentCategoryMixinVue],
   props: {
     columns: {
       type: Array,
@@ -304,10 +224,10 @@ export default {
       type: Boolean,
       required: true,
     },
-    show_expenditure_item_detail:{
+    show_expenditure_item_detail: {
       type: Boolean,
-      required: false
-    }
+      required: false,
+    },
   },
   data() {
     return {
@@ -316,19 +236,19 @@ export default {
       color: "positive",
       no_caps: true,
       dialog: false,
-      deleted_row : null,
+      deleted_row: null,
       showTable: true,
       label_cancel: "Cancel",
       filter: "",
       pagination: {
-        rowsPerPage:15 // current rows per page being displayed
+        rowsPerPage: 15, // current rows per page being displayed
       },
     };
   },
-  computed:{
-    getSelectedCategory(){
+  computed: {
+    getSelectedCategory() {
       return SessionStorage.getItem("selected_category");
-    }
+    },
   },
   methods: {
     onViewCategory(categories) {
@@ -353,17 +273,22 @@ export default {
       let has_intermediate_tab = true;
       this.$emit("show-payment-items", { payment_items, has_intermediate_tab });
     },
-    showExpenditureItems(expenditure_items){
+    showExpenditureItems(expenditure_items) {
       let has_intermediate_tab = true;
-      SessionStorage.set("selected_category", expenditure_items.id)
+      SessionStorage.set("selected_category", expenditure_items.id);
       this.$emit("show-expenditure-items", { data, has_intermediate_tab });
-
     },
     onViewExpenditureItemDetail(expenditure_item_detail) {
       let has_intermediate_tab = true;
       let selected_category = SessionStorage.getItem("selected_category");
-      this.$router.push({ name: 'expenditure_item_details', params:{ "id": selected_category, "item_id":expenditure_item_detail.id } })
-      this.$emit("show-expenditure-item-details", {expenditure_item_detail, has_intermediate_tab})
+      this.$router.push({
+        name: "expenditure_item_details",
+        params: { id: selected_category, item_id: expenditure_item_detail.id },
+      });
+      this.$emit("show-expenditure-item-details", {
+        expenditure_item_detail,
+        has_intermediate_tab,
+      });
     },
     onViewExpenditureCategory(expenditure_category) {
       let payload = {
@@ -372,21 +297,23 @@ export default {
       };
       this.$emit("update-expenditure-category", payload);
     },
-    onEditExpenditureItem(expenditure_item){
+    onEditExpenditureItem(expenditure_item) {
       let payload = {
         data: expenditure_item,
         tab: "Expenditure Items",
       };
       this.$emit("edit-expenditure-item", payload);
     },
-    onEditExpenditureItemDetail(expenditure_item_detail){
+    onEditExpenditureItemDetail(expenditure_item_detail) {
       let payload = {
         data: expenditure_item_detail,
         tab: "Expenditure Item Details",
       };
       this.$emit("edit-expenditure-item-detail", payload);
     },
-    deletedRow(deleted_data){
+
+
+    deletedRow(deleted_data) {
       let payload = {
         url: this.setDeletedUrlBaseOnType(deleted_data),
         msg: "Payment category deleted Successfully",
@@ -402,31 +329,60 @@ export default {
           has_value: false,
           data: [],
         },
-      }
+      };
       this.$store.dispatch("deleteRequest", payload).then(() => {
         this.callFetchDataBaseOnType(deleted_data);
-      })
+      });
     },
+
+
     setDeletedUrlBaseOnType(row) {
-      let url = '';
-      switch(row.type){
-        case 'PAYMENT_CATEGORY':
-          url =  `/api/protected/organisations/${row.organisation_id}/payment-categories/${row.id}`;
+      let url = "";
+      switch (row.type) {
+        case "PAYMENT_CATEGORY":
+          url = `/api/protected/organisations/${row.organisation_id}/payment-categories/${row.id}`;
+          break;
+        case "PAYMENT_ITEMS":
+          url = `/api/protected/payment-categories/${row.payment_category_id}/payment-items/${row.id}`;
           break;
       }
       return url;
     },
 
-    callFetchDataBaseOnType(row){
-      switch(row.type){
+
+    callFetchDataBaseOnType(row) {
+      switch (row.type) {
         case "PAYMENT_CATEGORY":
           this.fetchCategories();
           break;
+        case "PAYMENT_ITEMS":
+          this.getPaymentItemsByCategory(row.payment_category_id);
+          break;
       }
+    },
+
+
+    getPaymentItemsByCategory(id) {
+      let payload = {
+        status: "none",
+        url: `/api/protected/payment-categories/${id}/payment-items`,
+        has_path_val: true,
+        show_feedback: false,
+        msg: "none",
+        color: "default",
+        error_msg: "default",
+        commit: "SET_PAYMENT_ITEMS",
+        has_commit: true,
+        to_be_store_data: {
+          required: true,
+          has_value: false,
+          data: null,
+        },
+      };
+      this.$store.dispatch("getRequest", payload).then(() => { });
     }
   },
-  components: {
-  },
+  components: {},
 };
 </script>
 <style lang="scss" scoped>

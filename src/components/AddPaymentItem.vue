@@ -20,7 +20,7 @@
           </div>
         </div>
         <div>
-          <label for="credential" class="form_field">Description </label>
+          <label for="credential" class="form_field">Description <span class="text-red">*</span></label>
           <q-input v-model="payment_item.description" outlined dense type="textarea"
             placeholder="Please provide a description about the category" />
         </div>
@@ -64,24 +64,37 @@ export default {
       payment_item: {
         complusory: true,
         name: null,
-        amount: 0,
         description: null,
+        id: null,
+        payment_category_id: null,
+        amount: 0
       },
     };
   },
   computed: {
+
     validateForm() {
-      return this.payment_item.name === null || this.payment_item.amount == 0 ? true : false;
+      return this.payment_item.name === null || this.payment_item.description === null || this.payment_item.amount === 0 ? true : false;
     },
+
+    getUpdatedPaymentItem() {
+      return this.setFormFields(this.$store.getters.getUpdatedPaymentItem);
+    }
   },
+
+  watch: {
+    getUpdatedPaymentItem() {
+      return this.setFormFields(this.$store.getters.getUpdatedPaymentItem);
+    }
+  },
+
   methods: {
     onAddPaymentItem() {
       let category = this.$store.getters.getCurrentPaymentCategory;
-      console.log(category);
       let payload = {
-        url: `/api/protected/payment-categories/${category.id}/payment-items`,
+        url: this.setAddUpdatePaymentItemUrl(this.payment_item, category),
         data: this.payment_item,
-        msg: "Payment Item saved Successfully",
+        msg: "Payment Category save Successfully",
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
@@ -95,45 +108,67 @@ export default {
           data: [],
         },
       };
-      this.loading = true;
-      this.$store
-        .dispatch("postRequest", payload)
-        .then(() => {
-          this.getPaymentItemsByCategory(category.id);
-        })
-        .finally(() => {
-          this.loading = false;
-          this.resetForm();
-          this.$emit("close-right-drawer");
-        });
-    },
-    getPaymentItemsByCategory(id) {
-      let payload = {
-        status: "none",
-        url: `/api/protected/payment-categories/${id}/payment-items`,
-        has_path_val: true,
-        show_feedback: false,
-        msg: "none",
-        color: "default",
-        error_msg: "default",
-        commit: "SET_PAYMENT_ITEMS",
-        has_commit: true,
-        to_be_store_data: {
-          required: true,
-          has_value: false,
-          data: null,
-        },
-      };
-      this.$store.dispatch("getRequest", payload).then(() => { });
+      this.setDispatchAction(this.payment_item, payload, category);
     },
 
     resetForm() {
-      this.payment_item.name = null;
-      this.payment_item.description = null;
+      this.payment_item.name = null
       this.payment_item.amount = 0;
-      this.payment_item.complusory = true
+      this.payment_item.description = null,
+        this.payment_item.complusory = true
 
-      return this.payment_item
+      return this.payment_item;
+    },
+
+    setAddUpdatePaymentItemUrl(payment_item, category) {
+      let url = "";
+      if (payment_item.id === null) {
+        url = `/api/protected/payment-categories/${category.id}/payment-items`
+      } else {
+        url = `/api/protected/payment-categories/${category.id}/payment-items/${payment_item.id}`
+      }
+
+      return url;
+    },
+
+    setDispatchAction(payment_item, payload, category) {
+      if (payment_item.id === null) {
+        this.loading = true;
+        this.$store
+          .dispatch("postRequest", payload)
+          .then(() => {
+            this.getPaymentItemsByCategory(category.id)
+          })
+          .finally(() => {
+            this.loading = false;
+            this.resetForm();
+            this.$emit("close-right-drawer");
+          });
+      }
+      else {
+        this.loading = true;
+        this.$store
+          .dispatch("putRequest", payload)
+          .then(() => {
+            this.getPaymentItemsByCategory(category.id)
+          })
+          .finally(() => {
+            this.loading = false;
+            this.resetForm();
+            this.$emit("close-right-drawer");
+          });
+      }
+    },
+
+    setFormFields(data) {
+      this.payment_item.name = data?.name,
+      this.payment_item.payment_category_id = data?.payment_category_id;
+      this.payment_item.amount = data?.amount;
+      this.payment_item.description = data?.description;
+      this.payment_item.id = data?.id;
+      this.payment_item.complusory = data?.complusory == 1 ? true : false; //because the complusory field value is returned as either 1 or 0
+
+      return this.payment_item;
     }
 
   },

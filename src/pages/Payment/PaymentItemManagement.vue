@@ -115,12 +115,15 @@ export default {
 
 
     showPaymentItems(data) {
-
       SessionStorage.set("intermediate_tab", "Payment Items");
+
       SessionStorage.set("has_intermediate_tab", true);
+
       this.$emit("show-payment-items", data);
     },
     updatePaymentItems(data) {
+      this.$store.dispatch("setUpdatedPaymentItem", data.data);
+
       this.$emit("update-payment-item", data);
     },
 

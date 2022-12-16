@@ -33,3 +33,8 @@ export function getPaymentItems(state) {
 export function getCurrentPaymentCategory(state) {
   return state.current_payment_catgeory
 }
+
+//get the current updated payment item
+export function getUpdatedPaymentItem(state) {
+  return state.updated_payment_item
+}

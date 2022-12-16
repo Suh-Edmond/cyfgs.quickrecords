@@ -357,3 +357,7 @@ export function setNavigationTabByUserRole(){
 export function setCurrentPaymentCategory({commit}, data) {
   commit("SET_CURRENT_PAYMENT_CATEGORY", data)
 }
+
+export function setUpdatedPaymentItem({commit}, data) {
+  commit("SET_UPDATED_PAYMENT_ITEM", data);
+}

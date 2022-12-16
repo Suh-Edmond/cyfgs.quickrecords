@@ -32,3 +32,7 @@ export function SET_PAYMENT_ITEMS(state, data) {
 export function SET_CURRENT_PAYMENT_CATEGORY(state, data) {
   state.current_payment_catgeory = data
 }
+
+export function SET_UPDATED_PAYMENT_ITEM(state, data) {
+  state.updated_payment_item = data;
+}

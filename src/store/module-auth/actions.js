@@ -347,3 +347,17 @@ export function setPayCategories({commit}, data) {
 export function setUpdatedPayCategories({commit}, data) {
   commit("UPDATE_PAYMENT_CATEGORY", data)
 }
+
+
+export function setNavigationTabByUserRole(){
+  let role = LocalStorage.getItem('data').roles.find(role => role.name === 'PRESIDENT');
+  return role == "undefined";
+}
+
+export function setCurrentPaymentCategory({commit}, data) {
+  commit("SET_CURRENT_PAYMENT_CATEGORY", data)
+}
+
+export function setUpdatedPaymentItem({commit}, data) {
+  commit("SET_UPDATED_PAYMENT_ITEM", data);
+}

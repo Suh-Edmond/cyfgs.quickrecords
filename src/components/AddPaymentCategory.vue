@@ -86,7 +86,7 @@ export default {
           description: this.payment_category.description,
           id: this.getUpdatedPaymentCategoryFromState().id,
         },
-        msg: "Payment category save Successfully",
+        msg: "Payment Category save Successfully",
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
@@ -139,22 +139,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.add_member_title {
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 29px;
-  align-items: center;
-  text-align: center;
-  letter-spacing: 0.01em;
-  color: #5384ae;
-  text-transform: capitalize;
-}
-
-.button {
-  width: 100%;
-}
 
 .form_field {
   font-family: "Roboto";
@@ -166,18 +150,4 @@ export default {
   color: $grey2;
 }
 
-.or_option {
-  font-weight: bolder;
-}
-
-.help_text {
-  color: $dark;
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 13px;
-  text-align: center;
-  align-items: center;
-  letter-spacing: 0.01em;
-}
 </style>

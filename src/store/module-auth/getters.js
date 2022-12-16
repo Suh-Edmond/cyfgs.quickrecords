@@ -24,3 +24,17 @@ export function getPaymentCategories(state) {
 export function getUpdatedPaymentCategory(state) {
   return state.updated_payment_category;
 }
+
+export function getPaymentItems(state) {
+  return state.payment_items;
+}
+
+//the category that has be click inorder to view its items
+export function getCurrentPaymentCategory(state) {
+  return state.current_payment_catgeory
+}
+
+//get the current updated payment item
+export function getUpdatedPaymentItem(state) {
+  return state.updated_payment_item
+}

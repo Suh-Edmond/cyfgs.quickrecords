@@ -1,76 +1,37 @@
 <template>
   <q-page>
-    <NotFound
-      :message="not_found_msg"
-      v-if="getPaymentCategories.length == 0"
-    ></NotFound>
+    <NotFound :message="not_found_msg" v-if="getPaymentCategories.length == 0"></NotFound>
     <!-- header for filter categories -->
-    <div
-      class="row q-ml-xs q-pt-xs"
-      v-if="getPaymentCategories.length > 0"
-      :class="$q.screen.lg ? 'q-pa-sm' : ''"
+    <div class="row q-ml-xs q-pt-xs" v-if="getPaymentCategories.length > 0" :class="$q.screen.lg ? 'q-pa-sm' : ''"
       :style="
         $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-      "
-    >
+      ">
       <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
-        <q-select
-          v-model="year"
-          outlined
-          dense
-          :options="years"
-          label="Select year"
-          @input="filterPaymentCategories"
-        />
+        <q-select v-model="year" outlined dense :options="years" label="Select year" @input="filterPaymentCategories" />
       </div>
       <q-space />
       <div class="button q-pb-xs">
-        <q-btn
-          :label="label_download"
-          :loading="loading"
-          :color="color_print"
-          :disabled="false"
-          no-caps
-          icon-right="print"
-          @click="downloadPaymentCategory"
-        ></q-btn>
+        <q-btn :label="label_download" :loading="loading" :color="color_print" :disabled="false" no-caps
+          icon-right="print" @click="downloadPaymentCategory"></q-btn>
       </div>
     </div>
     <!-- table for categories -->
     <div class="row q-pt-sm">
-      <div class="col-md-12 col-xs-12 col-sm-12" v-if="!start_filter">
-        <CategoryTable
-          :columns="columns"
-          :data="getPaymentCategories"
-          :label="label"
-          :message="message"
-          :name="name"
-          @show-payment-items="showPaymentItems"
-          @update-payment-category="updatePaymentCategory"
-          :show_payment_category="true"
-          :show_payment_item="false"
-          :show_expenditure_category="false"
-          :show_expenditure_item="false"
-        >
+      <div class="col-md-12 col-xs-12 col-sm-12" v-show="!start_filter">
+        <CategoryTable :columns="columns" :data="getPaymentCategories" :label="label" :message="message"
+          @show-payment-items="showPaymentItems" @update-payment-category="updatePaymentCategory"
+          :show_payment_category="true" :show_payment_item="false" :show_expenditure_category="false"
+          :show_expenditure_item="false">
         </CategoryTable>
       </div>
     </div>
 
-    <!-- table for filter categories -->
-    <div class="col-md-12 col-xs-12 col-sm-12" v-if="start_filter">
-      <CategoryTable
-        :columns="columns"
-        :data="filteredPaymentCategories"
-        :label="label"
-        :message="message"
-        :name="name"
-        @show-payment-items="showPaymentItems"
-        @update-payment-category="updatePaymentCategory"
-        :show_payment_category="true"
-        :show_payment_item="false"
-        :show_expenditure_category="false"
-        :show_expenditure_item="false"
-      >
+    <!-- table for filtered categories -->
+    <div class="col-md-12 col-xs-12 col-sm-12" v-show="start_filter">
+      <CategoryTable :columns="columns" :data="filteredPaymentCategories" :label="label" :message="message"
+        @show-payment-items="showPaymentItems" @update-payment-category="updatePaymentCategory"
+        :show_payment_category="true" :show_payment_item="false" :show_expenditure_category="false"
+        :show_expenditure_item="false">
       </CategoryTable>
     </div>
   </q-page>
@@ -182,29 +143,29 @@ export default {
     },
 
     filterPaymentCategories() {
-      this.start_filter = true;
+      this.filteredPaymentCategories = [];
       let organisationId = this.getOrganisationId;
       let payload = {
-        url: `/api/protected/filter-payment-categories?organisation_id${organisationId}&year=${this.year}`,
+        url: `/api/protected/filter-payment-categories?organisation_id=${organisationId}&year=${this.year}`,
         msg: "none",
         color: "default",
         status: "none",
         error_msg: "An Error occurred! Could not fetch payment categories",
-        has_commit: true,
+        has_commit: false,
         show_feedback: false,
-        commit: "SET_PAYMENT_CATEGORIES",
+        commit: "none",
         to_be_store_data: {
           required: false,
           has_value: false,
           data: [],
         },
       };
-      this.filteredPaymentCategories = [];
       this.$store.dispatch("getRequest", payload).then((res) => {
+        this.start_filter = true;
         res.data.forEach((element) => {
           this.filteredPaymentCategories.push({
             counter:
-              this.$store.getters.getPaymentCategories.indexOf(element) + 1,
+              res.data.indexOf(element) + 1,
             name: element.name,
             item: "View Payment Items",
             id: element.id,
@@ -213,8 +174,6 @@ export default {
             organisation_id: element.organisation_id,
           });
         });
-
-        this.start_filter = false;
       });
     },
 

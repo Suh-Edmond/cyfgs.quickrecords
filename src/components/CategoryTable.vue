@@ -82,7 +82,7 @@
                     >
                       <q-item-section avatar>
                         <span>
-                          <q-icon name="info" size="xs" class="details" />
+                          <q-icon name="visibility" size="xs" class="details" />
                         </span>
                       </q-item-section>
                       <q-item-section>
@@ -97,7 +97,7 @@
                     >
                       <q-item-section avatar>
                         <span>
-                          <q-icon name="info" size="xs" class="details" />
+                          <q-icon name="visibility" size="xs" class="details" />
                         </span>
                       </q-item-section>
                       <q-item-section>
@@ -112,7 +112,7 @@
                     >
                       <q-item-section avatar>
                         <span>
-                          <q-icon name="info" size="xs" class="details" />
+                          <q-icon name="visibility" size="xs" class="details" />
                         </span>
                       </q-item-section>
                       <q-item-section>
@@ -142,7 +142,7 @@
                     >
                       <q-item-section avatar>
                         <span>
-                          <q-icon name="info" size="xs" class="details" />
+                          <q-icon name="visibility" size="xs" class="details" />
                         </span>
                       </q-item-section>
                       <q-item-section>
@@ -286,7 +286,7 @@ export default {
     },
     name: {
       type: String,
-      required: true,
+      required: false,
     },
     show_payment_category: {
       type: Boolean,
@@ -443,7 +443,7 @@ export default {
 }
 
 .details {
-  color: $dark;
+  color: $primary;
 }
 
 .warning_image {

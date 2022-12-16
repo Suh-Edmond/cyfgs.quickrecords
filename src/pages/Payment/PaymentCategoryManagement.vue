@@ -1,11 +1,10 @@
 <template>
   <q-page>
-    <NotFound :message="not_found_msg" v-if="getPaymentCategories.length == 0"></NotFound>
+    <NotFound :message="not_found_msg" v-if="getData.length == 0"></NotFound>
     <!-- header for filter categories -->
-    <div class="row q-ml-xs q-pt-xs" v-if="getPaymentCategories.length > 0" :class="$q.screen.lg ? 'q-pa-sm' : ''"
-      :style="
-        $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-      ">
+    <div class="row q-ml-xs q-pt-xs" v-if="getData.length > 0" :class="$q.screen.lg ? 'q-pa-sm' : ''" :style="
+      $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+    ">
       <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
         <q-select v-model="year" outlined dense :options="years" label="Select year" @input="filterPaymentCategories" />
       </div>
@@ -18,7 +17,7 @@
     <!-- table for categories -->
     <div class="row q-pt-sm">
       <div class="col-md-12 col-xs-12 col-sm-12" v-show="!start_filter">
-        <CategoryTable :columns="columns" :data="getPaymentCategories" :label="label" :message="message"
+        <CategoryTable :columns="columns" :data="getData" :label="label" :message="message"
           @show-payment-items="showPaymentItems" @update-payment-category="updatePaymentCategory"
           :show_payment_category="true" :show_payment_item="false" :show_expenditure_category="false"
           :show_expenditure_item="false">
@@ -42,6 +41,7 @@ import NotFound from "src/components/NotFound.vue";
 import CategoryTable from "src/components/CategoryTable.vue";
 import { SessionStorage } from "quasar";
 import PaymentCategoryMixinVue from "src/mixins/PaymentCategoryMixin.vue";
+
 
 export default {
   mixins: [PaymentCategoryMixinVue],
@@ -99,18 +99,9 @@ export default {
     validateFilter() {
       return true;
     },
-    getPaymentItem() {
-      if (!this.show_payment_items) {
-        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-        this.title = "Payment Categories";
-      } else {
-        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-        this.title = "Harvest ThanksGiven > Harvest Thanksgiven 2022";
-      }
-      return this.title;
-    },
-    getPaymentCategories() {
+    getData() {
       let data = [];
+
       this.$store.getters.getPaymentCategories.forEach((element) => {
         data.push({
           counter:
@@ -123,6 +114,7 @@ export default {
           organisation_id: element.organisation_id,
         });
       });
+
       return data;
     },
   },
@@ -132,9 +124,15 @@ export default {
       this.$emit("update-payment-category", data);
     },
     showPaymentItems(data) {
-      //make request
+
+      this.getPaymentItemsByCategory(data.payment_items.id);
+
       SessionStorage.set("intermediate_tab", "Payment Items");
+
       SessionStorage.set("has_intermediate_tab", true);
+
+      this.$store.dispatch("setCurrentPaymentCategory", data.payment_items);
+
       this.$emit("show-payment-items", data);
     },
 
@@ -211,6 +209,26 @@ export default {
           });
         });
     },
+
+    getPaymentItemsByCategory(id) {
+      let payload = {
+        status: "none",
+        url: `/api/protected/payment-categories/${id}/payment-items`,
+        has_path_val: true,
+        show_feedback: false,
+        msg: "none",
+        color: "default",
+        error_msg: "default",
+        commit: "SET_PAYMENT_ITEMS",
+        has_commit: true,
+        to_be_store_data: {
+          required: true,
+          has_value: false,
+          data: null,
+        },
+      };
+      this.$store.dispatch("getRequest", payload).then(() => { });
+    }
   },
   components: {
     NotFound,

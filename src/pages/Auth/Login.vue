@@ -277,12 +277,12 @@ export default {
       this.$store
         .dispatch("postRequest", payload)
         .then((res) => {
-          if (typeof res !== undefined) {
-            this.$store.dispatch(
-              "setRoles",
-              this.setUserRoles(res.data.data.roles)
-            );
-          }
+          // if (typeof res !== undefined) {
+          //   this.$store.dispatch(
+          //     "setRoles",
+          //     this.setUserRoles(res.data.data.roles)
+          //   );
+          // }
         })
         .finally(() => {
           this.loading = false;

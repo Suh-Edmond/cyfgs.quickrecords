@@ -13,7 +13,6 @@ export function SET_IS_FETCHING(state, data) {
   state.is_fetching = data;
 }
 
-
 export function UPDATE_MEMBER(state, data) {
   state.updated_member = data
 }
@@ -24,4 +23,12 @@ export function SET_PAYMENT_CATEGORIES(state, data) {
 
 export function UPDATE_PAYMENT_CATEGORY(state, data) {
   state.updated_payment_category = data
+}
+
+export function SET_PAYMENT_ITEMS(state, data) {
+  state.payment_items = data
+}
+
+export function SET_CURRENT_PAYMENT_CATEGORY(state, data) {
+  state.current_payment_catgeory = data
 }

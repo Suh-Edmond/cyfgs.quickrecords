@@ -101,7 +101,7 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="details">Details</q-item-label>
+                        <q-item-label class="details">View</q-item-label>
                       </q-item-section>
                     </q-item>
                     <q-item
@@ -116,7 +116,7 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="details">Details</q-item-label>
+                        <q-item-label class="details">View</q-item-label>
                       </q-item-section>
                     </q-item>
                     <q-item
@@ -146,7 +146,7 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="details">Details</q-item-label>
+                        <q-item-label class="details">View</q-item-label>
                       </q-item-section>
                     </q-item>
                     <q-item
@@ -463,7 +463,7 @@ export default {
 }
 
 .title {
-  font-size: medium;
+  font-size: small;
 }
 
 .dialog_button {

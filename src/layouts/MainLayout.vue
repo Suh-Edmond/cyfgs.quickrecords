@@ -387,6 +387,7 @@
         <AddPaymentItem
           v-if="current_tab == 'Payment Items'"
           @close-right-drawer="closeRightDrawer"
+          @set-heading="setHeading"
         ></AddPaymentItem>
         <AddExpenditureCategory
           v-if="current_tab == 'Expenditure Categories'"

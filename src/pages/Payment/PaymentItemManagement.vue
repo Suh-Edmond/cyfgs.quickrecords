@@ -10,8 +10,8 @@
       </div>
       <q-space />
       <div class="button q-pb-xs">
-        <ButtonVue :label="label_download" :loading="loading" :color="color_print" :disabled="false" :no_caps="no_caps"
-          icon_right="print"></ButtonVue>
+        <q-btn :label="label_download" :loading="loading" :color="color_print" :disabled="false" no-caps
+          icon-right="print" @click="downloadItems"></q-btn>
       </div>
     </div>
     <!-- table for categories -->
@@ -30,7 +30,6 @@
 <script>
 import NotFound from "src/components/NotFound.vue";
 import CategoryTable from "src/components/CategoryTable.vue";
-import ButtonVue from "src/components/Button.vue";
 
 export default {
   mounted() {
@@ -38,7 +37,7 @@ export default {
   },
   data() {
     return {
-      not_found_msg:"",
+      not_found_msg: "",
       search: null,
       label_fetch: "Filter",
       color: "primary",
@@ -130,25 +129,60 @@ export default {
     getPaymentItemsFromState() {
       let items = [];
       this.$store.getters.getPaymentItems.data?.forEach((ele) => {
-          items.push({
-            counter: this.$store.getters.getPaymentItems.data?.indexOf(ele) + 1,
-            name: ele.name,
-            amount: ele.amount,
-            id: ele.id,
-            complusory: ele.complusory,
-            payment_category_id: ele.payment_category_id,
-            description: ele.description,
-            payment_category_name: ele.payment_category_name,
-            type: 'PAYMENT_ITEMS'
-          })
+        items.push({
+          counter: this.$store.getters.getPaymentItems.data?.indexOf(ele) + 1,
+          name: ele.name,
+          amount: ele.amount,
+          id: ele.id,
+          complusory: ele.complusory,
+          payment_category_id: ele.payment_category_id,
+          description: ele.description,
+          payment_category_name: ele.payment_category_name,
+          type: 'PAYMENT_ITEMS'
         })
+      })
       return items;
+    },
+
+
+    downloadItems() {
+      let id = this.$store.getters.getCurrentPaymentCategory.id;
+      let payload = {
+        status: "none",
+        url: `/api/protected/download-payment-items?payment_category_id=${id}`,
+        has_path_val: true,
+        show_feedback: true,
+        msg: "none",
+        file_name: "Payment_Items.pdf",
+        color: "default",
+        error_msg: "Could not download pdf file",
+        commit: "none",
+        has_commit: false,
+        to_be_store_data: {
+          required: true,
+          has_value: false,
+          data: null,
+        },
+      };
+
+      this.loading = true;
+      this.$store
+        .dispatch("downloadPdf", payload)
+        .then(() => {
+          this.loading = false;
+        })
+        .catch(() => {
+          Notify.create({
+            type: "info",
+            message: "Could not download pdf file",
+            position: Platform.is.mobile ? "bottom-left" : "top-right",
+          });
+        });
     }
   },
   components: {
     NotFound,
     CategoryTable,
-    ButtonVue,
   },
 };
 </script>

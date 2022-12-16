@@ -4,6 +4,8 @@ export default function () {
     organisation:null,
     members:[],
     is_fetching: false,
-    updated_member: null
+    updated_member: null,
+    payment_categories:[],
+    updated_payment_category:null,
   };
 }

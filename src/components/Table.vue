@@ -131,7 +131,7 @@
                     >
                       <q-item-section avatar>
                         <span>
-                          <q-icon name="info" size="xs" class="edit" />
+                          <q-icon name="visibility" size="xs" class="edit" />
                         </span>
                       </q-item-section>
                       <q-item-section>
@@ -163,7 +163,7 @@
                     >
                       <q-item-section avatar>
                         <span>
-                          <q-icon name="info" size="xs" class="edit" />
+                          <q-icon name="visibility" size="xs" class="edit" />
                         </span>
                       </q-item-section>
                       <q-item-section>
@@ -446,7 +446,7 @@ export default {
 }
 
 .edit {
-  color: $dark;
+  color: $primary;
 }
 
 .warning_image {

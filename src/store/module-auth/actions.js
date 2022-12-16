@@ -60,7 +60,7 @@ export function handleRequestResponse({ }, payload) {
   }
 }
 
-export function postRequest({ commit, dispatch }, payload) {
+export function postRequest({dispatch }, payload) {
   return axios
     .post(API_URL + payload.url, payload.data, payload.headers)
     .then((res) => {
@@ -96,7 +96,7 @@ export function postRequest({ commit, dispatch }, payload) {
           payload.error_msg != "default"
             ? payload.error_msg
             : error.response.data.message,
-        status_code: error.response.status,
+        status_code: 404,
       };
       dispatch("handleRequestResponse", handle_error_payload);
     });
@@ -338,4 +338,12 @@ export function setOrganisation({ commit }, data) {
 
 export function updateMember({ commit }, data) {
   commit("UPDATE_MEMBER", data);
+}
+
+export function setPayCategories({commit}, data) {
+  commit("SET_PAYMENT_CATEGORIES", data)
+}
+
+export function setUpdatedPayCategories({commit}, data) {
+  commit("UPDATE_PAYMENT_CATEGORY", data)
 }

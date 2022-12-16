@@ -12,8 +12,8 @@
     >
       <template v-slot:body="props">
         <q-tr :props="props">
-          <q-td key="id" :props="props">
-            {{ props.row.id }}
+          <q-td key="counter" :props="props">
+            {{ props.row.counter }}
           </q-td>
           <q-td key="name" :props="props">
             {{ props.row.name }}
@@ -82,11 +82,11 @@
                     >
                       <q-item-section avatar>
                         <span>
-                          <q-icon name="info" size="xs" class="details" />
+                          <q-icon name="visibility" size="xs" class="details" />
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="details">Details</q-item-label>
+                        <q-item-label class="details">View</q-item-label>
                       </q-item-section>
                     </q-item>
                     <q-item
@@ -97,7 +97,7 @@
                     >
                       <q-item-section avatar>
                         <span>
-                          <q-icon name="info" size="xs" class="details" />
+                          <q-icon name="visibility" size="xs" class="details" />
                         </span>
                       </q-item-section>
                       <q-item-section>
@@ -112,7 +112,7 @@
                     >
                       <q-item-section avatar>
                         <span>
-                          <q-icon name="info" size="xs" class="details" />
+                          <q-icon name="visibility" size="xs" class="details" />
                         </span>
                       </q-item-section>
                       <q-item-section>
@@ -134,7 +134,6 @@
                         <q-item-label class="details">Edit</q-item-label>
                       </q-item-section>
                     </q-item>
-                    <q-separator />
                     <q-item
                       clickable
                       v-close-popup
@@ -143,7 +142,7 @@
                     >
                       <q-item-section avatar>
                         <span>
-                          <q-icon name="info" size="xs" class="details" />
+                          <q-icon name="visibility" size="xs" class="details" />
                         </span>
                       </q-item-section>
                       <q-item-section>
@@ -165,7 +164,7 @@
                         <q-item-label class="details">Edit</q-item-label>
                       </q-item-section>
                     </q-item>
-                    <q-separator />
+                    <q-separator/>
                     <q-item
                       clickable
                       v-close-popup
@@ -218,18 +217,24 @@
     </q-table>
 
     <!-- confirmation delete category dialog -->
-    <q-dialog v-model="dialog">
+    <q-dialog v-model="dialog" v-if="dialog">
       <q-card>
         <q-card-section>
           <div>
-            <q-avatar icon="warning" class="warning_image" size="40px" />
+            <q-avatar
+              icon="warning"
+              class="warning_image"
+              size="30px"
+              color="yellow"
+              text-color="white"
+            />
             <span class="q-ml-sm text-dark">{{ message }}</span>
           </div>
-          <div class="text-weight-bold text-center">{{ name }}</div>
+          <div class="text-weight-bold text-center">{{ deleted_row.name }}</div>
         </q-card-section>
 
         <q-card-actions align="right">
-          <ButtonVue
+          <q-btn
             :label="label_cancel"
             :color="'primary'"
             :disabled="false"
@@ -237,16 +242,17 @@
             :no_caps="false"
             v-close-popup
             :flat="true"
-          ></ButtonVue>
-          <ButtonVue
+          ></q-btn>
+          <q-btn
             :label="label"
             :color="'primary'"
             :disabled="false"
             :loading="loading"
             :no_caps="false"
             v-close-popup
+            @click="deletedRow(deleted_row)"
             :flat="true"
-          ></ButtonVue>
+          ></q-btn>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -254,8 +260,9 @@
 </template>
 <script>
 import { SessionStorage } from 'quasar';
-import ButtonVue from "./Button.vue";
+import PaymentCategoryMixinVue from 'src/mixins/PaymentCategoryMixin.vue';
 export default {
+  mixins:[PaymentCategoryMixinVue],
   props: {
     columns: {
       type: Array,
@@ -279,7 +286,7 @@ export default {
     },
     name: {
       type: String,
-      required: true,
+      required: false,
     },
     show_payment_category: {
       type: Boolean,
@@ -309,6 +316,7 @@ export default {
       color: "positive",
       no_caps: true,
       dialog: false,
+      deleted_row : null,
       showTable: true,
       label_cancel: "Cancel",
       filter: "",
@@ -323,63 +331,101 @@ export default {
     }
   },
   methods: {
-    onViewCategory(data) {
+    onViewCategory(categories) {
       let payload = {
-        data: data,
+        data: categories,
         tab: "Payment Categories",
       };
       this.$emit("update-payment-category", payload);
     },
-    onViewPaymentItem(data) {
+    onViewPaymentItem(payment_items) {
       let payload = {
-        data: data,
+        data: payment_items,
         tab: "Payment Items",
       };
       this.$emit("update-payment-item", payload);
     },
-    onDelete(data) {
+    onDelete(row) {
+      this.deleted_row = row;
       this.dialog = true;
     },
-    showPaymentItems(data) {
+    showPaymentItems(payment_items) {
       let has_intermediate_tab = true;
-      this.$emit("show-payment-items", { data, has_intermediate_tab });
+      this.$emit("show-payment-items", { payment_items, has_intermediate_tab });
     },
-    showExpenditureItems(data){
+    showExpenditureItems(expenditure_items){
       let has_intermediate_tab = true;
-      SessionStorage.set("selected_category", data.id)
+      SessionStorage.set("selected_category", expenditure_items.id)
       this.$emit("show-expenditure-items", { data, has_intermediate_tab });
 
     },
-    onViewExpenditureItemDetail(data) {
+    onViewExpenditureItemDetail(expenditure_item_detail) {
       let has_intermediate_tab = true;
       let selected_category = SessionStorage.getItem("selected_category");
-      this.$router.push({ name: 'expenditure_item_details', params:{ "id": selected_category, "item_id":data.id } })
-      this.$emit("show-expenditure-item-details", {data, has_intermediate_tab})
+      this.$router.push({ name: 'expenditure_item_details', params:{ "id": selected_category, "item_id":expenditure_item_detail.id } })
+      this.$emit("show-expenditure-item-details", {expenditure_item_detail, has_intermediate_tab})
     },
-    onViewExpenditureCategory(data) {
+    onViewExpenditureCategory(expenditure_category) {
       let payload = {
-        data: data,
+        data: expenditure_category,
         tab: "Expenditure Categories",
       };
       this.$emit("update-expenditure-category", payload);
     },
-    onEditExpenditureItem(data){
+    onEditExpenditureItem(expenditure_item){
       let payload = {
-        data: data,
+        data: expenditure_item,
         tab: "Expenditure Items",
       };
       this.$emit("edit-expenditure-item", payload);
     },
-    onEditExpenditureItemDetail(data){
+    onEditExpenditureItemDetail(expenditure_item_detail){
       let payload = {
-        data: data,
+        data: expenditure_item_detail,
         tab: "Expenditure Item Details",
       };
       this.$emit("edit-expenditure-item-detail", payload);
+    },
+    deletedRow(deleted_data){
+      let payload = {
+        url: this.setDeletedUrlBaseOnType(deleted_data),
+        msg: "Payment category deleted Successfully",
+        color: "default",
+        to_on_ok: "none",
+        to_on_fail: "none",
+        show_feedback: true,
+        error_msg: "An Error occurred! Please try again",
+        has_commit: false,
+        commit: "none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      }
+      this.$store.dispatch("deleteRequest", payload).then(() => {
+        this.callFetchDataBaseOnType(deleted_data);
+      })
+    },
+    setDeletedUrlBaseOnType(row) {
+      let url = '';
+      switch(row.type){
+        case 'PAYMENT_CATEGORY':
+          url =  `/api/protected/organisations/${row.organisation_id}/payment-categories/${row.id}`;
+          break;
+      }
+      return url;
+    },
+
+    callFetchDataBaseOnType(row){
+      switch(row.type){
+        case "PAYMENT_CATEGORY":
+          this.fetchCategories();
+          break;
+      }
     }
   },
   components: {
-    ButtonVue,
   },
 };
 </script>
@@ -397,7 +443,7 @@ export default {
 }
 
 .details {
-  color: $dark;
+  color: $primary;
 }
 
 .warning_image {
@@ -418,5 +464,10 @@ export default {
 
 .title {
   font-size: medium;
+}
+
+.dialog_button {
+  font-size: 9px;
+  font-weight: 300;
 }
 </style>

@@ -20,7 +20,7 @@
             </div>
             <div class="text_h6 text-center q-pt-sm q-pb-sm">SIGN IN</div>
             <div class="text-subtitle2 text-center q-pb-xs">
-              Sign in to continue to FinancialAssistant
+              Sign in to continue to Financial Assistant
             </div>
             <q-form
               @submit="onSubmit"
@@ -326,7 +326,7 @@ export default {
         data: this.user,
         msg: "Login Successful",
         color: "default",
-        to_on_ok: "dashboard",
+        to_on_ok: "members",
         to_on_fail: "none",
         show_feedback:true,
         error_msg: "Invalid Credentails! Please try again",
@@ -339,13 +339,7 @@ export default {
       this.loading = true;
       this.$store
         .dispatch("postRequest", payload)
-        .then((res) => {
-          if (typeof res !== undefined) {
-            this.$store.dispatch(
-              "setRoles",
-              this.setUserRoles(res.data.data.roles)
-            );
-          }
+        .then(() => {
         })
         .finally(() => {
           this.loading = false;
@@ -388,7 +382,7 @@ export default {
   color: $dark;
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 800;
+  font-weight: 600;
   font-size: 15px;
   line-height: 24px;
   align-items: center;
@@ -400,7 +394,7 @@ export default {
   color: $grey2;
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 600;
+  font-weight: 400;
   font-size: 13px;
   line-height: 18px;
   align-items: center;

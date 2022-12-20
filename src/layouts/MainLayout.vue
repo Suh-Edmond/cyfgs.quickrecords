@@ -343,7 +343,7 @@
                 icon="arrow_back"
                 v-close-popup
                 @click="goBack()"
-                size="md"
+                size="sm"
               >
               </q-btn>
             </div>
@@ -361,7 +361,7 @@
                 icon="close"
                 v-close-popup
                 @click="closeRightDrawer()"
-                size="md"
+                size="sm"
               >
               </q-btn>
             </div>
@@ -391,9 +391,13 @@
         ></AddPaymentItem>
         <AddExpenditureCategory
           v-if="current_tab == 'Expenditure Categories'"
+          @close-right-drawer="closeRightDrawer"
+          @set-heading="setHeading"
         ></AddExpenditureCategory>
         <AddExpenditureItem
           v-if="current_tab == 'Expenditure Items'"
+          @close-right-drawer="closeRightDrawer"
+          @set-heading="setHeading"
         ></AddExpenditureItem>
         <AddExpenditureItemDetail
           v-if="current_tab == 'Expenditure Item Details'"
@@ -477,7 +481,9 @@ export default {
       SessionStorage.set("from_tab", SessionStorage.getItem("to_tab"));
       SessionStorage.set("to_tab", item.name);
       SessionStorage.set("requires_add", this.requires_add);
-      this.$store.dispatch("setFetchingState", true)
+      // this.$store.dispatch("setFetchingState", true)
+      SessionStorage.remove('intermediate_tab')
+      SessionStorage.set('has_intermediate_tab', false);
     },
     updateRightDrawer({ right, current_tab, data }) {
       this.current_tab = current_tab;

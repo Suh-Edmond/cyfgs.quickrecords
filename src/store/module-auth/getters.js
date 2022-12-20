@@ -38,3 +38,11 @@ export function getCurrentPaymentCategory(state) {
 export function getUpdatedPaymentItem(state) {
   return state.updated_payment_item
 }
+
+export function getExpenditureCategories(state) {
+  return state.expenditure_categories;
+}
+
+export function getUpdatedExpenditureCategory(state) {
+  return state.updated_expenditure_category;
+}

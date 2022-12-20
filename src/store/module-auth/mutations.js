@@ -36,3 +36,11 @@ export function SET_CURRENT_PAYMENT_CATEGORY(state, data) {
 export function SET_UPDATED_PAYMENT_ITEM(state, data) {
   state.updated_payment_item = data;
 }
+
+export function SET_EXPENDITURE_CATEGORIES(state, data) {
+  state.expenditure_categories = data
+}
+
+export function UPDATE_EXPENDITURE_CATEGORY(state, data) {
+  state.updated_expenditure_category = data
+}

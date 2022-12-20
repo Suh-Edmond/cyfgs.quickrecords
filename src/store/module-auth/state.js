@@ -10,5 +10,7 @@ export default function () {
     payment_items: [],
     current_payment_catgeory:null,
     updated_payment_item:null,
+    expenditure_categories:[],
+    updated_expenditure_category:null
   };
 }

@@ -18,12 +18,12 @@
               {{ props.row.item }}
             </q-btn>
           </q-td>
-          <q-td key="expenditure_category" :props="props" v-if="show_expenditure_category">
+          <q-td key="expenditure_items" :props="props" v-if="show_expenditure_category">
             <q-btn flat class="view_items" @click="showExpenditureItems(props.row)" :to="{
               name: 'expenditure_items',
               params: { id: props.row.id },
             }">
-              {{ props.row.expenditure_category }}
+              {{ props.row.expenditure_items }}
             </q-btn>
           </q-td>
           <q-td key="amount" :props="props" v-if="show_payment_item || show_expenditure_item">
@@ -77,7 +77,7 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="details">Details</q-item-label>
+                        <q-item-label class="details">View</q-item-label>
                       </q-item-section>
                     </q-item>
                     <q-item clickable v-close-popup @click="onEditExpenditureItem(props.row)"
@@ -182,7 +182,9 @@ import PaymentCategoryMixinVue from "src/mixins/PaymentCategoryMixin.vue";
 
 
 export default {
+
   mixins: [PaymentCategoryMixinVue],
+
   props: {
     columns: {
       type: Array,
@@ -316,7 +318,7 @@ export default {
     deletedRow(deleted_data) {
       let payload = {
         url: this.setDeletedUrlBaseOnType(deleted_data),
-        msg: "Payment category deleted Successfully",
+        msg: this.setDeleteFeedbackMsg(deleted_data),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
@@ -345,10 +347,29 @@ export default {
         case "PAYMENT_ITEMS":
           url = `/api/protected/payment-categories/${row.payment_category_id}/payment-items/${row.id}`;
           break;
+        case "EXPENDITURE_CATEGORY":
+          url = `/api/protected/organisations/${row.organisation_id}/expenditure-categories/${row.id}`;
+          break;
       }
       return url;
     },
 
+    setDeleteFeedbackMsg(row) {
+      let msg = "";
+      switch (row.type) {
+        case "PAYMENT_CATEGORY":
+          msg = `Payment Category deleted successfully`;
+          break;
+        case "PAYMENT_ITEMS":
+          msg = `Payment Item deleted successfully`;
+          break;
+        case "EXPENDITURE_CATEGORY":
+          msg = `Expenditure Category deleted successfully`;
+          break;
+      }
+
+      return msg;
+    },
 
     callFetchDataBaseOnType(row) {
       switch (row.type) {
@@ -358,6 +379,9 @@ export default {
         case "PAYMENT_ITEMS":
           this.getPaymentItemsByCategory(row.payment_category_id);
           break;
+        case "EXPENDITURE_CATEGORY":
+          this.fetchExpenditureCategories(row.organisation_id);
+
       }
     },
 
@@ -380,7 +404,28 @@ export default {
         },
       };
       this.$store.dispatch("getRequest", payload).then(() => { });
-    }
+    },
+
+    fetchExpenditureCategories(organisation_id) {
+      let payload = {
+        url: `/api/protected/organisations/${organisation_id}/expenditure-categories`,
+        msg: "none",
+        color: "default",
+        status: "none",
+        error_msg: "An Error occurred! Could not fetch payment categories",
+        has_commit: true,
+        show_feedback: false,
+        commit: "SET_EXPENDITURE_CATEGORIES",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.$store.dispatch("getRequest", payload).then(() => {
+
+      });
+    },
   },
   components: {},
 };

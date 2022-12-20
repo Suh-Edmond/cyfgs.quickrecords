@@ -1,58 +1,35 @@
 <template>
   <q-page>
-    <NotFound
-      :message="not_found_msg"
-      v-if="expenditure_categories.length == 0"
-    ></NotFound>
-    <!-- header for filter categories -->
-    <div
-      class="row q-ml-xs q-pt-xs"
-      v-if="expenditure_categories.length > 0"
-      :class="$q.screen.lg ? 'q-pa-sm' : ''"
-      :style="
+    <NotFound :message="not_found_msg" v-if="getData.length == 0"></NotFound>
+
+    <div v-if="getData.length > 0">
+      <!-- header for filter categories -->
+      <div class="row q-ml-xs q-pt-xs" :class="$q.screen.lg ? 'q-pa-sm' : ''" :style="
         $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-      "
-    >
-      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
-        <q-select
-          v-model="year"
-          outlined
-          dense
-          :options="years"
-          label="Select year"
-        />
+      ">
+        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
+          <q-select v-model="year" outlined dense :options="years" label="Select year" />
+        </div>
+        <q-space />
+        <div class="button q-pb-xs">
+          <ButtonVue :label="label_download" :loading="loading" :color="color_print" :disabled="false"
+            :no_caps="no_caps" icon_right="print"></ButtonVue>
+        </div>
       </div>
-      <q-space />
-      <div class="button q-pb-xs">
-        <ButtonVue
-          :label="label_download"
-          :loading="loading"
-          :color="color_print"
-          :disabled="false"
-          :no_caps="no_caps"
-          icon_right="print"
-        ></ButtonVue>
-      </div>
-    </div>
-    <!-- table for categories -->
-    <div class="row q-pt-sm">
-      <div class="col-md-12 col-xs-12 col-sm-12">
-        <CategoryTable
-          :columns="columns"
-          :data="data"
-          :label="label"
-          :message="message"
-          :name="name"
-          @show-expenditure-items="showExpenditureItems"
-          @update-expenditure-category="updateExpenditureCategory"
-          :show_payment_category="false"
-          :show_payment_item="false"
-          :show_expenditure_category="true"
-          :show_expenditure_item="false"
-        >
-        </CategoryTable>
+
+      <!-- table for categories -->
+      <div class="row q-pt-sm">
+        <div class="col-md-12 col-xs-12 col-sm-12">
+          <CategoryTable :columns="columns" :data="getData" :label="label" :message="message" :name="name"
+            @show-expenditure-items="showExpenditureItems" @update-expenditure-category="updateExpenditureCategory"
+            :show_payment_category="false" :show_payment_item="false" :show_expenditure_category="true"
+            :show_expenditure_item="false">
+          </CategoryTable>
+        </div>
       </div>
     </div>
+
+
   </q-page>
 </template>
 
@@ -61,11 +38,18 @@ import NotFound from "src/components/NotFound.vue";
 import CategoryTable from "src/components/CategoryTable.vue";
 import ButtonVue from "src/components/Button.vue";
 import { SessionStorage } from "quasar";
+import ExpenditureCategoryMixinVue from "src/mixins/ExpenditureCategoryMixin.vue";
+
 export default {
+  mixins: [ExpenditureCategoryMixinVue],
+  mounted() {
+    this.fetchExpenditureCategories();
+  },
+
   data() {
     return {
       not_found_msg:
-        "Ooops!! No Expenditure Categories found. click the add button to add Expenditure Categories.",
+        "Ooops!! No Expenditure Categories found. Click the add button to add Expenditure Categories.",
       expenditure_categories: [{ id: 1 }],
       year: null,
       years: ["2020", "2021", "2022", "2023", "2024"],
@@ -78,11 +62,11 @@ export default {
       color_print: "positive",
       columns: [
         {
-          name: "id",
+          name: "counter",
           required: true,
           label: "S/N",
           align: "left",
-          field: "id",
+          field: "counter",
         },
         {
           name: "name",
@@ -94,77 +78,15 @@ export default {
           sortable: true,
         },
         {
-          name: "expenditure_category",
+          name: "expenditure_items",
           align: "center",
           label: "",
-          field: "expenditure_category",
+          field: "expenditure_items",
         },
         {
           name: "action",
           label: "Action",
           field: "action",
-        },
-      ],
-      data: [
-        {
-          id: 1,
-          name: "Frozen Yogurt",
-          expenditure_category: "View Expenditure Items",
-          action: "",
-        },
-        {
-          id: 2,
-          name: "Ice cream sandwich",
-          expenditure_category: "View Expenditure Items",
-          action: "",
-        },
-        {
-          id: 3,
-          name: "Eclair",
-          expenditure_category: "View Expenditure Items",
-          action: "",
-        },
-        {
-          id: 4,
-          name: "Cupcake",
-          expenditure_category: "View Expenditure Items",
-          action: "",
-        },
-        {
-          id: 5,
-          name: "Gingerbread",
-          expenditure_category: "View Expenditure Items",
-          action: "",
-        },
-        {
-          id: 6,
-          name: "Jelly bean",
-          expenditure_category: "View Expenditure Items",
-          action: "",
-        },
-        {
-          id: 7,
-          expenditure_category: "Lollipop",
-          item: "View Expenditure Items",
-          action: "",
-        },
-        {
-          id: 8,
-          name: "Honeycomb",
-          expenditure_category: "View Expenditure Items",
-          action: "",
-        },
-        {
-          id: 9,
-          name: "Donut",
-          expenditure_category: "View Expenditure Items",
-          action: "",
-        },
-        {
-          id: 10,
-          name: "KitKat",
-          expenditure_category: "View Expenditure Items",
-          action: "",
         },
       ],
       label: "Delete",
@@ -176,6 +98,25 @@ export default {
     validateFilter() {
       return true;
     },
+
+    getData() {
+      let data = [];
+
+      this.$store.getters.getExpenditureCategories.forEach((element) => {
+        data.push({
+          counter:
+            this.$store.getters.getExpenditureCategories.indexOf(element) + 1,
+          name: element.name,
+          expenditure_items: "View Expenditure Items",
+          id: element.id,
+          description: element.description,
+          type: "EXPENDITURE_CATEGORY",
+          organisation_id: element.organisation_id,
+        });
+      });
+
+      return data;
+    }
   },
   methods: {
     showExpenditureItems(data) {
@@ -184,7 +125,9 @@ export default {
       SessionStorage.set("has_intermediate_tab", true);
       this.$emit("show-expenditure-items", data);
     },
-    updateExpenditureCategory(data){
+    updateExpenditureCategory(data) {
+      this.$store.dispatch("setUpdatedExpenditureCategory", data.data);
+
       this.$emit("update-expenditure-category", data);
     }
   },

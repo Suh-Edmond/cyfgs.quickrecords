@@ -121,6 +121,7 @@ export default {
   methods: {
     updatePaymentCategory(data) {
       this.$store.dispatch("setUpdatedPayCategories", data.data);
+
       this.$emit("update-payment-category", data);
     },
     showPaymentItems(data) {

@@ -46,3 +46,11 @@ export function getExpenditureCategories(state) {
 export function getUpdatedExpenditureCategory(state) {
   return state.updated_expenditure_category;
 }
+
+export function getExpenditureItems(state) {
+  return state.expenditure_items;
+}
+
+export function getCurrentExpenditureCategory(state) {
+  return state.current_expenditure_category;
+}

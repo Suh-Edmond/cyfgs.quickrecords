@@ -115,10 +115,6 @@ export default {
       this.$emit("update-payment-category", data);
     },
 
-    showSearch() {
-      this.start_search = !this.start_search;
-    },
-
     showPaymentItems(data) {
       SessionStorage.set("intermediate_tab", "Payment Items");
 

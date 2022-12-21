@@ -91,6 +91,7 @@
                         <q-item-label class="details">Edit</q-item-label>
                       </q-item-section>
                     </q-item>
+                    <q-separator  v-if="show_expenditure_item"/>
                     <q-item clickable v-close-popup @click="onViewExpenditureItemDetail(props.row)"
                       v-if="show_expenditure_item">
                       <q-item-section avatar>
@@ -260,6 +261,7 @@ export default {
       };
       this.$emit("update-payment-category", payload);
     },
+
     onViewPaymentItem(payment_items) {
       let payload = {
         data: payment_items,
@@ -267,19 +269,23 @@ export default {
       };
       this.$emit("update-payment-item", payload);
     },
+
     onDelete(row) {
       this.deleted_row = row;
       this.dialog = true;
     },
+
     showPaymentItems(payment_items) {
       let has_intermediate_tab = true;
       this.$emit("show-payment-items", { payment_items, has_intermediate_tab });
     },
+
     showExpenditureItems(expenditure_items) {
       let has_intermediate_tab = true;
-      SessionStorage.set("selected_category", expenditure_items.id);
-      this.$emit("show-expenditure-items", { data, has_intermediate_tab });
+
+      this.$emit("show-expenditure-items", {expenditure_items, has_intermediate_tab });
     },
+
     onViewExpenditureItemDetail(expenditure_item_detail) {
       let has_intermediate_tab = true;
       let selected_category = SessionStorage.getItem("selected_category");
@@ -292,6 +298,7 @@ export default {
         has_intermediate_tab,
       });
     },
+
     onViewExpenditureCategory(expenditure_category) {
       let payload = {
         data: expenditure_category,

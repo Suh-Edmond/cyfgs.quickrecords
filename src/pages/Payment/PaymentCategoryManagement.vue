@@ -96,9 +96,6 @@ export default {
     };
   },
   computed: {
-    validateFilter() {
-      return true;
-    },
     getData() {
       let data = [];
 

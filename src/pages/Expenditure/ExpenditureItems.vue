@@ -1,13 +1,13 @@
 <template>
   <q-page>
     <NotFound
-      :message="not_found_msg"
-      v-if="expenditure_items.length == 0"
+      :message="getNotFoundMsgForPaymentItems"
+      v-if="getExpenditureItems.length == 0"
     ></NotFound>
     <!-- header for filter categories -->
     <div
       class="row q-ml-xs q-pt-xs"
-      v-if="expenditure_items.length > 0"
+      v-if="getExpenditureItems.length > 0"
       :class="$q.screen.lg ? 'q-pa-sm' : ''"
       :style="
         $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
@@ -24,26 +24,26 @@
       </div>
       <q-space />
       <div class="button q-pb-xs">
-        <ButtonVue
+        <q-btn
           :label="label_download"
           :loading="loading"
           :color="color_print"
           :disabled="false"
-          :no_caps="no_caps"
-          icon_right="print"
-        ></ButtonVue>
+          no-caps
+          icon-right="print"
+        ></q-btn>
       </div>
     </div>
     <!-- table for categories -->
-    <div class="row q-pt-sm">
+    <div v-if="getExpenditureItems.length > 0">
+      <div class="row q-pt-sm">
       <div class="col-md-12 col-xs-12 col-sm-12">
         <CategoryTable
           :columns="columns"
-          :data="data"
+          :data="getExpenditureItems"
           :label="label"
           :message="message"
-          :name="name"
-          :title="title"
+          :title="getExpenditureCategoryName"
           :show_payment_category="false"
           :show_payment_item="false"
           :show_expenditure_category="false"
@@ -55,20 +55,21 @@
         </CategoryTable>
       </div>
     </div>
+    </div>
   </q-page>
 </template>
 
 <script>
 import NotFound from "src/components/NotFound.vue";
 import CategoryTable from "src/components/CategoryTable.vue";
-import ButtonVue from "src/components/Button.vue";
 import { SessionStorage } from "quasar";
+
 export default {
+  mounted() {
+    this.getExpenditureItemsFromState();
+  },
   data() {
     return {
-      not_found_msg:
-        "Ooops!! No Expenditure Item found for this Expenditure Category. click the add button to add Expenditure Items.",
-      expenditure_items: [{"id":1}],
       search: null,
       label_fetch: "Filter",
       color: "primary",
@@ -79,11 +80,11 @@ export default {
       title:"Harvest ThanksGiven",// this title should be the category name
       columns: [
         {
-          name: "id",
+          name: "counter",
           required: true,
           label: "S/N",
           align: "left",
-          field: "id",
+          field: "counter",
         },
         {
           name: "name",
@@ -97,7 +98,7 @@ export default {
         {
           name: "amount",
           align: "center",
-          label: "Amount(XAF)",
+          label: "Amount (XAF)",
           field: "amount",
           sortable: true,
         },
@@ -123,88 +124,7 @@ export default {
           sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
         },
       ],
-      data: [
-        {
-          id: 1,
-          name: "Frozen Yogurt",
-          amount: 50000,
-          venue:"Sandpit Bakweri Town",
-          date:"20/10/2022",
-          action: "",
-        },
-        {
-          id: 2,
-          name: "Ice cream sandwich",
-          amount: 60000,
-          venue:"Sandpit Bakweri Town",
-          date:"20/10/2022",
-          action: "",
-        },
-        {
-          id: 3,
-          name: "Eclair",
-          amount: 70000,
-          venue:"Sandpit Bakweri Town",
-          date:"20/10/2022",
-          action: "",
-        },
-        {
-          id: 4,
-          name: "Cupcake",
-          amount: 50000,
-          venue:"Sandpit Bakweri Town",
-          date:"20/10/2022",
-          action: "",
-        },
-        {
-          id: 5,
-          name: "Gingerbread",
-          amount: 20000,
-          venue:"Sandpit Bakweri Town",
-          date:"20/10/2022",
-          action: "",
-        },
-        {
-          id: 6,
-          name: "Jelly bean",
-          amount: 50000,
-          venue:"Sandpit Bakweri Town",
-          date:"20/10/2022",
-          action: "",
-        },
-        {
-          id: 7,
-          name: "Lollipop",
-          amount: 50000,
-          venue:"Sandpit Bakweri Town",
-          date:"20/10/2022",
-          action: "",
-        },
-        {
-          id: 8,
-          name: "Honeycomb",
-          amount: 50000,
-          venue:"Sandpit Bakweri Town",
-          date:"20/10/2022",
-          action: "",
-        },
-        {
-          id: 9,
-          name: "Donut",
-          amount: 50000,
-          venue:"Sandpit Bakweri Town",
-          date:"20/10/2022",
-          action: "",
-        },
-        {
-          id: 10,
-          name: "KitKat",
-          amount: 50000,
-          venue:"Sandpit Bakweri Town",
-          date:"20/10/2022",
-          action: "",
-        },
-      ],
+      data: [],
       label: "Delete",
       message: "Are you sure you want to delete this Expenditure Item?",
       statuses: ["COMPLUSORY", "NOT COMPLUSORY"],
@@ -213,26 +133,71 @@ export default {
     };
   },
   computed: {
+    getExpenditureItems() {
+      let items = [];
+      items = this.getExpenditureItemsFromState();
+      return items;
+    },
+
+    getExpenditureCategoryName() {
+      return this.$store.getters.getCurrentExpenditureCategory.name;
+    },
+
+    getNotFoundMsgForPaymentItems() {
+      return `Ooops!! No Expenditure Items found for this Category [${this.$store.getters.getCurrentExpenditureCategory?.name}]. Click the add button to add Expenditure Items.`;
+    },
   },
   methods: {
     showExpenditureItem(data){
       SessionStorage.set("intermediate_tab", "Expenditure Items");
+
       SessionStorage.set("has_intermediate_tab", true);
+
       this.$emit("show-expenditure-items", data);
     },
+
     editExpenditureItem(data) {
       this.$emit("edit-expenditure-item", data)
     },
+
     showExpenditureItemDetails(data){
       SessionStorage.set("intermediate_tab2", "Expenditure Item Details");
+
       SessionStorage.set("has_intermediate_tab2", true);
+
       this.$emit("show-expenditure-item-details", data);
+    },
+
+    getExpenditureItemsFromState() {
+      let data = []
+      this.$store.getters.getExpenditureItems?.forEach((ele) => {
+        data.push({
+          counter: this.$store.getters.getExpenditureItems?.indexOf(ele) + 1,
+          name: ele.name,
+          id: ele.id,
+          amount:ele.amount,
+          venue:ele.venue,
+          date: ele.date,
+          comment:ele.comment,
+          approve:ele.approve,
+          expenditure_category_id: ele.expenditure_category_id,
+          created_at:ele.created_at,
+          updated_at:ele.updated_at,
+          updated_by:ele.updated_by,
+          expenditure_details:ele.expenditure_details,
+          total_amount_given:ele.total_amount_given,
+          total_amount_spent:ele.total_amount_spent,
+          total_balance:ele.total_balance,
+          type:"EXPENDITURE_ITEMS"
+        })
+      })
+
+      return data;
     }
   },
   components: {
     NotFound,
     CategoryTable,
-    ButtonVue,
   },
 };
 </script>

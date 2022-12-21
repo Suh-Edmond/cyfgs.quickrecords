@@ -11,6 +11,8 @@ export default function () {
     current_payment_catgeory:null,
     updated_payment_item:null,
     expenditure_categories:[],
-    updated_expenditure_category:null
+    updated_expenditure_category:null,
+    expenditure_items:[],
+    current_expenditure_category: null,
   };
 }

@@ -4,42 +4,73 @@
 
     <div v-if="getData.length > 0">
       <!-- header for filter categories -->
-      <div class="row q-ml-xs q-pt-xs" :class="$q.screen.lg ? 'q-pa-sm' : ''" :style="
-        $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-      ">
+      <div
+        class="row q-ml-xs q-pt-xs"
+        :class="$q.screen.lg ? 'q-pa-sm' : ''"
+        :style="
+          $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+        "
+      >
         <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
-          <q-select v-model="year" outlined dense :options="years" label="Select year"
-            @input="filterExpenditureCategories" />
+          <q-select
+            v-model="year"
+            outlined
+            dense
+            :options="years"
+            label="Select year"
+            @input="filterExpenditureCategories"
+          />
         </div>
         <q-space />
         <div class="button q-pb-xs">
-          <q-btn :label="label_download" :loading="loading" :color="color_print" :disabled="false" no-caps
-            icon-right="print" @click="downloadExpenditureCategory"></q-btn>
+          <q-btn
+            :label="label_download"
+            :loading="loading"
+            :color="color_print"
+            :disabled="false"
+            no-caps
+            icon-right="print"
+            @click="downloadExpenditureCategory"
+          ></q-btn>
         </div>
       </div>
 
       <!-- table for categories -->
       <div class="row q-pt-sm" v-show="!start_filter">
         <div class="col-md-12 col-xs-12 col-sm-12">
-          <CategoryTable :columns="columns" :data="getData" :label="label" :message="message"
-            @show-expenditure-items="showExpenditureItems" @update-expenditure-category="updateExpenditureCategory"
-            :show_payment_category="false" :show_payment_item="false" :show_expenditure_category="true"
-            :show_expenditure_item="false">
+          <CategoryTable
+            :columns="columns"
+            :data="getData"
+            :label="label"
+            :message="message"
+            @show-expenditure-items="showExpenditureItems"
+            @update-expenditure-category="updateExpenditureCategory"
+            :show_payment_category="false"
+            :show_payment_item="false"
+            :show_expenditure_category="true"
+            :show_expenditure_item="false"
+          >
           </CategoryTable>
         </div>
       </div>
 
       <!-- table for filtered categories -->
       <div class="col-md-12 col-xs-12 col-sm-12" v-show="start_filter">
-        <CategoryTable :columns="columns" :data="filteredExpenditureCategories" :label="label" :message="message"
-          @show-expenditure-items="showExpenditureItems" @update-expenditure-category="updateExpenditureCategory"
-          :show_payment_category="false" :show_payment_item="false" :show_expenditure_category="true"
-          :show_expenditure_item="false">
+        <CategoryTable
+          :columns="columns"
+          :data="filteredExpenditureCategories"
+          :label="label"
+          :message="message"
+          @show-expenditure-items="showExpenditureItems"
+          @update-expenditure-category="updateExpenditureCategory"
+          :show_payment_category="false"
+          :show_payment_item="false"
+          :show_expenditure_category="true"
+          :show_expenditure_item="false"
+        >
         </CategoryTable>
       </div>
     </div>
-
-
   </q-page>
 </template>
 
@@ -49,9 +80,14 @@ import CategoryTable from "src/components/CategoryTable.vue";
 import { SessionStorage } from "quasar";
 import ExpenditureCategoryMixinVue from "src/mixins/ExpenditureCategoryMixin.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
+import expenditureItemMixinVue from "src/mixins/expenditureItemMixin.vue";
 
 export default {
-  mixins: [ExpenditureCategoryMixinVue, organisationMixinVue],
+  mixins: [
+    ExpenditureCategoryMixinVue,
+    organisationMixinVue,
+    expenditureItemMixinVue,
+  ],
   mounted() {
     this.fetchExpenditureCategories();
   },
@@ -101,14 +137,10 @@ export default {
       label: "Delete",
       message: "Are you sure you want to delete this Expenditure Category?",
       start_filter: false,
-      filteredExpenditureCategories: []
+      filteredExpenditureCategories: [],
     };
   },
   computed: {
-    validateFilter() {
-      return true;
-    },
-
     getData() {
       let data = [];
 
@@ -126,16 +158,23 @@ export default {
       });
 
       return data;
-    }
+    },
   },
   methods: {
     showExpenditureItems(data) {
-      //make request
+      this.$store.dispatch(
+        "setCurrentExpenditureCategory",
+        data.expenditure_items
+      );
+
+      this.getExpenditureItemsByCategory();
+
       SessionStorage.set("intermediate_tab", "Expenditure Items");
+
       SessionStorage.set("has_intermediate_tab", true);
+
       this.$emit("show-expenditure-items", data);
     },
-
 
     updateExpenditureCategory(data) {
       this.$store.dispatch("setUpdatedExpenditureCategory", data.data);
@@ -166,8 +205,7 @@ export default {
         if (res != undefined) {
           res.data.forEach((element) => {
             this.filteredExpenditureCategories.push({
-              counter:
-                res.data.indexOf(element) + 1,
+              counter: res.data.indexOf(element) + 1,
               name: element.name,
               expenditure_items: "View Expenditure Items",
               id: element.id,

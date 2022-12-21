@@ -376,3 +376,11 @@ export function setExpenditureItems({commit}, data) {
 export function setCurrentExpenditureCategory({commit}, data) {
   commit("SET_CURRENT_EXPENDITURE_CATEGORY", data);
 }
+
+export function setUpdatedExpenditureItem({commit}, data) {
+  commit("SET_UPDATED_EXPENDITURE_ITEM", data);
+}
+
+export function setEditState({commit}, data) {
+  commit("SET_EDIT_STATE", data);
+}

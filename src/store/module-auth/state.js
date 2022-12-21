@@ -14,5 +14,7 @@ export default function () {
     updated_expenditure_category:null,
     expenditure_items:[],
     current_expenditure_category: null,
+    updated_expenditure_item:null,
+    is_edit_state:false
   };
 }

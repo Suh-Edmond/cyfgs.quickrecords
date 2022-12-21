@@ -1,9 +1,15 @@
 <template>
   <div class="q-pa-xs">
     <!-- table element -->
-    <q-table :data="data" :columns="columns" row-key="id"
-      :table-header-style="{ backgroundColor: '#5384ae', color: '#FFFFFF' }" class="col-xs-12" :filter="filter"
-      :pagination.sync="pagination">
+    <q-table
+      :data="data"
+      :columns="columns"
+      row-key="id"
+      :table-header-style="{ backgroundColor: '#5384ae', color: '#FFFFFF' }"
+      class="col-xs-12"
+      :filter="filter"
+      :pagination.sync="pagination"
+    >
       <template v-slot:body="props">
         <q-tr :props="props">
           <q-td key="counter" :props="props">
@@ -13,29 +19,58 @@
             {{ props.row.name }}
           </q-td>
           <q-td key="item" :props="props" v-if="show_payment_category">
-            <q-btn flat class="view_items" @click="showPaymentItems(props.row)"
-              :to="{ name: 'payment_items', params: { id: props.row.id } }">
+            <q-btn
+              flat
+              class="view_items"
+              @click="showPaymentItems(props.row)"
+              :to="{ name: 'payment_items', params: { id: props.row.id } }"
+            >
               {{ props.row.item }}
             </q-btn>
           </q-td>
-          <q-td key="expenditure_items" :props="props" v-if="show_expenditure_category">
-            <q-btn flat class="view_items" @click="showExpenditureItems(props.row)" :to="{
-              name: 'expenditure_items',
-              params: { id: props.row.id },
-            }">
+          <q-td
+            key="expenditure_items"
+            :props="props"
+            v-if="show_expenditure_category"
+          >
+            <q-btn
+              flat
+              class="view_items"
+              @click="showExpenditureItems(props.row)"
+              :to="{
+                name: 'expenditure_items',
+                params: { id: props.row.id },
+              }"
+            >
               {{ props.row.expenditure_items }}
             </q-btn>
           </q-td>
-          <q-td key="amount" :props="props" v-if="show_payment_item || show_expenditure_item">
+          <q-td
+            key="amount"
+            :props="props"
+            v-if="show_payment_item || show_expenditure_item"
+          >
             {{ props.row.amount }}
           </q-td>
-          <q-td key="amount_given" :props="props" v-if="show_expenditure_item_detail">
+          <q-td
+            key="amount_given"
+            :props="props"
+            v-if="show_expenditure_item_detail"
+          >
             {{ props.row.amount_given }}
           </q-td>
-          <q-td key="amount_spent" :props="props" v-if="show_expenditure_item_detail">
+          <q-td
+            key="amount_spent"
+            :props="props"
+            v-if="show_expenditure_item_detail"
+          >
             {{ props.row.amount_spent }}
           </q-td>
-          <q-td key="balance" :props="props" v-if="show_expenditure_item_detail">
+          <q-td
+            key="balance"
+            :props="props"
+            v-if="show_expenditure_item_detail"
+          >
             {{ props.row.balance }}
           </q-td>
           <q-td key="venue" :props="props" v-if="show_expenditure_item">
@@ -46,10 +81,21 @@
           </q-td>
           <q-td key="action" :props="props">
             <q-btn flat round>
-              <q-icon name="more_vert" size="xs" color="primary" class="menu_icon" clickable>
+              <q-icon
+                name="more_vert"
+                size="xs"
+                color="primary"
+                class="menu_icon"
+                clickable
+              >
                 <q-menu>
                   <q-list>
-                    <q-item clickable v-close-popup @click="onViewCategory(props.row)" v-if="show_payment_category">
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onViewCategory(props.row)"
+                      v-if="show_payment_category"
+                    >
                       <q-item-section avatar>
                         <span>
                           <q-icon name="visibility" size="xs" class="details" />
@@ -59,7 +105,12 @@
                         <q-item-label class="details">View</q-item-label>
                       </q-item-section>
                     </q-item>
-                    <q-item clickable v-close-popup @click="onViewPaymentItem(props.row)" v-if="show_payment_item">
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onViewPaymentItem(props.row)"
+                      v-if="show_payment_item"
+                    >
                       <q-item-section avatar>
                         <span>
                           <q-icon name="visibility" size="xs" class="details" />
@@ -69,8 +120,12 @@
                         <q-item-label class="details">View</q-item-label>
                       </q-item-section>
                     </q-item>
-                    <q-item clickable v-close-popup @click="onViewExpenditureCategory(props.row)"
-                      v-if="show_expenditure_category">
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onViewExpenditureCategory(props.row)"
+                      v-if="show_expenditure_category"
+                    >
                       <q-item-section avatar>
                         <span>
                           <q-icon name="visibility" size="xs" class="details" />
@@ -80,8 +135,12 @@
                         <q-item-label class="details">View</q-item-label>
                       </q-item-section>
                     </q-item>
-                    <q-item clickable v-close-popup @click="onEditExpenditureItem(props.row)"
-                      v-if="show_expenditure_item">
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onEditExpenditureItem(props.row)"
+                      v-if="show_expenditure_item"
+                    >
                       <q-item-section avatar>
                         <span>
                           <q-icon name="edit" size="xs" class="details" />
@@ -91,9 +150,13 @@
                         <q-item-label class="details">Edit</q-item-label>
                       </q-item-section>
                     </q-item>
-                    <q-separator  v-if="show_expenditure_item"/>
-                    <q-item clickable v-close-popup @click="onViewExpenditureItemDetail(props.row)"
-                      v-if="show_expenditure_item">
+                    <q-separator v-if="show_expenditure_item" />
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onViewExpenditureItemDetail(props.row)"
+                      v-if="show_expenditure_item"
+                    >
                       <q-item-section avatar>
                         <span>
                           <q-icon name="visibility" size="xs" class="details" />
@@ -103,8 +166,12 @@
                         <q-item-label class="details">Details</q-item-label>
                       </q-item-section>
                     </q-item>
-                    <q-item clickable v-close-popup @click="onEditExpenditureItemDetail(props.row)"
-                      v-if="show_expenditure_item_detail">
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onEditExpenditureItemDetail(props.row)"
+                      v-if="show_expenditure_item_detail"
+                    >
                       <q-item-section avatar>
                         <span>
                           <q-icon name="edit" size="xs" class="details" />
@@ -115,7 +182,11 @@
                       </q-item-section>
                     </q-item>
                     <q-separator />
-                    <q-item clickable v-close-popup @click="onDelete(props.row)">
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onDelete(props.row)"
+                    >
                       <q-item-section avatar>
                         <span>
                           <q-icon name="delete" size="xs" color="red" />
@@ -134,21 +205,27 @@
       </template>
       <template v-slot:top-left>
         <div class="text-h6 title" v-show="show_payment_item">
-          Category Name: {{ title }}
+          Category: {{ title }}
         </div>
         <div class="text-h6 title" v-show="show_expenditure_item">
-          Category Name: {{ title }}
+          Category: {{ title }}
         </div>
         <div class="text-h6 title" v-show="show_expenditure_item_detail">
-          Item Name: {{ title }}
+          Item: {{ title }}
         </div>
       </template>
       <template v-slot:top-right>
-        <q-input outlined dense :class="
-          $q.screen.md
-            ? 'text-h6-sm q-mb-sm q-mt-sm full-width'
-            : 'text-h6-sm'
-        " v-model="filter" placeholder="Search category...">
+        <q-input
+          outlined
+          dense
+          :class="
+            $q.screen.md
+              ? 'text-h6-sm q-mb-sm q-mt-sm full-width'
+              : 'text-h6-sm'
+          "
+          v-model="filter"
+          placeholder="Search category..."
+        >
           <template v-slot:append>
             <q-icon name="search" />
           </template>
@@ -161,17 +238,38 @@
       <q-card>
         <q-card-section>
           <div>
-            <q-avatar icon="warning" class="warning_image" size="30px" color="yellow" text-color="white" />
+            <q-avatar
+              icon="warning"
+              class="warning_image"
+              size="30px"
+              color="yellow"
+              text-color="white"
+            />
             <span class="q-ml-sm text-dark">{{ message }}</span>
           </div>
           <div class="text-weight-bold text-center">{{ deleted_row.name }}</div>
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn :label="label_cancel" :color="'primary'" :disabled="false" :loading="loading" :no_caps="false"
-            v-close-popup :flat="true"></q-btn>
-          <q-btn :label="label" :color="'primary'" :disabled="false" :loading="loading" :no_caps="false" v-close-popup
-            @click="deletedRow(deleted_row)" :flat="true"></q-btn>
+          <q-btn
+            :label="label_cancel"
+            :color="'primary'"
+            :disabled="false"
+            :loading="loading"
+            :no_caps="false"
+            v-close-popup
+            :flat="true"
+          ></q-btn>
+          <q-btn
+            :label="label"
+            :color="'primary'"
+            :disabled="false"
+            :loading="loading"
+            :no_caps="false"
+            v-close-popup
+            @click="deletedRow(deleted_row)"
+            :flat="true"
+          ></q-btn>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -182,9 +280,7 @@ import { SessionStorage } from "quasar";
 import PaymentCategoryMixinVue from "src/mixins/PaymentCategoryMixin.vue";
 import expenditureItemMixinVue from "src/mixins/expenditureItemMixin.vue";
 
-
 export default {
-
   mixins: [PaymentCategoryMixinVue, expenditureItemMixinVue],
 
   props: {
@@ -284,7 +380,10 @@ export default {
     showExpenditureItems(expenditure_items) {
       let has_intermediate_tab = true;
 
-      this.$emit("show-expenditure-items", {expenditure_items, has_intermediate_tab });
+      this.$emit("show-expenditure-items", {
+        expenditure_items,
+        has_intermediate_tab,
+      });
     },
 
     onViewExpenditureItemDetail(expenditure_item_detail) {
@@ -322,7 +421,6 @@ export default {
       this.$emit("edit-expenditure-item-detail", payload);
     },
 
-
     deletedRow(deleted_data) {
       let payload = {
         url: this.setDeletedUrlBaseOnType(deleted_data),
@@ -345,7 +443,6 @@ export default {
       });
     },
 
-
     setDeletedUrlBaseOnType(row) {
       let url = "";
       switch (row.type) {
@@ -359,7 +456,7 @@ export default {
           url = `/api/protected/organisations/${row.organisation_id}/expenditure-categories/${row.id}`;
           break;
         case "EXPENDITURE_ITEMS":
-          url = `/api/protected/expenditure-categories/${row.expenditure_category_id}/expenditure-items/${row.id}`
+          url = `/api/protected/expenditure-categories/${row.expenditure_category_id}/expenditure-items/${row.id}`;
           break;
       }
       return url;
@@ -400,7 +497,6 @@ export default {
       }
     },
 
-
     getPaymentItemsByCategory(id) {
       let payload = {
         status: "none",
@@ -418,7 +514,7 @@ export default {
           data: null,
         },
       };
-      this.$store.dispatch("getRequest", payload).then(() => { });
+      this.$store.dispatch("getRequest", payload).then(() => {});
     },
 
     fetchExpenditureCategories(organisation_id) {
@@ -437,9 +533,7 @@ export default {
           data: [],
         },
       };
-      this.$store.dispatch("getRequest", payload).then(() => {
-
-      });
+      this.$store.dispatch("getRequest", payload).then(() => {});
     },
   },
   components: {},

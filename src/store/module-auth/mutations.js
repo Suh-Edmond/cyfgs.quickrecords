@@ -52,3 +52,11 @@ export function SET_EXPENDITURE_ITEMS(state, data) {
 export function SET_CURRENT_EXPENDITURE_CATEGORY(state, data) {
   state.current_expenditure_category = data
 }
+
+export function SET_UPDATED_EXPENDITURE_ITEM(state, data) {
+  state.updated_expenditure_item = data;
+}
+
+export function SET_EDIT_STATE(state, data) {
+  state.is_edit_state = data
+}

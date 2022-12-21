@@ -142,6 +142,8 @@ export default {
     },
 
     editExpenditureItem(data) {
+      this.$store.dispatch("setUpdatedExpenditureItem", data.data);
+      this.$store.dispatch("setEditState", true);
       this.$emit("edit-expenditure-item", data);
     },
 

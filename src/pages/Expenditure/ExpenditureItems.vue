@@ -127,9 +127,8 @@ export default {
       data: [],
       label: "Delete",
       message: "Are you sure you want to delete this Expenditure Item?",
-      statuses: ["COMPLUSORY", "NOT COMPLUSORY"],
+      statuses: ["APPROVED", "UNAPPROVED"],
       status: null,
-      name: "Harvest of Joyful Celebration 2022",
     };
   },
   computed: {

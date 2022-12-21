@@ -180,11 +180,12 @@
 <script>
 import { SessionStorage } from "quasar";
 import PaymentCategoryMixinVue from "src/mixins/PaymentCategoryMixin.vue";
+import expenditureItemMixinVue from "src/mixins/expenditureItemMixin.vue";
 
 
 export default {
 
-  mixins: [PaymentCategoryMixinVue],
+  mixins: [PaymentCategoryMixinVue, expenditureItemMixinVue],
 
   props: {
     columns: {
@@ -357,6 +358,9 @@ export default {
         case "EXPENDITURE_CATEGORY":
           url = `/api/protected/organisations/${row.organisation_id}/expenditure-categories/${row.id}`;
           break;
+        case "EXPENDITURE_ITEMS":
+          url = `/api/protected/expenditure-categories/${row.expenditure_category_id}/expenditure-items/${row.id}`
+          break;
       }
       return url;
     },
@@ -373,6 +377,9 @@ export default {
         case "EXPENDITURE_CATEGORY":
           msg = `Expenditure Category deleted successfully`;
           break;
+        case "EXPENDITURE_ITEMS":
+          msg = `Expenditure Item deleted successfully`;
+          break;
       }
 
       return msg;
@@ -388,7 +395,8 @@ export default {
           break;
         case "EXPENDITURE_CATEGORY":
           this.fetchExpenditureCategories(row.organisation_id);
-
+        case "EXPENDITURE_ITEMS":
+          this.getExpenditureItemsByCategory();
       }
     },
 

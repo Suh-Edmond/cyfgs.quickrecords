@@ -25,7 +25,7 @@
 
         <div :style="$q.screen.lg ? 'margin-left:76px' : ''">
           <q-btn :label="label_print" :loading="loading_print" :color="color_print" :disabled="false" no-caps
-            icon-right="print" @click="downloadPdf"></q-btn>
+            icon-right="print" @click="downloadMembers"></q-btn>
         </div>
       </div>
       <!-- table for members -->
@@ -54,10 +54,11 @@ import TableVue from "src/components/Table.vue";
 import NotFound from "src/components/NotFound.vue";
 import memberMixin from "src/mixins/memberMixin.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
+import HelperMixinVue from "src/mixins/HelperMixin.vue";
 import { Notify, Platform } from "quasar";
 
 export default {
-  mixins: [memberMixin, organisationMixinVue],
+  mixins: [memberMixin, organisationMixinVue, HelperMixinVue],
 
   mounted() {
     let id = this.getOrganisationId
@@ -204,36 +205,11 @@ export default {
       })
     },
 
-    downloadPdf() {
+    downloadMembers() {
       let id = this.getOrganisationId;
-      let payload = {
-        status: "none",
-        url: `/api/protected/organisations/download-users?organisation_id=${id}&gender=${this.gender}&year=${this.year}`,
-        has_path_val: true,
-        show_feedback: true,
-        msg: "none",
-        file_name: "Organisation_Members.pdf",
-        color: "default",
-        error_msg: "Could not download pdf file",
-        commit: "none",
-        has_commit: false,
-        to_be_store_data: {
-          required: true,
-          has_value: false,
-          data: null,
-        },
-      };
-
-      this.loading_print = true
-      this.$store.dispatch("downloadPdf", payload).then(() => {
-        this.loading_print = false
-      }).catch((error) => {
-        Notify.create({
-          type:"info",
-          message:"Could not download pdf file",
-          position:Platform.is.mobile ? "bottom-left":"top-right"
-        })
-      })
+      let  url = `/api/protected/organisations/download-users?organisation_id=${id}&gender=${this.gender}&year=${this.year}`;
+      let file_name = "Organisation_Members.pdf";
+      this.loading = this.downloadPdf(url, file_name);
     }
   },
 

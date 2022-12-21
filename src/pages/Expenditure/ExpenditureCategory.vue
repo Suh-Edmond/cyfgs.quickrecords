@@ -81,12 +81,14 @@ import { SessionStorage } from "quasar";
 import ExpenditureCategoryMixinVue from "src/mixins/ExpenditureCategoryMixin.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import expenditureItemMixinVue from "src/mixins/expenditureItemMixin.vue";
+import HelperMixinVue from "src/mixins/HelperMixin.vue";
 
 export default {
   mixins: [
     ExpenditureCategoryMixinVue,
     organisationMixinVue,
     expenditureItemMixinVue,
+    HelperMixinVue
   ],
   mounted() {
     this.fetchExpenditureCategories();
@@ -221,38 +223,9 @@ export default {
 
     downloadExpenditureCategory() {
       let id = this.getOrganisationId;
-      let payload = {
-        status: "none",
-        url: `/api/protected/expenditure-categories/download?organisation_id=${id}&year=${this.year}`,
-        has_path_val: true,
-        show_feedback: true,
-        msg: "none",
-        file_name: "Expenditure_Categories.pdf",
-        color: "default",
-        error_msg: "Could not download pdf file",
-        commit: "none",
-        has_commit: false,
-        to_be_store_data: {
-          required: true,
-          has_value: false,
-          data: null,
-        },
-      };
-
-      this.loading = true;
-      this.$store
-        .dispatch("downloadPdf", payload)
-        .then(() => {
-          this.loading = false;
-          this.year = null;
-        })
-        .catch(() => {
-          Notify.create({
-            type: "info",
-            message: "Could not download pdf file",
-            position: Platform.is.mobile ? "bottom-left" : "top-right",
-          });
-        });
+      let url = `/api/protected/expenditure-categories/download?organisation_id=${id}&year=${this.year}`;
+      let file_name = "Expenditure_Categories.pdf";
+      this.loading = this.downloadPdf(url, file_name);
     },
   },
   components: {

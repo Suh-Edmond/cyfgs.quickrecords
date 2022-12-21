@@ -31,30 +31,31 @@
           :disabled="false"
           no-caps
           icon-right="print"
+          @click="downloadExpenditureItems"
         ></q-btn>
       </div>
     </div>
     <!-- table for categories -->
     <div v-if="getExpenditureItems.length > 0">
       <div class="row q-pt-sm">
-      <div class="col-md-12 col-xs-12 col-sm-12">
-        <CategoryTable
-          :columns="columns"
-          :data="getExpenditureItems"
-          :label="label"
-          :message="message"
-          :title="getExpenditureCategoryName"
-          :show_payment_category="false"
-          :show_payment_item="false"
-          :show_expenditure_category="false"
-          :show_expenditure_item="true"
-          @show-expenditure-items="showExpenditureItem"
-          @edit-expenditure-item="editExpenditureItem"
-          @show-expenditure-item-details="showExpenditureItemDetails"
-        >
-        </CategoryTable>
+        <div class="col-md-12 col-xs-12 col-sm-12">
+          <CategoryTable
+            :columns="columns"
+            :data="getExpenditureItems"
+            :label="label"
+            :message="message"
+            :title="getExpenditureCategoryName"
+            :show_payment_category="false"
+            :show_payment_item="false"
+            :show_expenditure_category="false"
+            :show_expenditure_item="true"
+            @show-expenditure-items="showExpenditureItem"
+            @edit-expenditure-item="editExpenditureItem"
+            @show-expenditure-item-details="showExpenditureItemDetails"
+          >
+          </CategoryTable>
+        </div>
       </div>
-    </div>
     </div>
   </q-page>
 </template>
@@ -63,8 +64,10 @@
 import NotFound from "src/components/NotFound.vue";
 import CategoryTable from "src/components/CategoryTable.vue";
 import { SessionStorage } from "quasar";
+import HelperMixinVue from "src/mixins/HelperMixin.vue";
 
 export default {
+  mixins: [HelperMixinVue],
   mounted() {
     this.getExpenditureItemsFromState();
   },
@@ -77,7 +80,7 @@ export default {
       loading: false,
       label_download: "Print",
       color_print: "positive",
-      title:"Harvest ThanksGiven",// this title should be the category name
+      title: "Harvest ThanksGiven", // this title should be the category name
       columns: [
         {
           name: "counter",
@@ -128,7 +131,7 @@ export default {
       label: "Delete",
       message: "Are you sure you want to delete this Expenditure Item?",
       statuses: ["APPROVED", "UNAPPROVED"],
-      status: null,
+      status: "UNAPPROVED",
     };
   },
   computed: {
@@ -147,7 +150,7 @@ export default {
     },
   },
   methods: {
-    showExpenditureItem(data){
+    showExpenditureItem(data) {
       SessionStorage.set("intermediate_tab", "Expenditure Items");
 
       SessionStorage.set("has_intermediate_tab", true);
@@ -156,10 +159,10 @@ export default {
     },
 
     editExpenditureItem(data) {
-      this.$emit("edit-expenditure-item", data)
+      this.$emit("edit-expenditure-item", data);
     },
 
-    showExpenditureItemDetails(data){
+    showExpenditureItemDetails(data) {
       SessionStorage.set("intermediate_tab2", "Expenditure Item Details");
 
       SessionStorage.set("has_intermediate_tab2", true);
@@ -168,31 +171,38 @@ export default {
     },
 
     getExpenditureItemsFromState() {
-      let data = []
+      let data = [];
       this.$store.getters.getExpenditureItems?.forEach((ele) => {
         data.push({
           counter: this.$store.getters.getExpenditureItems?.indexOf(ele) + 1,
           name: ele.name,
           id: ele.id,
-          amount:ele.amount,
-          venue:ele.venue,
+          amount: ele.amount,
+          venue: ele.venue,
           date: ele.date,
-          comment:ele.comment,
-          approve:ele.approve,
+          comment: ele.comment,
+          approve: ele.approve,
           expenditure_category_id: ele.expenditure_category_id,
-          created_at:ele.created_at,
-          updated_at:ele.updated_at,
-          updated_by:ele.updated_by,
-          expenditure_details:ele.expenditure_details,
-          total_amount_given:ele.total_amount_given,
-          total_amount_spent:ele.total_amount_spent,
-          total_balance:ele.total_balance,
-          type:"EXPENDITURE_ITEMS"
-        })
-      })
+          created_at: ele.created_at,
+          updated_at: ele.updated_at,
+          updated_by: ele.updated_by,
+          expenditure_details: ele.expenditure_details,
+          total_amount_given: ele.total_amount_given,
+          total_amount_spent: ele.total_amount_spent,
+          total_balance: ele.total_balance,
+          type: "EXPENDITURE_ITEMS",
+        });
+      });
 
       return data;
-    }
+    },
+
+    downloadExpenditureItems() {
+      let expenditure_category_id = this.$store.getters.getCurrentExpenditureCategory.id;
+      let url = `/api/protected/expenditure-items/download?expenditure_category_id=${expenditure_category_id}&status=${this.status}`;
+      let file_name = "Expenditure_Items.pdf";
+      this.loading = this.downloadPdf(url, file_name);
+    },
   },
   components: {
     NotFound,

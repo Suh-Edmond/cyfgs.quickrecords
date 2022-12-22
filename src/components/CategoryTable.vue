@@ -91,6 +91,7 @@
                         <q-item-label class="details">Edit</q-item-label>
                       </q-item-section>
                     </q-item>
+                    <q-separator v-if="show_expenditure_item" />
                     <q-item clickable v-close-popup @click="onViewExpenditureItemDetail(props.row)"
                       v-if="show_expenditure_item">
                       <q-item-section avatar>
@@ -133,13 +134,13 @@
       </template>
       <template v-slot:top-left>
         <div class="text-h6 title" v-show="show_payment_item">
-          Category Name: {{ title }}
+          Category: {{ title }}
         </div>
         <div class="text-h6 title" v-show="show_expenditure_item">
-          Category Name: {{ title }}
+          Category: {{ title }}
         </div>
         <div class="text-h6 title" v-show="show_expenditure_item_detail">
-          Item Name: {{ title }}
+          Item: {{ title }}
         </div>
       </template>
       <template v-slot:top-right>
@@ -179,11 +180,11 @@
 <script>
 import { SessionStorage } from "quasar";
 import PaymentCategoryMixinVue from "src/mixins/PaymentCategoryMixin.vue";
-
+import expenditureItemMixinVue from "src/mixins/expenditureItemMixin.vue";
+import ExpenditureItemDetailMixinVue from "src/mixins/ExpenditureItemDetailMixin.vue";
 
 export default {
-
-  mixins: [PaymentCategoryMixinVue],
+  mixins: [PaymentCategoryMixinVue, expenditureItemMixinVue, ExpenditureItemDetailMixinVue],
 
   props: {
     columns: {
@@ -260,6 +261,7 @@ export default {
       };
       this.$emit("update-payment-category", payload);
     },
+
     onViewPaymentItem(payment_items) {
       let payload = {
         data: payment_items,
@@ -267,31 +269,39 @@ export default {
       };
       this.$emit("update-payment-item", payload);
     },
+
     onDelete(row) {
       this.deleted_row = row;
       this.dialog = true;
     },
+
     showPaymentItems(payment_items) {
       let has_intermediate_tab = true;
       this.$emit("show-payment-items", { payment_items, has_intermediate_tab });
     },
+
     showExpenditureItems(expenditure_items) {
       let has_intermediate_tab = true;
-      SessionStorage.set("selected_category", expenditure_items.id);
-      this.$emit("show-expenditure-items", { data, has_intermediate_tab });
-    },
-    onViewExpenditureItemDetail(expenditure_item_detail) {
-      let has_intermediate_tab = true;
-      let selected_category = SessionStorage.getItem("selected_category");
-      this.$router.push({
-        name: "expenditure_item_details",
-        params: { id: selected_category, item_id: expenditure_item_detail.id },
-      });
-      this.$emit("show-expenditure-item-details", {
-        expenditure_item_detail,
+
+      this.$emit("show-expenditure-items", {
+        expenditure_items,
         has_intermediate_tab,
       });
     },
+
+    onViewExpenditureItemDetail(expenditure_item) {
+      let has_intermediate_tab = true;
+      let category = this.$store.getters.getCurrentExpenditureCategory;
+      this.$router.push({
+        name: "expenditure_item_details",
+        params: { id: category.id, item_id: expenditure_item.id },
+      });
+      this.$emit("show-expenditure-item-details", {
+        expenditure_item,
+        has_intermediate_tab,
+      });
+    },
+
     onViewExpenditureCategory(expenditure_category) {
       let payload = {
         data: expenditure_category,
@@ -311,9 +321,9 @@ export default {
         data: expenditure_item_detail,
         tab: "Expenditure Item Details",
       };
+      console.log(expenditure_item_detail);
       this.$emit("edit-expenditure-item-detail", payload);
     },
-
 
     deletedRow(deleted_data) {
       let payload = {
@@ -337,7 +347,6 @@ export default {
       });
     },
 
-
     setDeletedUrlBaseOnType(row) {
       let url = "";
       switch (row.type) {
@@ -349,6 +358,12 @@ export default {
           break;
         case "EXPENDITURE_CATEGORY":
           url = `/api/protected/organisations/${row.organisation_id}/expenditure-categories/${row.id}`;
+          break;
+        case "EXPENDITURE_ITEMS":
+          url = `/api/protected/expenditure-categories/${row.expenditure_category_id}/expenditure-items/${row.id}`;
+          break;
+        case "EXPENDITURE_DETAILS":
+          url = `/api/protected/expenditure-item-details/${row.id}`;
           break;
       }
       return url;
@@ -366,6 +381,12 @@ export default {
         case "EXPENDITURE_CATEGORY":
           msg = `Expenditure Category deleted successfully`;
           break;
+        case "EXPENDITURE_ITEMS":
+          msg = `Expenditure Item deleted successfully`;
+          break;
+        case "EXPENDITURE_DETAILS":
+          msg = `Expenditure Item detail deleted successfully`;
+          break;
       }
 
       return msg;
@@ -376,15 +397,25 @@ export default {
         case "PAYMENT_CATEGORY":
           this.fetchCategories();
           break;
+
         case "PAYMENT_ITEMS":
           this.getPaymentItemsByCategory(row.payment_category_id);
           break;
+
         case "EXPENDITURE_CATEGORY":
           this.fetchExpenditureCategories(row.organisation_id);
+          break;
+
+        case "EXPENDITURE_ITEMS":
+          this.getExpenditureItemsByCategory();
+          break;
+
+        case "EXPENDITURE_DETAILS":
+          this.getExpenditureDetailsByItemId(row.expenditure_item_id);
+          break;
 
       }
     },
-
 
     getPaymentItemsByCategory(id) {
       let payload = {
@@ -422,9 +453,7 @@ export default {
           data: [],
         },
       };
-      this.$store.dispatch("getRequest", payload).then(() => {
-
-      });
+      this.$store.dispatch("getRequest", payload).then(() => { });
     },
   },
   components: {},

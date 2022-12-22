@@ -39,8 +39,10 @@
 <script>
 import NotFound from "src/components/NotFound.vue";
 import CategoryTable from "src/components/CategoryTable.vue";
+import HelperMixinVue from "src/mixins/HelperMixin.vue";
 
 export default {
+  mixins:[HelperMixinVue],
   mounted() {
     this.getPaymentItemsFromState();
   },
@@ -115,10 +117,6 @@ export default {
       this.$emit("update-payment-category", data);
     },
 
-    showSearch() {
-      this.start_search = !this.start_search;
-    },
-
     showPaymentItems(data) {
       SessionStorage.set("intermediate_tab", "Payment Items");
 
@@ -152,37 +150,9 @@ export default {
 
     downloadItems() {
       let id = this.$store.getters.getCurrentPaymentCategory.id;
-      let payload = {
-        status: "none",
-        url: `/api/protected/download-payment-items?payment_category_id=${id}`,
-        has_path_val: true,
-        show_feedback: true,
-        msg: "none",
-        file_name: "Payment_Items.pdf",
-        color: "default",
-        error_msg: "Could not download pdf file",
-        commit: "none",
-        has_commit: false,
-        to_be_store_data: {
-          required: true,
-          has_value: false,
-          data: null,
-        },
-      };
-
-      this.loading = true;
-      this.$store
-        .dispatch("downloadPdf", payload)
-        .then(() => {
-          this.loading = false;
-        })
-        .catch(() => {
-          Notify.create({
-            type: "info",
-            message: "Could not download pdf file",
-            position: Platform.is.mobile ? "bottom-left" : "top-right",
-          });
-        });
+      let url = `/api/protected/download-payment-items?payment_category_id=${id}`
+      let file_name = "Payment_Items.pdf";
+      this.loading =  this.downloadPdf(url, file_name)
     },
 
     filterPaymentItems() {

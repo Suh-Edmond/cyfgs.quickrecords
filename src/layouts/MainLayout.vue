@@ -124,18 +124,26 @@
             <q-item
               clickable
               v-ripple
-              :active-class="item.name == 'Invite Members' ? 'item' : 'item_text'"
+              :active-class="
+                item.name == 'Invite Members' ? 'item' : 'item_text'
+              "
               :active="item.name == 'Invite Members'"
-              @click="setItem({ name: 'Invite Members', selected: true }, false)"
+              @click="
+                setItem({ name: 'Invite Members', selected: true }, false)
+              "
               v-if="checkRole(['PRESIDENT', null])"
             >
               <q-item-section
                 avatar
-                :class="item.name == 'Invite Members' ? 'item_icon' : 'item_text'"
+                :class="
+                  item.name == 'Invite Members' ? 'item_icon' : 'item_text'
+                "
               >
                 <q-icon name="share" size="xs" />
               </q-item-section>
-              <q-item-section class="item_name"> Invite Members </q-item-section>
+              <q-item-section class="item_name">
+                Invite Members
+              </q-item-section>
             </q-item>
             <q-item
               clickable
@@ -401,6 +409,8 @@
         ></AddExpenditureItem>
         <AddExpenditureItemDetail
           v-if="current_tab == 'Expenditure Item Details'"
+          @close-right-drawer="closeRightDrawer"
+          @set-heading="setHeading"
         ></AddExpenditureItemDetail>
         <AddMemberSavingVue
           v-if="current_tab == 'Member Savings'"
@@ -476,14 +486,24 @@ export default {
   methods: {
     setItem(item, requires_add) {
       this.item.name = item.name;
+
       this.requires_add = requires_add;
+
       this.item.selected = true;
+
       SessionStorage.set("from_tab", SessionStorage.getItem("to_tab"));
+
       SessionStorage.set("to_tab", item.name);
+
       SessionStorage.set("requires_add", this.requires_add);
-      // this.$store.dispatch("setFetchingState", true)
-      SessionStorage.remove('intermediate_tab')
-      SessionStorage.set('has_intermediate_tab', false);
+
+      SessionStorage.remove("intermediate_tab");
+
+      SessionStorage.set("has_intermediate_tab", false);
+
+      SessionStorage.remove("intermediate_tab2");
+
+      SessionStorage.set("has_intermediate_tab2", false);
     },
     updateRightDrawer({ right, current_tab, data }) {
       this.current_tab = current_tab;
@@ -509,7 +529,7 @@ export default {
         msg: "Logout Successful",
         color: "default",
         to_on_fail: "none",
-        show_feedback:false,
+        show_feedback: false,
         error_msg: "default",
         to_be_store_data: {
           required: false,
@@ -521,9 +541,11 @@ export default {
     },
     goBack() {
       this.right = !this.right;
+      this.$store.dispatch("setEditState", false);
     },
     closeRightDrawer() {
       this.right = !this.right;
+      this.$store.dispatch("setEditState", false);
     },
     setHeading(data) {
       this.heading = data;

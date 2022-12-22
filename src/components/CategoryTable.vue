@@ -321,6 +321,7 @@ export default {
         data: expenditure_item_detail,
         tab: "Expenditure Item Details",
       };
+      console.log(expenditure_item_detail);
       this.$emit("edit-expenditure-item-detail", payload);
     },
 

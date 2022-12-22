@@ -1,6 +1,6 @@
 <template>
   <div class="q-pa-md">
-    <div class="q-mt-md q-mx-md">
+    <div class="q-mt-md q-mx-md" v-if="!getEditState">
       <q-form @submit="onAddExpenditureItemDetail" class="q-gutter-sm">
         <div class="q-mb-md">
           <label for="credential" class="form_field">Name <span class="text-red">*</span></label>
@@ -40,6 +40,59 @@
         </div>
       </q-form>
     </div>
+    <div class="q-mt-md" v-if="getEditState">
+      <div class="q-mb-md">
+        <label for="expenditure_category_name" class="field">Expenditure Item:
+          <span class="field_value q-pl-md">{{
+              getCurrentExpenditureItem.name
+          }}</span></label>
+      </div>
+      <div class="q-mb-md">
+        <label for="expenditure_category_name" class="field">Total Amount:
+          <span class="field_value q-pl-md">{{
+              getUpdatedExpenditureItemDetailFromState.total_item_amount
+          }} XAF</span></label>
+      </div>
+      <div class="q-mb-md">
+        <label for="expenditure_item" class="field">Expenditure Detail:
+          <span class="field_value item_value">{{
+              getUpdatedExpenditureItemDetailFromState.name
+          }}</span></label>
+      </div>
+      <div class="q-mb-md">
+        <label for="venue" class="field">Amount Given:
+          <span class="field_value item_venue">{{
+              getUpdatedExpenditureItemDetailFromState.amount_given
+          }} XAF</span></label>
+      </div>
+      <div class="q-mb-md">
+        <label for="date" class="field">Amount Spent:
+          <span class="field_value item_date">{{
+              getUpdatedExpenditureItemDetailFromState.amount_spent
+          }} XAF</span></label>
+      </div>
+      <div class="q-mb-md">
+        <label for="amount" class="field">Balance:
+          <span class="field_value item_amount">
+            {{ getUpdatedExpenditureItemDetailFromState.balance }} XAF</span></label>
+      </div>
+      <div class="q-mb-md">
+        <label for="status" class="field" v-show="!getUpdatedExpenditureItemDetailFromState.approve">Status:
+          <span class="field_value item_statue unapproved_color">
+            UNAPPROVED</span></label>
+        <label for="status" class="field" v-show="getUpdatedExpenditureItemDetailFromState.approve">Status:
+          <span class="field_value item_statue approved_color">
+            APPROVED</span></label>
+      </div>
+      <div class="q-mb-md">
+        <label for="comment" class="field">Comment:</label>
+        <p>{{ getUpdatedExpenditureItemDetailFromState.comment }}.</p>
+      </div>
+
+      <div class="row q-mt-lg justify-end">
+        <q-btn round color="primary" icon="edit" size="sm" @click="showEditForm" />
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -78,6 +131,16 @@ export default {
         this.expenditure_item_detail.amount_spent === null ||
         this.expenditure_item_detail.amount_given < this.expenditure_item_detail.amount_spent ? true : false;
     },
+    getEditState() {
+      return this.$store.getters.getEditState;
+    },
+    getCurrentExpenditureItem() {
+      return this.$store.getters.getCurrentExpenditureItem;
+    },
+    getUpdatedExpenditureItemDetailFromState() {
+
+      return this.$store.getters.getUpdatedExpenditureItemDetail;
+    },
   },
 
   methods: {
@@ -114,7 +177,7 @@ export default {
     },
     showEditForm() {
       this.$store.dispatch("setEditState", false);
-      // this.setFormFields(this.$store.getters.getUpdatedExpenditureItem);
+      this.setFormFields(this.$store.getters.getUpdatedExpenditureItemDetail);
     },
 
     setFormFields(data) {
@@ -184,18 +247,52 @@ export default {
   color: $grey2;
 }
 
-.or_option {
-  font-weight: bolder;
+.field {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 11px;
+
+  letter-spacing: 0.01em;
+  color: $grey5;
 }
 
-.help_text {
-  color: $dark;
+.field_value {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 13px;
-  text-align: center;
-  align-items: center;
-  letter-spacing: 0.01em;
+  font-size: 15px;
+  line-height: 27px;
+  letter-spacing: 0.005em;
+  color: $dark;
+}
+
+.item_value {
+  padding-left: 2.8rem;
+}
+
+.item_venue {
+  padding-left: 7rem;
+}
+
+.item_date {
+  padding-left: 7.8rem;
+}
+
+.item_amount {
+  padding-left: 6.4rem;
+}
+
+.item_statue {
+  padding: 7.1rem;
+}
+
+.unapproved_color {
+  color: #f2994a;
+}
+
+.approved_color {
+  color: #27ae60;
 }
 </style>

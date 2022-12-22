@@ -151,6 +151,10 @@ export default {
   },
   methods: {
     editExpenditureItemDetail(data) {
+      this.$store.dispatch("setUpdatedExpenditureItemDetail", data.data);
+
+      this.$store.dispatch("setEditState", true);
+
       this.$emit("edit-expenditure-item-detail", data);
     },
 

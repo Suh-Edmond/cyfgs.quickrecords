@@ -392,3 +392,7 @@ export function setExpenditureItemDetails({commit}, data) {
 export function setCurrentExpenditureItem({commit}, data) {
   commit("SET_CURRENT_EXPENDITURE_ITEM", data)
 }
+
+export function setUpdatedExpenditureItemDetail({commit}, data) {
+  commit("SET_UPDATED_EXPENDITURE_ITEM_DETAIL", data);
+}

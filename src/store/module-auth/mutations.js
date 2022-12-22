@@ -68,3 +68,7 @@ export function SET_EXPENDITURE_ITEM_DETAIL(state, data) {
 export function SET_CURRENT_EXPENDITURE_ITEM(state, data) {
   state.current_expenditure_item = data
 }
+
+export function SET_UPDATED_EXPENDITURE_ITEM_DETAIL(state, data) {
+  state.updated_expenditure_item_detail = data
+}

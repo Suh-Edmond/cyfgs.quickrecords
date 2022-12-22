@@ -70,3 +70,7 @@ export function getExpenditureItemDetails(state) {
 export function getCurrentExpenditureItem(state) {
   return state.current_expenditure_item;
 }
+
+export function getUpdatedExpenditureItemDetail(state) {
+  return state.updated_expenditure_item_detail;
+}

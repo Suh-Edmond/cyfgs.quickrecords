@@ -42,7 +42,7 @@
             {{ props.row.venue }}
           </q-td>
           <q-td key="date" :props="props" v-if="show_expenditure_item">
-            {{ props.row.date }}
+            {{ getFormatedDate(props.row.date) }}
           </q-td>
           <q-td key="action" :props="props">
             <q-btn flat round>
@@ -182,6 +182,7 @@ import { SessionStorage } from "quasar";
 import PaymentCategoryMixinVue from "src/mixins/PaymentCategoryMixin.vue";
 import expenditureItemMixinVue from "src/mixins/expenditureItemMixin.vue";
 import ExpenditureItemDetailMixinVue from "src/mixins/ExpenditureItemDetailMixin.vue";
+import moment from 'moment'
 
 export default {
   mixins: [PaymentCategoryMixinVue, expenditureItemMixinVue, ExpenditureItemDetailMixinVue],
@@ -252,6 +253,7 @@ export default {
     getSelectedCategory() {
       return SessionStorage.getItem("selected_category");
     },
+
   },
   methods: {
     onViewCategory(categories) {
@@ -455,6 +457,10 @@ export default {
       };
       this.$store.dispatch("getRequest", payload).then(() => { });
     },
+
+    getFormatedDate(date) {
+      return moment(date).format('MMMM Do YYYY')
+    }
   },
   components: {},
 };

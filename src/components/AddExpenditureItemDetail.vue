@@ -48,33 +48,33 @@
           }}</span></label>
       </div>
       <div class="q-mb-md">
-        <label for="expenditure_category_name" class="field">Total Amount:
-          <span class="field_value q-pl-md">{{
-              getUpdatedExpenditureItemDetailFromState.total_item_amount
+        <label for="expenditure_category_name" class="field">Item Amount:
+          <span class="field_value item_amount ">{{
+              Number(getUpdatedExpenditureItemDetailFromState.total_item_amount).toLocaleString()
           }} XAF</span></label>
       </div>
       <div class="q-mb-md">
         <label for="expenditure_item" class="field">Expenditure Detail:
-          <span class="field_value item_value">{{
+          <span class="field_value detail_name">{{
               getUpdatedExpenditureItemDetailFromState.name
           }}</span></label>
       </div>
       <div class="q-mb-md">
         <label for="venue" class="field">Amount Given:
-          <span class="field_value item_venue">{{
-              getUpdatedExpenditureItemDetailFromState.amount_given
+          <span class="field_value detail_amount">{{
+              Number(getUpdatedExpenditureItemDetailFromState.amount_given).toLocaleString()
           }} XAF</span></label>
       </div>
       <div class="q-mb-md">
         <label for="date" class="field">Amount Spent:
-          <span class="field_value item_date">{{
-              getUpdatedExpenditureItemDetailFromState.amount_spent
+          <span class="field_value detail_amount">{{
+              Number(getUpdatedExpenditureItemDetailFromState.amount_spent).toLocaleString()
           }} XAF</span></label>
       </div>
       <div class="q-mb-md">
         <label for="amount" class="field">Balance:
-          <span class="field_value item_amount">
-            {{ getUpdatedExpenditureItemDetailFromState.balance }} XAF</span></label>
+          <span class="field_value item_bal">
+            {{ Number(getUpdatedExpenditureItemDetailFromState.balance).toLocaleString() }} XAF</span></label>
       </div>
       <div class="q-mb-md">
         <label for="status" class="field" v-show="!getUpdatedExpenditureItemDetailFromState.approve">Status:
@@ -89,7 +89,20 @@
         <p>{{ getUpdatedExpenditureItemDetailFromState.comment }}.</p>
       </div>
 
-      <div class="row q-mt-lg justify-end">
+      <div class="q-mb-md">
+        <label for="amount" class="field">Created Date:
+          <span class="field_value detail_date">
+            {{ getFormatDetailCreatedDate }}
+          </span></label>
+      </div>
+
+      <div class="q-mb-md">
+        <label for="amount" class="field">Created By:
+          <span class="field_value detail_created_by">
+            {{ getUpdatedExpenditureItemDetailFromState.updated_by }} </span></label>
+      </div>
+
+      <div class="row q-mt-xl justify-end">
         <q-btn round color="primary" icon="edit" size="sm" @click="showEditForm" />
       </div>
     </div>
@@ -98,6 +111,8 @@
 <script>
 import ButtonVue from "src/components/Button.vue";
 import ExpenditureItemDetailMixinVue from "src/mixins/ExpenditureItemDetailMixin.vue";
+import moment from 'moment'
+
 export default {
   mixins: [ExpenditureItemDetailMixinVue],
   created() {
@@ -141,6 +156,9 @@ export default {
 
       return this.$store.getters.getUpdatedExpenditureItemDetail;
     },
+    getFormatDetailCreatedDate() {
+      return moment(this.$store.getters.getUpdatedExpenditureItemDetail.created_at).format('MMMM Do YYYY, h:mm:ss a')
+    }
   },
 
   methods: {
@@ -224,7 +242,8 @@ export default {
             this.$emit("close-right-drawer");
             this.loading = false;
             this.resetForm();
-            // this.$store.dispatch("setUpdatedExpenditureItem", null);
+            this.$store.dispatch("setUpdatedExpenditureItemDetail", null);
+            this.$store.dispatch("setEditState", false)
           });
       }
     },
@@ -268,24 +287,32 @@ export default {
   color: $dark;
 }
 
-.item_value {
-  padding-left: 2.8rem;
-}
-
-.item_venue {
-  padding-left: 7rem;
-}
-
-.item_date {
-  padding-left: 7.8rem;
+.detail_name {
+  padding-left: .6rem;
 }
 
 .item_amount {
-  padding-left: 6.4rem;
+  padding-left: 2.5rem;
+}
+
+.detail_amount {
+  padding-left: 2.3rem;
+}
+
+.item_bal {
+  padding-left: 4.8rem;
+}
+
+.detail_date {
+  padding-left: 3rem;
+}
+
+.detail_created_by {
+  padding-left: 3.7rem;
 }
 
 .item_statue {
-  padding: 7.1rem;
+  padding: 5.5rem;
 }
 
 .unapproved_color {

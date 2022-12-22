@@ -62,3 +62,11 @@ export function getUpdatedExpenditureItem(state) {
 export function getEditState(state) {
   return state.is_edit_state;
 }
+
+export function getExpenditureItemDetails(state) {
+  return state.expenditure_item_details;
+}
+
+export function getCurrentExpenditureItem(state) {
+  return state.current_expenditure_item;
+}

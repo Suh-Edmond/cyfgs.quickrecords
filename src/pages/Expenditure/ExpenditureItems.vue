@@ -46,9 +46,10 @@ import NotFound from "src/components/NotFound.vue";
 import CategoryTable from "src/components/CategoryTable.vue";
 import { SessionStorage } from "quasar";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
+import ExpenditureItemDetailMixinVue from "src/mixins/ExpenditureItemDetailMixin.vue";
 
 export default {
-  mixins: [HelperMixinVue],
+  mixins: [HelperMixinVue, ExpenditureItemDetailMixinVue],
   mounted() {
     this.getExpenditureItemsFromState();
   },
@@ -61,7 +62,6 @@ export default {
       loading: false,
       label_download: "Print",
       color_print: "positive",
-      title: "Harvest ThanksGiven", // this title should be the category name
       columns: [
         {
           name: "counter",
@@ -148,6 +148,10 @@ export default {
     },
 
     showExpenditureItemDetails(data) {
+      this.$store.dispatch("setCurrentExpenditureItem", {id:data.expenditure_item.id, name:data.expenditure_item.name});
+
+      this.getExpenditureDetailsByItemId(data.expenditure_item.id)
+
       SessionStorage.set("intermediate_tab2", "Expenditure Item Details");
 
       SessionStorage.set("has_intermediate_tab2", true);

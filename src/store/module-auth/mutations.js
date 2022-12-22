@@ -60,3 +60,11 @@ export function SET_UPDATED_EXPENDITURE_ITEM(state, data) {
 export function SET_EDIT_STATE(state, data) {
   state.is_edit_state = data
 }
+
+export function SET_EXPENDITURE_ITEM_DETAIL(state, data) {
+  state.expenditure_item_details = data
+}
+
+export function SET_CURRENT_EXPENDITURE_ITEM(state, data) {
+  state.current_expenditure_item = data
+}

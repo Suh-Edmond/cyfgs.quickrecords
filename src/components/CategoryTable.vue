@@ -386,15 +386,15 @@ export default {
       });
     },
 
-    onViewExpenditureItemDetail(expenditure_item_detail) {
+    onViewExpenditureItemDetail(expenditure_item) {
       let has_intermediate_tab = true;
-      let selected_category = SessionStorage.getItem("selected_category");
+      let category = this.$store.getters.getCurrentExpenditureCategory;
       this.$router.push({
         name: "expenditure_item_details",
-        params: { id: selected_category, item_id: expenditure_item_detail.id },
+        params: { id: category.id, item_id: expenditure_item.id },
       });
       this.$emit("show-expenditure-item-details", {
-        expenditure_item_detail,
+        expenditure_item,
         has_intermediate_tab,
       });
     },

@@ -24,7 +24,7 @@
         </div>
 
         <div>
-          <label for="credential" class="form_field">Image</label>
+          <label for="credential" class="form_field">Receipt (Optional)</label>
           <q-file outlined v-model="expenditure_item.picture" dense class="q-mb-md">
             <template v-slot:prepend>
               <q-icon name="attach_file" />

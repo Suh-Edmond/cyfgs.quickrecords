@@ -384,3 +384,11 @@ export function setUpdatedExpenditureItem({commit}, data) {
 export function setEditState({commit}, data) {
   commit("SET_EDIT_STATE", data);
 }
+
+export function setExpenditureItemDetails({commit}, data) {
+  commit("SET_EXPENDITURE_ITEM_DETAIL", data)
+}
+
+export function setCurrentExpenditureItem({commit}, data) {
+  commit("SET_CURRENT_EXPENDITURE_ITEM", data)
+}

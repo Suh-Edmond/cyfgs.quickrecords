@@ -190,9 +190,9 @@ export default {
       this.getIntermediateTab();
     },
     getIntermediateTab() {
-      this.intermediate_tab = SessionStorage.getItem("intermediate_tab");
+      this.intermediate_tab = SessionStorage.getItem("has_intermediate_tab") ? SessionStorage.getItem("intermediate_tab") : "";
       this.intermediate_tab2 =
-        SessionStorage.getItem("intermediate_tab2") !== "undefined"
+        SessionStorage.getItem("has_intermediate_tab2")
           ? SessionStorage.getItem("intermediate_tab2")
           : "";
       return this.intermediate_tab;
@@ -266,7 +266,7 @@ export default {
       this.updateDrawer(data);
     },
     formatUserRole(role) {
-      let user_role =null;
+      let user_role = null;
       if (role === "FINANCIAL_SECRETARY") {
         user_role = "Financial Secretary"
       }

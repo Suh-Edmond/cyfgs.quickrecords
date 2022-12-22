@@ -1,28 +1,13 @@
 <template>
   <q-page>
-    <NotFound :message="not_found_msg" v-if="savings.length == 0"></NotFound>
+    <NotFound :message="not_found_msg" v-if="getMembersSavings.length == 0"></NotFound>
     <!-- header for filter categories -->
-    <div
-      class="row q-ml-xs q-pt-xs"
-      v-if="savings.length > 0"
-      :class="$q.screen.lg ? 'q-pa-sm' : ''"
-      :style="
-        $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-      "
-    >
+    <div class="row q-ml-xs q-pt-xs" v-if="getMembersSavings.length > 0" :class="$q.screen.lg ? 'q-pa-sm' : ''" :style="
+      $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+    ">
       <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
-        <q-select
-          v-model="year"
-          outlined
-          dense
-          :options="years"
-          label="Select year"
-          input-debounce="0"
-          @filter="filterYears"
-          use-input
-          hide-selected
-          fill-input
-        >
+        <q-select v-model="year" outlined dense :options="years" label="Select year" input-debounce="0"
+          @filter="filterYears" use-input hide-selected fill-input>
           <template v-slot:no-option>
             <q-item>
               <q-item-section class="text-grey"> No results </q-item-section>
@@ -31,18 +16,8 @@
         </q-select>
       </div>
       <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-pl-md">
-        <q-select
-          v-model="month"
-          outlined
-          dense
-          :options="months"
-          label="Select month"
-          input-debounce="0"
-          @filter="filterMonths"
-          use-input
-          hide-selected
-          fill-input
-        >
+        <q-select v-model="month" outlined dense :options="months" label="Select month" input-debounce="0"
+          @filter="filterMonths" use-input hide-selected fill-input>
           <template v-slot:no-option>
             <q-item>
               <q-item-section class="text-grey"> No results </q-item-section>
@@ -51,18 +26,8 @@
         </q-select>
       </div>
       <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-pl-md">
-        <q-select
-          v-model="status"
-          outlined
-          dense
-          :options="statuses"
-          label="Select status"
-          input-debounce="0"
-          @filter="filterStatus"
-          use-input
-          hide-selected
-          fill-input
-        >
+        <q-select v-model="status" outlined dense :options="statuses" label="Select status" input-debounce="0"
+          @filter="filterStatus" use-input hide-selected fill-input>
           <template v-slot:no-option>
             <q-item>
               <q-item-section class="text-grey"> No results </q-item-section>
@@ -72,44 +37,23 @@
       </div>
       <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 flex q-pl-md">
         <div>
-          <ButtonVue
-            :label="label_fetch"
-            :loading="loading"
-            :color="color"
-            :disabled="validateFilter"
-            :no_caps="no_caps"
-            icon_right="filter_list"
-          >
+          <ButtonVue :label="label_fetch" :loading="loading" :color="color" :disabled="validateFilter"
+            :no_caps="no_caps" icon_right="filter_list">
           </ButtonVue>
         </div>
         <q-space />
         <div class="button q-pb-xs">
-          <ButtonVue
-            :label="label_download"
-            :loading="loading"
-            :color="color_print"
-            :disabled="false"
-            :no_caps="no_caps"
-            icon_right="print"
-          ></ButtonVue>
+          <ButtonVue :label="label_download" :loading="loading" :color="color_print" :disabled="false"
+            :no_caps="no_caps" icon_right="print"></ButtonVue>
         </div>
       </div>
     </div>
     <!-- table for savings -->
     <div class="row q-pt-sm">
       <div class="col-md-12 col-xs-12 col-sm-12">
-        <TableVue
-          :columns="columns"
-          :data="data"
-          :label="label"
-          :message="message"
-          :name="name"
-          :show_savings="true"
-          :show_income_activity="false"
-          :show_members="false"
-          :show_contribution="false"
-          @edit-member-saving="editMemberSaving"
-        >
+        <TableVue :columns="columns" :data="getMembersSavings" :label="label" :message="message" :name="name" :show_savings="true"
+          :show_income_activity="false" :show_members="false" :show_contribution="false"
+          @edit-member-saving="editMemberSaving">
         </TableVue>
       </div>
     </div>
@@ -120,12 +64,18 @@
 import NotFound from "src/components/NotFound.vue";
 import TableVue from "src/components/Table.vue";
 import ButtonVue from "src/components/Button.vue";
+import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
+
+
 export default {
+  mixins: [UserSavingMixinVue],
+  mounted() {
+    this.getOrganisationMemberSavings();
+  },
   data() {
     return {
       not_found_msg:
-        "Ooops!! No Savings has been recorded. click the add button to add saving.",
-      savings: [{}],
+        "Ooops!! No Savings has been recorded. Click the add button to add saving.",
       year: null,
       years: ["2020", "2021", "2022", "2023", "2024"],
       month: null,
@@ -154,11 +104,11 @@ export default {
       color_print: "positive",
       columns: [
         {
-          name: "id",
+          name: "counter",
           required: true,
           label: "S/N",
           align: "left",
-          field: "id",
+          field: "counter",
         },
         {
           name: "name",
@@ -285,6 +235,23 @@ export default {
         ? false
         : true;
     },
+
+    getMembersSavings() {
+      let data = [];
+      this.$store.getters.getOrganisationMembersSavings.data?.forEach((ele) => {
+        data.push({
+          counter: this.$store.getters.getOrganisationMembersSavings.data?.indexOf(ele) + 1,
+          name: ele.user_name,
+          email: ele.email,
+          telephone: ele.telephone,
+          amount_deposited: ele.amount_deposited,
+          id: ele.id,
+          type: "USER_SAVINGS"
+        })
+      })
+
+      return data;
+    }
   },
   methods: {
     filterYears(val, update, abort) {
@@ -311,7 +278,7 @@ export default {
         );
       });
     },
-    editMemberSaving(data){
+    editMemberSaving(data) {
       this.$emit("edit-member-saving", data)
     }
   },

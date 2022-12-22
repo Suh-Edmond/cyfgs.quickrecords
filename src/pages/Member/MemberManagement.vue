@@ -55,7 +55,6 @@ import NotFound from "src/components/NotFound.vue";
 import memberMixin from "src/mixins/memberMixin.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
-import { Notify, Platform } from "quasar";
 
 export default {
   mixins: [memberMixin, organisationMixinVue, HelperMixinVue],

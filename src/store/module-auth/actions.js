@@ -396,3 +396,7 @@ export function setCurrentExpenditureItem({commit}, data) {
 export function setUpdatedExpenditureItemDetail({commit}, data) {
   commit("SET_UPDATED_EXPENDITURE_ITEM_DETAIL", data);
 }
+
+export function setOrganisationMembersSavings({commit}, data) {
+  commit("SET_ORGANISATION_MEMBERS_SAVINGS", data)
+}

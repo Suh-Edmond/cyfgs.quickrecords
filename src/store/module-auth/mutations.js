@@ -72,3 +72,7 @@ export function SET_CURRENT_EXPENDITURE_ITEM(state, data) {
 export function SET_UPDATED_EXPENDITURE_ITEM_DETAIL(state, data) {
   state.updated_expenditure_item_detail = data
 }
+
+export function SET_ORGANISATION_MEMBERS_SAVINGS(state, data) {
+  state.organisation_members_savings = data
+}

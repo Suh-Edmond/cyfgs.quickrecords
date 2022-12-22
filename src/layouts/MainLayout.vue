@@ -414,6 +414,8 @@
         ></AddExpenditureItemDetail>
         <AddMemberSavingVue
           v-if="current_tab == 'Member Savings'"
+          @close-right-drawer="closeRightDrawer"
+          @set-heading="setHeading"
         ></AddMemberSavingVue>
         <AddIncomeActivity
           v-if="current_tab == 'Income Activities'"

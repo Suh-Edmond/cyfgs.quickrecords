@@ -51,16 +51,16 @@
             {{ props.row.occupation }}
           </q-td>
           <q-td key="amount_deposited" :props="props" v-show="show_savings || show_member_savings">
-            {{ props.row.amount_deposited }}
+            {{Number( props.row.amount_deposited).toLocaleString() }}
           </q-td>
           <q-td key="amount" :props="props" v-show="show_income_activity || show_contribution">
-            {{ props.row.amount }}
+            {{ Number(props.row.amount).toLocaleString() }}
           </q-td>
           <q-td key="status" :props="props" v-show="show_contribution">
             {{ props.row.status }}
           </q-td>
           <q-td key="date" :props="props" v-show="show_savings || show_member_savings || show_income_activity || show_contribution">
-            {{ props.row.date }}
+            {{ getFormatedDate(props.row.date) }}
           </q-td>
           <q-td key="venue" :props="props" v-show="show_income_activity">
             {{ props.row.venue }}
@@ -273,7 +273,10 @@
   </div>
 </template>
 <script>
+import moment from 'moment'
+
 export default {
+
   props: {
     columns: {
       type: Array,
@@ -429,6 +432,10 @@ export default {
     },
     onAllContribution(data){
       this.$router.push({name:'member_contributions', params:{id:data.id}})
+    },
+
+    getFormatedDate(date) {
+      return moment(date).format('MMMM Do YYYY')
     }
   },
   components: {

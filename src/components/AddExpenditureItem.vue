@@ -1,19 +1,7 @@
 <template>
   <div class="q-pa-md">
-    <div class="q-mt-md q-mx-md" v-show="!getEditState">
+    <div class="q-mt-md q-mx-md" v-if="!getEditState">
       <q-form @submit="onAddExpenditureItem" class="q-gutter-sm">
-        <div>
-          <label for="credential" class="form_field">Expenditure Category <span class="text-red">*</span></label>
-          <q-select v-model="expenditure_item.expenditure_category_id" outlined dense
-            :disabled="checkIfExistExpenditureItem" :options="getExpenditureCategories" use-input hide-selected
-            fill-input input-debounce="0" class="q-mb-md">
-            <template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey"> No results </q-item-section>
-              </q-item>
-            </template>
-          </q-select>
-        </div>
         <div>
           <label for="credential" class="form_field">Name <span class="text-red">*</span></label>
           <q-input v-model="expenditure_item.name" outlined dense type="text" class="q-mb-md" />
@@ -52,38 +40,47 @@
         </div>
       </q-form>
     </div>
-    <div class="q-mt-md" v-show="getEditState">
+    <div class="q-mt-md" v-if="getEditState">
       <div class="q-mb-md">
         <label for="expenditure_category_name" class="field">Expenditure Category:
-          <span class="field_value q-pl-md">{{ getCurrentExpenditureCategory.name }}</span></label>
+          <span class="field_value q-pl-md">{{
+              getCurrentExpenditureCategory.name
+          }}</span></label>
       </div>
       <div class="q-mb-md">
         <label for="expenditure_item" class="field">Expenditure Item:
-          <span class="field_value item_value">{{ getUpdatedExpenditureFromState.name }}</span></label>
+          <span class="field_value item_value">{{
+              getUpdatedExpenditureFromState.name
+          }}</span></label>
       </div>
       <div class="q-mb-md">
         <label for="venue" class="field">Venue:
-          <span class="field_value item_venue">{{ getUpdatedExpenditureFromState.venue }}</span></label>
+          <span class="field_value item_venue">{{
+              getUpdatedExpenditureFromState.venue
+          }}</span></label>
       </div>
       <div class="q-mb-md">
-        <label for="date" class="field">Date: <span class="field_value item_date">{{ getUpdatedExpenditureFromState.date
-        }}</span></label>
+        <label for="date" class="field">Date:
+          <span class="field_value item_date">{{
+              getUpdatedExpenditureFromState.date
+          }}</span></label>
       </div>
       <div class="q-mb-md">
-        <label for="amount" class="field">Amount: <span class="field_value item_amount">
+        <label for="amount" class="field">Amount:
+          <span class="field_value item_amount">
             {{ getUpdatedExpenditureFromState.amount }} XAF</span></label>
       </div>
       <div class="q-mb-md">
-        <label for="status" class="field" v-show="!getUpdatedExpenditureFromState.approve">Status: <span
-            class="field_value item_statue unapproved_color"> UNAPPROVED</span></label>
-        <label for="status" class="field" v-show="getUpdatedExpenditureFromState.approve">Status: <span
-            class="field_value item_statue approved_color"> APPROVED</span></label>
+        <label for="status" class="field" v-show="!getUpdatedExpenditureFromState.approve">Status:
+          <span class="field_value item_statue unapproved_color">
+            UNAPPROVED</span></label>
+        <label for="status" class="field" v-show="getUpdatedExpenditureFromState.approve">Status:
+          <span class="field_value item_statue approved_color">
+            APPROVED</span></label>
       </div>
       <div class="q-mb-md">
         <label for="comment" class="field">Comment:</label>
-        <p>
-          {{ getUpdatedExpenditureFromState.comment }}.
-        </p>
+        <p>{{ getUpdatedExpenditureFromState.comment }}.</p>
       </div>
 
       <div class="row q-mt-lg justify-end">
@@ -116,19 +113,17 @@ export default {
         comment: null,
         amount: 0,
         picture: null,
-        id: null
+        id: null,
       },
       position: "right",
       dialog: false,
       no_caps: true,
-      expenditure_categories: [],
     };
   },
   computed: {
     validateForm() {
       return this.expenditure_item.amount === 0 ||
         this.expenditure_item.name === null ||
-        this.expenditure_item.expenditure_category_id === null ||
         this.expenditure_item.date === null ||
         this.expenditure_item.venue === null
         ? true
@@ -158,8 +153,8 @@ export default {
       return this.$store.getters.getCurrentExpenditureCategory;
     },
     getUpdatedExpenditureFromState() {
-      return this.$store.getters.getUpdatedExpenditureItem
-    }
+      return this.$store.getters.getUpdatedExpenditureItem;
+    },
   },
   methods: {
     onAddExpenditureItem() {
@@ -181,23 +176,8 @@ export default {
           data: [],
         },
       };
-      this.setDispatchAction(this.expenditure_item.id, payload)
+      this.setDispatchAction(this.expenditure_item.id, payload);
     },
-
-    filterFn(val, update, abort) {
-      if (val.length < 2) {
-        abort();
-        return;
-      }
-
-      update(() => {
-        const needle = val.toLowerCase();
-        return this.getExpenditureCategories.filter(
-          (v) => v.label.toLowerCase().indexOf(needle) > -1
-        );
-      });
-    },
-
     resetForm() {
       this.expenditure_item.name = null;
       this.expenditure_item.amount = 0;
@@ -210,19 +190,17 @@ export default {
       return this.expenditure_item;
     },
     showEditForm() {
-      this.$store.dispatch("setEditState", false)
-      this.setFormFields(this.$store.getters.getUpdatedExpenditureItem)
+      this.$store.dispatch("setEditState", false);
+      this.setFormFields(this.$store.getters.getUpdatedExpenditureItem);
     },
 
     setFormFields(data) {
-      let category = this.$store.getters.getExpenditureCategories.find((ele) => ele.id === data.expenditure_category_id);
-      this.expenditure_item.expenditure_category_id = { "label": category.name, "value": category.id };
+      this.expenditure_item.expenditure_category_id = data.expenditure_category_id
       this.expenditure_item.venue = data.venue;
       this.expenditure_item.date = data.date;
       this.expenditure_item.name = data.name;
       this.expenditure_item.comment = data.comment;
       this.expenditure_item.amount = data.amount;
-      this.expenditure_item.picture = data.picture;
       this.expenditure_item.id = data.id;
 
       return this.expenditure_item;
@@ -231,11 +209,11 @@ export default {
     setActionUrl(id, category) {
       let url = "";
       if (id === null) {
-        url = `/api/protected/expenditure-categories/${category.id}/expenditure-items`
+        url = `/api/protected/expenditure-categories/${category.id}/expenditure-items`;
       } else {
-        url = `/api/protected/expenditure-categories/${category.id}/expenditure-items/${id}`
+        url = `/api/protected/expenditure-categories/${category.id}/expenditure-items/${id}`;
       }
-      return url
+      return url;
     },
 
     setDispatchAction(id, payload) {
@@ -261,9 +239,10 @@ export default {
             this.$emit("close-right-drawer");
             this.loading = false;
             this.resetForm();
+            this.$store.dispatch("setUpdatedExpenditureItem", null);
           });
       }
-    }
+    },
   },
   components: {
     ButtonVue,
@@ -356,10 +335,10 @@ export default {
 }
 
 .unapproved_color {
-  color: #F2994A;
+  color: #f2994a;
 }
 
 .approved_color {
-  color: #27AE60;
+  color: #27ae60;
 }
 </style>

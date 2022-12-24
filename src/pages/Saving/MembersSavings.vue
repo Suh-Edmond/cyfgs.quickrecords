@@ -246,7 +246,12 @@ export default {
           telephone: ele.telephone,
           amount_deposited: ele.amount_deposited,
           id: ele.id,
-          type: "USER_SAVINGS"
+          approve:ele.approve,
+          comment:ele.comment,
+          type: "MEMBERS_SAVINGS",
+          user_id:ele.user_id,
+          created_at:ele.created_at,
+          updated_by:ele.updated_by
         })
       })
 
@@ -279,6 +284,10 @@ export default {
       });
     },
     editMemberSaving(data) {
+      this.$store.dispatch("setEditState", false);
+
+      this.$store.dispatch("setUpdatedMemberSaving", data.data);
+
       this.$emit("edit-member-saving", data)
     }
   },

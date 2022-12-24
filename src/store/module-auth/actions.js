@@ -400,3 +400,11 @@ export function setUpdatedExpenditureItemDetail({commit}, data) {
 export function setOrganisationMembersSavings({commit}, data) {
   commit("SET_ORGANISATION_MEMBERS_SAVINGS", data)
 }
+
+export function setMemberSavings({commit}, data) {
+  commit("SET_MEMBER_SAVINGS", data)
+}
+
+export function setUpdatedMemberSaving({commit}, data) {
+  commit("SET_UPDATED_MEMBER_SAVING", data)
+}

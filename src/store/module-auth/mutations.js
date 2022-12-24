@@ -76,3 +76,11 @@ export function SET_UPDATED_EXPENDITURE_ITEM_DETAIL(state, data) {
 export function SET_ORGANISATION_MEMBERS_SAVINGS(state, data) {
   state.organisation_members_savings = data
 }
+
+export function SET_MEMBER_SAVINGS(state, data) {
+  state.member_savings = data
+}
+
+export function SET_UPDATED_MEMBER_SAVING(state, data) {
+  state.updated_member_saving = data;
+}

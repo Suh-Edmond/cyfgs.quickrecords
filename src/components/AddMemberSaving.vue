@@ -3,32 +3,59 @@
     <div class="q-mt-md q-mx-md">
       <q-form @submit="onAddSaving" class="q-gutter-md">
         <div>
-          <label for="name" class="form_field">Member Name <span class="text-red">*</span>
+          <label for="name" class="form_field"
+            >Member Name <span class="text-red">*</span>
           </label>
-          <q-select outlined dense v-model="saving.user_id" use-input hide-selected fill-input input-debounce="0"
-            :options="getMembers" @filter="filterMembers">
+          <q-select
+            outlined
+            dense
+            v-model="saving.user_id"
+            use-input
+            hide-selected
+            fill-input
+            input-debounce="0"
+            :options="getMembers"
+            @filter="filterMembers"
+            :disable="isMemberExist"
+          >
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey">
-                  No results
-                </q-item-section>
+                <q-item-section class="text-grey"> No results </q-item-section>
               </q-item>
             </template>
           </q-select>
         </div>
         <div>
-          <label for="credential" class="form_field q-mt-ms">Amount <span class="text-red">*</span></label>
-          <q-input v-model="saving.amount_deposited" outlined dense type="number" />
+          <label for="credential" class="form_field q-mt-ms"
+            >Amount <span class="text-red">*</span></label
+          >
+          <q-input
+            v-model="saving.amount_deposited"
+            outlined
+            dense
+            type="number"
+          />
         </div>
         <div>
           <label for="credential" class="form_field">Comment </label>
-          <q-input v-model="saving.comment" outlined dense type="textarea"
-            placeholder="Provide any comment about this saving" />
+          <q-input
+            v-model="saving.comment"
+            outlined
+            dense
+            type="textarea"
+            placeholder="Provide any comment about this saving"
+          />
         </div>
-        <div class="row q-mt-xl justify-end">
+        <div class="row q-mt-lg justify-end">
           <div class="col-md-2 col-sm-2 col-xs-2">
-            <ButtonVue class="form_button" :label="label_save" :loading="loading" :color="color"
-              :disabled="validateForm" :no_caps="no_caps">
+            <ButtonVue
+              class="form_button"
+              :label="label_save"
+              :loading="loading"
+              :color="color"
+              :disabled="validateForm"
+              :no_caps="no_caps"
+            >
             </ButtonVue>
           </div>
         </div>
@@ -59,12 +86,12 @@ export default {
         user_id: null,
         amount_deposited: 0,
         comment: null,
-        id:null,
+        id: null,
       },
       position: "right",
       dialog: false,
       no_caps: true,
-      members: []
+      members: [],
     };
   },
   computed: {
@@ -74,32 +101,47 @@ export default {
         : false;
     },
     isMemberExist() {
-      return this.saving.user_id !== null && this.saving.amount_deposited !== 0
-        ? false
-        : true;
+      return this.saving.user_id !== null &&
+        this.saving.amount_deposited != 0 &&
+        this.saving.id != null
+        ? true
+        : false;
     },
     startSearch() {
-      return this.saving.user_id === null ? false : true
+      return this.saving.user_id === null ? false : true;
     },
     getMembers() {
       let data = [];
       this.$store.getters.getMembers.forEach((ele) => {
         data.push({
           label: ele.name,
-          value: ele.id
-        })
-      })
+          value: ele.id,
+        });
+      });
 
       return data;
-    }
+    },
+    getUpdateMemberSaving() {
+      return this.setFormFields(this.$store.getters.getUpdatedMemberSaving);
+    },
   },
+
+  watch: {
+    getUpdateMemberSaving() {
+      return this.setFormFields(this.$store.getters.getUpdatedMemberSaving);
+    },
+  },
+
   methods: {
     onAddSaving() {
-
-      // let category = this.$store.getters.getCurrentExpenditureCategory;
       let payload = {
-        url: this.setActionUrl(this.saving.id, this.saving.user_id),
-        data: {user_id:this.saving.user_id.value, amount_deposited:this.saving.amount_deposited, comment:this.saving.comment, id:this.saving.id},
+        url: this.setActionUrl(this.saving.id, this.saving.user_id.value),
+        data: {
+          user_id: this.saving.user_id.value,
+          amount_deposited: this.saving.amount_deposited,
+          comment: this.saving.comment,
+          id: this.saving.id,
+        },
         msg: "Member Saving save successfully",
         color: "default",
         to_on_ok: "none",
@@ -121,26 +163,26 @@ export default {
     filterMembers(val, update, abort) {
       let data = [];
       update(() => {
-
-        let filtered = this.$store.getters.getMembers.filter((ele) => ele.name.toLowerCase().includes(val.toLowerCase()));
+        let filtered = this.$store.getters.getMembers.filter((ele) =>
+          ele.name.toLowerCase().includes(val.toLowerCase())
+        );
         filtered.forEach((e) => {
           data.push({
             label: e.name,
-            value: e.id
-          })
-        })
+            value: e.id,
+          });
+        });
       });
 
-      return data
+      return data;
     },
-
 
     setActionUrl(id, user_id) {
       let url = "";
       if (id === null) {
         url = `/api/protected/user-savings`;
       } else {
-        url = `/api/protected/user-savings/${user_id}/${id}`;
+        url = `/api/protected/user-savings/${user_id}/${id}`; //the user_id of and the id of the saving to be updated
       }
       return url;
     },
@@ -163,23 +205,37 @@ export default {
           .dispatch("putRequest", payload)
           .then(() => {
             this.getOrganisationMemberSavings();
+            this.resetForm();
           })
           .finally(() => {
             this.$emit("close-right-drawer");
+
             this.loading = false;
+
             this.resetForm();
-            this.$store.dispatch("setUpdatedExpenditureItem", null);
+
+            this.$store.dispatch("setUpdatedMemberSaving", null);
           });
       }
     },
 
-    resetForm(){
-      this.saving.user_id = "";
+    resetForm() {
+      this.saving.user_id = null;
       this.saving.amount_deposited = 0;
       this.saving.id = null;
+      this.saving.comment = null;
 
-      return this.saving
-    }
+      return this.saving;
+    },
+
+    setFormFields(data) {
+      (this.saving.user_id = { label: data?.name, value: data?.user_id }),
+        (this.saving.amount_deposited = data?.amount_deposited),
+        (this.saving.comment = data?.comment),
+        (this.saving.id = data?.id);
+
+      return this.saving;
+    },
   },
   components: {
     ButtonVue,

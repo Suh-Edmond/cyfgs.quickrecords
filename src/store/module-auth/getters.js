@@ -78,3 +78,11 @@ export function getUpdatedExpenditureItemDetail(state) {
 export function getOrganisationMembersSavings(state) {
   return state.organisation_members_savings;
 }
+
+export function getMemberSavings(state) {
+  return state.member_savings
+}
+
+export function getUpdatedMemberSaving(state) {
+  return state.updated_member_saving;
+}

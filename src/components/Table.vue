@@ -27,7 +27,7 @@
               flat
               class="view_savings"
               @click="showMemberSavings(props.row)"
-              :to="{ name: 'user_savings', params: { id: props.row.id } }"
+              :to="{ name: 'user_savings', params: { id: props.row.user_id } }"
               v-show="show_savings"
             >
             {{ props.row.name }}
@@ -53,6 +53,9 @@
           <q-td key="amount_deposited" :props="props" v-show="show_savings || show_member_savings">
             {{Number( props.row.amount_deposited).toLocaleString() }}
           </q-td>
+          <q-td key="approve" :props="props" v-show="show_member_savings">
+            {{ props.row.approve }}
+          </q-td>
           <q-td key="amount" :props="props" v-show="show_income_activity || show_contribution">
             {{ Number(props.row.amount).toLocaleString() }}
           </q-td>
@@ -76,6 +79,8 @@
               >
                 <q-menu>
                   <q-list>
+
+                    <!-- edit member -->
                     <q-item
                       clickable
                       v-close-popup
@@ -91,6 +96,8 @@
                         <q-item-label class="edit">Edit</q-item-label>
                       </q-item-section>
                     </q-item>
+
+                    <!-- edit and view savings -->
                     <q-item
                       clickable
                       v-close-popup
@@ -106,7 +113,23 @@
                         <q-item-label class="edit">Edit</q-item-label>
                       </q-item-section>
                     </q-item>
-                    <!-- <q-separator /> -->
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onViewMemberSaving(props.row)"
+                      v-show="show_savings || show_member_savings"
+                    >
+                      <q-item-section avatar>
+                        <span>
+                          <q-icon name="visibility" size="xs" class="edit" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="edit">View</q-item-label>
+                      </q-item-section>
+                    </q-item>
+
+                    <!-- edit, view income activities -->
                     <q-item
                       clickable
                       v-close-popup
@@ -122,7 +145,8 @@
                         <q-item-label class="edit">Edit</q-item-label>
                       </q-item-section>
                     </q-item>
-                    <!-- <q-separator /> -->
+
+
                     <q-item
                       clickable
                       v-close-popup
@@ -138,7 +162,10 @@
                         <q-item-label class="edit">Details</q-item-label>
                       </q-item-section>
                     </q-item>
-                    <!-- <q-separator /> -->
+
+
+
+                    <!-- edit and view contributions -->
                     <q-item
                       clickable
                       v-close-popup
@@ -154,7 +181,8 @@
                         <q-item-label class="edit">Edit</q-item-label>
                       </q-item-section>
                     </q-item>
-                    <!-- <q-separator /> -->
+
+
                     <q-item
                       clickable
                       v-close-popup
@@ -170,7 +198,9 @@
                         <q-item-label class="edit">Details</q-item-label>
                       </q-item-section>
                     </q-item>
-                    <!-- <q-separator /> -->
+
+
+
                     <q-item
                       clickable
                       v-close-popup
@@ -186,11 +216,14 @@
                         <q-item-label class="edit">All Contributions</q-item-label>
                       </q-item-section>
                     </q-item>
+
+                    <!-- deleted specify row -->
                     <q-separator />
                     <q-item
                       clickable
                       v-close-popup
                       @click="onDeleteMember(props.row)"
+                      v-show="!show_member_savings"
                     >
                       <q-item-section avatar>
                         <span>
@@ -273,9 +306,11 @@
   </div>
 </template>
 <script>
+import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
 import moment from 'moment'
 
 export default {
+  mixins:[UserSavingMixinVue],
 
   props: {
     columns: {
@@ -367,6 +402,9 @@ export default {
       })
 
     },
+
+
+
     deleteRow(data){
       let payload = {
         url: `/api/protected/users/${data.id}`,
@@ -389,12 +427,22 @@ export default {
         this.$emit("fetch-members", data.organisation_id);
       })
     },
+
+
+
     onDeleteMember(data) {
       this.deleted_row = data;
       this.dialog = true;
     },
+
+
+
     showMemberSavings(data){
+      this.getMemberSavings(data.user_id)
     },
+
+
+
     onEditMemberSaving(data){
       let payload = {
         data: data,
@@ -402,6 +450,10 @@ export default {
       };
       this.$emit("edit-member-saving", payload);
     },
+
+
+
+
     onEditIncomeActivity(data){
       let payload = {
         data: data,
@@ -409,6 +461,10 @@ export default {
       };
       this.$emit("edit-income-activity", payload);
     },
+
+
+
+
     onViewIncomeActivity(data){
       let payload = {
         data: data,
@@ -416,6 +472,10 @@ export default {
       };
       this.$emit("view-income-activity", payload);
     },
+
+
+
+
     onViewContribution(data){
       let payload = {
         data: data,
@@ -423,6 +483,10 @@ export default {
       };
       this.$emit("view-contribution", payload);
     },
+
+
+
+
     onEditContribution(data){
       let payload = {
         data: data,
@@ -430,12 +494,22 @@ export default {
       };
       this.$emit("edit-contribution", payload);
     },
+
+
+
+
     onAllContribution(data){
       this.$router.push({name:'member_contributions', params:{id:data.id}})
     },
 
+
+
     getFormatedDate(date) {
       return moment(date).format('MMMM Do YYYY')
+    },
+
+    onViewMemberSaving(data) {
+      console.log(data);
     }
   },
   components: {

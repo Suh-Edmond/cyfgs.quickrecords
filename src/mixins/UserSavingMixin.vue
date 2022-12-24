@@ -25,6 +25,27 @@ export default {
       this.$store.dispatch("getRequest", payload).then(() => {
 
       });
+    },
+
+    getMemberSavings(id) {
+      let payload = {
+        url: `/api/protected/user-savings/${id}`,
+        msg: "none",
+        color: "default",
+        status: "none",
+        error_msg: "An Error occurred! Could not fetch member savings",
+        has_commit: true,
+        show_feedback: false,
+        commit: "SET_MEMBER_SAVINGS",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.$store.dispatch("getRequest", payload).then(() => {
+
+      });
     }
   }
 }

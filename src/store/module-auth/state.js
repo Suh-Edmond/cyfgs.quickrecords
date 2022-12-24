@@ -22,5 +22,6 @@ export default function () {
     organisation_members_savings:[],
     member_savings:[],
     updated_member_saving:null,
+    current_member_saving:null
   };
 }

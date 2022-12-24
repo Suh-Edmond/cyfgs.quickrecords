@@ -84,3 +84,7 @@ export function SET_MEMBER_SAVINGS(state, data) {
 export function SET_UPDATED_MEMBER_SAVING(state, data) {
   state.updated_member_saving = data;
 }
+
+export function SET_CURRENT_MEMBER_SAVING(state, data) {
+  state.current_member_saving = data
+}

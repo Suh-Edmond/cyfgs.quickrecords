@@ -73,7 +73,7 @@
               @update-payment-item="updatePaymentItem" @update-expenditure-category="updateExpenditureCategory"
               @show-expenditure-items="showExpenditureItems" @edit-expenditure-item="editExpenditureItem"
               @show-expenditure-item-details="showExpenditureItemDetails"
-              @edit-expenditure-item-detail="editExpenditureItemDetail" @edit-member-saving="editMemberSaving"
+              @edit-expenditure-item-detail="editExpenditureItemDetail" @edit-member-saving="editMemberSaving" @view-member-saving="viewMemberSaving"
               @edit-income-activity="editIncomeActivity" @view-income-activity="viewIncomeActivity"
               @view-contribution="viewContribution" @edit-contribution="editContribution" />
           </q-card-section>
@@ -185,10 +185,15 @@ export default {
     updatePaymentCategory(data) {
       this.updateDrawer(data);
     },
+
+
+
     showPaymentItems(data) {
       this.has_intermediate_tab = data.has_intermediate_tab;
       this.getIntermediateTab();
     },
+
+
     getIntermediateTab() {
       this.intermediate_tab = SessionStorage.getItem("has_intermediate_tab") ? SessionStorage.getItem("intermediate_tab") : "";
       this.intermediate_tab2 =
@@ -197,9 +202,18 @@ export default {
           : "";
       return this.intermediate_tab;
     },
+
+
     updatePaymentItem(data) {
       this.updateDrawer(data);
     },
+
+
+    viewMemberSaving(data) {
+      this.updateDrawer(data)
+    },
+
+
     updateDrawer(data) {
       this.right = true;
       this.$emit("show-right-drawer", {
@@ -361,7 +375,4 @@ export default {
   font-size: smaller;
 }
 
-.spinner {
-  // z-index: 1000;
-}
 </style>

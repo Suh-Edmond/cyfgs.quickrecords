@@ -37,7 +37,9 @@
           />
         </div>
         <div>
-          <label for="credential" class="form_field">Comment </label>
+          <label for="credential" class="form_field"
+            >Comment <span class="text-red">*</span></label
+          >
           <q-input
             v-model="saving.comment"
             outlined
@@ -75,7 +77,10 @@ export default {
   created() {
     let heading = "Member Savings Information";
     this.$emit("set-heading", heading);
+
     this.getOrganisationMembers(this.getOrganisationId);
+
+    this.setFormFields(null);
   },
   data() {
     return {
@@ -179,7 +184,7 @@ export default {
 
     setActionUrl(id, user_id) {
       let url = "";
-      if (id === null) {
+      if (id === null || id === undefined) {
         url = `/api/protected/user-savings`;
       } else {
         url = `/api/protected/user-savings/${user_id}/${id}`; //the user_id of and the id of the saving to be updated
@@ -188,8 +193,9 @@ export default {
     },
 
     setDispatchAction(id, payload) {
+      console.log(id);
       this.loading = true;
-      if (id === null) {
+      if (id === null || id === undefined) {
         this.$store
           .dispatch("postRequest", payload)
           .then(() => {

@@ -86,3 +86,7 @@ export function getMemberSavings(state) {
 export function getUpdatedMemberSaving(state) {
   return state.updated_member_saving;
 }
+
+export function getCurrentMemberSaving(state) {
+  return state.current_member_saving
+}

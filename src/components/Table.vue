@@ -9,39 +9,37 @@
       :filter="filter"
       :pagination.sync="pagination"
     >
-    <template v-slot:top-left>
-      <div class="text-h6 title" v-show="show_member_savings">
-         All Savings for: {{ title }}
+      <template v-slot:top-left>
+        <div class="text-h6 title" v-show="show_member_savings">
+          All Savings for: {{ title }}
         </div>
         <div class="text-h6 title" v-show="show_member_contribution">
-        {{ title }}
+          {{ title }}
         </div>
-    </template>
+      </template>
       <template v-slot:body="props">
         <q-tr :props="props">
           <q-td key="counter" :props="props">
-            {{props.row.counter}}
+            {{ props.row.counter }}
           </q-td>
           <q-td key="name" :props="props">
-            <q-btn
-              flat
-              class="view_savings"
-              @click="showMemberSavings(props.row)"
-              :to="{ name: 'user_savings', params: { id: props.row.user_id } }"
-              v-show="show_savings"
-            >
             {{ props.row.name }}
-              <q-tooltip>View All Savings</q-tooltip>
-            </q-btn>
-            <span v-if="!show_savings || show_income_activity || show_contribution">{{ props.row.name }}</span>
           </q-td>
-          <q-td key="email" :props="props" v-show="show_savings || show_members">
+          <q-td
+            key="email"
+            :props="props"
+            v-show="show_savings || show_members"
+          >
             {{ props.row.email }}
           </q-td>
           <q-td key="gender" :props="props" v-show="show_members">
             {{ props.row.gender }}
           </q-td>
-          <q-td key="telephone" :props="props" v-show="show_savings || show_members">
+          <q-td
+            key="telephone"
+            :props="props"
+            v-show="show_savings || show_members"
+          >
             {{ props.row.telephone }}
           </q-td>
           <q-td key="address" :props="props" v-show="show_members">
@@ -50,26 +48,44 @@
           <q-td key="occupation" :props="props" v-show="show_members">
             {{ props.row.occupation }}
           </q-td>
-          <q-td key="amount_deposited" :props="props" v-show="show_savings || show_member_savings">
-            {{Number( props.row.amount_deposited).toLocaleString() }}
+          <q-td
+            key="amount_deposited"
+            :props="props"
+            v-show="show_savings || show_member_savings"
+          >
+            {{ Number(props.row.amount_deposited).toLocaleString() }}
           </q-td>
           <q-td key="approve" :props="props" v-show="show_member_savings">
             {{ props.row.approve }}
           </q-td>
-          <q-td key="amount" :props="props" v-show="show_income_activity || show_contribution">
+          <q-td
+            key="amount"
+            :props="props"
+            v-show="show_income_activity || show_contribution"
+          >
             {{ Number(props.row.amount).toLocaleString() }}
           </q-td>
           <q-td key="status" :props="props" v-show="show_contribution">
             {{ props.row.status }}
           </q-td>
-          <q-td key="date" :props="props" v-show="show_savings || show_member_savings || show_income_activity || show_contribution">
+          <q-td
+            key="date"
+            :props="props"
+            v-show="
+              show_savings ||
+              show_member_savings ||
+              show_income_activity ||
+              show_contribution
+            "
+          >
             {{ getFormatedDate(props.row.date) }}
           </q-td>
           <q-td key="venue" :props="props" v-show="show_income_activity">
             {{ props.row.venue }}
           </q-td>
           <q-td key="action" :props="props">
-            <q-btn flat round>
+            <!-- button to handle edit, view and delete of row data -->
+            <q-btn flat round v-show="!show_savings && !show_member_savings">
               <q-icon
                 name="more_vert"
                 size="xs"
@@ -79,7 +95,6 @@
               >
                 <q-menu>
                   <q-list>
-
                     <!-- edit member -->
                     <q-item
                       clickable
@@ -94,38 +109,6 @@
                       </q-item-section>
                       <q-item-section>
                         <q-item-label class="edit">Edit</q-item-label>
-                      </q-item-section>
-                    </q-item>
-
-                    <!-- edit and view savings -->
-                    <q-item
-                      clickable
-                      v-close-popup
-                      @click="onEditMemberSaving(props.row)"
-                      v-show="show_savings"
-                    >
-                      <q-item-section avatar>
-                        <span>
-                          <q-icon name="edit" size="xs" class="edit" />
-                        </span>
-                      </q-item-section>
-                      <q-item-section>
-                        <q-item-label class="edit">Edit</q-item-label>
-                      </q-item-section>
-                    </q-item>
-                    <q-item
-                      clickable
-                      v-close-popup
-                      @click="onViewMemberSaving(props.row)"
-                      v-show="show_savings || show_member_savings"
-                    >
-                      <q-item-section avatar>
-                        <span>
-                          <q-icon name="visibility" size="xs" class="edit" />
-                        </span>
-                      </q-item-section>
-                      <q-item-section>
-                        <q-item-label class="edit">View</q-item-label>
                       </q-item-section>
                     </q-item>
 
@@ -146,7 +129,6 @@
                       </q-item-section>
                     </q-item>
 
-
                     <q-item
                       clickable
                       v-close-popup
@@ -162,8 +144,6 @@
                         <q-item-label class="edit">Details</q-item-label>
                       </q-item-section>
                     </q-item>
-
-
 
                     <!-- edit and view contributions -->
                     <q-item
@@ -182,7 +162,6 @@
                       </q-item-section>
                     </q-item>
 
-
                     <q-item
                       clickable
                       v-close-popup
@@ -199,8 +178,6 @@
                       </q-item-section>
                     </q-item>
 
-
-
                     <q-item
                       clickable
                       v-close-popup
@@ -213,7 +190,9 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="edit">All Contributions</q-item-label>
+                        <q-item-label class="edit"
+                          >All Contributions</q-item-label
+                        >
                       </q-item-section>
                     </q-item>
 
@@ -232,6 +211,65 @@
                       </q-item-section>
                       <q-item-section>
                         <q-item-label class="text-red">Delete</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                  </q-list>
+                </q-menu>
+              </q-icon>
+            </q-btn>
+
+            <!-- button for view all savings by member -->
+            <q-btn
+              flat
+
+              class="view_savings q-py-xs"
+              @click="showMemberSavings(props.row)"
+              :to="{ name: 'user_savings', params: { id: props.row.user_id } }"
+              v-show="show_savings"
+            >
+            View All Savings
+            </q-btn>
+
+            <!-- menu to handle edit and view details of a single saving -->
+            <q-btn flat round v-show="show_member_savings">
+              <q-icon
+                name="more_vert"
+                size="xs"
+                color="primary"
+                class="menu_icon"
+                clickable
+              >
+                <q-menu>
+                  <q-list>
+
+                    <!-- edit and view savings -->
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onEditMemberSaving(props.row)"
+                    >
+                      <q-item-section avatar>
+                        <span>
+                          <q-icon name="edit" size="xs" class="edit" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="edit">Edit</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <q-separator />
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onViewMemberSaving(props.row)"
+                    >
+                      <q-item-section avatar>
+                        <span>
+                          <q-icon name="visibility" size="xs" class="edit" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="edit">View</q-item-label>
                       </q-item-section>
                     </q-item>
                   </q-list>
@@ -261,7 +299,7 @@
     </q-table>
 
     <!-- confirmation dialog -->
-    <q-dialog v-model="dialog" v-if="dialog" >
+    <q-dialog v-model="dialog" v-if="dialog">
       <q-card>
         <q-card-section>
           <div>
@@ -272,9 +310,7 @@
               color="yellow"
               text-color="white"
             />
-            <span class="q-ml-sm text-dark"
-              >{{message}}</span
-            >
+            <span class="q-ml-sm text-dark">{{ message }}</span>
           </div>
           <div class="text-weight-bold text-center">{{ deleted_row.name }}</div>
         </q-card-section>
@@ -307,10 +343,10 @@
 </template>
 <script>
 import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
-import moment from 'moment'
+import moment from "moment";
 
 export default {
-  mixins:[UserSavingMixinVue],
+  mixins: [UserSavingMixinVue],
 
   props: {
     columns: {
@@ -329,38 +365,38 @@ export default {
       required: false,
       type: Object,
     },
-    show_members:{
+    show_members: {
       required: true,
-      type: Boolean
+      type: Boolean,
     },
     show_savings: {
       required: true,
-      type: Boolean
+      type: Boolean,
     },
     message: {
       type: String,
-      required: true
+      required: true,
     },
-    show_member_savings:{
+    show_member_savings: {
       required: false,
-      type: Boolean
+      type: Boolean,
     },
-    title:{
+    title: {
       required: false,
-      type: String
+      type: String,
     },
     show_income_activity: {
-      type:Boolean,
-      required: true
+      type: Boolean,
+      required: true,
     },
-    show_contribution:{
-      type:Boolean,
-      required: true
+    show_contribution: {
+      type: Boolean,
+      required: true,
     },
-    show_member_contribution:{
+    show_member_contribution: {
       required: false,
-      type: Boolean
-    }
+      type: Boolean,
+    },
   },
   data() {
     return {
@@ -372,7 +408,7 @@ export default {
       filter: null,
       label_cancel: "Cancel",
       pagination: {
-        rowsPerPage: 15 // current rows per page being displayed
+        rowsPerPage: 15, // current rows per page being displayed
       },
       deleted_row: null,
     };
@@ -383,9 +419,9 @@ export default {
         url: `/api/protected/organisations/users/${data.id}`,
         data: this.user,
         msg: "Member information updated successfully",
-        status:"none",
+        status: "none",
         color: "default",
-        show_feedback:true,
+        show_feedback: true,
         to_on_ok: "none",
         to_on_fail: "none",
         error_msg: "An Error occurred! Please try again",
@@ -398,21 +434,18 @@ export default {
         },
       };
       this.$store.dispatch("getRequest", payload).then((res) => {
-        this.$emit("update-member", {"data":res.data, "tab":"EditMember"});
-      })
-
+        this.$emit("update-member", { data: res.data, tab: "EditMember" });
+      });
     },
 
-
-
-    deleteRow(data){
+    deleteRow(data) {
       let payload = {
         url: `/api/protected/users/${data.id}`,
         msg: "Member successfully deleted",
-        status:"success",
+        status: "success",
         color: "default",
         to_on_ok: "none",
-        show_feedback:true,
+        show_feedback: true,
         to_on_fail: "none",
         error_msg: "An Error occurred! Please try again",
         has_commit: false,
@@ -425,36 +458,31 @@ export default {
       };
       this.$store.dispatch("deleteRequest", payload).then(() => {
         this.$emit("fetch-members", data.organisation_id);
-      })
+      });
     },
-
-
 
     onDeleteMember(data) {
       this.deleted_row = data;
       this.dialog = true;
     },
 
-
-
-    showMemberSavings(data){
-      this.getMemberSavings(data.user_id)
+    showMemberSavings(data) {
+      this.getMemberSavings(data.user_id);
     },
 
-
-
-    onEditMemberSaving(data){
+    onEditMemberSaving(data) {
       let payload = {
         data: data,
         tab: "Member Savings",
       };
+      this.$store.dispatch("setEditState", false);
+
+      this.$store.dispatch("setUpdatedMemberSaving", data);
+
       this.$emit("edit-member-saving", payload);
     },
 
-
-
-
-    onEditIncomeActivity(data){
+    onEditIncomeActivity(data) {
       let payload = {
         data: data,
         tab: "Income Activities",
@@ -462,10 +490,7 @@ export default {
       this.$emit("edit-income-activity", payload);
     },
 
-
-
-
-    onViewIncomeActivity(data){
+    onViewIncomeActivity(data) {
       let payload = {
         data: data,
         tab: "View Income Activity",
@@ -473,10 +498,7 @@ export default {
       this.$emit("view-income-activity", payload);
     },
 
-
-
-
-    onViewContribution(data){
+    onViewContribution(data) {
       let payload = {
         data: data,
         tab: "View Contribution",
@@ -484,10 +506,7 @@ export default {
       this.$emit("view-contribution", payload);
     },
 
-
-
-
-    onEditContribution(data){
+    onEditContribution(data) {
       let payload = {
         data: data,
         tab: "Members Contributions",
@@ -495,26 +514,28 @@ export default {
       this.$emit("edit-contribution", payload);
     },
 
-
-
-
-    onAllContribution(data){
-      this.$router.push({name:'member_contributions', params:{id:data.id}})
+    onAllContribution(data) {
+      this.$router.push({
+        name: "member_contributions",
+        params: { id: data.id },
+      });
     },
 
-
-
     getFormatedDate(date) {
-      return moment(date).format('MMMM Do YYYY')
+      return moment(date).format("MMMM Do YYYY");
     },
 
     onViewMemberSaving(data) {
-      console.log(data);
-    }
-  },
-  components: {
+      let payload = {
+        data: data,
+        tab: "View Member Saving",
+      };
+      this.$store.dispatch("setCurrentMemberSaving", data);
 
+      this.$emit("view-member-saving", payload);
+    },
   },
+  components: {},
 };
 </script>
 <style lang="scss" scoped>

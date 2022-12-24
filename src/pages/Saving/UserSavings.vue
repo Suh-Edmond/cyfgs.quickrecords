@@ -48,6 +48,7 @@
           :show_income_activity="false"
           :show_members="false"
           :show_contribution="false"
+          @view-member-saving="ViewMemberSaving"
           @edit-member-saving="editMemberSaving"
         >
         </TableVue>
@@ -96,7 +97,7 @@ export default {
         {
           name: "date",
           align: "left",
-          label: "Date",
+          label: "Date Collected",
           field: "date",
         },
         {
@@ -107,7 +108,7 @@ export default {
       ],
       label: "Delete",
       message: "Are you sure you want to delete this Saving?",
-      statuses: ["APPROVED", "UNAPPROVED"],
+      statuses: ["APPROVED", "UNAPPROVED", "ALL"],
       status: null,
     };
   },
@@ -127,19 +128,34 @@ export default {
           type: "MEMBER_SAVINGS",
           user_id:ele.user_id,
           created_at:ele.created_at,
-          updated_by:ele.updated_by
+          updated_by:ele.updated_by,
+          date:ele.created_at
         })
       })
       return data
     },
 
     getCurrentMemberName() {
-      return this.$store.getters.getMemberSavings != "undefined" ? this.$store.getters.getMemberSavings.data[0]?.user_name : ""
+      let name = ""
+      if(this.$store.getters.getMemberSavings.data !== "undefined" ){
+        name =  this.$store.getters.getMemberSavings?.data[0].user_name
+      }
+      return name;
     }
   },
   methods: {
-    editMemberSaving(data){
-      this.$emit('edit-member-saving', data)
+    ViewMemberSaving(data){
+      this.$store.dispatch("setEditState", true);
+
+      this.$emit('view-member-saving', data)
+    },
+
+    editMemberSaving(data) {
+      this.$store.dispatch("setEditState", false);
+
+      this.$store.dispatch("setUpdatedMemberSaving", data.data);
+
+      this.$emit("edit-member-saving", data)
     }
   },
   components: {

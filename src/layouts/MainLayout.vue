@@ -417,6 +417,12 @@
           @close-right-drawer="closeRightDrawer"
           @set-heading="setHeading"
         ></AddMemberSavingVue>
+        <ViewMemberSaving
+          v-if="current_tab == 'View Member Saving'"
+          @close-right-drawer="closeRightDrawer"
+          @set-heading="setHeading"
+        >
+        </ViewMemberSaving>
         <AddIncomeActivity
           v-if="current_tab == 'Income Activities'"
         ></AddIncomeActivity>
@@ -452,6 +458,7 @@ import ViewIncomeActivity from "src/components/ViewIncomeActivity.vue";
 import ViewContribution from "src/components/ViewContribution.vue";
 import AddContribution from "src/components/AddContribution.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
+import ViewMemberSaving from "src/components/Constants/ViewMemberSaving.vue";
 
 export default {
   mixins: [organisationMixinVue],
@@ -567,6 +574,7 @@ export default {
     ViewIncomeActivity,
     ViewContribution,
     AddContribution,
+    ViewMemberSaving,
   },
 };
 </script>

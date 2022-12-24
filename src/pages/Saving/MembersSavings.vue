@@ -134,94 +134,14 @@ export default {
         {
           name: "amount_deposited",
           align: "left",
-          label: "Amount Deposited (XAF)",
+          label: "Total Amount Deposited (XAF)",
           field: "amount_deposited",
         },
         {
           name: "action",
           label: "Action",
+          align: "center",
           field: "action",
-        },
-      ],
-      data: [
-        {
-          id: 1,
-          name: "Frozen Yogurt",
-          email: "emailgmail.com",
-          telephone: "34582390234",
-          amount_deposited: 50000,
-          action: "",
-        },
-        {
-          id: 2,
-          name: "Ice cream sandwich",
-          email: "emailgmail.com",
-          telephone: "34582390234",
-          amount_deposited: 50000,
-          action: "",
-        },
-        {
-          id: 3,
-          name: "Eclair",
-          email: "emailgmail.com",
-          telephone: "34582390234",
-          amount_deposited: 50000,
-          action: "",
-        },
-        {
-          id: 4,
-          name: "Cupcake",
-          email: "email@gmail.com",
-          telephone: "674009983",
-          amount_deposited: 50000,
-          action: "",
-        },
-        {
-          id: 5,
-          name: "Gingerbread",
-          email: "email@gmail.com",
-          telephone: "674009983",
-          amount_deposited: 50000,
-          action: "",
-        },
-        {
-          id: 6,
-          name: "Jelly bean",
-          email: "email@gmail.com",
-          telephone: "674009983",
-          amount_deposited: 50000,
-          action: "",
-        },
-        {
-          id: 7,
-          email: "email@gmail.com",
-          telephone: "674009983",
-          amount_deposited: 50000,
-          action: "",
-        },
-        {
-          id: 8,
-          name: "Honeycomb",
-          email: "emailgmail.com",
-          telephone: "674009983",
-          amount_deposited: 50000,
-          action: "",
-        },
-        {
-          id: 9,
-          name: "Donut",
-          email: "emailgmail.com",
-          telephone: "674009983",
-          amount_deposited: 50000,
-          action: "",
-        },
-        {
-          id: 10,
-          name: "KitKat",
-          email: "emailgmail.com",
-          telephone: "674009983",
-          amount_deposited: 50000,
-          action: "",
         },
       ],
       label: "Delete",
@@ -284,10 +204,6 @@ export default {
       });
     },
     editMemberSaving(data) {
-      this.$store.dispatch("setEditState", false);
-
-      this.$store.dispatch("setUpdatedMemberSaving", data.data);
-
       this.$emit("edit-member-saving", data)
     }
   },

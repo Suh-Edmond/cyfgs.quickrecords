@@ -408,3 +408,7 @@ export function setMemberSavings({commit}, data) {
 export function setUpdatedMemberSaving({commit}, data) {
   commit("SET_UPDATED_MEMBER_SAVING", data)
 }
+
+export function setCurrentMemberSaving({commit}, data)  {
+  commit("SET_CURRENT_MEMBER_SAVING", data);
+}

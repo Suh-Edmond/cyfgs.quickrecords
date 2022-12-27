@@ -73,14 +73,15 @@
             </div>
             <q-space />
             <div class="button q-pb-xs">
-              <ButtonVue
+              <q-btn
                 :label="label_download"
                 :loading="loading"
                 :color="color_print"
                 :disabled="false"
-                :no_caps="no_caps"
-                icon_right="print"
-              ></ButtonVue>
+                no-caps
+                icon-right="print"
+                @click="downloadMembersSavings"
+              ></q-btn>
             </div>
           </div>
         </div>
@@ -112,9 +113,10 @@ import NotFound from "src/components/NotFound.vue";
 import TableVue from "src/components/Table.vue";
 import ButtonVue from "src/components/Button.vue";
 import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
+import HelperMixinVue from "src/mixins/HelperMixin.vue";
 
 export default {
-  mixins: [UserSavingMixinVue],
+  mixins: [UserSavingMixinVue, HelperMixinVue, ],
   created() {
     this.getOrganisationMemberSavings();
   },
@@ -251,6 +253,16 @@ export default {
     editMemberSaving(data) {
       this.$emit("edit-member-saving", data);
     },
+
+    downloadMembersSavings(){
+      let id = this.$store.getters.getOrganisation.id
+
+      let url = `/api/protected/organisation-savings/download?organisation_id=${id}`;
+
+      let file_name = "Organisation_Savings.pdf";
+
+      this.loading = this.downloadPdf(url, file_name);
+    }
   },
   components: {
     NotFound,

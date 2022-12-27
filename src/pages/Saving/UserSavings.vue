@@ -86,14 +86,12 @@ import TableVue from "src/components/Table.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
 
 export default {
-  mixins:[HelperMixinVue],
-
+  mixins: [HelperMixinVue],
 
   data() {
     return {
-      not_found_msg:
-        "Ooops!! No Savings has been recorded for this Member",
-        filtered_savings: [],
+      not_found_msg: "Ooops!! No Savings has been recorded for this Member",
+      filtered_savings: [],
       search: null,
       label_fetch: "Filter",
       color: "primary",
@@ -101,7 +99,7 @@ export default {
       loading: false,
       label_download: "Print",
       color_print: "positive",
-      title:"Suh Edmond",// this title should be the member name
+      title: "Suh Edmond", // this title should be the member name
       columns: [
         {
           name: "counter",
@@ -138,7 +136,7 @@ export default {
       message: "Are you sure you want to delete this Saving?",
       statuses: ["APPROVED", "UNAPPROVED", "ALL"],
       status: null,
-      start_filter : false
+      start_filter: false,
     };
   },
   computed: {
@@ -153,57 +151,59 @@ export default {
           telephone: ele.telephone,
           amount_deposited: ele.amount_deposited,
           id: ele.id,
-          approve:ele.approve == 1 ? "APPROVED" : "UNAPPROVED",
-          comment:ele.comment,
+          approve: ele.approve == 1 ? "APPROVED" : "UNAPPROVED",
+          comment: ele.comment,
           type: "MEMBER_SAVINGS",
-          user_id:ele.user_id,
-          created_at:ele.created_at,
-          updated_by:ele.updated_by,
-          date:ele.created_at
-        })
-      })
-      return data
+          user_id: ele.user_id,
+          created_at: ele.created_at,
+          updated_by: ele.updated_by,
+          date: ele.created_at,
+        });
+      });
+      return data;
     },
 
     getCurrentMemberName() {
-      let name = ""
-      if(typeof(this.$store.getters.getMemberSavings)  !== undefined){
-        name =  this.$store.getters.getMemberSavings.data[0].user_name
+      let name = "";
+      if (typeof this.$store.getters.getMemberSavings !== undefined) {
+        name = this.$store.getters.getMemberSavings.data[0].user_name;
       }
 
       return name;
-    }
+    },
   },
   methods: {
-    ViewMemberSaving(data){
-      this.$emit('view-member-saving', data)
+    ViewMemberSaving(data) {
+      this.$emit("view-member-saving", data);
     },
 
     editMemberSaving(data) {
       this.$store.dispatch("setEditState", false);
 
-      this.$emit("edit-member-saving", data)
+      this.$emit("edit-member-saving", data);
     },
 
-    filterSavings(){
+    filterSavings() {
       this.start_filter = true;
-     if(this.status == "ALL"){
-      this.filtered_savings = this.getMemberSavings
-     }else {
-      this.filtered_savings = this.getMemberSavings.filter((ele) => ele.approve === this.status);
-     }
-      return this.filtered_savings
+      if (this.status == "ALL") {
+        this.filtered_savings = this.getMemberSavings;
+      } else {
+        this.filtered_savings = this.getMemberSavings.filter(
+          (ele) => ele.approve === this.status
+        );
+      }
+      return this.filtered_savings;
     },
 
     downloadSavings() {
-      let user_id = this.$store.getters.getMemberSavings.data[0].user_id
+      let user_id = this.$store.getters.getMemberSavings.data[0].user_id;
 
       let url = `/api/protected/savings/download?user_id=${user_id}&status=${this.status}`;
 
       let file_name = "User_Savings.pdf";
 
       this.loading = this.downloadPdf(url, file_name);
-    }
+    },
   },
   components: {
     NotFound,
@@ -212,5 +212,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

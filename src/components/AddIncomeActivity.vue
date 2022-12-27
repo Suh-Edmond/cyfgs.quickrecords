@@ -99,7 +99,23 @@ export default {
         ? true
         : false;
     },
+
+    getEditState() {
+      return this.$store.getters.getEditState;
+    },
+
+    getIncomeActivity() {
+      return this.setFormFields(this.getUpdatedIncomeActivityFromState());
+    }
   },
+
+  watch:{
+    getIncomeActivity() {
+      return this.setFormFields(this.getUpdatedIncomeActivityFromState());
+    }
+  },
+
+
   methods: {
     onAddIncomeActivity() {
       let organisation_id = this.getOrganisationId;
@@ -123,6 +139,7 @@ export default {
       this.setDispatchAction(this.income_activity.id, payload);
     },
 
+
     resetForm() {
       this.income_activity.name = null;
       this.income_activity.amount = 0;
@@ -145,6 +162,7 @@ export default {
       }
       return url;
     },
+
 
     setDispatchAction(id, payload) {
       this.loading = true;
@@ -174,6 +192,23 @@ export default {
           });
       }
     },
+
+
+    getUpdatedIncomeActivityFromState() {
+      return this.$store.getters.getUpdateIncomeActivity
+    },
+
+    setFormFields(data) {
+      this.income_activity.name = data.name;
+      this.income_activity.id = data.id;
+      this.income_activity.amount = data.amount;
+      this.income_activity.date = data.date;
+      this.income_activity.description = data.description;
+      this.income_activity.organisation_id = data.organisation_id;
+      this.income_activity.venue = data.venue;
+
+      return this.income_activity;
+    }
   },
   components: {
     ButtonVue,

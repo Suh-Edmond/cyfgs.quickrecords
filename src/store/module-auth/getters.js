@@ -1,3 +1,5 @@
+import state from "./state";
+
 export function getRoles(state) {
   return state.roles;
 }
@@ -94,3 +96,9 @@ export function getCurrentMemberSaving(state) {
 export function getIncomeActivities(state) {
   return state.income_activities
 }
+
+export function getUpdateIncomeActivity(state)
+{
+  return state.updated_income_activity
+}
+

@@ -92,3 +92,7 @@ export function SET_CURRENT_MEMBER_SAVING(state, data) {
 export function SET_INCOME_ACTIVITIES(state, data) {
   state.income_activities = data
 }
+
+export function SET_UPDATED_INCOME_ACTIVITY(state, data) {
+  state.updated_income_activity = data
+}

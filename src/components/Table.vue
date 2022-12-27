@@ -499,6 +499,12 @@ export default {
         data: data,
         tab: "Income Activities",
       };
+
+      this.$store.dispatch("setEditState", false);
+
+      
+      this.$store.dispatch("setUpdatedIncomeActivity", data);
+
       this.$emit("edit-income-activity", payload);
     },
 

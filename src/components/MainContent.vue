@@ -210,7 +210,6 @@ export default {
 
 
     viewMemberSaving(data) {
-      console.log(data);
       this.updateDrawer(data)
     },
 

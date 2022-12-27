@@ -1,60 +1,107 @@
 <template>
   <q-page>
-    <NotFound :message="not_found_msg" v-if="getMembersSavings.length == 0"></NotFound>
-    <!-- header for filter categories -->
-    <div class="row q-ml-xs q-pt-xs" v-if="getMembersSavings.length > 0" :class="$q.screen.lg ? 'q-pa-sm' : ''" :style="
-      $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-    ">
-      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
-        <q-select v-model="year" outlined dense :options="years" label="Select year" input-debounce="0"
-          @filter="filterYears" use-input hide-selected fill-input>
-          <template v-slot:no-option>
-            <q-item>
-              <q-item-section class="text-grey"> No results </q-item-section>
-            </q-item>
-          </template>
-        </q-select>
-      </div>
-      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-pl-md">
-        <q-select v-model="month" outlined dense :options="months" label="Select month" input-debounce="0"
-          @filter="filterMonths" use-input hide-selected fill-input>
-          <template v-slot:no-option>
-            <q-item>
-              <q-item-section class="text-grey"> No results </q-item-section>
-            </q-item>
-          </template>
-        </q-select>
-      </div>
-      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-pl-md">
-        <q-select v-model="status" outlined dense :options="statuses" label="Select status" input-debounce="0"
-          @filter="filterStatus" use-input hide-selected fill-input>
-          <template v-slot:no-option>
-            <q-item>
-              <q-item-section class="text-grey"> No results </q-item-section>
-            </q-item>
-          </template>
-        </q-select>
-      </div>
-      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 flex q-pl-md">
-        <div>
-          <ButtonVue :label="label_fetch" :loading="loading" :color="color" :disabled="validateFilter"
-            :no_caps="no_caps" icon_right="filter_list">
-          </ButtonVue>
+    <!-- <div v-if="is_fetching">loading...{{ is_fetching }}</div> -->
+    <div  >
+      <NotFound
+        :message="not_found_msg"
+        v-if="getMembersSavings.length == 0"
+      ></NotFound>
+      <!-- header for filter categories -->
+      <div v-if="getMembersSavings.length > 0">
+        <div
+          class="row q-ml-xs q-pt-xs"
+          :class="$q.screen.lg ? 'q-pa-sm' : ''"
+          :style="
+            $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+          "
+        >
+          <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
+            <q-select
+              v-model="year"
+              outlined
+              dense
+              :options="years"
+              label="Select year"
+              input-debounce="0"
+              @filter="filterYears"
+              use-input
+              hide-selected
+              fill-input
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No results
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+          <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-pl-md">
+            <q-select
+              v-model="month"
+              outlined
+              dense
+              :options="months"
+              label="Select month"
+              input-debounce="0"
+              @filter="filterMonths"
+              use-input
+              hide-selected
+              fill-input
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No results
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+          <div class="col-md-6 col-lg-6 col-xs-12 col-sm-12 flex q-pl-md">
+            <div>
+              <ButtonVue
+                :label="label_fetch"
+                :loading="loading"
+                :color="color"
+                :disabled="validateFilter"
+                :no_caps="no_caps"
+                icon_right="filter_list"
+              >
+              </ButtonVue>
+            </div>
+            <q-space />
+            <div class="button q-pb-xs">
+              <ButtonVue
+                :label="label_download"
+                :loading="loading"
+                :color="color_print"
+                :disabled="false"
+                :no_caps="no_caps"
+                icon_right="print"
+              ></ButtonVue>
+            </div>
+          </div>
         </div>
-        <q-space />
-        <div class="button q-pb-xs">
-          <ButtonVue :label="label_download" :loading="loading" :color="color_print" :disabled="false"
-            :no_caps="no_caps" icon_right="print"></ButtonVue>
+
+        <!-- table for savings -->
+        <div class="row q-pt-sm">
+          <div class="col-md-12 col-xs-12 col-sm-12">
+            <TableVue
+              :columns="columns"
+              :data="getMembersSavings"
+              :label="label"
+              :message="message"
+              :show_savings="true"
+              :show_income_activity="false"
+              :show_members="false"
+              :show_contribution="false"
+              @edit-member-saving="editMemberSaving"
+            >
+            </TableVue>
+          </div>
         </div>
-      </div>
-    </div>
-    <!-- table for savings -->
-    <div class="row q-pt-sm">
-      <div class="col-md-12 col-xs-12 col-sm-12">
-        <TableVue :columns="columns" :data="getMembersSavings" :label="label" :message="message" :name="name" :show_savings="true"
-          :show_income_activity="false" :show_members="false" :show_contribution="false"
-          @edit-member-saving="editMemberSaving">
-        </TableVue>
       </div>
     </div>
   </q-page>
@@ -66,10 +113,9 @@ import TableVue from "src/components/Table.vue";
 import ButtonVue from "src/components/Button.vue";
 import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
 
-
 export default {
   mixins: [UserSavingMixinVue],
-  mounted() {
+  created() {
     this.getOrganisationMemberSavings();
   },
   data() {
@@ -93,9 +139,6 @@ export default {
         "November",
         "December",
       ],
-      statuses: ["APPROVED", "UNAPPROVED"],
-      status: null,
-      search: null,
       label_fetch: "Filter",
       color: "primary",
       no_caps: true,
@@ -146,37 +189,45 @@ export default {
       ],
       label: "Delete",
       message: "Are you sure you want to delete this Member Saving?",
-      name: "Harvest ThanksGiven",
+      is_fetching: true,
     };
   },
   computed: {
     validateFilter() {
-      return this.year !== null || this.month !== null || this.status !== null
-        ? false
-        : true;
+      return this.year !== null || this.month !== null ? false : true;
+    },
+
+    getFetchingState() {
+      return typeof this.$store.getters.getOrganisationMemberSavings ===
+        undefined
+        ? true
+        : false;
     },
 
     getMembersSavings() {
       let data = [];
+
       this.$store.getters.getOrganisationMembersSavings.data.forEach((ele) => {
         data.push({
-          counter: this.$store.getters.getOrganisationMembersSavings.data.indexOf(ele) + 1,
+          counter:
+            this.$store.getters.getOrganisationMembersSavings.data.indexOf(
+              ele
+            ) + 1,
           name: ele.user_name,
           email: ele.email,
           telephone: ele.telephone,
           amount_deposited: ele.amount_deposited,
           id: ele.id,
-          approve:ele.approve,
-          comment:ele.comment,
+          approve: ele.approve,
+          comment: ele.comment,
           type: "MEMBERS_SAVINGS",
-          user_id:ele.user_id,
-          created_at:ele.created_at,
-          updated_by:ele.updated_by
-        })
-      })
-
+          user_id: ele.user_id,
+          created_at: ele.created_at,
+          updated_by: ele.updated_by,
+        });
+      });
       return data;
-    }
+    },
   },
   methods: {
     filterYears(val, update, abort) {
@@ -187,6 +238,7 @@ export default {
         );
       });
     },
+
     filterMonths(val, update, abort) {
       update(() => {
         const needle = val.toLowerCase();
@@ -195,17 +247,10 @@ export default {
         );
       });
     },
-    filterStatus(val, update, abort) {
-      update(() => {
-        const needle = val.toLowerCase();
-        this.statuses = this.statuses.filter(
-          (v) => v.toLowerCase().indexOf(needle) > -1
-        );
-      });
-    },
+
     editMemberSaving(data) {
-      this.$emit("edit-member-saving", data)
-    }
+      this.$emit("edit-member-saving", data);
+    },
   },
   components: {
     NotFound,
@@ -215,8 +260,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-.search {
-  cursor: pointer;
-}
-</style>
+<style lang="scss" scoped></style>

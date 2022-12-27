@@ -20,6 +20,7 @@
           dense
           :options="statuses"
           label="Select Status"
+          @input="filterSavings"
         />
       </div>
       <q-space />
@@ -31,15 +32,37 @@
           :disabled="false"
           no-caps
           icon-right="print"
+          @click="downloadSavings"
         ></q-btn>
       </div>
     </div>
-    <!-- table for categories -->
-    <div class="row q-pt-sm">
+    <!-- table for savings -->
+    <div class="row q-pt-sm" v-if="!start_filter">
       <div class="col-md-12 col-xs-12 col-sm-12">
         <TableVue
           :columns="columns"
           :data="getMemberSavings"
+          :label="label"
+          :message="message"
+          :title="getCurrentMemberName"
+          :show_savings="false"
+          :show_member_savings="true"
+          :show_income_activity="false"
+          :show_members="false"
+          :show_contribution="false"
+          @view-member-saving="ViewMemberSaving"
+          @edit-member-saving="editMemberSaving"
+        >
+        </TableVue>
+      </div>
+    </div>
+
+    <!-- table for filter savings -->
+    <div class="row q-pt-sm" v-if="start_filter">
+      <div class="col-md-12 col-xs-12 col-sm-12">
+        <TableVue
+          :columns="columns"
+          :data="filtered_savings"
           :label="label"
           :message="message"
           :title="getCurrentMemberName"
@@ -60,12 +83,17 @@
 <script>
 import NotFound from "src/components/NotFound.vue";
 import TableVue from "src/components/Table.vue";
+import HelperMixinVue from "src/mixins/HelperMixin.vue";
+
 export default {
+  mixins:[HelperMixinVue],
+
+
   data() {
     return {
       not_found_msg:
         "Ooops!! No Savings has been recorded for this Member",
-      expenditure_item_details: [{"id":1}],
+        filtered_savings: [],
       search: null,
       label_fetch: "Filter",
       color: "primary",
@@ -110,6 +138,7 @@ export default {
       message: "Are you sure you want to delete this Saving?",
       statuses: ["APPROVED", "UNAPPROVED", "ALL"],
       status: null,
+      start_filter : false
     };
   },
   computed: {
@@ -154,6 +183,26 @@ export default {
       this.$store.dispatch("setEditState", false);
 
       this.$emit("edit-member-saving", data)
+    },
+
+    filterSavings(){
+      this.start_filter = true;
+     if(this.status == "ALL"){
+      this.filtered_savings = this.getMemberSavings
+     }else {
+      this.filtered_savings = this.getMemberSavings.filter((ele) => ele.approve === this.status);
+     }
+      return this.filtered_savings
+    },
+
+    downloadSavings() {
+      let user_id = this.$store.getters.getMemberSavings.data[0].user_id
+
+      let url = `/api/protected/savings/download?user_id=${user_id}&status=${this.status}`;
+
+      let file_name = "User_Savings.pdf";
+
+      this.loading = this.downloadPdf(url, file_name);
     }
   },
   components: {
@@ -164,7 +213,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.search {
-  cursor: pointer;
-}
 </style>

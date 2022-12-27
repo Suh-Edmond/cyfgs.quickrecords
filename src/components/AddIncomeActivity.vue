@@ -84,6 +84,9 @@ export default {
         amount: 0,
         id:null,
         organisation_id:null,
+        approve:null,
+        created_at:null,
+        updated_by:null,
       },
       position: "right",
       dialog: false,
@@ -187,8 +190,8 @@ export default {
             this.$emit("close-right-drawer");
             this.loading = false;
             this.resetForm();
-            // this.$store.dispatch("setUpdatedExpenditureItemDetail", null);
-            // this.$store.dispatch("setEditState", false);
+            this.$store.dispatch("setUpdatedIncomeActivity", null);
+            this.$store.dispatch("setEditState", false);
           });
       }
     },
@@ -206,6 +209,9 @@ export default {
       this.income_activity.description = data.description;
       this.income_activity.organisation_id = data.organisation_id;
       this.income_activity.venue = data.venue;
+      this.income_activity.approve = data.approve;
+      this.income_activity.created_at = data.created_at;
+      this.income_activity.updated_by = data.updated_by
 
       return this.income_activity;
     }

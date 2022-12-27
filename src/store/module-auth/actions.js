@@ -421,3 +421,7 @@ export function setCurrentMemberSaving({commit}, data)  {
 export function setUpdatedIncomeActivity({commit}, data) {
   commit("SET_UPDATED_INCOME_ACTIVITY", data);
 }
+
+export function setCurrentIncomeActivity({commit}, data) {
+  commit("SET_CURRENT_INCOME_ACTIVITY", data)
+}

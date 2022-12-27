@@ -29,7 +29,7 @@
         <label for="amount" class="field"
           >Amount Deposited:
           <span class="field_value item_amount">
-            {{ saving.amount_deposited }} XAF</span
+            {{ Number(saving.amount_deposited).toLocaleString() }} XAF</span
           ></label
         >
       </div>
@@ -129,7 +129,6 @@ export default {
       this.saving.approve = this.$store.getters.getCurrentMemberSaving.approve;
       this.saving.created_at = this.$store.getters.getCurrentMemberSaving.created_at;
       this.saving.updated_by = this.$store.getters.getCurrentMemberSaving.updated_by;
-      this.saving.comment = this.$store.getters.getCurrentMemberSaving.comment;
 
       return  this.saving;
     },

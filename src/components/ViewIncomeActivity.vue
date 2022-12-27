@@ -1,39 +1,69 @@
 <template>
-  <div class="q-pa-sm">
-    <div class="text_h6 text-center q-pt-xs q-pb-md add_member_title">
-      Income Activity Information
-    </div>
-    <div>
-      <div class="flex q-pb-sm">
-        <label for="name" class="label">Name:
-          <span class="value q-pl-md">Singing during in a Visit to Mr Nkom Emmaunual</span></label>
+  <div class="q-pa-lg">
+    <div class="q-mt-sm">
+      <div class="flex q-pb-md">
+        <label for="name" class="field"
+          >Name:
+          <span class="field_value field_name">{{ income_activity.name }}</span></label
+        >
       </div>
-      <div class="flex q-pb-sm">
-        <label for="name" class="label">Amount:
-          <span class="value q-pl-sm">30000 XAF</span></label>
+      <div class="flex q-pb-md">
+        <label for="name" class="field"
+          >Amount:
+          <span class="field_value q-pl-md"
+            >{{ Number(income_activity.amount).toLocaleString() }} XAF</span
+          ></label
+        >
       </div>
-      <div class="flex q-pb-sm">
-        <label for="name" class="label">Date:
-          <span class="value q-pl-lg">Monday 31st October 2022</span></label>
+      <div class="flex q-pb-md">
+        <label for="name" class="field"
+          >Date:
+          <span class="field_value field_date">{{ getFormatIncomeDate }}</span></label
+        >
       </div>
-      <div class="flex q-pb-sm">
-        <label for="name" class="label">Venue:
-          <span class="value q-pl-md">Sandpit Bakweri Town</span></label>
+      <div class="flex q-pb-md">
+        <label for="name" class="field"
+          >Venue:
+          <span class="field_value field_venue">{{ income_activity.venue }}</span></label
+        >
       </div>
-      <div class="flex q-pb-sm">
-        <label for="name" class="label">Status:
-          <span class="value text-secondary q-pl-md">APPROVED</span></label>
+      <div class="flex q-pb-md">
+        <label for="status" class="field" v-show="!income_activity.approve"
+          >Status:
+          <span class="item_statue unapproved_color"
+            >UNAPPROVED</span
+          ></label
+        >
+        <label for="status" class="field" v-show="income_activity.approve"
+          >Status:
+          <span class="item_statue approved_color">
+            APPROVED</span
+          ></label
+        >
       </div>
-      <div class="flex q-pb-sm">
-        <label for="name" class="label">Comment:
-        </label>
-        <p class="value_comment">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Hic debitis veritatis dicta
-          ipsum
-          quibusdam nihil, molestias ea soluta nam reiciendis. Repudiandae itaque consectetur laboriosam eum maxime, vel
-          maiores quidem ipsa.</p>
+      <!-- <div class="q-mb-md">
+        <label for="amount" class="field"
+          >Created Date:
+          <span class="field_value detail_date">
+            {{ getFormatIncomeCreatedDate }}
+          </span></label
+        >
+      </div> -->
+
+      <div class="q-mb-md">
+        <label for="amount" class="field"
+          >Created By:
+          <span class="field_value detail_created_by">
+            {{ income_activity.updated_by }}
+          </span></label
+        >
+      </div>
+      <div class="flex q-pb-md">
+        <label for="name" class="field">Comment: </label>
+        <p>{{ income_activity.description }}</p>
       </div>
 
-      <div class="flex">
+      <!-- <div class="flex">
         <q-card class="image_card" @click="show_image = true">
           <q-img src="https://cdn.quasar.dev/img/mountains.jpg" basic>
             <div class="absolute-bottom text-caption text-center">
@@ -41,10 +71,13 @@
             </div>
           </q-img>
         </q-card>
-      </div>
+      </div> -->
     </div>
     <q-dialog v-model="show_image" :position="position">
-      <q-card style="width: 360px" :class="$q.screen.lg?'q-mr-md':'q-mx-sm'">
+      <q-card
+        style="width: 360px"
+        :class="$q.screen.lg ? 'q-mr-md' : 'q-mx-sm'"
+      >
         <q-bar>
           <div></div>
           <q-space />
@@ -54,91 +87,154 @@
         </q-bar>
         <q-card-section>
           <div>
-            <q-img src="https://cdn.quasar.dev/img/mountains.jpg" spinner-color="white" style="height: 100%; width: 100%px" />
+            <q-img
+              src="https://cdn.quasar.dev/img/mountains.jpg"
+              spinner-color="white"
+              style="height: 100%; width: 100%px"
+            />
           </div>
         </q-card-section>
       </q-card>
     </q-dialog>
   </div>
-
 </template>
 
 <script>
+import moment from "moment";
+
 export default {
+  created() {
+    let heading = "Income Activity Information";
+    this.$emit("set-heading", heading);
+  },
+
+  mounted() {
+    this.getCurrentIncomeActivity();
+  },
+
   data() {
     return {
       show_image: false,
       position: "right",
+      income_activity: {
+        venue: null,
+        date: null,
+        name: null,
+        description: null,
+        amount: 0,
+        id: null,
+        organisation_id: null,
+        approve: null,
+        created_at: null,
+        updated_by: null,
+      },
     };
   },
-  computed:{
 
+  computed: {
+    getEditState() {
+      return this.$store.getters.getEditState;
+    },
+
+    getFormatIncomeCreatedDate() {
+      return moment(
+        this.$store.getters.getCurrentIncomeActivity.created_at
+      ).format("MMMM Do YYYY");
+    },
+
+    getFormatIncomeDate() {
+      return moment(this.$store.getters.getCurrentIncomeActivity.date).format(
+        "MMMM Do YYYY"
+      );
+    },
   },
-  methods:{
 
-  }
+  methods: {
+    getCurrentIncomeActivity() {
+      console.log(this.$store.getters.getCurrentIncomeActivity);
+      this.income_activity.name =
+        this.$store.getters.getCurrentIncomeActivity.name;
+      this.income_activity.date =
+        this.$store.getters.getCurrentIncomeActivity.date;
+      this.income_activity.venue =
+        this.$store.getters.getCurrentIncomeActivity.venue;
+      this.income_activity.description =
+        this.$store.getters.getCurrentIncomeActivity.description;
+      this.income_activity.organisation_id =
+        this.$store.getters.getCurrentIncomeActivity.organisation_id;
+      this.income_activity.amount =
+        this.$store.getters.getCurrentIncomeActivity.amount;
+      this.income_activity.id = this.$store.getters.getCurrentIncomeActivity.id;
+      this.income_activity.approve =
+        this.$store.getters.getCurrentIncomeActivity.approve;
+      this.income_activity.created_at =
+        this.$store.getters.getCurrentIncomeActivity.created_at;
+      this.income_activity.updated_by =
+        this.$store.getters.getCurrentIncomeActivity.updated_by;
+
+      return this.income_activity;
+    },
+  },
 };
 </script>
 
 <style lang="scss" scoped>
-.add_member_title {
+.unapproved_color {
+  color: #f2994a;
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
+  font-size: 15px;
+  line-height: 27px;
+  letter-spacing: 0.005em;
+}
+
+.approved_color {
+  color: #27ae60;
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 27px;
+  letter-spacing: 0.005em;
+}
+.field {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 400;
   font-size: 14px;
-  line-height: 29px;
-  align-items: center;
-  text-align: center;
+  line-height: 11px;
   letter-spacing: 0.01em;
-  color: $primary;
-  text-transform: capitalize;
+  color: $grey5;
 }
 
-.label {
+.field_venue {
+ padding-left: 1.7rem;
+}
+
+
+.item_statue {
+  padding-left: 1.7rem;
+}
+
+.field_value {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 13px;
-  line-height: 24px;
-  text-align: start;
-  letter-spacing: 0.01em;
-  color: $grey2;
-}
-
-.value {
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 13px;
+  font-size: 15px;
   line-height: 27px;
-  text-align: right;
   letter-spacing: 0.005em;
   color: $dark;
 }
-
-.value_comment {
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 13px;
-  line-height: 27px;
-  text-align: start;
-  letter-spacing: 0.005em;
-  color: $dark;
+.field_name {
+  padding-left: 1.6rem;
 }
 
-.image {
-  height: 100px;
-  width: 100px;
+.field_date {
+  padding-left: 2.4rem;
 }
 
-.image_card {
-  width: 100%;
-  max-width: 150px;
-  cursor: pointer;
-}
-
-.card {
-  width: 100%;
+.detail_created_by {
+  padding-left: .2rem;
 }
 </style>

@@ -102,3 +102,7 @@ export function getUpdateIncomeActivity(state)
   return state.updated_income_activity
 }
 
+export function getCurrentIncomeActivity(state) {
+  return state.current_income_activity
+}
+

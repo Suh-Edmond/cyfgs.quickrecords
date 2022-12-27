@@ -96,3 +96,7 @@ export function SET_INCOME_ACTIVITIES(state, data) {
 export function SET_UPDATED_INCOME_ACTIVITY(state, data) {
   state.updated_income_activity = data
 }
+
+export function SET_CURRENT_INCOME_ACTIVITY(state, data) {
+  state.current_income_activity = data
+}

@@ -502,7 +502,6 @@ export default {
 
       this.$store.dispatch("setEditState", false);
 
-      
       this.$store.dispatch("setUpdatedIncomeActivity", data);
 
       this.$emit("edit-income-activity", payload);
@@ -513,6 +512,10 @@ export default {
         data: data,
         tab: "View Income Activity",
       };
+      this.$store.dispatch("setEditState", false);
+
+      this.$store.dispatch("setCurrentIncomeActivity", data);
+
       this.$emit("view-income-activity", payload);
     },
 

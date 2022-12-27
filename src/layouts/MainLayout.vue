@@ -430,6 +430,8 @@
         ></AddIncomeActivity>
         <ViewIncomeActivity
           v-if="current_tab == 'View Income Activity'"
+          @close-right-drawer="closeRightDrawer"
+          @set-heading="setHeading"
         ></ViewIncomeActivity>
         <ViewContribution
           v-if="current_tab == 'View Contribution'"

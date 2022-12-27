@@ -128,7 +128,7 @@
                         <q-item-label class="edit">Edit</q-item-label>
                       </q-item-section>
                     </q-item>
-
+                    <q-separator  v-show="show_income_activity" />
                     <q-item
                       clickable
                       v-close-popup
@@ -141,7 +141,7 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="edit">Details</q-item-label>
+                        <q-item-label class="edit">View</q-item-label>
                       </q-item-section>
                     </q-item>
 

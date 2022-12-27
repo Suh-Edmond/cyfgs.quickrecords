@@ -425,6 +425,8 @@
         </ViewMemberSaving>
         <AddIncomeActivity
           v-if="current_tab == 'Income Activities'"
+          @close-right-drawer="closeRightDrawer"
+          @set-heading="setHeading"
         ></AddIncomeActivity>
         <ViewIncomeActivity
           v-if="current_tab == 'View Income Activity'"

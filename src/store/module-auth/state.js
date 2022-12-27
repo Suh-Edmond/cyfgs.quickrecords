@@ -19,9 +19,10 @@ export default function () {
     expenditure_item_details:null,
     current_expenditure_item:null,
     updated_expenditure_item_detail:null,
-    organisation_members_savings:[],
-    member_savings:[],
+    organisation_members_savings:null,
+    member_savings:null,
     updated_member_saving:null,
-    current_member_saving:null
+    current_member_saving:null,
+    income_activities:null,
   };
 }

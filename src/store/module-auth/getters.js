@@ -90,3 +90,7 @@ export function getUpdatedMemberSaving(state) {
 export function getCurrentMemberSaving(state) {
   return state.current_member_saving
 }
+
+export function getIncomeActivities(state) {
+  return state.income_activities
+}

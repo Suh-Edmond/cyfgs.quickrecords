@@ -1,10 +1,13 @@
 <template>
   <q-page>
-    <NotFound :message="not_found_msg" v-if="income_activities.length == 0"></NotFound>
+    <NotFound
+      :message="not_found_msg"
+      v-if="getIncomeActivities.length == 0"
+    ></NotFound>
     <!-- header for filter categories -->
     <div
       class="row q-ml-xs q-pt-xs"
-      v-if="income_activities.length > 0"
+      v-if="getIncomeActivities.length > 0"
       :class="$q.screen.lg ? 'q-pa-sm' : ''"
       :style="
         $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
@@ -100,12 +103,13 @@
       <div class="col-md-12 col-xs-12 col-sm-12">
         <TableVue
           :columns="columns"
-          :data="data"
+          :data="getIncomeActivities"
           :label="label"
           :message="message"
           :name="name"
           :show_savings="false"
           :show_income_activity="true"
+          :show_contribution="false"
           :show_members="false"
           @edit-income-activity="editIncomeActivity"
           @view-income-activity="viewIncomeActivity"
@@ -120,12 +124,19 @@
 import NotFound from "src/components/NotFound.vue";
 import TableVue from "src/components/Table.vue";
 import ButtonVue from "src/components/Button.vue";
+import IncomeActivityMixinVue from "src/mixins/IncomeActivityMixin.vue";
+
 export default {
+  mixins: [IncomeActivityMixinVue],
+
+  mounted() {
+    this.getOrganisationIncomeActivities();
+  },
+
   data() {
     return {
       not_found_msg:
-        "Ooops!! No Income Activity has been recorded. click the add button to add income activity.",
-      income_activities: [{}],
+        "Ooops!! No Income Activity has been recorded. Click the add button to add income activity.",
       year: null,
       years: ["2020", "2021", "2022", "2023", "2024"],
       month: null,
@@ -154,11 +165,11 @@ export default {
       color_print: "positive",
       columns: [
         {
-          name: "id",
+          name: "counter",
           required: true,
           label: "S/N",
           align: "left",
-          field: "id",
+          field: "counter",
         },
         {
           name: "name",
@@ -193,88 +204,6 @@ export default {
           field: "action",
         },
       ],
-      data: [
-        {
-          id: 1,
-          name: "Frozen Yogurt",
-          venue: "Sandpit Bakweri Town",
-          date: "2023/01/09",
-          amount: 50000,
-          action: "",
-        },
-        {
-          id: 2,
-          name: "Ice cream sandwich",
-          venue: "Sandpit Bakweri Town",
-          date: "2023/01/09",
-          amount: 50000,
-          action: "",
-        },
-        {
-          id: 3,
-          name: "Eclair",
-          venue: "Sandpit Bakweri Town",
-          date: "2023/01/09",
-          amount: 50000,
-          action: "",
-        },
-        {
-          id: 4,
-          name: "Cupcake",
-          venue: "Molyko Buea",
-          date: "2022/09/12",
-          amount: 50000,
-          action: "",
-        },
-        {
-          id: 5,
-          name: "Gingerbread",
-          venue: "Molyko Buea",
-          date: "2022/09/12",
-          amount: 50000,
-          action: "",
-        },
-        {
-          id: 6,
-          name: "Jelly bean",
-          venue: "Molyko Buea",
-          date: "2022/09/12",
-          amount: 50000,
-          action: "",
-        },
-        {
-          id: 7,
-          name:"Jelly Brown",
-          venue: "Molyko Buea",
-          date: "2022/09/12",
-          amount: 50000,
-          action: "",
-        },
-        {
-          id: 8,
-          name: "Honeycomb",
-          venue: "Sandpit Bakweri Town",
-          date: "2022/09/12",
-          amount: 50000,
-          action: "",
-        },
-        {
-          id: 9,
-          name: "Donut",
-          venue: "Sandpit Bakweri Town",
-          date: "2022/09/12",
-          amount: 50000,
-          action: "",
-        },
-        {
-          id: 10,
-          name: "KitKat",
-          venue: "Sandpit Bakweri Town",
-          date: "2022/09/12",
-          amount: 50000,
-          action: "",
-        },
-      ],
       label: "Delete",
       message: "Are you sure you want to delete this Income Activity ?",
       name: "Harvest ThanksGiven",
@@ -285,6 +214,31 @@ export default {
       return this.year !== null || this.month !== null || this.status !== null
         ? false
         : true;
+    },
+
+    getIncomeActivities() {
+      let data = [];
+
+      if (this.$store.getters.getIncomeActivities != null) {
+        this.$store.getters.getIncomeActivities.data.forEach((ele) => {
+          data.push({
+            counter:
+              this.$store.getters.getIncomeActivities.data.indexOf(ele) + 1,
+            name: ele.name,
+            amount: ele.amount,
+            id: ele.id,
+            approve: ele.approve,
+            description: ele.description,
+            type: "INCOME_ACTIVITIES",
+            date: ele.date,
+            venue: ele.venue,
+            organisation_id: ele.organisation_id,
+            created_at: ele.created_at,
+            updated_by: ele.updated_by,
+          });
+        });
+      }
+      return data;
     },
   },
   methods: {
@@ -312,13 +266,12 @@ export default {
         );
       });
     },
-    editIncomeActivity(data){
-      this.$emit("edit-income-activity", data)
+    editIncomeActivity(data) {
+      this.$emit("edit-income-activity", data);
     },
-    viewIncomeActivity(data){
-      console.log(data);
+    viewIncomeActivity(data) {
       this.$emit("view-income-activity", data);
-    }
+    },
   },
   components: {
     NotFound,

@@ -143,29 +143,31 @@ export default {
     getMemberSavings() {
       let data = [];
 
-      this.$store.getters.getMemberSavings.data.forEach((ele) => {
-        data.push({
-          counter: this.$store.getters.getMemberSavings.data.indexOf(ele) + 1,
-          name: ele.user_name,
-          email: ele.email,
-          telephone: ele.telephone,
-          amount_deposited: ele.amount_deposited,
-          id: ele.id,
-          approve: ele.approve == 1 ? "APPROVED" : "UNAPPROVED",
-          comment: ele.comment,
-          type: "MEMBER_SAVINGS",
-          user_id: ele.user_id,
-          created_at: ele.created_at,
-          updated_by: ele.updated_by,
-          date: ele.created_at,
+      if (this.$store.getters.getMemberSavings != null) {
+        this.$store.getters.getMemberSavings.data.forEach((ele) => {
+          data.push({
+            counter: this.$store.getters.getMemberSavings.data.indexOf(ele) + 1,
+            name: ele.user_name,
+            email: ele.email,
+            telephone: ele.telephone,
+            amount_deposited: ele.amount_deposited,
+            id: ele.id,
+            approve: ele.approve == 1 ? "APPROVED" : "UNAPPROVED",
+            comment: ele.comment,
+            type: "MEMBER_SAVINGS",
+            user_id: ele.user_id,
+            created_at: ele.created_at,
+            updated_by: ele.updated_by,
+            date: ele.created_at,
+          });
         });
-      });
+      }
       return data;
     },
 
     getCurrentMemberName() {
       let name = "";
-      if (typeof this.$store.getters.getMemberSavings !== undefined) {
+      if (this.$store.getters.getMemberSavings != null) {
         name = this.$store.getters.getMemberSavings.data[0].user_name;
       }
 

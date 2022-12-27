@@ -209,7 +209,8 @@ export default {
     getMembersSavings() {
       let data = [];
 
-      this.$store.getters.getOrganisationMembersSavings.data.forEach((ele) => {
+      if(this.$store.getters.getOrganisationMembersSavings != null){
+        this.$store.getters.getOrganisationMembersSavings.data.forEach((ele) => {
         data.push({
           counter:
             this.$store.getters.getOrganisationMembersSavings.data.indexOf(
@@ -228,6 +229,7 @@ export default {
           updated_by: ele.updated_by,
         });
       });
+      }
       return data;
     },
   },

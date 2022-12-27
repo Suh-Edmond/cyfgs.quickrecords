@@ -161,12 +161,12 @@ export default {
     },
 
     setFormFields(data) {
-      this.payment_item.name = data?.name,
-      this.payment_item.payment_category_id = data?.payment_category_id;
-      this.payment_item.amount = data?.amount;
-      this.payment_item.description = data?.description;
-      this.payment_item.id = data?.id;
-      this.payment_item.complusory = data?.complusory == 1 ? true : false; //because the complusory field value is returned as either 1 or 0
+      this.payment_item.name = data.name,
+      this.payment_item.payment_category_id = data.payment_category_id;
+      this.payment_item.amount = data.amount;
+      this.payment_item.description = data.description;
+      this.payment_item.id = data.id;
+      this.payment_item.complusory = data.complusory == 1 ? true : false; //because the complusory field value is returned as either 1 or 0
 
       return this.payment_item;
     }

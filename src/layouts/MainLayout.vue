@@ -458,8 +458,7 @@ import ViewIncomeActivity from "src/components/ViewIncomeActivity.vue";
 import ViewContribution from "src/components/ViewContribution.vue";
 import AddContribution from "src/components/AddContribution.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
-import ViewMemberSaving from "src/components/Constants/ViewMemberSaving.vue";
-
+import ViewMemberSaving from "src/components/ViewMemberSaving.vue";
 export default {
   mixins: [organisationMixinVue],
   mounted() {

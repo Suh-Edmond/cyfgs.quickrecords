@@ -138,7 +138,7 @@ export default {
     },
     getExpenditureCategories() {
       let data = [];
-      this.$store.getters.getExpenditureCategories?.forEach((ele) => {
+      this.$store.getters.getExpenditureCategories.forEach((ele) => {
         data.push({
           label: ele.name,
           value: ele.id,

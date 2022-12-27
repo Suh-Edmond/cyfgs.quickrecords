@@ -235,10 +235,11 @@ export default {
     },
 
     setFormFields(data) {
-      (this.saving.user_id = { label: data?.name, value: data?.user_id }),
-        (this.saving.amount_deposited = data?.amount_deposited),
-        (this.saving.comment = data?.comment),
-        (this.saving.id = data?.id);
+
+      (this.saving.user_id = { label: data.name, value: data.user_id }),
+        (this.saving.amount_deposited = data.amount_deposited),
+        (this.saving.comment = data.comment),
+        (this.saving.id = data.id);
 
       return this.saving;
     },

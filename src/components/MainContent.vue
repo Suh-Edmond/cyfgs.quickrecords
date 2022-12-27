@@ -210,6 +210,7 @@ export default {
 
 
     viewMemberSaving(data) {
+      console.log(data);
       this.updateDrawer(data)
     },
 
@@ -270,7 +271,6 @@ export default {
       this.updateDrawer(data);
     },
     viewIncomeActivity(data) {
-      console.log(data);
       this.updateDrawer(data);
     },
     viewContribution(data) {

@@ -129,7 +129,7 @@ export default {
     },
 
     getNotFoundMsgForPaymentItems() {
-      return `Ooops!! No Expenditure Items found for this Category [${this.$store.getters.getCurrentExpenditureCategory?.name}]. Click the add button to add Expenditure Items.`;
+      return `Ooops!! No Expenditure Items found for this Category [${this.$store.getters.getCurrentExpenditureCategory.name}]. Click the add button to add Expenditure Items.`;
     },
   },
   methods: {
@@ -161,9 +161,9 @@ export default {
 
     getExpenditureItemsFromState() {
       let data = [];
-      this.$store.getters.getExpenditureItems?.forEach((ele) => {
+      this.$store.getters.getExpenditureItems.forEach((ele) => {
         data.push({
-          counter: this.$store.getters.getExpenditureItems?.indexOf(ele) + 1,
+          counter: this.$store.getters.getExpenditureItems.indexOf(ele) + 1,
           name: ele.name,
           id: ele.id,
           amount: ele.amount,

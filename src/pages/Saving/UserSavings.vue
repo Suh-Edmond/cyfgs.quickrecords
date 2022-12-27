@@ -115,9 +115,10 @@ export default {
   computed: {
     getMemberSavings() {
       let data = [];
-      this.$store.getters.getMemberSavings.data?.forEach((ele) => {
+
+      this.$store.getters.getMemberSavings.data.forEach((ele) => {
         data.push({
-          counter: this.$store.getters.getMemberSavings.data?.indexOf(ele) + 1,
+          counter: this.$store.getters.getMemberSavings.data.indexOf(ele) + 1,
           name: ele.user_name,
           email: ele.email,
           telephone: ele.telephone,
@@ -137,23 +138,20 @@ export default {
 
     getCurrentMemberName() {
       let name = ""
-      if(this.$store.getters.getMemberSavings.data !== "undefined" ){
-        name =  this.$store.getters.getMemberSavings?.data[0].user_name
+      if(typeof(this.$store.getters.getMemberSavings)  !== undefined){
+        name =  this.$store.getters.getMemberSavings.data[0].user_name
       }
+
       return name;
     }
   },
   methods: {
     ViewMemberSaving(data){
-      this.$store.dispatch("setEditState", true);
-
       this.$emit('view-member-saving', data)
     },
 
     editMemberSaving(data) {
       this.$store.dispatch("setEditState", false);
-
-      this.$store.dispatch("setUpdatedMemberSaving", data.data);
 
       this.$emit("edit-member-saving", data)
     }

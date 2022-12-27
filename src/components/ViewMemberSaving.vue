@@ -5,7 +5,7 @@
         <label for="name" class="field"
           >Member Name:
           <span class="field_value item_value">{{
-            getCurrentMemberSaving.name
+            saving.name
           }}</span></label
         >
       </div>
@@ -13,7 +13,7 @@
         <label for="email" class="field"
           >Email:
           <span class="field_value item_venue">{{
-            getCurrentMemberSaving.email
+            saving.email
           }}</span></label
         >
       </div>
@@ -21,7 +21,7 @@
         <label for="telephone" class="field"
           >Telephone:
           <span class="field_value item_tel">{{
-            getCurrentMemberSaving.telephone
+            saving.telephone
           }}</span></label
         >
       </div>
@@ -29,7 +29,7 @@
         <label for="amount" class="field"
           >Amount Deposited:
           <span class="field_value item_amount">
-            {{ getCurrentMemberSaving.amount_deposited }} XAF</span
+            {{ saving.amount_deposited }} XAF</span
           ></label
         >
       </div>
@@ -37,7 +37,7 @@
         <label
           for="status"
           class="field"
-          v-show="getCurrentMemberSaving.approve == 'UNAPPROVED'"
+          v-show="saving.approve == 'UNAPPROVED'"
           >Status:
           <span class="field_value item_statue unapproved_color">
             UNAPPROVED</span
@@ -46,7 +46,7 @@
         <label
           for="status"
           class="field"
-          v-show="getCurrentMemberSaving.approve == 'APPROVED'"
+          v-show="saving.approve == 'APPROVED'"
           >Status:
           <span class="field_value item_statue approved_color">
             APPROVED</span
@@ -66,13 +66,13 @@
         <label for="amount" class="field"
           >Created By:
           <span class="field_value detail_created_by">
-            {{ getCurrentMemberSaving.updated_by }}
+            {{ saving.updated_by }}
           </span></label
         >
       </div>
       <div class="q-mb-md">
         <label for="comment" class="field">Comment:</label>
-        <p>{{ getCurrentMemberSaving.comment }}.</p>
+        <p>{{ saving.comment }}.</p>
       </div>
     </div>
   </div>
@@ -86,14 +86,27 @@ export default {
     this.$emit("set-heading", heading);
   },
 
+  mounted() {
+    this.getCurrentMemberSaving();
+  },
+
   data() {
-    return {};
+    return {
+      saving:{
+        name: null,
+        email:null,
+        telephone:null,
+        amount_deposited:0,
+        comment:null,
+        approve:null,
+        created_at:null,
+        updated_by:null,
+        id:null
+      }
+    };
   },
 
   computed: {
-    getCurrentMemberSaving() {
-      return this.$store.getters.getCurrentMemberSaving;
-    },
 
     getEditState() {
       return this.$store.getters.getEditState;
@@ -105,6 +118,23 @@ export default {
       ).format("MMMM Do YYYY, h:mm:ss a");
     },
   },
+
+  methods :{
+    getCurrentMemberSaving() {
+      this.saving.name = this.$store.getters.getCurrentMemberSaving.name;
+      this.saving.email = this.$store.getters.getCurrentMemberSaving.email;
+      this.saving.telephone = this.$store.getters.getCurrentMemberSaving.telephone;
+      this.saving.amount_deposited = this.$store.getters.getCurrentMemberSaving.amount_deposited;
+      this.saving.id = this.$store.getters.getCurrentMemberSaving.id;
+      this.saving.approve = this.$store.getters.getCurrentMemberSaving.approve;
+      this.saving.created_at = this.$store.getters.getCurrentMemberSaving.created_at;
+      this.saving.updated_by = this.$store.getters.getCurrentMemberSaving.updated_by;
+      this.saving.comment = this.$store.getters.getCurrentMemberSaving.comment;
+
+      return  this.saving;
+    },
+
+  }
 };
 </script>
 

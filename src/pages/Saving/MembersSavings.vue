@@ -158,9 +158,9 @@ export default {
 
     getMembersSavings() {
       let data = [];
-      this.$store.getters.getOrganisationMembersSavings.data?.forEach((ele) => {
+      this.$store.getters.getOrganisationMembersSavings.data.forEach((ele) => {
         data.push({
-          counter: this.$store.getters.getOrganisationMembersSavings.data?.indexOf(ele) + 1,
+          counter: this.$store.getters.getOrganisationMembersSavings.data.indexOf(ele) + 1,
           name: ele.user_name,
           email: ele.email,
           telephone: ele.telephone,

@@ -482,6 +482,18 @@ export default {
       this.$emit("edit-member-saving", payload);
     },
 
+    onViewMemberSaving(data) {
+      let payload = {
+        data: data,
+        tab: "View Member Saving",
+      };
+      this.$store.dispatch("setEditState", true);
+
+      this.$store.dispatch("setCurrentMemberSaving", data);
+
+      this.$emit("view-member-saving", payload);
+    },
+
     onEditIncomeActivity(data) {
       let payload = {
         data: data,
@@ -523,16 +535,6 @@ export default {
 
     getFormatedDate(date) {
       return moment(date).format("MMMM Do YYYY");
-    },
-
-    onViewMemberSaving(data) {
-      let payload = {
-        data: data,
-        tab: "View Member Saving",
-      };
-      this.$store.dispatch("setCurrentMemberSaving", data);
-
-      this.$emit("view-member-saving", payload);
     },
   },
   components: {},

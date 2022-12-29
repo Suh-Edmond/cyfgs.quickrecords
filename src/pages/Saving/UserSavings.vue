@@ -2,12 +2,12 @@
   <q-page>
     <NotFound
       :message="not_found_msg"
-      v-if="expenditure_item_details.length == 0"
+      v-if="getMemberSavings.length == 0"
     ></NotFound>
     <!-- header for filter categories -->
     <div
       class="row q-ml-xs q-pt-xs"
-      v-if="expenditure_item_details.length > 0"
+      v-if="getMemberSavings.length > 0"
       :class="$q.screen.lg ? 'q-pa-sm' : ''"
       :style="
         $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
@@ -20,35 +20,58 @@
           dense
           :options="statuses"
           label="Select Status"
+          @input="filterSavings"
         />
       </div>
       <q-space />
       <div class="button q-pb-xs">
-        <ButtonVue
+        <q-btn
           :label="label_download"
           :loading="loading"
           :color="color_print"
           :disabled="false"
-          :no_caps="no_caps"
-          icon_right="print"
-        ></ButtonVue>
+          no-caps
+          icon-right="print"
+          @click="downloadSavings"
+        ></q-btn>
       </div>
     </div>
-    <!-- table for categories -->
-    <div class="row q-pt-sm">
+    <!-- table for savings -->
+    <div class="row q-pt-sm" v-if="!start_filter">
       <div class="col-md-12 col-xs-12 col-sm-12">
         <TableVue
           :columns="columns"
-          :data="data"
+          :data="getMemberSavings"
           :label="label"
           :message="message"
-          :name="name"
-          :title="title"
+          :title="getCurrentMemberName"
           :show_savings="false"
           :show_member_savings="true"
           :show_income_activity="false"
           :show_members="false"
           :show_contribution="false"
+          @view-member-saving="ViewMemberSaving"
+          @edit-member-saving="editMemberSaving"
+        >
+        </TableVue>
+      </div>
+    </div>
+
+    <!-- table for filter savings -->
+    <div class="row q-pt-sm" v-if="start_filter">
+      <div class="col-md-12 col-xs-12 col-sm-12">
+        <TableVue
+          :columns="columns"
+          :data="filtered_savings"
+          :label="label"
+          :message="message"
+          :title="getCurrentMemberName"
+          :show_savings="false"
+          :show_member_savings="true"
+          :show_income_activity="false"
+          :show_members="false"
+          :show_contribution="false"
+          @view-member-saving="ViewMemberSaving"
           @edit-member-saving="editMemberSaving"
         >
         </TableVue>
@@ -60,13 +83,15 @@
 <script>
 import NotFound from "src/components/NotFound.vue";
 import TableVue from "src/components/Table.vue";
-import ButtonVue from "src/components/Button.vue";
+import HelperMixinVue from "src/mixins/HelperMixin.vue";
+
 export default {
+  mixins: [HelperMixinVue],
+
   data() {
     return {
-      not_found_msg:
-        "Ooops!! No Details has been recorded for this Expenditure Category. click the add button to add Expenditure Item Details.",
-      expenditure_item_details: [{"id":1}],
+      not_found_msg: "Ooops!! No Savings has been recorded for this Member",
+      filtered_savings: [],
       search: null,
       label_fetch: "Filter",
       color: "primary",
@@ -74,14 +99,14 @@ export default {
       loading: false,
       label_download: "Print",
       color_print: "positive",
-      title:"Suh Edmond",// this title should be the member name
+      title: "Suh Edmond", // this title should be the member name
       columns: [
         {
-          name: "id",
+          name: "counter",
           required: true,
           label: "S/N",
           align: "left",
-          field: "id",
+          field: "counter",
         },
         {
           name: "amount_deposited",
@@ -90,9 +115,15 @@ export default {
           field: "amount_deposited",
         },
         {
+          name: "approve",
+          align: "left",
+          label: "Status",
+          field: "approve",
+        },
+        {
           name: "date",
           align: "left",
-          label: "Date",
+          label: "Date Collected",
           field: "date",
         },
         {
@@ -101,107 +132,86 @@ export default {
           field: "action",
         },
       ],
-      data: [
-        {
-          id: 1,
-          name: "Frozen Yogurt",
-          email: "emailgmail.com",
-          date: "2022/09/09",
-          amount_deposited: 50000,
-          action: "",
-        },
-        {
-          id: 2,
-          name: "Ice cream sandwich",
-          email: "emailgmail.com",
-         date: "2022/09/09",
-          amount_deposited: 50000,
-          action: "",
-        },
-        {
-          id: 3,
-          name: "Eclair",
-          email: "emailgmail.com",
-         date: "2022/09/09",
-          amount_deposited: 50000,
-          action: "",
-        },
-        {
-          id: 4,
-          date: "2022/09/09",
-          amount_deposited: 50000,
-          action: "",
-        },
-        {
-          id: 5,
-          name: "Gingerbread",
-          date: "2022/09/09",
-          amount_deposited: 50000,
-          action: "",
-        },
-        {
-          id: 6,
-          name: "Jelly bean",
-          date: "2022/09/09",
-          amount_deposited: 50000,
-          action: "",
-        },
-        {
-          id: 7,
-          date: "2022/09/09",
-          amount_deposited: 50000,
-          action: "",
-        },
-        {
-          id: 8,
-          name: "Honeycomb",
-          email: "emailgmail.com",
-          date: "2022/09/09",
-          amount_deposited: 50000,
-          action: "",
-        },
-        {
-          id: 9,
-          name: "Donut",
-          email: "emailgmail.com",
-          date: "2022/09/09",
-          amount_deposited: 50000,
-          action: "",
-        },
-        {
-          id: 10,
-          name: "KitKat",
-          email: "emailgmail.com",
-          date: "2022/09/09",
-          amount_deposited: 50000,
-          action: "",
-        },
-      ],
       label: "Delete",
       message: "Are you sure you want to delete this Saving?",
-      statuses: ["APPROVED", "UNAPPROVED"],
+      statuses: ["APPROVED", "UNAPPROVED", "ALL"],
       status: null,
-      name: "Harvest of Joyful Celebration 2022",
+      start_filter: false,
     };
   },
   computed: {
+    getMemberSavings() {
+      let data = [];
+
+      if (this.$store.getters.getMemberSavings != null) {
+        this.$store.getters.getMemberSavings.data.forEach((ele) => {
+          data.push({
+            counter: this.$store.getters.getMemberSavings.data.indexOf(ele) + 1,
+            name: ele.user_name,
+            email: ele.email,
+            telephone: ele.telephone,
+            amount_deposited: ele.amount_deposited,
+            id: ele.id,
+            approve: ele.approve == 1 ? "APPROVED" : "UNAPPROVED",
+            comment: ele.comment,
+            type: "MEMBER_SAVINGS",
+            user_id: ele.user_id,
+            created_at: ele.created_at,
+            updated_by: ele.updated_by,
+            date: ele.created_at,
+          });
+        });
+      }
+      return data;
+    },
+
+    getCurrentMemberName() {
+      let name = "";
+      if (this.$store.getters.getMemberSavings != null) {
+        name = this.$store.getters.getMemberSavings.data[0].user_name;
+      }
+
+      return name;
+    },
   },
   methods: {
-    editMemberSaving(data){
-      console.log(data);
-      this.$emit('edit-member-saving', data)
-    }
+    ViewMemberSaving(data) {
+      this.$emit("view-member-saving", data);
+    },
+
+    editMemberSaving(data) {
+      this.$store.dispatch("setEditState", false);
+
+      this.$emit("edit-member-saving", data);
+    },
+
+    filterSavings() {
+      this.start_filter = true;
+      if (this.status == "ALL") {
+        this.filtered_savings = this.getMemberSavings;
+      } else {
+        this.filtered_savings = this.getMemberSavings.filter(
+          (ele) => ele.approve === this.status
+        );
+      }
+      return this.filtered_savings;
+    },
+
+    downloadSavings() {
+      let user_id = this.$store.getters.getMemberSavings.data[0].user_id;
+
+      let url = `/api/protected/savings/download?user_id=${user_id}&status=${this.status}`;
+
+      let file_name = "User_Savings.pdf";
+
+      this.loading = this.downloadPdf(url, file_name);
+    },
   },
   components: {
     NotFound,
     TableVue,
-    ButtonVue,
   },
 };
 </script>
 
-<style lang="scss" scoped>
-.search {
-  cursor: pointer;
-}
-</style>
+<style lang="scss" scoped></style>

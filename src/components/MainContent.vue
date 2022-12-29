@@ -73,7 +73,7 @@
               @update-payment-item="updatePaymentItem" @update-expenditure-category="updateExpenditureCategory"
               @show-expenditure-items="showExpenditureItems" @edit-expenditure-item="editExpenditureItem"
               @show-expenditure-item-details="showExpenditureItemDetails"
-              @edit-expenditure-item-detail="editExpenditureItemDetail" @edit-member-saving="editMemberSaving"
+              @edit-expenditure-item-detail="editExpenditureItemDetail" @edit-member-saving="editMemberSaving" @view-member-saving="viewMemberSaving"
               @edit-income-activity="editIncomeActivity" @view-income-activity="viewIncomeActivity"
               @view-contribution="viewContribution" @edit-contribution="editContribution" />
           </q-card-section>
@@ -185,21 +185,35 @@ export default {
     updatePaymentCategory(data) {
       this.updateDrawer(data);
     },
+
+
+
     showPaymentItems(data) {
       this.has_intermediate_tab = data.has_intermediate_tab;
       this.getIntermediateTab();
     },
+
+
     getIntermediateTab() {
-      this.intermediate_tab = SessionStorage.getItem("intermediate_tab");
+      this.intermediate_tab = SessionStorage.getItem("has_intermediate_tab") ? SessionStorage.getItem("intermediate_tab") : "";
       this.intermediate_tab2 =
-        SessionStorage.getItem("intermediate_tab2") !== "undefined"
+        SessionStorage.getItem("has_intermediate_tab2")
           ? SessionStorage.getItem("intermediate_tab2")
           : "";
       return this.intermediate_tab;
     },
+
+
     updatePaymentItem(data) {
       this.updateDrawer(data);
     },
+
+
+    viewMemberSaving(data) {
+      this.updateDrawer(data)
+    },
+
+
     updateDrawer(data) {
       this.right = true;
       this.$emit("show-right-drawer", {
@@ -256,7 +270,6 @@ export default {
       this.updateDrawer(data);
     },
     viewIncomeActivity(data) {
-      console.log(data);
       this.updateDrawer(data);
     },
     viewContribution(data) {
@@ -266,7 +279,7 @@ export default {
       this.updateDrawer(data);
     },
     formatUserRole(role) {
-      let user_role =null;
+      let user_role = null;
       if (role === "FINANCIAL_SECRETARY") {
         user_role = "Financial Secretary"
       }
@@ -361,7 +374,4 @@ export default {
   font-size: smaller;
 }
 
-.spinner {
-  // z-index: 1000;
-}
 </style>

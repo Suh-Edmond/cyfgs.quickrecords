@@ -132,9 +132,9 @@ export default {
 
     getPaymentItemsFromState() {
       let items = [];
-      this.$store.getters.getPaymentItems.data?.forEach((ele) => {
+      this.$store.getters.getPaymentItems.data.forEach((ele) => {
         items.push({
-          counter: this.$store.getters.getPaymentItems.data?.indexOf(ele) + 1,
+          counter: this.$store.getters.getPaymentItems.data.indexOf(ele) + 1,
           name: ele.name,
           amount: ele.amount,
           id: ele.id,

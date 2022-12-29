@@ -1,3 +1,5 @@
+import state from "./state";
+
 export function getRoles(state) {
   return state.roles;
 }
@@ -74,3 +76,33 @@ export function getCurrentExpenditureItem(state) {
 export function getUpdatedExpenditureItemDetail(state) {
   return state.updated_expenditure_item_detail;
 }
+
+export function getOrganisationMembersSavings(state) {
+  return state.organisation_members_savings;
+}
+
+export function getMemberSavings(state) {
+  return state.member_savings
+}
+
+export function getUpdatedMemberSaving(state) {
+  return state.updated_member_saving;
+}
+
+export function getCurrentMemberSaving(state) {
+  return state.current_member_saving
+}
+
+export function getIncomeActivities(state) {
+  return state.income_activities
+}
+
+export function getUpdateIncomeActivity(state)
+{
+  return state.updated_income_activity
+}
+
+export function getCurrentIncomeActivity(state) {
+  return state.current_income_activity
+}
+

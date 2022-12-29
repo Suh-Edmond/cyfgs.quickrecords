@@ -414,12 +414,24 @@
         ></AddExpenditureItemDetail>
         <AddMemberSavingVue
           v-if="current_tab == 'Member Savings'"
+          @close-right-drawer="closeRightDrawer"
+          @set-heading="setHeading"
         ></AddMemberSavingVue>
+        <ViewMemberSaving
+          v-if="current_tab == 'View Member Saving'"
+          @close-right-drawer="closeRightDrawer"
+          @set-heading="setHeading"
+        >
+        </ViewMemberSaving>
         <AddIncomeActivity
           v-if="current_tab == 'Income Activities'"
+          @close-right-drawer="closeRightDrawer"
+          @set-heading="setHeading"
         ></AddIncomeActivity>
         <ViewIncomeActivity
           v-if="current_tab == 'View Income Activity'"
+          @close-right-drawer="closeRightDrawer"
+          @set-heading="setHeading"
         ></ViewIncomeActivity>
         <ViewContribution
           v-if="current_tab == 'View Contribution'"
@@ -450,7 +462,7 @@ import ViewIncomeActivity from "src/components/ViewIncomeActivity.vue";
 import ViewContribution from "src/components/ViewContribution.vue";
 import AddContribution from "src/components/AddContribution.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
-
+import ViewMemberSaving from "src/components/ViewMemberSaving.vue";
 export default {
   mixins: [organisationMixinVue],
   mounted() {
@@ -565,6 +577,7 @@ export default {
     ViewIncomeActivity,
     ViewContribution,
     AddContribution,
+    ViewMemberSaving,
   },
 };
 </script>

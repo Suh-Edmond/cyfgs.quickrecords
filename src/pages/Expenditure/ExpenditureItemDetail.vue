@@ -75,21 +75,21 @@ export default {
         {
           name: "amount_given",
           align: "center",
-          label: "Amount Given(XAF)",
+          label: "Amount Given (XAF)",
           field: "amount_given",
           sortable: true,
         },
         {
           name: "amount_spent",
           align: "center",
-          label: "Amount Spent(XAF)",
+          label: "Amount Spent (XAF)",
           field: "amount_spent",
           sortable: true,
         },
         {
           name: "balance",
           align: "center",
-          label: "Balance",
+          label: "Balance (XAF)",
           field: "balance",
           sortable: true,
         },
@@ -111,10 +111,10 @@ export default {
   computed: {
     getExpenditureItemDetails() {
       let data = [];
-      this.$store.getters.getExpenditureItemDetails?.data.forEach((ele) => {
+      this.$store.getters.getExpenditureItemDetails.data.forEach((ele) => {
         data.push({
           counter:
-            this.$store.getters.getExpenditureItemDetails?.data.indexOf(ele) +
+            this.$store.getters.getExpenditureItemDetails.data.indexOf(ele) +
             1,
           name: ele.name,
           amount_given: ele.amount_given,
@@ -129,20 +129,20 @@ export default {
           updated_at: ele.updated_at,
           updated_by: ele.updated_by,
           total_item_amount:
-            this.$store.getters.getExpenditureItemDetails?.total_item_amount,
+            this.$store.getters.getExpenditureItemDetails.total_item_amount,
           total_amount_given:
-            this.$store.getters.getExpenditureItemDetails?.total_amount_given,
+            this.$store.getters.getExpenditureItemDetails.total_amount_given,
           total_amount_spent:
-            this.$store.getters.getExpenditureItemDetails?.total_amount_spent,
+            this.$store.getters.getExpenditureItemDetails.total_amount_spent,
           total_balance:
-            this.$store.getters.getExpenditureItemDetails?.total_balance,
+            this.$store.getters.getExpenditureItemDetails.total_balance,
         });
       });
       return data;
     },
 
     getExpenditureItemName() {
-      return this.$store.getters.getCurrentExpenditureItem?.name;
+      return this.$store.getters.getCurrentExpenditureItem.name;
     },
 
     getNotFoundMsg() {
@@ -202,7 +202,7 @@ export default {
         if (res != undefined) {
           res.data.data.forEach((ele) => {
             this.filtered_items.push({
-              counter: res.data.data?.indexOf(ele) + 1,
+              counter: res.data.data.indexOf(ele) + 1,
               name: ele.name,
               amount_given: ele.amount_given,
               amount_spent: ele.amount_spent,
@@ -215,10 +215,10 @@ export default {
               created_at: ele.created_at,
               updated_at: ele.updated_at,
               updated_by: ele.updated_by,
-              total_item_amount: res.data.data?.total_item_amount,
-              total_amount_given: res.data.data?.total_amount_given,
-              total_amount_spent: res.data.data?.total_amount_spent,
-              total_balance: res.data.data?.total_balance,
+              total_item_amount: res.data.data.total_item_amount,
+              total_amount_given: res.data.data.total_amount_given,
+              total_amount_spent: res.data.data.total_amount_spent,
+              total_balance: res.data.data.total_balance,
             });
           });
         }

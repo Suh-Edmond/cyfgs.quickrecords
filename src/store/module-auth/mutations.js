@@ -72,3 +72,31 @@ export function SET_CURRENT_EXPENDITURE_ITEM(state, data) {
 export function SET_UPDATED_EXPENDITURE_ITEM_DETAIL(state, data) {
   state.updated_expenditure_item_detail = data
 }
+
+export function SET_ORGANISATION_MEMBERS_SAVINGS(state, data) {
+  state.organisation_members_savings = data
+}
+
+export function SET_MEMBER_SAVINGS(state, data) {
+  state.member_savings = data
+}
+
+export function SET_UPDATED_MEMBER_SAVING(state, data) {
+  state.updated_member_saving = data;
+}
+
+export function SET_CURRENT_MEMBER_SAVING(state, data) {
+  state.current_member_saving = data
+}
+
+export function SET_INCOME_ACTIVITIES(state, data) {
+  state.income_activities = data
+}
+
+export function SET_UPDATED_INCOME_ACTIVITY(state, data) {
+  state.updated_income_activity = data
+}
+
+export function SET_CURRENT_INCOME_ACTIVITY(state, data) {
+  state.current_income_activity = data
+}

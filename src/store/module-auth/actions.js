@@ -396,3 +396,32 @@ export function setCurrentExpenditureItem({commit}, data) {
 export function setUpdatedExpenditureItemDetail({commit}, data) {
   commit("SET_UPDATED_EXPENDITURE_ITEM_DETAIL", data);
 }
+
+export function setOrganisationMembersSavings({commit}, data) {
+  commit("SET_ORGANISATION_MEMBERS_SAVINGS", data)
+}
+
+export function setMemberSavings({commit}, data) {
+  commit("SET_MEMBER_SAVINGS", data)
+}
+
+export function setOrganisationIncomeActivities({commit}, data) {
+  commit("SET_INCOME_ACTIVITIES", data)
+}
+
+export function setUpdatedMemberSaving({commit}, data) {
+  commit("SET_UPDATED_MEMBER_SAVING", data)
+}
+
+export function setCurrentMemberSaving({commit}, data)  {
+  commit("SET_CURRENT_MEMBER_SAVING", data);
+}
+
+
+export function setUpdatedIncomeActivity({commit}, data) {
+  commit("SET_UPDATED_INCOME_ACTIVITY", data);
+}
+
+export function setCurrentIncomeActivity({commit}, data) {
+  commit("SET_CURRENT_INCOME_ACTIVITY", data)
+}

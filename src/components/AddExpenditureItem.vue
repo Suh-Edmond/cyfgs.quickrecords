@@ -138,7 +138,7 @@ export default {
     },
     getExpenditureCategories() {
       let data = [];
-      this.$store.getters.getExpenditureCategories?.forEach((ele) => {
+      this.$store.getters.getExpenditureCategories.forEach((ele) => {
         data.push({
           label: ele.name,
           value: ele.id,
@@ -251,22 +251,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.add_member_title {
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 29px;
-  align-items: center;
-  text-align: center;
-  letter-spacing: 0.01em;
-  color: #5384ae;
-  text-transform: capitalize;
-}
-
-.button {
-  width: 100%;
-}
 
 .form_field {
   font-family: "Roboto";

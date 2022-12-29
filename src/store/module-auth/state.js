@@ -7,7 +7,7 @@ export default function () {
     updated_member: null,
     payment_categories:[],
     updated_payment_category:null,
-    payment_items: [],
+    payment_items: null,
     current_payment_catgeory:null,
     updated_payment_item:null,
     expenditure_categories:[],
@@ -18,6 +18,13 @@ export default function () {
     is_edit_state:false,
     expenditure_item_details:null,
     current_expenditure_item:null,
-    updated_expenditure_item_detail:null
+    updated_expenditure_item_detail:null,
+    organisation_members_savings:null,
+    member_savings:null,
+    updated_member_saving:null,
+    current_member_saving:null,
+    income_activities:null,
+    updated_income_activity:null,
+    current_income_activity:null
   };
 }

@@ -368,7 +368,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.search {
-  cursor: pointer;
-}
 </style>

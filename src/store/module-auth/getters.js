@@ -113,6 +113,6 @@ export function getMembersContributionsByPaymentItem(state) {
   return state.members_contributions;
 }
 
-export function getCurrentContributionPaymentItem(state) {
-  return state.current_contribution_payment_item;
+export function getSelectedContribution(state) {
+  return state.selected_contribution;
 }

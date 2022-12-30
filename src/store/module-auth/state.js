@@ -28,6 +28,6 @@ export default function () {
     current_income_activity:null,
     members_contributions:null,
     current_payment_item:null,
-    current_contribution_payment_item:null
+    selected_contribution:null
   };
 }

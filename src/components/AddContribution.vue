@@ -333,6 +333,8 @@ export default {
       );
       this.$store.dispatch("setCurrentPaymentItem", item[0]); //set the state with the first element from the filtered array
     },
+
+    
   },
   components: {
     ButtonVue,

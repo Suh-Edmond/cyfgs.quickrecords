@@ -109,6 +109,6 @@ export function SET_MEMBERS_CONTRIBUTIONS_PER_ITEM(state, data) {
   state.members_contributions = data
 }
 
-export function SET_CURRENT_CONTRIBUTON_PAYMENT_ITEM(state, data) {
-  state.current_contribution_payment_item = data;
+export function SET_SELECTED_CONTRIBUTON(state, data) {
+  state.selected_contribution = data;
 }

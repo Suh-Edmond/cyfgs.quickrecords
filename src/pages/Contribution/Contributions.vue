@@ -321,7 +321,7 @@ export default {
               code: ele.code,
               type: "MEMBERS_CONTRIBUTIONS",
               date: ele.date,
-              organisation_id: ele.organisation_id,
+              complusory: ele.complusory,
               created_at: ele.created_at,
               updated_by: ele.updated_by,
               status: ele.status,

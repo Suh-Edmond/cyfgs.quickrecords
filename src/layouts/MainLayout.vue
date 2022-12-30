@@ -436,6 +436,7 @@
         <ViewContribution
           v-if="current_tab == 'View Contribution'"
           @edit-contribution="updateRightDrawer"
+          @set-heading="setHeading"
         >
         </ViewContribution>
         <AddContribution

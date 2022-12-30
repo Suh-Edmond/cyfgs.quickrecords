@@ -436,6 +436,6 @@ export function setMembersContributions({ commit }, data) {
   commit("SET_MEMBERS_CONTRIBUTIONS_PER_ITEM", data);
 }
 
-export function setCurrentContributionPaymentItem({ commit }, data) {
-  commit("SET_CURRENT_CONTRIBUTON_PAYMENT_ITEM", data);
+export function setSelectedContribution({ commit }, data) {
+  commit("SET_SELECTED_CONTRIBUTON", data);
 }

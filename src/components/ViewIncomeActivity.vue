@@ -43,14 +43,6 @@
           <span class="item_statue approved_color"> APPROVED</span></label
         >
       </div>
-      <!-- <div class="q-mb-md">
-        <label for="amount" class="field"
-          >Created Date:
-          <span class="field_value detail_date">
-            {{ getFormatIncomeCreatedDate }}
-          </span></label
-        >
-      </div> -->
 
       <div class="q-mb-md">
         <label for="amount" class="field"

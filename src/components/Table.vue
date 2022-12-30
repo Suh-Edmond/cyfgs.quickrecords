@@ -100,7 +100,7 @@
                       </q-item-section>
                     </q-item>
 
-                    <q-separator v-show="show_income_activity" />
+                    <q-separator v-show="show_income_activity && !show_contribution" />
 
                     <q-item clickable v-close-popup @click="onViewIncomeActivity(props.row)"
                       v-show="show_income_activity">
@@ -178,7 +178,7 @@
                         <q-item-label class="edit">Edit</q-item-label>
                       </q-item-section>
                     </q-item>
-                    <q-separator />
+                    <q-separator v-show="show_savings || show_member_savings" />
                     <q-item clickable v-close-popup @click="onViewMemberSaving(props.row)">
                       <q-item-section avatar>
                         <span>
@@ -412,6 +412,14 @@ export default {
         data: data,
         tab: "View Contribution",
       };
+
+      console.log(data);
+      this.$store.dispatch("setSelectedContribution", data);
+
+
+      this.$store.dispatch("setEditState", false);
+
+
       this.$emit("view-contribution", payload);
     },
 

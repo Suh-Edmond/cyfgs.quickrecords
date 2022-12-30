@@ -48,6 +48,14 @@
             @input="fetchPaymentItem"
           >
           </q-select>
+          <small
+            v-if="
+              contribution.payment_category_id != null &&
+              !checkIsExistPaymentItem
+            "
+            class="noPaymentItems"
+            >No Payment items found under this category</small
+          >
         </div>
         <div class="q-mb-md">
           <label for="credential" class="form_field">Amount Payable</label>
@@ -139,8 +147,6 @@ export default {
     let organisation_id = this.getOrganisationId;
 
     this.getOrganisationMembers(organisation_id);
-
-    this.fetchCategories();
   },
 
   data() {
@@ -183,12 +189,6 @@ export default {
         ? true
         : false;
     },
-    isMemberExist() {
-      return this.contribution.user_id !== null &&
-        this.contribution.amount_deposited !== 0
-        ? false
-        : true;
-    },
 
     getMembers() {
       let members = [];
@@ -200,6 +200,10 @@ export default {
       });
 
       return members;
+    },
+
+    checkIsExistPaymentItem() {
+      return this.getPaymentItems.length > 0;
     },
   },
   methods: {
@@ -337,19 +341,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.add_member_title {
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 29px;
-  align-items: center;
-  text-align: center;
-  letter-spacing: 0.01em;
-  color: #5384ae;
-  text-transform: capitalize;
-}
-
 .button {
   width: 100%;
 }
@@ -364,18 +355,7 @@ export default {
   color: $grey2;
 }
 
-.or_option {
-  font-weight: bolder;
-}
-
-.help_text {
-  color: $dark;
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 13px;
-  text-align: center;
-  align-items: center;
-  letter-spacing: 0.01em;
+.noPaymentItems {
+  color: $grey2;
 }
 </style>

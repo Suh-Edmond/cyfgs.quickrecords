@@ -1,70 +1,148 @@
 <template>
-  <div class="q-ma-md">
-    <div class="text_h6 text-center q-pt-xs q-pb-md add_member_title">
-      Contribution Information
-    </div>
-    <div>
-      <div>
-        <q-form @submit="onAddContribution" class="q-gutter-md">
-          <div>
-            <label for="name" class="form_field">Member Name <span class="text-red">*</span>
-            </label>
-            <q-select outlined dense v-model="contribution.user_id" placeholder="Type name to search..."
-              :options="members" input-debounce="0" @filter="filterMembers" use-input hide-selected fill-input>
-            </q-select>
-          </div>
-          <div>
-            <label for="name" class="form_field">Payment Item <span class="text-red">*</span>
-            </label>
-            <q-select outlined dense v-model="contribution.payment_item_id" placeholder="Type name to search..."
-              :options="payment_items" input-debounce="0" @filter="filterPaymentItems" use-input hide-selected
-              fill-input>
-            </q-select>
-          </div>
-          <div>
-            <label for="credential" class="form_field">Amount Payable</label>
-            <q-input v-model="contribution.amount_payable" outlined dense type="number" disable />
-          </div>
-          <div>
-            <label for="credential" class="form_field">Deposite Amount <span class="text-red">*</span></label>
-            <q-input v-model="contribution.amount_deposited" outlined dense type="number" />
-          </div>
-          <div>
-            <label for="credential" class="form_field">Balance </label>
-            <q-input v-model="contribution.balance" outlined dense type="number" disable />
-          </div>
-          <div>
-            <label for="credential" class="form_field">Comment </label>
-            <q-input v-model="contribution.comment" outlined dense type="text" autogrow
-              placeholder="Provide any comment about this contribution" />
-          </div>
-          <div>
-            <label for="credential" class="form_field">Receipt(Optional)</label>
-            <q-uploader
-              style="width:100%"
-              url="http://localhost:4444/upload"
-              label="Restricted to images"
-              flat
-              bordered
-              multiple
-              accept="image/jpg, image/png,image/jpeg"
-              @rejected="onRejected"
-            />
-          </div>
-          <div>
-            <ButtonVue class="form_button" :label="label_save" :loading="loading" :color="color"
-              :disabled="validateForm" :no_caps="no_caps">
+  <div class="q-pa-md">
+    <div class="q-mt-md q-mx-md">
+      <q-form @submit="onAddContribution" class="q-gutter-md">
+        <div class="q-mb-md">
+          <label for="name" class="form_field"
+            >Member Name <span class="text-red">*</span>
+          </label>
+          <q-select
+            outlined
+            dense
+            v-model="contribution.user_id"
+            placeholder="Type name to search..."
+            :options="getMembers"
+            input-debounce="0"
+            use-input
+            hide-selected
+            fill-input
+          >
+          </q-select>
+        </div>
+        <div class="q-mb-md">
+          <label for="name" class="form_field"
+            >Payment Category <span class="text-red">*</span>
+          </label>
+          <q-select
+            outlined
+            dense
+            v-model="contribution.payment_category_id"
+            placeholder="Type name to search..."
+            :options="getPaymentCategories"
+            input-debounce="0"
+            @input="fetchPaymentItems"
+          >
+          </q-select>
+        </div>
+        <div class="q-mb-md">
+          <label for="name" class="form_field"
+            >Payment Item <span class="text-red">*</span>
+          </label>
+          <q-select
+            outlined
+            dense
+            v-model="contribution.payment_item_id"
+            placeholder="Type name to search..."
+            :options="getPaymentItems"
+            input-debounce="0"
+            @input="fetchPaymentItem"
+          >
+          </q-select>
+        </div>
+        <div class="q-mb-md">
+          <label for="credential" class="form_field">Amount Payable</label>
+          <q-input
+            v-model="contribution.amount_payable"
+            outlined
+            dense
+            type="number"
+            disable
+          />
+        </div>
+        <div class="q-mb-md">
+          <label for="credential" class="form_field"
+            >Deposite Amount <span class="text-red">*</span></label
+          >
+          <q-input
+            v-model="contribution.amount_deposited"
+            outlined
+            dense
+            type="number"
+            @keyup="setPaymentItemBalance"
+          >
+          </q-input>
+          <small v-show="checkPaymentItemBal" class="text-red">
+            Amount deposited can not be more than the specified amount for the
+            item
+          </small>
+        </div>
+        <div class="q-mb-md">
+          <label for="credential" class="form_field">Balance </label>
+          <q-input
+            v-model="contribution.balance"
+            outlined
+            dense
+            type="number"
+            disable
+          />
+        </div>
+        <div class="q-mb-md">
+          <label for="credential" class="form_field">Comment </label>
+          <q-input
+            v-model="contribution.comment"
+            outlined
+            dense
+            type="text"
+            autogrow
+            placeholder="Provide any comment about this contribution"
+          />
+        </div>
+        <div class="row q-mt-lg justify-end">
+          <div class="col-md-2 col-sm-2 col-xs-2">
+            <ButtonVue
+              class="form_button"
+              :label="label_save"
+              :loading="loading"
+              :color="color"
+              :disabled="validateForm"
+              :no_caps="no_caps"
+            >
             </ButtonVue>
           </div>
-        </q-form>
-      </div>
+        </div>
+      </q-form>
     </div>
   </div>
 </template>
 <script>
 import ButtonVue from "src/components/Button.vue";
+import PaymentCategoryMixinVue from "src/mixins/PaymentCategoryMixin.vue";
+import organisationMixinVue from "src/mixins/organisationMixin.vue";
+import memberMixinVue from "src/mixins/memberMixin.vue";
+import PaymentItemMixinVue from "src/mixins/PaymentItemMixin.vue";
+import ContributionsMixinVue from "src/mixins/ContributionsMixin.vue";
 
 export default {
+  mixins: [
+    PaymentCategoryMixinVue,
+    organisationMixinVue,
+    memberMixinVue,
+    PaymentItemMixinVue,
+    ContributionsMixinVue,
+  ],
+
+  mounted() {
+    let heading = "Contribution Information";
+
+    this.$emit("set-heading", heading);
+
+    let organisation_id = this.getOrganisationId;
+
+    this.getOrganisationMembers(organisation_id);
+
+    this.fetchCategories();
+  },
+
   data() {
     return {
       label_save: "Save",
@@ -74,65 +152,183 @@ export default {
         user_id: null,
         payment_item_id: null,
         amount_deposited: 0,
-        comment: null,
+        comment: "",
         balance: 0,
-        amount_payable: 5000
+        amount_payable: 0,
+        payment_category_id: null,
+        id: null,
       },
       position: "right",
+      error_bal: false,
       dialog: false,
       no_caps: true,
-      members: [
-        "Mary",
-        "John",
-        "Joe",
-        "Paul",
-        "Peter",
-        "Lum",
-        "Bih",
-        "Jerry",
-        "Moses",
-      ],
-      payment_items: [{}]
     };
   },
   computed: {
+    checkPaymentItemBal() {
+      let in_range = false;
+      if (this.$store.getters.getCurrentPaymentItem != null) {
+        in_range =
+          this.contribution.amount_deposited >
+          this.$store.getters.getCurrentPaymentItem.amount;
+      }
+      return in_range;
+    },
+
     validateForm() {
-      return this.contribution.user_id === null || this.contribution.amount_deposited == 0
+      return this.contribution.user_id === null ||
+        this.contribution.amount_deposited == 0 ||
+        this.contribution.payment_item_id == null ||
+        this.checkPaymentItemBal
         ? true
         : false;
     },
     isMemberExist() {
-      return this.contribution.user_id !== null && this.contribution.amount_deposited !== 0
+      return this.contribution.user_id !== null &&
+        this.contribution.amount_deposited !== 0
         ? false
         : true;
     },
-    startSearch() {
-      return this.contribution.user_id === null ? false : true
-    }
+
+    getMembers() {
+      let members = [];
+      this.$store.getters.getMembers.forEach((ele) => {
+        members.push({
+          label: ele.name,
+          value: ele.id,
+        });
+      });
+
+      return members;
+    },
   },
   methods: {
     onAddContribution() {
-      this.$emit("close-right-drawer");
+      let payload = {
+        url: this.setActionUrl(this.contribution.id),
+        data: {
+          user_id: this.contribution.user_id.value,
+          amount_deposited: this.contribution.amount_deposited,
+          payment_item_id: this.contribution.payment_item_id.value,
+          comment: this.contribution.comment,
+        },
+        msg: "Member Contribution saved Successfully",
+        color: "default",
+        to_on_ok: "none",
+        to_on_fail: "none",
+        show_feedback: true,
+        error_msg: "An Error occurred! Please try again",
+        has_commit: false,
+        commit: "none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.setDispatchAction(this.contribution.id, payload);
     },
-    filterMembers(val, update, abort) {
-      update(() => {
-        const needle = val.toLowerCase();
-        this.members = this.members.filter(
-          (v) => v.toLowerCase().indexOf(needle) > -1
-        );
-      });
-    },
-    filterPaymentItems(val, update, abort) {
-      update(() => {
-        const needle = val.toLowerCase();
-        this.payment_items = this.payment_items.filter(
-          (v) => v.toLowerCase().indexOf(needle) > -1
-        );
-      });
-    },
-    onRejected(){
 
-    }
+    fetchPaymentItems() {
+      this.getPaymentItemsByCategory(
+        this.contribution.payment_category_id.value
+      );
+    },
+
+    fetchPaymentItem() {
+      let payload = {
+        status: "none",
+        url: `/api/protected/payment-categories/${this.contribution.payment_category_id.value}/payment-items/${this.contribution.payment_item_id.value}`,
+        has_path_val: true,
+        show_feedback: false,
+        msg: "none",
+        color: "default",
+        error_msg: "default",
+        commit: "SET_CURRENT_PAYMENT_ITEM",
+        has_commit: true,
+        to_be_store_data: {
+          required: true,
+          has_value: false,
+          data: null,
+        },
+      };
+      this.$store.dispatch("getRequest", payload).then(() => {
+        this.contribution.amount_payable =
+          this.$store.getters.getCurrentPaymentItem.amount;
+      });
+    },
+
+    setPaymentItemBalance() {
+      this.contribution.balance =
+        this.$store.getters.getCurrentPaymentItem.amount -
+        this.contribution.amount_deposited;
+    },
+
+    resetForm() {
+      this.contribution.user_id = null;
+      this.contribution.amount_payable = 0;
+      this.contribution.amount_deposited = 0;
+      this.contribution.balance = null;
+      this.contribution.comment = null;
+      this.contribution.payment_item_id = null;
+      this.contribution.payment_category_id = null;
+      this.contribution.id = null;
+
+      return this.contribution;
+    },
+
+    setActionUrl(id) {
+      let url = "";
+      if (id === null) {
+        url = `/api/protected/contributions`;
+      } else {
+        url = `/api/protected/contributions/${id}/update`;
+      }
+      return url;
+    },
+
+    setDispatchAction(id, payload) {
+      this.loading = true;
+      if (id === null) {
+        this.$store
+          .dispatch("postRequest", payload)
+          .then(() => {
+            this.getMembersContributionsByPaymentItem(
+              payload.data.payment_item_id
+            );
+
+            this.setCurrentContributionPaymentItem(
+              payload.data.payment_item_id
+            );
+          })
+          .finally(() => {
+            this.$emit("close-right-drawer");
+            this.loading = false;
+            this.resetForm();
+          });
+      } else {
+        this.$store
+          .dispatch("putRequest", payload)
+          .then(() => {
+            this.getMembersContributionsByPaymentItem(id);
+            this.setCurrentContributionPaymentItem(id);
+          })
+          .finally(() => {
+            this.$emit("close-right-drawer");
+            this.loading = false;
+            this.resetForm();
+            this.$store.dispatch("setEditState", false);
+          });
+      }
+    },
+
+    setCurrentContributionPaymentItem(id) {
+      let item = null;
+      item = this.$store.getters.getPaymentItems.data.filter(
+        (ele) => ele.id === id
+      );
+      this.$store.dispatch("setCurrentPaymentItem", item[0]); //set the state with the first element from the filtered array
+    },
   },
   components: {
     ButtonVue,

@@ -440,6 +440,8 @@
         </ViewContribution>
         <AddContribution
           v-if="current_tab == 'Members Contributions'"
+          @close-right-drawer="closeRightDrawer"
+          @set-heading="setHeading"
         ></AddContribution>
       </q-page>
     </q-drawer>

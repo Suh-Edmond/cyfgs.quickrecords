@@ -1,19 +1,14 @@
 <template>
   <div class="q-pa-xs">
     <div class="button q-pb-xs"></div>
-    <q-table
-      :data="data"
-      :columns="columns"
-      row-key="index"
-      :table-header-style="{ backgroundColor: '#5384ae', color: '#FFFFFF' }"
-      :filter="filter"
-      :pagination.sync="pagination"
-    >
+    <q-table :data="data" :columns="columns" row-key="index"
+      :table-header-style="{ backgroundColor: '#5384ae', color: '#FFFFFF' }" :filter="filter"
+      :pagination.sync="pagination">
       <template v-slot:top-left>
         <div class="text-h6 title" v-show="show_member_savings">
           All Savings for: {{ title }}
         </div>
-        <div class="text-h6 title" v-show="show_member_contribution">
+        <div class="text-h6 title" v-show="show_contribution">
           {{ title }}
         </div>
       </template>
@@ -22,24 +17,19 @@
           <q-td key="counter" :props="props">
             {{ props.row.counter }}
           </q-td>
-          <q-td key="name" :props="props">
+          <q-td key="name" :props="props" v-if="!show_contribution || !show_member_contribution">
             {{ props.row.name }}
           </q-td>
-          <q-td
-            key="email"
-            :props="props"
-            v-show="show_savings || show_members"
-          >
+          <q-td key="user_name" :props="props" v-if="show_contribution || show_member_contribution">
+            {{ props.row.user_name }}
+          </q-td>
+          <q-td key="email" :props="props" v-show="show_savings || show_members">
             {{ props.row.email }}
           </q-td>
           <q-td key="gender" :props="props" v-show="show_members">
             {{ props.row.gender }}
           </q-td>
-          <q-td
-            key="telephone"
-            :props="props"
-            v-show="show_savings || show_members"
-          >
+          <q-td key="telephone" :props="props" v-show="show_savings || show_members">
             {{ props.row.telephone }}
           </q-td>
           <q-td key="address" :props="props" v-show="show_members">
@@ -48,36 +38,32 @@
           <q-td key="occupation" :props="props" v-show="show_members">
             {{ props.row.occupation }}
           </q-td>
-          <q-td
-            key="amount_deposited"
-            :props="props"
-            v-show="show_savings || show_member_savings"
-          >
+          <q-td key="amount_deposited" :props="props" v-show="
+  show_savings ||
+  show_member_savings ||
+  show_contribution ||
+  show_member_contribution
+">
             {{ Number(props.row.amount_deposited).toLocaleString() }}
           </q-td>
           <q-td key="approve" :props="props" v-show="show_member_savings">
             {{ props.row.approve }}
           </q-td>
-          <q-td
-            key="amount"
-            :props="props"
-            v-show="show_income_activity || show_contribution"
-          >
+          <q-td key="amount" :props="props" v-show="show_income_activity || show_contribution">
             {{ Number(props.row.amount).toLocaleString() }}
+          </q-td>
+          <q-td key="balance" :props="props" v-show="show_contribution || show_member_contribution">
+            {{ Number(props.row.balance).toLocaleString() }}
           </q-td>
           <q-td key="status" :props="props" v-show="show_contribution">
             {{ props.row.status }}
           </q-td>
-          <q-td
-            key="date"
-            :props="props"
-            v-show="
-              show_savings ||
-              show_member_savings ||
-              show_income_activity ||
-              show_contribution
-            "
-          >
+          <q-td key="date" :props="props" v-show="
+  show_savings ||
+  show_member_savings ||
+  show_income_activity ||
+  show_contribution
+">
             {{ getFormatedDate(props.row.date) }}
           </q-td>
           <q-td key="venue" :props="props" v-show="show_income_activity">
@@ -86,22 +72,11 @@
           <q-td key="action" :props="props">
             <!-- button to handle edit, view and delete of row data -->
             <q-btn flat round v-show="!show_savings && !show_member_savings">
-              <q-icon
-                name="more_vert"
-                size="xs"
-                color="primary"
-                class="menu_icon"
-                clickable
-              >
+              <q-icon name="more_vert" size="xs" color="primary" class="menu_icon" clickable>
                 <q-menu>
                   <q-list>
                     <!-- edit member -->
-                    <q-item
-                      clickable
-                      v-close-popup
-                      @click="onEditMember(props.row)"
-                      v-show="show_members"
-                    >
+                    <q-item clickable v-close-popup @click="onEditMember(props.row)" v-show="show_members">
                       <q-item-section avatar>
                         <span>
                           <q-icon name="edit" size="xs" class="edit" />
@@ -113,12 +88,8 @@
                     </q-item>
 
                     <!-- edit, view income activities -->
-                    <q-item
-                      clickable
-                      v-close-popup
-                      @click="onEditIncomeActivity(props.row)"
-                      v-show="show_income_activity"
-                    >
+                    <q-item clickable v-close-popup @click="onEditIncomeActivity(props.row)"
+                      v-show="show_income_activity">
                       <q-item-section avatar>
                         <span>
                           <q-icon name="edit" size="xs" class="edit" />
@@ -128,13 +99,11 @@
                         <q-item-label class="edit">Edit</q-item-label>
                       </q-item-section>
                     </q-item>
-                    <q-separator  v-show="show_income_activity" />
-                    <q-item
-                      clickable
-                      v-close-popup
-                      @click="onViewIncomeActivity(props.row)"
-                      v-show="show_income_activity"
-                    >
+
+                    <q-separator v-show="show_income_activity" />
+
+                    <q-item clickable v-close-popup @click="onViewIncomeActivity(props.row)"
+                      v-show="show_income_activity">
                       <q-item-section avatar>
                         <span>
                           <q-icon name="visibility" size="xs" class="edit" />
@@ -146,12 +115,7 @@
                     </q-item>
 
                     <!-- edit and view contributions -->
-                    <q-item
-                      clickable
-                      v-close-popup
-                      @click="onEditContribution(props.row)"
-                      v-show="show_contribution"
-                    >
+                    <q-item clickable v-close-popup @click="onEditContribution(props.row)" v-show="show_contribution">
                       <q-item-section avatar>
                         <span>
                           <q-icon name="edit" size="xs" class="edit" />
@@ -162,48 +126,22 @@
                       </q-item-section>
                     </q-item>
 
-                    <q-item
-                      clickable
-                      v-close-popup
-                      @click="onViewContribution(props.row)"
-                      v-show="show_contribution"
-                    >
+                    <q-separator v-if="show_contribution" />
+
+                    <q-item clickable v-close-popup @click="onViewContribution(props.row)" v-show="show_contribution">
                       <q-item-section avatar>
                         <span>
                           <q-icon name="visibility" size="xs" class="edit" />
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="edit">Details</q-item-label>
-                      </q-item-section>
-                    </q-item>
-
-                    <q-item
-                      clickable
-                      v-close-popup
-                      @click="onAllContribution(props.row)"
-                      v-show="show_contribution"
-                    >
-                      <q-item-section avatar>
-                        <span>
-                          <q-icon name="eye" size="xs" class="edit" />
-                        </span>
-                      </q-item-section>
-                      <q-item-section>
-                        <q-item-label class="edit"
-                          >All Contributions</q-item-label
-                        >
+                        <q-item-label class="edit">View</q-item-label>
                       </q-item-section>
                     </q-item>
 
                     <!-- deleted specify row -->
                     <q-separator />
-                    <q-item
-                      clickable
-                      v-close-popup
-                      @click="onDeleteMember(props.row)"
-                      v-show="!show_member_savings"
-                    >
+                    <q-item clickable v-close-popup @click="onDeleteMember(props.row)" v-show="!show_member_savings">
                       <q-item-section avatar>
                         <span>
                           <q-icon name="delete" size="xs" color="red" />
@@ -219,35 +157,18 @@
             </q-btn>
 
             <!-- button for view all savings by member -->
-            <q-btn
-              flat
-
-              class="view_savings q-py-xs"
-              @click="showMemberSavings(props.row)"
-              :to="{ name: 'user_savings', params: { id: props.row.user_id } }"
-              v-show="show_savings"
-            >
-            View All Savings
+            <q-btn flat class="view_savings q-py-xs" @click="showMemberSavings(props.row)"
+              :to="{ name: 'user_savings', params: { id: props.row.user_id } }" v-show="show_savings">
+              View All Savings
             </q-btn>
 
             <!-- menu to handle edit and view details of a single saving -->
             <q-btn flat round v-show="show_member_savings">
-              <q-icon
-                name="more_vert"
-                size="xs"
-                color="primary"
-                class="menu_icon"
-                clickable
-              >
+              <q-icon name="more_vert" size="xs" color="primary" class="menu_icon" clickable>
                 <q-menu>
                   <q-list>
-
                     <!-- edit and view savings -->
-                    <q-item
-                      clickable
-                      v-close-popup
-                      @click="onEditMemberSaving(props.row)"
-                    >
+                    <q-item clickable v-close-popup @click="onEditMemberSaving(props.row)">
                       <q-item-section avatar>
                         <span>
                           <q-icon name="edit" size="xs" class="edit" />
@@ -258,11 +179,7 @@
                       </q-item-section>
                     </q-item>
                     <q-separator />
-                    <q-item
-                      clickable
-                      v-close-popup
-                      @click="onViewMemberSaving(props.row)"
-                    >
+                    <q-item clickable v-close-popup @click="onViewMemberSaving(props.row)">
                       <q-item-section avatar>
                         <span>
                           <q-icon name="visibility" size="xs" class="edit" />
@@ -280,17 +197,11 @@
         </q-tr>
       </template>
       <template v-slot:top-right>
-        <q-input
-          outlined
-          dense
-          :class="
-            $q.screen.md
-              ? 'text-h6-sm q-mb-lg q-mt-lg full-width'
-              : 'text-h6-sm'
-          "
-          v-model="filter"
-          placeholder="Type name to search..."
-        >
+        <q-input outlined dense :class="
+  $q.screen.md
+    ? 'text-h6-sm q-mb-lg q-mt-lg full-width'
+    : 'text-h6-sm'
+" v-model="filter" placeholder="Type name to search...">
           <template v-slot:append>
             <q-icon name="search" />
           </template>
@@ -303,39 +214,16 @@
       <q-card>
         <q-card-section>
           <div>
-            <q-avatar
-              icon="warning"
-              class="warning_image"
-              size="30px"
-              color="yellow"
-              text-color="white"
-            />
+            <q-avatar icon="warning" class="warning_image" size="30px" color="yellow" text-color="white" />
             <span class="q-ml-sm text-dark">{{ message }}</span>
           </div>
           <div class="text-weight-bold text-center">{{ deleted_row.name }}</div>
         </q-card-section>
         <q-card-actions align="right">
-          <q-btn
-            :label="label_cancel"
-            :color="'primary'"
-            :disabled="false"
-            :loading="loading"
-            :no_caps="true"
-            :flat="true"
-            class="dialog_button"
-            v-close-popup
-          ></q-btn>
-          <q-btn
-            :label="label"
-            :color="'primary'"
-            class="dialog_button"
-            :disabled="false"
-            :loading="loading"
-            :no_caps="false"
-            :flat="true"
-            v-close-popup
-            @click="deleteRow(deleted_row)"
-          ></q-btn>
+          <q-btn :label="label_cancel" :color="'primary'" :disabled="false" :loading="loading" :no_caps="true"
+            :flat="true" class="dialog_button" v-close-popup></q-btn>
+          <q-btn :label="label" :color="'primary'" class="dialog_button" :disabled="false" :loading="loading"
+            :no_caps="false" :flat="true" v-close-popup @click="deleteRow(deleted_row)"></q-btn>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -565,6 +453,7 @@ export default {
 .warning_image {
   color: yellow;
 }
+
 .view_savings {
   font-family: "Roboto";
   font-style: normal;

@@ -57,6 +57,10 @@ export function SET_UPDATED_EXPENDITURE_ITEM(state, data) {
   state.updated_expenditure_item = data;
 }
 
+export function SET_CURRENT_PAYMENT_ITEM(state, data) {
+  state.current_payment_item = data
+}
+
 export function SET_EDIT_STATE(state, data) {
   state.is_edit_state = data
 }
@@ -99,4 +103,12 @@ export function SET_UPDATED_INCOME_ACTIVITY(state, data) {
 
 export function SET_CURRENT_INCOME_ACTIVITY(state, data) {
   state.current_income_activity = data
+}
+
+export function SET_MEMBERS_CONTRIBUTIONS_PER_ITEM(state, data) {
+  state.members_contributions = data
+}
+
+export function SET_CURRENT_CONTRIBUTON_PAYMENT_ITEM(state, data) {
+  state.current_contribution_payment_item = data;
 }

@@ -178,7 +178,6 @@ export default {
                 this.$store.getters.getMembersContributionsByPaymentItem.data.indexOf(
                   ele
                 ) + 1,
-              name: ele.name,
               amount_deposited: ele.amount_deposited,
               id: ele.id,
               approve: ele.approve,
@@ -188,6 +187,7 @@ export default {
               payment_item_complusory: ele.payment_item_complusory,
               payment_item_name: ele.payment_item_name,
               comment: ele.comment,
+              complusory:ele.complusory,
               code: ele.code,
               type: "MEMBERS_CONTRIBUTIONS",
               date: ele.date,
@@ -308,7 +308,6 @@ export default {
                 res.data.data.indexOf(
                   ele
                 ) + 1,
-              name: ele.name,
               amount_deposited: ele.amount_deposited,
               id: ele.id,
               approve: ele.approve,

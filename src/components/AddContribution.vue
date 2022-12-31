@@ -147,6 +147,8 @@ export default {
     let organisation_id = this.getOrganisationId;
 
     this.getOrganisationMembers(organisation_id);
+
+    this.setFormFields();
   },
 
   data() {
@@ -334,7 +336,36 @@ export default {
       this.$store.dispatch("setCurrentPaymentItem", item[0]); //set the state with the first element from the filtered array
     },
 
-    
+    setFormFields() {
+      let data = this.$store.getters.getSelectedContribution;
+
+      let payment_item = this.$store.getters.getCurrentPaymentItem;
+
+      let payment_category = this.$store.getters.getPaymentCategories.find(
+        (ele) => ele.id === payment_item.payment_category_id
+      );
+
+      if (data !== null) {
+        let member = this.$store.getters.getMembers.find(
+          (ele) => ele.id == data.user_id
+        );
+        this.contribution.user_id = { label: member.name, value: member.id };
+        this.contribution.payment_item_id = {
+          label: payment_item.name,
+          value: payment_item.id,
+        };
+        this.contribution.amount_deposited = data.amount_deposited;
+        this.contribution.comment = data.comment;
+        this.contribution.balance = data.balance;
+        this.contribution.amount_payable = data.payment_item_amount;
+        (this.contribution.payment_category_id = {
+          label: payment_category.name,
+          value: payment_category.id,
+        }),
+          (this.contribution.id = data.id);
+      }
+      return this.contribution;
+    },
   },
   components: {
     ButtonVue,

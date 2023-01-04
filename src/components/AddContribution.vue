@@ -58,7 +58,9 @@
           >
         </div>
         <div class="q-mb-md">
-          <label for="credential" class="form_field">Amount Payable</label>
+          <label for="credential" class="form_field"
+            >Amount Payable (XAF)</label
+          >
           <q-input
             v-model="contribution.amount_payable"
             outlined
@@ -67,12 +69,35 @@
             disable
           />
         </div>
-        <div class="q-mb-md">
+        <div class="q-mb-md" v-show="hasMadePayment">
           <label for="credential" class="form_field"
-            >Deposite Amount <span class="text-red">*</span></label
+            >Total Amount Deposited (XAF)</label
           >
           <q-input
-            v-model="contribution.amount_deposited"
+            v-model.number="contribution.total_amount_deposited"
+            outlined
+            dense
+            type="number"
+            disable
+          >
+          </q-input>
+        </div>
+        <div class="q-mb-md">
+          <label for="credential" class="form_field">Balance (XAF)</label>
+          <q-input
+            v-model="contribution.balance"
+            outlined
+            dense
+            type="number"
+            disable
+          />
+        </div>
+        <div class="q-mb-md">
+          <label for="credential" class="form_field"
+            >Deposite Amount (XAF)<span class="text-red">*</span></label
+          >
+          <q-input
+            v-model.lazy="contribution.amount_deposited"
             outlined
             dense
             type="number"
@@ -83,16 +108,6 @@
             Amount deposited can not be more than the specified amount for the
             item
           </small>
-        </div>
-        <div class="q-mb-md">
-          <label for="credential" class="form_field">Balance </label>
-          <q-input
-            v-model="contribution.balance"
-            outlined
-            dense
-            type="number"
-            disable
-          />
         </div>
         <div class="q-mb-md">
           <label for="credential" class="form_field">Comment </label>
@@ -163,6 +178,7 @@ export default {
         comment: "",
         balance: 0,
         amount_payable: 0,
+        total_amount_deposited: 0,
         payment_category_id: null,
         id: null,
       },
@@ -170,6 +186,7 @@ export default {
       error_bal: false,
       dialog: false,
       no_caps: true,
+      hasMadePayment: false,
     };
   },
   computed: {
@@ -214,7 +231,7 @@ export default {
         url: this.setActionUrl(this.contribution.id),
         data: {
           user_id: this.contribution.user_id.value,
-          amount_deposited: this.contribution.amount_deposited,
+          amount_deposited:parseFloat(this.contribution.amount_deposited),
           payment_item_id: this.contribution.payment_item_id.value,
           comment: this.contribution.comment,
         },
@@ -259,26 +276,55 @@ export default {
         },
       };
       this.$store.dispatch("getRequest", payload).then(() => {
+        //payload to check the amount that has been deposited by the user
+        let amount_deposited_payload = {
+          status: "none",
+          url: `/api/protected/contributions/users/${this.contribution.user_id.value}/items/${this.contribution.payment_item_id.value}`,
+          has_path_val: true,
+          show_feedback: false,
+          msg: "none",
+          color: "default",
+          error_msg: "default",
+          commit: "none",
+          has_commit: false,
+          to_be_store_data: {
+            required: true,
+            has_value: false,
+            data: null,
+          },
+        };
+        this.$store
+          .dispatch("getRequest", amount_deposited_payload)
+          .then((res) => {
+            //set the balance to be paid id the member has paid anything got the item before
+            if (res.data > 0) {
+              this.hasMadePayment = true;
+              this.contribution.total_amount_deposited = res.data;
+              this.contribution.balance = (this.contribution.amount_payable - res.data)
+            }
+          });
+
+        //set the total amount to be paid
         this.contribution.amount_payable =
           this.$store.getters.getCurrentPaymentItem.amount;
       });
     },
 
     setPaymentItemBalance() {
-      this.contribution.balance =
-        this.$store.getters.getCurrentPaymentItem.amount -
-        this.contribution.amount_deposited;
+      let total_amount_paid = parseFloat(this.contribution.total_amount_deposited) + parseFloat(this.contribution.amount_deposited);
+      this.contribution.balance = this.$store.getters.getCurrentPaymentItem.amount - total_amount_paid;
     },
 
     resetForm() {
       this.contribution.user_id = null;
-      this.contribution.amount_payable = 0;
-      this.contribution.amount_deposited = 0;
+      this.contribution.amount_payable = 0.0;
+      this.contribution.amount_deposited = 0.0;
       this.contribution.balance = null;
       this.contribution.comment = null;
       this.contribution.payment_item_id = null;
       this.contribution.payment_category_id = null;
       this.contribution.id = null;
+      contribution.total_amount_deposited = 0.0
 
       return this.contribution;
     },
@@ -303,9 +349,7 @@ export default {
               payload.data.payment_item_id
             );
 
-            this.setCurrentContributionPaymentItem(
-              payload.data.payment_item_id
-            );
+            this.setCurrentContributedPaymentItem(payload.data.payment_item_id);
           })
           .finally(() => {
             this.$emit("close-right-drawer");
@@ -317,7 +361,7 @@ export default {
           .dispatch("putRequest", payload)
           .then(() => {
             this.getMembersContributionsByPaymentItem(id);
-            this.setCurrentContributionPaymentItem(id);
+            this.setCurrentContributedPaymentItem(id);
           })
           .finally(() => {
             this.$emit("close-right-drawer");
@@ -328,7 +372,7 @@ export default {
       }
     },
 
-    setCurrentContributionPaymentItem(id) {
+    setCurrentContributedPaymentItem(id) {
       let item = null;
       item = this.$store.getters.getPaymentItems.data.filter(
         (ele) => ele.id === id
@@ -338,14 +382,16 @@ export default {
 
     setFormFields() {
       let data = this.$store.getters.getSelectedContribution;
-
       let payment_item = this.$store.getters.getCurrentPaymentItem;
 
-      let payment_category = this.$store.getters.getPaymentCategories.find(
-        (ele) => ele.id === payment_item.payment_category_id
-      );
+      let payment_category =
+        payment_item != null
+          ? this.$store.getters.getPaymentCategories.find(
+              (ele) => ele.id === payment_item.payment_category_id
+            )
+          : [];
 
-      if (data !== null) {
+      if (data != null && this.$store.getters.getEditState) {
         let member = this.$store.getters.getMembers.find(
           (ele) => ele.id == data.user_id
         );

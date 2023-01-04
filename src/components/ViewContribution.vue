@@ -3,60 +3,61 @@
     <div class="q-mt-sm">
       <div class="flex q-pb-md">
         <label for="name" class="label">Payment Item:
-          <span class="value value_item">{{ contribution.payment_item_name }}</span></label>
+          <span class="value value_item">{{ getSelectedContribution.payment_item_name }}</span></label>
       </div>
       <div class="flex q-pb-md">
         <label for="name" class="label">Total Amount Payable:
-          <span class="value value_amount">{{ Number(contribution.payment_item_amount).toLocaleString() }}
+          <span class="value value_amount">{{ Number(getSelectedContribution.payment_item_amount).toLocaleString() }}
             XAF</span></label>
       </div>
       <div class="flex q-pb-md">
         <label for="name" class="label">Complusory:
-          <span class="value value_complusory"
-            :class="contribution.complusory ? 'text-secondary' : 'text-negative'">{{ contribution.complusory }}</span></label>
+          <span class="value value_complusory" v-if="getSelectedContribution.payment_item_complusory">YES</span>
+          <span class="value value_complusory" v-if="!getSelectedContribution.payment_item_complusory">NO</span></label>
+
       </div>
       <div class="flex q-pb-md">
         <label for="name" class="label">Member's Name:
-          <span class="value value_name">{{ contribution.user_name }}</span></label>
+          <span class="value value_name">{{ getSelectedContribution.user_name }}</span></label>
       </div>
       <div class="flex q-pb-md">
         <label for="name" class="label">Amount Paid:
-          <span class="value value_amount_paid">{{ Number(contribution.amount_deposited).toLocaleString() }}
+          <span class="value value_amount_paid">{{ Number(getSelectedContribution.amount_deposited).toLocaleString() }}
             XAF</span></label>
       </div>
       <div class="flex q-pb-md">
         <label for="name" class="label">Balance: <span
-            class="value value_balance">{{ Number(contribution.balance).toLocaleString() }} XAF</span></label>
+            class="value value_balance">{{ Number(getSelectedContribution.balance).toLocaleString() }} XAF</span></label>
       </div>
       <div class="flex q-pb-md">
         <label for="name" class="label">Payment Date:
           <span class="value value_date">{{ getFormatedCreatedDate }}</span></label>
       </div>
       <div class="flex q-pb-md">
-        <label for="status" class="label" v-show="!contribution.approve">Transaction Status:
+        <label for="status" class="label" v-show="!getSelectedContribution.approve">Transaction Status:
           <span class=" value_trxn unapproved_color">UNAPPROVED</span></label>
-        <label for="status" class="label" v-show="contribution.approve">Transaction Status:
+        <label for="status" class="label" v-show="getSelectedContribution.approve">Transaction Status:
           <span class=" value_trxn approved_color"> APPROVED</span></label>
       </div>
       <div class="flex q-pb-md">
-        <label for="name" class="label" v-show="contribution.status == 'INCOMPLETE'">Payment Status:
-          <span class="unapproved_color q-pl-md value_status">{{ contribution.status }}</span></label>
+        <label for="name" class="label" v-show="getSelectedContribution.status == 'INCOMPLETE'">Payment Status:
+          <span class="unapproved_color q-pl-md value_status">{{ getSelectedContribution.status }}</span></label>
 
-        <label for="name" class="label" v-show="contribution.status == 'COMPLETE'">Payment Status:
-          <span class="value text-secondary q-pl-md value_status">{{ contribution.status }}</span></label>
+        <label for="name" class="label" v-show="getSelectedContribution.status == 'COMPLETE'">Payment Status:
+          <span class="value text-secondary q-pl-md value_status">{{ getSelectedContribution.status }}</span></label>
       </div>
       <div class="flex q-pb-lg">
         <label for="name" class="label">Transaction code:
-          <span class="value  q-pl-md value_code">{{ contribution.code }}</span></label>
+          <span class="value  q-pl-md value_code">{{ getSelectedContribution.code }}</span></label>
       </div>
       <div class="flex q-pb-lg">
         <label for="name" class="label">Created By:
-          <span class="value  q-pl-md value_created_by">{{ contribution.updated_by }}</span></label>
+          <span class="value  q-pl-md value_created_by">{{ getSelectedContribution.updated_by }}</span></label>
       </div>
       <div class="flex q-pb-md">
         <label for="name" class="label">Comment: </label>
         <p class="value_comment">
-          {{ contribution.comment }}
+          {{ getSelectedContribution.comment }}
         </p>
       </div>
     </div>
@@ -65,6 +66,11 @@
         <q-icon name="edit" size="xs"></q-icon>
       </q-btn>
     </div>
+
+
+
+
+    <!-- image for receipt for contribution -->
     <q-dialog v-model="show_image" :position="position">
       <q-card style="width: 360px" :class="$q.screen.lg ? 'q-mr-md' : 'q-mx-sm'">
         <q-bar>
@@ -94,8 +100,6 @@ export default {
   mounted() {
     let heading = "Member Contribution Detail";
     this.$emit("set-heading", heading);
-
-    this.getSelectedContribution();
   },
 
   data() {
@@ -109,9 +113,8 @@ export default {
         balance: 0,
         payment_item_amount: 0,
         payment_item_id: null,
-        payment_item_complusory: true,
+        payment_item_complusory: "",
         payment_item_name: null,
-        complusory: true,
         comment: null,
         code: null,
         type: "",
@@ -129,8 +132,18 @@ export default {
       return moment(this.$store.getters.getSelectedContribution.created_at).format(
         "MMMM Do YYYY"
       );
+    },
+
+    getSelectedContribution() {
+      return this.$store.getters.getSelectedContribution;
     }
   },
+
+  watch: {
+
+  },
+
+
   methods: {
     editContribution(data) {
       let payload = {
@@ -138,31 +151,8 @@ export default {
         current_tab: "Members Contributions",
         right: true,
       };
+
       this.$emit("edit-contribution", payload);
-    },
-
-
-    getSelectedContribution() {
-      this.contribution.amount_deposited = this.$store.getters.getSelectedContribution.amount_deposited
-      this.contribution.approve = this.$store.getters.getSelectedContribution.approve
-      this.contribution.balance = this.$store.getters.getSelectedContribution.balance
-      this.contribution.code = this.$store.getters.getSelectedContribution.code
-      this.contribution.comment = this.$store.getters.getSelectedContribution.comment
-      this.contribution.created_at = this.$store.getters.getSelectedContribution.created_at
-      this.contribution.id = this.$store.getters.getSelectedContribution.id
-      this.contribution.name = this.$store.getters.getSelectedContribution.name
-      this.contribution.payment_item_amount = this.$store.getters.getSelectedContribution.payment_item_amount
-      this.contribution.payment_item_complusory = this.$store.getters.getSelectedContribution.complusory
-      this.contribution.payment_item_id = this.$store.getters.getSelectedContribution.payment_item_id
-      this.contribution.payment_item_name = this.$store.getters.getSelectedContribution.payment_item_name
-      this.contribution.status = this.$store.getters.getSelectedContribution.status
-      this.contribution.type = this.$store.getters.getSelectedContribution.type
-      this.contribution.updated_by = this.$store.getters.getSelectedContribution.updated_by
-      this.contribution.user_id = this.$store.getters.user_id
-      this.contribution.user_name = this.$store.getters.getSelectedContribution.user_name
-      this.contribution.user_telephone = this.$store.getters.getSelectedContribution.user_telephone
-
-      return this.contribution;
     }
 
   },

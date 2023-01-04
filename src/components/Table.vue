@@ -413,7 +413,6 @@ export default {
         tab: "View Contribution",
       };
 
-      console.log(data);
       this.$store.dispatch("setSelectedContribution", data);
 
 
@@ -428,6 +427,10 @@ export default {
         data: data,
         tab: "Members Contributions",
       };
+
+      this.$store.dispatch("setEditState", true);
+
+
       this.$emit("edit-contribution", payload);
     },
 

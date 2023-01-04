@@ -173,6 +173,7 @@ export default {
       if (this.$store.getters.getMembersContributionsByPaymentItem != null) {
         this.$store.getters.getMembersContributionsByPaymentItem.data.forEach(
           (ele) => {
+            console.log(ele);
             data.push({
               counter:
                 this.$store.getters.getMembersContributionsByPaymentItem.data.indexOf(
@@ -187,10 +188,8 @@ export default {
               payment_item_complusory: ele.payment_item_complusory,
               payment_item_name: ele.payment_item_name,
               comment: ele.comment,
-              complusory:ele.complusory,
               code: ele.code,
               type: "MEMBERS_CONTRIBUTIONS",
-              date: ele.date,
               organisation_id: ele.organisation_id,
               created_at: ele.created_at,
               updated_by: ele.updated_by,
@@ -262,6 +261,9 @@ export default {
     },
 
     editContribution(data) {
+
+      this.$store.dispatch("setSelectedContribution", data.data);
+
       this.$emit("edit-contribution", data);
     },
 
@@ -319,7 +321,6 @@ export default {
               comment: ele.comment,
               code: ele.code,
               type: "MEMBERS_CONTRIBUTIONS",
-              date: ele.date,
               complusory: ele.complusory,
               created_at: ele.created_at,
               updated_by: ele.updated_by,

@@ -1,7 +1,10 @@
 <template>
   <q-page>
-    <!-- <div v-if="is_fetching">loading...{{ is_fetching }}</div> -->
-    <div  >
+       <!-- spinners -->
+    <div class="flex justify-center">
+      <q-spinner-ios color="primary" size="3.3em" class="q-mb-lg" v-if="getLoadingState" />
+    </div>
+
       <NotFound
         :message="not_found_msg"
         v-if="getMembersSavings.length == 0"
@@ -104,7 +107,7 @@
           </div>
         </div>
       </div>
-    </div>
+
   </q-page>
 </template>
 
@@ -232,6 +235,11 @@ export default {
       }
       return data;
     },
+
+
+    getLoadingState() {
+      return this.$store.getters.getOrganisationMembersSavings != null ? false : true
+    }
   },
   methods: {
     filterYears(val, update, abort) {

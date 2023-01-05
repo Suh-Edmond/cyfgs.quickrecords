@@ -1,9 +1,20 @@
 <template>
+
   <q-page>
+    <!-- spinners -->
+    <div class="flex justify-center">
+        <q-spinner-ios
+          color="primary"
+          size="3.3em"
+          class="q-mb-lg"
+          v-if="getLoadingState"
+        />
+      </div>
     <!-- no members found -->
     <div>
       <NotFound :message="not_found_msg" v-if="getMembers.length == 0"></NotFound>
     </div>
+
 
     <div v-if="getMembers.length > 0">
       <!-- header for filter members -->
@@ -158,7 +169,19 @@ export default {
       })
       return data;
     },
+
+    getLoadingState(){
+      return  this.$store.getters.getMembers.length != 0 ? false : true
+    }
   },
+
+  watch: {
+    getLoadingState(){
+      return  this.$store.getters.getMembers.length != 0 ? false : true
+    }
+  },
+
+
   methods: {
     updateMember(data) {
       this.$emit("update-member", data);
@@ -209,7 +232,8 @@ export default {
       let  url = `/api/protected/organisations/download-users?organisation_id=${id}&gender=${this.gender}&year=${this.year}`;
       let file_name = "Organisation_Members.pdf";
       this.loading = this.downloadPdf(url, file_name);
-    }
+    },
+
   },
 
   components: {

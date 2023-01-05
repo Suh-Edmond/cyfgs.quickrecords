@@ -4,7 +4,7 @@
       <q-tabs v-model="tab" dense class="text-grey q-pt-sm" active-color="primary" indicator-color="primary"
         align="justify" narrow-indicator>
         <q-tab name="Personal Information" label="Personal Information" no-caps icon="person" />
-        <q-tab name="Member Roles" label="Member Roles" no-caps icon="person" v-if="can_edit_user_role" />
+        <q-tab name="Member Roles" label="Member Roles" no-caps icon="person" v-if="canEditUserRole" />
       </q-tabs>
 
       <q-separator />
@@ -79,7 +79,7 @@
                 <q-item-section>
                   <q-item-label>{{ role.name }}</q-item-label>
                   <q-item-label caption lines="1" class="text-sm">Updated by: <span class="q-pl-sm"> {{ role.updated_by
-                  }}</span></q-item-label>
+}}</span></q-item-label>
                   <q-item-label caption lines="2">Updated on: <span class="q-pl-sm">{{ formDateTime(role.updated_at) }}
                     </span></q-item-label>
                 </q-item-section>
@@ -151,10 +151,12 @@ export default {
     this.$emit("set-heading", heading);
   },
   mounted() {
-    this.can_edit_user_role = this.checkCanEditUserRole();
-    if(this.can_edit_user_role){
-      this.getAllRoles();
-    }
+    // this.can_edit_user_role = this.checkCanEditUserRole();
+
+    // if(this.can_edit_user_role){
+    //   this.getAllRoles();
+    // }
+    this.getAllRoles();
   },
   data() {
     return {
@@ -220,6 +222,11 @@ export default {
         });
       return roles;
     },
+
+    canEditUserRole() {
+      let has_president_role = LocalStorage.getItem('data').roles.find(role => role.name === 'PRESIDENT');
+      return has_president_role != undefined;
+    }
   },
 
   methods: {
@@ -256,6 +263,9 @@ export default {
           this.$emit("close-right-drawer");
         });
     },
+
+
+
     addRole() {
       const role = this.user_roles.find((ele) => ele.name == this.role.value);
 
@@ -276,7 +286,7 @@ export default {
           show_feedback: true,
           status: "none",
           to_on_fail: "none",
-          error_msg: "Only one(01) member of your organisation are allowed to have this Role",
+          error_msg: "Only one member of your organisation is allowed to have this Role",
           has_commit: false,
           commit: "none",
           to_be_store_data: {
@@ -289,10 +299,12 @@ export default {
         this.$store.dispatch("postRequest", payload).then(() => {
           this.loading = false;
           this.role = null;
-            this.getUserRoles(user_id);
+          this.getUserRoles(user_id);
         });
       }
     },
+
+
 
     getUserRoles(id) {
       let payload = {
@@ -312,12 +324,14 @@ export default {
         },
       };
       this.can_edit_user_role = this.checkCanEditUserRole();
-      if(this.can_edit_user_role){
+      if (this.can_edit_user_role) {
         this.$store.dispatch("getRequest", payload).then((res) => {
-        this.user_roles = res.data;
-      });
+          this.user_roles = res.data;
+        });
       }
     },
+
+
 
     removeUserRole() {
       let user_id = this.getUpdatedMemberFromState().id;
@@ -339,14 +353,19 @@ export default {
         },
       };
       this.$store.dispatch("deleteRequest", payload).then(() => {
-          this.getUserRoles(user_id);
+        this.getUserRoles(user_id);
       });
     },
+
+
 
     showRemoveRoleDialog(role) {
       this.role_deleted = role;
       this.show_dialog = true;
     },
+
+
+
     setFormField(data) {
       this.user.name = data.name;
       this.user.email = data.email;
@@ -361,6 +380,8 @@ export default {
       return this.user;
     },
 
+
+
     resetForm() {
       this.user.name = null;
       this.user.email = null;
@@ -372,15 +393,23 @@ export default {
       return this.user;
     },
 
+
+
     getUpdatedMemberFromState() {
       return this.$store.getters.getUpdatedMember;
     },
+
+
+
     formDateTime(date) {
       return moment(String(date)).format('MM/DD/YYYY')
     },
+
+
+
     checkCanEditUserRole() {
       let has_president_role = LocalStorage.getItem('data').roles.find(role => role.name === 'PRESIDENT');
-      return (has_president_role === "undefiend");
+      return has_president_role != undefined;
     }
   },
   components: {

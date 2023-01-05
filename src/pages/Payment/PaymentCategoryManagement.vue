@@ -1,10 +1,15 @@
 <template>
   <q-page>
+    <!-- spinners -->
+    <div class="flex justify-center">
+      <q-spinner-ios color="primary" size="3.3em" class="q-mb-lg" v-if="getLoadingState" />
+    </div>
+
     <NotFound :message="not_found_msg" v-if="getData.length == 0"></NotFound>
     <!-- header for filter categories -->
     <div class="row q-ml-xs q-pt-xs" v-if="getData.length > 0" :class="$q.screen.lg ? 'q-pa-sm' : ''" :style="
-      $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-    ">
+  $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+">
       <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
         <q-select v-model="year" outlined dense :options="years" label="Select year" @input="filterPaymentCategories" />
       </div>
@@ -115,6 +120,10 @@ export default {
 
       return data;
     },
+
+    getLoadingState() {
+      return this.$store.getters.getPaymentCategories.length != 0 ? false : true
+    }
   },
   methods: {
     updatePaymentCategory(data) {
@@ -176,7 +185,7 @@ export default {
 
     downloadPaymentCategory() {
       let id = this.getOrganisationId;
-      let  url = `/api/protected/download-payment-categories?organisation_id=${id}&year=${this.year}`;
+      let url = `/api/protected/download-payment-categories?organisation_id=${id}&year=${this.year}`;
       let file_name = "Organisation_Payment_Categories.pdf";
       this.loading = this.downloadPdf(url, file_name);
     },

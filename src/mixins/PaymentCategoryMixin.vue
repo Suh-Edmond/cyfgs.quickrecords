@@ -5,9 +5,26 @@ export default {
   mixins: [organisationMixinVue],
   data() {
     return {
-      payment_categories: [],
     };
   },
+
+  computed: {
+    getPaymentCategories() {
+      let data = [];
+      this.$store.getters.getPaymentCategories.forEach((ele) => {
+        data.push({
+          label: ele.name,
+          value: ele.id,
+        });
+      })
+
+      return data;
+    },
+
+  },
+
+
+
   methods: {
     fetchCategories() {
       let organisationId = this.getOrganisationId;

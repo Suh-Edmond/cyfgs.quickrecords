@@ -25,6 +25,9 @@ export default function () {
     current_member_saving:null,
     income_activities:null,
     updated_income_activity:null,
-    current_income_activity:null
+    current_income_activity:null,
+    members_contributions:null,
+    current_payment_item:null,
+    selected_contribution:null
   };
 }

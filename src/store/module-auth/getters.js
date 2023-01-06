@@ -4,19 +4,19 @@ export function getRoles(state) {
   return state.roles;
 }
 export function getOrganisation(state) {
-  return state.organisation
+  return state.organisation;
 }
 
-export function getMembers(state){
-  return state.members
+export function getMembers(state) {
+  return state.members;
 }
 
-export function getFetchingState(state){
-  return state.is_fetching
+export function getFetchingState(state) {
+  return state.is_fetching;
 }
 
 export function getUpdatedMember(state) {
-  return state.updated_member
+  return state.updated_member;
 }
 
 export function getPaymentCategories(state) {
@@ -31,14 +31,18 @@ export function getPaymentItems(state) {
   return state.payment_items;
 }
 
+export function getCurrentPaymentItem(state) {
+  return state.current_payment_item;
+}
+
 //the category that has be click inorder to view its items
 export function getCurrentPaymentCategory(state) {
-  return state.current_payment_catgeory
+  return state.current_payment_catgeory;
 }
 
 //get the current updated payment item
 export function getUpdatedPaymentItem(state) {
-  return state.updated_payment_item
+  return state.updated_payment_item;
 }
 
 export function getExpenditureCategories(state) {
@@ -58,7 +62,7 @@ export function getCurrentExpenditureCategory(state) {
 }
 
 export function getUpdatedExpenditureItem(state) {
-  return state.updated_expenditure_item
+  return state.updated_expenditure_item;
 }
 
 export function getEditState(state) {
@@ -82,7 +86,7 @@ export function getOrganisationMembersSavings(state) {
 }
 
 export function getMemberSavings(state) {
-  return state.member_savings
+  return state.member_savings;
 }
 
 export function getUpdatedMemberSaving(state) {
@@ -90,19 +94,25 @@ export function getUpdatedMemberSaving(state) {
 }
 
 export function getCurrentMemberSaving(state) {
-  return state.current_member_saving
+  return state.current_member_saving;
 }
 
 export function getIncomeActivities(state) {
-  return state.income_activities
+  return state.income_activities;
 }
 
-export function getUpdateIncomeActivity(state)
-{
-  return state.updated_income_activity
+export function getUpdateIncomeActivity(state) {
+  return state.updated_income_activity;
 }
 
 export function getCurrentIncomeActivity(state) {
-  return state.current_income_activity
+  return state.current_income_activity;
 }
 
+export function getMembersContributionsByPaymentItem(state) {
+  return state.members_contributions;
+}
+
+export function getSelectedContribution(state) {
+  return state.selected_contribution;
+}

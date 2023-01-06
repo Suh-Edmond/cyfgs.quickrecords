@@ -1,5 +1,11 @@
 <template>
   <q-page>
+     <!-- spinners -->
+     <div class="flex justify-center">
+      <q-spinner-ios color="primary" size="3.3em" class="q-mb-lg" v-if="getLoadingState" />
+    </div>
+
+
     <NotFound :message="not_found_msg" v-if="getData.length == 0"></NotFound>
 
     <div v-if="getData.length > 0">
@@ -161,6 +167,10 @@ export default {
 
       return data;
     },
+
+    getLoadingState() {
+      return this.$store.getters.getExpenditureCategories.length != 0 ? false : true
+    }
   },
   methods: {
     showExpenditureItems(data) {

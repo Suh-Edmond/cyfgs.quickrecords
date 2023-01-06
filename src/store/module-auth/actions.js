@@ -4,7 +4,7 @@ import { axios } from "src/boot/axios";
 const API_URL = process.env.BASE_URL[0];
 const FILE_UPLOAD_URL = "http://127.0.0.1:9000";
 
-export function handleRequestResponse({ }, payload) {
+export function handleRequestResponse({}, payload) {
   if (payload.status == "success" && payload.show_feedback) {
     if (payload.msg == "default") {
       Notify.create({
@@ -60,7 +60,7 @@ export function handleRequestResponse({ }, payload) {
   }
 }
 
-export function postRequest({dispatch }, payload) {
+export function postRequest({ dispatch }, payload) {
   return axios
     .post(API_URL + payload.url, payload.data, payload.headers)
     .then((res) => {
@@ -89,7 +89,7 @@ export function postRequest({dispatch }, payload) {
     .catch((error) => {
       let handle_error_payload = {
         status: "fail",
-        show_feedback:payload.show_feedback,
+        show_feedback: payload.show_feedback,
         color: "negative",
         to_on_fail: payload.to_on_fail,
         fail_msg:
@@ -111,7 +111,7 @@ export function uploadFileRequest({ dispatch }, payload) {
     .then((res) => {
       let handle_response_payload = {
         data: "",
-        show_feedback:payload.show_feedback,
+        show_feedback: payload.show_feedback,
         status: payload.status,
         color: payload.color,
         msg: payload.msg ? payload.msg : "default",
@@ -126,7 +126,7 @@ export function uploadFileRequest({ dispatch }, payload) {
           status: "fail",
           color: "negative",
           to_on_fail: "none",
-          show_feedback:payload.show_feedback,
+          show_feedback: payload.show_feedback,
           fail_msg:
             payload.error_msg != "default"
               ? payload.error_msg
@@ -145,7 +145,7 @@ export function getRequest({ commit, dispatch }, payload) {
       let handle_response_payload = {
         data: res.data,
         status: payload.status ? payload.status : "success",
-        show_feedback:payload.show_feedback,
+        show_feedback: payload.show_feedback,
         color: payload.color,
         msg: payload.msg ? payload.msg : "default",
         to_on_ok: payload.to_on_ok,
@@ -168,7 +168,7 @@ export function getRequest({ commit, dispatch }, payload) {
         status: "fail",
         color: "negative",
         to_on_fail: payload.to_on_fail,
-        show_feedback:payload.show_feedback,
+        show_feedback: payload.show_feedback,
         fail_msg:
           payload.error_msg != "default"
             ? payload.error_msg
@@ -186,7 +186,7 @@ export function putRequest({ dispatch }, payload) {
       let handle_response_payload = {
         data: res.data,
         status: payload.status ? payload.status : "success",
-        show_feedback:payload.show_feedback,
+        show_feedback: payload.show_feedback,
         color: payload.color,
         msg: payload.msg ? payload.msg : "default",
         to_on_ok: payload.to_on_ok,
@@ -206,7 +206,7 @@ export function putRequest({ dispatch }, payload) {
         status: payload.status ? payload.status : "fail",
         color: "negative",
         to_on_fail: payload.to_on_fail,
-        show_feedback:payload.show_feedback,
+        show_feedback: payload.show_feedback,
         fail_msg:
           payload.error_msg != "default"
             ? payload.error_msg
@@ -227,7 +227,7 @@ export function deleteRequest({ dispatch }, payload) {
         msg: payload.msg ? payload.msg : "default",
         to_on_ok: payload.to_on_ok,
         to_on_fail: payload.to_on_fail,
-        show_feedback:payload.show_feedback,
+        show_feedback: payload.show_feedback,
         to_be_store_data: {
           has_value: payload.to_be_store_data.has_value,
           required: payload.to_be_store_data.required,
@@ -243,7 +243,7 @@ export function deleteRequest({ dispatch }, payload) {
       let handle_fail_res_payload = {
         status: payload.status ? payload.status : "fail",
         color: "negative",
-        show_feedback:payload.show_feedback,
+        show_feedback: payload.show_feedback,
         to_on_fail: payload.to_on_fail,
         fail_msg:
           payload.error_msg != "default"
@@ -268,8 +268,9 @@ export function downloadPdf({}, payload) {
       fileLink.setAttribute("download", payload.file_name);
       document.body.appendChild(fileLink);
       fileLink.click();
-    }).catch((error) => {
-      return error
+    })
+    .catch((error) => {
+      return error;
     });
 }
 
@@ -340,88 +341,101 @@ export function updateMember({ commit }, data) {
   commit("UPDATE_MEMBER", data);
 }
 
-export function setPayCategories({commit}, data) {
-  commit("SET_PAYMENT_CATEGORIES", data)
+export function setPayCategories({ commit }, data) {
+  commit("SET_PAYMENT_CATEGORIES", data);
 }
 
-export function setUpdatedPayCategories({commit}, data) {
-  commit("UPDATE_PAYMENT_CATEGORY", data)
+export function setUpdatedPayCategories({ commit }, data) {
+  commit("UPDATE_PAYMENT_CATEGORY", data);
 }
 
-export function setNavigationTabByUserRole(){
-  let role = LocalStorage.getItem('data').roles.find(role => role.name === 'PRESIDENT');
+export function setNavigationTabByUserRole() {
+  let role = LocalStorage.getItem("data").roles.find(
+    (role) => role.name === "PRESIDENT"
+  );
   return role == "undefined";
 }
 
-export function setCurrentPaymentCategory({commit}, data) {
-  commit("SET_CURRENT_PAYMENT_CATEGORY", data)
+export function setCurrentPaymentCategory({ commit }, data) {
+  commit("SET_CURRENT_PAYMENT_CATEGORY", data);
 }
 
-export function setUpdatedPaymentItem({commit}, data) {
+export function setUpdatedPaymentItem({ commit }, data) {
   commit("SET_UPDATED_PAYMENT_ITEM", data);
 }
 
-export function setExpenditureCategories({commit}, data) {
+export function setCurrentPaymentItem({ commit }, data) {
+  commit("SET_CURRENT_PAYMENT_ITEM", data);
+}
+
+export function setExpenditureCategories({ commit }, data) {
   commit("SET_EXPENDITURE_CATEGORIES", data);
 }
 
-export function setUpdatedExpenditureCategory({commit},data) {
+export function setUpdatedExpenditureCategory({ commit }, data) {
   commit("UPDATE_EXPENDITURE_CATEGORY", data);
 }
 
-export function setExpenditureItems({commit}, data) {
+export function setExpenditureItems({ commit }, data) {
   commit("SET_EXPENDITURE_ITEMS", data);
 }
 
-export function setCurrentExpenditureCategory({commit}, data) {
+export function setCurrentExpenditureCategory({ commit }, data) {
   commit("SET_CURRENT_EXPENDITURE_CATEGORY", data);
 }
 
-export function setUpdatedExpenditureItem({commit}, data) {
+export function setUpdatedExpenditureItem({ commit }, data) {
   commit("SET_UPDATED_EXPENDITURE_ITEM", data);
 }
 
-export function setEditState({commit}, data) {
+export function setEditState({ commit }, data) {
   commit("SET_EDIT_STATE", data);
 }
 
-export function setExpenditureItemDetails({commit}, data) {
-  commit("SET_EXPENDITURE_ITEM_DETAIL", data)
+export function setExpenditureItemDetails({ commit }, data) {
+  commit("SET_EXPENDITURE_ITEM_DETAIL", data);
 }
 
-export function setCurrentExpenditureItem({commit}, data) {
-  commit("SET_CURRENT_EXPENDITURE_ITEM", data)
+export function setCurrentExpenditureItem({ commit }, data) {
+  commit("SET_CURRENT_EXPENDITURE_ITEM", data);
 }
 
-export function setUpdatedExpenditureItemDetail({commit}, data) {
+export function setUpdatedExpenditureItemDetail({ commit }, data) {
   commit("SET_UPDATED_EXPENDITURE_ITEM_DETAIL", data);
 }
 
-export function setOrganisationMembersSavings({commit}, data) {
-  commit("SET_ORGANISATION_MEMBERS_SAVINGS", data)
+export function setOrganisationMembersSavings({ commit }, data) {
+  commit("SET_ORGANISATION_MEMBERS_SAVINGS", data);
 }
 
-export function setMemberSavings({commit}, data) {
-  commit("SET_MEMBER_SAVINGS", data)
+export function setMemberSavings({ commit }, data) {
+  commit("SET_MEMBER_SAVINGS", data);
 }
 
-export function setOrganisationIncomeActivities({commit}, data) {
-  commit("SET_INCOME_ACTIVITIES", data)
+export function setOrganisationIncomeActivities({ commit }, data) {
+  commit("SET_INCOME_ACTIVITIES", data);
 }
 
-export function setUpdatedMemberSaving({commit}, data) {
-  commit("SET_UPDATED_MEMBER_SAVING", data)
+export function setUpdatedMemberSaving({ commit }, data) {
+  commit("SET_UPDATED_MEMBER_SAVING", data);
 }
 
-export function setCurrentMemberSaving({commit}, data)  {
+export function setCurrentMemberSaving({ commit }, data) {
   commit("SET_CURRENT_MEMBER_SAVING", data);
 }
 
-
-export function setUpdatedIncomeActivity({commit}, data) {
+export function setUpdatedIncomeActivity({ commit }, data) {
   commit("SET_UPDATED_INCOME_ACTIVITY", data);
 }
 
-export function setCurrentIncomeActivity({commit}, data) {
-  commit("SET_CURRENT_INCOME_ACTIVITY", data)
+export function setCurrentIncomeActivity({ commit }, data) {
+  commit("SET_CURRENT_INCOME_ACTIVITY", data);
+}
+
+export function setMembersContributions({ commit }, data) {
+  commit("SET_MEMBERS_CONTRIBUTIONS_PER_ITEM", data);
+}
+
+export function setSelectedContribution({ commit }, data) {
+  commit("SET_SELECTED_CONTRIBUTON", data);
 }

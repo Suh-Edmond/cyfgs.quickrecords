@@ -1,5 +1,11 @@
 <template>
   <q-page>
+
+     <!-- spinners -->
+     <div class="flex justify-center">
+      <q-spinner-ios color="primary" size="3.3em" class="q-mb-lg" v-if="getLoadingState" />
+    </div>
+
     <NotFound
       :message="not_found_msg"
       v-if="getMemberSavings.length == 0"
@@ -173,6 +179,11 @@ export default {
 
       return name;
     },
+
+
+    getLoadingState() {
+      return this.$store.getters.getMemberSavings != null ? false : true
+    }
   },
   methods: {
     ViewMemberSaving(data) {

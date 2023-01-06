@@ -1,10 +1,15 @@
 <template>
   <q-page>
+    <!-- spinners -->
+    <div class="flex justify-center">
+      <q-spinner-ios color="primary" size="3.3em" class="q-mb-lg" v-if="getLoadingState" />
+    </div>
+
     <NotFound :message="getNotFoundMsgForPaymentItems" v-if="getPaymentItems.length == 0"></NotFound>
     <!-- header for filter categories -->
     <div class="row q-ml-xs q-pt-xs" v-if="getPaymentItems.length > 0" :class="$q.screen.lg ? 'q-pa-sm' : ''" :style="
-      $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-    ">
+  $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+">
       <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
         <q-select v-model="is_complusory" outlined dense :options="statuses" label="Select Status"
           @input="filterPaymentItems" />
@@ -42,7 +47,7 @@ import CategoryTable from "src/components/CategoryTable.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
 
 export default {
-  mixins:[HelperMixinVue],
+  mixins: [HelperMixinVue],
   mounted() {
     this.getPaymentItemsFromState();
   },
@@ -110,6 +115,10 @@ export default {
     getNotFoundMsgForPaymentItems() {
       return `Ooops!! No Payment Items found for Category ${this.$store.getters.getCurrentPaymentCategory.name}. Click the add button to add Payment Items.`;
     },
+
+    getLoadingState() {
+      return this.$store.getters.getPaymentItems != null ? false : true
+    }
   },
 
   methods: {
@@ -132,19 +141,21 @@ export default {
 
     getPaymentItemsFromState() {
       let items = [];
-      this.$store.getters.getPaymentItems.data.forEach((ele) => {
-        items.push({
-          counter: this.$store.getters.getPaymentItems.data.indexOf(ele) + 1,
-          name: ele.name,
-          amount: ele.amount,
-          id: ele.id,
-          complusory: ele.complusory,
-          payment_category_id: ele.payment_category_id,
-          description: ele.description,
-          payment_category_name: ele.payment_category_name,
-          type: "PAYMENT_ITEMS",
+      if (this.$store.getters.getPaymentItems) {
+        this.$store.getters.getPaymentItems.data.forEach((ele) => {
+          items.push({
+            counter: this.$store.getters.getPaymentItems.data.indexOf(ele) + 1,
+            name: ele.name,
+            amount: ele.amount,
+            id: ele.id,
+            complusory: ele.complusory,
+            payment_category_id: ele.payment_category_id,
+            description: ele.description,
+            payment_category_name: ele.payment_category_name,
+            type: "PAYMENT_ITEMS",
+          });
         });
-      });
+      }
       return items;
     },
 
@@ -152,7 +163,7 @@ export default {
       let id = this.$store.getters.getCurrentPaymentCategory.id;
       let url = `/api/protected/download-payment-items?payment_category_id=${id}`
       let file_name = "Payment_Items.pdf";
-      this.loading =  this.downloadPdf(url, file_name)
+      this.loading = this.downloadPdf(url, file_name)
     },
 
     filterPaymentItems() {

@@ -4,7 +4,9 @@
       <div class="flex q-pb-md">
         <label for="name" class="field"
           >Name:
-          <span class="field_value field_name">{{ income_activity.name }}</span></label
+          <span class="field_value field_name">{{
+            income_activity.name
+          }}</span></label
         >
       </div>
       <div class="flex q-pb-md">
@@ -18,37 +20,29 @@
       <div class="flex q-pb-md">
         <label for="name" class="field"
           >Date:
-          <span class="field_value field_date">{{ getFormatIncomeDate }}</span></label
+          <span class="field_value field_date">{{
+            getFormatIncomeDate
+          }}</span></label
         >
       </div>
       <div class="flex q-pb-md">
         <label for="name" class="field"
           >Venue:
-          <span class="field_value field_venue">{{ income_activity.venue }}</span></label
+          <span class="field_value field_venue">{{
+            income_activity.venue
+          }}</span></label
         >
       </div>
       <div class="flex q-pb-md">
         <label for="status" class="field" v-show="!income_activity.approve"
           >Status:
-          <span class="item_statue unapproved_color"
-            >UNAPPROVED</span
-          ></label
+          <span class="item_statue unapproved_color">UNAPPROVED</span></label
         >
         <label for="status" class="field" v-show="income_activity.approve"
           >Status:
-          <span class="item_statue approved_color">
-            APPROVED</span
-          ></label
+          <span class="item_statue approved_color"> APPROVED</span></label
         >
       </div>
-      <!-- <div class="q-mb-md">
-        <label for="amount" class="field"
-          >Created Date:
-          <span class="field_value detail_date">
-            {{ getFormatIncomeCreatedDate }}
-          </span></label
-        >
-      </div> -->
 
       <div class="q-mb-md">
         <label for="amount" class="field"
@@ -151,7 +145,6 @@ export default {
 
   methods: {
     getCurrentIncomeActivity() {
-      console.log(this.$store.getters.getCurrentIncomeActivity);
       this.income_activity.name =
         this.$store.getters.getCurrentIncomeActivity.name;
       this.income_activity.date =
@@ -209,9 +202,8 @@ export default {
 }
 
 .field_venue {
- padding-left: 1.7rem;
+  padding-left: 1.7rem;
 }
-
 
 .item_statue {
   padding-left: 1.7rem;
@@ -235,6 +227,6 @@ export default {
 }
 
 .detail_created_by {
-  padding-left: .2rem;
+  padding-left: 0.2rem;
 }
 </style>

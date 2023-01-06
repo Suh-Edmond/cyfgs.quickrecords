@@ -1,5 +1,11 @@
 <template>
   <q-page>
+     <!-- spinners -->
+     <div class="flex justify-center">
+      <q-spinner-ios color="primary" size="3.3em" class="q-mb-lg" v-if="getLoadingState" />
+    </div>
+
+
     <NotFound :message="getNotFoundMsg" v-if="getExpenditureItemDetails.length == 0"></NotFound>
     <!-- header for filter categories -->
     <div class="row q-ml-xs q-pt-xs" v-if="getExpenditureItemDetails.length > 0" :class="$q.screen.lg ? 'q-pa-sm' : ''"
@@ -148,6 +154,10 @@ export default {
     getNotFoundMsg() {
       return `Ooops!! No Details has been recorded for this Expenditure Item [${this.getExpenditureItemName}]. Click the add button to add Expenditure Item Details.`;
     },
+
+    getLoadingState() {
+      return this.$store.getters.getExpenditureItemDetails != null ? false : true
+    }
   },
   methods: {
     editExpenditureItemDetail(data) {

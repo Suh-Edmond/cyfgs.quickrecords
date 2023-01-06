@@ -3,6 +3,26 @@ export default {
   data() {
 
   },
+
+
+  computed: {
+    getPaymentItems() {
+      let items = [];
+      if (this.$store.getters.getPaymentItems != null) {
+        this.$store.getters.getPaymentItems.data.forEach((ele) => {
+          items.push({
+            label: ele.name,
+            value: ele.id,
+          });
+        });
+      }
+
+      return items;
+    }
+  },
+
+
+
   methods: {
     getPaymentItemsByCategory(id) {
       let payload = {

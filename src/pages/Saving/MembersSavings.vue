@@ -2,15 +2,15 @@
   <q-page>
        <!-- spinners -->
     <div class="flex justify-center">
-      <q-spinner-ios color="primary" size="3.3em" class="q-mb-lg" v-if="getLoadingState" />
+      <q-spinner-ios color="primary" size="2em" class="q-mb-lg" v-if="getLoadingState" />
     </div>
 
       <NotFound
         :message="not_found_msg"
-        v-if="getMembersSavings.length == 0"
+        v-if="getMembersSavings.length == 0 && !getLoadingState"
       ></NotFound>
       <!-- header for filter categories -->
-      <div v-if="getMembersSavings.length > 0">
+      <div v-if="getMembersSavings.length > 0 && !getLoadingState">
         <div
           class="row q-ml-xs q-pt-xs"
           :class="$q.screen.lg ? 'q-pa-sm' : ''"
@@ -27,9 +27,6 @@
               label="Select year"
               input-debounce="0"
               @filter="filterYears"
-              use-input
-              hide-selected
-              fill-input
             >
               <template v-slot:no-option>
                 <q-item>
@@ -49,9 +46,6 @@
               label="Select month"
               input-debounce="0"
               @filter="filterMonths"
-              use-input
-              hide-selected
-              fill-input
             >
               <template v-slot:no-option>
                 <q-item>
@@ -238,7 +232,7 @@ export default {
 
 
     getLoadingState() {
-      return this.$store.getters.getOrganisationMembersSavings != null ? false : true
+      return this.$store.getters.getFetchingState
     }
   },
   methods: {

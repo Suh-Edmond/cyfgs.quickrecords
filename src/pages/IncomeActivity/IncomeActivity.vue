@@ -1,77 +1,152 @@
 <template>
   <q-page>
-
     <!-- spinners -->
     <div class="flex justify-center">
-      <q-spinner-ios color="primary" size="3.3em" class="q-mb-lg" v-if="getLoadingState" />
+      <q-spinner-ios
+        color="primary"
+        size="2em"
+        class="q-mb-lg"
+        v-if="getLoadingState"
+      />
     </div>
 
-    <NotFound :message="not_found_msg" v-if="getIncomeActivities.length == 0"></NotFound>
-    <!-- header for filter categories -->
-    <div class="row q-ml-xs q-pt-xs" v-if="getIncomeActivities.length > 0" :class="$q.screen.lg ? 'q-pa-sm' : ''"
-      :style="
-  $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-">
-      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
-        <q-select v-model="year" outlined dense :options="years" label="Select year" input-debounce="0"
-          @filter="filterYears" use-input hide-selected fill-input>
-          <template v-slot:no-option>
-            <q-item>
-              <q-item-section class="text-grey"> No results </q-item-section>
-            </q-item>
-          </template>
-        </q-select>
-      </div>
-      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-pl-md">
-        <q-select v-model="month" outlined dense :options="months" label="Select month" input-debounce="0"
-          @filter="filterMonths" use-input hide-selected fill-input>
-          <template v-slot:no-option>
-            <q-item>
-              <q-item-section class="text-grey"> No results </q-item-section>
-            </q-item>
-          </template>
-        </q-select>
-      </div>
-      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-pl-md">
-        <q-select v-model="status" outlined dense :options="statuses" label="Select status" input-debounce="0"
-          @filter="filterStatus" use-input hide-selected fill-input>
-          <template v-slot:no-option>
-            <q-item>
-              <q-item-section class="text-grey"> No results </q-item-section>
-            </q-item>
-          </template>
-        </q-select>
-      </div>
-      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 flex q-pl-md">
-        <div>
-          <q-btn :label="label_fetch" :loading="loading_filter" :color="color" :disabled="validateFilter" no-caps
-            icon-right="filter_list" @click="filterIncomeActivity">
-          </q-btn>
-        </div>
-        <q-space />
-        <div class="button q-pb-xs">
-          <q-btn :label="label_download" :loading="loading" :color="color_print" :disabled="false" no-caps
-            icon-right="print" @click="downloadIncomeActivity"></q-btn>
-        </div>
-      </div>
-    </div>
-    <!-- table for activities -->
-    <div class="row q-pt-sm" v-if="!start_filter">
-      <div class="col-md-12 col-xs-12 col-sm-12">
-        <TableVue :columns="columns" :data="getIncomeActivities" :label="label" :message="message" :show_savings="false"
-          :show_income_activity="true" :show_contribution="false" :show_members="false"
-          @edit-income-activity="editIncomeActivity" @view-income-activity="viewIncomeActivity">
-        </TableVue>
-      </div>
-    </div>
+    <NotFound
+      :message="not_found_msg"
+      v-if="getIncomeActivities.length == 0 && !getLoadingState"
+    ></NotFound>
 
-    <!-- table for filtered activities -->
-    <div class="row q-pt-sm" v-if="start_filter">
-      <div class="col-md-12 col-xs-12 col-sm-12">
-        <TableVue :columns="columns" :data="filteredActivities" :label="label" :message="message" :show_savings="false"
-          :show_income_activity="true" :show_contribution="false" :show_members="false"
-          @edit-income-activity="editIncomeActivity" @view-income-activity="viewIncomeActivity">
-        </TableVue>
+    <div v-if="getIncomeActivities.length > 0 && !getLoadingState">
+      <!-- header for filter categories -->
+      <div
+        class="row q-ml-xs q-pt-xs"
+        :class="$q.screen.lg ? 'q-pa-sm' : ''"
+        :style="
+          $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+        "
+      >
+        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
+          <q-select
+            v-model="year"
+            outlined
+            dense
+            :options="years"
+            label="Select year"
+            input-debounce="0"
+            @filter="filterYears"
+            use-input
+            hide-selected
+            fill-input
+          >
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey"> No results </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
+        </div>
+        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-pl-md">
+          <q-select
+            v-model="month"
+            outlined
+            dense
+            :options="months"
+            label="Select month"
+            input-debounce="0"
+            @filter="filterMonths"
+            use-input
+            hide-selected
+            fill-input
+          >
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey"> No results </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
+        </div>
+        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-pl-md">
+          <q-select
+            v-model="status"
+            outlined
+            dense
+            :options="statuses"
+            label="Select status"
+            input-debounce="0"
+            @filter="filterStatus"
+            use-input
+            hide-selected
+            fill-input
+          >
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey"> No results </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
+        </div>
+        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 flex q-pl-md">
+          <div>
+            <q-btn
+              :label="label_fetch"
+              :loading="loading_filter"
+              :color="color"
+              :disabled="validateFilter"
+              no-caps
+              icon-right="filter_list"
+              @click="filterIncomeActivity"
+            >
+            </q-btn>
+          </div>
+          <q-space />
+          <div class="button q-pb-xs">
+            <q-btn
+              :label="label_download"
+              :loading="loading"
+              :color="color_print"
+              :disabled="false"
+              no-caps
+              icon-right="print"
+              @click="downloadIncomeActivity"
+            ></q-btn>
+          </div>
+        </div>
+      </div>
+      <!-- table for activities -->
+      <div class="row q-pt-sm" v-if="!start_filter">
+        <div class="col-md-12 col-xs-12 col-sm-12">
+          <TableVue
+            :columns="columns"
+            :data="getIncomeActivities"
+            :label="label"
+            :message="message"
+            :show_savings="false"
+            :show_income_activity="true"
+            :show_contribution="false"
+            :show_members="false"
+            @edit-income-activity="editIncomeActivity"
+            @view-income-activity="viewIncomeActivity"
+          >
+          </TableVue>
+        </div>
+      </div>
+
+      <!-- table for filtered activities -->
+      <div class="row q-pt-sm" v-if="start_filter">
+        <div class="col-md-12 col-xs-12 col-sm-12">
+          <TableVue
+            :columns="columns"
+            :data="filteredActivities"
+            :label="label"
+            :message="message"
+            :show_savings="false"
+            :show_income_activity="true"
+            :show_contribution="false"
+            :show_members="false"
+            @edit-income-activity="editIncomeActivity"
+            @view-income-activity="viewIncomeActivity"
+          >
+          </TableVue>
+        </div>
       </div>
     </div>
   </q-page>
@@ -202,8 +277,8 @@ export default {
     },
 
     getLoadingState() {
-      return this.$store.getters.getIncomeActivities != null ? false : true
-    }
+      return this.$store.getters.getFetchingState;
+    },
   },
   methods: {
     filterYears(val, update, abort) {
@@ -242,7 +317,14 @@ export default {
 
     filterIncomeActivity() {
       this.filteredActivities = [];
+
       let id = this.getOrganisationId;
+
+      this.$router.push({
+        path: `/dashboard/income-activities?year=${this.year}&month=${this.month}&status=${this.status}`,
+        query: { year: this.year, month:this.month, status:this.status },
+      });
+
       let payload = {
         status: "none",
         url: `/api/protected/organisations/income-activities/search?organisation_id=${id}&month=${this.month}&year=${this.year}&status=${this.status}`,
@@ -308,6 +390,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

@@ -185,7 +185,7 @@ export default {
       this.expenditure_item.date = null;
       this.expenditure_item.comment = null;
       this.expenditure_item.expenditure_category_id = null;
-      this.expenditure_categories.picture = null;
+      this.expenditure_item.id = null;
 
       return this.expenditure_item;
     },
@@ -260,21 +260,6 @@ export default {
   align-items: center;
   letter-spacing: 0.01em;
   color: $grey2;
-}
-
-.or_option {
-  font-weight: bolder;
-}
-
-.help_text {
-  color: $dark;
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 13px;
-  text-align: center;
-  align-items: center;
-  letter-spacing: 0.01em;
 }
 
 .field {

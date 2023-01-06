@@ -3,31 +3,62 @@
     <div class="q-mt-md q-mx-md">
       <q-form @submit="onAddPaymentItem" class="q-gutter-md">
         <div>
-          <label for="credential" class="form_field">Name <span class="text-red">*</span></label>
+          <label for="credential" class="form_field"
+            >Name <span class="text-red">*</span></label
+          >
           <q-input v-model="payment_item.name" outlined dense type="text" />
         </div>
         <div>
-          <label for="credential" class="form_field">Amount <span class="text-red">*</span></label>
+          <label for="credential" class="form_field"
+            >Amount <span class="text-red">*</span></label
+          >
           <q-input v-model="payment_item.amount" outlined dense type="number" />
         </div>
         <div class="flex">
           <div>
-            <label for="credential" class="form_field">Compulsory <span class="text-red">*</span></label>
+            <label for="credential" class="form_field"
+              >Compulsory <span class="text-red">*</span></label
+            >
           </div>
           <div class="q-gutter-sm q-ml-lg">
-            <q-radio dense v-model="payment_item.complusory" :val=true label="YES" size="xs" />
-            <q-radio dense v-model="payment_item.complusory" :val=false label="NO" size="xs" />
+            <q-radio
+              dense
+              v-model="payment_item.complusory"
+              :val="true"
+              label="YES"
+              size="xs"
+            />
+            <q-radio
+              dense
+              v-model="payment_item.complusory"
+              :val="false"
+              label="NO"
+              size="xs"
+            />
           </div>
         </div>
         <div>
-          <label for="credential" class="form_field">Description <span class="text-red">*</span></label>
-          <q-input v-model="payment_item.description" outlined dense type="textarea"
-            placeholder="Please provide a description about the category" />
+          <label for="credential" class="form_field"
+            >Description <span class="text-red">*</span></label
+          >
+          <q-input
+            v-model="payment_item.description"
+            outlined
+            dense
+            type="textarea"
+            placeholder="Please provide a description about the category"
+          />
         </div>
         <div class="row q-mt-lg justify-end">
           <div class="col-md-2 col-sm-2 col-xs-2">
-            <ButtonVue class="form_button" :label="label_save" :loading="loading" :color="color"
-              :disabled="validateForm" :no_caps="no_caps">
+            <ButtonVue
+              class="form_button"
+              :label="label_save"
+              :loading="loading"
+              :color="color"
+              :disabled="validateForm"
+              :no_caps="no_caps"
+            >
             </ButtonVue>
           </div>
         </div>
@@ -39,7 +70,6 @@
 import ButtonVue from "src/components/Button.vue";
 import PaymentItemMixin from "src/mixins/PaymentItemMixin.vue";
 import PaymentItemMixinVue from "src/mixins/PaymentItemMixin.vue";
-
 
 export default {
   mixins: [PaymentItemMixin, PaymentItemMixinVue],
@@ -67,25 +97,28 @@ export default {
         description: null,
         id: null,
         payment_category_id: null,
-        amount: 0
+        amount: 0,
       },
     };
   },
   computed: {
-
     validateForm() {
-      return this.payment_item.name === null || this.payment_item.description === null || this.payment_item.amount === 0 ? true : false;
+      return this.payment_item.name === null ||
+        this.payment_item.description === null ||
+        this.payment_item.amount === 0
+        ? true
+        : false;
     },
 
     getUpdatedPaymentItem() {
       return this.setFormFields(this.$store.getters.getUpdatedPaymentItem);
-    }
+    },
   },
 
   watch: {
     getUpdatedPaymentItem() {
       return this.setFormFields(this.$store.getters.getUpdatedPaymentItem);
-    }
+    },
   },
 
   methods: {
@@ -112,12 +145,12 @@ export default {
     },
 
     resetForm() {
-      this.payment_item.name = null
+      this.payment_item.name = null;
       this.payment_item.amount = 0;
-      this.payment_item.description = null,
-        this.payment_item.complusory = true
+      (this.payment_item.description = null),
+        (this.payment_item.complusory = true);
       this.payment_item.id = null;
-      this.payment_item.payment_category_id = null
+      this.payment_item.payment_category_id = null;
 
       return this.payment_item;
     },
@@ -125,9 +158,9 @@ export default {
     setAddUpdatePaymentItemUrl(payment_item, category) {
       let url = "";
       if (payment_item.id === null) {
-        url = `/api/protected/payment-categories/${category.id}/payment-items`
+        url = `/api/protected/payment-categories/${category.id}/payment-items`;
       } else {
-        url = `/api/protected/payment-categories/${category.id}/payment-items/${payment_item.id}`
+        url = `/api/protected/payment-categories/${category.id}/payment-items/${payment_item.id}`;
       }
 
       return url;
@@ -139,20 +172,19 @@ export default {
         this.$store
           .dispatch("postRequest", payload)
           .then(() => {
-            this.getPaymentItemsByCategory(category.id)
+            this.getPaymentItemsByCategory(category.id);
           })
           .finally(() => {
             this.loading = false;
             this.resetForm();
             this.$emit("close-right-drawer");
           });
-      }
-      else {
+      } else {
         this.loading = true;
         this.$store
           .dispatch("putRequest", payload)
           .then(() => {
-            this.getPaymentItemsByCategory(category.id)
+            this.getPaymentItemsByCategory(category.id);
           })
           .finally(() => {
             this.loading = false;
@@ -163,16 +195,16 @@ export default {
     },
 
     setFormFields(data) {
-      this.payment_item.name = data.name,
-      this.payment_item.payment_category_id = data.payment_category_id;
-      this.payment_item.amount = data.amount;
-      this.payment_item.description = data.description;
-      this.payment_item.id = data.id;
-      this.payment_item.complusory = data.complusory == 1 ? true : false; //because the complusory field value is returned as either 1 or 0
-
+      if (data != null) {
+        (this.payment_item.name = data.name),
+          (this.payment_item.payment_category_id = data.payment_category_id);
+        this.payment_item.amount = data.amount;
+        this.payment_item.description = data.description;
+        this.payment_item.id = data.id;
+        this.payment_item.complusory = data.complusory == 1 ? true : false; //because the complusory field value is returned as either 1 or 0
+      }
       return this.payment_item;
-    }
-
+    },
   },
   components: {
     ButtonVue,

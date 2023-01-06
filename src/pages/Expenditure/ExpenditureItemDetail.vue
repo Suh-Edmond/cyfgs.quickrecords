@@ -1,44 +1,89 @@
 <template>
   <q-page>
-     <!-- spinners -->
-     <div class="flex justify-center">
-      <q-spinner-ios color="primary" size="3.3em" class="q-mb-lg" v-if="getLoadingState" />
+    <!-- spinners -->
+    <div class="flex justify-center">
+      <q-spinner-ios
+        color="primary"
+        size="2em"
+        class="q-mb-lg"
+        v-if="getLoadingState"
+      />
     </div>
 
+    <NotFound
+      :message="getNotFoundMsg"
+      v-if="getExpenditureItemDetails.length == 0 && !getLoadingState"
+    ></NotFound>
 
-    <NotFound :message="getNotFoundMsg" v-if="getExpenditureItemDetails.length == 0"></NotFound>
-    <!-- header for filter categories -->
-    <div class="row q-ml-xs q-pt-xs" v-if="getExpenditureItemDetails.length > 0" :class="$q.screen.lg ? 'q-pa-sm' : ''"
-      :style="
-        $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-      ">
-      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
-        <q-select v-model="status" outlined dense :options="statuses" label="Select Status" @input="filterItems" />
-      </div>
-      <q-space />
-      <div class="button q-pb-xs">
-        <q-btn :label="label_download" :loading="loading" :color="color_print" :disabled="false" no-caps
-          icon-right="print" @click="downloadExpenditureItemDetails"></q-btn>
-      </div>
-    </div>
-    <!-- table for categories -->
-    <div v-if="getExpenditureItemDetails.length > 0">
-      <div class="row q-pt-sm">
-        <div class="col-md-12 col-xs-12 col-sm-12" v-show="!start_filter">
-          <CategoryTable :columns="columns" :data="getExpenditureItemDetails" :label="label" :message="message"
-            :title="getExpenditureItemName" :show_payment_category="false" :show_payment_item="false"
-            :show_expenditure_category="false" :show_expenditure_item="false" :show_expenditure_item_detail="true"
-            @edit-expenditure-item-detail="editExpenditureItemDetail">
-          </CategoryTable>
+    <div v-if="getExpenditureItemDetails.length > 0 && !getLoadingState">
+      <!-- header for filter categories -->
+      <div
+        class="row q-ml-xs q-pt-xs"
+        :class="$q.screen.lg ? 'q-pa-sm' : ''"
+        :style="
+          $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+        "
+      >
+        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
+          <q-select
+            v-model="status"
+            outlined
+            dense
+            :options="statuses"
+            label="Select Status"
+            @input="filterItems"
+          />
         </div>
+        <q-space />
+        <div class="button q-pb-xs">
+          <q-btn
+            :label="label_download"
+            :loading="loading"
+            :color="color_print"
+            :disabled="false"
+            no-caps
+            icon-right="print"
+            @click="downloadExpenditureItemDetails"
+          ></q-btn>
+        </div>
+      </div>
+      <!-- table for categories -->
+      <div>
+        <div class="row q-pt-sm">
+          <div class="col-md-12 col-xs-12 col-sm-12" v-show="!start_filter">
+            <CategoryTable
+              :columns="columns"
+              :data="getExpenditureItemDetails"
+              :label="label"
+              :message="message"
+              :title="getExpenditureItemName"
+              :show_payment_category="false"
+              :show_payment_item="false"
+              :show_expenditure_category="false"
+              :show_expenditure_item="false"
+              :show_expenditure_item_detail="true"
+              @edit-expenditure-item-detail="editExpenditureItemDetail"
+            >
+            </CategoryTable>
+          </div>
 
-        <!-- table for filtered results -->
-        <div class="col-md-12 col-xs-12 col-sm-12" v-show="start_filter">
-          <CategoryTable :columns="columns" :data="filtered_items" :label="label" :message="message"
-            :title="getExpenditureItemName" :show_payment_category="false" :show_payment_item="false"
-            :show_expenditure_category="false" :show_expenditure_item="false" :show_expenditure_item_detail="true"
-            @edit-expenditure-item-detail="editExpenditureItemDetail">
-          </CategoryTable>
+          <!-- table for filtered results -->
+          <div class="col-md-12 col-xs-12 col-sm-12" v-show="start_filter">
+            <CategoryTable
+              :columns="columns"
+              :data="filtered_items"
+              :label="label"
+              :message="message"
+              :title="getExpenditureItemName"
+              :show_payment_category="false"
+              :show_payment_item="false"
+              :show_expenditure_category="false"
+              :show_expenditure_item="false"
+              :show_expenditure_item_detail="true"
+              @edit-expenditure-item-detail="editExpenditureItemDetail"
+            >
+            </CategoryTable>
+          </div>
         </div>
       </div>
     </div>
@@ -117,11 +162,11 @@ export default {
   computed: {
     getExpenditureItemDetails() {
       let data = [];
-      this.$store.getters.getExpenditureItemDetails.data.forEach((ele) => {
+      if(this.$store.getters.getExpenditureItemDetails != null){
+        this.$store.getters.getExpenditureItemDetails.data.forEach((ele) => {
         data.push({
           counter:
-            this.$store.getters.getExpenditureItemDetails.data.indexOf(ele) +
-            1,
+            this.$store.getters.getExpenditureItemDetails.data.indexOf(ele) + 1,
           name: ele.name,
           amount_given: ele.amount_given,
           amount_spent: ele.amount_spent,
@@ -144,6 +189,7 @@ export default {
             this.$store.getters.getExpenditureItemDetails.total_balance,
         });
       });
+      }
       return data;
     },
 
@@ -156,8 +202,8 @@ export default {
     },
 
     getLoadingState() {
-      return this.$store.getters.getExpenditureItemDetails != null ? false : true
-    }
+      return this.$store.getters.getFetchingState;
+    },
   },
   methods: {
     editExpenditureItemDetail(data) {
@@ -255,6 +301,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

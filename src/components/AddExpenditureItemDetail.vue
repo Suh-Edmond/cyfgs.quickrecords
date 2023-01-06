@@ -291,6 +291,7 @@ export default {
       this.expenditure_item_detail.comment = null;
       this.expenditure_item_detail.expenditure_item_id = null;
       this.expenditure_item_detail.picture = null;
+      this.expenditure_item_detail.id = null;
 
       return this.expenditure_item_detail;
     },

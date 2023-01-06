@@ -1,14 +1,21 @@
 <template>
   <q-page>
-     <!-- spinners -->
-     <div class="flex justify-center">
-      <q-spinner-ios color="primary" size="3.3em" class="q-mb-lg" v-if="getLoadingState" />
+    <!-- spinners -->
+    <div class="flex justify-center">
+      <q-spinner-ios
+        color="primary"
+        size="2em"
+        class="q-mb-lg"
+        v-if="getLoadingState"
+      />
     </div>
 
+    <NotFound
+      :message="not_found_msg"
+      v-if="getData.length == 0 && !getLoadingState"
+    ></NotFound>
 
-    <NotFound :message="not_found_msg" v-if="getData.length == 0"></NotFound>
-
-    <div v-if="getData.length > 0">
+    <div v-if="getData.length > 0 && !getLoadingState">
       <!-- header for filter categories -->
       <div
         class="row q-ml-xs q-pt-xs"
@@ -94,7 +101,7 @@ export default {
     ExpenditureCategoryMixinVue,
     organisationMixinVue,
     expenditureItemMixinVue,
-    HelperMixinVue
+    HelperMixinVue,
   ],
   mounted() {
     this.fetchExpenditureCategories();
@@ -169,8 +176,8 @@ export default {
     },
 
     getLoadingState() {
-      return this.$store.getters.getExpenditureCategories.length != 0 ? false : true
-    }
+      return this.$store.getters.getFetchingState;
+    },
   },
   methods: {
     showExpenditureItems(data) {
@@ -197,6 +204,11 @@ export default {
     filterExpenditureCategories() {
       this.filteredExpenditureCategories = [];
       let organisation_id = this.getOrganisationId;
+      this.$router.push({
+        path: "/dashboard/expenditure-categories",
+        query: { year: this.year},
+      });
+
       let payload = {
         url: `/api/protected/expenditure-categories/filter?organisation_id=${organisation_id}&year=${this.year}`,
         msg: "none",

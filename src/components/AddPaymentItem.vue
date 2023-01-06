@@ -116,6 +116,8 @@ export default {
       this.payment_item.amount = 0;
       this.payment_item.description = null,
         this.payment_item.complusory = true
+      this.payment_item.id = null;
+      this.payment_item.payment_category_id = null
 
       return this.payment_item;
     },

@@ -143,14 +143,14 @@
                 </q-item-section>
 
 
-                <q-item-section side top v-if="role.name !== 'MEMBER'">
+                <q-item-section side top >
                   <q-item-label caption
                     >
                     <span
                       >{{ formDateTime(role.updated_at) }}
                     </span></q-item-label
                   >
-                  <q-btn flat round @click="showRemoveRoleDialog(role)">
+                  <q-btn flat round @click="showRemoveRoleDialog(role)" v-if="role.name !== 'MEMBER'">
                     <q-icon name="close" color="negative">
                       <q-tooltip>Remove</q-tooltip>
                     </q-icon>

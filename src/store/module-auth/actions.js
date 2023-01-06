@@ -139,9 +139,11 @@ export function uploadFileRequest({ dispatch }, payload) {
 }
 
 export function getRequest({ commit, dispatch }, payload) {
+  commit("SET_IS_FETCHING", true);
   return axios
     .get(API_URL + payload.url)
     .then((res) => {
+      commit("SET_IS_FETCHING", false);
       let handle_response_payload = {
         data: res.data,
         status: payload.status ? payload.status : "success",

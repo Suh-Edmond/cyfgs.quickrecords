@@ -38,7 +38,7 @@
               v-ripple
               :active-class="item.name == 'Dashboard' ? 'item' : 'item_text'"
               @click="setItem({ name: 'Dashboard', selected: true }, false)"
-              v-if="checkRole(['PRESIDENT', null])"
+              v-if="checkRole(['PRESIDENT', 'FINANCIAL_SECRETARY', 'TREASURER'])"
               to="/dashboard"
             >
               <q-item-section
@@ -495,9 +495,7 @@ export default {
     },
   },
   watch: {
-    getOrganisation(new_value, old_value) {
-      return this.$store.getters.getOrganisation = new_value;
-    },
+
   },
   methods: {
     setItem(item, requires_add) {

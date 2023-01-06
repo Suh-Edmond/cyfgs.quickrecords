@@ -198,7 +198,7 @@
 
 <script>
 import ButtonVue from "src/components/Button.vue";
-import { LocalStorage } from "quasar";
+import { LocalStorage, SessionStorage } from "quasar";
 export default {
   name: "PageIndex",
   created() {
@@ -277,6 +277,7 @@ export default {
       this.$store
         .dispatch("postRequest", payload)
         .then((res) => {
+          SessionStorage.set("to_tab", 'Dashboard');
           if (typeof res !== undefined) {
             this.$store.dispatch(
               "setRoles",
@@ -340,6 +341,7 @@ export default {
       this.$store
         .dispatch("postRequest", payload)
         .then(() => {
+          SessionStorage.set("to_tab", 'Dashboard');
         })
         .finally(() => {
           this.loading = false;

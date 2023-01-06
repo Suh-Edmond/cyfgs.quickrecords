@@ -99,7 +99,7 @@ import { LocalStorage, SessionStorage } from "quasar";
 export default {
   mounted() {
     this.auth_name = LocalStorage.getItem('data').name;
-    this.auth_user_role = this.formatUserRole(LocalStorage.getItem('data').roles.find(role => role.name !== "USER").name);
+    this.auth_user_role = this.formatUserRole(LocalStorage.getItem('data').roles.find(role => role.name !== "MEMBER").name);
 
   },
   props: {

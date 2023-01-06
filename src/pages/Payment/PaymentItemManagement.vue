@@ -2,40 +2,88 @@
   <q-page>
     <!-- spinners -->
     <div class="flex justify-center">
-      <q-spinner-ios color="primary" size="3.3em" class="q-mb-lg" v-if="getLoadingState" />
+      <q-spinner-ios
+        color="primary"
+        size="2em"
+        class="q-mb-lg"
+        v-if="getLoadingState"
+      />
     </div>
 
-    <NotFound :message="getNotFoundMsgForPaymentItems" v-if="getPaymentItems.length == 0"></NotFound>
-    <!-- header for filter categories -->
-    <div class="row q-ml-xs q-pt-xs" v-if="getPaymentItems.length > 0" :class="$q.screen.lg ? 'q-pa-sm' : ''" :style="
-  $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-">
-      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
-        <q-select v-model="is_complusory" outlined dense :options="statuses" label="Select Status"
-          @input="filterPaymentItems" />
-      </div>
-      <q-space />
-      <div class="button q-pb-xs">
-        <q-btn :label="label_download" :loading="loading" :color="color_print" :disabled="false" no-caps
-          icon-right="print" @click="downloadItems"></q-btn>
-      </div>
-    </div>
-    <!-- table for categories -->
-    <div class="row q-pt-sm" v-show="getPaymentItems.length > 0">
-      <div class="col-md-12 col-xs-12 col-sm-12" v-show="!start_filter">
-        <CategoryTable :columns="columns" :data="getPaymentItems" :label="label" :message="message"
-          :title="getPaymentCategoryName" @show-payment-items="showPaymentItems"
-          @update-payment-category="updatePaymentCategory" :show_payment_category="false" :show_payment_item="true"
-          @update-payment-item="updatePaymentItems" :show_expenditure_category="false" :show_expenditure_item="false">
-        </CategoryTable>
-      </div>
+    <NotFound
+      :message="getNotFoundMsgForPaymentItems"
+      v-if="getPaymentItems.length == 0 && !getLoadingState"
+    ></NotFound>
 
-      <div class="col-md-12 col-xs-12 col-sm-12" v-show="start_filter">
-        <CategoryTable :columns="columns" :data="filteredPaymentItems" :label="label" :message="message"
-          :title="getPaymentCategoryName" @show-payment-items="showPaymentItems"
-          @update-payment-category="updatePaymentCategory" :show_payment_category="false" :show_payment_item="true"
-          @update-payment-item="updatePaymentItems" :show_expenditure_category="false" :show_expenditure_item="false">
-        </CategoryTable>
+    <div v-if="getPaymentItems.length > 0 && !getLoadingState">
+      <!-- header for filter categories -->
+      <div
+        class="row q-ml-xs q-pt-xs"
+        :class="$q.screen.lg ? 'q-pa-sm' : ''"
+        :style="
+          $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+        "
+      >
+        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
+          <q-select
+            v-model="is_complusory"
+            outlined
+            dense
+            :options="statuses"
+            label="Select Status"
+            @input="filterPaymentItems"
+          />
+        </div>
+        <q-space />
+        <div class="button q-pb-xs">
+          <q-btn
+            :label="label_download"
+            :loading="loading"
+            :color="color_print"
+            :disabled="false"
+            no-caps
+            icon-right="print"
+            @click="downloadItems"
+          ></q-btn>
+        </div>
+      </div>
+      <!-- table for categories -->
+      <div class="row q-pt-sm">
+        <div class="col-md-12 col-xs-12 col-sm-12" v-show="!start_filter">
+          <CategoryTable
+            :columns="columns"
+            :data="getPaymentItems"
+            :label="label"
+            :message="message"
+            :title="getPaymentCategoryName"
+            @show-payment-items="showPaymentItems"
+            @update-payment-category="updatePaymentCategory"
+            :show_payment_category="false"
+            :show_payment_item="true"
+            @update-payment-item="updatePaymentItems"
+            :show_expenditure_category="false"
+            :show_expenditure_item="false"
+          >
+          </CategoryTable>
+        </div>
+
+        <div class="col-md-12 col-xs-12 col-sm-12" v-show="start_filter">
+          <CategoryTable
+            :columns="columns"
+            :data="filteredPaymentItems"
+            :label="label"
+            :message="message"
+            :title="getPaymentCategoryName"
+            @show-payment-items="showPaymentItems"
+            @update-payment-category="updatePaymentCategory"
+            :show_payment_category="false"
+            :show_payment_item="true"
+            @update-payment-item="updatePaymentItems"
+            :show_expenditure_category="false"
+            :show_expenditure_item="false"
+          >
+          </CategoryTable>
+        </div>
       </div>
     </div>
   </q-page>
@@ -113,12 +161,12 @@ export default {
     },
 
     getNotFoundMsgForPaymentItems() {
-      return `Ooops!! No Payment Items found for Category ${this.$store.getters.getCurrentPaymentCategory.name}. Click the add button to add Payment Items.`;
+      return `Ooops!! No Payment Items found for Category [${this.$store.getters.getCurrentPaymentCategory.name}]. Click the add button to add Payment Items.`;
     },
 
     getLoadingState() {
-      return this.$store.getters.getPaymentItems != null ? false : true
-    }
+      return this.$store.getters.getFetchingState;
+    },
   },
 
   methods: {
@@ -161,14 +209,19 @@ export default {
 
     downloadItems() {
       let id = this.$store.getters.getCurrentPaymentCategory.id;
-      let url = `/api/protected/download-payment-items?payment_category_id=${id}`
+      let url = `/api/protected/download-payment-items?payment_category_id=${id}`;
       let file_name = "Payment_Items.pdf";
-      this.loading = this.downloadPdf(url, file_name)
+      this.loading = this.downloadPdf(url, file_name);
     },
 
     filterPaymentItems() {
-      this.filteredPaymentItems = [];
       let id = this.$store.getters.getCurrentPaymentCategory.id;
+      this.$router.push({
+        path: `/dashboard/payment-categories/${id}/items`,
+        query: { status: this.is_complusory },
+      });
+
+      this.filteredPaymentItems = [];
       let is_complusory = this.is_complusory == "COMPLUSORY" ? 1 : 0; //1 means true and 0 means false
       let payload = {
         url: `/api/protected/filter-payment-items?payment_category_id=${id}&complusory=${is_complusory}`,

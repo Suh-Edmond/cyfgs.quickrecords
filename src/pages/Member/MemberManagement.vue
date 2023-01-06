@@ -17,7 +17,7 @@
       ></NotFound>
     </div>
 
-    <div v-if="getMembers.length > 0">
+    <div v-if="getMembers.length > 0 && !getLoadingState">
       <!-- header for filter members -->
       <div
         class="row q-ml-xs"
@@ -238,12 +238,8 @@ export default {
     },
 
     getLoadingState() {
-      return this.$store.getters.getMembers.length != 0 ? false : true;
+      return this.$store.getters.getFetchingState
     },
-  },
-
-  watch: {
-
   },
 
   methods: {

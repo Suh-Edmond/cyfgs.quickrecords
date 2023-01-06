@@ -353,7 +353,7 @@ export function setNavigationTabByUserRole() {
   let role = LocalStorage.getItem("data").roles.find(
     (role) => role.name === "PRESIDENT"
   );
-  return role == "undefined";
+  return role == undefined;
 }
 
 export function setCurrentPaymentCategory({ commit }, data) {

@@ -6,7 +6,7 @@
         color="primary"
         size="2em"
         class="q-mb-lg"
-        v-if="getLoadingState || start_spinner"
+        v-if="getLoadingState"
       />
     </div>
     <!-- no members found -->

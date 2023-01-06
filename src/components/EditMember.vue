@@ -46,8 +46,7 @@
                   outlined
                   dense
                   :options="gender_options"
-                  disable
-                  readonly
+                  :disable="user.gender != null"
                 />
               </div>
               <div>
@@ -102,39 +101,14 @@
           <div class="flex justify-center">
             <q-spinner-ios color="primary" size="1.7em" v-if="show_spinner" />
           </div>
-          <div class="q-mx-sm" >
+          <div class="q-mx-sm">
             <q-list v-if="!show_spinner">
-              <q-item
-                class="q-my-sm"
-                v-ripple
-              >
-              <q-item-section avatar>
+              <q-item v-for="role in user_roles" :key="role.name" v-ripple class="q-mb-sm">
+                <q-item-section avatar v-if="role.name == 'MEMBER'">
                   <q-avatar color="primary" text-color="white" size="35px">
-                    U</q-avatar
+                    M</q-avatar
                   >
                 </q-item-section>
-                <q-item-section>
-                  <q-item-label>{{getRoleWithNameUser.name}}</q-item-label>
-                  <q-item-label caption lines="1" class="text-sm"
-                    >Updated by:
-                    <span class="q-pl-sm">
-                      {{getRoleWithNameUser.updated_by}}</span
-                    ></q-item-label
-                  >
-                  <q-item-label caption lines="2"
-                    >Updated on:
-                    <span class="q-pl-sm"
-                      >{{formDateTime(getRoleWithNameUser.updated_at)}}
-                    </span></q-item-label
-                  >
-                </q-item-section>
-              </q-item>
-              <q-item
-                v-for="role in user_roles"
-                :key="role.name"
-                class="q-my-sm"
-                v-ripple
-              >
                 <q-item-section avatar v-if="role.name == 'PRESIDENT'">
                   <q-avatar color="primary" text-color="white" size="35px">
                     PP
@@ -158,23 +132,24 @@
                     AU
                   </q-avatar>
                 </q-item-section>
-                <q-item-section v-if="role.name != 'USER'">
+                <q-item-section>
                   <q-item-label>{{ role.name }}</q-item-label>
-                  <q-item-label caption lines="1" class="text-sm"
+                  <q-item-label caption  class="text-sm"
                     >Updated by:
-                    <span class="q-pl-sm">
+                    <span>
                       {{ role.updated_by }}</span
                     ></q-item-label
                   >
-                  <q-item-label caption lines="2"
-                    >Updated on:
-                    <span class="q-pl-sm"
+                </q-item-section>
+
+
+                <q-item-section side top v-if="role.name !== 'MEMBER'">
+                  <q-item-label caption
+                    >
+                    <span
                       >{{ formDateTime(role.updated_at) }}
                     </span></q-item-label
                   >
-                </q-item-section>
-
-                <q-item-section side v-if="role.name !== 'USER'">
                   <q-btn flat round @click="showRemoveRoleDialog(role)">
                     <q-icon name="close" color="negative">
                       <q-tooltip>Remove</q-tooltip>
@@ -199,7 +174,10 @@
                     </q-select>
                   </div>
                   <div class="col-md-1 col-sm-12 col-xs-12"></div>
-                  <div class="col-md-2 col-sm-12 col-xs-12" :class="$q.screen.lg ?'q-ml-md':''">
+                  <div
+                    class="col-md-2 col-sm-12 col-xs-12"
+                    :class="$q.screen.lg ? 'q-ml-md' : ''"
+                  >
                     <ButtonVue
                       class="form_button"
                       :label="label_add_role"
@@ -356,10 +334,10 @@ export default {
       return has_president_role != undefined;
     },
 
-    getRoleWithNameUser(){
-      const role = this.user_roles.find((ele) => ele.name == 'USER');
-      return role
-    }
+    getRoleWithNameUser() {
+      const role = this.user_roles.find((ele) => ele.name == "MEMBER");
+      return role;
+    },
   },
 
   methods: {
@@ -547,7 +525,6 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-
 .form_field {
   font-family: "Roboto";
   font-style: normal;

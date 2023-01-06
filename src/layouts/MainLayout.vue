@@ -12,7 +12,7 @@
       <div>
         <div class="bg-white left_drawer">
           <div class="bg-transparent q-pa-sm flex flex-center">
-            <q-avatar size="90px" v-if="getOrganisation !== null">
+            <q-avatar size="90px" v-if="getOrganisation != null">
               <q-img :src="getOrganisation.logo"> </q-img>
             </q-avatar>
             <q-avatar
@@ -466,6 +466,7 @@ import ViewContribution from "src/components/ViewContribution.vue";
 import AddContribution from "src/components/AddContribution.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import ViewMemberSaving from "src/components/ViewMemberSaving.vue";
+
 export default {
   mixins: [organisationMixinVue],
   mounted() {
@@ -494,8 +495,8 @@ export default {
     },
   },
   watch: {
-    getOrganisation() {
-      return this.$store.getters.getOrganisation;
+    getOrganisation(new_value, old_value) {
+      return this.$store.getters.getOrganisation = new_value;
     },
   },
   methods: {

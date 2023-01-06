@@ -25,9 +25,13 @@
         <q-tab-panel name="Add Member">
           <div class="q-mx-md">
             <q-form @submit="onAddMember" class="q-gutter-md">
-              <div class="text-subtitle2 text-left text-primary q-pt-lg">
+              <div class="text-subtitle2 text-left text-primary q-pt-xs">
                 Personal Information
               </div>
+              <small class="hint"
+                >All fields with <span class="text-red">*</span> are
+                required</small
+              >
               <div>
                 <label for="credential" class="form_field"
                   >Name <span class="text-red">*</span></label
@@ -77,14 +81,14 @@
               </div>
               <div class="row q-mt-lg justify-end">
                 <div class="col-md-2 col-sm-2 col-xs-2">
-                <ButtonVue
-                  :label="label_save"
-                  :loading="loading"
-                  :color="color"
-                  :disabled="validateForm"
-                  :no_caps="no_caps"
-                >
-                </ButtonVue>
+                  <ButtonVue
+                    :label="label_save"
+                    :loading="loading"
+                    :color="color"
+                    :disabled="validateForm"
+                    :no_caps="no_caps"
+                  >
+                  </ButtonVue>
                 </div>
               </div>
             </q-form>
@@ -135,28 +139,59 @@
       </q-tab-panels>
     </div>
     <q-dialog v-model="dialog" :position="position">
-      <q-card style="width: 370px" class="q-ma-md">
-        <q-bar>
+      <q-card :style="{ width: image_width }" class="q-ma-md">
+        <q-bar class="bg-primary">
           <div></div>
           <q-space />
 
-          <q-btn dense flat icon="close" v-close-popup>
+          <q-btn dense flat icon="close" v-close-popup class="text-white">
             <q-tooltip>Close</q-tooltip>
           </q-btn>
         </q-bar>
-        <q-card-section class="row flex flex-center">
+        <q-card-section
+          class="row flex flex-center csv_image_card"
+          @click="full_width = true"
+        >
           <div>
-            <div class="q-pb-sm help_text">
-              Below is an Eample of an Excel file to be upload
+            <div class="q-pb-md help_text">
+              Below is a structure of an example excel file to upload members
             </div>
-            <div>
+            <div class="q-mx-lg">
               <q-img
                 src="../assets/example_csv_upload.png"
                 spinner-color="white"
-                style="height: 100%; width: 100%"
+                class="q-px-sm"
+                style="width: 100%; height: 100%"
               />
             </div>
           </div>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
+
+    <!-- example csv file to be uploaded in full width-->
+    <q-dialog v-model="full_width" full-width>
+      <q-card>
+        <q-bar class="bg-primary">
+          <div></div>
+          <q-space />
+
+          <q-btn dense flat icon="close" v-close-popup class="text-white">
+            <q-tooltip>Close</q-tooltip>
+          </q-btn>
+        </q-bar>
+        <q-card-section>
+          <div class="q-pb-md help_text">
+            Below is a structure of an example excel file to upload members
+          </div>
+        </q-card-section>
+
+        <q-card-section class="q-pa-md">
+          <q-img
+            src="../assets/example_csv_upload.png"
+            spinner-color="white"
+            class="q-px-md"
+          />
         </q-card-section>
       </q-card>
     </q-dialog>
@@ -175,6 +210,8 @@ export default {
   },
   data() {
     return {
+      full_width: false,
+      image_width: "370px",
       label_save: "Save",
       loading: false,
       color: "primary",
@@ -220,7 +257,7 @@ export default {
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
-        show_feedback:true,
+        show_feedback: true,
         error_msg: "An Error occurred! Please try again",
         has_commit: false,
         commit: "none",
@@ -232,7 +269,7 @@ export default {
       };
       this.$store
         .dispatch("postRequest", payload)
-        .then((res) => {
+        .then(() => {
           this.getOrganisationMembers(id);
         })
         .finally(() => {
@@ -254,7 +291,7 @@ export default {
         msg: "Members uploaded successfully",
         data: formData,
         color: "default",
-        show_feedback:true,
+        show_feedback: true,
         status: "success",
         to_on_ok: "none",
         to_on_fail: "none",
@@ -297,20 +334,13 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.add_member_title {
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 29px;
-  align-items: center;
-  text-align: center;
-  letter-spacing: 0.01em;
-  color: #5384ae;
+.csv_image_card {
+  cursor: pointer;
 }
 
-.button {
-  width: 100%;
+.hint {
+  color: $grey2;
+  font-size: smaller;
 }
 
 .form_field {
@@ -332,7 +362,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 13px;
+  font-size: 12px;
   text-align: center;
   align-items: center;
   letter-spacing: 0.01em;

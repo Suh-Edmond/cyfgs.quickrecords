@@ -326,7 +326,7 @@ export default {
       this.contribution.payment_item_id = null;
       this.contribution.payment_category_id = null;
       this.contribution.id = null;
-      contribution.total_amount_deposited = 0.0
+      this.contribution.total_amount_deposited = 0.0
 
       return this.contribution;
     },

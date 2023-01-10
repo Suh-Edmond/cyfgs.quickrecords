@@ -2,68 +2,32 @@
   <q-page>
     <!-- spinners -->
     <div class="flex justify-center">
-      <q-spinner-ios
-        color="primary"
-        size="2em"
-        class="q-mb-lg"
-        v-if="getLoadingState"
-      />
+      <q-spinner-ios color="primary" size="2em" class="q-mb-lg" v-if="getLoadingState" />
     </div>
 
-    <NotFound
-      :message="not_found_msg"
-      v-if="getMemberSavings.length == 0 && !getLoadingState"
-    ></NotFound>
+    <NotFound :message="not_found_msg" v-if="getMemberSavings.length == 0 && !getLoadingState"></NotFound>
 
     <div v-if="getMemberSavings.length > 0">
       <!-- header for filter categories -->
-      <div
-        class="row q-ml-xs q-pt-xs"
-        :class="$q.screen.lg ? 'q-pa-sm' : ''"
-        :style="
-          $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-        "
-      >
+      <div class="row q-ml-xs q-pt-xs" :class="$q.screen.lg ? 'q-pa-sm' : ''" :style="
+        $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+      ">
         <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
-          <q-select
-            v-model="status"
-            outlined
-            dense
-            :options="statuses"
-            label="Select Status"
-            @input="filterSavings"
-          />
+          <q-select v-model="status" outlined dense :options="statuses" label="Select Status" @input="filterSavings" />
         </div>
         <q-space />
         <div class="button q-pb-xs">
-          <q-btn
-            :label="label_download"
-            :loading="loading"
-            :color="color_print"
-            :disabled="false"
-            no-caps
-            icon-right="print"
-            @click="downloadSavings"
-          ></q-btn>
+          <q-btn :label="label_download" :loading="loading" :color="color_print" :disabled="false" no-caps
+            icon-right="print" @click="downloadSavings"></q-btn>
         </div>
       </div>
       <!-- table for savings -->
       <div class="row q-pt-sm" v-if="!start_filter">
         <div class="col-md-12 col-xs-12 col-sm-12">
-          <TableVue
-            :columns="columns"
-            :data="getMemberSavings"
-            :label="label"
-            :message="message"
-            :title="getCurrentMemberName"
-            :show_savings="false"
-            :show_member_savings="true"
-            :show_income_activity="false"
-            :show_members="false"
-            :show_contribution="false"
-            @view-member-saving="ViewMemberSaving"
-            @edit-member-saving="editMemberSaving"
-          >
+          <TableVue :columns="columns" :data="getMemberSavings" :label="label" :message="message"
+            :title="getCurrentMemberName" :show_savings="false" :show_member_savings="true"
+            :show_income_activity="false" :show_members="false" :show_contribution="false"
+            @view-member-saving="ViewMemberSaving" @edit-member-saving="editMemberSaving">
           </TableVue>
         </div>
       </div>
@@ -71,20 +35,10 @@
       <!-- table for filter savings -->
       <div class="row q-pt-sm" v-if="start_filter">
         <div class="col-md-12 col-xs-12 col-sm-12">
-          <TableVue
-            :columns="columns"
-            :data="filtered_savings"
-            :label="label"
-            :message="message"
-            :title="getCurrentMemberName"
-            :show_savings="false"
-            :show_member_savings="true"
-            :show_income_activity="false"
-            :show_members="false"
-            :show_contribution="false"
-            @view-member-saving="ViewMemberSaving"
-            @edit-member-saving="editMemberSaving"
-          >
+          <TableVue :columns="columns" :data="filtered_savings" :label="label" :message="message"
+            :title="getCurrentMemberName" :show_savings="false" :show_member_savings="true"
+            :show_income_activity="false" :show_members="false" :show_contribution="false"
+            @view-member-saving="ViewMemberSaving" @edit-member-saving="editMemberSaving">
           </TableVue>
         </div>
       </div>
@@ -210,6 +164,13 @@ export default {
           (ele) => ele.approve === this.status
         );
       }
+      // let member = this.$store.getters.getMemberSavings.data[0];
+
+      this.$router.push({
+        path: `/dashboard/members-savings/users/${member.name}`,
+        query: { status: this.status },
+      });
+
       return this.filtered_savings;
     },
 
@@ -230,4 +191,6 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+
+</style>

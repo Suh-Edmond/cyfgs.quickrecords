@@ -240,7 +240,6 @@ export default {
             });
           });
         }
-        this.year = null;
       });
     },
 

@@ -3,61 +3,51 @@
     <!-- no contributions available -->
     <!-- <NotFound :message="not_found_msg" v-if="getMembersContributionsByPaymentItem.length == 0"></NotFound> -->
 
-    <!-- contributions available -->
-    <div class="row q-ml-xs q-gutter-md" :class="$q.screen.lg ? 'q-px-sm q-pb-sm' : ''" :style="
+
+    <div>
+      <!-- contributions available -->
+      <div class="row q-ml-xs q-gutter-md" :class="$q.screen.lg ? 'q-px-sm q-pb-sm' : ''" :style="
         $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
       ">
-      <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12">
-        <q-select v-model="payment_category_id" outlined dense :options="getPaymentCategories" label="Payment Category"
-          @input="fetchPaymentItems" />
+        <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12">
+          <q-select v-model="payment_category_id" outlined dense :options="getPaymentCategories"
+            label="Payment Category" @input="fetchPaymentItems" />
+        </div>
+        <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12">
+          <q-select v-model="payment_item_id" outlined dense :options="getPaymentItems" label="Payment Item"
+            @input="getSelectedPaymentItem" />
+          <small v-if="payment_category_id != null && !checkIsExistPaymentItem" class="noPaymentItems">No Payment items
+            found under this category</small>
+        </div>
+        <div class="col-md-1 col-lg-1 col-xs-12 col-sm-12">
+          <q-select v-model="year" outlined dense :options="years" label="Year" />
+        </div>
+        <div class="col-md-1 col-lg-1 col-xs-12 col-sm-12">
+          <q-select v-model="month" outlined dense :options="months" label="Month" input-debounce="0"
+            @filter="filterMonths" use-input hide-selected fill-input />
+        </div>
+        <div class="col-md-1 col-lg-1 col-xs-12 col-sm-12">
+          <q-select v-model="status" outlined dense :options="statuses" label="Status" />
+        </div>
+        <div class="col-md-1 col-lg-1 col-xs-12 col-sm-12" :style="$q.screen.lg ? 'margin-left:75px' : ''">
+          <q-btn :label="label_fetch" :loading="loading_filter" :color="color" :disabled="validateFilter" no-caps
+            icon-right="filter_list" @click="filterContributions">
+          </q-btn>
+        </div>
+        <div class="col-md-1 col-lg-1 col-xs-12 col-sm-12" :style="$q.screen.lg ? 'margin-left:170px' : ''">
+          <q-btn :label="label_print" :loading="loading" :color="color_print" :disabled="false" no-caps
+            icon-right="print"></q-btn>
+        </div>
       </div>
-      <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12">
-        <q-select v-model="payment_item_id" outlined dense :options="getPaymentItems" label="Payment Item"
-          @input="getSelectedPaymentItem" />
-        <small v-if="
-  payment_category_id != null &&
-  !checkIsExistPaymentItem
-" class="noPaymentItems">No Payment items found under this category</small>
-      </div>
-      <div class="col-md-1 col-lg-1 col-xs-12 col-sm-12">
-        <q-select v-model="year" outlined dense :options="years" label="Year" />
-      </div>
-      <div class="col-md-1 col-lg-1 col-xs-12 col-sm-12">
-        <q-select v-model="month" outlined dense :options="months" label="Month" input-debounce="0"
-          @filter="filterMonths" use-input hide-selected fill-input />
-      </div>
-      <div class="col-md-1 col-lg-1 col-xs-12 col-sm-12">
-        <q-select v-model="status" outlined dense :options="statuses" label="Status" />
-      </div>
-      <div class="col-md-1 col-lg-1 col-xs-12 col-sm-12" :style="$q.screen.lg ? 'margin-left:75px' : ''">
-        <q-btn :label="label_fetch" :loading="loading_filter" :color="color" :disabled="validateFilter" no-caps
-          icon-right="filter_list" @click="filterContributions">
-        </q-btn>
-      </div>
-      <div class="col-md-1 col-lg-1 col-xs-12 col-sm-12" :style="$q.screen.lg ? 'margin-left:170px' : ''">
-        <q-btn :label="label_print" :loading="loading" :color="color_print" :disabled="false" no-caps
-          icon-right="print"></q-btn>
-      </div>
-    </div>
-    <!-- table for contributions -->
-    <div class="row q-pt-sm" v-if="!start_filter">
-      <div class="col-md-12 col-xs-12 col-sm-12">
-        <TableVue :columns="columns" :data="getMembersContributionsByPaymentItem" :label="label" :message="message"
-          :show_savings="false" :show_income_activity="false" :show_members="false" :show_member_savings="false"
-          :show_contribution="true" @view-contribution="viewContribution" @edit-contribution="editContribution"
-          :title="setTableTitle">
-        </TableVue>
-      </div>
-    </div>
-
-    <!-- table for filtered contributions -->
-    <div class="row q-pt-sm" v-if="start_filter">
-      <div class="col-md-12 col-xs-12 col-sm-12">
-        <TableVue :columns="columns" :data="filteredContributions" :label="label" :message="message"
-          :show_savings="false" :show_income_activity="false" :show_members="false" :show_member_savings="false"
-          :show_contribution="true" @view-contribution="viewContribution" @edit-contribution="editContribution"
-          :title="setTableTitle">
-        </TableVue>
+      <!-- table for contributions -->
+      <div class="row q-pt-sm">
+        <div class="col-md-12 col-xs-12 col-sm-12">
+          <TableVue :columns="columns" :data="filteredContributions" :label="label" :message="message"
+            :show_savings="false" :show_income_activity="false" :show_members="false" :show_member_savings="false"
+            :show_contribution="true" @view-contribution="viewContribution" @edit-contribution="editContribution"
+            :title="setTableTitle">
+          </TableVue>
+        </div>
       </div>
     </div>
   </div>
@@ -162,9 +152,7 @@ export default {
   },
   computed: {
     validateFilter() {
-      return this.payment_item_id !== null
-        ? false
-        : true;
+      return this.payment_item_id !== null ? false : true;
     },
 
     getMembersContributionsByPaymentItem() {
@@ -212,7 +200,10 @@ export default {
         name = this.$store.getters.getCurrentPaymentItem.name;
         amount = this.$store.getters.getCurrentPaymentItem.amount;
       }
-      if (this.$store.getters.getCurrentPaymentItem != null && this.$store.getters.getCurrentContributionPaymentItem != null) {
+      if (
+        this.$store.getters.getCurrentPaymentItem != null &&
+        this.$store.getters.getCurrentContributionPaymentItem != null
+      ) {
         title =
           `Contributions for ${name}, Amount Payable: ` +
           Number(amount).toLocaleString() +
@@ -220,7 +211,6 @@ export default {
       }
       return title;
     },
-
 
     checkIsExistPaymentItem() {
       return this.getPaymentItems.length > 0;
@@ -236,7 +226,10 @@ export default {
         name = this.$store.getters.getCurrentPaymentItem.name;
         amount = this.$store.getters.getCurrentPaymentItem.amount;
       }
-      if (this.$store.getters.getCurrentPaymentItem != null && this.$store.getters.getCurrentContributionPaymentItem != null) {
+      if (
+        this.$store.getters.getCurrentPaymentItem != null &&
+        this.$store.getters.getCurrentContributionPaymentItem != null
+      ) {
         title =
           `Contributions for ${name}, Amount Payable: ` +
           Number(amount).toLocaleString() +
@@ -261,7 +254,6 @@ export default {
     },
 
     editContribution(data) {
-
       this.$store.dispatch("setSelectedContribution", data.data);
 
       this.$emit("edit-contribution", data);
@@ -280,13 +272,16 @@ export default {
     },
 
     filterContributions() {
+      this.setFilterUrl(this.payment_category_id.label, this.payment_item_id.label, this.year, this.month, this.status)
+
+
       this.filteredContributions = [];
       let payload = {
         status: "none",
         url: `/api/protected/organisation/contributions/search?payment_item_id=${this.payment_item_id.value}&month=${this.month}&year=${this.year}&status=${this.status}`,
         has_path_val: true,
         show_feedback: false,
-        show_spinner:true,
+        show_spinner: true,
         msg: "none",
         color: "default",
         error_msg: "default",
@@ -307,10 +302,7 @@ export default {
 
           res.data.data.forEach((ele) => {
             this.filteredContributions.push({
-              counter:
-                res.data.data.indexOf(
-                  ele
-                ) + 1,
+              counter: res.data.data.indexOf(ele) + 1,
               amount_deposited: ele.amount_deposited,
               id: ele.id,
               approve: ele.approve,
@@ -334,12 +326,35 @@ export default {
         })
         .finally(() => {
           this.loading_filter = false;
-          this.year = null;
-          this.status = null;
-          this.month = null;
-          this.payment_item_id = null;
-          this.payment_category_id = null
         });
+    },
+
+    setFilterUrl(payment_category, payment_item, year, month, status) {
+      console.log(payment_category);
+      if (payment_category != null && payment_item != null) {
+        this.$router.push({
+          path: `/dashboard/contributions`,
+          query: { category: payment_category, item: payment_item },
+        });
+      }
+      if (year != null) {
+        this.$router.push({
+          path: `/dashboard/contributions`,
+          query: { category: payment_category, item: payment_item, year: year },
+        });
+      }
+      if (month != null) {
+        this.$router.push({
+          path: `/dashboard/contributions`,
+          query: { category: payment_category, item: payment_item, month: month },
+        });
+      }
+      if (status != null) {
+        this.$router.push({
+          path: `/dashboard/contributions`,
+          query: { category: payment_category, item: payment_item, status:status },
+        });
+      }
     }
   },
   components: {

@@ -367,9 +367,6 @@ export default {
           });
         })
         .finally(() => {
-          this.year = null;
-          this.month = null;
-          this.status = null;
           this.loading_filter = false;
         });
     },

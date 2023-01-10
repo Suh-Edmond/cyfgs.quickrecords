@@ -261,7 +261,6 @@ export default {
             });
           });
         }
-        this.status = null;
       });
 
       return this.filtered_items;

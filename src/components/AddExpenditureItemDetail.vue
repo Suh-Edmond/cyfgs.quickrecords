@@ -33,12 +33,7 @@
             outlined
             dense
             type="number"
-            standout
-            bottom-slots
           >
-            <template v-slot:hint>
-              Amount Spent must not be more than Amount Given
-            </template>
           </q-input>
         </div>
         <div class="q-mb-md">
@@ -236,14 +231,13 @@ export default {
 
   computed: {
     validateForm() {
-      return this.expenditure_item_detail.amount_given === null ||
-        this.expenditure_item_detail.name === null ||
-        this.expenditure_item_detail.amount_spent === null ||
-        this.expenditure_item_detail.amount_given <
-          this.expenditure_item_detail.amount_spent
+      return this.expenditure_item_detail.amount_given == null ||
+        this.expenditure_item_detail.name == null ||
+        this.expenditure_item_detail.amount_spent == null
         ? true
         : false;
     },
+
     getEditState() {
       return this.$store.getters.getEditState;
     },
@@ -289,9 +283,9 @@ export default {
       this.expenditure_item_detail.amount_spent = 0;
       this.expenditure_item_detail.amount_given = 0;
       this.expenditure_item_detail.comment = null;
-      this.expenditure_item_detail.expenditure_item_id = null;
+      // this.expenditure_item_detail.expenditure_item_id = null;
       this.expenditure_item_detail.picture = null;
-      this.expenditure_item_detail.id = null;
+      // this.expenditure_item_detail.id = null;
 
       return this.expenditure_item_detail;
     },

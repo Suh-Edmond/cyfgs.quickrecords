@@ -15,6 +15,7 @@ export default {
         error_msg: "An Error occurred! Could not fetch income activities",
         has_commit: true,
         show_feedback: false,
+        show_spinner:true,
         commit: "SET_INCOME_ACTIVITIES",
         to_be_store_data: {
           required: false,

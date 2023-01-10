@@ -16,7 +16,19 @@
         </div>
         <div>
           <label for="credential" class="form_field">Date <span class="text-red">*</span></label>
-          <q-input v-model="expenditure_item.date" outlined dense type="date" class="q-mb-md" />
+          <q-input v-model="expenditure_item.date"  outlined dense class="q-mb-md">
+            <template v-slot:append>
+              <q-icon name="event" class="cursor-pointer">
+                <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                  <q-date v-model="expenditure_item.date">
+                    <div class="row items-center justify-end">
+                      <q-btn v-close-popup label="Close" color="primary" flat />
+                    </div>
+                  </q-date>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
         </div>
         <div>
           <label for="credential" class="form_field">Comment</label>
@@ -44,25 +56,25 @@
       <div class="q-mb-md">
         <label for="expenditure_category_name" class="field">Expenditure Category:
           <span class="field_value q-pl-md">{{
-              getCurrentExpenditureCategory.name
+            getCurrentExpenditureCategory.name
           }}</span></label>
       </div>
       <div class="q-mb-md">
         <label for="expenditure_item" class="field">Expenditure Item:
           <span class="field_value item_value">{{
-              getUpdatedExpenditureFromState.name
+            getUpdatedExpenditureFromState.name
           }}</span></label>
       </div>
       <div class="q-mb-md">
         <label for="venue" class="field">Venue:
           <span class="field_value item_venue">{{
-              getUpdatedExpenditureFromState.venue
+            getUpdatedExpenditureFromState.venue
           }}</span></label>
       </div>
       <div class="q-mb-md">
         <label for="date" class="field">Date:
           <span class="field_value item_date">{{
-              getUpdatedExpenditureFromState.date
+            getUpdatedExpenditureFromState.date
           }}</span></label>
       </div>
       <div class="q-mb-md">
@@ -251,7 +263,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-
 .form_field {
   font-family: "Roboto";
   font-style: normal;

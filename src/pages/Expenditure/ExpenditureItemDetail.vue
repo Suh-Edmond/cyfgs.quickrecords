@@ -2,86 +2,42 @@
   <q-page>
     <!-- spinners -->
     <div class="flex justify-center">
-      <q-spinner-ios
-        color="primary"
-        size="2em"
-        class="q-mb-lg"
-        v-if="getLoadingState"
-      />
+      <q-spinner-ios color="primary" size="2em" class="q-mb-lg" v-if="getLoadingState" />
     </div>
 
-    <NotFound
-      :message="getNotFoundMsg"
-      v-if="getExpenditureItemDetails.length == 0 && !getLoadingState"
-    ></NotFound>
+    <NotFound :message="getNotFoundMsg" v-if="getExpenditureItemDetails.length == 0 && !getLoadingState"></NotFound>
 
-    <div v-if="getExpenditureItemDetails.length > 0 && !getLoadingState">
+    <div v-if="getExpenditureItemDetails.length > 0">
       <!-- header for filter categories -->
-      <div
-        class="row q-ml-xs q-pt-xs"
-        :class="$q.screen.lg ? 'q-pa-sm' : ''"
-        :style="
-          $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-        "
-      >
+      <div class="row q-ml-xs q-pt-xs" :class="$q.screen.lg ? 'q-pa-sm' : ''" :style="
+        $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+      ">
         <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
-          <q-select
-            v-model="status"
-            outlined
-            dense
-            :options="statuses"
-            label="Select Status"
-            @input="filterItems"
-          />
+          <q-select v-model="status" outlined dense :options="statuses" label="Select Status" @input="filterItems" />
         </div>
         <q-space />
         <div class="button q-pb-xs">
-          <q-btn
-            :label="label_download"
-            :loading="loading"
-            :color="color_print"
-            :disabled="false"
-            no-caps
-            icon-right="print"
-            @click="downloadExpenditureItemDetails"
-          ></q-btn>
+          <q-btn :label="label_download" :loading="loading" :color="color_print" :disabled="false" no-caps
+            icon-right="print" @click="downloadExpenditureItemDetails"></q-btn>
         </div>
       </div>
       <!-- table for categories -->
       <div>
         <div class="row q-pt-sm">
           <div class="col-md-12 col-xs-12 col-sm-12" v-show="!start_filter">
-            <CategoryTable
-              :columns="columns"
-              :data="getExpenditureItemDetails"
-              :label="label"
-              :message="message"
-              :title="getExpenditureItemName"
-              :show_payment_category="false"
-              :show_payment_item="false"
-              :show_expenditure_category="false"
-              :show_expenditure_item="false"
-              :show_expenditure_item_detail="true"
-              @edit-expenditure-item-detail="editExpenditureItemDetail"
-            >
+            <CategoryTable :columns="columns" :data="getExpenditureItemDetails" :label="label" :message="message"
+              :title="getExpenditureItemName" :show_payment_category="false" :show_payment_item="false"
+              :show_expenditure_category="false" :show_expenditure_item="false" :show_expenditure_item_detail="true"
+              @edit-expenditure-item-detail="editExpenditureItemDetail">
             </CategoryTable>
           </div>
 
           <!-- table for filtered results -->
           <div class="col-md-12 col-xs-12 col-sm-12" v-show="start_filter">
-            <CategoryTable
-              :columns="columns"
-              :data="filtered_items"
-              :label="label"
-              :message="message"
-              :title="getExpenditureItemName"
-              :show_payment_category="false"
-              :show_payment_item="false"
-              :show_expenditure_category="false"
-              :show_expenditure_item="false"
-              :show_expenditure_item_detail="true"
-              @edit-expenditure-item-detail="editExpenditureItemDetail"
-            >
+            <CategoryTable :columns="columns" :data="filtered_items" :label="label" :message="message"
+              :title="getExpenditureItemName" :show_payment_category="false" :show_payment_item="false"
+              :show_expenditure_category="false" :show_expenditure_item="false" :show_expenditure_item_detail="true"
+              @edit-expenditure-item-detail="editExpenditureItemDetail">
             </CategoryTable>
           </div>
         </div>
@@ -162,33 +118,33 @@ export default {
   computed: {
     getExpenditureItemDetails() {
       let data = [];
-      if(this.$store.getters.getExpenditureItemDetails != null){
+      if (this.$store.getters.getExpenditureItemDetails != null) {
         this.$store.getters.getExpenditureItemDetails.data.forEach((ele) => {
-        data.push({
-          counter:
-            this.$store.getters.getExpenditureItemDetails.data.indexOf(ele) + 1,
-          name: ele.name,
-          amount_given: ele.amount_given,
-          amount_spent: ele.amount_spent,
-          balance: ele.balance,
-          type: "EXPENDITURE_DETAILS",
-          id: ele.id,
-          expenditure_item_id: ele.expenditure_item_id,
-          comment: ele.comment,
-          approve: ele.approve,
-          created_at: ele.created_at,
-          updated_at: ele.updated_at,
-          updated_by: ele.updated_by,
-          total_item_amount:
-            this.$store.getters.getExpenditureItemDetails.total_item_amount,
-          total_amount_given:
-            this.$store.getters.getExpenditureItemDetails.total_amount_given,
-          total_amount_spent:
-            this.$store.getters.getExpenditureItemDetails.total_amount_spent,
-          total_balance:
-            this.$store.getters.getExpenditureItemDetails.total_balance,
+          data.push({
+            counter:
+              this.$store.getters.getExpenditureItemDetails.data.indexOf(ele) + 1,
+            name: ele.name,
+            amount_given: ele.amount_given,
+            amount_spent: ele.amount_spent,
+            balance: ele.balance,
+            type: "EXPENDITURE_DETAILS",
+            id: ele.id,
+            expenditure_item_id: ele.expenditure_item_id,
+            comment: ele.comment,
+            approve: ele.approve,
+            created_at: ele.created_at,
+            updated_at: ele.updated_at,
+            updated_by: ele.updated_by,
+            total_item_amount:
+              this.$store.getters.getExpenditureItemDetails.total_item_amount,
+            total_amount_given:
+              this.$store.getters.getExpenditureItemDetails.total_amount_given,
+            total_amount_spent:
+              this.$store.getters.getExpenditureItemDetails.total_amount_spent,
+            total_balance:
+              this.$store.getters.getExpenditureItemDetails.total_balance,
+          });
         });
-      });
       }
       return data;
     },
@@ -235,8 +191,15 @@ export default {
     },
 
     filterItems() {
-      this.filtered_items = [];
+      let expenditure_category = this.$store.getters.getCurrentExpenditureCategory;
       let expenditure_item = this.$store.getters.getCurrentExpenditureItem;
+      this.filtered_items = [];
+
+      this.$router.push({
+        path: `/dashboard/expenditure-categories/${expenditure_category.id}/items/${expenditure_item.id}/details`,
+        query: {status: this.status },
+      });
+
       let payload = {
         url: this.setFilterItemActionUrl(this.status, expenditure_item.id),
         msg: "none",
@@ -246,6 +209,7 @@ export default {
           "An Error occurred! Could not fetch expenditure item details",
         has_commit: false,
         show_feedback: false,
+        show_spinner: true,
         commit: "none",
         to_be_store_data: {
           required: false,
@@ -301,4 +265,6 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+
+</style>

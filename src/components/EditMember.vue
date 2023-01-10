@@ -102,7 +102,7 @@
             <q-spinner-ios color="primary" size="1.7em" v-if="show_spinner" />
           </div>
           <div class="q-mx-sm">
-            <q-list v-if="!show_spinner">
+            <q-list>
               <q-item v-for="role in user_roles" :key="role.name" v-ripple class="q-mb-sm">
                 <q-item-section avatar v-if="role.name == 'MEMBER'">
                   <q-avatar color="primary" text-color="white" size="35px">
@@ -415,6 +415,7 @@ export default {
     },
 
     getUserRoles(id) {
+      this.show_spinner = true;
       let payload = {
         url: `/api/protected/roles/users/${id}`,
         msg: "none",
@@ -424,6 +425,8 @@ export default {
         to_on_fail: "none",
         error_msg: "An Error occurred! Please try again",
         has_commit: false,
+        show_feedback:false,
+        show_spinner:false,
         commit: "none",
         to_be_store_data: {
           required: false,
@@ -432,7 +435,6 @@ export default {
         },
       };
       this.can_edit_user_role = this.checkCanEditUserRole();
-      this.show_spinner = true;
       if (this.can_edit_user_role) {
         this.$store
           .dispatch("getRequest", payload)

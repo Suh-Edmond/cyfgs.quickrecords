@@ -29,7 +29,19 @@
           <label for="credential" class="form_field"
             >Date <span class="text-red">*</span></label
           >
-          <q-input v-model="income_activity.date" outlined dense type="date" />
+          <q-input v-model="income_activity.date"  outlined dense>
+            <template v-slot:append>
+              <q-icon name="event" class="cursor-pointer">
+                <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                  <q-date v-model="income_activity.date">
+                    <div class="row items-center justify-end">
+                      <q-btn v-close-popup label="Close" color="primary" flat />
+                    </div>
+                  </q-date>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
         </div>
         <div class="q-mb-md">
           <label for="credential" class="form_field">Description</label>

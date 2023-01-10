@@ -15,7 +15,7 @@
       v-if="getIncomeActivities.length == 0 && !getLoadingState"
     ></NotFound>
 
-    <div v-if="getIncomeActivities.length > 0 && !getLoadingState">
+    <div v-if="getIncomeActivities.length > 0">
       <!-- header for filter categories -->
       <div
         class="row q-ml-xs q-pt-xs"
@@ -330,6 +330,7 @@ export default {
         url: `/api/protected/organisations/income-activities/search?organisation_id=${id}&month=${this.month}&year=${this.year}&status=${this.status}`,
         has_path_val: true,
         show_feedback: false,
+        show_spinner:true,
         msg: "none",
         color: "default",
         error_msg: "default",

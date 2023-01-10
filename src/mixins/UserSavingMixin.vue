@@ -15,6 +15,7 @@ export default {
         error_msg: "An Error occurred! Could not fetch members savings",
         has_commit: true,
         show_feedback: false,
+        show_spinner:true,
         commit: "SET_ORGANISATION_MEMBERS_SAVINGS",
         to_be_store_data: {
           required: false,
@@ -36,6 +37,7 @@ export default {
         error_msg: "An Error occurred! Could not fetch member savings",
         has_commit: true,
         show_feedback: false,
+        show_spinner:true,
         commit: "SET_MEMBER_SAVINGS",
         to_be_store_data: {
           required: false,

@@ -14,6 +14,7 @@ export default {
         url: `/api/protected/expenditure-categories/${category.id}/expenditure-items?status=${0}`,//using status 0 which is the unapproved
         has_path_val: true,
         show_feedback: false,
+        show_spinner:true,
         msg: "none",
         color: "default",
         error_msg: "default",

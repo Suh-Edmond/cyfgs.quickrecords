@@ -315,6 +315,7 @@ export default {
         error_msg: "An Error occurred! Please try again",
         has_commit: false,
         commit: "none",
+        show_spinner:false,
         to_be_store_data: {
           required: false,
           has_value: false,

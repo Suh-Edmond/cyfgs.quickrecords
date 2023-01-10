@@ -48,14 +48,14 @@
             </label>
             <div class="q-pa-xs">
               <span class="q-pl-sm title">{{ item.name }}</span>
-              <span class="q-pl-sm">
-                <q-icon size="1.5em" name="chevron_right" color="primary" v-if="has_intermediate_tab" /></span>
-              <span class="q-pl-sm title" v-if="has_intermediate_tab">{{
+              <span class="q-pl-sm" v-if="has_intermediate_tab">
+                <q-icon size="1.5em" name="chevron_right" color="primary" /></span>
+              <span class="q-pl-sm title">{{
                   intermediate_tab
               }}</span>
-              <span class="q-pl-sm">
-                <q-icon size="1.5em" name="chevron_right" color="primary" v-if="has_intermediate_tab2" /></span>
-              <span class="q-pl-sm title" v-if="has_intermediate_tab2">{{
+              <span class="q-pl-sm" v-if="has_intermediate_tab2">
+                <q-icon size="1.5em" name="chevron_right" color="primary" /></span>
+              <span class="q-pl-sm title" >{{
                   intermediate_tab2
               }}</span>
             </div>

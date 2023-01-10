@@ -15,7 +15,7 @@
       v-if="getData.length == 0 && !getLoadingState"
     ></NotFound>
 
-    <div v-if="getData.length > 0 && !getLoadingState">
+    <div v-if="getData.length > 0">
       <!-- header for filter categories -->
       <div
         class="row q-ml-xs q-pt-xs"
@@ -217,6 +217,7 @@ export default {
         error_msg: "An Error occurred! Could not fetch payment categories",
         has_commit: false,
         show_feedback: false,
+        show_spinner:true,
         commit: "none",
         to_be_store_data: {
           required: false,

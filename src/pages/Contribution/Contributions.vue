@@ -286,6 +286,7 @@ export default {
         url: `/api/protected/organisation/contributions/search?payment_item_id=${this.payment_item_id.value}&month=${this.month}&year=${this.year}&status=${this.status}`,
         has_path_val: true,
         show_feedback: false,
+        show_spinner:true,
         msg: "none",
         color: "default",
         error_msg: "default",

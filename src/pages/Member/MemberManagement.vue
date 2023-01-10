@@ -17,7 +17,7 @@
       ></NotFound>
     </div>
 
-    <div v-if="getMembers.length > 0 && !getLoadingState">
+    <div v-if="getMembers.length > 0">
       <!-- header for filter members -->
       <div
         class="row q-ml-xs"
@@ -261,6 +261,7 @@ export default {
         url: `/api/protected/organisations/filter-users?organisation_id=${id}&gender=${this.gender}&year=${this.year}`,
         has_path_val: true,
         show_feedback: false,
+        show_spinner:true,
         msg: "none",
         color: "default",
         error_msg: "default",

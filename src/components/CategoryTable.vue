@@ -425,6 +425,7 @@ export default {
         url: `/api/protected/payment-categories/${id}/payment-items`,
         has_path_val: true,
         show_feedback: false,
+        show_spinner:true,
         msg: "none",
         color: "default",
         error_msg: "default",
@@ -448,6 +449,7 @@ export default {
         error_msg: "An Error occurred! Could not fetch payment categories",
         has_commit: true,
         show_feedback: false,
+        show_spinner:true,
         commit: "SET_EXPENDITURE_CATEGORIES",
         to_be_store_data: {
           required: false,

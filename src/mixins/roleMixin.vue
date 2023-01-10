@@ -10,6 +10,7 @@ export default {
         status:"none",
         error_msg: "An Error occurred! Please try again",
         has_commit: false,
+        show_spinner:true,
         commit: "none",
         to_be_store_data: {
           required: false,

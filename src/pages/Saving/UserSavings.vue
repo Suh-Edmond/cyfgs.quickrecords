@@ -15,7 +15,7 @@
       v-if="getMemberSavings.length == 0 && !getLoadingState"
     ></NotFound>
 
-    <div v-if="getMemberSavings.length > 0 && !getLoadingState">
+    <div v-if="getMemberSavings.length > 0">
       <!-- header for filter categories -->
       <div
         class="row q-ml-xs q-pt-xs"

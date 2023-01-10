@@ -513,11 +513,11 @@ export default {
 
       SessionStorage.remove("intermediate_tab");
 
-      SessionStorage.set("has_intermediate_tab", false);
+      SessionStorage.remove("has_intermediate_tab", false);
 
       SessionStorage.remove("intermediate_tab2");
 
-      SessionStorage.set("has_intermediate_tab2", false);
+      SessionStorage.remove("has_intermediate_tab2", false);
     },
     updateRightDrawer({ right, current_tab, data }) {
       this.current_tab = current_tab;

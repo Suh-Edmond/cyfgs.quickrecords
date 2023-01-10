@@ -18,6 +18,7 @@ export default {
         error_msg: "An Error occurred! Could not fetch payment categories",
         has_commit: true,
         show_feedback: false,
+        show_spinner:true,
         commit: "SET_EXPENDITURE_CATEGORIES",
         to_be_store_data: {
           required: false,

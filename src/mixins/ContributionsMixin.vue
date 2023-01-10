@@ -17,6 +17,7 @@ export default {
         url: `/api/protected/contributions/payment-items/${id}`,
         has_path_val: true,
         show_feedback: false,
+        show_spinner:true,
         msg: "none",
         color: "default",
         error_msg: "default",

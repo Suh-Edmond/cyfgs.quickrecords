@@ -384,7 +384,7 @@
                 icon="mail"
                 size="md"
                 :href="
-                  'mailto:you@example.com?subject=Hey%20there&cc=somebody@example.com&bcc=somebody.else@example.com&body=Hey%20there,%20how%20have%20you%20been?'
+                  'mailto:'+member_to_be_invited.email+'?subject=Invitation%20to%20Join%20Financial%20Assistance&cc=&bcc=&body=Hello%20there,%20Your%20have%20been%20invited%20to%20join%20Financial%20Assistance%20in%20order%20to%20better%20manage%20your%20financial%20transaction.%20Click%20the%20link%20to%20join:%20%20'+redirect_url+'%20If%20you%20dont%20recognise%20the%20sender,%20simply%20ignore%20this%20message.'
                 "
               >
                 <q-tooltip>Invite via email</q-tooltip></q-btn
@@ -531,7 +531,7 @@ export default {
 
     whatsappInvite() {
       console.log(process.env.REDIRECT_URL);
-      let msg = "You have been Invite to join Financial Assistance to better manage your finances. Click on the link to join :"+this.redirect_url
+      let msg = "You have been Invite to join Financial Assistance to better manage your finances. Click on the link to join : "+this.redirect_url
       let whatsapp_url = `https://api.whatsapp.com/send?phone=${this.member_to_be_invited.telephone}&text=${encodeURIComponent(msg)}`
       window.open(whatsapp_url);
     },

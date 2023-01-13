@@ -101,7 +101,7 @@
           <div class="flex justify-center">
             <q-spinner-ios color="primary" size="1.7em" v-if="show_spinner" />
           </div>
-          <div class="q-mx-sm">
+          <div class="q-mx-sm" v-if="!show_spinner">
             <q-list>
               <q-item v-for="role in user_roles" :key="role.name" v-ripple class="q-mb-sm">
                 <q-item-section avatar v-if="role.name == 'MEMBER'">

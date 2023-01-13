@@ -44,7 +44,7 @@
           <q-td key="date" :props="props" v-if="show_expenditure_item">
             {{ getFormatedDate(props.row.date) }}
           </q-td>
-          <q-td key="action" :props="props">
+          <q-td key="action" :props="props" v-show="show_expenditure_item || show_expenditure_category || show_expenditure_item_detail">
             <q-btn flat round>
               <q-icon name="more_vert" size="xs" color="primary" class="menu_icon" clickable>
                 <q-menu>
@@ -130,14 +130,36 @@
               </q-icon>
             </q-btn>
           </q-td>
+          <q-td :props="props" v-show="show_expenditure_item || show_expenditure_item_detail && checkTreasurerRole()">
+            <q-btn
+              class="approve_btn"
+              size="md"
+              label="Approve"
+              round
+              no-caps
+              @click="approvedRecord()"
+            />
+            <br>
+          </q-td>
+          <q-td :props="props" v-show="show_expenditure_item || show_expenditure_item_detail && checkTreasurerRole()">
+            <q-btn
+              class="decline_btn"
+              size="md"
+              label="Decline"
+              round
+              no-caps
+              @click="declineRecord()"
+            />
+            <br>
+          </q-td>
         </q-tr>
       </template>
-      <template v-slot:bottom>
+      <!-- <template v-slot:bottom-right>
         <q-tr>
           <q-td class="field_total">Total Amount (XAF): </q-td>
           <q-td>10,156</q-td>
         </q-tr>
-      </template>
+      </template> -->
       <template v-slot:top-left>
         <div class="text-h6 title" v-show="show_payment_item">
           Category: {{ title }}
@@ -184,7 +206,7 @@
   </div>
 </template>
 <script>
-import { SessionStorage } from "quasar";
+import { LocalStorage, SessionStorage } from "quasar";
 import PaymentCategoryMixinVue from "src/mixins/PaymentCategoryMixin.vue";
 import expenditureItemMixinVue from "src/mixins/expenditureItemMixin.vue";
 import ExpenditureItemDetailMixinVue from "src/mixins/ExpenditureItemDetailMixin.vue";
@@ -239,6 +261,7 @@ export default {
       required: false,
     },
   },
+
   data() {
     return {
       label_download: "Print",
@@ -262,6 +285,16 @@ export default {
 
   },
   methods: {
+    checkTreasurerRole() {
+      const treasurer_role = LocalStorage.getItem("data").roles.find((role) => role.name == 'TREASURER');
+      return treasurer_role == undefined
+    },
+    approvedRecord(){
+      console.log("approved");
+    },
+    declineRecord() {
+      console.log("decline");
+    },
     onViewCategory(categories) {
       let payload = {
         data: categories,
@@ -524,5 +557,15 @@ export default {
 .dialog_button {
   font-size: 9px;
   font-weight: 300;
+}
+
+.approve_btn {
+  background-color: $secondary;
+  color: white;
+}
+
+.decline_btn {
+  background-color: $orange;
+  color: white;
 }
 </style>

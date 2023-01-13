@@ -307,7 +307,7 @@
       </template>
     </q-table>
 
-    <!-- confirmation dialog -->
+    <!-- confirmation dialog for delete -->
     <q-dialog v-model="dialog" v-if="dialog">
       <q-card>
         <q-card-section>

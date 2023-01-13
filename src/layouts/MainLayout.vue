@@ -38,7 +38,6 @@
               v-ripple
               :active-class="item.name == 'Dashboard' ? 'item' : 'item_text'"
               @click="setItem({ name: 'Dashboard', selected: true }, false)"
-              v-if="checkRole(['PRESIDENT', 'FINANCIAL_SECRETARY', 'TREASURER'])"
               to="/dashboard"
             >
               <q-item-section

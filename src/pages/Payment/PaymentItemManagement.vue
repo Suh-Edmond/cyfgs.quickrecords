@@ -15,7 +15,7 @@
       v-if="getPaymentItems.length == 0 && !getLoadingState"
     ></NotFound>
 
-    <div v-if="getPaymentItems.length > 0">
+    <div v-if="getPaymentItems.length > 0 && !getLoadingState">
       <!-- header for filter categories -->
       <div
         class="row q-ml-xs q-pt-xs"

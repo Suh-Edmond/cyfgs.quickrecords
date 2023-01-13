@@ -7,7 +7,7 @@
 
     <NotFound :message="getNotFoundMsg" v-if="getExpenditureItemDetails.length == 0 && !getLoadingState"></NotFound>
 
-    <div v-if="getExpenditureItemDetails.length > 0">
+    <div v-if="getExpenditureItemDetails.length > 0 && !getLoadingState">
       <!-- header for filter categories -->
       <div class="row q-ml-xs q-pt-xs" :class="$q.screen.lg ? 'q-pa-sm' : ''" :style="
         $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''

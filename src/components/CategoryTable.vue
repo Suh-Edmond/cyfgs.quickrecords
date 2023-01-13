@@ -132,6 +132,12 @@
           </q-td>
         </q-tr>
       </template>
+      <template v-slot:bottom>
+        <q-tr>
+          <q-td class="field_total">Total Amount (XAF): </q-td>
+          <q-td>10,156</q-td>
+        </q-tr>
+      </template>
       <template v-slot:top-left>
         <div class="text-h6 title" v-show="show_payment_item">
           Category: {{ title }}
@@ -500,6 +506,17 @@ export default {
   color: $primary;
 }
 
+.field_total {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 25px;
+  align-items: center;
+  letter-spacing: 0.01em;
+  text-transform: capitalize;
+  color: $dark;
+}
 .title {
   font-size: small;
 }

@@ -14,7 +14,7 @@
 
 
     <!-- header for filter categories -->
-    <div v-if="getData.length > 0">
+    <div v-if="getData.length > 0 && !getLoadingState">
       <div
         class="row q-ml-xs q-pt-xs"
         :class="$q.screen.lg ? 'q-pa-sm' : ''"

@@ -17,7 +17,7 @@
       ></NotFound>
     </div>
 
-    <div v-if="getMembers.length > 0">
+    <div v-if="getMembers.length > 0 && !getLoadingState">
       <!-- header for filter members -->
       <div
         class="row q-ml-xs"

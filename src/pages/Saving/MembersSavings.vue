@@ -10,7 +10,7 @@
         v-if="getMembersSavings.length == 0 && !getLoadingState"
       ></NotFound>
       <!-- header for filter categories -->
-      <div v-if="getMembersSavings.length > 0">
+      <div v-if="getMembersSavings.length > 0 && !getLoadingState">
         <div
           class="row q-ml-xs q-pt-xs"
           :class="$q.screen.lg ? 'q-pa-sm' : ''"

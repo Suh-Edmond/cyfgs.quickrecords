@@ -7,7 +7,7 @@
 
     <NotFound :message="not_found_msg" v-if="getMemberSavings.length == 0 && !getLoadingState"></NotFound>
 
-    <div v-if="getMemberSavings.length > 0">
+    <div v-if="getMemberSavings.length > 0 && !getLoadingState">
       <!-- header for filter categories -->
       <div class="row q-ml-xs q-pt-xs" :class="$q.screen.lg ? 'q-pa-sm' : ''" :style="
         $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''

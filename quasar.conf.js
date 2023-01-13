@@ -8,10 +8,9 @@
 // Configuration for your app
 // https://v1.quasar.dev/quasar-cli/quasar-conf-js
 
-
 const ESLintPlugin = require("eslint-webpack-plugin");
 
-module.exports = function (/* ctx */) {
+module.exports = function (ctx) {
   return {
     // https://v1.quasar.dev/quasar-cli/supporting-ts
     supportTS: false,
@@ -22,7 +21,7 @@ module.exports = function (/* ctx */) {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://v1.quasar.dev/quasar-cli/boot-files
-    boot: ["i18n", "axios", ],
+    boot: ["i18n", "axios"],
 
     // https://v1.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
     css: ["app.scss"],
@@ -44,7 +43,14 @@ module.exports = function (/* ctx */) {
     // Full list of options: https://v1.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
       vueRouterMode: "history", // available values: 'hash', 'history'
-      // env: require("dotenv").config().parsed,
+      env: {
+
+        API_BASE_URL: ctx.dev ? "http://localhost:8000" : "financial-assistant-api.com",
+        CLIENT_SERVER: ctx.dev ? "http://localhost:7000" : "financial-assistant.com",
+        REDIRECT_URL: ctx.dev ? "http://localhost:7000/auth/login" : "financial-assistant.com/auth/login",
+        FILE_UPLOAD_URL: ctx.dev ? "http://localhost:9000": "file-storage-web-api"
+
+      },
       // env: envparser(),
       // transpile: false,
 
@@ -82,7 +88,6 @@ module.exports = function (/* ctx */) {
       open: true, // opens browser window automatically
     },
 
-
     // https://v1.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-framework
     framework: {
       iconSet: "material-icons", // Quasar icon set
@@ -102,12 +107,12 @@ module.exports = function (/* ctx */) {
       // directives: [],
 
       // Quasar plugins
-      plugins: [
-        'Notify', 'LocalStorage','SessionStorage'
-      ],
+      plugins: ["Notify", "LocalStorage", "SessionStorage"],
       config: {
-        notify: { /* look at QUASARCONFOPTIONS from the API card (bottom of page) */ }
-      }
+        notify: {
+          /* look at QUASARCONFOPTIONS from the API card (bottom of page) */
+        },
+      },
     },
 
     // animations: 'all', // --- includes all animations

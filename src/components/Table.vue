@@ -134,6 +134,23 @@
                         <q-item-label class="edit">Edit</q-item-label>
                       </q-item-section>
                     </q-item>
+                    <q-separator v-show="checkPresidentRole()" />
+                    <!-- invite members to the app -->
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onInviteMember(props.row)"
+                      v-show="checkPresidentRole()"
+                    >
+                      <q-item-section avatar>
+                        <span>
+                          <q-icon name="share" size="xs" class="edit" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="edit">Invite Member</q-item-label>
+                      </q-item-section>
+                    </q-item>
 
                     <!-- edit, view income activities -->
                     <q-item
@@ -348,10 +365,64 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+
+    <!-- dialog for invite members. -->
+    <q-dialog v-model="show_invite" position="top">
+      <q-card>
+        <q-card-section>
+          <div class="text-h6 q-pa-sm heading">
+            Invite your Team Members to use Financial Assistance
+          </div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none" v-if="show_invite">
+          <div class="row q-gutter-xl justify-center">
+            <div>
+              <q-btn
+                round
+                color="dark"
+                icon="mail"
+                size="md"
+                :href="
+                  'mailto:you@example.com?subject=Hey%20there&cc=somebody@example.com&bcc=somebody.else@example.com&body=Hey%20there,%20how%20have%20you%20been?'
+                "
+              >
+                <q-tooltip>Invite via email</q-tooltip></q-btn
+              >
+            </div>
+            <div>
+              <q-btn
+                round
+                color="secondary"
+                icon="whatsapp"
+                size="md"
+                @click="whatsappInvite()"
+              />
+              <q-tooltip>Invite via Whatsapp</q-tooltip>
+            </div>
+            <div>
+              <q-btn
+                round
+                color="primary"
+                icon="facebook"
+                size="md"
+                @click="faceBookInvite()"
+              />
+              <q-tooltip>Invite via Facebook</q-tooltip>
+            </div>
+          </div>
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn flat label="Close" color="primary" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 <script>
 import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
+import { LocalStorage } from "quasar";
 import moment from "moment";
 
 export default {
@@ -420,6 +491,9 @@ export default {
         rowsPerPage: 15, // current rows per page being displayed
       },
       deleted_row: null,
+      show_invite: false,
+      member_to_be_invited: null,
+      redirect_url: process.env.REDIRECT_URL,
     };
   },
   methods: {
@@ -446,6 +520,29 @@ export default {
       this.$store.dispatch("getRequest", payload).then((res) => {
         this.$emit("update-member", { data: res.data, tab: "EditMember" });
       });
+    },
+
+    onInviteMember(data) {
+      this.show_invite = true;
+      this.member_to_be_invited = data;
+    },
+
+    emailInvite() {},
+
+    whatsappInvite() {
+      console.log(process.env.REDIRECT_URL);
+      let msg = "You have been Invite to join Financial Assistance to better manage your finances. Click on the link to join :"+this.redirect_url
+      let whatsapp_url = `https://api.whatsapp.com/send?phone=${this.member_to_be_invited.telephone}&text=${encodeURIComponent(msg)}`
+      window.open(whatsapp_url);
+    },
+
+    faceBookInvite() {},
+
+    checkPresidentRole() {
+      const president_role = LocalStorage.getItem("data").roles.find(
+        (role) => role.name == "PRESIDENT"
+      );
+      return president_role != undefined;
     },
 
     deleteRow(data) {
@@ -580,6 +677,10 @@ export default {
   color: $primary;
 }
 
+.invite {
+  color: $dark;
+}
+
 .warning_image {
   color: yellow;
 }
@@ -594,6 +695,17 @@ export default {
   letter-spacing: 0.01em;
   text-transform: capitalize;
   color: $primary;
+}
+
+.heading {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 25px;
+  align-items: left;
+  letter-spacing: 0.01em;
+  color: $dark;
 }
 
 .title {

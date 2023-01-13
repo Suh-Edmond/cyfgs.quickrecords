@@ -1,8 +1,9 @@
 import { LocalStorage, Notify, Platform } from "quasar";
 import { axios } from "src/boot/axios";
 
-const API_URL = process.env.BASE_URL[0];
-const FILE_UPLOAD_URL = "http://127.0.0.1:9000";
+const API_URL = process.env.API_BASE_URL
+
+const FILE_UPLOAD_URL = process.env.FILE_UPLOAD_URL;
 
 export function handleRequestResponse({}, payload) {
   if (payload.status == "success" && payload.show_feedback) {

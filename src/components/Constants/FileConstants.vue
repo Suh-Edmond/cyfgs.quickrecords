@@ -5,6 +5,7 @@ export default {
     LOGOS: 'LOGOS',
     IMAGES: 'IMAGES',
     PAYMENT_ITEMS: 'PAYMENT_ITEMS'
+
 }
 </script>
 

@@ -116,133 +116,128 @@
                 class="menu_icon"
                 clickable
               >
-                <q-menu>
-                  <q-list>
-                    <!-- edit member -->
-                    <q-item
-                      clickable
-                      v-close-popup
-                      @click="onEditMember(props.row)"
-                      v-show="show_members"
-                    >
-                      <q-item-section avatar>
-                        <span>
-                          <q-icon name="edit" size="xs" class="edit" />
-                        </span>
-                      </q-item-section>
-                      <q-item-section>
-                        <q-item-label class="edit">Edit</q-item-label>
-                      </q-item-section>
-                    </q-item>
-                    <q-separator v-show="checkPresidentRole()" />
-                    <!-- invite members to the app -->
-                    <q-item
-                      clickable
-                      v-close-popup
-                      @click="onInviteMember(props.row)"
-                      v-show="checkPresidentRole()"
-                    >
-                      <q-item-section avatar>
-                        <span>
-                          <q-icon name="share" size="xs" class="edit" />
-                        </span>
-                      </q-item-section>
-                      <q-item-section>
-                        <q-item-label class="edit">Invite Member</q-item-label>
-                      </q-item-section>
-                    </q-item>
+                  <q-menu>
+                    <q-list style="width: 180px" bordered separator>
+                      <!-- edit member -->
+                      <q-item
+                        clickable
+                        v-close-popup
+                        @click="onEditMember(props.row)"
+                        v-show="show_members"
+                      >
+                        <q-item-section avatar>
+                          <span>
+                            <q-icon name="edit" size="xs" class="edit" />
+                          </span>
+                        </q-item-section>
+                        <q-item-section>
+                          <q-item-label class="edit">Edit</q-item-label>
+                        </q-item-section>
+                      </q-item>
 
-                    <!-- edit, view income activities -->
-                    <q-item
-                      clickable
-                      v-close-popup
-                      @click="onEditIncomeActivity(props.row)"
-                      v-show="show_income_activity"
-                    >
-                      <q-item-section avatar>
-                        <span>
-                          <q-icon name="edit" size="xs" class="edit" />
-                        </span>
-                      </q-item-section>
-                      <q-item-section>
-                        <q-item-label class="edit">Edit</q-item-label>
-                      </q-item-section>
-                    </q-item>
+                      <!-- invite members to the app -->
+                      <q-item
+                        clickable
+                        v-close-popup
+                        @click="onInviteMember(props.row)"
+                        v-show="checkPresidentRole()"
+                      >
+                        <q-item-section avatar>
+                          <span>
+                            <q-icon name="share" size="xs" class="edit" />
+                          </span>
+                        </q-item-section>
+                        <q-item-section>
+                          <q-item-label class="edit"
+                            >Invite Member</q-item-label
+                          >
+                        </q-item-section>
+                      </q-item>
 
-                    <q-separator
-                      v-show="show_income_activity && !show_contribution"
-                    />
+                      <!-- edit, view income activities -->
+                      <q-item
+                        clickable
+                        v-close-popup
+                        @click="onEditIncomeActivity(props.row)"
+                        v-show="show_income_activity"
+                      >
+                        <q-item-section avatar>
+                          <span>
+                            <q-icon name="edit" size="xs" class="edit" />
+                          </span>
+                        </q-item-section>
+                        <q-item-section>
+                          <q-item-label class="edit">Edit</q-item-label>
+                        </q-item-section>
+                      </q-item>
 
-                    <q-item
-                      clickable
-                      v-close-popup
-                      @click="onViewIncomeActivity(props.row)"
-                      v-show="show_income_activity"
-                    >
-                      <q-item-section avatar>
-                        <span>
-                          <q-icon name="visibility" size="xs" class="edit" />
-                        </span>
-                      </q-item-section>
-                      <q-item-section>
-                        <q-item-label class="edit">View</q-item-label>
-                      </q-item-section>
-                    </q-item>
+                      <q-item
+                        clickable
+                        v-close-popup
+                        @click="onViewIncomeActivity(props.row)"
+                        v-show="show_income_activity"
+                      >
+                        <q-item-section avatar>
+                          <span>
+                            <q-icon name="visibility" size="xs" class="edit" />
+                          </span>
+                        </q-item-section>
+                        <q-item-section>
+                          <q-item-label class="edit">View</q-item-label>
+                        </q-item-section>
+                      </q-item>
 
-                    <!-- edit and view contributions -->
-                    <q-item
-                      clickable
-                      v-close-popup
-                      @click="onEditContribution(props.row)"
-                      v-show="show_contribution"
-                    >
-                      <q-item-section avatar>
-                        <span>
-                          <q-icon name="edit" size="xs" class="edit" />
-                        </span>
-                      </q-item-section>
-                      <q-item-section>
-                        <q-item-label class="edit">Edit</q-item-label>
-                      </q-item-section>
-                    </q-item>
+                      <!-- edit and view contributions -->
+                      <q-item
+                        clickable
+                        v-close-popup
+                        @click="onEditContribution(props.row)"
+                        v-show="show_contribution"
+                      >
+                        <q-item-section avatar>
+                          <span>
+                            <q-icon name="edit" size="xs" class="edit" />
+                          </span>
+                        </q-item-section>
+                        <q-item-section>
+                          <q-item-label class="edit">Edit</q-item-label>
+                        </q-item-section>
+                      </q-item>
 
-                    <q-separator v-if="show_contribution" />
+                      <q-item
+                        clickable
+                        v-close-popup
+                        @click="onViewContribution(props.row)"
+                        v-show="show_contribution"
+                      >
+                        <q-item-section avatar>
+                          <span>
+                            <q-icon name="visibility" size="xs" class="edit" />
+                          </span>
+                        </q-item-section>
+                        <q-item-section>
+                          <q-item-label class="edit">View</q-item-label>
+                        </q-item-section>
+                      </q-item>
 
-                    <q-item
-                      clickable
-                      v-close-popup
-                      @click="onViewContribution(props.row)"
-                      v-show="show_contribution"
-                    >
-                      <q-item-section avatar>
-                        <span>
-                          <q-icon name="visibility" size="xs" class="edit" />
-                        </span>
-                      </q-item-section>
-                      <q-item-section>
-                        <q-item-label class="edit">View</q-item-label>
-                      </q-item-section>
-                    </q-item>
-
-                    <!-- deleted specify row -->
-                    <q-separator />
-                    <q-item
-                      clickable
-                      v-close-popup
-                      @click="onDeleteMember(props.row)"
-                      v-show="!show_member_savings"
-                    >
-                      <q-item-section avatar>
-                        <span>
-                          <q-icon name="delete" size="xs" color="red" />
-                        </span>
-                      </q-item-section>
-                      <q-item-section>
-                        <q-item-label class="text-red">Delete</q-item-label>
-                      </q-item-section>
-                    </q-item>
-                  </q-list>
-                </q-menu>
+                      <!-- deleted specify row -->
+                      <q-item
+                        clickable
+                        v-close-popup
+                        @click="onDeleteMember(props.row)"
+                        v-show="!show_member_savings"
+                      >
+                        <q-item-section avatar>
+                          <span>
+                            <q-icon name="delete" size="xs" color="red" />
+                          </span>
+                        </q-item-section>
+                        <q-item-section>
+                          <q-item-label class="text-red">Delete</q-item-label>
+                        </q-item-section>
+                      </q-item>
+                    </q-list>
+                  </q-menu>
               </q-icon>
             </q-btn>
 
@@ -267,7 +262,7 @@
                 clickable
               >
                 <q-menu>
-                  <q-list>
+                  <q-list bordered separator>
                     <!-- edit and view savings -->
                     <q-item
                       clickable
@@ -283,7 +278,7 @@
                         <q-item-label class="edit">Edit</q-item-label>
                       </q-item-section>
                     </q-item>
-                    <q-separator v-show="show_savings || show_member_savings" />
+
                     <q-item
                       clickable
                       v-close-popup
@@ -384,7 +379,9 @@
                 icon="mail"
                 size="md"
                 :href="
-                  'mailto:'+member_to_be_invited.email+'?subject=Invitation%20to%20Join%20Financial%20Assistance&cc=&bcc=&body=Hello%20there,%20Your%20have%20been%20invited%20to%20join%20Financial%20Assistance%20in%20order%20to%20better%20manage%20your%20financial%20transaction.%20Click%20the%20link%20to%20join:%20%20'+redirect_url+'%20If%20you%20dont%20recognise%20the%20sender,%20simply%20ignore%20this%20message.'
+                  'mailto:' +
+                  member_to_be_invited.email +
+                  '?subject='+invite_msg_subject+'&cc=&bcc=&body='+invite_msg
                 "
               >
                 <q-tooltip>Invite via email</q-tooltip></q-btn
@@ -394,10 +391,9 @@
               <q-btn
                 round
                 color="secondary"
-                icon="whatsapp"
                 size="md"
                 @click="whatsappInvite()"
-              />
+              ><i class="bi bi-whatsapp"></i></q-btn>
               <q-tooltip>Invite via Whatsapp</q-tooltip>
             </div>
             <div>
@@ -494,6 +490,9 @@ export default {
       show_invite: false,
       member_to_be_invited: null,
       redirect_url: process.env.REDIRECT_URL,
+      invite_msg_subject:"Invitation to Join Financial Assistance",
+      invite_msg: "Hello there! You have been invited to join Financial Assistance in order to better manage your financial transaction.  "+
+       "Click the link to join: "+  process.env.REDIRECT_URL + ".  If you don't recognize the sender, simply ignore this message.",
     };
   },
   methods: {
@@ -531,12 +530,16 @@ export default {
 
     whatsappInvite() {
       console.log(process.env.REDIRECT_URL);
-      let msg = "You have been Invite to join Financial Assistance to better manage your finances. Click on the link to join : "+this.redirect_url
-      let whatsapp_url = `https://api.whatsapp.com/send?phone=${this.member_to_be_invited.telephone}&text=${encodeURIComponent(msg)}`
+      let msg = this.invite_msg_subject +"\n\n"+ this.invite_msg
+      let whatsapp_url = `https://api.whatsapp.com/send?phone=${
+        this.member_to_be_invited.telephone
+      }&text=${encodeURIComponent(msg)}`;
       window.open(whatsapp_url);
     },
 
-    faceBookInvite() {},
+    faceBookInvite() {
+
+    },
 
     checkPresidentRole() {
       const president_role = LocalStorage.getItem("data").roles.find(

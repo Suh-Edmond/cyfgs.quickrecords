@@ -47,7 +47,7 @@ module.exports = function (ctx) {
 
         API_BASE_URL: ctx.dev ? "http://localhost:8000" : "financial-assistant-api.com",
         CLIENT_SERVER: ctx.dev ? "http://localhost:7000" : "financial-assistant.com",
-        REDIRECT_URL: ctx.dev ? "http://localhost:7000/auth/login" : "financial-assistant.com/auth/login",
+        REDIRECT_URL: ctx.dev ? "http://localhost:7000/auth/invite-member" : "financial-assistant.com/auth/invite-member",
         FILE_UPLOAD_URL: ctx.dev ? "http://localhost:9000": "file-storage-web-api"
 
       },

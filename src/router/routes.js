@@ -6,6 +6,7 @@ const routes = [
     meta: {
       middleware: "guest",
       firstTimer: true,
+      enableSignUp:true,
     },
     children: [
       {
@@ -15,6 +16,7 @@ const routes = [
         meta: {
           middleware: "guest",
           firstTimer: true,
+          enableSignUp:true,
         },
       },
       {
@@ -23,9 +25,32 @@ const routes = [
         component: () => import("src/pages/Auth/Register.vue"),
         meta: {
           middleware: "guest",
+          enableSignUp:true,
         },
       },
     ],
+  },
+  {
+    path:"/auth/invite-member",
+    component: () => import("layouts/AuthLayout.vue"),
+    redirect: "/auth/set-password",
+    meta: {
+      middleware: "guest",
+      firstTimer: true,
+    },
+    children: [
+      {
+        name:"Set_Password",
+        path:"/auth/set-password",
+        component: () => import("src/pages/Auth/SetPassword.vue"),
+        meta: {
+          middleware: "guest",
+          firstTimer: true,
+          enableSignUp:false,
+        },
+      }
+    ]
+
   },
   {
     path: "/dashboard",

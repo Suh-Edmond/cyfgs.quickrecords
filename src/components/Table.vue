@@ -529,7 +529,6 @@ export default {
     emailInvite() {},
 
     whatsappInvite() {
-      console.log(process.env.REDIRECT_URL);
       let msg = this.invite_msg_subject +"\n\n"+ this.invite_msg
       let whatsapp_url = `https://api.whatsapp.com/send?phone=${
         this.member_to_be_invited.telephone

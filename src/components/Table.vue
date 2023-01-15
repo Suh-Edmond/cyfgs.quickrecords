@@ -1,14 +1,9 @@
 <template>
   <div class="q-pa-xs">
     <div class="button q-pb-xs"></div>
-    <q-table
-      :data="data"
-      :columns="columns"
-      row-key="index"
-      :table-header-style="{ backgroundColor: '#5384ae', color: '#FFFFFF' }"
-      :filter="filter"
-      :pagination.sync="pagination"
-    >
+    <q-table :data="data" :columns="columns" row-key="index"
+      :table-header-style="{ backgroundColor: '#5384ae', color: '#FFFFFF' }" :filter="filter"
+      :pagination.sync="pagination">
       <template v-slot:top-left>
         <div class="text-h6 title" v-show="show_member_savings">
           All Savings for: {{ title }}
@@ -22,35 +17,19 @@
           <q-td key="counter" :props="props">
             {{ props.row.counter }}
           </q-td>
-          <q-td
-            key="name"
-            :props="props"
-            v-if="!show_contribution || !show_member_contribution"
-          >
+          <q-td key="name" :props="props" v-if="!show_contribution || !show_member_contribution">
             {{ props.row.name }}
           </q-td>
-          <q-td
-            key="user_name"
-            :props="props"
-            v-if="show_contribution || show_member_contribution"
-          >
+          <q-td key="user_name" :props="props" v-if="show_contribution || show_member_contribution">
             {{ props.row.user_name }}
           </q-td>
-          <q-td
-            key="email"
-            :props="props"
-            v-show="show_savings || show_members"
-          >
+          <q-td key="email" :props="props" v-show="show_savings || show_members">
             {{ props.row.email }}
           </q-td>
           <q-td key="gender" :props="props" v-show="show_members">
             {{ props.row.gender }}
           </q-td>
-          <q-td
-            key="telephone"
-            :props="props"
-            v-show="show_savings || show_members"
-          >
+          <q-td key="telephone" :props="props" v-show="show_savings || show_members">
             {{ props.row.telephone }}
           </q-td>
           <q-td key="address" :props="props" v-show="show_members">
@@ -59,48 +38,32 @@
           <q-td key="occupation" :props="props" v-show="show_members">
             {{ props.row.occupation }}
           </q-td>
-          <q-td
-            key="amount_deposited"
-            :props="props"
-            v-show="
-              show_savings ||
-              show_member_savings ||
-              show_contribution ||
-              show_member_contribution
-            "
-          >
+          <q-td key="amount_deposited" :props="props" v-show="
+            show_savings ||
+            show_member_savings ||
+            show_contribution ||
+            show_member_contribution
+          ">
             {{ Number(props.row.amount_deposited).toLocaleString() }}
           </q-td>
           <q-td key="approve" :props="props" v-show="show_member_savings">
             {{ props.row.approve }}
           </q-td>
-          <q-td
-            key="amount"
-            :props="props"
-            v-show="show_income_activity || show_contribution"
-          >
+          <q-td key="amount" :props="props" v-show="show_income_activity || show_contribution">
             {{ Number(props.row.amount).toLocaleString() }}
           </q-td>
-          <q-td
-            key="balance"
-            :props="props"
-            v-show="show_contribution || show_member_contribution"
-          >
+          <q-td key="balance" :props="props" v-show="show_contribution || show_member_contribution">
             {{ Number(props.row.balance).toLocaleString() }}
           </q-td>
           <q-td key="status" :props="props" v-show="show_contribution">
             {{ props.row.status }}
           </q-td>
-          <q-td
-            key="date"
-            :props="props"
-            v-show="
-              show_savings ||
-              show_member_savings ||
-              show_income_activity ||
-              show_contribution
-            "
-          >
+          <q-td key="date" :props="props" v-show="
+            show_savings ||
+            show_member_savings ||
+            show_income_activity ||
+            show_contribution
+          ">
             {{ getFormatedDate(props.row.date) }}
           </q-td>
           <q-td key="venue" :props="props" v-show="show_income_activity">
@@ -108,167 +71,12 @@
           </q-td>
           <q-td key="action" :props="props">
             <!-- button to handle edit, view and delete of row data -->
-            <q-btn flat round v-show="!show_savings && !show_member_savings">
-              <q-icon
-                name="more_vert"
-                size="xs"
-                color="primary"
-                class="menu_icon"
-                clickable
-              >
-                  <q-menu>
-                    <q-list style="width: 180px" bordered separator>
-                      <!-- edit member -->
-                      <q-item
-                        clickable
-                        v-close-popup
-                        @click="onEditMember(props.row)"
-                        v-show="show_members"
-                      >
-                        <q-item-section avatar>
-                          <span>
-                            <q-icon name="edit" size="xs" class="edit" />
-                          </span>
-                        </q-item-section>
-                        <q-item-section>
-                          <q-item-label class="edit">Edit</q-item-label>
-                        </q-item-section>
-                      </q-item>
-
-                      <!-- invite members to the app -->
-                      <q-item
-                        clickable
-                        v-close-popup
-                        @click="onInviteMember(props.row)"
-                        v-show="checkPresidentRole()"
-                      >
-                        <q-item-section avatar>
-                          <span>
-                            <q-icon name="share" size="xs" class="edit" />
-                          </span>
-                        </q-item-section>
-                        <q-item-section>
-                          <q-item-label class="edit"
-                            >Invite Member</q-item-label
-                          >
-                        </q-item-section>
-                      </q-item>
-
-                      <!-- edit, view income activities -->
-                      <q-item
-                        clickable
-                        v-close-popup
-                        @click="onEditIncomeActivity(props.row)"
-                        v-show="show_income_activity"
-                      >
-                        <q-item-section avatar>
-                          <span>
-                            <q-icon name="edit" size="xs" class="edit" />
-                          </span>
-                        </q-item-section>
-                        <q-item-section>
-                          <q-item-label class="edit">Edit</q-item-label>
-                        </q-item-section>
-                      </q-item>
-
-                      <q-item
-                        clickable
-                        v-close-popup
-                        @click="onViewIncomeActivity(props.row)"
-                        v-show="show_income_activity"
-                      >
-                        <q-item-section avatar>
-                          <span>
-                            <q-icon name="visibility" size="xs" class="edit" />
-                          </span>
-                        </q-item-section>
-                        <q-item-section>
-                          <q-item-label class="edit">View</q-item-label>
-                        </q-item-section>
-                      </q-item>
-
-                      <!-- edit and view contributions -->
-                      <q-item
-                        clickable
-                        v-close-popup
-                        @click="onEditContribution(props.row)"
-                        v-show="show_contribution"
-                      >
-                        <q-item-section avatar>
-                          <span>
-                            <q-icon name="edit" size="xs" class="edit" />
-                          </span>
-                        </q-item-section>
-                        <q-item-section>
-                          <q-item-label class="edit">Edit</q-item-label>
-                        </q-item-section>
-                      </q-item>
-
-                      <q-item
-                        clickable
-                        v-close-popup
-                        @click="onViewContribution(props.row)"
-                        v-show="show_contribution"
-                      >
-                        <q-item-section avatar>
-                          <span>
-                            <q-icon name="visibility" size="xs" class="edit" />
-                          </span>
-                        </q-item-section>
-                        <q-item-section>
-                          <q-item-label class="edit">View</q-item-label>
-                        </q-item-section>
-                      </q-item>
-
-                      <!-- deleted specify row -->
-                      <q-item
-                        clickable
-                        v-close-popup
-                        @click="onDeleteMember(props.row)"
-                        v-show="!show_member_savings"
-                      >
-                        <q-item-section avatar>
-                          <span>
-                            <q-icon name="delete" size="xs" color="red" />
-                          </span>
-                        </q-item-section>
-                        <q-item-section>
-                          <q-item-label class="text-red">Delete</q-item-label>
-                        </q-item-section>
-                      </q-item>
-                    </q-list>
-                  </q-menu>
-              </q-icon>
-            </q-btn>
-
-            <!-- button for view all savings by member -->
-            <q-btn
-              flat
-              class="view_savings q-py-xs"
-              @click="showMemberSavings(props.row)"
-              :to="{ name: 'user_savings', params: { id: props.row.user_id } }"
-              v-show="show_savings"
-            >
-              View All Savings
-            </q-btn>
-
-            <!-- menu to handle edit and view details of a single saving -->
-            <q-btn flat round v-show="show_member_savings">
-              <q-icon
-                name="more_vert"
-                size="xs"
-                color="primary"
-                class="menu_icon"
-                clickable
-              >
+            <q-btn flat round v-show="!show_savings && !show_member_savings && !checkTreasurerRole()">
+              <q-icon name="more_vert" size="xs" color="primary" class="menu_icon" clickable>
                 <q-menu>
-                  <q-list bordered separator>
-                    <!-- edit and view savings -->
-                    <q-item
-                      clickable
-                      v-close-popup
-                      @click="onEditMemberSaving(props.row)"
-                    >
+                  <q-list style="width: 180px" bordered separator>
+                    <!-- edit member -->
+                    <q-item clickable v-close-popup @click="onEditMember(props.row)" v-show="show_members">
                       <q-item-section avatar>
                         <span>
                           <q-icon name="edit" size="xs" class="edit" />
@@ -279,11 +87,106 @@
                       </q-item-section>
                     </q-item>
 
-                    <q-item
-                      clickable
-                      v-close-popup
-                      @click="onViewMemberSaving(props.row)"
-                    >
+                    <!-- invite members to the app -->
+                    <q-item clickable v-close-popup @click="onInviteMember(props.row)" v-show="checkPresidentRole()">
+                      <q-item-section avatar>
+                        <span>
+                          <q-icon name="share" size="xs" class="edit" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="edit">Invite Member</q-item-label>
+                      </q-item-section>
+                    </q-item>
+
+                    <!-- edit, view income activities -->
+                    <q-item clickable v-close-popup @click="onEditIncomeActivity(props.row)"
+                      v-show="show_income_activity">
+                      <q-item-section avatar>
+                        <span>
+                          <q-icon name="edit" size="xs" class="edit" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="edit">Edit</q-item-label>
+                      </q-item-section>
+                    </q-item>
+
+                    <q-item clickable v-close-popup @click="onViewIncomeActivity(props.row)"
+                      v-show="show_income_activity">
+                      <q-item-section avatar>
+                        <span>
+                          <q-icon name="visibility" size="xs" class="edit" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="edit">View</q-item-label>
+                      </q-item-section>
+                    </q-item>
+
+                    <!-- edit and view contributions -->
+                    <q-item clickable v-close-popup @click="onEditContribution(props.row)" v-show="show_contribution">
+                      <q-item-section avatar>
+                        <span>
+                          <q-icon name="edit" size="xs" class="edit" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="edit">Edit</q-item-label>
+                      </q-item-section>
+                    </q-item>
+
+                    <q-item clickable v-close-popup @click="onViewContribution(props.row)" v-show="show_contribution">
+                      <q-item-section avatar>
+                        <span>
+                          <q-icon name="visibility" size="xs" class="edit" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="edit">View</q-item-label>
+                      </q-item-section>
+                    </q-item>
+
+                    <!-- deleted specify row -->
+                    <q-item clickable v-close-popup @click="onDeleteMember(props.row)" v-show="!show_member_savings">
+                      <q-item-section avatar>
+                        <span>
+                          <q-icon name="delete" size="xs" color="red" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="text-red">Delete</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                  </q-list>
+                </q-menu>
+              </q-icon>
+            </q-btn>
+
+            <!-- button for view all savings by member -->
+            <q-btn flat class="view_savings q-py-xs" @click="showMemberSavings(props.row)"
+              :to="{ name: 'user_savings', params: { id: props.row.user_id } }" v-show="show_savings && !checkTreasurerRole()">
+              View All Savings
+            </q-btn>
+
+            <!-- menu to handle edit and view details of a single saving -->
+            <q-btn flat round v-show="show_member_savings && !checkTreasurerRole()">
+              <q-icon name="more_vert" size="xs" color="primary" class="menu_icon" clickable>
+                <q-menu>
+                  <q-list bordered separator>
+                    <!-- edit and view savings -->
+                    <q-item clickable v-close-popup @click="onEditMemberSaving(props.row)">
+                      <q-item-section avatar>
+                        <span>
+                          <q-icon name="edit" size="xs" class="edit" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="edit">Edit</q-item-label>
+                      </q-item-section>
+                    </q-item>
+
+                    <q-item clickable v-close-popup @click="onViewMemberSaving(props.row)">
                       <q-item-section avatar>
                         <span>
                           <q-icon name="visibility" size="xs" class="edit" />
@@ -297,21 +200,20 @@
                 </q-menu>
               </q-icon>
             </q-btn>
+
+            <!-- buttons for approve and decline row data -->
+            <q-btn class="decline_btn" size="md" label="Decline" no-caps @click="onDeclineRecord(props.row, 'Decline')" v-if="checkTreasurerRole()" />
+
+            <q-btn class="approve_btn" size="md" label="Approve" no-caps @click="onApprovedRecord(props.row, 'Approve')" v-if="checkTreasurerRole()" />
           </q-td>
         </q-tr>
       </template>
       <template v-slot:top-right>
-        <q-input
-          outlined
-          dense
-          :class="
-            $q.screen.md
-              ? 'text-h6-sm q-mb-lg q-mt-lg full-width'
-              : 'text-h6-sm'
-          "
-          v-model="filter"
-          placeholder="Type name to search..."
-        >
+        <q-input outlined dense :class="
+          $q.screen.md
+            ? 'text-h6-sm q-mb-lg q-mt-lg full-width'
+            : 'text-h6-sm'
+        " v-model="filter" placeholder="Type name to search...">
           <template v-slot:append>
             <q-icon name="search" />
           </template>
@@ -324,39 +226,16 @@
       <q-card>
         <q-card-section>
           <div>
-            <q-avatar
-              icon="warning"
-              class="warning_image"
-              size="30px"
-              color="yellow"
-              text-color="white"
-            />
+            <q-avatar icon="warning" class="warning_image" size="30px" color="yellow" text-color="white" />
             <span class="q-ml-sm text-dark">{{ message }}</span>
           </div>
           <div class="text-weight-bold text-center">{{ deleted_row.name }}</div>
         </q-card-section>
         <q-card-actions align="right">
-          <q-btn
-            :label="label_cancel"
-            :color="'primary'"
-            :disabled="false"
-            :loading="loading"
-            :no_caps="true"
-            :flat="true"
-            class="dialog_button"
-            v-close-popup
-          ></q-btn>
-          <q-btn
-            :label="label"
-            :color="'primary'"
-            class="dialog_button"
-            :disabled="false"
-            :loading="loading"
-            :no_caps="false"
-            :flat="true"
-            v-close-popup
-            @click="deleteRow(deleted_row)"
-          ></q-btn>
+          <q-btn :label="label_cancel" :color="'primary'" :disabled="false" :loading="loading" :no_caps="true"
+            :flat="true" class="dialog_button" v-close-popup></q-btn>
+          <q-btn :label="label" :color="'primary'" class="dialog_button" :disabled="false" :loading="loading"
+            :no_caps="false" :flat="true" v-close-popup @click="deleteRow(deleted_row)"></q-btn>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -373,37 +252,19 @@
         <q-card-section class="q-pt-none" v-if="show_invite">
           <div class="row q-gutter-xl justify-center">
             <div>
-              <q-btn
-                round
-                color="dark"
-                icon="mail"
-                size="md"
-                :href="
-                  'mailto:' +
-                  member_to_be_invited.email +
-                  '?subject='+invite_msg_subject+'&cc=&bcc=&body='+invite_msg
-                "
-              >
-                <q-tooltip>Invite via email</q-tooltip></q-btn
-              >
+              <q-btn round color="dark" icon="mail" size="md" :href="
+                'mailto:' +
+                member_to_be_invited.email +
+                '?subject=' + invite_msg_subject + '&cc=&bcc=&body=' + invite_msg
+              ">
+                <q-tooltip>Invite via email</q-tooltip></q-btn>
             </div>
             <div>
-              <q-btn
-                round
-                color="secondary"
-                size="md"
-                @click="whatsappInvite()"
-              ><i class="bi bi-whatsapp"></i></q-btn>
+              <q-btn round color="secondary" size="md" @click="whatsappInvite()"><i class="bi bi-whatsapp"></i></q-btn>
               <q-tooltip>Invite via Whatsapp</q-tooltip>
             </div>
             <div>
-              <q-btn
-                round
-                color="primary"
-                icon="facebook"
-                size="md"
-                @click="faceBookInvite()"
-              />
+              <q-btn round color="primary" icon="facebook" size="md" @click="faceBookInvite()" />
               <q-tooltip>Invite via Facebook</q-tooltip>
             </div>
           </div>
@@ -411,6 +272,30 @@
 
         <q-card-actions align="right">
           <q-btn flat label="Close" color="primary" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
+    <!-- confirmation dialog for approve and decline row data -->
+    <q-dialog v-model="show_approve_dialog" v-if="show_approve_dialog" >
+      <q-card class="approve_card">
+        <q-card-section>
+          <div class="row">
+            <div class="col-md-2 text-center">
+              <q-avatar icon="warning" class="warning_image" size="30px" color="yellow" text-color="white" />
+            </div>
+            <div class="col-md-10">
+               <label for="msg">
+                <span class="text-weight-bold text-center">Do you want to {{chosen_state}} Suh Edmond’s Payment of 15000 FCFA for Cometogther Molyko 2022 ?</span>
+            </label>
+            </div>
+          </div>
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn class="decline" size="md" label="Decline" flat v-close-popup />
+          <q-btn class="approve" size="md" label="Approve" flat @click="approvedRecord()" v-close-popup />
+
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -490,9 +375,11 @@ export default {
       show_invite: false,
       member_to_be_invited: null,
       redirect_url: process.env.REDIRECT_URL,
-      invite_msg_subject:"Invitation to Join Financial Assistance",
-      invite_msg: "Hello there! You have been invited to join Financial Assistance in order to better manage your financial transaction.  "+
-       "Click the link to join: "+  process.env.REDIRECT_URL + ".  If you don't recognize the sender, simply ignore this message.",
+      invite_msg_subject: "Invitation to Join Financial Assistance",
+      invite_msg: "Hello there! You have been invited to join Financial Assistance in order to better manage your financial transaction.  " +
+        "Click the link to join: " + process.env.REDIRECT_URL + ".  If you don't recognize the sender, simply ignore this message.",
+      show_approve_dialog:false,
+      chosen_state:null,
     };
   },
   methods: {
@@ -526,13 +413,12 @@ export default {
       this.member_to_be_invited = data;
     },
 
-    emailInvite() {},
+    emailInvite() { },
 
     whatsappInvite() {
-      let msg = this.invite_msg_subject +"\n\n"+ this.invite_msg
-      let whatsapp_url = `https://api.whatsapp.com/send?phone=${
-        this.member_to_be_invited.telephone
-      }&text=${encodeURIComponent(msg)}`;
+      let msg = this.invite_msg_subject + "\n\n" + this.invite_msg
+      let whatsapp_url = `https://api.whatsapp.com/send?phone=${this.member_to_be_invited.telephone
+        }&text=${encodeURIComponent(msg)}`;
       window.open(whatsapp_url);
     },
 
@@ -662,6 +548,57 @@ export default {
     getFormatedDate(date) {
       return moment(date).format("MMMM Do YYYY");
     },
+
+    checkTreasurerRole() {
+      const treasurer_role = LocalStorage.getItem("data").roles.find(
+        (role) => role.name == "TREASURER"
+      );
+      return treasurer_role != undefined;
+    },
+    onApprovedRecord(row, state) {
+      this.show_approve_dialog = true;
+      this.approve_data = row;
+      this.chosen_state = state
+    },
+
+    onDeclineRecord(row, state) {
+      this.show_approve_dialog = true;
+      this.approve_data = row;
+      this.chosen_state = state
+    },
+
+    approvedRecord() {
+      let payload = {
+        url: this.setApproveUrlBaseOnType(this.approve_data),
+        msg: this.setApproveFeedbackMsg(this.approve_data),
+        data: this.setApproveDataBaseOnType(this.approve_data),
+        color: "default",
+        to_on_ok: "none",
+        to_on_fail: "none",
+        show_feedback: true,
+        error_msg: "An Error occurred! Please try again",
+        has_commit: false,
+        commit: "none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.$store.dispatch("putRequest", payload).then(() => {
+      });
+    },
+
+    setApproveUrlBaseOnType(data) {
+
+    },
+
+    setApproveFeedbackMsg(data) {
+
+    },
+    setApproveDataBaseOnType(data) {
+
+    }
   },
   components: {},
 };
@@ -717,5 +654,26 @@ export default {
 .dialog_button {
   font-size: small;
   font-weight: 500;
+}
+
+.approve_btn {
+  background-color: $secondary;
+  color: white;
+}
+.approve_card {
+  width: 30rem;
+}
+.decline_btn {
+  background-color: $orange;
+  color: white;
+  margin-right: 4.5rem;
+}
+
+.approve {
+  color: $secondary;
+}
+
+.decline {
+  color: $orange;
 }
 </style>

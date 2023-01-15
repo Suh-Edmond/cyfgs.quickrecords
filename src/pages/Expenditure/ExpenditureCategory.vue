@@ -147,7 +147,7 @@ export default {
           name: "action",
           label: "Action",
           field: "action",
-        },
+        }
       ],
       label: "Delete",
       message: "Are you sure you want to delete this Expenditure Category?",

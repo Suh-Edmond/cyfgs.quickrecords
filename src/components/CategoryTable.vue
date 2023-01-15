@@ -44,8 +44,10 @@
           <q-td key="date" :props="props" v-if="show_expenditure_item">
             {{ getFormatedDate(props.row.date) }}
           </q-td>
-          <q-td key="action" :props="props" v-show="show_expenditure_item || show_expenditure_category || show_expenditure_item_detail">
-            <q-btn flat round>
+          <q-td key="action" :props="props">
+            <!-- buttons for edit, view and delete table data row -->
+            <q-btn flat round
+              v-if="(show_expenditure_item || show_expenditure_category || show_expenditure_item_detail) && !checkTreasurerRole()">
               <q-icon name="more_vert" size="xs" color="primary" class="menu_icon" clickable>
                 <q-menu>
                   <q-list>
@@ -129,37 +131,19 @@
                 </q-menu>
               </q-icon>
             </q-btn>
-          </q-td>
-          <q-td :props="props" v-show="show_expenditure_item || show_expenditure_item_detail && checkTreasurerRole()">
-            <q-btn
-              class="approve_btn"
-              size="md"
-              label="Approve"
-              round
-              no-caps
-              @click="approvedRecord()"
-            />
-            <br>
-          </q-td>
-          <q-td :props="props" v-show="show_expenditure_item || show_expenditure_item_detail && checkTreasurerRole()">
-            <q-btn
-              class="decline_btn"
-              size="md"
-              label="Decline"
-              round
-              no-caps
-              @click="declineRecord()"
-            />
-            <br>
+
+            <!-- buttons for approve and decline row data -->
+
+            <q-btn class="decline_btn" size="md" label="Decline" no-caps @click="onDeclineRecord(props.row, 'Decline')" v-if="
+            (show_expenditure_item || show_expenditure_item_detail) && checkTreasurerRole()" />
+
+            <q-btn class="approve_btn" size="md" label="Approve" no-caps @click="onApprovedRecord(props.row, 'Approve')" v-if="
+            (show_expenditure_item || show_expenditure_item_detail) && checkTreasurerRole()" />
           </q-td>
         </q-tr>
       </template>
-      <!-- <template v-slot:bottom-right>
-        <q-tr>
-          <q-td class="field_total">Total Amount (XAF): </q-td>
-          <q-td>10,156</q-td>
-        </q-tr>
-      </template> -->
+
+      <!-- slot for table headings -->
       <template v-slot:top-left>
         <div class="text-h6 title" v-show="show_payment_item">
           Category: {{ title }}
@@ -171,6 +155,8 @@
           Item: {{ title }}
         </div>
       </template>
+
+      <!-- slot for search table data -->
       <template v-slot:top-right>
         <q-input outlined dense :class="
           $q.screen.md
@@ -185,7 +171,7 @@
     </q-table>
 
     <!-- confirmation delete category dialog -->
-    <q-dialog v-model="dialog" v-if="dialog">
+    <q-dialog v-model="dialog" v-if="dialog" >
       <q-card>
         <q-card-section>
           <div>
@@ -203,6 +189,30 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+
+    <!-- confirmation dialog for approve and decline row data -->
+    <q-dialog v-model="show_approve_dialog" v-if="show_approve_dialog" >
+      <q-card class="approve_card">
+        <q-card-section>
+          <div class="row">
+            <div class="col-md-2 text-center">
+              <q-avatar icon="warning" class="warning_image" size="30px" color="yellow" text-color="white" />
+            </div>
+            <div class="col-md-10">
+               <label for="msg">
+                <span class="text-weight-bold text-center">Do you want to {{chosen_state}} Suh Edmond’s Payment of 15000 FCFA for Cometogther Molyko 2022 ?</span>
+            </label>
+            </div>
+          </div>
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn class="decline" size="md" label="Decline" flat v-close-popup />
+          <q-btn class="approve" size="md" label="Approve" flat @click="approvedRecord()" v-close-popup />
+
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 <script>
@@ -210,10 +220,14 @@ import { LocalStorage, SessionStorage } from "quasar";
 import PaymentCategoryMixinVue from "src/mixins/PaymentCategoryMixin.vue";
 import expenditureItemMixinVue from "src/mixins/expenditureItemMixin.vue";
 import ExpenditureItemDetailMixinVue from "src/mixins/ExpenditureItemDetailMixin.vue";
-import moment from 'moment'
+import moment from "moment";
 
 export default {
-  mixins: [PaymentCategoryMixinVue, expenditureItemMixinVue, ExpenditureItemDetailMixinVue],
+  mixins: [
+    PaymentCategoryMixinVue,
+    expenditureItemMixinVue,
+    ExpenditureItemDetailMixinVue,
+  ],
 
   props: {
     columns: {
@@ -269,10 +283,12 @@ export default {
       color: "positive",
       no_caps: true,
       dialog: false,
+      show_approve_dialog: false,
       deleted_row: null,
       showTable: true,
       label_cancel: "Cancel",
       filter: "",
+      approve_data: null,
       pagination: {
         rowsPerPage: 15, // current rows per page being displayed
       },
@@ -282,19 +298,48 @@ export default {
     getSelectedCategory() {
       return SessionStorage.getItem("selected_category");
     },
-
   },
   methods: {
     checkTreasurerRole() {
-      const treasurer_role = LocalStorage.getItem("data").roles.find((role) => role.name == 'TREASURER');
-      return treasurer_role == undefined
+      const treasurer_role = LocalStorage.getItem("data").roles.find(
+        (role) => role.name == "TREASURER"
+      );
+      return treasurer_role != undefined;
     },
-    approvedRecord(){
-      console.log("approved");
+    onApprovedRecord(row, state) {
+      this.show_approve_dialog = true;
+      this.approve_data = row;
+      this.chosen_state = state
     },
-    declineRecord() {
-      console.log("decline");
+
+    onDeclineRecord(row, state) {
+      this.show_approve_dialog = true;
+      this.approve_data = row;
+      this.chosen_state = state
     },
+
+    approvedRecord() {
+      let payload = {
+        url: this.setApproveUrlBaseOnType(this.approve_data),
+        msg: this.setApproveFeedbackMsg(this.approve_data),
+        data: this.setApproveDataBaseOnType(this.approve_data),
+        color: "default",
+        to_on_ok: "none",
+        to_on_fail: "none",
+        show_feedback: true,
+        error_msg: "An Error occurred! Please try again",
+        has_commit: false,
+        commit: "none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.$store.dispatch("putRequest", payload).then(() => {
+      });
+    },
+
     onViewCategory(categories) {
       let payload = {
         data: categories,
@@ -362,7 +407,6 @@ export default {
         data: expenditure_item_detail,
         tab: "Expenditure Item Details",
       };
-      console.log(expenditure_item_detail);
       this.$emit("edit-expenditure-item-detail", payload);
     },
 
@@ -454,7 +498,6 @@ export default {
         case "EXPENDITURE_DETAILS":
           this.getExpenditureDetailsByItemId(row.expenditure_item_id);
           break;
-
       }
     },
 
@@ -464,7 +507,7 @@ export default {
         url: `/api/protected/payment-categories/${id}/payment-items`,
         has_path_val: true,
         show_feedback: false,
-        show_spinner:true,
+        show_spinner: true,
         msg: "none",
         color: "default",
         error_msg: "default",
@@ -488,7 +531,7 @@ export default {
         error_msg: "An Error occurred! Could not fetch payment categories",
         has_commit: true,
         show_feedback: false,
-        show_spinner:true,
+        show_spinner: true,
         commit: "SET_EXPENDITURE_CATEGORIES",
         to_be_store_data: {
           required: false,
@@ -500,7 +543,18 @@ export default {
     },
 
     getFormatedDate(date) {
-      return moment(date).format('MMMM Do YYYY')
+      return moment(date).format("MMMM Do YYYY");
+    },
+
+    setApproveUrlBaseOnType(data) {
+
+    },
+
+    setApproveFeedbackMsg(data) {
+
+    },
+    setApproveDataBaseOnType(data) {
+
     }
   },
   components: {},
@@ -550,6 +604,7 @@ export default {
   text-transform: capitalize;
   color: $dark;
 }
+
 .title {
   font-size: small;
 }
@@ -563,9 +618,20 @@ export default {
   background-color: $secondary;
   color: white;
 }
-
+.approve_card {
+  width: 30rem;
+}
 .decline_btn {
   background-color: $orange;
   color: white;
+  margin-right: 4.5rem;
+}
+
+.approve {
+  color: $secondary;
+}
+
+.decline {
+  color: $orange;
 }
 </style>

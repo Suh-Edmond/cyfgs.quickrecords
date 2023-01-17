@@ -28,6 +28,8 @@ export default function () {
     current_income_activity:null,
     members_contributions:null,
     current_payment_item:null,
-    selected_contribution:null
+    selected_contribution:null,
+    expenditures:null,
+    expenditure_category:null// this is the category been selected during the approve state
   };
 }

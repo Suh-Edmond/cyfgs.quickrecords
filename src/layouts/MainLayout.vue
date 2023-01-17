@@ -159,7 +159,7 @@
                   true
                 )
               "
-              v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER'])"
+              v-if="checkRole(['FINANCIAL_SECRETARY', null])"
               to="/dashboard/expenditure-categories"
             >
               <q-item-section
@@ -174,6 +174,37 @@
               </q-item-section>
               <q-item-section class="item_name">
                 Expenditure Categories
+              </q-item-section>
+            </q-item>
+
+            <q-item
+              clickable
+              v-ripple
+              :active-class="
+                item.name == 'Expenditures' ? 'item' : 'item_text'
+              "
+              :active="item.name == 'Expenditures'"
+              @click="
+                setItem(
+                  { name: 'Expenditures', selected: true },
+                  true
+                )
+              "
+              v-if="checkRole([null,'TREASURER'])"
+              to="/dashboard/expenditures"
+            >
+              <q-item-section
+                avatar
+                :class="
+                  item.name == 'Expenditures'
+                    ? 'item_icon'
+                    : 'item_text'
+                "
+              >
+                <q-icon name="monetization_on" size="xs" />
+              </q-item-section>
+              <q-item-section class="item_name">
+                Expenditures
               </q-item-section>
             </q-item>
 

@@ -116,3 +116,11 @@ export function getMembersContributionsByPaymentItem(state) {
 export function getSelectedContribution(state) {
   return state.selected_contribution;
 }
+
+export function getExpenditures(state) {
+  return state.expenditures;
+}
+
+export  function getExpenditureCategory(state) {
+  return state.expenditure_category;
+}

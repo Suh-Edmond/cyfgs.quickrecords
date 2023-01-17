@@ -1,0 +1,218 @@
+<template>
+  <q-page>
+    <!-- spinners -->
+    <div class="flex justify-center">
+      <q-spinner-ios color="primary" size="2em" class="q-mb-lg" v-if="show_spinner" />
+    </div>
+
+    <NotFound :message="getNotFoundMsg" v-if="getExpenditureDetails.length == 0"></NotFound>
+
+    <div v-if="getExpenditureDetails.length > 0 && !getLoadingState">
+      <!-- header for filter categories -->
+      <div class="row q-ml-xs q-pt-xs" :class="$q.screen.lg ? 'q-pa-sm' : ''" :style="
+        $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+      ">
+        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
+          <q-select v-model="status" outlined dense :options="statuses" label="Select Status" @input="filterItems" />
+        </div>
+        <q-space />
+        <div class="button q-pb-xs">
+          <q-btn :label="label_download" :loading="loading" :color="color_print" :disabled="false" no-caps
+            icon-right="print" @click="downloadExpenditureItemDetails"></q-btn>
+        </div>
+      </div>
+      <!-- table for categories -->
+      <div class="row q-pt-sm">
+        <div class="col-md-12 col-xs-12 col-sm-12" v-show="!start_filter">
+          <CategoryTable :columns="columns" :data="getExpenditureDetails" :label="label" :message="message" :title="getExpenditureItemName"
+            :show_payment_category="false" :show_payment_item="false" :show_expenditure_category="false"
+            :show_expenditure_item="false" :show_expenditure_item_detail="true">
+          </CategoryTable>
+        </div>
+
+        <!-- table for filtered results -->
+        <div class="col-md-12 col-xs-12 col-sm-12" v-show="start_filter">
+          <CategoryTable :columns="columns" :data="filtered_items" :label="label" :message="message" :title="getExpenditureItemName"
+            :show_payment_category="false" :show_payment_item="false" :show_expenditure_category="false"
+            :show_expenditure_item="false" :show_expenditure_item_detail="true">
+          </CategoryTable>
+        </div>
+      </div>
+
+
+    </div>
+  </q-page>
+</template>
+
+<script>
+import NotFound from "src/components/NotFound.vue";
+import CategoryTable from "src/components/CategoryTable.vue";
+import HelperMixinVue from "src/mixins/HelperMixin.vue";
+
+export default {
+  mixins: [HelperMixinVue],
+
+  mounted() {
+  },
+
+  data() {
+    return {
+      start_filter: false,
+      label_fetch: "Filter",
+      color: "primary",
+      no_caps: true,
+      loading: false,
+      label_download: "Print",
+      color_print: "positive",
+      columns: [
+        {
+          name: "counter",
+          required: true,
+          label: "S/N",
+          align: "left",
+          field: "counter",
+        },
+        {
+          name: "name",
+          required: true,
+          label: "Name",
+          align: "left",
+          field: (row) => row.name,
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "amount_given",
+          align: "center",
+          label: "Amount Given (XAF)",
+          field: "amount_given",
+          sortable: true,
+        },
+        {
+          name: "amount_spent",
+          align: "center",
+          label: "Amount Spent (XAF)",
+          field: "amount_spent",
+          sortable: true,
+        },
+        {
+          name: "balance",
+          align: "center",
+          label: "Balance (XAF)",
+          field: "balance",
+          sortable: true,
+        },
+        {
+          name: "action",
+          label: "Action",
+          field: "action",
+          sortable: true,
+          sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
+        },
+      ],
+      label: "Delete",
+      message: "",
+      statuses: ["APPROVED", "UNAPPROVED", "ALL"],
+      status: null,
+      filtered_items: [],
+      show_spinner:false,
+    };
+  },
+  computed: {
+    getLoadingState() {
+      return this.$store.getters.getFetchingState;
+    },
+    getExpenditureItemName(){
+      let expenditure_item = this.$store.getters.getExpenditures.filter((ele) => ele.id = this.$router.currentRoute.params.id)
+      return expenditure_item[0].expenditure_details[0].expenditure_item_name;
+    },
+
+    getNotFoundMsg(){
+      return `Ooops!! No Details has been recorded for this Expenditure Item [${this.getExpenditureItemName}].`;
+    },
+
+    getExpenditureDetails(){
+      let data = [];
+      let expenditure_item = [];
+      if(this.$store.getters.getExpenditures != undefined){
+        expenditure_item = this.$store.getters.getExpenditures.filter((ele) => ele.id = this.$router.currentRoute.params.id);
+        expenditure_item[0].expenditure_details.forEach((ele) => {
+          data.push({
+            counter: expenditure_item[0].expenditure_details.indexOf(ele) + 1,
+              name: ele.name,
+              amount_given: ele.amount_given,
+              amount_spent: ele.amount_spent,
+              balance: ele.balance,
+              type: "EXPENDITURE_DETAILS",
+              id: ele.id,
+              expenditure_item_id: ele.expenditure_item_id,
+              comment: ele.comment,
+              approve: ele.approve,
+              created_at: ele.created_at,
+              updated_at: ele.updated_at,
+              updated_by: ele.updated_by,
+              total_item_amount: expenditure_item[0].total_item_amount,
+              total_amount_given: expenditure_item[0].total_amount_given,
+              total_amount_spent: expenditure_item[0].total_amount_spent,
+              total_balance: expenditure_item[0].total_balance,
+          })
+        })
+      }
+      return data;
+    },
+  },
+  methods: {
+    downloadExpenditureItemDetails() {
+      let expenditure_item_id =
+        this.$router.currentRoute.params.id;
+      let status = "";
+      switch (this.status) {
+        case "APPROVED":
+          status = 1;
+          break;
+        case "UNAPPROVED":
+          status = 0;
+          break;
+        case "ALL":
+          status = 2;
+          break;
+      }
+      let url = `/api/protected/expenditure-item-details/download?expenditure_item_id=${expenditure_item_id}&status=${status}`;
+      let file_name = "Expenditure_Item_Details.pdf";
+      this.loading = this.downloadPdf(url, file_name);
+    },
+
+    filterItems() {
+      this.start_filter = true;
+      this.show_spinner = true;
+      let expenditure_item_id = this.$router.currentRoute.params.id
+
+      this.$router.push({
+        path: `/dashboard/expenditures/${expenditure_item_id}/details`,
+        query: { status: this.status },
+      });
+
+      let status = this.status == "APPROVED" ? true: false;
+
+      if(this.status == 'ALL'){
+        this.filtered_items = this.getExpenditureDetails;
+      }else{
+        const items = this.getExpenditureDetails.filter((item) => item.approve == status)
+        this.filtered_items = items;
+
+      };
+      this.filtered_items =  Array.from(this.filtered_items);
+      this.show_spinner = false;
+      return  this.filtered_items;
+    },
+  },
+  components: {
+    NotFound,
+    CategoryTable,
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+
+</style>

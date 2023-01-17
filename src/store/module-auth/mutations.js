@@ -112,3 +112,12 @@ export function SET_MEMBERS_CONTRIBUTIONS_PER_ITEM(state, data) {
 export function SET_SELECTED_CONTRIBUTON(state, data) {
   state.selected_contribution = data;
 }
+
+
+export function SET_EXPENDITURES(state, data) {
+  state.expenditures = data
+}
+
+export function SET_EXPENDITURE_CATEGORY(state, data) {
+  state.expenditure_category = data;
+}

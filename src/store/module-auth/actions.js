@@ -446,3 +446,11 @@ export function setMembersContributions({ commit }, data) {
 export function setSelectedContribution({ commit }, data) {
   commit("SET_SELECTED_CONTRIBUTON", data);
 }
+
+export function setExpenditures({commit}, data){
+  commit("SET_EXPENDITURES", data)
+}
+
+export function setExpenditureCategory({commit}, data){
+  commit("SET_EXPENDITURE_CATEGORY", data)
+}

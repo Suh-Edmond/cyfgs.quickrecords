@@ -369,16 +369,7 @@
       <q-card class="approve_card">
         <q-card-section>
           <div class="row">
-            <div class="col-md-2 text-center">
-              <q-avatar
-                icon="warning"
-                class="warning_image"
-                size="30px"
-                color="yellow"
-                text-color="white"
-              />
-            </div>
-            <div class="col-md-10">
+            <div class="col-md-12 text-center">
               <label for="msg">
                 <span class="text-weight-bold text-center"
                   >Do you want to {{ chosen_state }} Suh Edmond’s Payment of

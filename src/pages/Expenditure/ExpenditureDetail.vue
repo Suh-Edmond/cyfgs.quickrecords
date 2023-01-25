@@ -112,7 +112,7 @@ export default {
       ],
       label: "Delete",
       message: "",
-      statuses: ["APPROVED", "UNAPPROVED", "ALL"],
+      statuses: ["PENDING","APPROVED", "UNAPPROVED", "ALL"],
       status: null,
       filtered_items: [],
       show_spinner:false,

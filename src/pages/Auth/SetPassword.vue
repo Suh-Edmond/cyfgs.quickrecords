@@ -155,6 +155,9 @@
 import ButtonVue from "src/components/Button.vue";
 import { LocalStorage, SessionStorage } from "quasar";
 export default {
+  created(){
+    LocalStorage.clear();
+  },
   data() {
     return {
       user: {

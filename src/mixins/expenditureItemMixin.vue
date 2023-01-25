@@ -11,7 +11,7 @@ export default {
       let category = this.$store.getters.getCurrentExpenditureCategory;
       let payload = {
         status: "none",
-        url: `/api/protected/expenditure-categories/${category.id}/expenditure-items?status=${0}`,//using status 0 which is the unapproved
+        url: `/api/protected/expenditure-categories/${category.id}/expenditure-items?status=PENDING`,//using status 0 which is the unapproved
         has_path_val: true,
         show_feedback: false,
         show_spinner:true,

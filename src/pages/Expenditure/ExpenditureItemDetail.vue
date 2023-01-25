@@ -110,7 +110,7 @@ export default {
       ],
       label: "Delete",
       message: "Are you sure you want to delete this Expenditure Item Detail?",
-      statuses: ["APPROVED", "UNAPPROVED", "ALL"],
+      statuses: [ "PENDING","APPROVED", "UNAPPROVED", "ALL"],
       status: null,
       filtered_items: [],
     };
@@ -173,19 +173,7 @@ export default {
     downloadExpenditureItemDetails() {
       let expenditure_item_id =
         this.$store.getters.getCurrentExpenditureItem.id;
-      let status = "";
-      switch (this.status) {
-        case "APPROVED":
-          status = 1;
-          break;
-        case "UNAPPROVED":
-          status = 0;
-          break;
-        case "ALL":
-          status = 2;
-          break;
-      }
-      let url = `/api/protected/expenditure-item-details/download?expenditure_item_id=${expenditure_item_id}&status=${status}`;
+      let url = `/api/protected/expenditure-item-details/download?expenditure_item_id=${expenditure_item_id}&status=${this.status}`;
       let file_name = "Expenditure_Item_Details.pdf";
       this.loading = this.downloadPdf(url, file_name);
     },
@@ -249,9 +237,8 @@ export default {
 
     setFilterItemActionUrl(status, expenditure_item_id) {
       let url = "";
-      if (status === "APPROVED" || status === "UNAPPROVED") {
-        let num_status = status == "APPROVED" ? 1 : 0;
-        url = `/api/protected/expenditure-details?expenditure_item_id=${expenditure_item_id}&status=${num_status}`;
+      if (status != "") {
+        url = `/api/protected/expenditure-details?expenditure_item_id=${expenditure_item_id}&status=${this.status}`;
       } else {
         url = `/api/protected/expenditure-items/${expenditure_item_id}/details`;
       }

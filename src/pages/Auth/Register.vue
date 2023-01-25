@@ -9,7 +9,7 @@
           <q-card-section>
             <div class="text_h6 text-center q-pt-xs q-pb-sm">SIGN UP</div>
             <div class="text-subtitle2 text-center q-pb-xs">
-              Sign up to get started with FinancialAssistant
+              Sign up to get started with Financial Assistant
             </div>
             <div class="q-pa-md">
               <q-form @submit="onSubmit" class="q-gutter-md">

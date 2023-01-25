@@ -121,7 +121,7 @@ export default {
       data: [],
       label: "Delete",
       message: "Are you sure you want to delete this Expenditure Item?",
-      statuses: ["APPROVED", "UNAPPROVED", "ALL"],
+      statuses: ["PENDING","APPROVED", "UNAPPROVED", "ALL"],
       status: null,
       start_filter: false,
       filtered_items: [],
@@ -213,15 +213,13 @@ export default {
 
       let expenditure_category = this.$store.getters.getCurrentExpenditureCategory;
 
-      let state = this.status === "APPROVED" ? 1 : 0
-
       this.$router.push({
         path: `/dashboard/expenditure-categories/${expenditure_category.id}/items`,
         query: { status: this.status},
       });
 
       let payload = {
-        url: `/api/protected/expenditure-categories/${expenditure_category.id}/expenditure-items?status=${state}`,
+        url: `/api/protected/expenditure-categories/${expenditure_category.id}/expenditure-items?status=${this.status}`,
         msg: "none",
         color: "default",
         status: "none",

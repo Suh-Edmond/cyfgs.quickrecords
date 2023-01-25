@@ -75,7 +75,7 @@
               @show-expenditure-item-details="showExpenditureItemDetails"
               @edit-expenditure-item-detail="editExpenditureItemDetail" @edit-member-saving="editMemberSaving" @view-member-saving="viewMemberSaving"
               @edit-income-activity="editIncomeActivity" @view-income-activity="viewIncomeActivity"
-              @view-contribution="viewContribution" @edit-contribution="editContribution" />
+              @view-contribution="viewContribution" @edit-contribution="editContribution" @search-member-saving="searchMemberSaving"/>
           </q-card-section>
         </q-card>
       </q-scroll-area>
@@ -293,6 +293,9 @@ export default {
         user_role = "Auditor"
       }
       return user_role
+    },
+    searchMemberSaving(data){
+      this.updateDrawer(data);
     }
   },
 };

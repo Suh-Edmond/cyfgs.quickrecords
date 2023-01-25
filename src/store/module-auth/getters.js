@@ -124,3 +124,8 @@ export function getExpenditures(state) {
 export  function getExpenditureCategory(state) {
   return state.expenditure_category;
 }
+
+
+export function getSavings(state) {
+  return state.savings
+}

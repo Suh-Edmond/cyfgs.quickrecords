@@ -30,6 +30,7 @@ export default function () {
     current_payment_item:null,
     selected_contribution:null,
     expenditures:null,
-    expenditure_category:null// this is the category been selected during the approve state
+    expenditure_category:null,// this is the category been selected during the approve state
+    savings:[],//for approveing to be done
   };
 }

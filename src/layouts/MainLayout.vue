@@ -180,32 +180,19 @@
             <q-item
               clickable
               v-ripple
-              :active-class="
-                item.name == 'Expenditures' ? 'item' : 'item_text'
-              "
+              :active-class="item.name == 'Expenditures' ? 'item' : 'item_text'"
               :active="item.name == 'Expenditures'"
-              @click="
-                setItem(
-                  { name: 'Expenditures', selected: true },
-                  true
-                )
-              "
-              v-if="checkRole([null,'TREASURER'])"
+              @click="setItem({ name: 'Expenditures', selected: true }, true)"
+              v-if="checkRole([null, 'TREASURER'])"
               to="/dashboard/expenditures"
             >
               <q-item-section
                 avatar
-                :class="
-                  item.name == 'Expenditures'
-                    ? 'item_icon'
-                    : 'item_text'
-                "
+                :class="item.name == 'Expenditures' ? 'item_icon' : 'item_text'"
               >
                 <q-icon name="monetization_on" size="xs" />
               </q-item-section>
-              <q-item-section class="item_name">
-                Expenditures
-              </q-item-section>
+              <q-item-section class="item_name"> Expenditures </q-item-section>
             </q-item>
 
             <q-item
@@ -450,8 +437,11 @@
           @close-right-drawer="closeRightDrawer"
           @set-heading="setHeading"
         ></AddContribution>
-        <SearchSavings v-if="current_tab == 'Search Savings'"  @close-right-drawer="closeRightDrawer" @set-heading="setHeading">
-
+        <SearchSavings
+          v-if="current_tab == 'Search Savings'"
+          @close-right-drawer="closeRightDrawer"
+          @set-heading="setHeading"
+        >
         </SearchSavings>
       </q-page>
     </q-drawer>
@@ -504,9 +494,7 @@ export default {
       return this.$store.getters.getOrganisation;
     },
   },
-  watch: {
-
-  },
+  watch: {},
   methods: {
     setItem(item, requires_add) {
       this.item.name = item.name;

@@ -71,7 +71,7 @@
           </q-td>
           <q-td key="action" :props="props">
             <!-- button to handle edit, view and delete of row data -->
-            <q-btn flat round v-show="!show_savings && !show_member_savings && !checkTreasurerRole()">
+            <q-btn flat round v-if="!show_savings && !show_member_savings && !checkTreasurerRole()">
               <q-icon name="more_vert" size="xs" color="primary" class="menu_icon" clickable>
                 <q-menu>
                   <q-list style="width: 180px" bordered separator>
@@ -165,12 +165,12 @@
 
             <!-- button for view all savings by member -->
             <q-btn flat class="view_savings q-py-xs" @click="showMemberSavings(props.row)"
-              :to="{ name: 'user_savings', params: { id: props.row.user_id } }" v-show="show_savings && !checkTreasurerRole()">
+              :to="{ name: 'user_savings', params: { id: props.row.user_id } }" v-if="show_savings && !checkTreasurerRole()">
               View All Savings
             </q-btn>
 
             <!-- menu to handle edit and view details of a single saving -->
-            <q-btn flat round v-show="show_member_savings && !checkTreasurerRole()">
+            <q-btn flat round v-if="show_member_savings && !checkTreasurerRole()">
               <q-icon name="more_vert" size="xs" color="primary" class="menu_icon" clickable>
                 <q-menu>
                   <q-list bordered separator>
@@ -277,7 +277,7 @@
     </q-dialog>
 
     <!-- confirmation dialog for approve and decline row data -->
-    <q-dialog v-model="show_approve_dialog" v-if="show_approve_dialog" >
+    <q-dialog v-model="show_approve_dialog" v-if="show_approve_dialog">
       <q-card class="approve_card">
         <q-card-section>
           <div class="row">

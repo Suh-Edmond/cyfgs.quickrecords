@@ -454,3 +454,7 @@ export function setExpenditures({commit}, data){
 export function setExpenditureCategory({commit}, data){
   commit("SET_EXPENDITURE_CATEGORY", data)
 }
+
+export function setSavings({commit}, data) {
+  commit("SET_SAVINGS", data);
+}

@@ -118,48 +118,48 @@
           $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
         "
       >
-          <div>
-            <q-btn
-              :label="label_fetch"
-              :loading="loading"
-              :color="color"
-              :disabled="false"
-              no-caps
-              icon-right="filter_list"
-              @click="searchSavings()"
-            >
-            </q-btn>
-          </div>
-          <q-space />
-          <div class="button q-pb-xs">
-            <q-btn
-              :label="label_download"
-              :loading="loading"
-              :color="color_print"
-              :disabled="savings.length == 0"
-              no-caps
-              icon-right="print"
-              @click="downloadMembersSavings"
-            ></q-btn>
-          </div>
+        <div>
+          <q-btn
+            :label="label_fetch"
+            :loading="loading"
+            :color="color"
+            :disabled="false"
+            no-caps
+            icon-right="filter_list"
+            @click="searchSavings()"
+          >
+          </q-btn>
+        </div>
+        <q-space />
+        <div class="button q-pb-xs">
+          <q-btn
+            :label="label_download"
+            :loading="loading"
+            :color="color_print"
+            :disabled="savings.length == 0"
+            no-caps
+            icon-right="print"
+            @click="downloadMembersSavings"
+          ></q-btn>
+        </div>
       </div>
 
-        <!-- table for savings -->
-        <div class="row q-pt-sm">
-          <div class="col-md-12 col-xs-12 col-sm-12">
-            <TableVue
-              :columns="columns"
-              :data="savings"
-              :label="label"
-              :message="message"
-              :show_savings="true"
-              :show_income_activity="false"
-              :show_members="false"
-              :show_contribution="false"
-            >
-            </TableVue>
-          </div>
+      <!-- table for filtered savings -->
+      <div class="row q-pt-sm">
+        <div class="col-md-12 col-xs-12 col-sm-12">
+          <TableVue
+            :columns="columns"
+            :data="getFilteredSavings"
+            :label="label"
+            :message="message"
+            :show_savings="true"
+            :show_income_activity="false"
+            :show_members="false"
+            :show_contribution="false"
+          >
+          </TableVue>
         </div>
+      </div>
     </div>
   </q-page>
 </template>
@@ -250,7 +250,7 @@ export default {
       message: "Are you sure you want to delete this Member Saving?",
       is_fetching: true,
       search_data: null,
-      savings:[],
+      savings: [],
     };
   },
   computed: {
@@ -291,6 +291,27 @@ export default {
           }
         );
       }
+      return data;
+    },
+
+    getFilteredSavings() {
+      let data = [];
+      this.$store.getters.getSavings.forEach((ele) => {
+        data.push({
+          counter: this.$store.getters.getSavings.indexOf(ele) + 1,
+          name: ele.user_name,
+          email: ele.email,
+          telephone: ele.telephone,
+          amount_deposited: ele.amount_deposited,
+          id: ele.id,
+          approve: ele.approve,
+          comment: ele.comment,
+          type: "MEMBERS_SAVINGS",
+          user_id: ele.user_id,
+          created_at: ele.created_at,
+          updated_by: ele.updated_by,
+        });
+      });
       return data;
     },
 

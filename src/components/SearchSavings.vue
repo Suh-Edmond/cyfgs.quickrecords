@@ -63,7 +63,7 @@
       <!-- filter by status of savings -->
       <div class="q-mb-lg row q-gutter-xs">
         <div
-          class="col-md-3 col-lg-3 col-sm-12 col-xs-12"
+          class="col-md-3 col-lg-3 col-sm-12 col-xs-12 "
           v-for="status in statuses"
           :key="status.index"
         >
@@ -218,15 +218,19 @@ export default {
       statuses: [
         {
           name: "PENDING",
-          id: 2,
+          id: 0,
         },
         {
           name: "DECLINED",
-          id: 0,
+          id: 2,
         },
         {
           name: "APPROVED",
           id: 1,
+        },
+        {
+          name: "ALL",
+          id: 3,
         },
       ],
       param: {

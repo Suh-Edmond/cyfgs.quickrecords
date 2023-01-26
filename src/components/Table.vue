@@ -106,6 +106,13 @@
           <q-td key="venue" :props="props" v-show="show_income_activity">
             {{ props.row.venue }}
           </q-td>
+          <q-td
+            key="state"
+            :props="props"
+            v-if="(show_member_savings || show_savings || show_income_activity)"
+          >
+            {{ props.row.approve }}
+          </q-td>
           <q-td key="action" :props="props">
             <!-- button to handle edit, view and delete of row data -->
             <q-btn
@@ -308,7 +315,11 @@
 
             <!-- buttons for approve and decline row data -->
             <q-btn
-              :class="show_savings ? 'decline_btn_saving' : 'decline_btn'"
+              :class="
+                show_savings || show_income_activity || show_contribution
+                  ? 'decline_btn_saving'
+                  : 'decline_btn'
+              "
               size="md"
               label="Decline"
               no-caps
@@ -332,26 +343,6 @@
                 !has_been_approve
               "
             />
-            <q-btn
-              :class="
-                props.row.approve == 'APPROVED' ? 'approve_btn' : 'decline_btn'
-              "
-              dense
-              size="md"
-              padding="5px 7px"
-              :label="has_been_approve ? type : props.row.approve"
-              :disable="
-                props.row.approve == 'APPROVED' ||
-                props.row.approve == 'DECLINED' ||
-                has_been_approve
-              "
-              v-if="
-                (checkTreasurerRole() &&
-                  (props.row.approve == 'APPROVED' ||
-                    props.row.approve == 'DECLINED')) ||
-                has_been_approve
-              "
-            />
           </q-td>
         </q-tr>
       </template>
@@ -364,7 +355,7 @@
               ? 'text-h6-sm q-mb-lg q-mt-lg full-width'
               : 'text-h6-sm'
           "
-          v-model="filter"
+
           placeholder="Type name to search..."
         >
           <template v-slot:append>
@@ -511,9 +502,10 @@
 import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
 import { LocalStorage } from "quasar";
 import moment from "moment";
+import IncomeActivityMixin from 'src/mixins/IncomeActivityMixin.vue';
 
 export default {
-  mixins: [UserSavingMixinVue],
+  mixins: [UserSavingMixinVue, IncomeActivityMixin],
 
   props: {
     columns: {
@@ -592,7 +584,7 @@ export default {
       chosen_state: null,
       approve_msg: null,
       approve_data: null,
-      type: null,
+      type: "PENDING",
     };
   },
   methods: {
@@ -803,6 +795,7 @@ export default {
         if (res.status == 200) {
           this.has_been_approve = true;
           this.type = this.chosen_state == "Approve" ? "APPROVED" : "DECLINED";
+          this.fetchDataBaseOnTypeAfterApprove(this.approve_data);
         }
       });
     },
@@ -818,7 +811,7 @@ export default {
           url = `/api/protected/user-savings/${data.id}?type=${type}`;
           break;
         case "MEMBERS_CONTRIBUTIONS":
-          url = `/api/protected/contributions/${id}/approve?type=${type}`;
+          url = `/api/protected/contributions/${data.id}/approve?type=${type}`;
           break;
       }
 
@@ -843,11 +836,19 @@ export default {
           break;
         case "MEMBERS_CONTRIBUTIONS":
           date = moment(data.date).format("MMMM Do YYYY");
-          this.approve_msg = ` ${data.amount_deposited} F CFA Payment for ${data.name} on the ${date} ?`
+          this.approve_msg = ` ${data.amount_deposited} F CFA Payment for ${data.name} on the ${date} ?`;
       }
 
       return this.approve_msg;
     },
+
+    fetchDataBaseOnTypeAfterApprove(data) {
+      switch(data.type) {
+        case "INCOME_ACTIVITIES":
+          // this.getOrganisationIncomeActivities();
+          break;
+      }
+    }
   },
   components: {},
 };

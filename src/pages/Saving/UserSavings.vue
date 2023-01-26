@@ -92,6 +92,13 @@ export default {
           field: "date",
         },
         {
+          name: "state",
+          align: "left",
+          label: "Status",
+          field: "state",
+          sortable: true,
+        },
+        {
           name: "action",
           label: "Action",
           field: "action",

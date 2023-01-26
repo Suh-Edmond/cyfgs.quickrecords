@@ -79,6 +79,15 @@
           <q-td key="date" :props="props" v-if="show_expenditure_item">
             {{ getFormatedDate(props.row.date) }}
           </q-td>
+          <q-td
+            key="state"
+            :props="props"
+            v-if="
+              (show_expenditure_item || show_expenditure_item_detail)
+            "
+          >
+            {{ props.row.approve }}
+          </q-td>
           <q-td key="action" :props="props">
             <!-- buttons for edit, view and delete table data row -->
             <q-btn
@@ -252,30 +261,6 @@
                 checkTreasurerRole() &&
                 props.row.approve == 'PENDING' &&
                 !has_been_approve
-              "
-            />
-
-            <!-- btn when the record has be either approved or declined -->
-            <q-btn
-              :class="
-                props.row.approve == 'APPROVED' ? 'approve_btn' : 'decline_btn'
-              "
-              dense
-              size="md"
-              padding="5px 7px"
-              :label="has_been_approve ? type : props.row.approve"
-              no-caps
-              :disable="
-                props.row.approve == 'APPROVED' ||
-                props.row.approve == 'DECLINED' ||
-                has_been_approve
-              "
-              v-if="
-                ((show_expenditure_item || show_expenditure_item_detail) &&
-                  checkTreasurerRole() &&
-                  (props.row.approve == 'APPROVED' ||
-                    props.row.approve == 'DECLINED') ||
-                has_been_approve)
               "
             />
           </q-td>
@@ -474,7 +459,7 @@ export default {
         rowsPerPage: 15, // current rows per page being displayed
       },
       approve_msg: null,
-      type: null,
+      type: "PENDING",
     };
   },
   computed: {
@@ -522,7 +507,7 @@ export default {
           data: [],
         },
       };
-      this.$store.dispatch("putRequest", payload).then(() => {
+      this.$store.dispatch("putRequest", payload).then((res) => {
         if (res.status == 200) {
           this.has_been_approve = true;
           this.type = this.chosen_state == "Approve" ? "APPROVED" : "DECLINED";

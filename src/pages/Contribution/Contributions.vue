@@ -1,51 +1,129 @@
 <template>
   <div class="q-pa-sm">
+    <!-- spinner when fetching data -->
+    <div class="flex justify-center">
+      <q-spinner-ios
+        color="primary"
+        size="2em"
+        class="q-mb-lg"
+        v-if="loading_filter"
+      />
+    </div>
     <!-- no contributions available -->
     <!-- <NotFound :message="not_found_msg" v-if="getMembersContributionsByPaymentItem.length == 0"></NotFound> -->
 
-
     <div>
       <!-- contributions available -->
-      <div class="row q-ml-xs q-gutter-md" :class="$q.screen.lg ? 'q-px-sm q-pb-sm' : ''" :style="
-        $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-      ">
+      <div
+        class="row q-ml-xs q-gutter-md"
+        :class="$q.screen.lg ? 'q-px-sm q-pb-sm' : ''"
+        :style="
+          $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+        "
+      >
         <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12">
-          <q-select v-model="payment_category_id" outlined dense :options="getPaymentCategories"
-            label="Payment Category" @input="fetchPaymentItems" />
+          <q-select
+            v-model="payment_category_id"
+            outlined
+            dense
+            :options="getPaymentCategories"
+            label="Payment Category"
+            @input="fetchPaymentItems"
+          />
         </div>
         <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12">
-          <q-select v-model="payment_item_id" outlined dense :options="getPaymentItems" label="Payment Item"
-            @input="getSelectedPaymentItem" />
-          <small v-if="payment_category_id != null && !checkIsExistPaymentItem" class="noPaymentItems">No Payment items
-            found under this category</small>
+          <q-select
+            v-model="payment_item_id"
+            outlined
+            dense
+            :options="getPaymentItems"
+            label="Payment Item"
+            @input="getSelectedPaymentItem"
+          />
+          <small
+            v-if="payment_category_id != null && !checkIsExistPaymentItem"
+            class="noPaymentItems"
+            >No Payment items found under this category</small
+          >
         </div>
         <div class="col-md-1 col-lg-1 col-xs-12 col-sm-12">
-          <q-select v-model="year" outlined dense :options="years" label="Year" />
+          <q-select
+            v-model="year"
+            outlined
+            dense
+            :options="years"
+            label="Year"
+          />
         </div>
         <div class="col-md-1 col-lg-1 col-xs-12 col-sm-12">
-          <q-select v-model="month" outlined dense :options="months" label="Month" input-debounce="0"
-            @filter="filterMonths" use-input hide-selected fill-input />
+          <q-select
+            v-model="month"
+            outlined
+            dense
+            :options="months"
+            label="Month"
+            input-debounce="0"
+            @filter="filterMonths"
+            use-input
+            hide-selected
+            fill-input
+          />
         </div>
         <div class="col-md-1 col-lg-1 col-xs-12 col-sm-12">
-          <q-select v-model="status" outlined dense :options="statuses" label="Status" />
+          <q-select
+            v-model="status"
+            outlined
+            dense
+            :options="statuses"
+            label="Status"
+          />
         </div>
-        <div class="col-md-1 col-lg-1 col-xs-12 col-sm-12" :style="$q.screen.lg ? 'margin-left:75px' : ''">
-          <q-btn :label="label_fetch" :loading="loading_filter" :color="color" :disabled="validateFilter" no-caps
-            icon-right="filter_list" @click="filterContributions">
+        <div
+          class="col-md-1 col-lg-1 col-xs-12 col-sm-12"
+          :style="$q.screen.lg ? 'margin-left:75px' : ''"
+        >
+          <q-btn
+            :label="label_fetch"
+            :loading="loading_filter"
+            :color="color"
+            :disabled="validateFilter"
+            no-caps
+            icon-right="filter_list"
+            @click="filterContributions"
+          >
           </q-btn>
         </div>
-        <div class="col-md-1 col-lg-1 col-xs-12 col-sm-12" :style="$q.screen.lg ? 'margin-left:170px' : ''">
-          <q-btn :label="label_print" :loading="loading" :color="color_print" :disabled="false" no-caps
-            icon-right="print"></q-btn>
+        <div
+          class="col-md-1 col-lg-1 col-xs-12 col-sm-12"
+          :style="$q.screen.lg ? 'margin-left:170px' : ''"
+        >
+          <q-btn
+            :label="label_print"
+            :loading="loading"
+            :color="color_print"
+            :disabled="false"
+            no-caps
+            icon-right="print"
+          ></q-btn>
         </div>
       </div>
       <!-- table for contributions -->
       <div class="row q-pt-sm">
         <div class="col-md-12 col-xs-12 col-sm-12">
-          <TableVue :columns="columns" :data="filteredContributions" :label="label" :message="message"
-            :show_savings="false" :show_income_activity="false" :show_members="false" :show_member_savings="false"
-            :show_contribution="true" @view-contribution="viewContribution" @edit-contribution="editContribution"
-            :title="setTableTitle">
+          <TableVue
+            :columns="columns"
+            :data="filteredContributions"
+            :label="label"
+            :message="message"
+            :show_savings="false"
+            :show_income_activity="false"
+            :show_members="false"
+            :show_member_savings="false"
+            :show_contribution="true"
+            @view-contribution="viewContribution"
+            @edit-contribution="editContribution"
+            :title="setTableTitle"
+          >
           </TableVue>
         </div>
       </div>
@@ -95,7 +173,14 @@ export default {
         "November",
         "December",
       ],
-      statuses: ["APPROVED", "UNAPPROVED", "INCOMPLETE", "COMPLETE", "ALL"],
+      statuses: [
+        "PENDING",
+        "APPROVED",
+        "UNAPPROVED",
+        "INCOMPLETE",
+        "COMPLETE",
+        "ALL",
+      ],
       status: null,
       columns: [
         {
@@ -139,9 +224,17 @@ export default {
           field: "date",
         },
         {
+          name: "state",
+          align: "left",
+          label: "Status",
+          field: "state",
+          sortable: true,
+        },
+        {
           name: "action",
           label: "Action",
           field: "action",
+          align:"left"
         },
       ],
       payment_category_id: null,
@@ -272,8 +365,13 @@ export default {
     },
 
     filterContributions() {
-      this.setFilterUrl(this.payment_category_id.label, this.payment_item_id.label, this.year, this.month, this.status)
-
+      this.setFilterUrl(
+        this.payment_category_id.label,
+        this.payment_item_id.label,
+        this.year,
+        this.month,
+        this.status
+      );
 
       this.filteredContributions = [];
       let payload = {
@@ -297,7 +395,6 @@ export default {
       this.$store
         .dispatch("getRequest", payload)
         .then((res) => {
-          this.loading_filter = false;
           this.start_filter = true;
 
           res.data.data.forEach((ele) => {
@@ -346,16 +443,24 @@ export default {
       if (month != null) {
         this.$router.push({
           path: `/dashboard/contributions`,
-          query: { category: payment_category, item: payment_item, month: month },
+          query: {
+            category: payment_category,
+            item: payment_item,
+            month: month,
+          },
         });
       }
       if (status != null) {
         this.$router.push({
           path: `/dashboard/contributions`,
-          query: { category: payment_category, item: payment_item, status:status },
+          query: {
+            category: payment_category,
+            item: payment_item,
+            status: status,
+          },
         });
       }
-    }
+    },
   },
   components: {
     TableVue,
@@ -363,6 +468,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

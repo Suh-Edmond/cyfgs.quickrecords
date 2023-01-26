@@ -236,8 +236,15 @@ export default {
         {
           name: "amount_deposited",
           align: "left",
-          label: "Total Amount Deposited (XAF)",
+          label: "Total Amount Saved (XAF)",
           field: "amount_deposited",
+        },
+        {
+          name: "state",
+          align: "left",
+          label: "Status",
+          field: "state",
+          sortable: true,
         },
         {
           name: "action",

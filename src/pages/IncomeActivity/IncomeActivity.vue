@@ -232,6 +232,13 @@ export default {
           field: "venue",
         },
         {
+          name: "state",
+          align: "left",
+          label: "Status",
+          field: "state",
+          sortable: true,
+        },
+        {
           name: "action",
           label: "Action",
           field: "action",

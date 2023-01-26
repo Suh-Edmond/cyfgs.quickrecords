@@ -218,12 +218,9 @@
               color="teal"
               padding="5px 7px"
               label="View more"
-              v-if="
-                show_expenditure_item &&
-                checkTreasurerRole()
-              "
+              v-if="show_expenditure_item && checkTreasurerRole()"
               class="view"
-              :to="{name:'expenditure_detail', params: {id:props.row.id}}"
+              :to="{ name: 'expenditure_detail', params: { id: props.row.id } }"
             />
 
             <q-btn
@@ -236,7 +233,9 @@
               @click="onDeclineRecord(props.row, 'Decline')"
               v-if="
                 (show_expenditure_item || show_expenditure_item_detail) &&
-                checkTreasurerRole() && !has_been_approve
+                checkTreasurerRole() &&
+                props.row.approve == 'PENDING' &&
+                !has_been_approve
               "
             />
 
@@ -250,39 +249,35 @@
               @click="onApprovedRecord(props.row, 'Approve')"
               v-if="
                 (show_expenditure_item || show_expenditure_item_detail) &&
-                checkTreasurerRole() && !has_been_approve
+                checkTreasurerRole() &&
+                props.row.approve == 'PENDING' &&
+                !has_been_approve
               "
             />
 
+            <!-- btn when the record has be either approved or declined -->
             <q-btn
-              class="decline_btn"
+              :class="
+                props.row.approve == 'APPROVED' ? 'approve_btn' : 'decline_btn'
+              "
               dense
               size="md"
               padding="5px 7px"
-              label="DECLINED"
+              :label="has_been_approve ? type : props.row.approve"
               no-caps
-              disable
+              :disable="
+                props.row.approve == 'APPROVED' ||
+                props.row.approve == 'DECLINED' ||
+                has_been_approve
+              "
               v-if="
-                (show_expenditure_item || show_expenditure_item_detail) &&
-                checkTreasurerRole() && has_been_approve
+                ((show_expenditure_item || show_expenditure_item_detail) &&
+                  checkTreasurerRole() &&
+                  (props.row.approve == 'APPROVED' ||
+                    props.row.approve == 'DECLINED') ||
+                has_been_approve)
               "
             />
-
-            <q-btn
-              class="approve_btn"
-              dense
-              size="md"
-              padding="5px 7px"
-              label="APPROVED"
-              no-caps
-              disable
-              v-if="
-                (show_expenditure_item || show_expenditure_item_detail) &&
-                checkTreasurerRole() && has_been_approve
-              "
-            />
-
-
           </q-td>
         </q-tr>
       </template>
@@ -369,11 +364,10 @@
       <q-card class="approve_card">
         <q-card-section>
           <div class="row">
-            <div class="col-md-12 text-center">
+            <div class="col-md-12">
               <label for="msg">
-                <span class="text-weight-bold text-center"
-                  >Do you want to {{ chosen_state }} Suh Edmond’s Payment of
-                  15000 FCFA for Cometogther Molyko 2022 ?</span
+                <span class="text-weight-bold"
+                  >Do you want to {{ chosen_state }} {{ approve_msg }}</span
                 >
               </label>
             </div>
@@ -381,11 +375,17 @@
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn class="decline" size="md" label="Decline" flat v-close-popup />
           <q-btn
-            class="approve"
+            :class="chosen_state == 'Approve' ? 'approve' : 'decline'"
             size="md"
-            label="Approve"
+            label="Cancel"
+            flat
+            v-close-popup
+          />
+          <q-btn
+            :class="chosen_state == 'Approve' ? 'approve' : 'decline'"
+            size="md"
+            :label="chosen_state"
             flat
             @click="approvedRecord()"
             v-close-popup
@@ -469,10 +469,12 @@ export default {
       label_cancel: "Cancel",
       filter: "",
       approve_data: null,
-      has_been_approve:false,
+      has_been_approve: false,
       pagination: {
         rowsPerPage: 15, // current rows per page being displayed
       },
+      approve_msg: null,
+      type: null,
     };
   },
   computed: {
@@ -487,23 +489,26 @@ export default {
       );
       return treasurer_role != undefined;
     },
+
     onApprovedRecord(row, state) {
       this.show_approve_dialog = true;
       this.approve_data = row;
       this.chosen_state = state;
+      this.setApproveWarningMsgByType(row);
     },
 
     onDeclineRecord(row, state) {
       this.show_approve_dialog = true;
       this.approve_data = row;
       this.chosen_state = state;
+      this.setApproveWarningMsgByType(row);
     },
 
     approvedRecord() {
       let payload = {
         url: this.setApproveUrlBaseOnType(this.approve_data),
         msg: this.setApproveFeedbackMsg(this.approve_data),
-        data: this.setApproveDataBaseOnType(this.approve_data),
+        data: null,
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
@@ -517,7 +522,12 @@ export default {
           data: [],
         },
       };
-      this.$store.dispatch("putRequest", payload).then(() => {});
+      this.$store.dispatch("putRequest", payload).then(() => {
+        if (res.status == 200) {
+          this.has_been_approve = true;
+          this.type = this.chosen_state == "Approve" ? "APPROVED" : "DECLINED";
+        }
+      });
     },
 
     onViewCategory(categories) {
@@ -575,6 +585,7 @@ export default {
       };
       this.$emit("update-expenditure-category", payload);
     },
+
     onEditExpenditureItem(expenditure_item) {
       let payload = {
         data: expenditure_item,
@@ -582,6 +593,7 @@ export default {
       };
       this.$emit("edit-expenditure-item", payload);
     },
+
     onEditExpenditureItemDetail(expenditure_item_detail) {
       let payload = {
         data: expenditure_item_detail,
@@ -726,10 +738,40 @@ export default {
       return moment(date).format("MMMM Do YYYY");
     },
 
-    setApproveUrlBaseOnType(data) {},
+    setApproveUrlBaseOnType(data) {
+      let url = "";
+      let type = this.chosen_state == "Approve" ? "APPROVED" : "DECLINED";
+      switch (data.type) {
+        case "EXPENDITURE_ITEMS":
+          url = `/api/protected/expenditure-items/${data.id}/approve?type=${type}`;
+          break;
+        case "EXPENDITURE_DETAILS":
+          url = `/api/protected/expenditure-details/${data.id}/approve?type=${type}`;
+          break;
+      }
+      return url;
+    },
 
-    setApproveFeedbackMsg(data) {},
-    setApproveDataBaseOnType(data) {},
+    setApproveFeedbackMsg() {
+      let msg = `Record was ${this.chosen_state} successfully`;
+      return msg;
+    },
+
+    setApproveWarningMsgByType(data) {
+      let date = "";
+      switch (data.type) {
+        case "EXPENDITURE_ITEMS":
+          date = moment(data.date).format("MMMM Do YYYY");
+          this.approve_msg = ` ${data.amount}  F CFA Expenditure for ${data.name} on the ${date} at ${data.venue} ?`;
+          break;
+        case "EXPENDITURE_DETAILS":
+          date = moment(data.created_at).format("MMMM Do YYYY");
+          this.approve_msg = ` ${data.amount_given} F CFA Spent for ${data.name} on the ${date} ?`;
+          break;
+      }
+
+      return this.approve_msg;
+    },
   },
   components: {},
 };
@@ -794,6 +836,7 @@ export default {
 }
 .approve_card {
   width: 30rem;
+  padding: 0.7rem;
 }
 .decline_btn {
   background-color: $orange;

@@ -107,12 +107,13 @@ export default {
           label: "Action",
           field: "action",
           sortable: true,
+          align:"left",
           sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
         },
       ],
       label: "Delete",
       message: "",
-      statuses: ["PENDING","APPROVED", "UNAPPROVED", "ALL"],
+      statuses: ["PENDING","APPROVED", "DECLINED", "ALL"],
       status: null,
       filtered_items: [],
       show_spinner:false,
@@ -192,12 +193,10 @@ export default {
         query: { status: this.status },
       });
 
-      let status = this.status == "APPROVED" ? true: false;
-
       if(this.status == 'ALL'){
         this.filtered_items = this.getExpenditureDetails;
       }else{
-        const items = this.getExpenditureDetails.filter((item) => item.approve == status)
+        const items = this.getExpenditureDetails.filter((item) => item.approve == this.status)
         this.filtered_items = items;
 
       };

@@ -242,7 +242,7 @@ export default {
         {
           name: "action",
           label: "Action",
-          align: "center",
+          align: "left",
           field: "action",
         },
       ],

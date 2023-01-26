@@ -170,9 +170,9 @@ export default {
     return {
       not_found_msg:
         "Ooops!! No Income Activity has been recorded. Click the add button to add income activity.",
-      year: null,
+      year: "",
       years: ["2020", "2021", "2022", "2023", "2024"],
-      month: null,
+      month: "",
       months: [
         "January",
         "February",
@@ -187,8 +187,8 @@ export default {
         "November",
         "December",
       ],
-      statuses: ["APPROVED", "UNAPPROVED", "ALL"],
-      status: null,
+      statuses: ["PENDING","APPROVED", "DECLINED", "ALL"],
+      status: "",
       search: null,
       label_fetch: "Filter",
       color: "primary",
@@ -235,6 +235,7 @@ export default {
           name: "action",
           label: "Action",
           field: "action",
+          align:"left"
         },
       ],
       label: "Delete",

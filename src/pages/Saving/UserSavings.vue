@@ -65,7 +65,6 @@ export default {
       loading: false,
       label_download: "Print",
       color_print: "positive",
-      title: "Suh Edmond", // this title should be the member name
       columns: [
         {
           name: "counter",
@@ -96,11 +95,12 @@ export default {
           name: "action",
           label: "Action",
           field: "action",
+          align:"left"
         },
       ],
       label: "Delete",
       message: "Are you sure you want to delete this Saving?",
-      statuses: ["APPROVED", "UNAPPROVED", "ALL"],
+      statuses: ["PENDING", "APPROVED", "DECLINED", "ALL"],
       status: null,
       start_filter: false,
     };
@@ -118,7 +118,7 @@ export default {
             telephone: ele.telephone,
             amount_deposited: ele.amount_deposited,
             id: ele.id,
-            approve: ele.approve == 1 ? "APPROVED" : "UNAPPROVED",
+            approve: ele.approve,
             comment: ele.comment,
             type: "MEMBER_SAVINGS",
             user_id: ele.user_id,
@@ -164,8 +164,6 @@ export default {
           (ele) => ele.approve === this.status
         );
       }
-      // let member = this.$store.getters.getMemberSavings.data[0];
-
       this.$router.push({
         path: `/dashboard/members-savings/users/${member.name}`,
         query: { status: this.status },

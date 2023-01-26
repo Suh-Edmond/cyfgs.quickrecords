@@ -121,7 +121,7 @@ export default {
       data: [],
       label: "Delete",
       message: "Are you sure you want to delete this Expenditure Item?",
-      statuses: ["PENDING","APPROVED", "UNAPPROVED", "ALL"],
+      statuses: ["PENDING","APPROVED", "DECLINED", "ALL"],
       status: null,
       start_filter: false,
       filtered_items: [],

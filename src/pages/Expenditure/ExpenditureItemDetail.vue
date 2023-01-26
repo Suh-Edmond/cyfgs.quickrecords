@@ -110,7 +110,7 @@ export default {
       ],
       label: "Delete",
       message: "Are you sure you want to delete this Expenditure Item Detail?",
-      statuses: [ "PENDING","APPROVED", "UNAPPROVED", "ALL"],
+      statuses: [ "PENDING","APPROVED", "DECLINED", "ALL"],
       status: null,
       filtered_items: [],
     };

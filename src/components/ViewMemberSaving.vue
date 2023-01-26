@@ -37,10 +37,10 @@
         <label
           for="status"
           class="field"
-          v-show="saving.approve == 'UNAPPROVED'"
+          v-show="saving.approve == 'DECLINED'"
           >Status:
           <span class="field_value item_statue unapproved_color">
-            UNAPPROVED</span
+            {{saving.approve}}</span
           ></label
         >
         <label
@@ -49,7 +49,16 @@
           v-show="saving.approve == 'APPROVED'"
           >Status:
           <span class="field_value item_statue approved_color">
-            APPROVED</span
+            {{saving.approve}}</span
+          ></label
+        >
+        <label
+          for="status"
+          class="field"
+          v-show="saving.approve == 'PENDING'"
+          >Status:
+          <span class="field_value item_statue pending_color">
+            {{saving.approve}}</span
           ></label
         >
       </div>
@@ -193,5 +202,15 @@ export default {
 
 .detail_created_by {
   padding-left: 3.7rem;
+}
+
+.pending_color {
+  color: $info;
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 27px;
+  letter-spacing: 0.005em;
 }
 </style>

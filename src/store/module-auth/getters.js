@@ -138,3 +138,7 @@ export function getExpenditureItemName(state) {
 export function getSearchSavingParams(state) {
   return state.search_saving_param;
 }
+
+export function getFilteredContributions(state) {
+  return state.filtered_contributions;
+}

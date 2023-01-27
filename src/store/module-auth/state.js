@@ -33,6 +33,7 @@ export default function () {
     expenditure_category:null,// this is the category been selected during the approve state
     savings:[],//for approveing to be done
     expenditure_item_name:null,
-    search_saving_param:null
+    search_saving_param:null,
+    filtered_contributions:null
   };
 }

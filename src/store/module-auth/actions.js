@@ -467,3 +467,8 @@ export function setExpenditureItemName({commit}, data) {
 export function setSearchSavingsParams({commit}, data) {
   commit("SET_SEARCH_SAVING_PARAMS", data);
 }
+
+
+export function setFilteredContributions({commit}, data) {
+  commit("SET_FILTERED_CONTRIBUTIONS", data);
+}

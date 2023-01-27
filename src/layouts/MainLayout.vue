@@ -443,6 +443,11 @@
           @set-heading="setHeading"
         >
         </SearchSavings>
+        <SearchContribution  v-if="current_tab == 'Search Members Contributions'"
+          @close-right-drawer="closeRightDrawer"
+          @set-heading="setHeading">
+
+        </SearchContribution>
       </q-page>
     </q-drawer>
   </q-layout>
@@ -466,6 +471,7 @@ import AddContribution from "src/components/AddContribution.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import ViewMemberSaving from "src/components/ViewMemberSaving.vue";
 import SearchSavings from "src/components/SearchSavings.vue";
+import SearchContribution from "src/components/SearchContribution.vue";
 
 export default {
   mixins: [organisationMixinVue],
@@ -579,6 +585,7 @@ export default {
     AddContribution,
     ViewMemberSaving,
     SearchSavings,
+    SearchContribution
   },
 };
 </script>

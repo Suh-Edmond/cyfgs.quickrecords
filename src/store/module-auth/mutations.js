@@ -133,3 +133,7 @@ export function SET_EXPENDITURE_ITEM_NAME(state, data) {
 export function SET_SEARCH_SAVING_PARAMS(state, data) {
   state.search_saving_param = data;
 }
+
+export function SET_FILTERED_CONTRIBUTIONS(state, data) {
+  state.filtered_contributions = data;
+}

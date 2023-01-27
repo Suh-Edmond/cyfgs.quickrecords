@@ -9,10 +9,7 @@
         v-if="loading_filter"
       />
     </div>
-    <!-- no contributions available -->
-    <!-- <NotFound :message="not_found_msg" v-if="getMembersContributionsByPaymentItem.length == 0"></NotFound> -->
-
-    <div>
+    <div v-if="!checkTreasurerRole()">
       <!-- contributions available -->
       <div
         class="row q-ml-xs q-gutter-md"
@@ -128,6 +125,59 @@
         </div>
       </div>
     </div>
+
+    <!-- table for filtered savings so they can be approve/decline-->
+    <div v-if="checkTreasurerRole()">
+      <div
+        class="row q-ml-xs q-pt-md justify-between"
+        :class="$q.screen.lg ? 'q-pa-md' : ''"
+        :style="
+          $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+        "
+      >
+        <div>
+          <q-btn
+            :label="label_fetch"
+            :loading="loading"
+            :color="color"
+            :disabled="false"
+            no-caps
+            icon-right="filter_list"
+            @click="openSearchBar()"
+          >
+          </q-btn>
+        </div>
+        <q-space />
+        <div class="button q-pb-xs">
+          <q-btn
+            :label="label_download"
+            :loading="loading"
+            :color="color_print"
+            :disabled="getFilteredContributionsForApproval.length == 0"
+            no-caps
+            icon-right="print"
+            @click="downloadContributions()"
+          ></q-btn>
+        </div>
+      </div>
+
+      <!-- table for filtered savings -->
+      <div class="row q-pt-sm">
+        <div class="col-md-12 col-xs-12 col-sm-12">
+          <TableVue
+            :columns="columns"
+            :data="getFilteredContributionsForApproval"
+            :label="label"
+            :message="message"
+            :show_savings="true"
+            :show_income_activity="false"
+            :show_members="false"
+            :show_contribution="false"
+          >
+          </TableVue>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -135,6 +185,7 @@
 import TableVue from "src/components/Table.vue";
 import PaymentCategoryMixinVue from "src/mixins/PaymentCategoryMixin.vue";
 import PaymentItemMixinVue from "src/mixins/PaymentItemMixin.vue";
+import { LocalStorage } from "quasar";
 
 export default {
   mixins: [PaymentCategoryMixinVue, PaymentItemMixinVue],
@@ -153,6 +204,7 @@ export default {
       year: null,
       years: ["2020", "2021", "2022", "2023", "2024"],
       label_fetch: "Filter",
+      label_download:"Print",
       loading: false,
       color: "primary",
       no_caps: true,
@@ -234,7 +286,7 @@ export default {
           name: "action",
           label: "Action",
           field: "action",
-          align:"left"
+          align: "left",
         },
       ],
       payment_category_id: null,
@@ -308,6 +360,38 @@ export default {
     checkIsExistPaymentItem() {
       return this.getPaymentItems.length > 0;
     },
+
+    getFilteredContributionsForApproval() {
+      let data = [];
+      if (this.$store.getters.getFilteredContributions != null) {
+        this.$store.getters.getFilteredContributions.data.forEach((ele) => {
+          this.data.push({
+            counter:
+              this.$store.getters.getFilteredContributions.data.indexOf(ele) +
+              1,
+            amount_deposited: ele.amount_deposited,
+            id: ele.id,
+            approve: ele.approve,
+            balance: ele.balance,
+            payment_item_amount: ele.payment_item_amount,
+            payment_item_id: ele.payment_item_id,
+            payment_item_complusory: ele.payment_item_complusory,
+            payment_item_name: ele.payment_item_name,
+            comment: ele.comment,
+            code: ele.code,
+            type: "MEMBERS_CONTRIBUTIONS",
+            complusory: ele.complusory,
+            created_at: ele.created_at,
+            updated_by: ele.updated_by,
+            status: ele.status,
+            user_id: ele.user_id,
+            user_name: ele.user_name,
+            user_telephone: ele.user_telephone,
+          });
+        });
+      }
+      return data;
+    },
   },
 
   watch: {
@@ -333,6 +417,13 @@ export default {
   },
 
   methods: {
+    checkTreasurerRole() {
+      const treasurer_role = LocalStorage.getItem("data").roles.find(
+        (role) => role.name == "TREASURER"
+      );
+      return treasurer_role != undefined;
+    },
+
     filterMonths(val, update, abort) {
       update(() => {
         const needle = val.toLowerCase();
@@ -417,6 +508,17 @@ export default {
           this.loading_filter = false;
         });
     },
+
+    openSearchBar() {
+      let payload = {
+        data: null,
+        tab: "Search Members Contributions",
+      };
+
+      this.$emit("search-members-contribution", payload);
+    },
+
+    downloadContributions() {},
   },
   components: {
     TableVue,

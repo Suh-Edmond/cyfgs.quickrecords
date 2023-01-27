@@ -114,6 +114,7 @@
               @view-contribution="viewContribution"
               @edit-contribution="editContribution"
               @search-member-saving="searchMemberSaving"
+              @search-members-contribution="searchMemberContribution"
             />
           </q-card-section>
         </q-card>
@@ -341,6 +342,10 @@ export default {
       );
       return treasurer_role != undefined;
     },
+
+    searchMemberContribution(data) {
+      this.updateDrawer(data)
+    }
   },
 };
 </script>

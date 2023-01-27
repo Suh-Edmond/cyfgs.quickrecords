@@ -104,6 +104,7 @@ export default {
     HelperMixinVue,
   ],
   mounted() {
+    let id =
     this.fetchExpenditureCategories();
   },
 

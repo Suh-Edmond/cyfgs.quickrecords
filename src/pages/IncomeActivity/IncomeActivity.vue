@@ -163,7 +163,8 @@ export default {
   mixins: [IncomeActivityMixinVue, organisationMixinVue, HelperMixinVue],
 
   mounted() {
-    this.getOrganisationIncomeActivities();
+    let organisation_id = this.getOrganisationId;
+    this.getOrganisationIncomeActivities(organisation_id);
   },
 
   data() {

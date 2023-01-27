@@ -149,7 +149,7 @@ export default {
           data: [],
         },
       };
-      this.setDispatchAction(this.income_activity.id, payload);
+      this.setDispatchAction(this.income_activity.id, payload, organisation_id);
     },
 
     resetForm() {
@@ -174,13 +174,13 @@ export default {
       return url;
     },
 
-    setDispatchAction(id, payload) {
+    setDispatchAction(id, payload, organisation_id) {
       this.loading = true;
       if (id === null) {
         this.$store
           .dispatch("postRequest", payload)
           .then(() => {
-            this.getOrganisationIncomeActivities();
+            this.getOrganisationIncomeActivities(organisation_id);
           })
           .finally(() => {
             this.$emit("close-right-drawer");
@@ -191,7 +191,7 @@ export default {
         this.$store
           .dispatch("putRequest", payload)
           .then(() => {
-            this.getOrganisationIncomeActivities();
+            this.getOrganisationIncomeActivities(organisation_id);
           })
           .finally(() => {
             this.$emit("close-right-drawer");

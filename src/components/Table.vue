@@ -326,8 +326,7 @@
               @click="onDeclineRecord(props.row, 'Decline')"
               v-if="
                 checkTreasurerRole() &&
-                props.row.approve == 'PENDING' &&
-                !has_been_approve
+                props.row.approve == 'PENDING'
               "
             />
 
@@ -339,8 +338,7 @@
               @click="onApprovedRecord(props.row, 'Approve')"
               v-if="
                 checkTreasurerRole() &&
-                props.row.approve == 'PENDING' &&
-                !has_been_approve
+                props.row.approve == 'PENDING'
               "
             />
           </q-td>
@@ -500,11 +498,12 @@
 </template>
 <script>
 import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
+import IncomeActivityMixin from "src/mixins/IncomeActivityMixin.vue";
 import { LocalStorage } from "quasar";
 import moment from "moment";
 
 export default {
-  mixins: [UserSavingMixinVue],
+  mixins: [UserSavingMixinVue, IncomeActivityMixin],
 
   props: {
     columns: {
@@ -565,7 +564,6 @@ export default {
       dialog: false,
       filter: null,
       label_cancel: "Cancel",
-      has_been_approve: false,
       pagination: {
         rowsPerPage: 15, // current rows per page being displayed
       },
@@ -583,7 +581,6 @@ export default {
       chosen_state: null,
       approve_msg: null,
       approve_data: null,
-      type: "PENDING",
     };
   },
   methods: {
@@ -792,8 +789,6 @@ export default {
       };
       this.$store.dispatch("putRequest", payload).then((res) => {
         if (res.status == 200) {
-          this.has_been_approve = true;
-          this.type = this.chosen_state == "Approve" ? "APPROVED" : "DECLINED";
           this.fetchDataBaseOnTypeAfterApprove(this.approve_data);
         }
       });
@@ -842,10 +837,15 @@ export default {
     },
 
     fetchDataBaseOnTypeAfterApprove(data) {
+      let organisation_id = this.$store.getters.getOrganisation.id;
       switch(data.type) {
         case "INCOME_ACTIVITIES":
-          // this.getOrganisationIncomeActivities();
-          break;
+          this.getOrganisationIncomeActivities(organisation_id);
+        break;
+        case "MEMBERS_SAVINGS":
+        break;
+        case "MEMBERS_CONTRIBUTIONS":
+        break;
       }
     }
   },

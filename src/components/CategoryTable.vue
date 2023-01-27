@@ -371,7 +371,7 @@
             size="md"
             :label="chosen_state"
             flat
-            @click="approvedRecord()"
+            @click="onChangeRecordState()"
             v-close-popup
           />
         </q-card-actions>
@@ -487,7 +487,7 @@ export default {
       this.setApproveWarningMsgByType(row);
     },
 
-    approvedRecord() {
+    onChangeRecordState() {
       let payload = {
         url: this.setApproveUrlBaseOnType(this.approve_data),
         msg: this.setApproveFeedbackMsg(this.approve_data),

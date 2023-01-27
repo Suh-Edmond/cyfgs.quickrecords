@@ -1,14 +1,12 @@
 <script>
-import organisationMixinVue from "./organisationMixin.vue";
 
 
 export default {
-  mixins: [organisationMixinVue],
+
   methods: {
-    getOrganisationIncomeActivities() {
-      let organisationId = this.getOrganisationId;
+    getOrganisationIncomeActivities(organisation_id) {
       let payload = {
-        url: `/api/protected/organisations/${organisationId}/income-activities`,
+        url: `/api/protected/organisations/${organisation_id}/income-activities`,
         msg: "none",
         color: "default",
         status: "none",

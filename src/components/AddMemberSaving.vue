@@ -162,13 +162,13 @@ export default {
     },
 
     setDispatchAction(id, payload) {
-      console.log(id);
+      let organisation_id = this.getOrganisationId;
       this.loading = true;
       if (id === null || id === undefined) {
         this.$store
           .dispatch("postRequest", payload)
           .then(() => {
-            this.getOrganisationMemberSavings();
+            this.getOrganisationMemberSavings(organisation_id);
           })
           .finally(() => {
             this.$emit("close-right-drawer");
@@ -179,7 +179,7 @@ export default {
         this.$store
           .dispatch("putRequest", payload)
           .then(() => {
-            this.getOrganisationMemberSavings();
+            this.getOrganisationMemberSavings(organisation_id);
             this.resetForm();
           })
           .finally(() => {

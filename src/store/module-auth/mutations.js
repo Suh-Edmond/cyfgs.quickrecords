@@ -129,3 +129,7 @@ export function SET_SAVINGS(state, data) {
 export function SET_EXPENDITURE_ITEM_NAME(state, data) {
   state.expenditure_item_name = data;
 }
+
+export function SET_SEARCH_SAVING_PARAMS(state, data) {
+  state.search_saving_param = data;
+}

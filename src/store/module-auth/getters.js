@@ -133,3 +133,8 @@ export function getSavings(state) {
 export function getExpenditureItemName(state) {
   return state.expenditure_item_name;
 }
+
+
+export function getSearchSavingParams(state) {
+  return state.search_saving_param;
+}

@@ -7,24 +7,11 @@
       <!-- search by name of member -->
       <div class="q-mb-lg row q-gutter-md">
         <div class="col-md-9 col-lg-9 col-sm-12 col-xs-12">
-          <q-input
-            v-model="param.name"
-            outlined
-            dense
-            type="text"
-            placeholder="Filter by name"
-          />
+          <q-input v-model="param.name" outlined dense type="text" placeholder="Filter by name" />
         </div>
         <div class="col-md-2 col-lg-2 col-sm-12 col xs-12">
-          <q-btn
-            class="form_button"
-            label="Filter"
-            :loading="loading_user_info"
-            :color="color"
-            :disabled="validateFilterByUserInfo"
-            no-caps
-            @click="filterByUserInfo()"
-          >
+          <q-btn class="form_button" label="Filter" :loading="loading_user_info" :color="color"
+            :disabled="validateFilterByUserInfo" no-caps @click="filterByUserInfo()">
           </q-btn>
         </div>
       </div>
@@ -35,24 +22,11 @@
       <!-- search by amount deposited -->
       <div class="q-mb-lg row q-gutter-md">
         <div class="col-md-9 col-lg-9 col-sm-12 col-xs-12">
-          <q-input
-            v-model="param.amount_deposited"
-            outlined
-            dense
-            type="number"
-            placeholder="Search by amount"
-          />
+          <q-input v-model="param.amount_deposited" outlined dense type="number" placeholder="Search by amount" />
         </div>
         <div class="col-md-2 col-lg-2 col-sm-12 col xs-12">
-          <q-btn
-            class="form_button"
-            label="Filter"
-            :loading="loading_save_amount"
-            :color="color"
-            :disabled="validateAmount"
-            no-caps
-            @click="filterByAmount()"
-          >
+          <q-btn class="form_button" label="Filter" :loading="loading_save_amount" :color="color"
+            :disabled="validateAmount" no-caps @click="filterByAmount()">
           </q-btn>
         </div>
       </div>
@@ -62,18 +36,8 @@
       </div>
       <!-- filter by status of savings -->
       <div class="q-mb-lg row q-gutter-xs">
-        <div
-          class="col-md-3 col-lg-3 col-sm-12 col-xs-12 "
-          v-for="status in statuses"
-          :key="status.index"
-        >
-          <q-chip
-            color="primary"
-            text-color="white"
-            clickable
-            class="q-pa-md"
-            @click="filterByStatus(status.name)"
-          >
+        <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12" v-for="status in statuses" :key="status.index">
+          <q-chip color="primary" text-color="white" clickable class="q-pa-md" @click="filterByStatus(status.name)">
             {{ status.name }}
           </q-chip>
         </div>
@@ -86,45 +50,23 @@
       <!-- search by year -->
       <div class="q-mb-md row">
         <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
-          <q-select
-            v-model="param.year"
-            outlined
-            dense
-            label="filter by year"
-            :options="years"
-          />
+          <q-select v-model="param.year" outlined dense label="filter by year" :options="years" />
         </div>
       </div>
       <!-- search by month -->
       <div class="q-mb-md row">
         <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
-          <q-select
-            v-model="param.month"
-            outlined
-            dense
-            label="filter by month"
-            :options="months"
-          />
+          <q-select v-model="param.month" outlined dense label="filter by month" :options="months" />
         </div>
       </div>
 
       <!-- filter by date -->
       <div class="row q-mb-md">
         <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
-          <q-input
-            dense
-            v-model="param.date"
-            mask="date"
-            outlined
-            placeholder="filter by date"
-          >
+          <q-input dense v-model="param.date" mask="date" outlined placeholder="filter by date">
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy
-                  ref="qDateProxy"
-                  transition-show="scale"
-                  transition-hide="scale"
-                >
+                <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
                   <q-date v-model="param.date">
                     <div class="row items-center justify-end">
                       <q-btn v-close-popup label="Close" color="primary" flat />
@@ -140,20 +82,10 @@
       <!-- filter by date range -->
       <div class="q-mb-md row">
         <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
-          <q-input
-            dense
-            v-model="param.date_range"
-            mask="date"
-            outlined
-            placeholder="filter by date-range"
-          >
+          <q-input dense v-model="param.date_range" mask="date" outlined placeholder="filter by date-range">
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy
-                  ref="qDateProxy"
-                  transition-show="scale"
-                  transition-hide="scale"
-                >
+                <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
                   <q-date v-model="param.date_range" range>
                     <div class="row items-center justify-end">
                       <q-btn v-close-popup label="Close" color="primary" flat />
@@ -167,16 +99,8 @@
       </div>
 
       <div class="row">
-        <q-btn
-          class="filter_btn"
-          label="Filter"
-          :loading="loading"
-          :color="color"
-          :disabled="validateForm"
-          no-caps
-          full-width
-          @click="filterByDuration()"
-        >
+        <q-btn class="filter_btn" label="Filter" :loading="loading" :color="color" :disabled="validateForm" no-caps
+          full-width @click="filterByDuration()">
         </q-btn>
       </div>
     </div>
@@ -262,13 +186,9 @@ export default {
         : false;
     },
 
-
-
     validateFilterByUserInfo() {
       return this.param.name == "" ? true : false;
     },
-
-
 
     validateAmount() {
       return this.param.amount_deposited == 0 ? true : false;
@@ -283,10 +203,12 @@ export default {
       });
       let url = `/api/protected/user-savings?organisation_id=${organisation_id}&name=${this.param.name}`;
       this.filterSaving(url);
+      this.$store.dispatch("setSearchSavingsParams", {
+        organisation_id: organisation_id,
+        name: this.param.name,
+      });
+      this.param.name = ""
     },
-
-
-
 
     filterByAmount() {
       let organisation_id = this.getOrganisationId;
@@ -299,10 +221,12 @@ export default {
       });
       let url = `/api/protected/user-savings?organisation_id=${organisation_id}&amount_deposited=${this.param.amount_deposited}`;
       this.filterSaving(url);
+      this.$store.dispatch("setSearchSavingsParams", {
+        organisation_id: organisation_id,
+        amount_deposited: this.param.amount_deposited,
+      });
+      this.param.amount_deposited = 0
     },
-
-
-
 
     filterByStatus(status) {
       let organisation_id = this.getOrganisationId;
@@ -312,25 +236,40 @@ export default {
       });
       let url = `/api/protected/user-savings?organisation_id=${organisation_id}&status=${status}`;
       this.filterSaving(url);
+      this.$store.dispatch("setSearchSavingsParams", {
+        organisation_id: organisation_id,
+        status: status
+      });
     },
-
-
-
 
     filterByDuration() {
       let organisation_id = this.getOrganisationId;
       this.$router.push({
         path: `/dashboard/members-savings`,
-        query: { organisation_id: organisation_id, year: this.param.year, month:this.param.month,  date:this.param.date, range:this.param.date_range },
+        query: {
+          organisation_id: organisation_id,
+          year: this.param.year,
+          month: this.param.month,
+          date: this.param.date,
+          range: this.param.date_range,
+        },
       });
 
       let url = `/api/protected/user-savings?organisation_id=${organisation_id}&year=${this.param.year}&month=${this.param.month}&date=${this.param.date}&range=${this.param.date_range}`;
       this.filterSaving(url);
       this.param.year = "";
-      this.param.month = ""
+      this.param.month = "";
       this.param.date = "";
       this.param.date_range = "";
-    }
+
+      this.$store.dispatch("setSearchSavingsParams", {
+        organisation_id: organisation_id,
+        year: this.param.year,
+        month: this.param.month,
+        date: this.param.date,
+        range: this.param.date_range,
+      });
+    },
   },
   components: {},
 };

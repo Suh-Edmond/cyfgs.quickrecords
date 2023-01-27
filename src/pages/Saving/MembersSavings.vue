@@ -175,7 +175,8 @@ import HelperMixinVue from "src/mixins/HelperMixin.vue";
 export default {
   mixins: [UserSavingMixinVue, HelperMixinVue],
   mounted() {
-    this.getOrganisationMemberSavings();
+    let organisation_id = this.$store.getters.getOrganisation.id
+    this.getOrganisationMemberSavings(organisation_id);
   },
   data() {
     return {
@@ -236,7 +237,7 @@ export default {
         {
           name: "amount_deposited",
           align: "left",
-          label: "Total Amount Saved (XAF)",
+          label: "Amount Saved (XAF)",
           field: "amount_deposited",
         },
         {

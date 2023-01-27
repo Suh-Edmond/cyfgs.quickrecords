@@ -1,16 +1,13 @@
 <script>
-import organisationMixinVue from "./organisationMixin.vue";
 
 export default {
-  mixins: [organisationMixinVue],
   data() {
     return {
       loading: false,
     };
   },
   methods: {
-    getOrganisationMemberSavings() {
-      let id = this.getOrganisationId;
+    getOrganisationMemberSavings(id) {
       let payload = {
         url: `/api/protected/organisations/${id}/user-savings`,
         msg: "none",

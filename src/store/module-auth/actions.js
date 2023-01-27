@@ -463,3 +463,7 @@ export function setSavings({commit}, data) {
 export function setExpenditureItemName({commit}, data) {
   commit("SET_EXPENDITURE_ITEM_NAME", data);
 }
+
+export function setSearchSavingsParams({commit}, data) {
+  commit("SET_SEARCH_SAVING_PARAMS", data);
+}

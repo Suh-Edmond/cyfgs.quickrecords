@@ -365,14 +365,6 @@ export default {
     },
 
     filterContributions() {
-      this.setFilterUrl(
-        this.payment_category_id.label,
-        this.payment_item_id.label,
-        this.year,
-        this.month,
-        this.status
-      );
-
       this.filteredContributions = [];
       let payload = {
         status: "none",
@@ -424,42 +416,6 @@ export default {
         .finally(() => {
           this.loading_filter = false;
         });
-    },
-
-    setFilterUrl(payment_category, payment_item, year, month, status) {
-      console.log(payment_category);
-      if (payment_category != null && payment_item != null) {
-        this.$router.push({
-          path: `/dashboard/contributions`,
-          query: { category: payment_category, item: payment_item },
-        });
-      }
-      if (year != null) {
-        this.$router.push({
-          path: `/dashboard/contributions`,
-          query: { category: payment_category, item: payment_item, year: year },
-        });
-      }
-      if (month != null) {
-        this.$router.push({
-          path: `/dashboard/contributions`,
-          query: {
-            category: payment_category,
-            item: payment_item,
-            month: month,
-          },
-        });
-      }
-      if (status != null) {
-        this.$router.push({
-          path: `/dashboard/contributions`,
-          query: {
-            category: payment_category,
-            item: payment_item,
-            status: status,
-          },
-        });
-      }
     },
   },
   components: {

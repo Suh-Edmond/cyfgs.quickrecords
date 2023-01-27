@@ -453,7 +453,6 @@ export default {
       label_cancel: "Cancel",
       filter: "",
       approve_data: null,
-      has_been_approve: false,
       pagination: {
         rowsPerPage: 15, // current rows per page being displayed
       },
@@ -507,7 +506,6 @@ export default {
       };
       this.$store.dispatch("putRequest", payload).then((res) => {
         if (res.status == 200) {
-          this.has_been_approve = true;
           this.callFetchDataAfterApproveAction(this.approve_data);
         }
       });

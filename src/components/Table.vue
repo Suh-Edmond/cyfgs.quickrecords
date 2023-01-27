@@ -109,7 +109,7 @@
           <q-td
             key="state"
             :props="props"
-            v-if="(show_member_savings || show_savings || show_income_activity)"
+            v-if="(show_member_savings || show_savings || show_income_activity || show_contribution)"
           >
             {{ props.row.approve }}
           </q-td>
@@ -502,10 +502,9 @@
 import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
 import { LocalStorage } from "quasar";
 import moment from "moment";
-import IncomeActivityMixin from 'src/mixins/IncomeActivityMixin.vue';
 
 export default {
-  mixins: [UserSavingMixinVue, IncomeActivityMixin],
+  mixins: [UserSavingMixinVue],
 
   props: {
     columns: {

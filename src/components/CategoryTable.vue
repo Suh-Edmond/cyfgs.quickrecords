@@ -229,6 +229,7 @@
               label="View more"
               v-if="show_expenditure_item && checkTreasurerRole()"
               class="view"
+              @click="showDetails(props.row)"
               :to="{ name: 'expenditure_detail', params: { id: props.row.id } }"
             />
 
@@ -243,8 +244,7 @@
               v-if="
                 (show_expenditure_item || show_expenditure_item_detail) &&
                 checkTreasurerRole() &&
-                props.row.approve == 'PENDING' &&
-                !has_been_approve
+                props.row.approve == 'PENDING'
               "
             />
 
@@ -259,8 +259,7 @@
               v-if="
                 (show_expenditure_item || show_expenditure_item_detail) &&
                 checkTreasurerRole() &&
-                props.row.approve == 'PENDING' &&
-                !has_been_approve
+                props.row.approve == 'PENDING'
               "
             />
           </q-td>
@@ -459,7 +458,6 @@ export default {
         rowsPerPage: 15, // current rows per page being displayed
       },
       approve_msg: null,
-      type: "PENDING",
     };
   },
   computed: {
@@ -510,7 +508,7 @@ export default {
       this.$store.dispatch("putRequest", payload).then((res) => {
         if (res.status == 200) {
           this.has_been_approve = true;
-          this.type = this.chosen_state == "Approve" ? "APPROVED" : "DECLINED";
+          this.callFetchDataAfterApproveAction(this.approve_data);
         }
       });
     },
@@ -757,6 +755,22 @@ export default {
 
       return this.approve_msg;
     },
+
+    callFetchDataAfterApproveAction(data) {
+      switch(data.type) {
+        case "EXPENDITURE_ITEMS":
+          this.getExpendituresByCategory(data.expenditure_category_id);
+        break;
+        case "EXPENDITURE_DETAILS":
+          this.getExpenditureDetailsByItemId(data.expenditure_item_id);
+        break;
+      }
+    },
+
+    showDetails(data) {
+      this.$store.dispatch("setExpenditureItemName", data.name);
+      this.getExpenditureDetailsByItemId(data.id);
+    }
   },
   components: {},
 };

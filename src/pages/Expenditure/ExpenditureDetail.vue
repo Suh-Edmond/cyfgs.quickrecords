@@ -6,13 +6,13 @@
         color="primary"
         size="2em"
         class="q-mb-lg"
-        v-if="show_spinner"
+        v-if="getLoadingState"
       />
     </div>
 
     <NotFound
       :message="getNotFoundMsg"
-      v-if="getExpenditureDetails.length == 0"
+      v-if="getExpenditureDetails.length == 0 && !getLoadingState"
     ></NotFound>
 
     <div v-if="getExpenditureDetails.length > 0 && !getLoadingState">
@@ -172,10 +172,7 @@ export default {
       return this.$store.getters.getFetchingState;
     },
     getExpenditureItemName() {
-      let expenditure_item = this.$store.getters.getExpenditures.filter(
-        (ele) => (ele.id = this.$router.currentRoute.params.id)
-      );
-      return expenditure_item[0].expenditure_details[0].expenditure_item_name;
+      return this.$store.getters.getExpenditureItemName;
     },
 
     getNotFoundMsg() {
@@ -184,49 +181,50 @@ export default {
 
     getExpenditureDetails() {
       let data = [];
-      const expenditure_item = this.$store.getters.getExpenditures.filter(
-        (ele) => (ele.id = this.$router.currentRoute.params.id)
-      );
-      expenditure_item[0].expenditure_details.forEach((ele) => {
-        data.push({
-          counter: expenditure_item[0].expenditure_details.indexOf(ele) + 1,
-          name: ele.name,
-          amount_given: ele.amount_given,
-          amount_spent: ele.amount_spent,
-          balance: ele.balance,
-          type: "EXPENDITURE_DETAILS",
-          id: ele.id,
-          expenditure_item_id: ele.expenditure_item_id,
-          comment: ele.comment,
-          approve: ele.approve,
-          created_at: ele.created_at,
-          updated_at: ele.updated_at,
-          updated_by: ele.updated_by,
-          total_item_amount: expenditure_item[0].total_item_amount,
-          total_amount_given: expenditure_item[0].total_amount_given,
-          total_amount_spent: expenditure_item[0].total_amount_spent,
-          total_balance: expenditure_item[0].total_balance,
+      if (this.$store.getters.getExpenditureItemDetails != undefined) {
+        this.$store.getters.getExpenditureItemDetails.data.forEach((ele) => {
+          data.push({
+            counter:
+              this.$store.getters.getExpenditureItemDetails.data.indexOf(ele) +
+              1,
+            name: ele.name,
+            amount_given: ele.amount_given,
+            amount_spent: ele.amount_spent,
+            balance: ele.balance,
+            type: "EXPENDITURE_DETAILS",
+            id: ele.id,
+            expenditure_item_id: ele.expenditure_item_id,
+            comment: ele.comment,
+            approve: ele.approve,
+            created_at: ele.created_at,
+            updated_at: ele.updated_at,
+            updated_by: ele.updated_by,
+            total_item_amount: this.$store.getters.getExpenditureItemDetails.total_item_amount,
+            total_amount_given: this.$store.getters.getExpenditureItemDetails.total_amount_given,
+            total_amount_spent: this.$store.getters.getExpenditureItemDetails.total_amount_spent,
+            total_balance: this.$store.getters.getExpenditureItemDetails.total_balance,
+          });
         });
-      });
+      }
       return data;
     },
   },
   methods: {
     downloadExpenditureItemDetails() {
       let expenditure_item_id = this.$router.currentRoute.params.id;
-      let status = "";
-      switch (this.status) {
-        case "APPROVED":
-          status = 1;
-          break;
-        case "UNAPPROVED":
-          status = 0;
-          break;
-        case "ALL":
-          status = 2;
-          break;
-      }
-      let url = `/api/protected/expenditure-item-details/download?expenditure_item_id=${expenditure_item_id}&status=${status}`;
+      // let status = "";
+      // switch (this.status) {
+      //   case "APPROVED":
+      //     status = 1;
+      //     break;
+      //   case "UNAPPROVED":
+      //     status = 0;
+      //     break;
+      //   case "ALL":
+      //     status = 2;
+      //     break;
+      // }
+      let url = `/api/protected/expenditure-item-details/download?expenditure_item_id=${expenditure_item_id}&status=${this.status}`;
       let file_name = "Expenditure_Item_Details.pdf";
       this.loading = this.downloadPdf(url, file_name);
     },

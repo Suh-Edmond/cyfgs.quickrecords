@@ -125,3 +125,7 @@ export function SET_EXPENDITURE_CATEGORY(state, data) {
 export function SET_SAVINGS(state, data) {
   state.savings = data;
 }
+
+export function SET_EXPENDITURE_ITEM_NAME(state, data) {
+  state.expenditure_item_name = data;
+}

@@ -458,3 +458,8 @@ export function setExpenditureCategory({commit}, data){
 export function setSavings({commit}, data) {
   commit("SET_SAVINGS", data);
 }
+
+
+export function setExpenditureItemName({commit}, data) {
+  commit("SET_EXPENDITURE_ITEM_NAME", data);
+}

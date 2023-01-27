@@ -129,3 +129,7 @@ export  function getExpenditureCategory(state) {
 export function getSavings(state) {
   return state.savings
 }
+
+export function getExpenditureItemName(state) {
+  return state.expenditure_item_name;
+}

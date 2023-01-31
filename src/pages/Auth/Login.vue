@@ -69,8 +69,11 @@
 <script>
 import ButtonVue from "src/components/Button.vue";
 import { SessionStorage } from "quasar";
+import organisationMixin from "src/mixins/organisationMixin.vue";
+
 export default {
   name: "PageIndex",
+  mixins: [organisationMixin],
   data() {
     return {
       user: {
@@ -123,6 +126,7 @@ export default {
         .dispatch("postRequest", payload)
         .then(() => {
           SessionStorage.set("to_tab", 'Dashboard');
+          this.getOrganisationInfo();
         })
         .finally(() => {
           this.loading = false;

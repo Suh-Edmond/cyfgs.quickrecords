@@ -154,9 +154,12 @@
 <script>
 import ButtonVue from "src/components/Button.vue";
 import { LocalStorage, SessionStorage } from "quasar";
+import organisationMixin from "src/mixins/organisationMixin.vue";
 export default {
-  created(){
+  mixins:[organisationMixin],
+  mounted(){
     LocalStorage.clear();
+    this.getOrganisationInfo();
   },
   data() {
     return {
@@ -256,6 +259,7 @@ export default {
         .dispatch("postRequest", payload)
         .then(() => {
           SessionStorage.set("to_tab", 'Dashboard');
+          this.getOrganisationInfo();
         })
         .finally(() => {
           this.loading = false;

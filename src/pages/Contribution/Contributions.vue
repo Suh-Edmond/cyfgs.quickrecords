@@ -6,7 +6,7 @@
         color="primary"
         size="2em"
         class="q-mb-lg"
-        v-if="loading_filter"
+        v-if="getLoadingState"
       />
     </div>
     <div v-if="!checkTreasurerRole()">
@@ -172,7 +172,8 @@
             :show_savings="true"
             :show_income_activity="false"
             :show_members="false"
-            :show_contribution="false"
+            :show_contribution="true"
+            :title="getTableTitleForSearchContributions"
           >
           </TableVue>
         </div>
@@ -186,12 +187,14 @@ import TableVue from "src/components/Table.vue";
 import PaymentCategoryMixinVue from "src/mixins/PaymentCategoryMixin.vue";
 import PaymentItemMixinVue from "src/mixins/PaymentItemMixin.vue";
 import { LocalStorage } from "quasar";
+import organisationMixinVue from "src/mixins/organisationMixin.vue";
 
 export default {
-  mixins: [PaymentCategoryMixinVue, PaymentItemMixinVue],
+  mixins: [PaymentCategoryMixinVue, PaymentItemMixinVue, organisationMixinVue],
 
   mounted() {
-    this.fetchCategories();
+    let id = this.getOrganisationId;
+    this.fetchCategories(id);
   },
 
   data() {
@@ -204,7 +207,7 @@ export default {
       year: null,
       years: ["2020", "2021", "2022", "2023", "2024"],
       label_fetch: "Filter",
-      label_download:"Print",
+      label_download: "Print",
       loading: false,
       color: "primary",
       no_caps: true,
@@ -306,7 +309,6 @@ export default {
       if (this.$store.getters.getMembersContributionsByPaymentItem != null) {
         this.$store.getters.getMembersContributionsByPaymentItem.data.forEach(
           (ele) => {
-            console.log(ele);
             data.push({
               counter:
                 this.$store.getters.getMembersContributionsByPaymentItem.data.indexOf(
@@ -363,9 +365,9 @@ export default {
 
     getFilteredContributionsForApproval() {
       let data = [];
-      if (this.$store.getters.getFilteredContributions != null) {
+      if (this.$store.getters.getFilteredContributions != undefined) {
         this.$store.getters.getFilteredContributions.data.forEach((ele) => {
-          this.data.push({
+          data.push({
             counter:
               this.$store.getters.getFilteredContributions.data.indexOf(ele) +
               1,
@@ -391,6 +393,16 @@ export default {
         });
       }
       return data;
+    },
+
+    getLoadingState() {
+      return this.$store.getters.getFetchingState;
+    },
+
+    getTableTitleForSearchContributions() {
+      return this.$store.getters.getSearchSavingParams != undefined
+        ? `Members Contributions for ${this.$store.getters.getSearchSavingParams.payment_item_id.label}`
+        : "";
     },
   },
 

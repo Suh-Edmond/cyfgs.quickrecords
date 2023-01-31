@@ -90,11 +90,13 @@ import CategoryTable from "src/components/CategoryTable.vue";
 import { SessionStorage } from "quasar";
 import PaymentCategoryMixinVue from "src/mixins/PaymentCategoryMixin.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
+import organisationMixinVue from 'src/mixins/organisationMixin.vue';
 
 export default {
-  mixins: [PaymentCategoryMixinVue, HelperMixinVue],
+  mixins: [PaymentCategoryMixinVue, HelperMixinVue, organisationMixinVue],
   mounted() {
-    this.fetchCategories();
+    let id = this.getOrganisationId;
+    this.fetchCategories(id);
   },
   data() {
     return {

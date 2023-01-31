@@ -13,7 +13,7 @@
             outlined
             dense
             label="Select category"
-            :options="getExpenditureCategories"
+            :options="getPaymentCategories"
             @input="getPaymentItems"
           />
         </div>
@@ -24,7 +24,7 @@
             outlined
             dense
             label="Select item"
-            :options="months"
+            :options="payment_items"
           />
         </div>
       </div>
@@ -45,7 +45,8 @@
             text-color="white"
             clickable
             class="q-pa-md"
-            @click="filterByStatus(status.name)"
+            :disable="validateForm"
+            @click="filterByDuration(status.name)"
           >
             {{ status.name }}
           </q-chip>
@@ -142,14 +143,7 @@
 
       <div class="row justify-end q-mt-lg">
         <div class="col-md-3 col-sm-3 col-xs-3">
-          <q-btn
-            label="Reset"
-            color="primary"
-            :disabled="!validateForm"
-            no-caps
-            outline
-            @click="reset()"
-          >
+          <q-btn label="Reset" color="primary" no-caps outline @click="reset()">
           </q-btn>
         </div>
         <div class="col-md-3 col-sm-3 col-xs-3 col-lg-3">
@@ -160,7 +154,7 @@
             :color="color"
             :disabled="validateForm"
             no-caps
-            @click="filterByDuration()"
+            @click="filterByDuration(null)"
           >
           </q-btn>
         </div>
@@ -171,17 +165,25 @@
 <script>
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
-import ExpenditureCategoryMixin from "src/mixins/ExpenditureCategoryMixin.vue";
+import PaymentCategoryMixin from "src/mixins/PaymentCategoryMixin.vue";
+import ContributionsMixinVue from "src/mixins/ContributionsMixin.vue";
 
 export default {
-  mixins: [organisationMixinVue, UserSavingMixinVue],
+  mixins: [
+    organisationMixinVue,
+    UserSavingMixinVue,
+    PaymentCategoryMixin,
+    ContributionsMixinVue,
+  ],
 
   mounted() {
     let heading = "Search Member's Contribution";
 
     this.$emit("set-heading", heading);
 
-    // this.fetchExpenditureCategories();
+    let id = this.getOrganisationId;
+
+    this.fetchCategories(id);
   },
 
   data() {
@@ -234,7 +236,7 @@ export default {
         payment_category_id: "",
         payment_item_id: "",
         month: "",
-        status: "",
+        year: "",
         range: "",
         date: "",
         date_range: "",
@@ -246,112 +248,75 @@ export default {
       hasMadePayment: false,
       loading_user_info: false,
       loading_save_amount: false,
+      payment_items: [],
     };
   },
   computed: {
     validateForm() {
-      return this.param.payment_category_id == "" &&
+      return this.param.payment_category_id == "" ||
         this.param.payment_item_id == ""
         ? true
         : false;
     },
-
-    getExpenditureCategories() {
-      let data = [];
-
-      this.$store.getters.getExpenditureCategories.forEach((element) => {
-        data.push({
-          label: element.name,
-          value: element.id,
-        });
-      });
-
-      return data;
-    },
   },
   methods: {
-    getPaymentItems(){
-
-    },
-    filterByUserInfo() {
-      let organisation_id = this.getOrganisationId;
-      this.$router.push({
-        path: `/dashboard/members-savings`,
-        query: { organisation_id: organisation_id, name: this.param.name },
-      });
-      let url = `/api/protected/user-savings?organisation_id=${organisation_id}&name=${this.param.name}`;
-      this.filterSaving(url);
-      this.$store.dispatch("setSearchSavingsParams", {
-        organisation_id: organisation_id,
-        name: this.param.name,
-      });
-      this.param.name = "";
-    },
-
-    filterByAmount() {
-      let organisation_id = this.getOrganisationId;
-      this.$router.push({
-        path: `/dashboard/members-savings`,
-        query: {
-          organisation_id: organisation_id,
-          amount_deposited: this.param.amount_deposited,
+    getPaymentItems() {
+      this.payment_items = [];
+      let payload = {
+        status: "none",
+        url: `/api/protected/payment-categories/${this.param.payment_category_id.value}/payment-items`,
+        has_path_val: true,
+        show_feedback: false,
+        show_spinner: true,
+        msg: "none",
+        color: "default",
+        error_msg: "default",
+        commit: "none",
+        has_commit: false,
+        to_be_store_data: {
+          required: true,
+          has_value: false,
+          data: null,
         },
+      };
+      this.$store.dispatch("getRequest", payload).then((res) => {
+        if (res.success) {
+          res.data.data.forEach((ele) => {
+            this.payment_items.push({
+              label: ele.name,
+              value: ele.id,
+            });
+          });
+        }
       });
-      let url = `/api/protected/user-savings?organisation_id=${organisation_id}&amount_deposited=${this.param.amount_deposited}`;
-      this.filterSaving(url);
-      this.$store.dispatch("setSearchSavingsParams", {
-        organisation_id: organisation_id,
-        amount_deposited: this.param.amount_deposited,
-      });
-      this.param.amount_deposited = 0;
+
+      return this.payment_items;
     },
 
-    filterByStatus(status) {
-      let organisation_id = this.getOrganisationId;
-      this.$router.push({
-        path: `/dashboard/members-savings`,
-        query: { organisation_id: organisation_id, status: status },
-      });
-      let url = `/api/protected/user-savings?organisation_id=${organisation_id}&status=${status}`;
-      this.filterSaving(url);
-      this.$store.dispatch("setSearchSavingsParams", {
-        organisation_id: organisation_id,
-        status: status,
-      });
-    },
-
-    filterByDuration() {
-      let organisation_id = this.getOrganisationId;
-      this.$router.push({
-        path: `/dashboard/members-savings`,
-        query: {
-          organisation_id: organisation_id,
-          year: this.param.year,
-          month: this.param.month,
-          date: this.param.date,
-          range: this.param.date_range,
-        },
-      });
-
-      let url = `/api/protected/user-savings?organisation_id=${organisation_id}&year=${this.param.year}&month=${this.param.month}&date=${this.param.date}&range=${this.param.date_range}`;
-      this.filterSaving(url);
-      this.param.year = "";
-      this.param.month = "";
-      this.param.date = "";
-      this.param.date_range = "";
-
-      this.$store.dispatch("setSearchSavingsParams", {
-        organisation_id: organisation_id,
+    filterByDuration(status) {
+      let state = status == null ? "" : status;
+      let payload = {
+        organisation_id: this.getOrganisationId,
+        status: state,
+        payment_category_id: this.param.payment_category_id,
+        payment_item_id: this.param.payment_item_id,
         year: this.param.year,
         month: this.param.month,
         date: this.param.date,
-        range: this.param.date_range,
-      });
+        date_range: this.param.date_range,
+      };
+      this.loading = this.filterMembersContributions(payload);
     },
 
     reset() {
-
-    }
+      this.param.payment_category_id = "";
+      this.param.payment_item_id = "";
+      this.param.month = "";
+      this.param.year = "";
+      this.param.range = "";
+      this.param.date = "";
+      this.param.date_range = "";
+    },
   },
   components: {},
 };

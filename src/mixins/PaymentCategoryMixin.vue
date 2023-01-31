@@ -1,8 +1,6 @@
 <script>
-import organisationMixinVue from "./organisationMixin.vue";
 
 export default {
-  mixins: [organisationMixinVue],
   data() {
     return {
     };
@@ -26,10 +24,9 @@ export default {
 
 
   methods: {
-    fetchCategories() {
-      let organisationId = this.getOrganisationId;
+    fetchCategories(organisation_id) {
       let payload = {
-        url: `/api/protected/organisations/${organisationId}/payment-categories`,
+        url: `/api/protected/organisations/${organisation_id}/payment-categories`,
         msg: "none",
         color: "default",
         status: "none",

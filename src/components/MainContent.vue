@@ -67,13 +67,21 @@
               />
             </label>
             <div class="q-pa-xs">
-              <span class="q-pl-sm title tab" @click="goBack(item.name)">{{ item.name }}</span>
+              <span class="q-pl-sm title tab" @click="goBack(item.name)">{{
+                item.name
+              }}</span>
 
-             <span v-if="getIntermediateTabs.length > 0">
-              <span class="q-pl-sm tab" v-for="tab in getIntermediateTabs" :key="tab.index" @click="goBack(null)" >
-                <q-icon size="1.5em" name="chevron_right" color="primary"
-              /> <span class="q-pl-sm title" >{{ tab.name }}</span></span>
-             </span>
+              <span v-if="getIntermediateTabs.length > 0">
+                <span
+                  class="q-pl-sm tab"
+                  v-for="tab in getIntermediateTabs"
+                  :key="tab.index"
+                  @click="goBack(null)"
+                >
+                  <q-icon size="1.5em" name="chevron_right" color="primary" />
+                  <span class="q-pl-sm title">{{ tab.name }}</span></span
+                >
+              </span>
             </div>
             <q-space />
             <q-btn
@@ -101,7 +109,6 @@
               @update-payment-item="updatePaymentItem"
               @update-expenditure-category="updateExpenditureCategory"
               @edit-expenditure-item="editExpenditureItem"
-              @show-expenditure-item-details="showExpenditureItemDetails"
               @edit-expenditure-item-detail="editExpenditureItemDetail"
               @edit-member-saving="editMemberSaving"
               @view-member-saving="viewMemberSaving"
@@ -166,20 +173,17 @@ export default {
     };
   },
 
-
   computed: {
-
-    getIntermediateTabs(){
+    getIntermediateTabs() {
       let data = [];
       Array.from(this.$store.getters.getIntermediateTabs).forEach((ele) => {
         data.push({
           name: ele.name,
-          has_intermediate_tab:ele.has_intermediate_tab
-        })
-      })
+          has_intermediate_tab: ele.has_intermediate_tab,
+        });
+      });
       return data;
-    }
-
+    },
   },
 
   methods: {
@@ -188,7 +192,6 @@ export default {
     },
     showRightDrawer() {
       this.right = true;
-
       this.$emit("show-right-drawer", {
         right: this.right,
         current_tab: this.getCurrentRightDrawerTab(),
@@ -216,12 +219,12 @@ export default {
     },
     goBack(tab) {
       history.back();
-      let data = []
+      let data = [];
       data = Array.from(this.$store.getters.getIntermediateTabs);
-      if(tab == "Expenditure Categories"){
+      if (tab == "Expenditure Categories") {
         data.pop();
         data.pop();
-      }else {
+      } else {
         data.pop();
       }
       this.$store.dispatch("setIntermediateTabs", Array.from(data));
@@ -261,34 +264,20 @@ export default {
     editExpenditureItem(data) {
       this.updateDrawer(data);
     },
-    showExpenditureItemDetails(data) {
-      // this.has_intermediate_tab = data.has_intermediate_tab;
-      // this.has_intermediate_tab2 = SessionStorage.getItem(
-      //   "has_intermediate_tab2"
-      // );
-    },
     editExpenditureItemDetail(data) {
       this.updateDrawer(data);
     },
     getCurrentRightDrawerTab() {
       let tab = "";
-      // if (
-      //   SessionStorage.getItem("intermediate_tab") === null &&
-      //   SessionStorage.getItem("intermediate_tab2") === null
-      // ) {
-      //   tab = SessionStorage.getItem("to_tab");
-      // }
-      // if (
-      //   SessionStorage.getItem("intermediate_tab") !== null &&
-      //   SessionStorage.getItem("intermediate_tab2") === null
-      // ) {
-      //   tab = SessionStorage.getItem("intermediate_tab");
-      // }
-      // if (SessionStorage.getItem("intermediate_tab2") !== null) {
-      //   tab = SessionStorage.getItem("intermediate_tab2");
-      // }
-      
-
+      if (Array.from(this.$store.getters.getIntermediateTabs).length == 0) {
+        tab = SessionStorage.getItem("to_tab");
+      }
+      if (Array.from(this.$store.getters.getIntermediateTabs).length == 1) {
+        tab = Array.from(this.$store.getters.getIntermediateTabs)[0].name;
+      }
+      if (Array.from(this.$store.getters.getIntermediateTabs).length == 2) {
+        tab = Array.from(this.$store.getters.getIntermediateTabs)[1].name;
+      }
       return tab;
     },
     editMemberSaving(data) {
@@ -337,8 +326,8 @@ export default {
     },
 
     searchMemberContribution(data) {
-      this.updateDrawer(data)
-    }
+      this.updateDrawer(data);
+    },
   },
 };
 </script>

@@ -515,13 +515,7 @@ export default {
 
       SessionStorage.set("requires_add", this.requires_add);
 
-      SessionStorage.remove("intermediate_tab");
-
-      SessionStorage.remove("has_intermediate_tab", false);
-
-      SessionStorage.remove("intermediate_tab2");
-
-      SessionStorage.remove("has_intermediate_tab2", false);
+      this.$store.dispatch("setIntermediateTabs", []);
     },
     updateRightDrawer({ right, current_tab, data }) {
       this.current_tab = current_tab;

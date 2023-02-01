@@ -63,19 +63,17 @@
                 icon="arrow_back"
                 flat
                 dense
-                @click="goBack"
+                @click="goBack(null)"
               />
             </label>
             <div class="q-pa-xs">
-              <span class="q-pl-sm title">{{ item.name }}</span>
-              <span class="q-pl-sm" v-if="has_intermediate_tab">
+              <span class="q-pl-sm title tab" @click="goBack(item.name)">{{ item.name }}</span>
+
+             <span v-if="getIntermediateTabs.length > 0">
+              <span class="q-pl-sm tab" v-for="tab in getIntermediateTabs" :key="tab.index" @click="goBack(null)" >
                 <q-icon size="1.5em" name="chevron_right" color="primary"
-              /></span>
-              <span class="q-pl-sm title">{{ intermediate_tab }}</span>
-              <span class="q-pl-sm" v-if="has_intermediate_tab2">
-                <q-icon size="1.5em" name="chevron_right" color="primary"
-              /></span>
-              <span class="q-pl-sm title">{{ intermediate_tab2 }}</span>
+              /> <span class="q-pl-sm title" >{{ tab.name }}</span></span>
+             </span>
             </div>
             <q-space />
             <q-btn
@@ -100,10 +98,8 @@
               @start-loading="startLoading"
               @update-member="updateMember"
               @update-payment-category="updatePaymentCategory"
-              @show-payment-items="showPaymentItems"
               @update-payment-item="updatePaymentItem"
               @update-expenditure-category="updateExpenditureCategory"
-              @show-expenditure-items="showExpenditureItems"
               @edit-expenditure-item="editExpenditureItem"
               @show-expenditure-item-details="showExpenditureItemDetails"
               @edit-expenditure-item-detail="editExpenditureItemDetail"
@@ -169,7 +165,22 @@ export default {
       loading: false,
     };
   },
-  computed: {},
+
+
+  computed: {
+
+    getIntermediateTabs(){
+      let data = [];
+      Array.from(this.$store.getters.getIntermediateTabs).forEach((ele) => {
+        data.push({
+          name: ele.name,
+          has_intermediate_tab:ele.has_intermediate_tab
+        })
+      })
+      return data;
+    }
+
+  },
 
   methods: {
     startLoading(data) {
@@ -203,17 +214,17 @@ export default {
       };
       this.$store.dispatch("logoutUser", payload);
     },
-    goBack() {
+    goBack(tab) {
       history.back();
-      if (SessionStorage.getItem("has_intermediate_tab2")) {
-        this.has_intermediate_tab2 = false;
-        SessionStorage.set("has_intermediate_tab2", false);
-        SessionStorage.remove("intermediate_tab2");
-      } else {
-        this.has_intermediate_tab = false;
-        SessionStorage.set("has_intermediate_tab", false);
-        SessionStorage.remove("intermediate_tab");
+      let data = []
+      data = Array.from(this.$store.getters.getIntermediateTabs);
+      if(tab == "Expenditure Categories"){
+        data.pop();
+        data.pop();
+      }else {
+        data.pop();
       }
+      this.$store.dispatch("setIntermediateTabs", Array.from(data));
     },
     updateMember(data) {
       this.right = true;
@@ -225,21 +236,6 @@ export default {
     },
     updatePaymentCategory(data) {
       this.updateDrawer(data);
-    },
-
-    showPaymentItems(data) {
-      this.has_intermediate_tab = data.has_intermediate_tab;
-      this.getIntermediateTab();
-    },
-
-    getIntermediateTab() {
-      this.intermediate_tab = SessionStorage.getItem("has_intermediate_tab")
-        ? SessionStorage.getItem("intermediate_tab")
-        : "";
-      this.intermediate_tab2 = SessionStorage.getItem("has_intermediate_tab2")
-        ? SessionStorage.getItem("intermediate_tab2")
-        : "";
-      return this.intermediate_tab;
     },
 
     updatePaymentItem(data) {
@@ -261,40 +257,37 @@ export default {
     updateExpenditureCategory(data) {
       this.updateDrawer(data);
     },
-    showExpenditureItems(data) {
-      this.has_intermediate_tab = data.has_intermediate_tab;
-      this.getIntermediateTab();
-    },
+
     editExpenditureItem(data) {
       this.updateDrawer(data);
     },
     showExpenditureItemDetails(data) {
-      this.has_intermediate_tab = data.has_intermediate_tab;
-      this.has_intermediate_tab2 = SessionStorage.getItem(
-        "has_intermediate_tab2"
-      );
-      this.getIntermediateTab();
+      // this.has_intermediate_tab = data.has_intermediate_tab;
+      // this.has_intermediate_tab2 = SessionStorage.getItem(
+      //   "has_intermediate_tab2"
+      // );
     },
     editExpenditureItemDetail(data) {
       this.updateDrawer(data);
     },
     getCurrentRightDrawerTab() {
       let tab = "";
-      if (
-        SessionStorage.getItem("intermediate_tab") === null &&
-        SessionStorage.getItem("intermediate_tab2") === null
-      ) {
-        tab = SessionStorage.getItem("to_tab");
-      }
-      if (
-        SessionStorage.getItem("intermediate_tab") !== null &&
-        SessionStorage.getItem("intermediate_tab2") === null
-      ) {
-        tab = SessionStorage.getItem("intermediate_tab");
-      }
-      if (SessionStorage.getItem("intermediate_tab2") !== null) {
-        tab = SessionStorage.getItem("intermediate_tab2");
-      }
+      // if (
+      //   SessionStorage.getItem("intermediate_tab") === null &&
+      //   SessionStorage.getItem("intermediate_tab2") === null
+      // ) {
+      //   tab = SessionStorage.getItem("to_tab");
+      // }
+      // if (
+      //   SessionStorage.getItem("intermediate_tab") !== null &&
+      //   SessionStorage.getItem("intermediate_tab2") === null
+      // ) {
+      //   tab = SessionStorage.getItem("intermediate_tab");
+      // }
+      // if (SessionStorage.getItem("intermediate_tab2") !== null) {
+      //   tab = SessionStorage.getItem("intermediate_tab2");
+      // }
+      
 
       return tab;
     },
@@ -424,5 +417,9 @@ export default {
   color: $primary;
   font-weight: 500;
   font-size: smaller;
+}
+
+.tab {
+  cursor: pointer;
 }
 </style>

@@ -87,7 +87,6 @@
 <script>
 import NotFound from "src/components/NotFound.vue";
 import CategoryTable from "src/components/CategoryTable.vue";
-import { SessionStorage } from "quasar";
 import PaymentCategoryMixinVue from "src/mixins/PaymentCategoryMixin.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
 
@@ -186,13 +185,13 @@ export default {
     showPaymentItems(data) {
       this.getPaymentItemsByCategory(data.payment_items.id);
 
-      SessionStorage.set("intermediate_tab", "Payment Items");
+      let intermediate_tabs = [];
 
-      SessionStorage.set("has_intermediate_tab", true);
+      intermediate_tabs.push({name: "Payment Items", has_intermediate_tab: true})
+
+      this.$store.dispatch("setIntermediateTabs", intermediate_tabs)
 
       this.$store.dispatch("setCurrentPaymentCategory", data.payment_items);
-
-      this.$emit("show-payment-items", data);
     },
 
     updatePaymentItems(data) {

@@ -34,6 +34,7 @@ export default function () {
     savings:[],//for approveing to be done
     expenditure_item_name:null,
     search_saving_param:null,
-    filtered_contributions:null
+    filtered_contributions:null,
+    intermediate_tabs:[],
   };
 }

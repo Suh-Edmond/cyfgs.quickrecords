@@ -56,7 +56,6 @@
             :label="label"
             :message="message"
             :title="getPaymentCategoryName"
-            @show-payment-items="showPaymentItems"
             @update-payment-category="updatePaymentCategory"
             :show_payment_category="false"
             :show_payment_item="true"
@@ -74,7 +73,6 @@
             :label="label"
             :message="message"
             :title="getPaymentCategoryName"
-            @show-payment-items="showPaymentItems"
             @update-payment-category="updatePaymentCategory"
             :show_payment_category="false"
             :show_payment_item="true"
@@ -130,6 +128,15 @@ export default {
           sortable: true,
         },
         {
+          name: "complusory",
+          required: true,
+          label: "Complusory",
+          align: "left",
+          field: (row) => row.name,
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
           name: "amount",
           align: "center",
           label: "Amount(XAF)",
@@ -175,14 +182,6 @@ export default {
     updatePaymentCategory(data) {
       this.$emit("update-payment-category", data);
     },
-
-    showPaymentItems(data) {
-      SessionStorage.set("intermediate_tab", "Payment Items");
-
-      SessionStorage.set("has_intermediate_tab", true);
-
-      this.$emit("show-payment-items", data);
-    },
     updatePaymentItems(data) {
       this.$store.dispatch("setUpdatedPaymentItem", data.data);
 
@@ -198,7 +197,7 @@ export default {
             name: ele.name,
             amount: ele.amount,
             id: ele.id,
-            complusory: ele.complusory,
+            complusory: ele.complusory ? "YES" : "NO",
             payment_category_id: ele.payment_category_id,
             description: ele.description,
             payment_category_name: ele.payment_category_name,
@@ -249,7 +248,7 @@ export default {
             name: ele.name,
             amount: ele.amount,
             id: ele.id,
-            complusory: ele.complusory,
+            complusory: ele.complusory ? "YES" : "NO",
             payment_category_id: ele.payment_category_id,
             description: ele.description,
             payment_category_name: ele.payment_category_name,

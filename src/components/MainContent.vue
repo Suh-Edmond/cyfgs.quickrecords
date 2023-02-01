@@ -196,6 +196,7 @@ export default {
         right: this.right,
         current_tab: this.getCurrentRightDrawerTab(),
       });
+      this.resetAllForms(this.getCurrentRightDrawerTab());
     },
     showLeftDrawer() {
       this.left = !this.left;
@@ -328,6 +329,16 @@ export default {
     searchMemberContribution(data) {
       this.updateDrawer(data);
     },
+
+    resetAllForms(tab) {
+      this.$store.dispatch("setUpdatedPayCategories", null)
+      this.$store.dispatch("setUpdatedPaymentItem", null);
+      this.$store.dispatch("setUpdatedExpenditureCategory", null);
+      this.$store.dispatch("setUpdatedExpenditureItem", null);
+      this.$store.dispatch("setUpdatedExpenditureItemDetail", null);
+      this.$store.dispatch("setUpdatedMemberSaving", null);
+      this.$store.dispatch("setUpdatedIncomeActivity", null);
+    }
   },
 };
 </script>

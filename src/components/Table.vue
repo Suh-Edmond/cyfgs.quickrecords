@@ -348,6 +348,7 @@
         <q-input
           outlined
           dense
+          v-model="filter"
           :class="
             $q.screen.md
               ? 'text-h6-sm q-mb-lg q-mt-lg full-width'

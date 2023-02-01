@@ -28,6 +28,12 @@ export default function () {
     current_income_activity:null,
     members_contributions:null,
     current_payment_item:null,
-    selected_contribution:null
+    selected_contribution:null,
+    expenditures:null,
+    expenditure_category:null,// this is the category been selected during the approve state
+    savings:[],//for approveing to be done
+    expenditure_item_name:null,
+    search_saving_param:null,
+    filtered_contributions:null
   };
 }

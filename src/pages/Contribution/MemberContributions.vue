@@ -1,29 +1,76 @@
 <template>
   <div class="q-pa-sm">
     <!-- no contributions available -->
-    <NotFound :message="not_found_msg" v-if="contributions.length == 0"></NotFound>
+    <NotFound
+      :message="not_found_msg"
+      v-if="contributions.length == 0"
+    ></NotFound>
     <!-- contributions available -->
-    <div class="row q-ml-xs" v-if="contributions.length > 0" :class="$q.screen.lg ? 'q-pa-sm' : ''" :style="
-      $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-    ">
-      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12" :class="$q.screen.lg ? 'q-pr-md' : ''">
-        <q-select v-model="payment_category_item_id" outlined dense :options="payment_items"
-          label="Select payment item" />
+    <div
+      class="row q-ml-xs"
+      v-if="contributions.length > 0"
+      :class="$q.screen.lg ? 'q-pa-sm' : ''"
+      :style="
+        $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+      "
+    >
+      <div
+        class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+        :class="$q.screen.lg ? 'q-pr-md' : ''"
+      >
+        <q-select
+          v-model="payment_category_item_id"
+          outlined
+          dense
+          :options="payment_items"
+          label="Select payment item"
+        />
       </div>
-      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12" :class="$q.screen.lg ? 'q-pr-md' : ''">
-        <q-select v-model="year" outlined dense :options="years" label="Select year" />
+      <div
+        class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+        :class="$q.screen.lg ? 'q-pr-md' : ''"
+      >
+        <q-select
+          v-model="year"
+          outlined
+          dense
+          :options="years"
+          label="Select year"
+        />
       </div>
-      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12" :class="$q.screen.lg ? 'q-pr-md' : ''">
-        <q-select v-model="status" outlined dense :options="statuses" label="Select status" />
+      <div
+        class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+        :class="$q.screen.lg ? 'q-pr-md' : ''"
+      >
+        <q-select
+          v-model="status"
+          outlined
+          dense
+          :options="statuses"
+          label="Select status"
+        />
       </div>
       <div :class="$q.screen.lg ? 'q-pr-md' : ''">
-        <ButtonVue :label="label_fetch_user" :loading="loading" :color="color" :disabled="validateFilter"
-          :no_caps="no_caps" icon_right="filter_list">
+        <ButtonVue
+          :label="label_fetch_user"
+          :loading="loading"
+          :color="color"
+          :disabled="validateFilter"
+          :no_caps="no_caps"
+          icon_right="filter_list"
+        >
         </ButtonVue>
       </div>
       <div :style="$q.screen.lg ? 'margin-left:76px' : ''">
-        <ButtonVue :label="label_print" :loading="loading" :color="color_print" :disabled="false" :no_caps="no_caps"
-          icon_right="print" size="sm"></ButtonVue>
+        <ButtonVue
+          :label="label_print"
+          :loading="loading"
+          :color="color_print"
+          :disabled="false"
+          :no_caps="no_caps"
+          icon_right="print"
+          size="sm"
+        ></ButtonVue>
       </div>
     </div>
     <!-- table for savings -->
@@ -73,10 +120,10 @@ export default {
       payment_items: [],
       message: "Are you sure you want to delete this member's contribution ?",
       label: "Delete",
-      name:"test",
+      name: "test",
       month: null,
-      title:"Contributions for Harvest 2022 by Suh Edmond Neba ",
-      member_name:"Name: Suh Edmond, Amount Paid: 500 XAF",
+      title: "Contributions for Harvest 2022 by Suh Edmond Neba ",
+      member_name: "Name: Suh Edmond, Amount Paid: 500 XAF",
       months: [
         "January",
         "February",
@@ -128,6 +175,13 @@ export default {
           align: "left",
           label: "Date",
           field: "date",
+        },
+        {
+          name: "state",
+          align: "left",
+          label: "Status",
+          field: "state",
+          sortable: true,
         },
         {
           name: "action",
@@ -216,12 +270,17 @@ export default {
           action: "",
         },
       ],
-    }
+    };
   },
   computed: {
     validateFilter() {
-      return this.payment_category_item_id !== null || this.month !== null || this.year !== null || this.status !== null ? false : true;
-    }
+      return this.payment_category_item_id !== null ||
+        this.month !== null ||
+        this.year !== null ||
+        this.status !== null
+        ? false
+        : true;
+    },
   },
   methods: {
     filterMonths(val, update, abort) {
@@ -232,21 +291,19 @@ export default {
         );
       });
     },
-    viewContribution(data){
-      this.$emit('view-contribution', data)
+    viewContribution(data) {
+      this.$emit("view-contribution", data);
     },
-    editContribution(data){
+    editContribution(data) {
       this.$emit("edit-contribution", data);
-    }
+    },
   },
   components: {
     NotFound,
     ButtonVue,
-    TableVue
-  }
-}
+    TableVue,
+  },
+};
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

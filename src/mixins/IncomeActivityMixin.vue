@@ -1,20 +1,19 @@
 <script>
-import organisationMixinVue from "./organisationMixin.vue";
 
 
 export default {
-  mixins: [organisationMixinVue],
+
   methods: {
-    getOrganisationIncomeActivities() {
-      let organisationId = this.getOrganisationId;
+    getOrganisationIncomeActivities(organisation_id) {
       let payload = {
-        url: `/api/protected/organisations/${organisationId}/income-activities`,
+        url: `/api/protected/organisations/${organisation_id}/income-activities`,
         msg: "none",
         color: "default",
         status: "none",
         error_msg: "An Error occurred! Could not fetch income activities",
         has_commit: true,
         show_feedback: false,
+        show_spinner:true,
         commit: "SET_INCOME_ACTIVITIES",
         to_be_store_data: {
           required: false,

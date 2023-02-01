@@ -9,7 +9,7 @@
           <q-card-section>
             <div class="text_h6 text-center q-pt-xs q-pb-sm">SIGN UP</div>
             <div class="text-subtitle2 text-center q-pb-xs">
-              Sign up to get started with FinancialAssistant
+              Sign up to get started with Financial Assistant
             </div>
             <div class="q-pa-md">
               <q-form @submit="onSubmit" class="q-gutter-md">
@@ -163,6 +163,7 @@ export default {
         to_on_ok: "Login",
         to_on_fail: "undefined",
         error_msg: "default",
+        show_feedback:true,
         to_be_store_data: {
           required: true,
           has_value: true,
@@ -214,7 +215,7 @@ export default {
   color: $grey2;
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 600;
+  font-weight: 400;
   font-size: 13px;
   line-height: 18px;
   align-items: center;

@@ -29,7 +29,19 @@
           <label for="credential" class="form_field"
             >Date <span class="text-red">*</span></label
           >
-          <q-input v-model="income_activity.date" outlined dense type="date" />
+          <q-input v-model="income_activity.date"  outlined dense>
+            <template v-slot:append>
+              <q-icon name="event" class="cursor-pointer">
+                <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                  <q-date v-model="income_activity.date">
+                    <div class="row items-center justify-end">
+                      <q-btn v-close-popup label="Close" color="primary" flat />
+                    </div>
+                  </q-date>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
         </div>
         <div class="q-mb-md">
           <label for="credential" class="form_field">Description</label>
@@ -62,7 +74,6 @@ import ButtonVue from "src/components/Button.vue";
 import IncomeActivityMixinVue from "src/mixins/IncomeActivityMixin.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
 
-
 export default {
   mixins: [IncomeActivityMixinVue, organisationMixinVue],
 
@@ -82,11 +93,11 @@ export default {
         name: null,
         description: null,
         amount: 0,
-        id:null,
-        organisation_id:null,
-        approve:null,
-        created_at:null,
-        updated_by:null,
+        id: null,
+        organisation_id: null,
+        approve: null,
+        created_at: null,
+        updated_by: null,
       },
       position: "right",
       dialog: false,
@@ -109,15 +120,14 @@ export default {
 
     getIncomeActivity() {
       return this.setFormFields(this.getUpdatedIncomeActivityFromState());
-    }
+    },
   },
 
-  watch:{
+  watch: {
     getIncomeActivity() {
       return this.setFormFields(this.getUpdatedIncomeActivityFromState());
-    }
+    },
   },
-
 
   methods: {
     onAddIncomeActivity() {
@@ -139,9 +149,8 @@ export default {
           data: [],
         },
       };
-      this.setDispatchAction(this.income_activity.id, payload);
+      this.setDispatchAction(this.income_activity.id, payload, organisation_id);
     },
-
 
     resetForm() {
       this.income_activity.name = null;
@@ -155,7 +164,6 @@ export default {
       return this.income_activity;
     },
 
-
     setActionUrl(id, organsation_id) {
       let url = "";
       if (id === null) {
@@ -166,14 +174,13 @@ export default {
       return url;
     },
 
-
-    setDispatchAction(id, payload) {
+    setDispatchAction(id, payload, organisation_id) {
       this.loading = true;
       if (id === null) {
         this.$store
           .dispatch("postRequest", payload)
           .then(() => {
-            this.getOrganisationIncomeActivities();
+            this.getOrganisationIncomeActivities(organisation_id);
           })
           .finally(() => {
             this.$emit("close-right-drawer");
@@ -184,7 +191,7 @@ export default {
         this.$store
           .dispatch("putRequest", payload)
           .then(() => {
-            this.getOrganisationIncomeActivities();
+            this.getOrganisationIncomeActivities(organisation_id);
           })
           .finally(() => {
             this.$emit("close-right-drawer");
@@ -196,25 +203,26 @@ export default {
       }
     },
 
-
     getUpdatedIncomeActivityFromState() {
-      return this.$store.getters.getUpdateIncomeActivity
+      return this.$store.getters.getUpdateIncomeActivity;
     },
 
     setFormFields(data) {
-      this.income_activity.name = data.name;
-      this.income_activity.id = data.id;
-      this.income_activity.amount = data.amount;
-      this.income_activity.date = data.date;
-      this.income_activity.description = data.description;
-      this.income_activity.organisation_id = data.organisation_id;
-      this.income_activity.venue = data.venue;
-      this.income_activity.approve = data.approve;
-      this.income_activity.created_at = data.created_at;
-      this.income_activity.updated_by = data.updated_by
+      if (data != null) {
+        this.income_activity.name = data.name;
+        this.income_activity.id = data.id;
+        this.income_activity.amount = data.amount;
+        this.income_activity.date = data.date;
+        this.income_activity.description = data.description;
+        this.income_activity.organisation_id = data.organisation_id;
+        this.income_activity.venue = data.venue;
+        this.income_activity.approve = data.approve;
+        this.income_activity.created_at = data.created_at;
+        this.income_activity.updated_by = data.updated_by;
+      }
 
       return this.income_activity;
-    }
+    },
   },
   components: {
     ButtonVue,

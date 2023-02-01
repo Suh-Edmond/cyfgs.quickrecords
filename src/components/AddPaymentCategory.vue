@@ -84,7 +84,7 @@ export default {
         data: {
           name: this.payment_category.name,
           description: this.payment_category.description,
-          id: this.getUpdatedPaymentCategoryFromState().id,
+          id: this.getUpdatedPaymentCategoryFromState() != null ? this.getUpdatedPaymentCategoryFromState().id: null,
         },
         msg: "Payment Category save Successfully",
         color: "default",
@@ -116,6 +116,7 @@ export default {
     resetForm() {
       this.payment_category.description = null;
       this.payment_category.name = null;
+      this.payment_category.id = null
       return this.payment_category;
     },
 

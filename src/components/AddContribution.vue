@@ -264,6 +264,7 @@ export default {
         url: `/api/protected/payment-categories/${this.contribution.payment_category_id.value}/payment-items/${this.contribution.payment_item_id.value}`,
         has_path_val: true,
         show_feedback: false,
+        show_spinner:true,
         msg: "none",
         color: "default",
         error_msg: "default",
@@ -282,6 +283,7 @@ export default {
           url: `/api/protected/contributions/users/${this.contribution.user_id.value}/items/${this.contribution.payment_item_id.value}`,
           has_path_val: true,
           show_feedback: false,
+          show_spinner:true,
           msg: "none",
           color: "default",
           error_msg: "default",
@@ -324,7 +326,7 @@ export default {
       this.contribution.payment_item_id = null;
       this.contribution.payment_category_id = null;
       this.contribution.id = null;
-      contribution.total_amount_deposited = 0.0
+      this.contribution.total_amount_deposited = 0.0
 
       return this.contribution;
     },

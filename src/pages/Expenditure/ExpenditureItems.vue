@@ -2,13 +2,16 @@
   <q-page>
      <!-- spinners -->
      <div class="flex justify-center">
-      <q-spinner-ios color="primary" size="3.3em" class="q-mb-lg" v-if="getLoadingState" />
+      <q-spinner-ios color="primary" size="2em" class="q-mb-lg" v-if="getLoadingState" />
     </div>
 
 
-    <NotFound :message="getNotFoundMsgForPaymentItems" v-if="getExpenditureItems.length == 0"></NotFound>
-    <!-- header for filter categories -->
-    <div class="row q-ml-xs q-pt-xs" v-if="getExpenditureItems.length > 0" :class="$q.screen.lg ? 'q-pa-sm' : ''"
+    <NotFound :message="getNotFoundMsgForPaymentItems" v-if="getExpenditureItems.length == 0 && !getLoadingState"></NotFound>
+
+
+    <div v-if="getExpenditureItems.length > 0 && !getLoadingState">
+      <!-- header for filter categories -->
+    <div class="row q-ml-xs q-pt-xs" :class="$q.screen.lg ? 'q-pa-sm' : ''"
       :style="
         $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
       ">
@@ -22,7 +25,7 @@
       </div>
     </div>
     <!-- table for categories -->
-    <div v-if="getExpenditureItems.length > 0">
+    <div>
       <div class="row q-pt-sm">
         <div class="col-md-12 col-xs-12 col-sm-12" v-show="!start_filter">
           <CategoryTable :columns="columns" :data="getExpenditureItems" :label="label" :message="message"
@@ -43,6 +46,7 @@
           </CategoryTable>
         </div>
       </div>
+    </div>
     </div>
   </q-page>
 </template>
@@ -117,7 +121,7 @@ export default {
       data: [],
       label: "Delete",
       message: "Are you sure you want to delete this Expenditure Item?",
-      statuses: ["APPROVED", "UNAPPROVED"],
+      statuses: ["PENDING","APPROVED", "DECLINED", "ALL"],
       status: null,
       start_filter: false,
       filtered_items: [],
@@ -139,7 +143,7 @@ export default {
     },
 
     getLoadingState() {
-      return this.$store.getters.getExpenditureItems.length != 0 ? false : true
+      return this.$store.getters.getFetchingState
     }
   },
   methods: {
@@ -206,16 +210,23 @@ export default {
 
     filterItems() {
       this.filtered_items = [];
+
       let expenditure_category = this.$store.getters.getCurrentExpenditureCategory;
-      let state = this.status === "APPROVED" ? 1 : 0
+
+      this.$router.push({
+        path: `/dashboard/expenditure-categories/${expenditure_category.id}/items`,
+        query: { status: this.status},
+      });
+
       let payload = {
-        url: `/api/protected/expenditure-categories/${expenditure_category.id}/expenditure-items?status=${state}`,
+        url: `/api/protected/expenditure-categories/${expenditure_category.id}/expenditure-items?status=${this.status}`,
         msg: "none",
         color: "default",
         status: "none",
         error_msg: "An Error occurred! Could not fetch payment categories",
         has_commit: false,
         show_feedback: false,
+        show_spinner:true,
         commit: "none",
         to_be_store_data: {
           required: false,
@@ -248,7 +259,6 @@ export default {
             });
           });
         }
-        this.status = null;
       });
 
       return this.filtered_items;

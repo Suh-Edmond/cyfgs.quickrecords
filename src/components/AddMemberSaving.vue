@@ -3,21 +3,10 @@
     <div class="q-mt-md q-mx-md">
       <q-form @submit="onAddSaving" class="q-gutter-md">
         <div>
-          <label for="name" class="form_field"
-            >Member Name <span class="text-red">*</span>
+          <label for="name" class="form_field">Member Name <span class="text-red">*</span>
           </label>
-          <q-select
-            outlined
-            dense
-            v-model="saving.user_id"
-            use-input
-            hide-selected
-            fill-input
-            input-debounce="0"
-            :options="getMembers"
-            @filter="filterMembers"
-            :disable="isMemberExist"
-          >
+          <q-select outlined dense v-model="saving.user_id" use-input hide-selected fill-input input-debounce="0"
+            :options="getMembers" @filter="filterMembers" :disable="isMemberExist">
             <template v-slot:no-option>
               <q-item>
                 <q-item-section class="text-grey"> No results </q-item-section>
@@ -26,38 +15,18 @@
           </q-select>
         </div>
         <div>
-          <label for="credential" class="form_field q-mt-ms"
-            >Amount <span class="text-red">*</span></label
-          >
-          <q-input
-            v-model="saving.amount_deposited"
-            outlined
-            dense
-            type="number"
-          />
+          <label for="credential" class="form_field q-mt-ms">Amount <span class="text-red">*</span></label>
+          <q-input v-model="saving.amount_deposited" outlined dense type="number" />
         </div>
         <div>
-          <label for="credential" class="form_field"
-            >Comment <span class="text-red">*</span></label
-          >
-          <q-input
-            v-model="saving.comment"
-            outlined
-            dense
-            type="textarea"
-            placeholder="Provide any comment about this saving"
-          />
+          <label for="credential" class="form_field">Comment <span class="text-red">*</span></label>
+          <q-input v-model="saving.comment" outlined dense type="textarea"
+            placeholder="Provide any comment about this saving" />
         </div>
         <div class="row q-mt-lg justify-end">
           <div class="col-md-2 col-sm-2 col-xs-2">
-            <ButtonVue
-              class="form_button"
-              :label="label_save"
-              :loading="loading"
-              :color="color"
-              :disabled="validateForm"
-              :no_caps="no_caps"
-            >
+            <ButtonVue class="form_button" :label="label_save" :loading="loading" :color="color"
+              :disabled="validateForm" :no_caps="no_caps">
             </ButtonVue>
           </div>
         </div>
@@ -193,13 +162,13 @@ export default {
     },
 
     setDispatchAction(id, payload) {
-      console.log(id);
+      let organisation_id = this.getOrganisationId;
       this.loading = true;
       if (id === null || id === undefined) {
         this.$store
           .dispatch("postRequest", payload)
           .then(() => {
-            this.getOrganisationMemberSavings();
+            this.getOrganisationMemberSavings(organisation_id);
           })
           .finally(() => {
             this.$emit("close-right-drawer");
@@ -210,7 +179,7 @@ export default {
         this.$store
           .dispatch("putRequest", payload)
           .then(() => {
-            this.getOrganisationMemberSavings();
+            this.getOrganisationMemberSavings(organisation_id);
             this.resetForm();
           })
           .finally(() => {
@@ -235,11 +204,12 @@ export default {
     },
 
     setFormFields(data) {
-
-      (this.saving.user_id = { label: data.name, value: data.user_id }),
-        (this.saving.amount_deposited = data.amount_deposited),
-        (this.saving.comment = data.comment),
-        (this.saving.id = data.id);
+      if (data != null) {
+        (this.saving.user_id = { label: data.name, value: data.user_id }),
+          (this.saving.amount_deposited = data.amount_deposited),
+          (this.saving.comment = data.comment),
+          (this.saving.id = data.id);
+      }
 
       return this.saving;
     },

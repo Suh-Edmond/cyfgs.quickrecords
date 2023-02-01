@@ -12,7 +12,7 @@
       <div>
         <div class="bg-white left_drawer">
           <div class="bg-transparent q-pa-sm flex flex-center">
-            <q-avatar size="90px" v-if="getOrganisation !== null">
+            <q-avatar size="90px" v-if="getOrganisation != null">
               <q-img :src="getOrganisation.logo"> </q-img>
             </q-avatar>
             <q-avatar
@@ -38,7 +38,6 @@
               v-ripple
               :active-class="item.name == 'Dashboard' ? 'item' : 'item_text'"
               @click="setItem({ name: 'Dashboard', selected: true }, false)"
-              v-if="checkRole(['PRESIDENT', null])"
               to="/dashboard"
             >
               <q-item-section
@@ -125,30 +124,6 @@
               clickable
               v-ripple
               :active-class="
-                item.name == 'Invite Members' ? 'item' : 'item_text'
-              "
-              :active="item.name == 'Invite Members'"
-              @click="
-                setItem({ name: 'Invite Members', selected: true }, false)
-              "
-              v-if="checkRole(['PRESIDENT', null])"
-            >
-              <q-item-section
-                avatar
-                :class="
-                  item.name == 'Invite Members' ? 'item_icon' : 'item_text'
-                "
-              >
-                <q-icon name="share" size="xs" />
-              </q-item-section>
-              <q-item-section class="item_name">
-                Invite Members
-              </q-item-section>
-            </q-item>
-            <q-item
-              clickable
-              v-ripple
-              :active-class="
                 item.name == 'Payment Categories' ? 'item' : 'item_text'
               "
               :active="item.name == 'Payment Categories'"
@@ -184,7 +159,7 @@
                   true
                 )
               "
-              v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER'])"
+              v-if="checkRole(['FINANCIAL_SECRETARY', null])"
               to="/dashboard/expenditure-categories"
             >
               <q-item-section
@@ -200,6 +175,24 @@
               <q-item-section class="item_name">
                 Expenditure Categories
               </q-item-section>
+            </q-item>
+
+            <q-item
+              clickable
+              v-ripple
+              :active-class="item.name == 'Expenditures' ? 'item' : 'item_text'"
+              :active="item.name == 'Expenditures'"
+              @click="setItem({ name: 'Expenditures', selected: true }, true)"
+              v-if="checkRole([null, 'TREASURER'])"
+              to="/dashboard/expenditures"
+            >
+              <q-item-section
+                avatar
+                :class="item.name == 'Expenditures' ? 'item_icon' : 'item_text'"
+              >
+                <q-icon name="monetization_on" size="xs" />
+              </q-item-section>
+              <q-item-section class="item_name"> Expenditures </q-item-section>
             </q-item>
 
             <q-item
@@ -444,6 +437,17 @@
           @close-right-drawer="closeRightDrawer"
           @set-heading="setHeading"
         ></AddContribution>
+        <SearchSavings
+          v-if="current_tab == 'Search Savings'"
+          @close-right-drawer="closeRightDrawer"
+          @set-heading="setHeading"
+        >
+        </SearchSavings>
+        <SearchContribution  v-if="current_tab == 'Search Members Contributions'"
+          @close-right-drawer="closeRightDrawer"
+          @set-heading="setHeading">
+
+        </SearchContribution>
       </q-page>
     </q-drawer>
   </q-layout>
@@ -466,6 +470,9 @@ import ViewContribution from "src/components/ViewContribution.vue";
 import AddContribution from "src/components/AddContribution.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import ViewMemberSaving from "src/components/ViewMemberSaving.vue";
+import SearchSavings from "src/components/SearchSavings.vue";
+import SearchContribution from "src/components/SearchContribution.vue";
+
 export default {
   mixins: [organisationMixinVue],
   mounted() {
@@ -493,11 +500,7 @@ export default {
       return this.$store.getters.getOrganisation;
     },
   },
-  watch: {
-    getOrganisation() {
-      return this.$store.getters.getOrganisation;
-    },
-  },
+  watch: {},
   methods: {
     setItem(item, requires_add) {
       this.item.name = item.name;
@@ -514,11 +517,11 @@ export default {
 
       SessionStorage.remove("intermediate_tab");
 
-      SessionStorage.set("has_intermediate_tab", false);
+      SessionStorage.remove("has_intermediate_tab", false);
 
       SessionStorage.remove("intermediate_tab2");
 
-      SessionStorage.set("has_intermediate_tab2", false);
+      SessionStorage.remove("has_intermediate_tab2", false);
     },
     updateRightDrawer({ right, current_tab, data }) {
       this.current_tab = current_tab;
@@ -581,6 +584,8 @@ export default {
     ViewContribution,
     AddContribution,
     ViewMemberSaving,
+    SearchSavings,
+    SearchContribution
   },
 };
 </script>

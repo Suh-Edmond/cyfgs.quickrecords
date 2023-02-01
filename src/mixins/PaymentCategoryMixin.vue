@@ -1,8 +1,6 @@
 <script>
-import organisationMixinVue from "./organisationMixin.vue";
 
 export default {
-  mixins: [organisationMixinVue],
   data() {
     return {
     };
@@ -26,16 +24,16 @@ export default {
 
 
   methods: {
-    fetchCategories() {
-      let organisationId = this.getOrganisationId;
+    fetchCategories(organisation_id) {
       let payload = {
-        url: `/api/protected/organisations/${organisationId}/payment-categories`,
+        url: `/api/protected/organisations/${organisation_id}/payment-categories`,
         msg: "none",
         color: "default",
         status: "none",
         error_msg: "An Error occurred! Could not fetch payment categories",
         has_commit: true,
         show_feedback: false,
+        show_spinner:true,
         commit: "SET_PAYMENT_CATEGORIES",
         to_be_store_data: {
           required: false,

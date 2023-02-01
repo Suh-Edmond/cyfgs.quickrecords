@@ -1,8 +1,9 @@
 import { LocalStorage, Notify, Platform } from "quasar";
 import { axios } from "src/boot/axios";
 
-const API_URL = process.env.BASE_URL[0];
-const FILE_UPLOAD_URL = "http://127.0.0.1:9000";
+const API_URL = process.env.API_BASE_URL
+
+const FILE_UPLOAD_URL = process.env.FILE_UPLOAD_URL;
 
 export function handleRequestResponse({}, payload) {
   if (payload.status == "success" && payload.show_feedback) {
@@ -139,9 +140,15 @@ export function uploadFileRequest({ dispatch }, payload) {
 }
 
 export function getRequest({ commit, dispatch }, payload) {
+  if(payload.show_spinner){
+    commit("SET_IS_FETCHING", true);
+  }
   return axios
     .get(API_URL + payload.url)
     .then((res) => {
+     if(payload.show_spinner){
+      commit("SET_IS_FETCHING", false);
+     }
       let handle_response_payload = {
         data: res.data,
         status: payload.status ? payload.status : "success",
@@ -353,7 +360,7 @@ export function setNavigationTabByUserRole() {
   let role = LocalStorage.getItem("data").roles.find(
     (role) => role.name === "PRESIDENT"
   );
-  return role == "undefined";
+  return role == undefined;
 }
 
 export function setCurrentPaymentCategory({ commit }, data) {
@@ -438,4 +445,30 @@ export function setMembersContributions({ commit }, data) {
 
 export function setSelectedContribution({ commit }, data) {
   commit("SET_SELECTED_CONTRIBUTON", data);
+}
+
+export function setExpenditures({commit}, data){
+  commit("SET_EXPENDITURES", data)
+}
+
+export function setExpenditureCategory({commit}, data){
+  commit("SET_EXPENDITURE_CATEGORY", data)
+}
+
+export function setSavings({commit}, data) {
+  commit("SET_SAVINGS", data);
+}
+
+
+export function setExpenditureItemName({commit}, data) {
+  commit("SET_EXPENDITURE_ITEM_NAME", data);
+}
+
+export function setSearchSavingsParams({commit}, data) {
+  commit("SET_SEARCH_SAVING_PARAMS", data);
+}
+
+
+export function setFilteredContributions({commit}, data) {
+  commit("SET_FILTERED_CONTRIBUTIONS", data);
 }

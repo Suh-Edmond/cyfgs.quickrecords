@@ -1,86 +1,46 @@
 <template>
   <q-page>
-
-     <!-- spinners -->
-     <div class="flex justify-center">
-      <q-spinner-ios color="primary" size="3.3em" class="q-mb-lg" v-if="getLoadingState" />
+    <!-- spinners -->
+    <div class="flex justify-center">
+      <q-spinner-ios color="primary" size="2em" class="q-mb-lg" v-if="getLoadingState" />
     </div>
 
-    <NotFound
-      :message="not_found_msg"
-      v-if="getMemberSavings.length == 0"
-    ></NotFound>
-    <!-- header for filter categories -->
-    <div
-      class="row q-ml-xs q-pt-xs"
-      v-if="getMemberSavings.length > 0"
-      :class="$q.screen.lg ? 'q-pa-sm' : ''"
-      :style="
+    <NotFound :message="not_found_msg" v-if="getMemberSavings.length == 0 && !getLoadingState"></NotFound>
+
+    <div v-if="getMemberSavings.length > 0 && !getLoadingState">
+      <!-- header for filter categories -->
+      <div class="row q-ml-xs q-pt-xs" :class="$q.screen.lg ? 'q-pa-sm' : ''" :style="
         $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-      "
-    >
-      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
-        <q-select
-          v-model="status"
-          outlined
-          dense
-          :options="statuses"
-          label="Select Status"
-          @input="filterSavings"
-        />
+      ">
+        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
+          <q-select v-model="status" outlined dense :options="statuses" label="Select Status" @input="filterSavings" />
+        </div>
+        <q-space />
+        <div class="button q-pb-xs">
+          <q-btn :label="label_download" :loading="loading" :color="color_print" :disabled="false" no-caps
+            icon-right="print" @click="downloadSavings"></q-btn>
+        </div>
       </div>
-      <q-space />
-      <div class="button q-pb-xs">
-        <q-btn
-          :label="label_download"
-          :loading="loading"
-          :color="color_print"
-          :disabled="false"
-          no-caps
-          icon-right="print"
-          @click="downloadSavings"
-        ></q-btn>
+      <!-- table for savings -->
+      <div class="row q-pt-sm" v-if="!start_filter">
+        <div class="col-md-12 col-xs-12 col-sm-12">
+          <TableVue :columns="columns" :data="getMemberSavings" :label="label" :message="message"
+            :title="getCurrentMemberName" :show_savings="false" :show_member_savings="true"
+            :show_income_activity="false" :show_members="false" :show_contribution="false"
+            @view-member-saving="ViewMemberSaving" @edit-member-saving="editMemberSaving">
+          </TableVue>
+        </div>
       </div>
-    </div>
-    <!-- table for savings -->
-    <div class="row q-pt-sm" v-if="!start_filter">
-      <div class="col-md-12 col-xs-12 col-sm-12">
-        <TableVue
-          :columns="columns"
-          :data="getMemberSavings"
-          :label="label"
-          :message="message"
-          :title="getCurrentMemberName"
-          :show_savings="false"
-          :show_member_savings="true"
-          :show_income_activity="false"
-          :show_members="false"
-          :show_contribution="false"
-          @view-member-saving="ViewMemberSaving"
-          @edit-member-saving="editMemberSaving"
-        >
-        </TableVue>
-      </div>
-    </div>
 
-    <!-- table for filter savings -->
-    <div class="row q-pt-sm" v-if="start_filter">
-      <div class="col-md-12 col-xs-12 col-sm-12">
-        <TableVue
-          :columns="columns"
-          :data="filtered_savings"
-          :label="label"
-          :message="message"
-          :title="getCurrentMemberName"
-          :show_savings="false"
-          :show_member_savings="true"
-          :show_income_activity="false"
-          :show_members="false"
-          :show_contribution="false"
-          @view-member-saving="ViewMemberSaving"
-          @edit-member-saving="editMemberSaving"
-        >
-        </TableVue>
+      <!-- table for filter savings -->
+      <div class="row q-pt-sm" v-if="start_filter">
+        <div class="col-md-12 col-xs-12 col-sm-12">
+          <TableVue :columns="columns" :data="filtered_savings" :label="label" :message="message"
+            :title="getCurrentMemberName" :show_savings="false" :show_member_savings="true"
+            :show_income_activity="false" :show_members="false" :show_contribution="false"
+            @view-member-saving="ViewMemberSaving" @edit-member-saving="editMemberSaving">
+          </TableVue>
+        </div>
       </div>
     </div>
   </q-page>
@@ -105,7 +65,6 @@ export default {
       loading: false,
       label_download: "Print",
       color_print: "positive",
-      title: "Suh Edmond", // this title should be the member name
       columns: [
         {
           name: "counter",
@@ -133,14 +92,22 @@ export default {
           field: "date",
         },
         {
+          name: "state",
+          align: "left",
+          label: "Status",
+          field: "state",
+          sortable: true,
+        },
+        {
           name: "action",
           label: "Action",
           field: "action",
+          align:"left"
         },
       ],
       label: "Delete",
       message: "Are you sure you want to delete this Saving?",
-      statuses: ["APPROVED", "UNAPPROVED", "ALL"],
+      statuses: ["PENDING", "APPROVED", "DECLINED", "ALL"],
       status: null,
       start_filter: false,
     };
@@ -158,7 +125,7 @@ export default {
             telephone: ele.telephone,
             amount_deposited: ele.amount_deposited,
             id: ele.id,
-            approve: ele.approve == 1 ? "APPROVED" : "UNAPPROVED",
+            approve: ele.approve,
             comment: ele.comment,
             type: "MEMBER_SAVINGS",
             user_id: ele.user_id,
@@ -180,10 +147,9 @@ export default {
       return name;
     },
 
-
     getLoadingState() {
-      return this.$store.getters.getMemberSavings != null ? false : true
-    }
+      return this.$store.getters.getFetchingState;
+    },
   },
   methods: {
     ViewMemberSaving(data) {
@@ -205,6 +171,11 @@ export default {
           (ele) => ele.approve === this.status
         );
       }
+      this.$router.push({
+        path: `/dashboard/members-savings/users/${member.name}`,
+        query: { status: this.status },
+      });
+
       return this.filtered_savings;
     },
 
@@ -225,4 +196,6 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+
+</style>

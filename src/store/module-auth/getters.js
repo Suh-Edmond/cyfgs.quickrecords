@@ -116,3 +116,29 @@ export function getMembersContributionsByPaymentItem(state) {
 export function getSelectedContribution(state) {
   return state.selected_contribution;
 }
+
+export function getExpenditures(state) {
+  return state.expenditures;
+}
+
+export  function getExpenditureCategory(state) {
+  return state.expenditure_category;
+}
+
+
+export function getSavings(state) {
+  return state.savings
+}
+
+export function getExpenditureItemName(state) {
+  return state.expenditure_item_name;
+}
+
+
+export function getSearchSavingParams(state) {
+  return state.search_saving_param;
+}
+
+export function getFilteredContributions(state) {
+  return state.filtered_contributions;
+}

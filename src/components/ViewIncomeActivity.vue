@@ -34,13 +34,17 @@
         >
       </div>
       <div class="flex q-pb-md">
-        <label for="status" class="field" v-show="!income_activity.approve"
+        <label for="status" class="field" v-show="income_activity.approve == 'DECLINED'"
           >Status:
-          <span class="item_statue unapproved_color">UNAPPROVED</span></label
+          <span class="item_statue unapproved_color">{{income_activity.approve}}</span></label
         >
-        <label for="status" class="field" v-show="income_activity.approve"
+        <label for="status" class="field" v-show="income_activity.approve == 'APPROVED'"
           >Status:
-          <span class="item_statue approved_color"> APPROVED</span></label
+          <span class="item_statue approved_color"> {{income_activity.approve}}</span></label
+        >
+        <label for="status" class="field" v-show="income_activity.approve == 'PENDING'"
+          >Status:
+          <span class="item_statue pending_color"> {{income_activity.approve}}</span></label
         >
       </div>
 
@@ -184,6 +188,15 @@ export default {
 
 .approved_color {
   color: #27ae60;
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 27px;
+  letter-spacing: 0.005em;
+}
+.pending_color {
+  color: $info;
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;

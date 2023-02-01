@@ -116,15 +116,9 @@
   </q-page>
 </template>
 <script>
-import organisationMixinVue from 'src/mixins/organisationMixin.vue';
 export default {
-  mixins:[organisationMixinVue],
-  created() {
-    this.getOrganisationInfo()
-  },
   data() {
     return {
-      show_loading: false,
     }
   },
   methods: {

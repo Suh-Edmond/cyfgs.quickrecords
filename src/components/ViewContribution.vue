@@ -34,10 +34,12 @@
           <span class="value value_date">{{ getFormatedCreatedDate }}</span></label>
       </div>
       <div class="flex q-pb-md">
-        <label for="status" class="label" v-show="!getSelectedContribution.approve">Transaction Status:
-          <span class=" value_trxn unapproved_color">UNAPPROVED</span></label>
-        <label for="status" class="label" v-show="getSelectedContribution.approve">Transaction Status:
-          <span class=" value_trxn approved_color"> APPROVED</span></label>
+        <label for="status" class="label" v-show="getSelectedContribution.approve == 'DECLINED'">Transaction Status:
+          <span class=" value_trxn unapproved_color">{{getSelectedContribution.approve}}</span></label>
+        <label for="status" class="label" v-show="getSelectedContribution.approve == 'APPROVED'">Transaction Status:
+          <span class=" value_trxn approved_color"> {{getSelectedContribution.approve}}</span></label>
+          <label for="status" class="label" v-show="getSelectedContribution.approve == 'PENDING'">Transaction Status:
+          <span class=" value_trxn pending_color"> {{getSelectedContribution.approve}}</span></label>
       </div>
       <div class="flex q-pb-md">
         <label for="name" class="label" v-show="getSelectedContribution.status == 'INCOMPLETE'">Payment Status:
@@ -273,5 +275,15 @@ export default {
 
 .value_created_by {
   padding-left: 5rem;
+}
+
+.pending_color {
+  color: $info;
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 27px;
+  letter-spacing: 0.005em;
 }
 </style>

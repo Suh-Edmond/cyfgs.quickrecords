@@ -112,3 +112,28 @@ export function SET_MEMBERS_CONTRIBUTIONS_PER_ITEM(state, data) {
 export function SET_SELECTED_CONTRIBUTON(state, data) {
   state.selected_contribution = data;
 }
+
+
+export function SET_EXPENDITURES(state, data) {
+  state.expenditures = data
+}
+
+export function SET_EXPENDITURE_CATEGORY(state, data) {
+  state.expenditure_category = data;
+}
+
+export function SET_SAVINGS(state, data) {
+  state.savings = data;
+}
+
+export function SET_EXPENDITURE_ITEM_NAME(state, data) {
+  state.expenditure_item_name = data;
+}
+
+export function SET_SEARCH_SAVING_PARAMS(state, data) {
+  state.search_saving_param = data;
+}
+
+export function SET_FILTERED_CONTRIBUTIONS(state, data) {
+  state.filtered_contributions = data;
+}

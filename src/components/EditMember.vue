@@ -1,10 +1,28 @@
 <template>
   <div class="q-pa-xs">
     <div>
-      <q-tabs v-model="tab" dense class="text-grey q-pt-sm" active-color="primary" indicator-color="primary"
-        align="justify" narrow-indicator>
-        <q-tab name="Personal Information" label="Personal Information" no-caps icon="person" />
-        <q-tab name="Member Roles" label="Member Roles" no-caps icon="person" v-if="canEditUserRole" />
+      <q-tabs
+        v-model="tab"
+        dense
+        class="text-grey q-pt-sm"
+        active-color="primary"
+        indicator-color="primary"
+        align="justify"
+        narrow-indicator
+      >
+        <q-tab
+          name="Personal Information"
+          label="Personal Information"
+          no-caps
+          icon="person"
+        />
+        <q-tab
+          name="Member Roles"
+          label="Member Roles"
+          no-caps
+          icon="person"
+          v-if="canEditUserRole"
+        />
       </q-tabs>
 
       <q-separator />
@@ -14,34 +32,64 @@
           <div class="q-mx-lg q-pt-md">
             <q-form @submit="onUpdateMember" class="q-gutter-md">
               <div>
-                <label for="credential" class="form_field">Name <span class="text-red">*</span></label>
+                <label for="credential" class="form_field"
+                  >Name <span class="text-red">*</span></label
+                >
                 <q-input v-model="user.name" outlined dense type="text" />
               </div>
               <div>
-                <label for="credential" class="form_field">Gender <span class="text-red">*</span></label>
-                <q-select v-model="user.gender" outlined dense :options="gender_options" disable readonly />
+                <label for="credential" class="form_field"
+                  >Gender <span class="text-red">*</span></label
+                >
+                <q-select
+                  v-model="user.gender"
+                  outlined
+                  dense
+                  :options="gender_options"
+                  :disable="user.gender != null"
+                />
               </div>
               <div>
                 <label for="credential" class="form_field">Email</label>
                 <q-input v-model="user.email" outlined dense type="email" />
               </div>
               <div>
-                <label for="credential" class="form_field">Telephone <span class="text-red">*</span></label>
-                <q-input v-model="user.telephone" outlined dense type="tel" mask="(+###) ### - ### - ###" unmasked-value
-                  disable readonly />
+                <label for="credential" class="form_field"
+                  >Telephone <span class="text-red">*</span></label
+                >
+                <q-input
+                  v-model="user.telephone"
+                  outlined
+                  dense
+                  type="tel"
+                  mask="(+###) ### - ### - ###"
+                  unmasked-value
+                  disable
+                  readonly
+                />
               </div>
               <div>
-                <label for="credential" class="form_field">Address <span class="text-red">*</span></label>
+                <label for="credential" class="form_field"
+                  >Address <span class="text-red">*</span></label
+                >
                 <q-input v-model="user.address" outlined dense type="text" />
               </div>
               <div>
-                <label for="credential" class="form_field">Occupation <span class="text-red">*</span></label>
+                <label for="credential" class="form_field"
+                  >Occupation <span class="text-red">*</span></label
+                >
                 <q-input v-model="user.occupation" outlined dense type="text" />
               </div>
               <div class="row q-mt-lg justify-end">
                 <div class="col-md-2 col-sm-2 col-xs-2 q-mt-xs">
-                  <ButtonVue class="form_button" :label="label_save" :loading="loading" :color="color"
-                    :disabled="validateForm" :no_caps="no_caps">
+                  <ButtonVue
+                    class="form_button"
+                    :label="label_save"
+                    :loading="loading"
+                    :color="color"
+                    :disabled="validateForm"
+                    :no_caps="no_caps"
+                  >
                   </ButtonVue>
                 </div>
               </div>
@@ -49,43 +97,60 @@
           </div>
         </q-tab-panel>
         <q-tab-panel name="Member Roles">
-          <div class="q-mx-sm">
+          <!-- spinners -->
+          <div class="flex justify-center">
+            <q-spinner-ios color="primary" size="1.7em" v-if="show_spinner" />
+          </div>
+          <div class="q-mx-sm" v-if="!show_spinner">
             <q-list>
-              <q-item v-for="role in user_roles" :key="role.name" class="q-my-sm" v-ripple>
+              <q-item v-for="role in user_roles" :key="role.name" v-ripple class="q-mb-sm">
+                <q-item-section avatar v-if="role.name == 'MEMBER'">
+                  <q-avatar color="primary" text-color="white" size="35px">
+                    M</q-avatar
+                  >
+                </q-item-section>
                 <q-item-section avatar v-if="role.name == 'PRESIDENT'">
-                  <q-avatar color="primary" text-color="white" size="30px">
+                  <q-avatar color="primary" text-color="white" size="35px">
                     PP
                   </q-avatar>
                 </q-item-section>
-                <q-item-section avatar v-if="role.name == 'FINANCIAL_SECRETARY'">
-                  <q-avatar color="primary" text-color="white" size="30px">
+                <q-item-section
+                  avatar
+                  v-if="role.name == 'FINANCIAL_SECRETARY'"
+                >
+                  <q-avatar color="primary" text-color="white" size="35px">
                     FS
                   </q-avatar>
                 </q-item-section>
                 <q-item-section avatar v-if="role.name == 'TREASURER'">
-                  <q-avatar color="primary" text-color="white" size="30px">
+                  <q-avatar color="primary" text-color="white" size="35px">
                     TR
                   </q-avatar>
                 </q-item-section>
                 <q-item-section avatar v-if="role.name == 'AUDITOR'">
-                  <q-avatar color="primary" text-color="white" size="30px">
+                  <q-avatar color="primary" text-color="white" size="35px">
                     AU
                   </q-avatar>
                 </q-item-section>
-                <q-item-section avatar v-if="role.name == 'USER'">
-                  <q-avatar color="primary" text-color="white" size="30px">
-                    U</q-avatar>
-                </q-item-section>
                 <q-item-section>
                   <q-item-label>{{ role.name }}</q-item-label>
-                  <q-item-label caption lines="1" class="text-sm">Updated by: <span class="q-pl-sm"> {{ role.updated_by
-}}</span></q-item-label>
-                  <q-item-label caption lines="2">Updated on: <span class="q-pl-sm">{{ formDateTime(role.updated_at) }}
-                    </span></q-item-label>
+                  <q-item-label caption  class="text-sm"
+                    >Updated by:
+                    <span>
+                      {{ role.updated_by }}</span
+                    ></q-item-label
+                  >
                 </q-item-section>
 
-                <q-item-section side v-if="role.name !== 'USER'">
-                  <q-btn flat round @click="showRemoveRoleDialog(role)">
+
+                <q-item-section side top >
+                  <q-item-label caption
+                    >
+                    <span
+                      >{{ formDateTime(role.updated_at) }}
+                    </span></q-item-label
+                  >
+                  <q-btn flat round @click="showRemoveRoleDialog(role)" v-if="role.name !== 'MEMBER'">
                     <q-icon name="close" color="negative">
                       <q-tooltip>Remove</q-tooltip>
                     </q-icon>
@@ -99,13 +164,28 @@
               <q-form @submit="addRole">
                 <div class="row q-gutter-sm q-pt-md">
                   <div class="col-md-8 col-sm-12 col-xs-12">
-                    <q-select outlined v-model="role" :options="getAvailableRoles" dense label="Select Role">
+                    <q-select
+                      outlined
+                      v-model="role"
+                      :options="getAvailableRoles"
+                      dense
+                      label="Select Role"
+                    >
                     </q-select>
                   </div>
                   <div class="col-md-1 col-sm-12 col-xs-12"></div>
-                  <div class="col-md-2 col-sm-12 col-xs-12">
-                    <ButtonVue class="form_button" :label="label_add_role" :loading="loading" :color="color"
-                      :disabled="validateAddRoleForm" :no_caps="no_caps">
+                  <div
+                    class="col-md-2 col-sm-12 col-xs-12"
+                    :class="$q.screen.lg ? 'q-ml-md' : ''"
+                  >
+                    <ButtonVue
+                      class="form_button"
+                      :label="label_add_role"
+                      :loading="loading"
+                      :color="color"
+                      :disabled="validateAddRoleForm"
+                      :no_caps="no_caps"
+                    >
                     </ButtonVue>
                   </div>
                 </div>
@@ -120,16 +200,42 @@
       <q-card>
         <q-card-section>
           <div>
-            <q-avatar icon="warning" class="warning_image" size="30px" color="yellow" text-color="white" />
-            <span class="q-ml-sm text-dark warning_text">Are you sure you want to remove this role ?</span>
+            <q-avatar
+              icon="warning"
+              class="warning_image"
+              size="30px"
+              color="yellow"
+              text-color="white"
+            />
+            <span class="q-ml-sm text-dark warning_text"
+              >Are you sure you want to remove this role ?</span
+            >
           </div>
-          <div class="text-weight-medium text-center diaglog_info" v-if="show_dialog">
+          <div
+            class="text-weight-medium text-center diaglog_info"
+            v-if="show_dialog"
+          >
             {{ role_deleted.name }}
           </div>
         </q-card-section>
         <q-card-actions align="right">
-          <q-btn :label="label_cancel" color="primary" no_caps flat size="sm" v-close-popup></q-btn>
-          <q-btn :label="label" color="primary" size="sm" @click="removeUserRole" no_caps flat v-close-popup></q-btn>
+          <q-btn
+            :label="label_cancel"
+            color="primary"
+            no_caps
+            flat
+            size="sm"
+            v-close-popup
+          ></q-btn>
+          <q-btn
+            :label="label"
+            color="primary"
+            size="sm"
+            @click="removeUserRole"
+            no_caps
+            flat
+            v-close-popup
+          ></q-btn>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -142,7 +248,7 @@ import organisationMixin from "src/mixins/organisationMixin.vue";
 import memberMixin from "src/mixins/memberMixin.vue";
 import { LocalStorage, Notify, Platform } from "quasar";
 import roleMixinVue from "src/mixins/roleMixin.vue";
-import moment from 'moment';
+import moment from "moment";
 
 export default {
   mixins: [organisationMixin, memberMixin, roleMixinVue],
@@ -151,12 +257,9 @@ export default {
     this.$emit("set-heading", heading);
   },
   mounted() {
-    // this.can_edit_user_role = this.checkCanEditUserRole();
-
-    // if(this.can_edit_user_role){
-    //   this.getAllRoles();
-    // }
-    this.getAllRoles();
+    if (this.checkCanEditUserRole()) {
+      this.getAllRoles();
+    }
   },
   data() {
     return {
@@ -184,17 +287,18 @@ export default {
       show_dialog: false,
       user_roles: [],
       role_deleted: null,
+      show_spinner: false,
     };
   },
 
   computed: {
     validateForm() {
-      return this.user.name === null ||
-        this.user.telephone === null ||
-        this.user.address === null ||
-        this.user.address === null ||
-        this.user.occupation === null ||
-        this.user.gender === null
+      return this.user.name == null ||
+        this.user.telephone == null ||
+        this.user.address == null ||
+        this.user.address == null ||
+        this.user.occupation == null ||
+        this.user.gender == null
         ? true
         : false;
     },
@@ -224,9 +328,16 @@ export default {
     },
 
     canEditUserRole() {
-      let has_president_role = LocalStorage.getItem('data').roles.find(role => role.name === 'PRESIDENT');
+      let has_president_role = LocalStorage.getItem("data").roles.find(
+        (role) => role.name === "PRESIDENT"
+      );
       return has_president_role != undefined;
-    }
+    },
+
+    getRoleWithNameUser() {
+      const role = this.user_roles.find((ele) => ele.name == "MEMBER");
+      return role;
+    },
   },
 
   methods: {
@@ -264,8 +375,6 @@ export default {
         });
     },
 
-
-
     addRole() {
       const role = this.user_roles.find((ele) => ele.name == this.role.value);
 
@@ -286,7 +395,8 @@ export default {
           show_feedback: true,
           status: "none",
           to_on_fail: "none",
-          error_msg: "Only one member of your organisation is allowed to have this Role",
+          error_msg:
+            "Only one member of your organisation is allowed to have this Role",
           has_commit: false,
           commit: "none",
           to_be_store_data: {
@@ -304,9 +414,8 @@ export default {
       }
     },
 
-
-
     getUserRoles(id) {
+      this.show_spinner = true;
       let payload = {
         url: `/api/protected/roles/users/${id}`,
         msg: "none",
@@ -316,6 +425,8 @@ export default {
         to_on_fail: "none",
         error_msg: "An Error occurred! Please try again",
         has_commit: false,
+        show_feedback:false,
+        show_spinner:false,
         commit: "none",
         to_be_store_data: {
           required: false,
@@ -325,13 +436,16 @@ export default {
       };
       this.can_edit_user_role = this.checkCanEditUserRole();
       if (this.can_edit_user_role) {
-        this.$store.dispatch("getRequest", payload).then((res) => {
-          this.user_roles = res.data;
-        });
+        this.$store
+          .dispatch("getRequest", payload)
+          .then((res) => {
+            this.user_roles = res.data;
+          })
+          .finally(() => {
+            this.show_spinner = false;
+          });
       }
     },
-
-
 
     removeUserRole() {
       let user_id = this.getUpdatedMemberFromState().id;
@@ -357,14 +471,10 @@ export default {
       });
     },
 
-
-
     showRemoveRoleDialog(role) {
       this.role_deleted = role;
       this.show_dialog = true;
     },
-
-
 
     setFormField(data) {
       this.user.name = data.name;
@@ -374,13 +484,10 @@ export default {
       this.user.occupation = data.occupation;
       this.user.gender = data.gender;
 
-      this.getUserRoles(data.id)
-
+      this.getUserRoles(data.id);
 
       return this.user;
     },
-
-
 
     resetForm() {
       this.user.name = null;
@@ -393,24 +500,20 @@ export default {
       return this.user;
     },
 
-
-
     getUpdatedMemberFromState() {
       return this.$store.getters.getUpdatedMember;
     },
 
-
-
     formDateTime(date) {
-      return moment(String(date)).format('MM/DD/YYYY')
+      return moment(date).format("MMMM Do YYYY");
     },
 
-
-
     checkCanEditUserRole() {
-      let has_president_role = LocalStorage.getItem('data').roles.find(role => role.name === 'PRESIDENT');
+      let has_president_role = LocalStorage.getItem("data").roles.find(
+        (role) => role.name === "PRESIDENT"
+      );
       return has_president_role != undefined;
-    }
+    },
   },
   components: {
     ButtonVue,
@@ -424,19 +527,6 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.add_member_title {
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 29px;
-  align-items: center;
-  text-align: center;
-  letter-spacing: 0.01em;
-  color: #5384ae;
-  text-transform: capitalize;
-}
-
 .form_field {
   font-family: "Roboto";
   font-style: normal;

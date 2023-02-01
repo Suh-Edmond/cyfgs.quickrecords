@@ -94,7 +94,7 @@
               flat
               round
               v-if="
-                (show_expenditure_item ||
+                (show_expenditure_item || show_payment_category ||
                   show_expenditure_category ||
                   show_expenditure_item_detail) &&
                 !checkTreasurerRole()
@@ -307,14 +307,14 @@
       <q-card>
         <q-card-section>
           <div>
-            <q-avatar
+            <!-- <q-avatar
               icon="warning"
               class="warning_image"
               size="30px"
               color="yellow"
               text-color="white"
-            />
-            <span class="q-ml-sm text-dark">{{ message }}</span>
+            /> -->
+            <label class="q-ml-sm text-dark">{{ message }}</label>
           </div>
           <div class="text-weight-bold text-center">{{ deleted_row.name }}</div>
         </q-card-section>

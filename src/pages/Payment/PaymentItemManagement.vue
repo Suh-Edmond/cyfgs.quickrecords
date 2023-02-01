@@ -90,12 +90,14 @@
 </template>
 
 <script>
+
 import NotFound from "src/components/NotFound.vue";
 import CategoryTable from "src/components/CategoryTable.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
 
 export default {
   mixins: [HelperMixinVue],
+
   mounted() {
     this.getPaymentItemsFromState();
   },

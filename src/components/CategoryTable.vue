@@ -407,12 +407,12 @@ export default {
       type: String,
     },
     label: {
-      required: true,
+      required: false,
       type: String,
     },
     message: {
       type: String,
-      required: true,
+      required: false,
     },
     name: {
       type: String,
@@ -420,19 +420,19 @@ export default {
     },
     show_payment_category: {
       type: Boolean,
-      required: true,
+      required: false,
     },
     show_payment_item: {
       type: Boolean,
-      required: true,
+      required: false,
     },
     show_expenditure_category: {
       type: Boolean,
-      required: true,
+      required: false,
     },
     show_expenditure_item: {
       type: Boolean,
-      required: true,
+      required: false,
     },
     show_expenditure_item_detail: {
       type: Boolean,

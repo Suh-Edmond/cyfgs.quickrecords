@@ -12,7 +12,7 @@
 
 
       <!-- contributions available -->
-    <div>
+    <div v-if="!checkTreasurerRole()">
       <div
         class="row q-ml-xs q-pt-md justify-between"
         :class="$q.screen.lg ? 'q-pa-md' : ''"
@@ -50,7 +50,7 @@
         <div class="col-md-12 col-xs-12 col-sm-12">
           <TableVue
             :columns="columns"
-            :data="getMembersContributionsByPaymentItem"
+            :data="getTableData"
             :label="label"
             :message="message"
             :show_savings="false"
@@ -61,7 +61,7 @@
             :show_member_contribution="true"
             @view-contribution="viewContribution"
             @edit-contribution="editContribution"
-            :title="setTableTitle"
+            :title="getTableTitleForSearchContributions"
           >
           </TableVue>
         </div>
@@ -69,7 +69,7 @@
     </div>
 
     <!-- table for filtered savings so they can be approve/decline-->
-    <div v-if="checkTreasurerRole">
+    <div v-if="checkTreasurerRole()">
       <div
         class="row q-ml-xs q-pt-md justify-between"
         :class="$q.screen.lg ? 'q-pa-md' : ''"
@@ -130,6 +130,7 @@ import PaymentCategoryMixinVue from "src/mixins/PaymentCategoryMixin.vue";
 import PaymentItemMixinVue from "src/mixins/PaymentItemMixin.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import HelperMixinVue from 'src/mixins/HelperMixin.vue';
+import { LocalStorage } from "quasar";
 
 export default {
   mixins: [PaymentCategoryMixinVue, PaymentItemMixinVue, organisationMixinVue, HelperMixinVue],
@@ -180,7 +181,7 @@ export default {
         {
           name: "status",
           align: "left",
-          label: "Payment Item Status",
+          label: "Payment Status",
           field: "status",
         },
         {
@@ -192,7 +193,7 @@ export default {
         {
           name: "state",
           align: "left",
-          label: "Payment State",
+          label: "Transaction Status",
           field: "state",
           sortable: true,
         },
@@ -213,6 +214,15 @@ export default {
       return this.payment_item_id !== null ? false : true;
     },
 
+    getTableData() {
+      let data = [];
+      if(this.getMembersContributionsByPaymentItem.length != 0) {
+        data = this.getMembersContributionsByPaymentItem;
+      }else {
+        data = this.getFilteredContributions;
+      }
+      return data;
+    },
     getMembersContributionsByPaymentItem() {
       let data = [];
 
@@ -246,7 +256,6 @@ export default {
           }
         );
       }
-      console.log(data);
       return data;
     },
 
@@ -276,7 +285,6 @@ export default {
 
     getFilteredContributions() {
       let data = [];
-      console.log(this.$store.getters.getFilteredContributions);
       if (this.$store.getters.getFilteredContributions != null) {
         this.$store.getters.getFilteredContributions.forEach((ele) => {
           data.push({
@@ -313,7 +321,7 @@ export default {
 
     getTableTitleForSearchContributions() {
       return this.$store.getters.getSearchSavingParams != undefined
-        ? `Members Contributions for ${this.$store.getters.getSearchSavingParams.payment_item_id.label}`
+        ? `Members Contributions for ${this.$store.getters.getSearchSavingParams.payment_item_id.name}, Amount Payable:  ${Number(this.$store.getters.getSearchSavingParams.payment_item_id.amount).toLocaleString()} XAF`
         : "";
     },
   },
@@ -323,6 +331,12 @@ export default {
   },
 
   methods: {
+    checkTreasurerRole() {
+      const treasurer_role = LocalStorage.getItem("data").roles.find(
+        (role) => role.name == "TREASURER"
+      );
+      return treasurer_role != undefined;
+    },
 
     viewContribution(data) {
       this.$emit("view-contribution", data);

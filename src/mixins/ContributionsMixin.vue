@@ -31,7 +31,6 @@ export default {
     },
 
     filterMembersContributions(data) {
-      console.log(data.payment_item_id);
       this.$router.push({
         path: `/dashboard/contributions`,
         query: {
@@ -66,17 +65,18 @@ export default {
 
       this.$store.dispatch("getRequest", payload).then((res) => {
         this.loading = false;
-        // this.$store.dispatch("setSearchSavingsParams", {
-        //   organisation_id: data.organisation_id,
-        //   year: data.year,
-        //   payment_category_id: data.payment_category_id,
-        //   payment_item_id: data.payment_category_id,
-        //   month: data.month,
-        //   date: data.date,
-        //   range: data.date_range,
-        //   status: data.status,
-        // });
-        console.log(res);
+        if(res.data.length > 0) {
+          this.$store.dispatch("setSearchSavingsParams", {
+          organisation_id: data.organisation_id,
+          year: data.year,
+          payment_category_id: data.payment_category_id,
+          payment_item_id: {name: res.data[0].payment_item_name, amount:res.data[0].payment_item_amount},
+          month: data.month,
+          date: data.date,
+          range: data.date_range,
+          status: data.status,
+        });
+        }
       });
 
       return this.loading;

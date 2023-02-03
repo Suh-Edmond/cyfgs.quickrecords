@@ -1,136 +1,171 @@
 <template>
   <div class="q-pa-md">
-    <div class="q-mt-md q-mx-md">
+    <div class="q-ml-sm q-mb-lg">
+      <label class="text-muted"
+        >All fields with <span class="text-red">*</span> are required</label
+      >
+    </div>
+    <div class="q-px-sm">
       <q-form @submit="onAddContribution" class="q-gutter-md">
-        <div class="q-mb-md">
-          <label for="name" class="form_field"
-            >Member Name <span class="text-red">*</span>
-          </label>
-          <q-select
-            outlined
-            dense
-            v-model="contribution.user_id"
-            placeholder="Type name to search..."
-            :options="getMembers"
-            input-debounce="0"
-            use-input
-            hide-selected
-            fill-input
-          >
-          </q-select>
-        </div>
-        <div class="q-mb-md">
-          <label for="name" class="form_field"
-            >Payment Category <span class="text-red">*</span>
-          </label>
-          <q-select
-            outlined
-            dense
-            v-model="contribution.payment_category_id"
-            placeholder="Type name to search..."
-            :options="getPaymentCategories"
-            input-debounce="0"
-            @input="fetchPaymentItems"
-          >
-          </q-select>
-        </div>
-        <div class="q-mb-md">
-          <label for="name" class="form_field"
-            >Payment Item <span class="text-red">*</span>
-          </label>
-          <q-select
-            outlined
-            dense
-            v-model="contribution.payment_item_id"
-            placeholder="Type name to search..."
-            :options="getPaymentItems"
-            input-debounce="0"
-            @input="fetchPaymentItem"
-          >
-          </q-select>
-          <small
-            v-if="
-              contribution.payment_category_id != null &&
-              !checkIsExistPaymentItem
-            "
-            class="noPaymentItems"
-            >No Payment items found under this category</small
-          >
-        </div>
-        <div class="q-mb-md">
-          <label for="credential" class="form_field"
-            >Amount Payable (XAF)</label
-          >
-          <q-input
-            v-model="contribution.amount_payable"
-            outlined
-            dense
-            type="number"
-            disable
-          />
-        </div>
-        <div class="q-mb-md" v-show="hasMadePayment">
-          <label for="credential" class="form_field"
-            >Total Amount Deposited (XAF)</label
-          >
-          <q-input
-            v-model.number="contribution.total_amount_deposited"
-            outlined
-            dense
-            type="number"
-            disable
-          >
-          </q-input>
-        </div>
-        <div class="q-mb-md">
-          <label for="credential" class="form_field">Balance (XAF)</label>
-          <q-input
-            v-model="contribution.balance"
-            outlined
-            dense
-            type="number"
-            disable
-          />
-        </div>
-        <div class="q-mb-md">
-          <label for="credential" class="form_field"
-            >Deposite Amount (XAF)<span class="text-red">*</span></label
-          >
-          <q-input
-            v-model.lazy="contribution.amount_deposited"
-            outlined
-            dense
-            type="number"
-            @keyup="setPaymentItemBalance"
-          >
-          </q-input>
-          <small v-show="checkPaymentItemBal" class="text-red">
-            Amount deposited can not be more than the specified amount for the
-            item
-          </small>
-        </div>
-        <div class="q-mb-md">
-          <label for="credential" class="form_field">Comment </label>
-          <q-input
-            v-model="contribution.comment"
-            outlined
-            dense
-            type="text"
-            autogrow
-            placeholder="Provide any comment about this contribution"
-          />
-        </div>
-        <div class="row q-mt-lg justify-end">
-          <div class="col-md-2 col-sm-2 col-xs-2">
-            <ButtonVue
-              class="form_button"
-              :label="label_save"
-              :loading="loading"
-              :color="color"
-              :disabled="validateForm"
-              :no_caps="no_caps"
+        <div>
+          <div class="q-mb-md">
+            <label for="name" class="form_field"
+              >Payment Category <span class="text-red">*</span>
+            </label>
+            <q-select
+              outlined
+              dense
+              v-model="contribution.payment_category_id"
+              placeholder="Type name to search..."
+              :options="getPaymentCategories"
+              input-debounce="0"
+              @input="fetchPaymentItems"
             >
-            </ButtonVue>
+            </q-select>
+          </div>
+          <div class="q-mb-md">
+            <label for="name" class="form_field"
+              >Payment Item <span class="text-red">*</span>
+            </label>
+            <q-select
+              outlined
+              dense
+              v-model="contribution.payment_item_id"
+              placeholder="Type name to search..."
+              :options="payment_items"
+              input-debounce="0"
+              @input="fetchPaymentItem"
+            >
+            </q-select>
+            <small
+              v-if="
+                contribution.payment_category_id != null &&
+                payment_items.length == 0
+              "
+              class="noPaymentItems"
+              >No Payment items found under this category</small
+            >
+          </div>
+          <div class="q-mb-md">
+            <label for="credential" class="form_field"
+              >Amount Payable(XAF)</label
+            >
+            <q-input
+              v-model="contribution.amount_payable"
+              outlined
+              dense
+              type="number"
+              disable
+            />
+          </div>
+          <div class="row justify-end" v-show="!has_selected_payment_item">
+            <q-btn
+              @click="has_selected_payment_item = !has_selected_payment_item"
+              color="primary"
+              label="Next"
+              no-caps
+              :disable="validatePaymentItem"
+              ><q-icon name="arrow_forward" size="xs" class="q-pl-sm"></q-icon
+            ></q-btn>
+          </div>
+          <div v-show="has_selected_payment_item">
+            <div class="q-mb-md">
+              <label for="name" class="form_field"
+                >Member Name <span class="text-red">*</span>
+              </label>
+              <q-select
+                outlined
+                dense
+                v-model="contribution.user_id"
+                placeholder="Type name to search..."
+                :options="getMembers"
+                @input="selectMember"
+              >
+              </q-select>
+            </div>
+            <div class="q-mb-md">
+              <label for="credential" class="form_field"
+                >Total Amount Deposited (XAF)</label
+              >
+              <q-input
+                v-model.number="contribution.total_amount_deposited"
+                outlined
+                dense
+                type="number"
+                disable
+              >
+              </q-input>
+            </div>
+            <div class="q-mb-md">
+              <label for="credential" class="form_field">Balance (XAF)</label>
+              <q-input
+                v-model="contribution.balance"
+                outlined
+                dense
+                type="number"
+                disable
+              />
+            </div>
+            <div class="q-mb-md">
+              <label for="credential" class="form_field"
+                >Deposite Amount (XAF)<span class="text-red">*</span></label
+              >
+              <q-input
+                v-model.lazy="contribution.amount_deposited"
+                outlined
+                dense
+                type="number"
+                @keyup="setPaymentItemBalance"
+                :disable="has_completed_payment"
+              >
+              </q-input>
+              <small v-if="checkPaymentItemBal" class="text-red">
+                <b>Amount deposited can not be more than Amount Payable</b>
+              </small>
+              <small v-if="has_completed_payment" class="text-info">
+                <b
+                  >Member has already completed payment for
+                  {{ selected_payment_item.label }}</b
+                >
+              </small>
+            </div>
+            <div class="q-mb-md">
+              <label for="credential" class="form_field">Comment </label>
+              <q-input
+                v-model="contribution.comment"
+                outlined
+                dense
+                type="text"
+                autogrow
+                placeholder="Provide any comment about this contribution"
+                :disable="has_completed_payment"
+              />
+            </div>
+            <div class="row q-mt-lg justify-end">
+              <div class="col-md-2 col-sm-2 col-xs-2 q-mr-lg">
+                <q-btn
+                  class="form_button"
+                  label="Reset"
+                  :color="color"
+                  :disabled="!validateForm"
+                  no-caps
+                  outline
+                  @click="resetForm"
+                >
+                </q-btn>
+              </div>
+              <div class="col-md-2 col-sm-2 col-xs-2">
+                <ButtonVue
+                  class="form_button"
+                  :label="label_save"
+                  :loading="loading"
+                  :color="color"
+                  :disabled="validateForm"
+                  :no_caps="no_caps"
+                >
+                </ButtonVue>
+              </div>
+            </div>
           </div>
         </div>
       </q-form>
@@ -163,7 +198,9 @@ export default {
 
     this.getOrganisationMembers(organisation_id);
 
-    this.setFormFields();
+    if (this.getPaymentCategories.length == 0) {
+      this.fetchCategories(organisation_id);
+    }
   },
 
   data() {
@@ -186,18 +223,20 @@ export default {
       error_bal: false,
       dialog: false,
       no_caps: true,
-      hasMadePayment: false,
+      has_completed_payment: false,
+      has_selected_payment_item: false,
+      payment_items: [],
+      selected_payment_item: null,
     };
   },
   computed: {
     checkPaymentItemBal() {
-      let in_range = false;
-      if (this.$store.getters.getCurrentPaymentItem != null) {
-        in_range =
-          this.contribution.amount_deposited >
-          this.$store.getters.getCurrentPaymentItem.amount;
-      }
-      return in_range;
+      return this.contribution.amount_deposited != 0 &&
+        parseFloat(this.contribution.amount_deposited) +
+          parseFloat(this.contribution.total_amount_deposited) >
+          parseFloat(this.contribution.amount_payable)
+        ? true
+        : false;
     },
 
     validateForm() {
@@ -205,6 +244,13 @@ export default {
         this.contribution.amount_deposited == 0 ||
         this.contribution.payment_item_id == null ||
         this.checkPaymentItemBal
+        ? true
+        : false;
+    },
+
+    validatePaymentItem() {
+      return this.contribution.payment_category_id == null ||
+        this.contribution.payment_item_id == null
         ? true
         : false;
     },
@@ -220,18 +266,14 @@ export default {
 
       return members;
     },
-
-    checkIsExistPaymentItem() {
-      return this.getPaymentItems.length > 0;
-    },
   },
   methods: {
     onAddContribution() {
       let payload = {
-        url: this.setActionUrl(this.contribution.id),
+        url: `/api/protected/contributions`,
         data: {
           user_id: this.contribution.user_id.value,
-          amount_deposited:parseFloat(this.contribution.amount_deposited),
+          amount_deposited: parseFloat(this.contribution.amount_deposited),
           payment_item_id: this.contribution.payment_item_id.value,
           comment: this.contribution.comment,
         },
@@ -249,75 +291,97 @@ export default {
           data: [],
         },
       };
-      this.setDispatchAction(this.contribution.id, payload);
+      this.setDispatchAction(payload);
     },
 
     fetchPaymentItems() {
-      this.getPaymentItemsByCategory(
-        this.contribution.payment_category_id.value
-      );
-    },
-
-    fetchPaymentItem() {
       let payload = {
         status: "none",
-        url: `/api/protected/payment-categories/${this.contribution.payment_category_id.value}/payment-items/${this.contribution.payment_item_id.value}`,
+        url: `/api/protected/payment-categories/${this.contribution.payment_category_id.value}/payment-items`,
         has_path_val: true,
         show_feedback: false,
-        show_spinner:true,
+        show_spinner: false,
         msg: "none",
         color: "default",
         error_msg: "default",
-        commit: "SET_CURRENT_PAYMENT_ITEM",
-        has_commit: true,
+        commit: "none",
+        has_commit: false,
         to_be_store_data: {
           required: true,
           has_value: false,
           data: null,
         },
       };
-      this.$store.dispatch("getRequest", payload).then(() => {
-        //payload to check the amount that has been deposited by the user
-        let amount_deposited_payload = {
-          status: "none",
-          url: `/api/protected/contributions/users/${this.contribution.user_id.value}/items/${this.contribution.payment_item_id.value}`,
-          has_path_val: true,
-          show_feedback: false,
-          show_spinner:true,
-          msg: "none",
-          color: "default",
-          error_msg: "default",
-          commit: "none",
-          has_commit: false,
-          to_be_store_data: {
-            required: true,
-            has_value: false,
-            data: null,
-          },
-        };
-        this.$store
-          .dispatch("getRequest", amount_deposited_payload)
-          .then((res) => {
-            //set the balance to be paid id the member has paid anything got the item before
-            if (res.data > 0) {
-              this.hasMadePayment = true;
-              this.contribution.total_amount_deposited = res.data;
-              this.contribution.balance = (this.contribution.amount_payable - res.data)
-            }
+      this.$store.dispatch("getRequest", payload).then((res) => {
+        if (res.success) {
+          res.data.data.forEach((ele) => {
+            this.payment_items.push({
+              label: ele.name,
+              value: ele.id,
+              amount: ele.amount,
+            });
           });
-
-        //set the total amount to be paid
-        this.contribution.amount_payable =
-          this.$store.getters.getCurrentPaymentItem.amount;
+        }
       });
+      return this.payment_items;
+    },
+
+    fetchPaymentItem() {
+      this.selected_payment_item = this.payment_items.find(
+        (item) => item.value == this.contribution.payment_item_id.value
+      );
+      if (this.selected_payment_item != undefined) {
+        this.contribution.amount_payable = this.selected_payment_item.amount;
+      }
+    },
+
+    selectMember() {
+      this.has_completed_payment = false;
+      //payload to check the amount that has been deposited by the user
+      let amount_deposited_payload = {
+        status: "none",
+        url: `/api/protected/contributions/users/${this.contribution.user_id.value}/items/${this.contribution.payment_item_id.value}`,
+        has_path_val: true,
+        show_feedback: false,
+        show_spinner: false,
+        msg: "none",
+        color: "default",
+        error_msg: "default",
+        commit: "none",
+        has_commit: false,
+        to_be_store_data: {
+          required: true,
+          has_value: false,
+          data: null,
+        },
+      };
+      this.$store
+        .dispatch("getRequest", amount_deposited_payload)
+        .then((res) => {
+          // //set the balance to be paid by the member has paid anything got the item before
+          this.contribution.total_amount_deposited = res.data;
+          this.contribution.balance =
+            this.contribution.amount_payable - res.data;
+          if (this.contribution.balance == 0) {
+            this.has_completed_payment = true;
+          }
+        });
     },
 
     setPaymentItemBalance() {
-      let total_amount_paid = parseFloat(this.contribution.total_amount_deposited) + parseFloat(this.contribution.amount_deposited);
-      this.contribution.balance = this.$store.getters.getCurrentPaymentItem.amount - total_amount_paid;
+      let total_amount_paid =
+        parseFloat(this.contribution.total_amount_deposited) +
+        parseFloat(this.contribution.amount_deposited);
+      this.contribution.balance =
+        this.contribution.amount_deposited != 0
+          ? this.contribution.amount_payable - total_amount_paid
+          : this.contribution.amount_payable -
+            this.contribution.total_amount_deposited;
     },
 
     resetForm() {
+      this.has_selected_payment_item = false;
+      this.has_completed_payment = false;
       this.contribution.user_id = null;
       this.contribution.amount_payable = 0.0;
       this.contribution.amount_deposited = 0.0;
@@ -326,93 +390,25 @@ export default {
       this.contribution.payment_item_id = null;
       this.contribution.payment_category_id = null;
       this.contribution.id = null;
-      this.contribution.total_amount_deposited = 0.0
+      this.contribution.total_amount_deposited = 0.0;
 
       return this.contribution;
     },
 
-    setActionUrl(id) {
-      let url = "";
-      if (id === null) {
-        url = `/api/protected/contributions`;
-      } else {
-        url = `/api/protected/contributions/${id}/update`;
-      }
-      return url;
-    },
-
-    setDispatchAction(id, payload) {
+    setDispatchAction(payload) {
       this.loading = true;
-      if (id === null) {
-        this.$store
-          .dispatch("postRequest", payload)
-          .then(() => {
-            this.getMembersContributionsByPaymentItem(
-              payload.data.payment_item_id
-            );
-
-            this.setCurrentContributedPaymentItem(payload.data.payment_item_id);
-          })
-          .finally(() => {
-            this.$emit("close-right-drawer");
-            this.loading = false;
-            this.resetForm();
-          });
-      } else {
-        this.$store
-          .dispatch("putRequest", payload)
-          .then(() => {
-            this.getMembersContributionsByPaymentItem(id);
-            this.setCurrentContributedPaymentItem(id);
-          })
-          .finally(() => {
-            this.$emit("close-right-drawer");
-            this.loading = false;
-            this.resetForm();
-            this.$store.dispatch("setEditState", false);
-          });
-      }
-    },
-
-    setCurrentContributedPaymentItem(id) {
-      let item = null;
-      item = this.$store.getters.getPaymentItems.data.filter(
-        (ele) => ele.id === id
-      );
-      this.$store.dispatch("setCurrentPaymentItem", item[0]); //set the state with the first element from the filtered array
-    },
-
-    setFormFields() {
-      let data = this.$store.getters.getSelectedContribution;
-      let payment_item = this.$store.getters.getCurrentPaymentItem;
-
-      let payment_category =
-        payment_item != null
-          ? this.$store.getters.getPaymentCategories.find(
-              (ele) => ele.id === payment_item.payment_category_id
-            )
-          : [];
-
-      if (data != null && this.$store.getters.getEditState) {
-        let member = this.$store.getters.getMembers.find(
-          (ele) => ele.id == data.user_id
-        );
-        this.contribution.user_id = { label: member.name, value: member.id };
-        this.contribution.payment_item_id = {
-          label: payment_item.name,
-          value: payment_item.id,
-        };
-        this.contribution.amount_deposited = data.amount_deposited;
-        this.contribution.comment = data.comment;
-        this.contribution.balance = data.balance;
-        this.contribution.amount_payable = data.payment_item_amount;
-        (this.contribution.payment_category_id = {
-          label: payment_category.name,
-          value: payment_category.id,
-        }),
-          (this.contribution.id = data.id);
-      }
-      return this.contribution;
+      this.$store
+        .dispatch("postRequest", payload)
+        .then(() => {
+          this.getMembersContributionsByPaymentItem(
+            payload.data.payment_item_id
+          );
+          this.resetForm();
+        })
+        .finally(() => {
+          this.$emit("close-right-drawer");
+          this.loading = false;
+        });
     },
   },
   components: {

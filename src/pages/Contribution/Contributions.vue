@@ -9,8 +9,10 @@
         v-if="getLoadingState"
       />
     </div>
-    <div v-if="!checkTreasurerRole">
+
+
       <!-- contributions available -->
+    <div>
       <div
         class="row q-ml-xs q-pt-md justify-between"
         :class="$q.screen.lg ? 'q-pa-md' : ''"
@@ -36,7 +38,7 @@
             :label="label_download"
             :loading="loading"
             :color="color_print"
-            :disabled="getFilteredContributions.length == 0"
+            :disabled="getMembersContributionsByPaymentItem.length == 0"
             no-caps
             icon-right="print"
             @click="downloadContributions()"
@@ -48,7 +50,7 @@
         <div class="col-md-12 col-xs-12 col-sm-12">
           <TableVue
             :columns="columns"
-            :data="getFilteredContributions"
+            :data="getMembersContributionsByPaymentItem"
             :label="label"
             :message="message"
             :show_savings="false"
@@ -56,6 +58,7 @@
             :show_members="false"
             :show_member_savings="false"
             :show_contribution="true"
+            :show_member_contribution="true"
             @view-contribution="viewContribution"
             @edit-contribution="editContribution"
             :title="setTableTitle"
@@ -177,7 +180,7 @@ export default {
         {
           name: "status",
           align: "left",
-          label: "Status",
+          label: "Payment Item Status",
           field: "status",
         },
         {
@@ -189,7 +192,7 @@ export default {
         {
           name: "state",
           align: "left",
-          label: "Status",
+          label: "Payment State",
           field: "state",
           sortable: true,
         },
@@ -243,6 +246,7 @@ export default {
           }
         );
       }
+      console.log(data);
       return data;
     },
 

@@ -31,6 +31,7 @@ export default {
     },
 
     filterMembersContributions(data) {
+      console.log(data.payment_item_id);
       this.$router.push({
         path: `/dashboard/contributions`,
         query: {
@@ -41,10 +42,11 @@ export default {
           month: data.month,
           date: data.date,
           range: data.date_range,
+          is_treasurer:data.is_treasurer,
         },
       });
       this.loading = true;
-      let url = `/api/protected/organisations/contributions/search?organisation_id=${data.organisation_id}&payment_item_id=${data.payment_item_id.value}&year=${data.year}&month=${data.month}&date=${data.date}&range=${data.date_range}&status=${data.status}`;
+      let url = `/api/protected/organisations/contributions/search?payment_item_id=${data.payment_item_id.value}&year=${data.year}&month=${data.month}&date=${data.date}&range=${data.date_range}&status=${data.status}&is_treasurer=${data.is_treasurer}`;
       let payload = {
         url: url,
         msg: "none",
@@ -62,18 +64,19 @@ export default {
         },
       };
 
-      this.$store.dispatch("getRequest", payload).then(() => {
+      this.$store.dispatch("getRequest", payload).then((res) => {
         this.loading = false;
-        this.$store.dispatch("setSearchSavingsParams", {
-          organisation_id: data.organisation_id,
-          year: data.year,
-          payment_category_id: data.payment_category_id,
-          payment_item_id: data.payment_category_id,
-          month: data.month,
-          date: data.date,
-          range: data.date_range,
-          status: data.status,
-        });
+        // this.$store.dispatch("setSearchSavingsParams", {
+        //   organisation_id: data.organisation_id,
+        //   year: data.year,
+        //   payment_category_id: data.payment_category_id,
+        //   payment_item_id: data.payment_category_id,
+        //   month: data.month,
+        //   date: data.date,
+        //   range: data.date_range,
+        //   status: data.status,
+        // });
+        console.log(res);
       });
 
       return this.loading;

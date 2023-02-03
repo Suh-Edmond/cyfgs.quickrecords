@@ -9,125 +9,8 @@
         v-if="getLoadingState"
       />
     </div>
-    <div v-if="!checkTreasurerRole()">
+    <div v-if="!checkTreasurerRole">
       <!-- contributions available -->
-      <div
-        class="row q-ml-xs q-gutter-md"
-        :class="$q.screen.lg ? 'q-px-sm q-pb-sm' : ''"
-        :style="
-          $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-        "
-      >
-        <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12">
-          <q-select
-            v-model="payment_category_id"
-            outlined
-            dense
-            :options="getPaymentCategories"
-            label="Payment Category"
-            @input="fetchPaymentItems"
-          />
-        </div>
-        <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12">
-          <q-select
-            v-model="payment_item_id"
-            outlined
-            dense
-            :options="getPaymentItems"
-            label="Payment Item"
-            @input="getSelectedPaymentItem"
-          />
-          <small
-            v-if="payment_category_id != null && !checkIsExistPaymentItem"
-            class="noPaymentItems"
-            >No Payment items found under this category</small
-          >
-        </div>
-        <div class="col-md-1 col-lg-1 col-xs-12 col-sm-12">
-          <q-select
-            v-model="year"
-            outlined
-            dense
-            :options="years"
-            label="Year"
-          />
-        </div>
-        <div class="col-md-1 col-lg-1 col-xs-12 col-sm-12">
-          <q-select
-            v-model="month"
-            outlined
-            dense
-            :options="months"
-            label="Month"
-            input-debounce="0"
-            @filter="filterMonths"
-            use-input
-            hide-selected
-            fill-input
-          />
-        </div>
-        <div class="col-md-1 col-lg-1 col-xs-12 col-sm-12">
-          <q-select
-            v-model="status"
-            outlined
-            dense
-            :options="statuses"
-            label="Status"
-          />
-        </div>
-        <div
-          class="col-md-1 col-lg-1 col-xs-12 col-sm-12"
-          :style="$q.screen.lg ? 'margin-left:75px' : ''"
-        >
-          <q-btn
-            :label="label_fetch"
-            :loading="loading_filter"
-            :color="color"
-            :disabled="validateFilter"
-            no-caps
-            icon-right="filter_list"
-            @click="filterContributions"
-          >
-          </q-btn>
-        </div>
-        <div
-          class="col-md-1 col-lg-1 col-xs-12 col-sm-12"
-          :style="$q.screen.lg ? 'margin-left:170px' : ''"
-        >
-          <q-btn
-            :label="label_print"
-            :loading="loading"
-            :color="color_print"
-            :disabled="false"
-            no-caps
-            icon-right="print"
-          ></q-btn>
-        </div>
-      </div>
-      <!-- table for contributions -->
-      <div class="row q-pt-sm">
-        <div class="col-md-12 col-xs-12 col-sm-12">
-          <TableVue
-            :columns="columns"
-            :data="filteredContributions"
-            :label="label"
-            :message="message"
-            :show_savings="false"
-            :show_income_activity="false"
-            :show_members="false"
-            :show_member_savings="false"
-            :show_contribution="true"
-            @view-contribution="viewContribution"
-            @edit-contribution="editContribution"
-            :title="setTableTitle"
-          >
-          </TableVue>
-        </div>
-      </div>
-    </div>
-
-    <!-- table for filtered savings so they can be approve/decline-->
-    <div v-if="checkTreasurerRole()">
       <div
         class="row q-ml-xs q-pt-md justify-between"
         :class="$q.screen.lg ? 'q-pa-md' : ''"
@@ -153,7 +36,63 @@
             :label="label_download"
             :loading="loading"
             :color="color_print"
-            :disabled="getFilteredContributionsForApproval.length == 0"
+            :disabled="getFilteredContributions.length == 0"
+            no-caps
+            icon-right="print"
+            @click="downloadContributions()"
+          ></q-btn>
+        </div>
+      </div>
+      <!-- table for contributions -->
+      <div class="row q-pt-sm">
+        <div class="col-md-12 col-xs-12 col-sm-12">
+          <TableVue
+            :columns="columns"
+            :data="getFilteredContributions"
+            :label="label"
+            :message="message"
+            :show_savings="false"
+            :show_income_activity="false"
+            :show_members="false"
+            :show_member_savings="false"
+            :show_contribution="true"
+            @view-contribution="viewContribution"
+            @edit-contribution="editContribution"
+            :title="setTableTitle"
+          >
+          </TableVue>
+        </div>
+      </div>
+    </div>
+
+    <!-- table for filtered savings so they can be approve/decline-->
+    <div v-if="checkTreasurerRole">
+      <div
+        class="row q-ml-xs q-pt-md justify-between"
+        :class="$q.screen.lg ? 'q-pa-md' : ''"
+        :style="
+          $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+        "
+      >
+        <div>
+          <q-btn
+            :label="label_fetch"
+            :loading="loading"
+            :color="color"
+            :disabled="false"
+            no-caps
+            icon-right="filter_list"
+            @click="openSearchBar()"
+          >
+          </q-btn>
+        </div>
+        <q-space />
+        <div class="button q-pb-xs">
+          <q-btn
+            :label="label_download"
+            :loading="loading"
+            :color="color_print"
+            :disabled="getFilteredContributions.length == 0"
             no-caps
             icon-right="print"
             @click="downloadContributions()"
@@ -166,10 +105,10 @@
         <div class="col-md-12 col-xs-12 col-sm-12">
           <TableVue
             :columns="columns"
-            :data="getFilteredContributionsForApproval"
+            :data="getFilteredContributions"
             :label="label"
             :message="message"
-            :show_savings="true"
+            :show_savings="false"
             :show_income_activity="false"
             :show_members="false"
             :show_contribution="true"
@@ -186,57 +125,26 @@
 import TableVue from "src/components/Table.vue";
 import PaymentCategoryMixinVue from "src/mixins/PaymentCategoryMixin.vue";
 import PaymentItemMixinVue from "src/mixins/PaymentItemMixin.vue";
-import { LocalStorage } from "quasar";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
+import HelperMixinVue from 'src/mixins/HelperMixin.vue';
 
 export default {
-  mixins: [PaymentCategoryMixinVue, PaymentItemMixinVue, organisationMixinVue],
+  mixins: [PaymentCategoryMixinVue, PaymentItemMixinVue, organisationMixinVue, HelperMixinVue],
 
   mounted() {
-    let id = this.getOrganisationId;
-    this.fetchCategories(id);
   },
 
   data() {
     return {
-      not_found_msg:
-        "Ooops!! No Contributions have been record, Click the add to record contribution.",
       label_print: "Print",
       color_print: "positive",
       payment_item_id: null,
-      year: null,
-      years: ["2020", "2021", "2022", "2023", "2024"],
       label_fetch: "Filter",
       label_download: "Print",
       loading: false,
       color: "primary",
-      no_caps: true,
       message: "Are you sure you want to delete this member's contribution ?",
       label: "Delete",
-      month: null,
-      months: [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December",
-      ],
-      statuses: [
-        "PENDING",
-        "APPROVED",
-        "UNAPPROVED",
-        "INCOMPLETE",
-        "COMPLETE",
-        "ALL",
-      ],
-      status: null,
       columns: [
         {
           name: "counter",
@@ -292,7 +200,6 @@ export default {
           align: "left",
         },
       ],
-      payment_category_id: null,
       start_filter: false,
       filteredContributions: [],
       loading_filter: false,
@@ -363,13 +270,14 @@ export default {
       return this.getPaymentItems.length > 0;
     },
 
-    getFilteredContributionsForApproval() {
+    getFilteredContributions() {
       let data = [];
-      if (this.$store.getters.getFilteredContributions != undefined) {
-        this.$store.getters.getFilteredContributions.data.forEach((ele) => {
+      console.log(this.$store.getters.getFilteredContributions);
+      if (this.$store.getters.getFilteredContributions != null) {
+        this.$store.getters.getFilteredContributions.forEach((ele) => {
           data.push({
             counter:
-              this.$store.getters.getFilteredContributions.data.indexOf(ele) +
+              this.$store.getters.getFilteredContributions.indexOf(ele) +
               1,
             amount_deposited: ele.amount_deposited,
             id: ele.id,
@@ -407,43 +315,10 @@ export default {
   },
 
   watch: {
-    setTableTitle() {
-      let name = "";
-      let amount = 0;
-      let title = "";
-      if (this.$store.getters.getCurrentPaymentItem != null) {
-        name = this.$store.getters.getCurrentPaymentItem.name;
-        amount = this.$store.getters.getCurrentPaymentItem.amount;
-      }
-      if (
-        this.$store.getters.getCurrentPaymentItem != null &&
-        this.$store.getters.getCurrentContributionPaymentItem != null
-      ) {
-        title =
-          `Contributions for ${name}, Amount Payable: ` +
-          Number(amount).toLocaleString() +
-          "  XAF";
-      }
-      return title;
-    },
+
   },
 
   methods: {
-    checkTreasurerRole() {
-      const treasurer_role = LocalStorage.getItem("data").roles.find(
-        (role) => role.name == "TREASURER"
-      );
-      return treasurer_role != undefined;
-    },
-
-    filterMonths(val, update, abort) {
-      update(() => {
-        const needle = val.toLowerCase();
-        this.months = this.months.filter(
-          (v) => v.toLowerCase().indexOf(needle) > -1
-        );
-      });
-    },
 
     viewContribution(data) {
       this.$emit("view-contribution", data);
@@ -453,10 +328,6 @@ export default {
       this.$store.dispatch("setSelectedContribution", data.data);
 
       this.$emit("edit-contribution", data);
-    },
-
-    fetchPaymentItems() {
-      this.getPaymentItemsByCategory(this.payment_category_id.value);
     },
 
     getSelectedPaymentItem() {

@@ -1,9 +1,13 @@
 <script>
+import { LocalStorage } from 'quasar';
 export default {
   data() {
     return {
       loading: false,
     }
+  },
+  computed: {
+
   },
   methods: {
     downloadPdf(url, file_name) {
@@ -40,6 +44,13 @@ export default {
         });
 
       return this.loading
+    },
+
+    checkTreasurerRole() {
+      const treasurer_role = LocalStorage.getItem("data").roles.find(
+        (role) => role.name == "TREASURER"
+      );
+      return treasurer_role != undefined;
     }
   }
 }

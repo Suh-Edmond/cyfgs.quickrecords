@@ -108,7 +108,6 @@ export default {
         data: {
           telephone: this.user.credential,
           password: this.user.password,
-          email: this.user.credential,
         },
         msg: "Login Successful",
         color: "default",

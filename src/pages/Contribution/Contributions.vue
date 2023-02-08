@@ -58,7 +58,7 @@
             :show_members="false"
             :show_member_savings="false"
             :show_contribution="true"
-            :show_member_contribution="true"
+            :show_member_contribution="false"
             @view-contribution="viewContribution"
             @edit-contribution="editContribution"
             :title="getTableTitleForSearchContributions"
@@ -114,6 +114,7 @@
             :show_savings="false"
             :show_income_activity="false"
             :show_members="false"
+            :show_member_contribution="false"
             :show_contribution="true"
             :title="getTableTitleForSearchContributions"
           >
@@ -167,10 +168,10 @@ export default {
           sortable: true,
         },
         {
-          name: "amount_deposited",
+          name: "total_amount_deposited",
           align: "left",
-          label: "Amount Deposited (XAF)",
-          field: "amount_deposited",
+          label: "Total Amount Deposited (XAF)",
+          field: "total_amount_deposited",
         },
         {
           name: "balance",
@@ -235,6 +236,7 @@ export default {
                   ele
                 ) + 1,
               amount_deposited: ele.amount_deposited,
+              total_amount_deposited:ele.total_amount_deposited,
               id: ele.id,
               approve: ele.approve,
               balance: ele.balance,
@@ -288,10 +290,9 @@ export default {
       if (this.$store.getters.getFilteredContributions != null) {
         this.$store.getters.getFilteredContributions.forEach((ele) => {
           data.push({
-            counter:
-              this.$store.getters.getFilteredContributions.indexOf(ele) +
-              1,
+            counter: this.$store.getters.getFilteredContributions.indexOf(ele) + 1,
             amount_deposited: ele.amount_deposited,
+            total_amount_deposited:ele.total_amount_deposited,
             id: ele.id,
             approve: ele.approve,
             balance: ele.balance,
@@ -385,6 +386,7 @@ export default {
             this.filteredContributions.push({
               counter: res.data.data.indexOf(ele) + 1,
               amount_deposited: ele.amount_deposited,
+              total_amount_deposited:ele.total_amount_deposited,
               id: ele.id,
               approve: ele.approve,
               balance: ele.balance,

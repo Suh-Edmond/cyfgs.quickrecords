@@ -66,11 +66,16 @@
             v-show="
               show_savings ||
               show_member_savings ||
-              show_contribution ||
               show_member_contribution
             "
           >
             {{ Number(props.row.amount_deposited).toLocaleString() }}
+          </q-td>
+          <q-td
+            key="total_amount_deposited"
+            :props="props"
+            v-show="show_contribution">
+            {{ Number(props.row.total_amount_deposited).toLocaleString() }}
           </q-td>
           <q-td key="approve" :props="props" v-show="show_member_savings">
             {{ props.row.approve }}
@@ -89,7 +94,7 @@
           >
             {{ Number(props.row.balance).toLocaleString() }}
           </q-td>
-          <q-td key="status" :props="props" v-show="show_contribution">
+          <q-td key="status" :props="props" v-show="show_contribution || show_member_contribution">
             {{ props.row.status }}
           </q-td>
           <q-td
@@ -99,7 +104,8 @@
               show_savings ||
               show_member_savings ||
               show_income_activity ||
-              show_contribution
+              show_contribution ||
+              show_member_contribution
             "
           >
             {{ getFormatedDate(props.row.date) }}
@@ -114,7 +120,7 @@
               show_member_savings ||
               show_savings ||
               show_income_activity ||
-              show_contribution
+              show_contribution || show_member_contribution
             "
           >
             {{ props.row.approve }}
@@ -209,7 +215,7 @@
                       clickable
                       v-close-popup
                       @click="onEditContribution(props.row)"
-                      v-show="show_contribution"
+                      v-show="show_member_contribution"
                     >
                       <q-item-section avatar>
                         <span>
@@ -233,7 +239,7 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="edit">View</q-item-label>
+                        <q-item-label class="edit">View Details</q-item-label>
                       </q-item-section>
                     </q-item>
 
@@ -721,16 +727,23 @@ export default {
     },
 
     onViewContribution(data) {
-      let payload = {
-        data: data,
-        tab: "View Contribution",
-      };
+      // let payload = {
+      //   data: data,
+      //   tab: "View Contribution",
+      // };
 
-      this.$store.dispatch("setSelectedContribution", data);
+      // this.$store.dispatch("setSelectedContribution", data);
 
-      this.$store.dispatch("setEditState", false);
+      // this.$store.dispatch("setEditState", false);
 
-      this.$emit("view-contribution", payload);
+      // let has_intermediate_tab = true;
+      // let category = this.$store.getters.getCurrentExpenditureCategory;
+      this.$router.push({
+        name: "member_contributions",
+        params: { item_id:data.payment_item_id, id: data.user_id },
+      });
+
+      // this.$emit("view-contribution", payload);
     },
 
     onEditContribution(data) {

@@ -85,9 +85,7 @@
           <q-td
             key="state"
             :props="props"
-            v-if="
-              (show_expenditure_item || show_expenditure_item_detail)
-            "
+            v-if="(show_expenditure_item || show_expenditure_item_detail)"
           >
             {{ props.row.approve }}
           </q-td>

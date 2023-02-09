@@ -10,8 +10,8 @@
       />
     </div>
 
-
-    <!-- contributions available -->
+    <div v-if="!getLoadingState">
+       <!-- contributions available -->
     <div
       class="row justify-end"
       :class="$q.screen.lg ? 'q-pa-sm' : ''"
@@ -34,14 +34,14 @@
       <div class="col-md-12 col-xs-12 col-sm-12">
         <TableVue
           :columns="columns"
-          :data="data"
+          :data="getMemberContributions"
           :label="label"
           :message="message"
           :show_savings="false"
           :show_income_activity="false"
           :show_members="false"
           :show_contribution="false"
-          :title="title"
+          :title="getTableTile"
           :show_member_contribution="true"
           @view-contribution="viewContribution"
           @edit-contribution="editContribution"
@@ -49,14 +49,18 @@
         </TableVue>
       </div>
     </div>
+    </div>
   </div>
 </template>
 
 <script>
 import TableVue from "src/components/Table.vue";
+import ContributionsMixin from "src/mixins/ContributionsMixin.vue";
 export default {
+  mixins:[ContributionsMixin],
+
   mounted() {
-    this.getMembersContributions(this.$router.currentRoute.params.item_id, this.$router.currentRoute.params.id);
+    this.getMemberContributionsByPaymentItem(this.$router.currentRoute.params.item_id, this.$router.currentRoute.params.id);
   },
   data() {
     return {
@@ -130,33 +134,16 @@ export default {
     getLoadingState() {
       return this.$store.getters.getFetchingState;
     },
-  },
-  methods: {
-    getMembersContributions(payment_item_id, user_id) {
-      let payload = {
-        status: "none",
-        url: `/api/protected/contributions/payment-items/${payment_item_id}/users/${user_id}`,
-        has_path_val: true,
-        show_feedback: false,
-        show_spinner: true,
-        msg: "none",
-        color: "default",
-        error_msg: "default",
-        commit: "none",
-        has_commit: false,
-        to_be_store_data: {
-          required: true,
-          has_value: false,
-          data: null,
-        },
-      };
-      this.$store
-        .dispatch("getRequest", payload)
-        .then((res) => {
-          this.title = `${res.data[0].user_name} Contributions for ${res.data[0].payment_item_name}`
-          res.data.forEach((ele) => {
-            this.data.push({
-              counter: res.data.indexOf(ele) + 1,
+
+    getTableTile() {
+      return this.$store.getters.getMemberContributions !=  undefined? `${this.$store.getters.getMemberContributions[0].user_name} Contributions for ${this.$store.getters.getMemberContributions[0].payment_item_name}`: null;
+    },
+
+    getMemberContributions() {
+      let data = [];
+      this.$store.getters.getMemberContributions.forEach((ele) => {
+        data.push({
+              counter: this.$store.getters.getMemberContributions.indexOf(ele) + 1,
               amount_deposited: ele.amount_deposited,
               total_amount_deposited:ele.total_amount_deposited,
               id: ele.id,
@@ -166,6 +153,7 @@ export default {
               payment_item_id: ele.payment_item_id,
               payment_item_complusory: ele.payment_item_complusory,
               payment_item_name: ele.payment_item_name,
+              payment_category:ele.payment_category,
               comment: ele.comment,
               code: ele.code,
               type: "MEMBERS_CONTRIBUTIONS",
@@ -177,11 +165,11 @@ export default {
               user_name: ele.user_name,
               user_telephone: ele.user_telephone,
             });
-          });
-        })
-        return this.data
-    },
-
+      })
+      return data;
+    }
+  },
+  methods: {
     viewContribution(data) {
       this.$emit("view-contribution", data);
     },

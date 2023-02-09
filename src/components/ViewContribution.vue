@@ -95,10 +95,12 @@
 
 <script>
 import moment from "moment";
-
+import organisationMixin from "src/mixins/organisationMixin.vue";
+import memberMixin from "src/mixins/memberMixin.vue";
 
 
 export default {
+  mixins:[organisationMixin, memberMixin],
   mounted() {
     let heading = "Member Contribution Detail";
     this.$emit("set-heading", heading);
@@ -140,19 +142,19 @@ export default {
       return this.$store.getters.getSelectedContribution;
     }
   },
-
-  watch: {
-
-  },
-
-
   methods: {
     editContribution(data) {
       let payload = {
         data: data,
-        current_tab: "Members Contributions",
+        current_tab: "Edit Member Contribution",
         right: true,
       };
+
+      let id = this.getOrganisationId;
+
+      if(this.$store.getters.getMembers.length == 0) {
+        this.getOrganisationMembers(id);
+      }
 
       this.$emit("edit-contribution", payload);
     }

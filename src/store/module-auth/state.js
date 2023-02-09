@@ -36,5 +36,6 @@ export default function () {
     search_saving_param:null,
     filtered_contributions:null,
     intermediate_tabs:[],
+    member_contributions:[],
   };
 }

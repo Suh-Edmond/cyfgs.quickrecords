@@ -476,3 +476,7 @@ export function setFilteredContributions({commit}, data) {
 export function setIntermediateTabs({commit}, data) {
   commit("SET_INTERMEDIATE_TABS", data);
 }
+
+export function setMemberContributions({commit}, data) {
+  commit("SET_MEMBER_CONTRIBUTIONS", data);
+}

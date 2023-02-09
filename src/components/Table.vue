@@ -742,7 +742,7 @@ export default {
 
       this.$store.dispatch("setSelectedContribution", data);
 
-      this.$store.dispatch("setEditState", false);
+      this.$store.dispatch("setEditState", true);
 
      this.$emit("view-contribution", payload);
     },

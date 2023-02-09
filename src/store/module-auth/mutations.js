@@ -141,3 +141,7 @@ export function SET_FILTERED_CONTRIBUTIONS(state, data) {
 export function SET_INTERMEDIATE_TABS(state, data) {
   state.intermediate_tabs = data;
 }
+
+export function SET_MEMBER_CONTRIBUTIONS(state, data) {
+  state.member_contributions = data;
+}

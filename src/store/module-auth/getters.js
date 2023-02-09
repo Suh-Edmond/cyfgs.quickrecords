@@ -146,3 +146,7 @@ export function getFilteredContributions(state) {
 export function getIntermediateTabs(state) {
   return state.intermediate_tabs;
 }
+
+export function getMemberContributions(state) {
+  return state.member_contributions;
+}

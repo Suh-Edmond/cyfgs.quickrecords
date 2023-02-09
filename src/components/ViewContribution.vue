@@ -58,13 +58,13 @@
       </div>
       <div class="flex q-pb-md">
         <label for="name" class="label">Comment: </label>
-        <p class="value_comment">
+      </div>
+      <p class="value_comment">
           {{ getSelectedContribution.comment }}
         </p>
-      </div>
     </div>
     <div align="end" class="q-mt-md">
-      <q-btn color="primary" no-caps size="md" round @click="editContribution">
+      <q-btn color="primary" no-caps size="sm" round @click="editContribution">
         <q-icon name="edit" size="xs"></q-icon>
       </q-btn>
     </div>
@@ -207,7 +207,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 27px;
   text-align: start;
   letter-spacing: 0.005em;

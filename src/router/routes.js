@@ -213,6 +213,17 @@ const routes = [
         },
       },
 
+      {
+        name: "member_account",
+        path: "/dashboard/user/profile",
+        component: () => import("src/pages/Account/Account.vue"),
+        meta: {
+          middleware: "auth",
+          role: "MEMBER",
+          has_intermediate_tab:false
+        },
+      },
+
     ],
   },
 

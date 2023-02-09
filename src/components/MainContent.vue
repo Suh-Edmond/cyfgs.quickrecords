@@ -20,7 +20,7 @@
           {{ auth_name }}
           <q-btn-dropdown flat>
             <q-list>
-              <q-item clickable v-close-popup>
+              <q-item clickable v-close-popup :to="{name:'member_account'}">
                 <q-item-section avatar>
                   <span>
                     <q-icon name="person" size="sm" />

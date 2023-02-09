@@ -14,7 +14,7 @@
         <div class="text-h6 title" v-show="show_member_savings">
           All Savings for: {{ title }}
         </div>
-        <div class="text-h6 title" v-show="show_contribution">
+        <div class="text-h6 title" v-show="show_contribution || show_member_contribution">
           {{ title }}
         </div>
       </template>
@@ -214,32 +214,32 @@
                     <q-item
                       clickable
                       v-close-popup
-                      @click="onEditContribution(props.row)"
+                      @click="onViewContribution(props.row)"
                       v-show="show_member_contribution"
                     >
                       <q-item-section avatar>
                         <span>
-                          <q-icon name="edit" size="xs" class="edit" />
+                          <q-icon name="info" size="xs" class="edit" />
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="edit">Edit</q-item-label>
+                        <q-item-label class="edit">View</q-item-label>
                       </q-item-section>
                     </q-item>
 
                     <q-item
                       clickable
                       v-close-popup
-                      @click="onViewContribution(props.row)"
+                      @click="onViewAllMemberContributions(props.row)"
                       v-show="show_contribution"
                     >
                       <q-item-section avatar>
                         <span>
-                          <q-icon name="visibility" size="xs" class="edit" />
+                          <q-icon name="info" size="xs" class="edit" />
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="edit">View Details</q-item-label>
+                        <q-item-label class="edit">Details</q-item-label>
                       </q-item-section>
                     </q-item>
 
@@ -726,35 +726,25 @@ export default {
       this.$emit("view-income-activity", payload);
     },
 
-    onViewContribution(data) {
-      // let payload = {
-      //   data: data,
-      //   tab: "View Contribution",
-      // };
+    onViewAllMemberContributions(data) {
 
-      // this.$store.dispatch("setSelectedContribution", data);
-
-      // this.$store.dispatch("setEditState", false);
-
-      // let has_intermediate_tab = true;
-      // let category = this.$store.getters.getCurrentExpenditureCategory;
       this.$router.push({
         name: "member_contributions",
         params: { item_id:data.payment_item_id, id: data.user_id },
       });
-
-      // this.$emit("view-contribution", payload);
     },
 
-    onEditContribution(data) {
+    onViewContribution(data) {
       let payload = {
         data: data,
-        tab: "Members Contributions",
+        tab: "View Contribution",
       };
 
-      this.$store.dispatch("setEditState", true);
+      this.$store.dispatch("setSelectedContribution", data);
 
-      this.$emit("edit-contribution", payload);
+      this.$store.dispatch("setEditState", false);
+
+     this.$emit("view-contribution", payload);
     },
 
     onAllContribution(data) {

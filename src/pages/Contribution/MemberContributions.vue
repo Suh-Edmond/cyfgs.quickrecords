@@ -68,7 +68,7 @@ export default {
       no_caps: true,
       message: "Are you sure you want to delete this member's contribution ?",
       label: "Delete",
-      title: "Contributions for Harvest 2022 by Suh Edmond Neba ",
+      title: "",
       columns: [
         {
           name: "counter",
@@ -153,7 +153,7 @@ export default {
       this.$store
         .dispatch("getRequest", payload)
         .then((res) => {
-
+          this.title = `${res.data[0].user_name} Contributions for ${res.data[0].payment_item_name}`
           res.data.forEach((ele) => {
             this.data.push({
               counter: res.data.indexOf(ele) + 1,
@@ -179,7 +179,6 @@ export default {
             });
           });
         })
-        console.log(this.data);
         return this.data
     },
 

@@ -136,7 +136,11 @@ export default {
     },
 
     getTableTile() {
-      return this.$store.getters.getMemberContributions !=  undefined? `${this.$store.getters.getMemberContributions[0].user_name} Contributions for ${this.$store.getters.getMemberContributions[0].payment_item_name}`: null;
+      let title = ""
+      if(this.$store.getters.getMemberContributions.length != 0) {
+        title = `${this.$store.getters.getMemberContributions[0].user_name} Contributions for ${this.$store.getters.getMemberContributions[0].payment_item_name}`;
+      }
+      return title;
     },
 
     getMemberContributions() {

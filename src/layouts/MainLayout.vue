@@ -428,8 +428,8 @@
         ></ViewIncomeActivity>
         <ViewContribution
           v-if="current_tab == 'View Contribution'"
-          @edit-contribution="updateRightDrawer"
           @set-heading="setHeading"
+          @edit-contribution="updateRightDrawer"
         >
         </ViewContribution>
         <AddContribution
@@ -448,6 +448,11 @@
           @set-heading="setHeading">
 
         </SearchContribution>
+        <EditMemberContribution v-if="current_tab == 'Edit Member Contribution'"
+          @close-right-drawer="closeRightDrawer"
+          @set-heading="setHeading" >
+
+        </EditMemberContribution>
       </q-page>
     </q-drawer>
   </q-layout>
@@ -472,6 +477,7 @@ import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import ViewMemberSaving from "src/components/ViewMemberSaving.vue";
 import SearchSavings from "src/components/SearchSavings.vue";
 import SearchContribution from "src/components/SearchContribution.vue";
+import EditMemberContribution from "src/components/EditMemberContribution.vue";
 
 export default {
   mixins: [organisationMixinVue],
@@ -488,7 +494,7 @@ export default {
         selected: true,
       },
       requires_add: false,
-      right_drawer_width: 450,
+      right_drawer_width: 480,
       current_tab: "",
       right_drawer_tab: "",
       data: null,
@@ -515,13 +521,7 @@ export default {
 
       SessionStorage.set("requires_add", this.requires_add);
 
-      SessionStorage.remove("intermediate_tab");
-
-      SessionStorage.remove("has_intermediate_tab", false);
-
-      SessionStorage.remove("intermediate_tab2");
-
-      SessionStorage.remove("has_intermediate_tab2", false);
+      this.$store.dispatch("setIntermediateTabs", []);
     },
     updateRightDrawer({ right, current_tab, data }) {
       this.current_tab = current_tab;
@@ -585,7 +585,8 @@ export default {
     AddContribution,
     ViewMemberSaving,
     SearchSavings,
-    SearchContribution
+    SearchContribution,
+    EditMemberContribution
   },
 };
 </script>

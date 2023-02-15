@@ -137,3 +137,11 @@ export function SET_SEARCH_SAVING_PARAMS(state, data) {
 export function SET_FILTERED_CONTRIBUTIONS(state, data) {
   state.filtered_contributions = data;
 }
+
+export function SET_INTERMEDIATE_TABS(state, data) {
+  state.intermediate_tabs = data;
+}
+
+export function SET_MEMBER_CONTRIBUTIONS(state, data) {
+  state.member_contributions = data;
+}

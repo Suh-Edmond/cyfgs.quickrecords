@@ -29,7 +29,7 @@
         </div>
       </div>
 
-      <!-- filter by status of savings -->
+      <!-- filter by status of contributions -->
       <hr class="separator" />
       <div class="q-my-md">
         <label for="heading" class="text">Filter by status</label>
@@ -167,6 +167,7 @@ import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
 import PaymentCategoryMixin from "src/mixins/PaymentCategoryMixin.vue";
 import ContributionsMixinVue from "src/mixins/ContributionsMixin.vue";
+import HelperMixinVue from 'src/mixins/HelperMixin.vue';
 
 export default {
   mixins: [
@@ -174,6 +175,7 @@ export default {
     UserSavingMixinVue,
     PaymentCategoryMixin,
     ContributionsMixinVue,
+    HelperMixinVue
   ],
 
   mounted() {
@@ -183,7 +185,7 @@ export default {
 
     let id = this.getOrganisationId;
 
-    this.fetchCategories(id);
+    this.fetchCategories(id,false);
   },
 
   data() {
@@ -267,7 +269,7 @@ export default {
         url: `/api/protected/payment-categories/${this.param.payment_category_id.value}/payment-items`,
         has_path_val: true,
         show_feedback: false,
-        show_spinner: true,
+        show_spinner: false,
         msg: "none",
         color: "default",
         error_msg: "default",
@@ -304,6 +306,7 @@ export default {
         month: this.param.month,
         date: this.param.date,
         date_range: this.param.date_range,
+        is_treasurer: this.checkTreasurerRole() ? true: false,
       };
       this.loading = this.filterMembersContributions(payload);
     },

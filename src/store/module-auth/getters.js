@@ -142,3 +142,11 @@ export function getSearchSavingParams(state) {
 export function getFilteredContributions(state) {
   return state.filtered_contributions;
 }
+
+export function getIntermediateTabs(state) {
+  return state.intermediate_tabs;
+}
+
+export function getMemberContributions(state) {
+  return state.member_contributions;
+}

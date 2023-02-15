@@ -24,7 +24,7 @@ export default {
 
 
   methods: {
-    fetchCategories(organisation_id) {
+    fetchCategories(organisation_id, show_spinner) {
       let payload = {
         url: `/api/protected/organisations/${organisation_id}/payment-categories`,
         msg: "none",
@@ -33,7 +33,7 @@ export default {
         error_msg: "An Error occurred! Could not fetch payment categories",
         has_commit: true,
         show_feedback: false,
-        show_spinner:true,
+        show_spinner:show_spinner,
         commit: "SET_PAYMENT_CATEGORIES",
         to_be_store_data: {
           required: false,

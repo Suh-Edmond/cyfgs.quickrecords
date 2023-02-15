@@ -20,7 +20,7 @@
           {{ auth_name }}
           <q-btn-dropdown flat>
             <q-list>
-              <q-item clickable v-close-popup>
+              <q-item clickable v-close-popup :to="{name:'member_account'}">
                 <q-item-section avatar>
                   <span>
                     <q-icon name="person" size="sm" />
@@ -63,19 +63,25 @@
                 icon="arrow_back"
                 flat
                 dense
-                @click="goBack"
+                @click="goBack(null)"
               />
             </label>
             <div class="q-pa-xs">
-              <span class="q-pl-sm title">{{ item.name }}</span>
-              <span class="q-pl-sm" v-if="has_intermediate_tab">
-                <q-icon size="1.5em" name="chevron_right" color="primary"
-              /></span>
-              <span class="q-pl-sm title">{{ intermediate_tab }}</span>
-              <span class="q-pl-sm" v-if="has_intermediate_tab2">
-                <q-icon size="1.5em" name="chevron_right" color="primary"
-              /></span>
-              <span class="q-pl-sm title">{{ intermediate_tab2 }}</span>
+              <span class="q-pl-sm title tab" @click="goBack(item.name)">{{
+                item.name
+              }}</span>
+
+              <span v-if="getIntermediateTabs.length > 0">
+                <span
+                  class="q-pl-sm tab"
+                  v-for="tab in getIntermediateTabs"
+                  :key="tab.index"
+                  @click="goBack(null)"
+                >
+                  <q-icon size="1.5em" name="chevron_right" color="primary" />
+                  <span class="q-pl-sm title">{{ tab.name }}</span></span
+                >
+              </span>
             </div>
             <q-space />
             <q-btn
@@ -100,12 +106,9 @@
               @start-loading="startLoading"
               @update-member="updateMember"
               @update-payment-category="updatePaymentCategory"
-              @show-payment-items="showPaymentItems"
               @update-payment-item="updatePaymentItem"
               @update-expenditure-category="updateExpenditureCategory"
-              @show-expenditure-items="showExpenditureItems"
               @edit-expenditure-item="editExpenditureItem"
-              @show-expenditure-item-details="showExpenditureItemDetails"
               @edit-expenditure-item-detail="editExpenditureItemDetail"
               @edit-member-saving="editMemberSaving"
               @view-member-saving="viewMemberSaving"
@@ -169,7 +172,19 @@ export default {
       loading: false,
     };
   },
-  computed: {},
+
+  computed: {
+    getIntermediateTabs() {
+      let data = [];
+      Array.from(this.$store.getters.getIntermediateTabs).forEach((ele) => {
+        data.push({
+          name: ele.name,
+          has_intermediate_tab: ele.has_intermediate_tab,
+        });
+      });
+      return data;
+    },
+  },
 
   methods: {
     startLoading(data) {
@@ -177,11 +192,11 @@ export default {
     },
     showRightDrawer() {
       this.right = true;
-
       this.$emit("show-right-drawer", {
         right: this.right,
         current_tab: this.getCurrentRightDrawerTab(),
       });
+      this.resetAllForms(this.getCurrentRightDrawerTab());
     },
     showLeftDrawer() {
       this.left = !this.left;
@@ -203,17 +218,17 @@ export default {
       };
       this.$store.dispatch("logoutUser", payload);
     },
-    goBack() {
+    goBack(tab) {
       history.back();
-      if (SessionStorage.getItem("has_intermediate_tab2")) {
-        this.has_intermediate_tab2 = false;
-        SessionStorage.set("has_intermediate_tab2", false);
-        SessionStorage.remove("intermediate_tab2");
+      let data = [];
+      data = Array.from(this.$store.getters.getIntermediateTabs);
+      if (tab == "Expenditure Categories") {
+        data.pop();
+        data.pop();
       } else {
-        this.has_intermediate_tab = false;
-        SessionStorage.set("has_intermediate_tab", false);
-        SessionStorage.remove("intermediate_tab");
+        data.pop();
       }
+      this.$store.dispatch("setIntermediateTabs", Array.from(data));
     },
     updateMember(data) {
       this.right = true;
@@ -225,21 +240,6 @@ export default {
     },
     updatePaymentCategory(data) {
       this.updateDrawer(data);
-    },
-
-    showPaymentItems(data) {
-      this.has_intermediate_tab = data.has_intermediate_tab;
-      this.getIntermediateTab();
-    },
-
-    getIntermediateTab() {
-      this.intermediate_tab = SessionStorage.getItem("has_intermediate_tab")
-        ? SessionStorage.getItem("intermediate_tab")
-        : "";
-      this.intermediate_tab2 = SessionStorage.getItem("has_intermediate_tab2")
-        ? SessionStorage.getItem("intermediate_tab2")
-        : "";
-      return this.intermediate_tab;
     },
 
     updatePaymentItem(data) {
@@ -261,41 +261,24 @@ export default {
     updateExpenditureCategory(data) {
       this.updateDrawer(data);
     },
-    showExpenditureItems(data) {
-      this.has_intermediate_tab = data.has_intermediate_tab;
-      this.getIntermediateTab();
-    },
+
     editExpenditureItem(data) {
       this.updateDrawer(data);
-    },
-    showExpenditureItemDetails(data) {
-      this.has_intermediate_tab = data.has_intermediate_tab;
-      this.has_intermediate_tab2 = SessionStorage.getItem(
-        "has_intermediate_tab2"
-      );
-      this.getIntermediateTab();
     },
     editExpenditureItemDetail(data) {
       this.updateDrawer(data);
     },
     getCurrentRightDrawerTab() {
       let tab = "";
-      if (
-        SessionStorage.getItem("intermediate_tab") === null &&
-        SessionStorage.getItem("intermediate_tab2") === null
-      ) {
+      if (Array.from(this.$store.getters.getIntermediateTabs).length == 0) {
         tab = SessionStorage.getItem("to_tab");
       }
-      if (
-        SessionStorage.getItem("intermediate_tab") !== null &&
-        SessionStorage.getItem("intermediate_tab2") === null
-      ) {
-        tab = SessionStorage.getItem("intermediate_tab");
+      if (Array.from(this.$store.getters.getIntermediateTabs).length == 1) {
+        tab = Array.from(this.$store.getters.getIntermediateTabs)[0].name;
       }
-      if (SessionStorage.getItem("intermediate_tab2") !== null) {
-        tab = SessionStorage.getItem("intermediate_tab2");
+      if (Array.from(this.$store.getters.getIntermediateTabs).length == 2) {
+        tab = Array.from(this.$store.getters.getIntermediateTabs)[1].name;
       }
-
       return tab;
     },
     editMemberSaving(data) {
@@ -344,7 +327,17 @@ export default {
     },
 
     searchMemberContribution(data) {
-      this.updateDrawer(data)
+      this.updateDrawer(data);
+    },
+
+    resetAllForms(tab) {
+      this.$store.dispatch("setUpdatedPayCategories", null)
+      this.$store.dispatch("setUpdatedPaymentItem", null);
+      this.$store.dispatch("setUpdatedExpenditureCategory", null);
+      this.$store.dispatch("setUpdatedExpenditureItem", null);
+      this.$store.dispatch("setUpdatedExpenditureItemDetail", null);
+      this.$store.dispatch("setUpdatedMemberSaving", null);
+      this.$store.dispatch("setUpdatedIncomeActivity", null);
     }
   },
 };
@@ -424,5 +417,9 @@ export default {
   color: $primary;
   font-weight: 500;
   font-size: smaller;
+}
+
+.tab {
+  cursor: pointer;
 }
 </style>

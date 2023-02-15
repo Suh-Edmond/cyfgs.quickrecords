@@ -5,7 +5,7 @@
         <label for="name" class="field"
           >Name:
           <span class="field_value field_name">{{
-            income_activity.name
+            getCurrentIncomeActivity.name
           }}</span></label
         >
       </div>
@@ -13,7 +13,7 @@
         <label for="name" class="field"
           >Amount:
           <span class="field_value q-pl-md"
-            >{{ Number(income_activity.amount).toLocaleString() }} XAF</span
+            >{{ Number(getCurrentIncomeActivity.amount).toLocaleString() }} XAF</span
           ></label
         >
       </div>
@@ -29,22 +29,22 @@
         <label for="name" class="field"
           >Venue:
           <span class="field_value field_venue">{{
-            income_activity.venue
+            getCurrentIncomeActivity.venue
           }}</span></label
         >
       </div>
       <div class="flex q-pb-md">
-        <label for="status" class="field" v-show="income_activity.approve == 'DECLINED'"
+        <label for="status" class="field" v-show="getCurrentIncomeActivity.approve == 'DECLINED'"
           >Status:
-          <span class="item_statue unapproved_color">{{income_activity.approve}}</span></label
+          <span class="item_statue unapproved_color">{{getCurrentIncomeActivity.approve}}</span></label
         >
-        <label for="status" class="field" v-show="income_activity.approve == 'APPROVED'"
+        <label for="status" class="field" v-show="getCurrentIncomeActivity.approve == 'APPROVED'"
           >Status:
-          <span class="item_statue approved_color"> {{income_activity.approve}}</span></label
+          <span class="item_statue approved_color"> {{getCurrentIncomeActivity.approve}}</span></label
         >
-        <label for="status" class="field" v-show="income_activity.approve == 'PENDING'"
+        <label for="status" class="field" v-show="getCurrentIncomeActivity.approve == 'PENDING'"
           >Status:
-          <span class="item_statue pending_color"> {{income_activity.approve}}</span></label
+          <span class="item_statue pending_color"> {{getCurrentIncomeActivity.approve}}</span></label
         >
       </div>
 
@@ -52,13 +52,13 @@
         <label for="amount" class="field"
           >Created By:
           <span class="field_value detail_created_by">
-            {{ income_activity.updated_by }}
+            {{ getCurrentIncomeActivity.updated_by }}
           </span></label
         >
       </div>
       <div class="flex q-pb-md">
-        <label for="name" class="field">Comment: </label>
-        <p>{{ income_activity.description }}</p>
+        <label for="name" class="field">Comment: </label><br/>
+        <div>{{ getCurrentIncomeActivity.description }}</div>
       </div>
 
       <!-- <div class="flex">
@@ -105,27 +105,10 @@ export default {
     let heading = "Income Activity Information";
     this.$emit("set-heading", heading);
   },
-
-  mounted() {
-    this.getCurrentIncomeActivity();
-  },
-
   data() {
     return {
       show_image: false,
       position: "right",
-      income_activity: {
-        venue: null,
-        date: null,
-        name: null,
-        description: null,
-        amount: 0,
-        id: null,
-        organisation_id: null,
-        approve: null,
-        created_at: null,
-        updated_by: null,
-      },
     };
   },
 
@@ -145,32 +128,12 @@ export default {
         "MMMM Do YYYY"
       );
     },
+
+    getCurrentIncomeActivity(){
+      return this.$store.getters.getCurrentIncomeActivity;
+    }
   },
-
   methods: {
-    getCurrentIncomeActivity() {
-      this.income_activity.name =
-        this.$store.getters.getCurrentIncomeActivity.name;
-      this.income_activity.date =
-        this.$store.getters.getCurrentIncomeActivity.date;
-      this.income_activity.venue =
-        this.$store.getters.getCurrentIncomeActivity.venue;
-      this.income_activity.description =
-        this.$store.getters.getCurrentIncomeActivity.description;
-      this.income_activity.organisation_id =
-        this.$store.getters.getCurrentIncomeActivity.organisation_id;
-      this.income_activity.amount =
-        this.$store.getters.getCurrentIncomeActivity.amount;
-      this.income_activity.id = this.$store.getters.getCurrentIncomeActivity.id;
-      this.income_activity.approve =
-        this.$store.getters.getCurrentIncomeActivity.approve;
-      this.income_activity.created_at =
-        this.$store.getters.getCurrentIncomeActivity.created_at;
-      this.income_activity.updated_by =
-        this.$store.getters.getCurrentIncomeActivity.updated_by;
-
-      return this.income_activity;
-    },
   },
 };
 </script>

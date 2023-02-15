@@ -126,7 +126,7 @@ export default {
 
   mounted() {
     let id = this.getOrganisationId;
-    this.getOrganisationMembers(id);
+    this.getOrganisationMembers(id, true);
   },
   data() {
     return {

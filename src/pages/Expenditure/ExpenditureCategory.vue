@@ -90,7 +90,6 @@
 <script>
 import NotFound from "src/components/NotFound.vue";
 import CategoryTable from "src/components/CategoryTable.vue";
-import { SessionStorage } from "quasar";
 import ExpenditureCategoryMixinVue from "src/mixins/ExpenditureCategoryMixin.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import expenditureItemMixinVue from "src/mixins/expenditureItemMixin.vue";
@@ -189,9 +188,11 @@ export default {
 
       this.getExpenditureItemsByCategory();
 
-      SessionStorage.set("intermediate_tab", "Expenditure Items");
+      let intermediate_tabs = [];
 
-      SessionStorage.set("has_intermediate_tab", true);
+      intermediate_tabs.push({name: "Expenditure Items", has_intermediate_tab: true})
+
+      this.$store.dispatch("setIntermediateTabs", intermediate_tabs)
 
       this.$emit("show-expenditure-items", data);
     },

@@ -104,7 +104,7 @@ export default {
       this.$store
         .dispatch("postRequest", payload)
         .then(() => {
-          this.fetchCategories();
+          this.fetchCategories(id, true);
         })
         .finally(() => {
           this.loading = false;

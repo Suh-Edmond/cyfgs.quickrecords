@@ -204,8 +204,19 @@ const routes = [
       },
       {
         name: "member_contributions",
-        path: "/dashboard/contributions/members/:id",
+        path: "/dashboard/contributions/payment-item/:item_id/members/:id",
         component: () => import("src/pages/Contribution/MemberContributions.vue"),
+        meta: {
+          middleware: "auth",
+          role: "MEMBER",
+          has_intermediate_tab:false
+        },
+      },
+
+      {
+        name: "member_account",
+        path: "/dashboard/user/profile",
+        component: () => import("src/pages/Account/Account.vue"),
         meta: {
           middleware: "auth",
           role: "MEMBER",

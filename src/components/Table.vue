@@ -8,12 +8,13 @@
       :table-header-style="{ backgroundColor: '#5384ae', color: '#FFFFFF' }"
       :filter="filter"
       :pagination.sync="pagination"
+
     >
       <template v-slot:top-left>
         <div class="text-h6 title" v-show="show_member_savings">
           All Savings for: {{ title }}
         </div>
-        <div class="text-h6 title" v-show="show_contribution">
+        <div class="text-h6 title" v-show="show_contribution || show_member_contribution">
           {{ title }}
         </div>
       </template>
@@ -65,11 +66,16 @@
             v-show="
               show_savings ||
               show_member_savings ||
-              show_contribution ||
               show_member_contribution
             "
           >
             {{ Number(props.row.amount_deposited).toLocaleString() }}
+          </q-td>
+          <q-td
+            key="total_amount_deposited"
+            :props="props"
+            v-show="show_contribution">
+            {{ Number(props.row.total_amount_deposited).toLocaleString() }}
           </q-td>
           <q-td key="approve" :props="props" v-show="show_member_savings">
             {{ props.row.approve }}
@@ -88,20 +94,29 @@
           >
             {{ Number(props.row.balance).toLocaleString() }}
           </q-td>
-          <q-td key="status" :props="props" v-show="show_contribution">
+          <q-td key="status" :props="props" v-show="show_contribution || show_member_contribution">
             {{ props.row.status }}
           </q-td>
           <q-td
             key="date"
             :props="props"
-            v-show="
+            v-if="
               show_savings ||
               show_member_savings ||
-              show_income_activity ||
-              show_contribution
+              show_income_activity
             "
           >
             {{ getFormatedDate(props.row.date) }}
+          </q-td>
+          <q-td
+            key="date"
+            :props="props"
+            v-if="
+              show_contribution ||
+              show_member_contribution
+            "
+          >
+            {{ getFormatedDate(props.row.created_at) }}
           </q-td>
           <q-td key="venue" :props="props" v-show="show_income_activity">
             {{ props.row.venue }}
@@ -113,7 +128,7 @@
               show_member_savings ||
               show_savings ||
               show_income_activity ||
-              show_contribution
+              show_contribution || show_member_contribution
             "
           >
             {{ props.row.approve }}
@@ -207,32 +222,32 @@
                     <q-item
                       clickable
                       v-close-popup
-                      @click="onEditContribution(props.row)"
-                      v-show="show_contribution"
+                      @click="onViewContribution(props.row)"
+                      v-show="show_member_contribution"
                     >
                       <q-item-section avatar>
                         <span>
-                          <q-icon name="edit" size="xs" class="edit" />
+                          <q-icon name="info" size="xs" class="edit" />
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="edit">Edit</q-item-label>
+                        <q-item-label class="edit">View</q-item-label>
                       </q-item-section>
                     </q-item>
 
                     <q-item
                       clickable
                       v-close-popup
-                      @click="onViewContribution(props.row)"
+                      @click="onViewAllMemberContributions(props.row)"
                       v-show="show_contribution"
                     >
                       <q-item-section avatar>
                         <span>
-                          <q-icon name="visibility" size="xs" class="edit" />
+                          <q-icon name="info" size="xs" class="edit" />
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="edit">View</q-item-label>
+                        <q-item-label class="edit">Details</q-item-label>
                       </q-item-section>
                     </q-item>
 
@@ -347,6 +362,7 @@
         <q-input
           outlined
           dense
+          v-model="filter"
           :class="
             $q.screen.md
               ? 'text-h6-sm q-mb-lg q-mt-lg full-width'
@@ -566,7 +582,7 @@ export default {
       color: "positive",
       no_caps: true,
       dialog: false,
-      filter: null,
+      filter: "",
       label_cancel: "Cancel",
       pagination: {
         rowsPerPage: 15, // current rows per page being displayed
@@ -718,6 +734,14 @@ export default {
       this.$emit("view-income-activity", payload);
     },
 
+    onViewAllMemberContributions(data) {
+
+      this.$router.push({
+        name: "member_contributions",
+        params: { item_id:data.payment_item_id, id: data.user_id },
+      });
+    },
+
     onViewContribution(data) {
       let payload = {
         data: data,
@@ -726,20 +750,9 @@ export default {
 
       this.$store.dispatch("setSelectedContribution", data);
 
-      this.$store.dispatch("setEditState", false);
-
-      this.$emit("view-contribution", payload);
-    },
-
-    onEditContribution(data) {
-      let payload = {
-        data: data,
-        tab: "Members Contributions",
-      };
-
       this.$store.dispatch("setEditState", true);
 
-      this.$emit("edit-contribution", payload);
+     this.$emit("view-contribution", payload);
     },
 
     onAllContribution(data) {

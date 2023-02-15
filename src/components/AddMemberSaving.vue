@@ -47,7 +47,7 @@ export default {
     let heading = "Member Savings Information";
     this.$emit("set-heading", heading);
 
-    this.getOrganisationMembers(this.getOrganisationId);
+    this.getOrganisationMembers(this.getOrganisationId, false);
 
     this.setFormFields(null);
   },

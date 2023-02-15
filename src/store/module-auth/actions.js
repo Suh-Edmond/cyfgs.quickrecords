@@ -472,3 +472,11 @@ export function setSearchSavingsParams({commit}, data) {
 export function setFilteredContributions({commit}, data) {
   commit("SET_FILTERED_CONTRIBUTIONS", data);
 }
+
+export function setIntermediateTabs({commit}, data) {
+  commit("SET_INTERMEDIATE_TABS", data);
+}
+
+export function setMemberContributions({commit}, data) {
+  commit("SET_MEMBER_CONTRIBUTIONS", data);
+}

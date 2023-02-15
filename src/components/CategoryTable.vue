@@ -18,6 +18,9 @@
           <q-td key="name" :props="props">
             {{ props.row.name }}
           </q-td>
+          <q-td key="complusory" :props="props" v-if="show_payment_item">
+            {{ props.row.complusory }}
+          </q-td>
           <q-td key="item" :props="props" v-if="show_payment_category">
             <q-btn
               flat
@@ -82,9 +85,7 @@
           <q-td
             key="state"
             :props="props"
-            v-if="
-              (show_expenditure_item || show_expenditure_item_detail)
-            "
+            v-if="(show_expenditure_item || show_expenditure_item_detail)"
           >
             {{ props.row.approve }}
           </q-td>
@@ -94,7 +95,7 @@
               flat
               round
               v-if="
-                (show_expenditure_item || show_payment_category ||
+                (show_expenditure_item || show_payment_category || show_payment_item||
                   show_expenditure_category ||
                   show_expenditure_item_detail) &&
                 !checkTreasurerRole()
@@ -380,7 +381,7 @@
   </div>
 </template>
 <script>
-import { LocalStorage, SessionStorage } from "quasar";
+import { LocalStorage } from "quasar";
 import PaymentCategoryMixinVue from "src/mixins/PaymentCategoryMixin.vue";
 import expenditureItemMixinVue from "src/mixins/expenditureItemMixin.vue";
 import ExpenditureItemDetailMixinVue from "src/mixins/ExpenditureItemDetailMixin.vue";
@@ -460,9 +461,7 @@ export default {
     };
   },
   computed: {
-    getSelectedCategory() {
-      return SessionStorage.getItem("selected_category");
-    },
+
   },
   methods: {
     checkTreasurerRole() {
@@ -533,16 +532,13 @@ export default {
     },
 
     showPaymentItems(payment_items) {
-      let has_intermediate_tab = true;
-      this.$emit("show-payment-items", { payment_items, has_intermediate_tab });
+      this.$emit("show-payment-items", { payment_items});
     },
 
     showExpenditureItems(expenditure_items) {
-      let has_intermediate_tab = true;
 
       this.$emit("show-expenditure-items", {
         expenditure_items,
-        has_intermediate_tab,
       });
     },
 
@@ -653,7 +649,7 @@ export default {
     callFetchDataBaseOnType(row) {
       switch (row.type) {
         case "PAYMENT_CATEGORY":
-          this.fetchCategories();
+          this.fetchCategories(false);
           break;
 
         case "PAYMENT_ITEMS":

@@ -366,7 +366,7 @@ export default {
       this.$store
         .dispatch("putRequest", payload)
         .then(() => {
-          this.getOrganisationMembers(organisation_id);
+          this.getOrganisationMembers(organisation_id, true);
           this.resetForm();
         })
         .finally(() => {

@@ -31,7 +31,7 @@
           <CategoryTable :columns="columns" :data="getExpenditureItems" :label="label" :message="message"
             :title="getExpenditureCategoryName" :show_payment_category="false" :show_payment_item="false"
             :show_expenditure_category="false" :show_expenditure_item="true"
-            @show-expenditure-items="showExpenditureItem" @edit-expenditure-item="editExpenditureItem"
+             @edit-expenditure-item="editExpenditureItem"
             @show-expenditure-item-details="showExpenditureItemDetails">
           </CategoryTable>
         </div>
@@ -41,7 +41,7 @@
           <CategoryTable :columns="columns" :data="filtered_items" :label="label" :message="message"
             :title="getExpenditureCategoryName" :show_payment_category="false" :show_payment_item="false"
             :show_expenditure_category="false" :show_expenditure_item="true"
-            @show-expenditure-items="showExpenditureItem" @edit-expenditure-item="editExpenditureItem"
+             @edit-expenditure-item="editExpenditureItem"
             @show-expenditure-item-details="showExpenditureItemDetails">
           </CategoryTable>
         </div>
@@ -147,17 +147,11 @@ export default {
     }
   },
   methods: {
-    showExpenditureItem(data) {
-      SessionStorage.set("intermediate_tab", "Expenditure Items");
-
-      SessionStorage.set("has_intermediate_tab", true);
-
-      this.$emit("show-expenditure-items", data);
-    },
-
     editExpenditureItem(data) {
       this.$store.dispatch("setUpdatedExpenditureItem", data.data);
+
       this.$store.dispatch("setEditState", true);
+
       this.$emit("edit-expenditure-item", data);
     },
 
@@ -166,9 +160,11 @@ export default {
 
       this.getExpenditureDetailsByItemId(data.expenditure_item.id)
 
-      SessionStorage.set("intermediate_tab2", "Expenditure Item Details");
+      const intermediate_tabs = Array.from(this.$store.getters.getIntermediateTabs);
 
-      SessionStorage.set("has_intermediate_tab2", true);
+      intermediate_tabs.push({name: "Expenditure Item Details", has_intermediate_tab: true})
+
+      this.$store.dispatch("setIntermediateTabs", intermediate_tabs)
 
       this.$emit("show-expenditure-item-details", data);
     },

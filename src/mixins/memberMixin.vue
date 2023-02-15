@@ -9,7 +9,7 @@ export default {
 
   },
   methods: {
-    getOrganisationMembers(id) {
+    getOrganisationMembers(id, show_spinner) {
       let payload = {
         url: `/api/protected/organisations/${id}/users`,
         msg: "none",
@@ -18,7 +18,7 @@ export default {
         error_msg: "An Error occurred! Could not fetch users",
         has_commit: true,
         show_feedback:false,
-        show_spinner:true,
+        show_spinner:show_spinner,
         commit: "SET_MEMBERS",
         to_be_store_data: {
           required: false,

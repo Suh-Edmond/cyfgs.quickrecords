@@ -51,6 +51,14 @@ export default {
         (role) => role.name == "TREASURER"
       );
       return treasurer_role != undefined;
+    },
+
+    computeTotal(data) {
+      let total = 0;
+      data.forEach((ele) => {
+        total += ele.amount_deposited
+      })
+      return total;
     }
   }
 }

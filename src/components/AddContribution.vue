@@ -39,7 +39,7 @@
             </q-select>
             <small
               v-if="
-                (contribution.payment_category_id != null && contribution.payment_item_id == null) || (contribution.payment_category_id != null && payment_items.length == 0 && contribution.payment_item_id == null)
+                (contribution.payment_category_id != null && payment_items.length == 0 && contribution.payment_item_id == null)
               "
               class="noPaymentItems"
               >No Payment items found under this category</small
@@ -195,10 +195,10 @@ export default {
 
     let organisation_id = this.getOrganisationId;
 
-    this.getOrganisationMembers(organisation_id);
+    this.getOrganisationMembers(organisation_id. false);
 
     if (this.getPaymentCategories.length == 0) {
-      this.fetchCategories(organisation_id);
+      this.fetchCategories(organisation_id, false);
     }
   },
 

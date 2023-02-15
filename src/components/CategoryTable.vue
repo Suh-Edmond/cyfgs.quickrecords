@@ -649,7 +649,7 @@ export default {
     callFetchDataBaseOnType(row) {
       switch (row.type) {
         case "PAYMENT_CATEGORY":
-          this.fetchCategories();
+          this.fetchCategories(false);
           break;
 
         case "PAYMENT_ITEMS":

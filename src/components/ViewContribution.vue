@@ -21,8 +21,13 @@
           <span class="value value_name">{{ getSelectedContribution.user_name }}</span></label>
       </div>
       <div class="flex q-pb-md">
-        <label for="name" class="label">Amount Paid:
+        <label for="name" class="label">Amount:
           <span class="value value_amount_paid">{{ Number(getSelectedContribution.amount_deposited).toLocaleString() }}
+            XAF</span></label>
+      </div>
+      <div class="flex q-pb-md">
+        <label for="name" class="label">Total Amount Paid:
+          <span class="value value_amount_total">{{ Number(computeTotalAmountContributed).toLocaleString() }}
             XAF</span></label>
       </div>
       <div class="flex q-pb-md">
@@ -63,11 +68,12 @@
           {{ getSelectedContribution.comment }}
         </p>
     </div>
-    <div align="end" class="q-mt-md">
+    <!-- edit contribution has been remove -->
+    <!-- <div align="end" class="q-mt-md">
       <q-btn color="primary" no-caps size="sm" round @click="editContribution">
         <q-icon name="edit" size="xs"></q-icon>
       </q-btn>
-    </div>
+    </div> -->
 
 
 
@@ -97,10 +103,11 @@
 import moment from "moment";
 import organisationMixin from "src/mixins/organisationMixin.vue";
 import memberMixin from "src/mixins/memberMixin.vue";
+import HelperMixin from "src/mixins/HelperMixin.vue";
 
 
 export default {
-  mixins:[organisationMixin, memberMixin],
+  mixins:[organisationMixin, memberMixin, HelperMixin],
   mounted() {
     let heading = "Member Contribution Detail";
     this.$emit("set-heading", heading);
@@ -140,6 +147,10 @@ export default {
 
     getSelectedContribution() {
       return this.$store.getters.getSelectedContribution;
+    },
+
+    computeTotalAmountContributed() {
+      return this.computeTotal(this.$store.getters.getMemberContributions);
     }
   },
   methods: {
@@ -153,7 +164,7 @@ export default {
       let id = this.getOrganisationId;
 
       if(this.$store.getters.getMembers.length == 0) {
-        this.getOrganisationMembers(id);
+        this.getOrganisationMembers(id, false);
       }
 
       this.$emit("edit-contribution", payload);
@@ -260,7 +271,11 @@ export default {
 }
 
 .value_amount_paid {
-  padding-left: 4rem;
+  padding-left: 6rem;
+}
+
+.value_amount_total {
+  padding-left: 1.8rem;
 }
 
 .value_balance {

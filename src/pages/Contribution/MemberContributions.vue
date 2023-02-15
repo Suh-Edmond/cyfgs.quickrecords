@@ -24,7 +24,7 @@
           :label="label_print"
           :loading="loading"
           :color="color_print"
-          no_caps
+          no-caps
           icon-right="print"
         ></q-btn>
       </div>

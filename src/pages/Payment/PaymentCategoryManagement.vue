@@ -94,7 +94,7 @@ export default {
   mixins: [PaymentCategoryMixinVue, HelperMixinVue],
   mounted() {
     let id = this.$store.getters.getOrganisation.id;
-    this.fetchCategories(id);
+    this.fetchCategories(id, true);
   },
   data() {
     return {

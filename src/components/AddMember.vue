@@ -270,7 +270,7 @@ export default {
       this.$store
         .dispatch("postRequest", payload)
         .then(() => {
-          this.getOrganisationMembers(id);
+          this.getOrganisationMembers(id, true);
         })
         .finally(() => {
           this.loading = false;
@@ -309,7 +309,7 @@ export default {
         .dispatch("uploadFileRequest", payload)
         .then(() => {})
         .finally(() => {
-          this.getOrganisationMembers(id);
+          this.getOrganisationMembers(id, true);
           this.loading = false;
           this.file = null;
           this.$emit("close-right-drawer");

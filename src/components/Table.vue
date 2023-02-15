@@ -103,12 +103,20 @@
             v-show="
               show_savings ||
               show_member_savings ||
-              show_income_activity ||
+              show_income_activity 
+            "
+          >
+            {{ getFormatedDate(props.row.date) }}
+          </q-td>
+          <q-td
+            key="date"
+            :props="props"
+            v-show="
               show_contribution ||
               show_member_contribution
             "
           >
-            {{ getFormatedDate(props.row.date) }}
+            {{ getFormatedDate(props.row.created_at) }}
           </q-td>
           <q-td key="venue" :props="props" v-show="show_income_activity">
             {{ props.row.venue }}

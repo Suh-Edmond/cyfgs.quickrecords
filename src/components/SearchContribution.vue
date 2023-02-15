@@ -185,7 +185,7 @@ export default {
 
     let id = this.getOrganisationId;
 
-    this.fetchCategories(id);
+    this.fetchCategories(id,false);
   },
 
   data() {
@@ -269,7 +269,7 @@ export default {
         url: `/api/protected/payment-categories/${this.param.payment_category_id.value}/payment-items`,
         has_path_val: true,
         show_feedback: false,
-        show_spinner: true,
+        show_spinner: false,
         msg: "none",
         color: "default",
         error_msg: "default",

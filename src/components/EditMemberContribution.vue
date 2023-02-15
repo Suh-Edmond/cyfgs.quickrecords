@@ -59,7 +59,7 @@
               >
               </q-select>
             </div>
-            <div class="q-mb-md">
+            <!-- <div class="q-mb-md">
               <label for="credential" class="form_field"
                 >Total Amount Deposited(XAF)  </label
               >
@@ -81,7 +81,7 @@
                 type="number"
                 disable
               />
-            </div>
+            </div> -->
             <div class="q-mb-md">
               <label for="credential" class="form_field"
                 >Amount Deposited(XAF)  <span class="text-red">*</span></label
@@ -91,7 +91,7 @@
                 outlined
                 dense
                 type="number"
-                @input="depositedAmount"
+                @keyup="depositedAmount"
                 :disable="hasCompletedPayment"
               >
               </q-input>
@@ -151,10 +151,12 @@
 <script>
 import ButtonVue from "src/components/Button.vue";
 import ContributionsMixinVue from "src/mixins/ContributionsMixin.vue";
+import HelperMixin from "src/mixins/HelperMixin.vue";
 
 export default {
   mixins: [
     ContributionsMixinVue,
+    HelperMixin
   ],
 
   mounted() {
@@ -183,6 +185,8 @@ export default {
       },
       no_caps: true,
       amount_has_exceed: false,
+      amount_before_update:this.$store.getters.getSelectedContribution.amount_deposited,
+
     };
   },
   computed: {
@@ -276,9 +280,9 @@ export default {
       };
       this.contribution.amount_deposited = data.amount_deposited;
       this.contribution.comment = data.comment;
-      this.contribution.balance = data.balance;
+      this.contribution.balance = parseFloat(data.balance);
       this.contribution.amount_payable = data.payment_item_amount;
-      this.contribution.total_amount_deposited = data.total_amount_deposited;
+      this.contribution.total_amount_deposited = parseFloat(this.computeTotal(this.$store.getters.getMemberContributions));
       this.contribution.payment_category_id = {
         label: data.payment_category.name,
         value: data.payment_category.id,
@@ -288,9 +292,15 @@ export default {
     },
 
     depositedAmount(){
-      this.setPaymentItemBalance();
+
+      if(this.amount_before_update == this.contribution.amount_deposited) {
+        this.contribution.balance = this.contribution.balance
+      }else {
+        this.setPaymentItemBalance();
+      }
       return this.amount_has_exceed = parseFloat(this.contribution.amount_deposited) + parseFloat(this.contribution.total_amount_deposited) > parseFloat(this.contribution.amount_payable)
-    }
+    },
+
 
   },
   components: {

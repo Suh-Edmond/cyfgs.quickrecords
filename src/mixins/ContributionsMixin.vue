@@ -64,6 +64,7 @@ export default {
       };
 
       this.$store.dispatch("getRequest", payload).then((res) => {
+        console.log(res);
         this.loading = false;
         if(res.data.length > 0) {
           this.$store.dispatch("setSearchSavingsParams", {
@@ -102,7 +103,9 @@ export default {
       };
       this.$store
         .dispatch("getRequest", payload)
-        .then(() => {})
+        .then((res) => {
+          console.log(res);
+        })
     }
   },
 };

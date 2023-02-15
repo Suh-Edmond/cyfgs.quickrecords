@@ -100,10 +100,10 @@
           <q-td
             key="date"
             :props="props"
-            v-show="
+            v-if="
               show_savings ||
               show_member_savings ||
-              show_income_activity 
+              show_income_activity
             "
           >
             {{ getFormatedDate(props.row.date) }}
@@ -111,7 +111,7 @@
           <q-td
             key="date"
             :props="props"
-            v-show="
+            v-if="
               show_contribution ||
               show_member_contribution
             "

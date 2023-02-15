@@ -26,6 +26,7 @@
           :color="color_print"
           no-caps
           icon-right="print"
+          @click="downloadContributions"
         ></q-btn>
       </div>
     </div>
@@ -56,8 +57,9 @@
 <script>
 import TableVue from "src/components/Table.vue";
 import ContributionsMixin from "src/mixins/ContributionsMixin.vue";
+import HelperMixin from "src/mixins/HelperMixin.vue";
 export default {
-  mixins:[ContributionsMixin],
+  mixins:[ContributionsMixin, HelperMixin],
 
   mounted() {
     this.getMemberContributionsByPaymentItem(this.$router.currentRoute.params.item_id, this.$router.currentRoute.params.id);
@@ -179,6 +181,16 @@ export default {
     },
     editContribution(data) {
       this.$emit("edit-contribution", data);
+    },
+
+    downloadContributions() {
+      let payment_item_id = this.$router.currentRoute.params.item_id;
+      let user_id = this.$router.currentRoute.params.id;
+
+      let url = `/api/protected/download-user-contributions?payment_item_id=${payment_item_id}&user_id=${user_id}`;
+
+      let file_name = "Member's Contribution for "+this.$store.getters.getSearchSavingParams.payment_item_id.name +".pdf";
+      this.loading = this.downloadPdf(url, file_name);
     },
   },
   components: {

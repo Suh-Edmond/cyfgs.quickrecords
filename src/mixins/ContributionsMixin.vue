@@ -64,14 +64,13 @@ export default {
       };
 
       this.$store.dispatch("getRequest", payload).then((res) => {
-        console.log(res);
         this.loading = false;
         if(res.data.length > 0) {
           this.$store.dispatch("setSearchSavingsParams", {
           organisation_id: data.organisation_id,
           year: data.year,
           payment_category_id: data.payment_category_id,
-          payment_item_id: {name: res.data[0].payment_item_name, amount:res.data[0].payment_item_amount},
+          payment_item_id: {name: res.data[0].payment_item_name, amount:res.data[0].payment_item_amount, id: data.payment_item_id.value},
           month: data.month,
           date: data.date,
           range: data.date_range,

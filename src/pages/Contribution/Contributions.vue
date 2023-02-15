@@ -23,7 +23,6 @@
         <div>
           <q-btn
             :label="label_fetch"
-            :loading="loading"
             :color="color"
             :disabled="false"
             no-caps
@@ -38,7 +37,7 @@
             :label="label_download"
             :loading="loading"
             :color="color_print"
-            :disabled="getMembersContributionsByPaymentItem.length == 0"
+            :disabled="getTableData == 0"
             no-caps
             icon-right="print"
             @click="downloadContributions()"
@@ -80,7 +79,6 @@
         <div>
           <q-btn
             :label="label_fetch"
-            :loading="loading"
             :color="color"
             :disabled="false"
             no-caps
@@ -421,7 +419,16 @@ export default {
       this.$emit("search-members-contribution", payload);
     },
 
-    downloadContributions() {},
+    downloadContributions() {
+      let payment_item_id = this.$store.getters.getSearchSavingParams.payment_item_id.id;
+      let month = this.$store.getters.getSearchSavingParams.month;
+      let year = this.$store.getters.getSearchSavingParams.year;
+      let status = this.$store.getters.getSearchSavingParams.status
+      let url = `/api/protected/download-contributions?payment_item_id=${payment_item_id}&month=${month}&year=${year}&status=${status}`;
+
+      let file_name = "Member's Contribution for "+this.$store.getters.getSearchSavingParams.payment_item_id.name +".pdf";
+      this.loading = this.downloadPdf(url, file_name);
+    },
   },
   components: {
     TableVue,

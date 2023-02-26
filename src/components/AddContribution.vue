@@ -290,7 +290,7 @@ export default {
           data: [],
         },
       };
-      this.setDispatchAction(payload);
+      this.setDispatchAction(payload, this.contribution.payment_item_id.value);
     },
 
     fetchPaymentItems() {
@@ -393,14 +393,20 @@ export default {
       return this.contribution;
     },
 
-    setDispatchAction(payload) {
+    setDispatchAction(payload, payment_item_id) {
       this.loading = true;
       this.$store
         .dispatch("postRequest", payload)
         .then(() => {
-          this.getMembersContributionsByPaymentItem(
-            payload.data.payment_item_id
-          );
+          let data = {
+            payment_item_id: payment_item_id,
+            year:null,
+            month:null,
+            date:null,
+            status:null,
+            date_range:null
+          }
+          this.filterMembersContributions(data);
           this.resetForm();
         })
         .finally(() => {

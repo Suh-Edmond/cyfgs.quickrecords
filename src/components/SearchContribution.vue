@@ -306,7 +306,6 @@ export default {
         month: this.param.month,
         date: this.param.date,
         date_range: this.param.date_range,
-        is_treasurer: this.checkTreasurerRole() ? true: false,
       };
       this.loading = this.filterMembersContributions(payload);
     },

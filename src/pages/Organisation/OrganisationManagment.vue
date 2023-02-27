@@ -539,7 +539,9 @@ export default {
             };
             this.$store
               .dispatch("putRequest", update_organisation)
-              .then(() => {});
+              .then(() => {
+                location.reload()
+              });
           });
       });
     },

@@ -224,6 +224,15 @@
                   />
                 </div>
                 <div class="row justify-end">
+                  <q-btn
+                  class="q-mr-lg"
+                  label="Cancel"
+                  color="primary"
+                  no-caps
+                  outline
+                  @click="edit_profile = false"
+                >
+                </q-btn>
                   <ButtonVue
                     label="Save"
                     :loading="loading"
@@ -334,6 +343,15 @@
                   </q-input>
                 </div>
                 <div class="row justify-end">
+                  <q-btn
+                  class="q-mr-lg"
+                  label="Cancel"
+                  color="primary"
+                  no-caps
+                  outline
+                  @click="edit_password = false"
+                >
+                </q-btn>
                   <ButtonVue
                     label="Save"
                     :loading="loading"
@@ -363,8 +381,8 @@ export default {
   mounted() {
     let storage_data = LocalStorage.getItem("data");
     if (
-      storage_data.occupation &&
-      storage_data.address &&
+      storage_data.occupation == null ||
+      storage_data.address == null ||
       storage_data.gender == null
     ) {
       this.getUser();

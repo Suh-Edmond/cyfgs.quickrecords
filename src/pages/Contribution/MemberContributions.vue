@@ -124,6 +124,13 @@ export default {
           sortable: true,
         },
         {
+          name: "code",
+          align: "left",
+          label: "Transaction Code",
+          field: "code",
+          sortable: true,
+        },
+        {
           name: "action",
           label: "Action",
           field: "action",

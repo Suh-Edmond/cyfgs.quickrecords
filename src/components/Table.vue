@@ -40,30 +40,30 @@
           <q-td
             key="email"
             :props="props"
-            v-show="show_savings || show_members"
+            v-if="show_savings || show_members"
           >
             {{ props.row.email }}
           </q-td>
-          <q-td key="gender" :props="props" v-show="show_members">
+          <q-td key="gender" :props="props" v-if="show_members">
             {{ props.row.gender }}
           </q-td>
           <q-td
             key="telephone"
             :props="props"
-            v-show="show_savings || show_members"
+            v-if="show_savings || show_members"
           >
             {{ props.row.telephone }}
           </q-td>
-          <q-td key="address" :props="props" v-show="show_members">
+          <q-td key="address" :props="props" v-if="show_members">
             {{ props.row.address }}
           </q-td>
-          <q-td key="occupation" :props="props" v-show="show_members">
+          <q-td key="occupation" :props="props" v-if="show_members">
             {{ props.row.occupation }}
           </q-td>
           <q-td
             key="amount_deposited"
             :props="props"
-            v-show="
+            v-if="
               show_savings ||
               show_member_savings ||
               show_member_contribution
@@ -74,10 +74,10 @@
           <q-td
             key="total_amount_deposited"
             :props="props"
-            v-show="show_contribution">
+            v-if="show_contribution">
             {{ Number(props.row.total_amount_deposited).toLocaleString() }}
           </q-td>
-          <q-td key="approve" :props="props" v-show="show_member_savings">
+          <q-td key="approve" :props="props" v-if="show_member_savings">
             {{ props.row.approve }}
           </q-td>
           <q-td
@@ -90,11 +90,11 @@
           <q-td
             key="balance"
             :props="props"
-            v-show="show_contribution || show_member_contribution"
+            v-if="show_contribution || show_member_contribution"
           >
             {{ Number(props.row.balance).toLocaleString() }}
           </q-td>
-          <q-td key="status" :props="props" v-show="show_contribution || show_member_contribution">
+          <q-td key="status" :props="props" v-if="show_member_contribution">
             {{ props.row.status }}
           </q-td>
           <q-td
@@ -112,13 +112,12 @@
             key="date"
             :props="props"
             v-if="
-              show_contribution ||
               show_member_contribution
             "
           >
             {{ getFormatedDate(props.row.created_at) }}
           </q-td>
-          <q-td key="venue" :props="props" v-show="show_income_activity">
+          <q-td key="venue" :props="props" v-if="show_income_activity">
             {{ props.row.venue }}
           </q-td>
           <q-td
@@ -132,6 +131,15 @@
             "
           >
             {{ props.row.approve }}
+          </q-td>
+          <q-td
+            key="code"
+            :props="props"
+            v-if="
+              show_member_contribution
+            "
+          >
+            {{ props.row.code }}
           </q-td>
           <q-td key="action" :props="props">
             <!-- button to handle edit, view and delete of row data -->
@@ -889,15 +897,11 @@ export default {
         payment_item_id:
           this.$store.getters.getSearchSavingParams.payment_item_id == undefined
             ? ""
-            : this.$store.getters.getSearchSavingParams.payment_item_id,
+            : this.$store.getters.getSearchSavingParams.payment_item_id.id,
         range:
           this.$store.getters.getSearchSavingParams.range == undefined
             ? ""
             : this.$store.getters.getSearchSavingParams.range,
-        organisation_id:
-          this.$store.getters.getSearchSavingParams.organisation_id == undefined
-            ? ""
-            : this.$store.getters.getSearchSavingParams.organisation_id,
       };
 
       switch (data.type) {

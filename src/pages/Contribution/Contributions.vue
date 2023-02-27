@@ -178,25 +178,6 @@ export default {
           field: "balance",
         },
         {
-          name: "status",
-          align: "left",
-          label: "Payment Status",
-          field: "status",
-        },
-        {
-          name: "date",
-          align: "left",
-          label: "Date",
-          field: "date",
-        },
-        {
-          name: "state",
-          align: "left",
-          label: "Transaction Status",
-          field: "state",
-          sortable: true,
-        },
-        {
           name: "action",
           label: "Action",
           field: "action",

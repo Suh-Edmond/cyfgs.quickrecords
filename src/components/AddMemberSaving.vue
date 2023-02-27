@@ -1,12 +1,17 @@
 <template>
   <div class="q-pa-md">
+    <div class="q-ml-sm q-mb-lg">
+      <label class="text-muted"
+        >All fields with <span class="text-red">*</span> are required</label
+      >
+    </div>
     <div class="q-mt-md q-mx-md">
       <q-form @submit="onAddSaving" class="q-gutter-md">
         <div>
           <label for="name" class="form_field">Member Name <span class="text-red">*</span>
           </label>
           <q-select outlined dense v-model="saving.user_id" use-input hide-selected fill-input input-debounce="0"
-            :options="getMembers" @filter="filterMembers" :disable="isMemberExist">
+            :options="members" @filter="filterMembers" :disable="isMemberExist">
             <template v-slot:no-option>
               <q-item>
                 <q-item-section class="text-grey"> No results </q-item-section>
@@ -50,7 +55,12 @@ export default {
     this.getOrganisationMembers(this.getOrganisationId, false);
 
     this.setFormFields(null);
+
+    this.getMembers();
+    console.log(this.members);
   },
+
+
   data() {
     return {
       label_save: "Save",
@@ -84,17 +94,6 @@ export default {
     startSearch() {
       return this.saving.user_id === null ? false : true;
     },
-    getMembers() {
-      let data = [];
-      this.$store.getters.getMembers.forEach((ele) => {
-        data.push({
-          label: ele.name,
-          value: ele.id,
-        });
-      });
-
-      return data;
-    },
     getUpdateMemberSaving() {
       return this.setFormFields(this.$store.getters.getUpdatedMemberSaving);
     },
@@ -107,6 +106,18 @@ export default {
   },
 
   methods: {
+    getMembers() {
+      this.$store.getters.getMembers.forEach((ele) => {
+        this.members.push({
+          label: ele.name,
+          value: ele.id,
+        });
+      });
+
+      return this.members;
+    },
+
+
     onAddSaving() {
       let payload = {
         url: this.setActionUrl(this.saving.id, this.saving.user_id.value),
@@ -135,20 +146,37 @@ export default {
     },
 
     filterMembers(val, update, abort) {
-      let data = [];
-      update(() => {
-        let filtered = this.$store.getters.getMembers.filter((ele) =>
-          ele.name.toLowerCase().includes(val.toLowerCase())
-        );
-        filtered.forEach((e) => {
-          data.push({
-            label: e.name,
-            value: e.id,
-          });
-        });
-      });
+      // let data = [];
+      // update(() => {
+      //   let filtered = this.$store.getters.getMembers.filter((ele) =>
+      //     ele.name.toLowerCase().includes(val.toLowerCase())
+      //   );
+      //   filtered.forEach((e) => {
+      //     data.push({
+      //       label: e.name,
+      //       value: e.id,
+      //     });
+      //   });
+      // });
 
-      return data;
+      // return data;
+      if (val === '') {
+        // update(() => {
+        //   this.members = stringOptions
+
+        //   // with Quasar v1.7.4+
+        //   // here you have access to "ref" which
+        //   // is the Vue reference of the QSelect
+        // })
+        // return
+        const needle = val.toLowerCase();
+        this.members = this.members.filter(v => v.label.toLowerCase().indexOf(needle) > -1)
+      }
+
+      // update(() => {
+      //   const needle = val.toLowerCase()
+      //   this.options = stringOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
+      // })
     },
 
     setActionUrl(id, user_id) {

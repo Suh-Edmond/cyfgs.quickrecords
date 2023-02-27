@@ -147,11 +147,9 @@
             </div>
 
             <!-- edit personal information -->
-            <div class="q-pa-sm  q-mb-lg" v-if="edit_profile">
+            <div class="q-pa-sm q-mb-lg" v-if="edit_profile">
               <q-form @submit="onUpdateProfile" class="q-gutter-md">
-                <div class="info2 q-pb-md">
-                  Update Profile
-                </div>
+                <div class="info2 q-pb-md">Update Profile</div>
                 <small class="hint"
                   >All fields with <span class="text-red">*</span> are
                   required</small
@@ -185,13 +183,13 @@
                 </div>
                 <div class="row justify-end">
                   <ButtonVue
-                      label="Save"
-                      :loading="loading"
-                      color="primary"
-                      :disabled="validateForm"
-                      :no_caps="no_caps"
-                    >
-                    </ButtonVue>
+                    label="Save"
+                    :loading="loading"
+                    color="primary"
+                    :disabled="validateForm"
+                    :no_caps="no_caps"
+                  >
+                  </ButtonVue>
                 </div>
               </q-form>
             </div>
@@ -231,9 +229,7 @@
             <!-- edit user password -->
             <div class="q-pa-sm" v-if="edit_password">
               <q-form @submit="onUpdatePassword" class="q-gutter-md">
-                <div class="info q-pb-md">
-                  Update Password
-                </div>
+                <div class="info q-pb-md">Update Password</div>
                 <small class="hint"
                   >All fields with <span class="text-red">*</span> are
                   required</small
@@ -297,13 +293,13 @@
                 </div>
                 <div class="row justify-end">
                   <ButtonVue
-                      label="Save"
-                      :loading="loading"
-                      color="primary"
-                      :disabled="validatePassword"
-                     :no_caps="no_caps"
-                    >
-                    </ButtonVue>
+                    label="Save"
+                    :loading="loading"
+                    color="primary"
+                    :disabled="validatePassword"
+                    :no_caps="no_caps"
+                  >
+                  </ButtonVue>
                 </div>
               </q-form>
             </div>
@@ -326,21 +322,21 @@ export default {
         email: LocalStorage.getItem("data").email,
         address: LocalStorage.getItem("data").address,
         occupation: LocalStorage.getItem("data").occupation,
-        user_id: LocalStorage.getItem("data").id
+        user_id: LocalStorage.getItem("data").id,
       },
       security: {
         old_password: null,
         password: null,
         password_confirmation: null,
-        user_id: LocalStorage.getItem("data").id
+        user_id: LocalStorage.getItem("data").id,
       },
       loading: false,
-      edit_profile:false,
-      edit_password:false,
+      edit_profile: false,
+      edit_password: false,
       is_pwd: true,
       is_confirm_pwd: true,
-      is_old_pwd:true,
-      no_caps:true
+      is_old_pwd: true,
+      no_caps: true,
     };
   },
   computed: {
@@ -361,12 +357,19 @@ export default {
         ? true
         : false;
     },
-    validatePasswordMatch(){
-      return this.security.password != null &&  (this.security.password != this.security.password_confirmation)
+    validatePasswordMatch() {
+      return (
+        this.security.password != null &&
+        this.security.password != this.security.password_confirmation
+      );
     },
     validatePassword() {
-      return this.security.old_password == null || this.security.password == null || this.security.password_confirmation == null ? true: false
-    }
+      return this.security.old_password == null ||
+        this.security.password == null ||
+        this.security.password_confirmation == null
+        ? true
+        : false;
+    },
   },
   methods: {
     onUpdateProfile() {
@@ -391,8 +394,8 @@ export default {
       this.$store
         .dispatch("putRequest", payload)
         .then((res) => {
-          LocalStorage.set('data', res.data.data);
-          LocalStorage.set("has_logged_in", true)
+          LocalStorage.set("data", res.data.data);
+          LocalStorage.set("has_logged_in", true);
           this.edit_profile = false;
         })
         .finally(() => {
@@ -401,12 +404,12 @@ export default {
         });
     },
     showEditProfile() {
-      return this.edit_profile = true;
+      return (this.edit_profile = true);
     },
-    showEditPassword(){
-      return this.edit_password = true;
+    showEditPassword() {
+      return (this.edit_password = true);
     },
-    onUpdatePassword(){
+    onUpdatePassword() {
       this.loading = true;
       let payload = {
         url: `/api/protected/user/profile/password/update`,
@@ -416,7 +419,8 @@ export default {
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: "Old password did not match saved password! Please try again",
+        error_msg:
+          "Old password did not match saved password! Please try again",
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -428,12 +432,11 @@ export default {
       this.$store
         .dispatch("putRequest", payload)
         .then((res) => {
-          if(res.status == 200){
+          if (res.status == 200) {
             this.edit_password = false;
           }
-        }).catch((error) => {
-
         })
+        .catch((error) => {})
         .finally(() => {
           this.loading = false;
           this.resetForm();
@@ -446,8 +449,53 @@ export default {
       this.security.password_confirmation = null;
 
       return this.security;
-    }
+    },
 
+    openFileUpload() {
+      document.getElementById("logo").click();
+    },
+    onFileChanged(e) {
+      const formData = new FormData();
+      formData.append("file", e.target.files[0]);
+      let directory =
+        FileConstants.APP_NAME +
+        "/" +
+        this.organisation.name +
+        "/" +
+        FileConstants.LOGOS;
+      let payload = {
+        url: `/api/v1/protected/upload-file?directory=${directory}&fileCategory=${FileConstants.IMAGES}`,
+        data: formData,
+        status: "none",
+        show_feedback: false,
+        msg: "Logo uploaded successfully",
+        color: "default",
+        error_msg: "default",
+        commit: "none",
+        has_commit: false,
+      };
+      this.$store.dispatch("uploadImageRequest", payload).then((res) => {
+        let get_file_payload = {
+          url: `/api/v1/protected/file?directory=${directory}&fileCategory=${FileConstants.IMAGES}&fileName=${e.target.files[0].name}`,
+          data: formData,
+          show_feedback: false,
+        };
+        this.$store
+          .dispatch("fetchUploadedImageRequest", get_file_payload)
+          .then((res) => {
+            this.organisation.logo = res.data.fileDownloadUri;
+            let update_organisation = {
+              url: `/api/protected/organisations/${this.$store.getters.getOrganisation.id}`,
+              data: { logo: res.data.fileDownloadUri },
+              status: "none",
+              show_feedback: false,
+            };
+            this.$store.dispatch("putRequest", update_organisation).then(() => {
+              location.reload();
+            });
+          });
+      });
+    },
   },
   components: {
     ButtonVue,
@@ -458,6 +506,13 @@ export default {
 <style lang="scss" scoped>
 .icon {
   color: $grey1;
+  cursor: pointer;
+}
+
+.camara_icon {
+  left: 0;
+  right: 5rem;
+  top: 100;
 }
 .edit_icon {
   cursor: pointer;

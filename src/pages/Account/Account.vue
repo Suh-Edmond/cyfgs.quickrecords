@@ -4,19 +4,36 @@
       <div class="row">
         <div class="col col-md-4 col-sm-12 col-xs-12">
           <q-card-section class="text-center">
-              <q-avatar size="190px">
-              <q-icon name="account_circle" size="190px" class="icon" v-if="getUserInfo.picture == null"> </q-icon>
-              <img :src="getUserInfo.picture" alt="User picture" v-if="getUserInfo.picture != null">
+            <q-avatar size="190px">
+              <q-icon
+                name="account_circle"
+                size="190px"
+                class="icon"
+                v-if="getUserInfo.picture == null"
+              >
+              </q-icon>
+              <img
+                :src="getUserInfo.picture"
+                alt="User picture"
+                v-if="getUserInfo.picture != null"
+              />
             </q-avatar>
             <div>
               <input
-                  type="file"
-                  accept="image/x-png,image/jpg,image/jpeg"
-                  style="display: none"
-                  id="logo"
-                  @change="onFileChanged"
-                />
-            <q-icon name="add_a_photo" class="camara" size="sm" @click="openFileUpload"> </q-icon>
+                type="file"
+                accept="image/x-png,image/jpg,image/jpeg"
+                style="display: none"
+                id="logo"
+                @change="onFileChanged"
+              />
+              <q-icon
+                name="add_a_photo"
+                class="camara"
+                size="sm"
+                @click="openFileUpload"
+              >
+              <q-tooltip>Upload Picture</q-tooltip>
+              </q-icon>
             </div>
             <p class="text_h6 q-pt-md">My Roles:</p>
             <div>
@@ -341,11 +358,15 @@ import ButtonVue from "src/components/Button.vue";
 import moment from "moment";
 import organisationMixin from "src/mixins/organisationMixin.vue";
 export default {
-  mixins:[organisationMixin],
+  mixins: [organisationMixin],
 
-  mounted(){
+  mounted() {
     let storage_data = LocalStorage.getItem("data");
-    if(storage_data.occupation && storage_data.address && storage_data.gender == null) {
+    if (
+      storage_data.occupation &&
+      storage_data.address &&
+      storage_data.gender == null
+    ) {
       this.getUser();
     }
   },
@@ -386,7 +407,7 @@ export default {
       );
     },
 
-    getFormatedUpdatedDate(){
+    getFormatedUpdatedDate() {
       return moment(LocalStorage.getItem("data").updated_at).format(
         "MMMM Do YYYY"
       );
@@ -426,7 +447,7 @@ export default {
         error_msg: "An Error occurred! Please try again",
         has_commit: false,
         commit: "none",
-        show_spinner:false,
+        show_spinner: false,
         to_be_store_data: {
           required: false,
           has_value: false,
@@ -532,7 +553,7 @@ export default {
       let organisation = this.$store.getters.getOrganisation;
       let fileCategory = "IMAGES";
       let APP_NAME = "FINANCIAL_ASSISTANT_APP";
-      let upload_folder = "PROFILE_PICTURES"
+      let upload_folder = "PROFILE_PICTURES";
       let directory = `${APP_NAME}/${organisation.name}/${upload_folder}`;
       let payload = {
         url: `/api/v1/protected/upload-file?directory=${directory}&fileCategory=${fileCategory}`,
@@ -557,17 +578,16 @@ export default {
             let data = {
               name: user.name,
               email: user.email,
-              telephone: user.telephone,
+              gender: user.gender,
               address: user.address,
               occupation: user.occupation,
-              picture: res.data.fileDownloadUri
-            }
+              picture: res.data.fileDownloadUri,
+            };
             let update_user = {
               url: `/api/protected/users/${user.id}`,
               data: data,
               status: "none",
               show_feedback: false,
-
             };
             this.$store.dispatch("putRequest", update_user).then(() => {
               user.picture = res.data.fileDownloadUri;

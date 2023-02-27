@@ -257,7 +257,7 @@
                 v-if="organisation.logo == null"
               >
               </q-avatar>
-              <div class="q-mt-xl logo">
+              <div>
                 <input
                   type="file"
                   accept="image/x-png,image/jpg,image/jpeg"
@@ -266,11 +266,12 @@
                   @change="onFileChanged"
                 />
                 <q-icon
-                  name="photo_camera"
+                  name="add_a_photo"
                   size="sm"
-                  class="q-mt-md q-pr-xl"
+                  class="camara"
                   @click="openFileUpload"
                 >
+                <q-tooltip>Upload Logo</q-tooltip>
                 </q-icon>
               </div>
             </q-card-section>
@@ -539,7 +540,9 @@ export default {
             };
             this.$store
               .dispatch("putRequest", update_organisation)
-              .then(() => {});
+              .then(() => {
+                location.reload()
+              });
           });
       });
     },
@@ -610,5 +613,13 @@ export default {
 
 .logo {
   cursor: pointer;
+}
+
+.camara {
+  position: absolute;
+  top: 70%;
+  left: 55%;
+  cursor: pointer;
+  color: $grey8;
 }
 </style>

@@ -4,10 +4,21 @@
       <div class="row">
         <div class="col col-md-4 col-sm-12 col-xs-12">
           <q-card-section class="text-center">
-            <q-avatar size="190px">
-              <q-icon name="account_circle" size="190px" class="icon"> </q-icon>
+              <q-avatar size="190px">
+              <q-icon name="account_circle" size="190px" class="icon" v-if="getUserInfo.picture == null"> </q-icon>
+              <img :src="getUserInfo.picture" alt="User picture" v-if="getUserInfo.picture != null">
             </q-avatar>
-            <p class="text_h6">My Roles:</p>
+            <div>
+              <input
+                  type="file"
+                  accept="image/x-png,image/jpg,image/jpeg"
+                  style="display: none"
+                  id="logo"
+                  @change="onFileChanged"
+                />
+            <q-icon name="add_a_photo" class="camara" size="sm" @click="openFileUpload"> </q-icon>
+            </div>
+            <p class="text_h6 q-pt-md">My Roles:</p>
             <div>
               <q-chip
                 size="md"
@@ -141,6 +152,20 @@
                   >Created Date:
                   <span class="value date value_code">{{
                     getFormatedCreatedDate
+                  }}</span></label
+                >
+              </div>
+              <div class="flex q-pb-lg">
+                <label for="name" class="label"
+                  ><span
+                    ><q-icon
+                      name="verified_user"
+                      size="xs"
+                      class="q-pr-xs"
+                    ></q-icon></span
+                  >Updated Date:
+                  <span class="value date value_code">{{
+                    getFormatedUpdatedDate
                   }}</span></label
                 >
               </div>
@@ -311,10 +336,20 @@
 </template>
 
 <script>
-import { LocalStorage, Notify, Platform } from "quasar";
+import { LocalStorage } from "quasar";
 import ButtonVue from "src/components/Button.vue";
 import moment from "moment";
+import organisationMixin from "src/mixins/organisationMixin.vue";
 export default {
+  mixins:[organisationMixin],
+
+  mounted(){
+    let storage_data = LocalStorage.getItem("data");
+    if(storage_data.occupation && storage_data.address && storage_data.gender == null) {
+      this.getUser();
+    }
+  },
+
   data() {
     return {
       user: {
@@ -350,6 +385,12 @@ export default {
         "MMMM Do YYYY"
       );
     },
+
+    getFormatedUpdatedDate(){
+      return moment(LocalStorage.getItem("data").updated_at).format(
+        "MMMM Do YYYY"
+      );
+    },
     validateForm() {
       return this.user.name == null ||
         this.user.address == null ||
@@ -372,6 +413,36 @@ export default {
     },
   },
   methods: {
+    getUser() {
+      let data = LocalStorage.getItem("data");
+      let payload = {
+        url: `/api/protected/organisations/users/${data.id}`,
+        data: this.user,
+        msg: "none",
+        color: "default",
+        to_on_ok: "none",
+        to_on_fail: "none",
+        show_feedback: false,
+        error_msg: "An Error occurred! Please try again",
+        has_commit: false,
+        commit: "none",
+        show_spinner:false,
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.$store
+        .dispatch("getRequest", payload)
+        .then((res) => {
+          data.address = res.data.address;
+          data.occupation = res.data.occupation;
+          data.gender = res.data.gender;
+          LocalStorage.set("data", data);
+        })
+        .finally(() => {});
+    },
     onUpdateProfile() {
       this.loading = true;
       let payload = {
@@ -457,18 +528,18 @@ export default {
     onFileChanged(e) {
       const formData = new FormData();
       formData.append("file", e.target.files[0]);
-      let directory =
-        FileConstants.APP_NAME +
-        "/" +
-        this.organisation.name +
-        "/" +
-        FileConstants.LOGOS;
+      let user = LocalStorage.getItem("data");
+      let organisation = this.$store.getters.getOrganisation;
+      let fileCategory = "IMAGES";
+      let APP_NAME = "FINANCIAL_ASSISTANT_APP";
+      let upload_folder = "PROFILE_PICTURES"
+      let directory = `${APP_NAME}/${organisation.name}/${upload_folder}`;
       let payload = {
-        url: `/api/v1/protected/upload-file?directory=${directory}&fileCategory=${FileConstants.IMAGES}`,
+        url: `/api/v1/protected/upload-file?directory=${directory}&fileCategory=${fileCategory}`,
         data: formData,
         status: "none",
         show_feedback: false,
-        msg: "Logo uploaded successfully",
+        msg: "Picture uploaded successfully",
         color: "default",
         error_msg: "default",
         commit: "none",
@@ -476,21 +547,31 @@ export default {
       };
       this.$store.dispatch("uploadImageRequest", payload).then((res) => {
         let get_file_payload = {
-          url: `/api/v1/protected/file?directory=${directory}&fileCategory=${FileConstants.IMAGES}&fileName=${e.target.files[0].name}`,
+          url: `/api/v1/protected/file?directory=${directory}&fileCategory=${fileCategory}&fileName=${e.target.files[0].name}`,
           data: formData,
           show_feedback: false,
         };
         this.$store
           .dispatch("fetchUploadedImageRequest", get_file_payload)
           .then((res) => {
-            this.organisation.logo = res.data.fileDownloadUri;
-            let update_organisation = {
-              url: `/api/protected/organisations/${this.$store.getters.getOrganisation.id}`,
-              data: { logo: res.data.fileDownloadUri },
+            let data = {
+              name: user.name,
+              email: user.email,
+              telephone: user.telephone,
+              address: user.address,
+              occupation: user.occupation,
+              picture: res.data.fileDownloadUri
+            }
+            let update_user = {
+              url: `/api/protected/users/${user.id}`,
+              data: data,
               status: "none",
               show_feedback: false,
+
             };
-            this.$store.dispatch("putRequest", update_organisation).then(() => {
+            this.$store.dispatch("putRequest", update_user).then(() => {
+              user.picture = res.data.fileDownloadUri;
+              LocalStorage.set("data", user);
               location.reload();
             });
           });
@@ -509,11 +590,6 @@ export default {
   cursor: pointer;
 }
 
-.camara_icon {
-  left: 0;
-  right: 5rem;
-  top: 100;
-}
 .edit_icon {
   cursor: pointer;
 }
@@ -550,7 +626,13 @@ export default {
 .email {
   padding-left: 3.5rem;
 }
-
+.camara {
+  position: absolute;
+  top: 50%;
+  left: 60%;
+  cursor: pointer;
+  color: $grey8;
+}
 .phone {
   padding-left: 2rem;
 }

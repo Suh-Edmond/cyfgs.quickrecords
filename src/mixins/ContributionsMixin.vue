@@ -41,11 +41,16 @@ export default {
           month: data.month,
           date: data.date,
           range: data.date_range,
-          is_treasurer:data.is_treasurer,
+          is_treasurer: data.is_treasurer,
         },
       });
       this.loading = true;
-      let url = `/api/protected/organisations/contributions/search?payment_item_id=${data.payment_item_id.value}&year=${data.year}&month=${data.month}&date=${data.date}&range=${data.date_range}&status=${data.status}&is_treasurer=${data.is_treasurer}`;
+      console.log(data.payment_item_id);
+      let id =
+        data.payment_item_id.value != undefined
+          ? data.payment_item_id.value
+          : data.payment_item_id;
+      let url = `/api/protected/organisations/contributions/search?payment_item_id=${id}&year=${data.year}&month=${data.month}&date=${data.date}&range=${data.date_range}&status=${data.status}`;
       let payload = {
         url: url,
         msg: "none",
@@ -65,17 +70,21 @@ export default {
 
       this.$store.dispatch("getRequest", payload).then((res) => {
         this.loading = false;
-        if(res.data.length > 0) {
+        if (res.data.length > 0) {
           this.$store.dispatch("setSearchSavingsParams", {
-          organisation_id: data.organisation_id,
-          year: data.year,
-          payment_category_id: data.payment_category_id,
-          payment_item_id: {name: res.data[0].payment_item_name, amount:res.data[0].payment_item_amount, id: data.payment_item_id.value},
-          month: data.month,
-          date: data.date,
-          range: data.date_range,
-          status: data.status,
-        });
+            organisation_id: data.organisation_id,
+            year: data.year,
+            payment_category_id: data.payment_category_id,
+            payment_item_id: {
+              name: res.data[0].payment_item_name,
+              amount: res.data[0].payment_item_amount,
+              id: data.payment_item_id.value,
+            },
+            month: data.month,
+            date: data.date,
+            range: data.date_range,
+            status: data.status,
+          });
         }
       });
 
@@ -100,11 +109,8 @@ export default {
           data: null,
         },
       };
-      this.$store
-        .dispatch("getRequest", payload)
-        .then((res) => {
-        })
-    }
+      this.$store.dispatch("getRequest", payload).then((res) => {});
+    },
   },
 };
 </script>

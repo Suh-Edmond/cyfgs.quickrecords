@@ -11,47 +11,47 @@
     </div>
 
     <div v-if="!getLoadingState">
-       <!-- contributions available -->
-    <div
-      class="row justify-end"
-      :class="$q.screen.lg ? 'q-pa-sm' : ''"
-      :style="
-        $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-      "
-    >
-      <div>
-        <q-btn
-          :label="label_print"
-          :loading="loading"
-          :color="color_print"
-          no-caps
-          icon-right="print"
-          @click="downloadContributions"
-        ></q-btn>
+      <!-- contributions available -->
+      <div
+        class="row justify-end"
+        :class="$q.screen.lg ? 'q-pa-sm' : ''"
+        :style="
+          $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+        "
+      >
+        <div>
+          <q-btn
+            :label="label_print"
+            :loading="loading"
+            :color="color_print"
+            no-caps
+            icon-right="print"
+            @click="downloadContributions"
+          ></q-btn>
+        </div>
       </div>
-    </div>
-    <!-- table for contributions -->
-    <div class="row q-pt-sm">
-      <div class="col-md-12 col-xs-12 col-sm-12">
-        <TableVue
-          :columns="columns"
-          :data="getMemberContributions"
-          :label="label"
-          :message="message"
-          :show_savings="false"
-          :show_income_activity="false"
-          :show_members="false"
-          :show_contribution="false"
-          :title="getTableTile"
-          :total_contribution="getTotalMemberContribution"
-          :total_balance="getTotalBalance"
-          :show_member_contribution="true"
-          @view-contribution="viewContribution"
-          @edit-contribution="editContribution"
-        >
-        </TableVue>
+      <!-- table for contributions -->
+      <div class="row q-pt-sm">
+        <div class="col-md-12 col-xs-12 col-sm-12">
+          <TableVue
+            :columns="columns"
+            :data="getMemberContributions"
+            :label="label"
+            :message="message"
+            :show_savings="false"
+            :show_income_activity="false"
+            :show_members="false"
+            :show_contribution="false"
+            :title="getTableTile"
+            :total_contribution="getTotalMemberContribution"
+            :total_balance="getTotalBalance"
+            :show_member_contribution="true"
+            @view-contribution="viewContribution"
+            @edit-contribution="editContribution"
+          >
+          </TableVue>
+        </div>
       </div>
-    </div>
     </div>
   </div>
 </template>
@@ -61,10 +61,13 @@ import TableVue from "src/components/Table.vue";
 import ContributionsMixin from "src/mixins/ContributionsMixin.vue";
 import HelperMixin from "src/mixins/HelperMixin.vue";
 export default {
-  mixins:[ContributionsMixin, HelperMixin],
+  mixins: [ContributionsMixin, HelperMixin],
 
   mounted() {
-    this.getMemberContributionsByPaymentItem(this.$router.currentRoute.params.item_id, this.$router.currentRoute.params.id);
+    this.getMemberContributionsByPaymentItem(
+      this.$router.currentRoute.params.item_id,
+      this.$router.currentRoute.params.id
+    );
   },
   data() {
     return {
@@ -147,8 +150,8 @@ export default {
     },
 
     getTableTile() {
-      let title = ""
-      if(this.$store.getters.getMemberContributions.length != 0) {
+      let title = "";
+      if (this.$store.getters.getMemberContributions.length != 0) {
         title = `${this.$store.getters.getMemberContributions[0].user_name} Contributions for ${this.$store.getters.getMemberContributions[0].payment_item_name}`;
       }
       return title;
@@ -158,47 +161,50 @@ export default {
     getTotalMemberContribution() {
       let total = 0.0;
       this.$store.getters.getMemberContributions.forEach((ele) => {
-        total+=ele.amount_deposited
-      })
+        total += ele.amount_deposited;
+      });
       return total;
     },
 
     //balance by payment item
-    getTotalBalance(){
+    getTotalBalance() {
       let total = this.getTotalMemberContribution;
-      let payment_item_amount = this.$store.getters.getMemberContributions.length > 0 ? this.$store.getters.getMemberContributions[0].payment_item_amount : 0;
-      return payment_item_amount - total
+      let payment_item_amount =
+        this.$store.getters.getMemberContributions.length > 0
+          ? this.$store.getters.getMemberContributions[0].payment_item_amount
+          : 0;
+      return payment_item_amount - total;
     },
 
     getMemberContributions() {
       let data = [];
       this.$store.getters.getMemberContributions.forEach((ele) => {
         data.push({
-              counter: this.$store.getters.getMemberContributions.indexOf(ele) + 1,
-              amount_deposited: ele.amount_deposited,
-              total_amount_deposited:ele.total_amount_deposited,
-              id: ele.id,
-              approve: ele.approve,
-              balance: ele.balance,
-              payment_item_amount: ele.payment_item_amount,
-              payment_item_id: ele.payment_item_id,
-              payment_item_complusory: ele.payment_item_complusory,
-              payment_item_name: ele.payment_item_name,
-              payment_category:ele.payment_category,
-              comment: ele.comment,
-              code: ele.code,
-              type: "MEMBERS_CONTRIBUTIONS",
-              complusory: ele.complusory,
-              created_at: ele.created_at,
-              updated_by: ele.updated_by,
-              status: ele.status,
-              user_id: ele.user_id,
-              user_name: ele.user_name,
-              user_telephone: ele.user_telephone,
-            });
-      })
+          counter: this.$store.getters.getMemberContributions.indexOf(ele) + 1,
+          amount_deposited: ele.amount_deposited,
+          total_amount_deposited: ele.total_amount_deposited,
+          id: ele.id,
+          approve: ele.approve,
+          balance: ele.balance,
+          payment_item_amount: ele.payment_item_amount,
+          payment_item_id: ele.payment_item_id,
+          payment_item_complusory: ele.payment_item_complusory,
+          payment_item_name: ele.payment_item_name,
+          payment_category: ele.payment_category,
+          comment: ele.comment,
+          code: ele.code,
+          type: "MEMBERS_CONTRIBUTIONS",
+          complusory: ele.complusory,
+          created_at: ele.created_at,
+          updated_by: ele.updated_by,
+          status: ele.status,
+          user_id: ele.user_id,
+          user_name: ele.user_name,
+          user_telephone: ele.user_telephone,
+        });
+      });
       return data;
-    }
+    },
   },
   methods: {
     viewContribution(data) {
@@ -214,7 +220,10 @@ export default {
 
       let url = `/api/protected/download-user-contributions?payment_item_id=${payment_item_id}&user_id=${user_id}`;
 
-      let file_name = "Member's Contribution for "+this.$store.getters.getSearchSavingParams.payment_item_id.name +".pdf";
+      let file_name =
+        "Member's Contribution for " +
+        this.$store.getters.getSearchSavingParams.payment_item_id.name +
+        ".pdf";
       this.loading = this.downloadPdf(url, file_name);
     },
   },

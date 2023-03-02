@@ -43,6 +43,8 @@
           :show_members="false"
           :show_contribution="false"
           :title="getTableTile"
+          :total_contribution="getTotalMemberContribution"
+          :total_balance="getTotalBalance"
           :show_member_contribution="true"
           @view-contribution="viewContribution"
           @edit-contribution="editContribution"
@@ -150,6 +152,22 @@ export default {
         title = `${this.$store.getters.getMemberContributions[0].user_name} Contributions for ${this.$store.getters.getMemberContributions[0].payment_item_name}`;
       }
       return title;
+    },
+
+    //total by payment item
+    getTotalMemberContribution() {
+      let total = 0.0;
+      this.$store.getters.getMemberContributions.forEach((ele) => {
+        total+=ele.amount_deposited
+      })
+      return total;
+    },
+
+    //balance by payment item
+    getTotalBalance(){
+      let total = this.getTotalMemberContribution;
+      let payment_item_amount = this.$store.getters.getMemberContributions.length > 0 ? this.$store.getters.getMemberContributions[0].payment_item_amount : 0;
+      return payment_item_amount - total
     },
 
     getMemberContributions() {

@@ -58,6 +58,7 @@
             :show_member_savings="false"
             :show_contribution="true"
             :show_member_contribution="false"
+            :total_contribution="total_contribution"
             @view-contribution="viewContribution"
             @edit-contribution="editContribution"
             :title="getTableTitleForSearchContributions"
@@ -114,6 +115,7 @@
             :show_members="false"
             :show_member_contribution="false"
             :show_contribution="true"
+            :total_contribution="total_contribution"
             :title="getTableTitleForSearchContributions"
           >
           </TableVue>
@@ -187,6 +189,7 @@ export default {
       start_filter: false,
       filteredContributions: [],
       loading_filter: false,
+      total_contribution:0.0
     };
   },
   computed: {
@@ -209,6 +212,7 @@ export default {
       if (this.$store.getters.getMembersContributionsByPaymentItem != null) {
         this.$store.getters.getMembersContributionsByPaymentItem.data.forEach(
           (ele) => {
+            this.total_contribution += ele.total_amount_deposited
             data.push({
               counter:
                 this.$store.getters.getMembersContributionsByPaymentItem.data.indexOf(
@@ -268,6 +272,7 @@ export default {
       let data = [];
       if (this.$store.getters.getFilteredContributions != null) {
         this.$store.getters.getFilteredContributions.forEach((ele) => {
+          this.total_contribution+=ele.total_amount_deposited
           data.push({
             counter: this.$store.getters.getFilteredContributions.indexOf(ele) + 1,
             amount_deposited: ele.amount_deposited,

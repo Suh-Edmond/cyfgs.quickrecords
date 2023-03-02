@@ -103,7 +103,6 @@ export default {
       this.$store
         .dispatch("getRequest", payload)
         .then((res) => {
-          console.log(res);
         })
     }
   },

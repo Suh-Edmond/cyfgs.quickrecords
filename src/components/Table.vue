@@ -8,13 +8,15 @@
       :table-header-style="{ backgroundColor: '#5384ae', color: '#FFFFFF' }"
       :filter="filter"
       :pagination.sync="pagination"
-
     >
       <template v-slot:top-left>
         <div class="text-h6 title" v-show="show_member_savings">
           All Savings for: {{ title }}
         </div>
-        <div class="text-h6 title" v-show="show_contribution || show_member_contribution">
+        <div
+          class="text-h6 title"
+          v-show="show_contribution || show_member_contribution"
+        >
           {{ title }}
         </div>
       </template>
@@ -37,11 +39,7 @@
           >
             {{ props.row.user_name }}
           </q-td>
-          <q-td
-            key="email"
-            :props="props"
-            v-if="show_savings || show_members"
-          >
+          <q-td key="email" :props="props" v-if="show_savings || show_members">
             {{ props.row.email }}
           </q-td>
           <q-td key="gender" :props="props" v-if="show_members">
@@ -64,9 +62,7 @@
             key="amount_deposited"
             :props="props"
             v-if="
-              show_savings ||
-              show_member_savings ||
-              show_member_contribution
+              show_savings || show_member_savings || show_member_contribution
             "
           >
             {{ Number(props.row.amount_deposited).toLocaleString() }}
@@ -74,7 +70,8 @@
           <q-td
             key="total_amount_deposited"
             :props="props"
-            v-if="show_contribution">
+            v-if="show_contribution"
+          >
             {{ Number(props.row.total_amount_deposited).toLocaleString() }}
           </q-td>
           <q-td key="approve" :props="props" v-if="show_member_savings">
@@ -100,21 +97,11 @@
           <q-td
             key="date"
             :props="props"
-            v-if="
-              show_savings ||
-              show_member_savings ||
-              show_income_activity
-            "
+            v-if="show_savings || show_member_savings || show_income_activity"
           >
             {{ getFormatedDate(props.row.date) }}
           </q-td>
-          <q-td
-            key="date"
-            :props="props"
-            v-if="
-              show_member_contribution
-            "
-          >
+          <q-td key="date" :props="props" v-if="show_member_contribution">
             {{ getFormatedDate(props.row.created_at) }}
           </q-td>
           <q-td key="venue" :props="props" v-if="show_income_activity">
@@ -127,18 +114,13 @@
               show_member_savings ||
               show_savings ||
               show_income_activity ||
-              show_contribution || show_member_contribution
+              show_contribution ||
+              show_member_contribution
             "
           >
             {{ props.row.approve }}
           </q-td>
-          <q-td
-            key="code"
-            :props="props"
-            v-if="
-              show_member_contribution
-            "
-          >
+          <q-td key="code" :props="props" v-if="show_member_contribution">
             {{ props.row.code }}
           </q-td>
           <q-td key="action" :props="props">
@@ -384,6 +366,31 @@
         </q-input>
       </template>
     </q-table>
+    <q-card>
+      <q-card-section>
+        <div class="text-bold" v-if="show_members">
+          Total Members: {{ total_members }}
+        </div>
+        <div class="text-bold" v-if="show_income_activity">
+          Total Income: {{ total_income }} XAF
+        </div>
+        <div class="text-bold" v-if="show_member_savings">
+          Total Amount Saved: {{ total_saving }} XAF
+        </div>
+        <div class="text-bold" v-if="show_savings">
+          Total Members Savings: {{ total_saving }} XAF
+        </div>
+        <div class="text-bold" v-if="show_contribution">
+          Total Members Contribution: {{ total_contribution }} XAF
+        </div>
+        <div class="text-bold" v-if="show_member_contribution">
+          Total Contribution: {{ total_contribution }} XAF
+        </div>
+        <div class="text-bold" v-if="show_member_contribution">
+          Total Balance: {{ total_balance }} XAF
+        </div>
+      </q-card-section>
+    </q-card>
 
     <!-- confirmation dialog for delete -->
     <q-dialog v-model="dialog" v-if="dialog">
@@ -582,6 +589,28 @@ export default {
       required: false,
       type: Boolean,
     },
+    total_members : {
+      required:false,
+      type:Number
+    },
+    total_income: {
+      required:false,
+      type:Number
+    },
+    total_saving: {
+      required:false,
+      type:Number
+    },
+    total_contribution:{
+      required:false,
+      type:Number,
+      default:0.0
+    },
+    total_balance: {
+      required:false,
+      type:Number,
+      default:0.0
+    }
   },
   data() {
     return {
@@ -743,10 +772,9 @@ export default {
     },
 
     onViewAllMemberContributions(data) {
-
       this.$router.push({
         name: "member_contributions",
-        params: { item_id:data.payment_item_id, id: data.user_id },
+        params: { item_id: data.payment_item_id, id: data.user_id },
       });
     },
 
@@ -760,7 +788,7 @@ export default {
 
       this.$store.dispatch("setEditState", true);
 
-     this.$emit("view-contribution", payload);
+      this.$emit("view-contribution", payload);
     },
 
     onAllContribution(data) {

@@ -1,5 +1,10 @@
 <template>
   <div class="q-pa-md">
+    <div class="q-ml-sm q-mb-lg">
+      <label class="text-muted q-ml-sm"
+        >All fields with <span class="text-red">*</span> are required</label
+      >
+    </div>
     <div class="q-mt-md q-mx-md" v-if="!getEditState">
       <q-form @submit="onAddExpenditureItem" class="q-gutter-sm">
         <div>

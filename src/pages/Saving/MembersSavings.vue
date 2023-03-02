@@ -100,6 +100,7 @@
               :show_savings="true"
               :show_income_activity="false"
               :show_members="false"
+              :total_saving="getTotalMembersSavings"
               :show_contribution="false"
               @edit-member-saving="editMemberSaving"
             >
@@ -155,6 +156,7 @@
             :show_savings="true"
             :show_income_activity="false"
             :show_members="false"
+            :total_saving="computeTotalSavingsForFiltered"
             :show_contribution="false"
           >
           </TableVue>
@@ -273,6 +275,10 @@ export default {
         : false;
     },
 
+    getTotalMembersSavings() {
+      return this.$store.getters.getOrganisationMembersSavings.total_savings
+    },
+
     getMembersSavings() {
       let data = [];
 
@@ -321,6 +327,14 @@ export default {
         });
       });
       return data;
+    },
+
+    computeTotalSavingsForFiltered() {
+      let total = 0;
+      this.$store.getters.getSavings.forEach((ele) => {
+        total += ele.amount_deposited
+      });
+      return total;
     },
 
     getLoadingState() {

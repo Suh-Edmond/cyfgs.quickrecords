@@ -122,6 +122,7 @@
             :show_savings="false"
             :show_income_activity="true"
             :show_contribution="false"
+            :total_income="getTotalIncome"
             :show_members="false"
             @edit-income-activity="editIncomeActivity"
             @view-income-activity="viewIncomeActivity"
@@ -142,6 +143,7 @@
             :show_income_activity="true"
             :show_contribution="false"
             :show_members="false"
+            :total_income="total_income_amount"
             @edit-income-activity="editIncomeActivity"
             @view-income-activity="viewIncomeActivity"
           >
@@ -251,6 +253,7 @@ export default {
       filteredActivities: [],
       start_filter: false,
       loading: false,
+      total_income_amount:0,
     };
   },
   computed: {
@@ -258,6 +261,10 @@ export default {
       return this.year !== null || this.month !== null || this.status !== null
         ? false
         : true;
+    },
+
+    getTotalIncome() {
+      return this.$store.getters.getIncomeActivities.total_amount;
     },
 
     getIncomeActivities() {
@@ -326,6 +333,7 @@ export default {
 
     filterIncomeActivity() {
       this.filteredActivities = [];
+      this.total_income_amount = 0;
 
       let id = this.getOrganisationId;
 
@@ -359,6 +367,7 @@ export default {
           this.start_filter = true;
 
           res.data.data.forEach((ele) => {
+            this.total_income_amount+= ele.amount
             this.filteredActivities.push({
               counter: res.data.data.indexOf(ele) + 1,
               name: ele.name,

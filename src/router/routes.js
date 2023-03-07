@@ -224,6 +224,17 @@ const routes = [
         },
       },
 
+      {
+        name: "report_generation",
+        path: "/dashboard/reports",
+        component: () => import("src/pages/Report/ReportManagement.vue"),
+        meta: {
+          middleware: "auth",
+          role: "MEMBER",
+          has_intermediate_tab:false
+        },
+      },
+
     ],
   },
 

@@ -277,7 +277,8 @@
               @click="
                 setItem({ name: 'Reports Generation', selected: true }, false)
               "
-              v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER'])"
+              v-if="checkRole(['FINANCIAL_SECRETARY'])"
+              :to="{ name: 'report_generation' }"
             >
               <q-item-section
                 avatar
@@ -447,6 +448,10 @@
           @set-heading="setHeading" >
 
         </EditMemberContribution>
+        <GenerateReportFilter  @close-right-drawer="closeRightDrawer"
+          @set-heading="setHeading" v-if="current_tab == 'Generate Reports'">
+
+        </GenerateReportFilter>
       </q-page>
     </q-drawer>
   </q-layout>
@@ -472,6 +477,7 @@ import ViewMemberSaving from "src/components/ViewMemberSaving.vue";
 import SearchSavings from "src/components/SearchSavings.vue";
 import SearchContribution from "src/components/SearchContribution.vue";
 import EditMemberContribution from "src/components/EditMemberContribution.vue";
+import GenerateReportFilter from "src/components/GenerateReportFilter.vue";
 
 export default {
   mixins: [organisationMixinVue],
@@ -580,7 +586,8 @@ export default {
     ViewMemberSaving,
     SearchSavings,
     SearchContribution,
-    EditMemberContribution
+    EditMemberContribution,
+    GenerateReportFilter
   },
 };
 </script>

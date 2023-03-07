@@ -15,13 +15,6 @@
             <q-avatar size="90px" v-if="getOrganisation != null">
               <q-img :src="getOrganisation.logo"> </q-img>
             </q-avatar>
-            <q-avatar
-              size="90px"
-              v-if="getOrganisation == null"
-              font-size="52px"
-              color="grey"
-            >
-            </q-avatar>
           </div>
           <div
             class="text-weight-bold text-center organisation_name q-mb-md q-pa-xs"
@@ -91,6 +84,7 @@
               "
               v-if="checkRole(['PRESIDENT', 'FINANCIAL_SECRETARY'])"
               to="/dashboard/members"
+              :disable="getOrganisation == null"
             >
               <q-item-section
                 avatar
@@ -104,7 +98,7 @@
                 Member Management
               </q-item-section>
             </q-item>
-            <q-item
+            <!-- <q-item
               clickable
               v-ripple
               :active-class="item.name == 'Settings' ? 'item' : 'item_text'"
@@ -119,7 +113,7 @@
                 <q-icon name="settings" size="xs" />
               </q-item-section>
               <q-item-section class="item_name"> Settings Zone </q-item-section>
-            </q-item>
+            </q-item> -->
             <q-item
               clickable
               v-ripple

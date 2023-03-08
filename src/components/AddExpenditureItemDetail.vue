@@ -42,7 +42,7 @@
           </q-input>
         </div>
         <div class="q-mb-md">
-          <label for="credential" class="form_field">Comment</label>
+          <label for="credential" class="form_field">Comment  <span class="text-red">*</span></label>
           <q-input
             v-model="expenditure_item_detail.comment"
             outlined

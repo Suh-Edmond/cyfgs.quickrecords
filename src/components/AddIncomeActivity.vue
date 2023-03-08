@@ -49,7 +49,7 @@
           </q-input>
         </div>
         <div class="q-mb-md">
-          <label for="credential" class="form_field">Description</label>
+          <label for="credential" class="form_field">Description <span class="text-red">*</span></label>
           <q-input
             v-model="income_activity.description"
             outlined

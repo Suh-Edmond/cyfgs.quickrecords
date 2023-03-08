@@ -1,7 +1,7 @@
 <template>
   <div class="q-pa-md">
     <div class="q-ml-sm q-mb-lg">
-      <label class="text-muted"
+      <label class="text-muted q-pl-sm"
         >All fields with <span class="text-red">*</span> are required</label
       >
     </div>
@@ -178,6 +178,7 @@ export default {
           .dispatch("postRequest", payload)
           .then(() => {
             this.getPaymentItemsByCategory(category.id);
+            this.resetForm();
           })
           .finally(() => {
             this.loading = false;
@@ -190,6 +191,7 @@ export default {
           .dispatch("putRequest", payload)
           .then(() => {
             this.getPaymentItemsByCategory(category.id);
+            this.resetForm()
           })
           .finally(() => {
             this.loading = false;

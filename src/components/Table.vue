@@ -414,13 +414,6 @@
       <q-card>
         <q-card-section>
           <div>
-            <!-- <q-avatar
-              icon="warning"
-              class="warning_image"
-              size="30px"
-              color="yellow"
-              text-color="white"
-            /> -->
             <label class="q-ml-sm text-dark">{{ message }}</label>
           </div>
           <div class="text-weight-bold text-center">{{ deleted_row.name }}</div>
@@ -1010,9 +1003,6 @@ export default {
   color: $dark;
 }
 
-.title {
-  font-size: small;
-}
 
 .dialog_button {
   font-size: small;

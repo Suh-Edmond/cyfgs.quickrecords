@@ -151,31 +151,30 @@
     <!-- confirmation dialog for delete -->
     <q-dialog v-model="dialog" v-if="dialog">
       <q-card>
-        <q-card-section>
-          <div>
-            <label class="q-ml-sm text-dark">{{ message }}</label>
+        <q-card-section class="q-pa-lg">
+          <div class="q-mb-md">
+            <label class="text-dark message">{{ message }}</label>
           </div>
-          <div class="text-weight-bold text-center">{{ deleted_row.name }}</div>
+          <div class="text-weight-bold text-left text-red">Sponsor:  <span class="q-pl-md">{{ deleted_row.supporter }}</span> </div>
+          <div class="text-weight-bold text-left text-red"> Amount: <span class="q-pl-md">{{ Number(deleted_row.amount_deposited).toLocaleString() }} XAF</span></div>
         </q-card-section>
         <q-card-actions align="right">
           <q-btn
             label="Cancel"
-            :color="'primary'"
+            color="primary"
             :disabled="false"
             :loading="loading"
-            :no_caps="true"
-            :flat="true"
+            flat
             class="dialog_button"
             v-close-popup
           ></q-btn>
           <q-btn
-            :label="label"
-            :color="'primary'"
+            label="Delete"
+            color="primary"
             class="dialog_button"
             :disabled="false"
             :loading="loading"
-            :no_caps="false"
-            :flat="true"
+            flat
             v-close-popup
             @click="deleteRow(deleted_row)"
           ></q-btn>
@@ -222,8 +221,10 @@
 </template>
 <script>
 import { LocalStorage } from "quasar";
+import SponsorshipMixin from "src/mixins/SponsorshipMixin.vue";
 
 export default {
+  mixins:[SponsorshipMixin],
   props: {
     columns: {
       type: Array,
@@ -291,7 +292,10 @@ export default {
 
       this.$emit("edit-sponsorship", payload)
     },
-    onDeleteSupport(data) {},
+    onDeleteSupport(data) {
+      this.dialog = true;
+      this.deleted_row = data
+    },
 
     onDeclineRecord(data, type) {},
 
@@ -304,7 +308,28 @@ export default {
       return treasurer_role != undefined;
     },
 
-    deleteRow(data) {},
+    deleteRow(data) {
+      let payload = {
+        url: `/api/protected/sponsorships/${data.id}`,
+        msg: "Sponsorship deleted successfully",
+        status: "success",
+        color: "default",
+        to_on_ok: "none",
+        show_feedback: true,
+        to_on_fail: "none",
+        error_msg: "An Error occurred! Please try again",
+        has_commit: false,
+        commit: "none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.$store.dispatch("deleteRequest", payload).then(() => {
+        this.getAllSponsorships();
+      });
+    },
 
     onChangeRecordState() {},
   },
@@ -326,8 +351,9 @@ export default {
 }
 
 .dialog_button {
-  font-size: small;
+  font-size: .9rem;
   font-weight: 500;
+  margin-bottom: .5rem;
 }
 
 .approve_btn {
@@ -351,5 +377,15 @@ export default {
 
 .decline {
   color: $orange;
+}
+
+.message {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 15px;
+  align-items: center;
+  letter-spacing: 0.01em;
+  color: $grey2;
 }
 </style>

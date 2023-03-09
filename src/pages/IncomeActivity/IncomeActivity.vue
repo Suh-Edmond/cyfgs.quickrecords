@@ -40,7 +40,7 @@
             </template>
           </q-select>
         </div>
-        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-pl-md">
+        <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12 q-pl-md">
           <q-select
             v-model="month"
             outlined
@@ -60,7 +60,7 @@
             </template>
           </q-select>
         </div>
-        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-pl-md">
+        <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12 q-pl-md">
           <q-select
             v-model="status"
             outlined
@@ -80,7 +80,7 @@
             </template>
           </q-select>
         </div>
-        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 flex q-pl-md">
+        <div class="col-md-5 col-lg-5 col-xs-12 col-sm-12 flex q-pl-md">
           <div>
             <q-btn
               label="Filter"
@@ -268,14 +268,21 @@ export default {
     },
 
     getTableTitle() {
-      let title = `Income Raised for ${this.filteredActivities[0].payment_item.name}`;
-      return this.$store.getters.getIncomeActivities.length > 0 ? title: "";
+      let title = "";
+      if(this.filteredActivities.length > 0) {
+        if(this.payment_item_id != null) {
+         title = `Income Raised for ${this.filteredActivities[0].payment_item.name}`;
+        }else {
+          title = `Income Raised for the month of ${this.month}`;
+        }
+      }
+      return  title;
     },
 
     getIncomeActivities() {
       let data = [];
-
-      this.$store.getters.getIncomeActivities.forEach((ele) => {
+      if(this.$store.getters.getIncomeActivities.length > 0){
+        this.$store.getters.getIncomeActivities.forEach((ele) => {
           data.push({
             counter:
               this.$store.getters.getIncomeActivities.indexOf(ele) + 1,
@@ -293,7 +300,7 @@ export default {
             updated_by: ele.updated_by,
           });
         });
-
+      }
       return data;
     },
 
@@ -346,15 +353,17 @@ export default {
       this.total_income_amount = 0;
 
       let id = this.getOrganisationId;
+      let payment_item_name = this.payment_item_id != null ? this.payment_item_id.label : "";
+      let payment_item_value = this.payment_item_id != null ? this.payment_item_id.value : "";
 
       this.$router.push({
-        path: `/dashboard/income-activities?payment_item=${this.payment_item_id.label}&month=${this.month}&status=${this.status}`,
-        query: { payment_item: this.payment_item_id.label, month:this.month, status:this.status },
+        path: `/dashboard/income-activities?payment_item=${payment_item_name}&month=${this.month}&status=${this.status}`,
+        query: { payment_item: payment_item_name, month:this.month, status:this.status },
       });
 
       let payload = {
         status: "none",
-        url: `/api/protected/organisations/income-activities/search?organisation_id=${id}&month=${this.month}&payment_item_id=${this.payment_item_id.value}&status=${this.status}`,
+        url: `/api/protected/organisations/income-activities/search?organisation_id=${id}&month=${this.month}&payment_item_id=${payment_item_value}&status=${this.status}`,
         has_path_val: true,
         show_feedback: false,
         show_spinner:true,

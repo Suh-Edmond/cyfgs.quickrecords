@@ -1,11 +1,11 @@
 <template>
   <div class="q-pa-md">
-    <div class="q-ml-sm q-mb-lg">
+    <div class="q-ml-sm q-mb-md">
       <label class="text-muted q-ml-sm info"
         >All fields with <span class="text-red">*</span> are required</label
       >
     </div>
-    <div class="q-mt-sm q-mx-md">
+    <div class="q-mx-md">
       <q-form @submit="onAddIncomeActivity" class="q-gutter-sm">
         <div class="q-mb-md">
           <label for="credential" class="form_field"
@@ -236,11 +236,11 @@ export default {
           .dispatch("putRequest", payload)
           .then(() => {
             this.getOrganisationIncomeActivities(organisation_id);
+            this.resetForm();
           })
           .finally(() => {
             this.$emit("close-right-drawer");
             this.loading = false;
-            this.resetForm();
             this.$store.dispatch("setUpdatedIncomeActivity", null);
             this.$store.dispatch("setEditState", false);
           });
@@ -263,7 +263,7 @@ export default {
         this.income_activity.approve = data.approve;
         this.income_activity.created_at = data.created_at;
         this.income_activity.updated_by = data.updated_by;
-        // this.income_activity.payment_item_id = {label:data.pa}
+        this.income_activity.payment_item_id = data.payment_item != null ? {label:data.payment_item.name, value:data.payment_item.id, amount:data.payment_item.amount} : null
       }
 
       return this.income_activity;

@@ -1,11 +1,11 @@
 <template>
   <div class="q-pa-md">
     <div class="q-ml-sm q-mb-lg">
-      <label class="text-muted q-ml-sm"
+      <label class="text-muted q-ml-sm info"
         >All fields with <span class="text-red">*</span> are required</label
       >
     </div>
-    <div class="q-mt-md q-mx-md">
+    <div class="q-mt-sm q-mx-md">
       <q-form @submit="onAddIncomeActivity" class="q-gutter-sm">
         <div class="q-mb-md">
           <label for="credential" class="form_field"
@@ -34,10 +34,14 @@
           <label for="credential" class="form_field"
             >Date <span class="text-red">*</span></label
           >
-          <q-input v-model="income_activity.date"  outlined dense>
+          <q-input v-model="income_activity.date" outlined dense>
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                <q-popup-proxy
+                  ref="qDateProxy"
+                  transition-show="scale"
+                  transition-hide="scale"
+                >
                   <q-date v-model="income_activity.date">
                     <div class="row items-center justify-end">
                       <q-btn v-close-popup label="Close" color="primary" flat />
@@ -49,23 +53,36 @@
           </q-input>
         </div>
         <div class="q-mb-md">
-          <label for="credential" class="form_field">Description <span class="text-red">*</span></label>
+          <label for="name" class="form_field">Payment Activity </label>
+          <q-select
+            outlined
+            dense
+            v-model="income_activity.payment_item_id"
+            placeholder="Type name to search..."
+            :options="getPaymentActivities"
+            input-debounce="0"
+          >
+          </q-select>
+        </div>
+        <div class="q-mb-md">
+          <label for="credential" class="form_field">Description</label>
           <q-input
             v-model="income_activity.description"
             outlined
             dense
-            autogrow
+            type="textarea"
+            placeholder="Provide any comment about this income activity"
           />
         </div>
         <div class="row q-mt-lg justify-end">
           <div class="col-md-2 col-sm-2 col-xs-2">
             <ButtonVue
               class="form_button"
-              :label="label_save"
+              label="Save"
               :loading="loading"
-              :color="color"
+              color="primary"
               :disabled="validateForm"
-              :no_caps="no_caps"
+              :no_caps="true"
             >
             </ButtonVue>
           </div>
@@ -89,9 +106,7 @@ export default {
 
   data() {
     return {
-      label_save: "Save",
       loading: false,
-      color: "primary",
       income_activity: {
         venue: null,
         date: null,
@@ -103,10 +118,10 @@ export default {
         approve: null,
         created_at: null,
         updated_by: null,
+        payment_item_id: null,
       },
       position: "right",
       dialog: false,
-      no_caps: true,
     };
   },
   computed: {
@@ -126,6 +141,18 @@ export default {
     getIncomeActivity() {
       return this.setFormFields(this.getUpdatedIncomeActivityFromState());
     },
+
+    getPaymentActivities() {
+      let data = [];
+      this.$store.getters.getPaymentActivities.forEach((ele) => {
+        data.push({
+          label: ele.name,
+          value: ele.id,
+          amount: ele.amount,
+        });
+      });
+      return data;
+    },
   },
 
   watch: {
@@ -139,7 +166,18 @@ export default {
       let organisation_id = this.getOrganisationId;
       let payload = {
         url: this.setActionUrl(this.income_activity.id, organisation_id),
-        data: this.income_activity,
+        data: {
+          venue: this.income_activity.venue,
+          date: this.income_activity.date,
+          name: this.income_activity.name,
+          description: this.income_activity.description,
+          amount: this.income_activity.amount,
+          organisation_id: this.income_activity.organisation_id,
+          payment_item_id:
+            this.income_activity.payment_item_id != null
+              ? this.income_activity.payment_item_id.value
+              : null,
+        },
         msg: "Income Activity saved Successfully",
         color: "default",
         to_on_ok: "none",
@@ -165,6 +203,7 @@ export default {
       this.income_activity.organisation_id = null;
       this.income_activity.venue = null;
       this.income_activity.id = null;
+      this.income_activity.payment_item_id = null;
 
       return this.income_activity;
     },
@@ -224,6 +263,7 @@ export default {
         this.income_activity.approve = data.approve;
         this.income_activity.created_at = data.created_at;
         this.income_activity.updated_by = data.updated_by;
+        // this.income_activity.payment_item_id = {label:data.pa}
       }
 
       return this.income_activity;
@@ -236,23 +276,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.add_member_title {
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 29px;
-  align-items: center;
-  text-align: center;
-  letter-spacing: 0.01em;
-  color: #5384ae;
-  text-transform: capitalize;
-}
-
-.button {
-  width: 100%;
-}
-
 .form_field {
   font-family: "Roboto";
   font-style: normal;
@@ -263,18 +286,7 @@ export default {
   color: $grey2;
 }
 
-.or_option {
-  font-weight: bolder;
-}
-
-.help_text {
-  color: $dark;
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 13px;
-  text-align: center;
-  align-items: center;
-  letter-spacing: 0.01em;
+.info {
+  color: $grey2;
 }
 </style>

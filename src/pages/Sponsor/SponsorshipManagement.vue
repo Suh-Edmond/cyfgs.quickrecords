@@ -105,7 +105,10 @@ export default {
   mixins: [PaymentItemMixin, SponsorshipMixin, HelperMixin],
 
   mounted() {
-    this.fetchPaymentActivities();
+    if(this.$store.getters.getPaymentActivities.length = 0){
+      this.fetchPaymentActivities();
+    }
+
   },
 
   data() {

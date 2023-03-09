@@ -15,7 +15,7 @@
         </div>
         <div
           class="text-h6 title"
-          v-show="show_contribution || show_member_contribution"
+          v-show="show_contribution || show_member_contribution || show_income_activity"
         >
           {{ title }}
         </div>

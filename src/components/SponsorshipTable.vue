@@ -308,10 +308,6 @@ export default {
   color: $primary;
 }
 
-.title {
-  font-size: medium;
-}
-
 .dialog_button {
   font-size: small;
   font-weight: 500;

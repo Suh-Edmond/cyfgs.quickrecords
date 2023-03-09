@@ -366,20 +366,37 @@
         </q-input>
       </template>
     </q-table>
-    <q-card>
+    <!-- members total card -->
+    <q-card v-if="show_members && total_members > 0">
       <q-card-section>
-        <div class="text-bold" v-if="show_members">
-          Total Members: {{ total_members }}
-        </div>
-        <div class="text-bold" v-if="show_income_activity">
-          Total Income: {{ total_income }} XAF
-        </div>
-        <div class="text-bold" v-if="show_member_savings">
-          Total Amount Saved: {{ total_saving }} XAF
-        </div>
-        <div class="text-bold" v-if="show_savings">
+        <div class="text-bold">Total Members: {{ total_members }}</div>
+      </q-card-section>
+    </q-card>
+
+    <!-- income total card -->
+    <q-card v-if="show_income_activity && total_income > 0">
+      <q-card-section>
+        <div class="text-bold">Total Income: {{ total_income }} XAF</div>
+      </q-card-section>
+    </q-card>
+
+    <!-- member saving total card -->
+    <q-card v-if="show_member_savings && total_saving > 0">
+      <q-card-section>
+        <div class="text-bold">Total Amount Saved: {{ total_saving }} XAF</div>
+      </q-card-section>
+    </q-card>
+
+    <!-- savings total card -->
+    <q-card v-if="show_savings && total_saving > 0">
+      <q-card-section>
+        <div class="text-bold">
           Total Members Savings: {{ total_saving }} XAF
         </div>
+      </q-card-section>
+    </q-card>
+    <q-card v-if="total_contribution > 0">
+      <q-card-section>
         <div class="text-bold" v-if="show_contribution">
           Total Members Contribution: {{ total_contribution }} XAF
         </div>
@@ -589,28 +606,28 @@ export default {
       required: false,
       type: Boolean,
     },
-    total_members : {
-      required:false,
-      type:Number
+    total_members: {
+      required: false,
+      type: Number,
     },
     total_income: {
-      required:false,
-      type:Number
+      required: false,
+      type: Number,
     },
     total_saving: {
-      required:false,
-      type:Number
+      required: false,
+      type: Number,
     },
-    total_contribution:{
-      required:false,
-      type:Number,
-      default:0.0
+    total_contribution: {
+      required: false,
+      type: Number,
+      default: 0.0,
     },
     total_balance: {
-      required:false,
-      type:Number,
-      default:0.0
-    }
+      required: false,
+      type: Number,
+      default: 0.0,
+    },
   },
   data() {
     return {

@@ -142,8 +142,8 @@
                 :disable="has_completed_payment"
               />
             </div>
-            <div class="row q-mt-lg justify-end">
-              <div class="col-md-2 col-sm-2 col-xs-2 q-mr-lg">
+            <div class="flex q-mt-lg justify-end">
+              <div class="q-mr-lg">
                 <q-btn
                   class="form_button"
                   label="Reset"
@@ -155,7 +155,7 @@
                 >
                 </q-btn>
               </div>
-              <div class="col-md-2 col-sm-2 col-xs-2">
+              <div>
                 <ButtonVue
                   class="form_button"
                   :label="label_save"

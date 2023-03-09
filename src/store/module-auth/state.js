@@ -39,5 +39,6 @@ export default function () {
     member_contributions:[],
     payment_activities:[],
     sponsorships:[],
+    selected_sponsorship:null
   };
 }

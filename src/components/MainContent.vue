@@ -119,6 +119,7 @@
               @search-member-saving="searchMemberSaving"
               @search-members-contribution="searchMemberContribution"
               @report-generation="reportGeneration"
+              @view-sponsorship="viewSponsorship"
             />
           </q-card-section>
         </q-card>
@@ -335,7 +336,11 @@ export default {
       this.updateDrawer(data);
     },
 
-    resetAllForms(tab) {
+    viewSponsorship(data) {
+      this.updateDrawer(data);
+    },
+
+    resetAllForms() {
       this.$store.dispatch("setUpdatedPayCategories", null)
       this.$store.dispatch("setUpdatedPaymentItem", null);
       this.$store.dispatch("setUpdatedExpenditureCategory", null);

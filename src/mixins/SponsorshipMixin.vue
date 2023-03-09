@@ -27,8 +27,7 @@ export default {
           data: null,
         },
       };
-      this.$store.dispatch("getRequest", payload).then(() => {
-      });
+      this.$store.dispatch("getRequest", payload).then(() => {});
     },
   },
 };

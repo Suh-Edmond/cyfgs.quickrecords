@@ -155,6 +155,10 @@ export function getPaymentActivities(state) {
   return state.payment_activities;
 }
 
-export function getSponsorship(state) {
+export function getSponsorships(state) {
   return state.sponsorships
+}
+
+export function getSelectedSponsorship(state) {
+  return state.selected_sponsorship;
 }

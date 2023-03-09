@@ -85,6 +85,7 @@
             :title="setTableTitle"
             :message="message"
             :total="getTotalSponsorship"
+            @view-sponsorship="viewSponsorship"
           >
           </SponsorshipTable>
         </div>
@@ -166,7 +167,7 @@ export default {
 
     getTotalSponsorship() {
       let total = 0;
-      this.$store.getters.getSponsorship.forEach((ele) => {
+      this.$store.getters.getSponsorships.forEach((ele) => {
         total += parseFloat(ele.amount_deposited);
       });
       return total;
@@ -185,8 +186,8 @@ export default {
     },
 
     setTableTitle() {
-      return this.$store.getters.getSponsorship.length > 0
-        ? `Sponsorships for ${this.$store.getters.getSponsorship[0].payment_item.name}`
+      return this.$store.getters.getSponsorships.length > 0
+        ? `Sponsorships for ${this.$store.getters.getSponsorships[0].payment_item.name}`
         : "";
     },
 
@@ -195,9 +196,9 @@ export default {
     },
     getData() {
       let data = [];
-      this.$store.getters.getSponsorship.forEach((ele) => {
+      this.$store.getters.getSponsorships.forEach((ele) => {
           data.push({
-            counter: this.$store.getters.getSponsorship.indexOf(ele) + 1,
+            counter: this.$store.getters.getSponsorships.indexOf(ele) + 1,
             supporter: ele.supporter,
             amount_deposited: ele.amount_deposited,
             code: ele.code,
@@ -207,6 +208,7 @@ export default {
             created_at: ele.created_at,
             updated_at: ele.updated_at,
             updated_by: ele.updated_by,
+            comment:ele.comment
           });
         });
       return data;
@@ -242,6 +244,10 @@ export default {
     },
 
     downloadSponsorship() {},
+
+    viewSponsorship(data) {
+      this.$emit("view-sponsorship", data);
+    }
   },
   components: {
     SponsorshipTable,

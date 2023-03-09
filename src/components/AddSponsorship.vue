@@ -171,9 +171,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.button {
-  width: 100%;
-}
 
 .form_field {
   font-family: "Roboto";
@@ -186,10 +183,6 @@ export default {
 }
 
 .instruction_info {
-  color: $grey2;
-}
-
-.noPaymentItems {
   color: $grey2;
 }
 </style>

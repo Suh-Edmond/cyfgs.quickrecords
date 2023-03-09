@@ -488,3 +488,7 @@ export function setPaymentActivities({commit}, data) {
 export function setSponsorship({commit}, data) {
   commit("SET_SPONSORSHIPS", data)
 }
+
+export function setSelectedSponsorship({commit}, data) {
+  commit("SET_SELECTED_SPONSORSHIP", data);
+}

@@ -486,6 +486,9 @@
           @close-right-drawer="closeRightDrawer"
           @set-heading="setHeading"
         ></AddSponsorship>
+        <ViewSponsorshipVue v-if="current_tab == 'View Sponsorship'" @close-right-drawer="closeRightDrawer"
+          @set-heading="setHeading">
+        </ViewSponsorshipVue>
       </q-page>
     </q-drawer>
   </q-layout>
@@ -513,6 +516,7 @@ import SearchContribution from "src/components/SearchContribution.vue";
 import EditMemberContribution from "src/components/EditMemberContribution.vue";
 import GenerateReportFilter from "src/components/GenerateReportFilter.vue";
 import AddSponsorship from "src/components/AddSponsorship.vue";
+import ViewSponsorshipVue from "src/components/ViewSponsorship.vue";
 
 export default {
   mixins: [organisationMixinVue],
@@ -623,7 +627,8 @@ export default {
     SearchContribution,
     EditMemberContribution,
     GenerateReportFilter,
-    AddSponsorship
+    AddSponsorship,
+    ViewSponsorshipVue
   },
 };
 </script>

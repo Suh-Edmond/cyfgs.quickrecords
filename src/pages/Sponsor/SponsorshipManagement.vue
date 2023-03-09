@@ -68,10 +68,11 @@
               label="Print"
               :loading="loading"
               color="positive"
-              :disabled="false"
+              :disabled="validateDownload"
               no-caps
               icon-right="print"
               @click="downloadSponsorship"
+
             ></q-btn>
           </div>
         </div>
@@ -98,9 +99,10 @@
 import SponsorshipTable from "src/components/SponsorshipTable.vue";
 import PaymentItemMixin from "src/mixins/PaymentItemMixin.vue";
 import SponsorshipMixin from "src/mixins/SponsorshipMixin.vue";
+import HelperMixin from "src/mixins/HelperMixin.vue";
 
 export default {
-  mixins: [PaymentItemMixin, SponsorshipMixin],
+  mixins: [PaymentItemMixin, SponsorshipMixin, HelperMixin],
 
   mounted() {
     this.fetchPaymentActivities();
@@ -110,7 +112,6 @@ export default {
     return {
       statuses: ["PENDING", "APPROVED", "DECLINED", "ALL"],
       status: "",
-      no_caps: true,
       loading_filter: false,
       columns: [
         {
@@ -163,6 +164,10 @@ export default {
   computed: {
     validateFilter() {
       return this.payment_item_id != null ? false : true;
+    },
+
+    validateDownload(){
+      return this.getData.length == 0;
     },
 
     getTotalSponsorship() {
@@ -236,14 +241,15 @@ export default {
       };
       this.$store.dispatch("getRequest", payload).then(() => {
         this.loading_filter = false
-      }).finally(() => {
-        this.payment_item_id = null;
-      this.status = null;
-      });
+      })
 
     },
 
-    downloadSponsorship() {},
+    downloadSponsorship() {
+      let url = `/api/protected/sponsorships/download?payment_item_id=${this.payment_item_id.value}&status=${this.status}`;
+      let file_name = "Sponsorships.pdf";
+      this.loading = this.downloadPdf(url, file_name);
+    },
 
     viewSponsorship(data) {
       this.$emit("view-sponsorship", data);

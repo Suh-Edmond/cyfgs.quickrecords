@@ -150,3 +150,11 @@ export function getIntermediateTabs(state) {
 export function getMemberContributions(state) {
   return state.member_contributions;
 }
+
+export function getPaymentActivities(state) {
+  return state.payment_activities;
+}
+
+export function getSponsorship(state) {
+  return state.sponsorships
+}

@@ -271,6 +271,34 @@
               clickable
               v-ripple
               :active-class="
+                item.name == 'Sponsorship Management' ? 'item' : 'item_text'
+              "
+              :active="item.name == 'Sponsorship Management'"
+              @click="
+                setItem({ name: 'Sponsorship Management', selected: true }, true)
+              "
+              v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER'])"
+              :to="{ name: 'sponsorship' }"
+            >
+              <q-item-section
+                avatar
+                :class="
+                  item.name == 'Sponsorship Management'
+                    ? 'item_icon'
+                    : 'item_text'
+                "
+              >
+                <img src="../../src/assets/sponsorship.png" class="sponsorship_icon">
+              </q-item-section>
+              <q-item-section class="item_name"
+                >Sponsorship Management
+              </q-item-section>
+            </q-item>
+
+            <q-item
+              clickable
+              v-ripple
+              :active-class="
                 item.name == 'Reports Generation' ? 'item' : 'item_text'
               "
               :active="item.name == 'Reports Generation'"
@@ -452,6 +480,12 @@
           @set-heading="setHeading" v-if="current_tab == 'Generate Reports'">
 
         </GenerateReportFilter>
+
+        <AddSponsorship
+          v-if="current_tab == 'Sponsorship Management'"
+          @close-right-drawer="closeRightDrawer"
+          @set-heading="setHeading"
+        ></AddSponsorship>
       </q-page>
     </q-drawer>
   </q-layout>
@@ -478,6 +512,7 @@ import SearchSavings from "src/components/SearchSavings.vue";
 import SearchContribution from "src/components/SearchContribution.vue";
 import EditMemberContribution from "src/components/EditMemberContribution.vue";
 import GenerateReportFilter from "src/components/GenerateReportFilter.vue";
+import AddSponsorship from "src/components/AddSponsorship.vue";
 
 export default {
   mixins: [organisationMixinVue],
@@ -587,7 +622,8 @@ export default {
     SearchSavings,
     SearchContribution,
     EditMemberContribution,
-    GenerateReportFilter
+    GenerateReportFilter,
+    AddSponsorship
   },
 };
 </script>
@@ -658,5 +694,10 @@ export default {
   border-bottom-right-radius: 0px;
   border-top-left-radius: 0px;
   border-top-right-radius: 0px;
+}
+
+.sponsorship_icon {
+  color: $grey2;
+  width: 1.13rem;
 }
 </style>

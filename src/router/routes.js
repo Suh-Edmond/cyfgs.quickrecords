@@ -235,6 +235,17 @@ const routes = [
         },
       },
 
+      {
+        name: "sponsorship",
+        path: "/dashboard/sponsorship",
+        component: () => import("src/pages/Sponsor/SponsorshipManagement.vue"),
+        meta: {
+          middleware: "auth",
+          role: "MEMBER",
+          has_intermediate_tab:false
+        },
+      },
+
     ],
   },
 

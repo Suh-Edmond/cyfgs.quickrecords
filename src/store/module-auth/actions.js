@@ -480,3 +480,11 @@ export function setIntermediateTabs({commit}, data) {
 export function setMemberContributions({commit}, data) {
   commit("SET_MEMBER_CONTRIBUTIONS", data);
 }
+
+export function setPaymentActivities({commit}, data) {
+  commit("SET_PAYMENT_ACTIVITIES", data);
+}
+
+export function setSponsorship({commit}, data) {
+  commit("SET_SPONSORSHIPS", data)
+}

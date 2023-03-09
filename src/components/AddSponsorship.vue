@@ -5,7 +5,7 @@
         >All fields with <span class="text-red">*</span> are required</label
       >
     </div>
-    <div class="q-px-sm">
+    <div class="q-px-sm ">
       <q-form @submit="onAddSponsorship" class="q-gutter-md">
         <div>
           <div class="q-mb-md">
@@ -19,6 +19,7 @@
               placeholder="Type name to search..."
               :options="getPaymentActivities"
               input-debounce="0"
+              class="text_color"
             >
             </q-select>
           </div>
@@ -27,7 +28,7 @@
               <label for="name" class="form_field"
                 >Sponsor's Name <span class="text-red">*</span>
               </label>
-              <q-input outlined dense v-model="sponsorship.supporter">
+              <q-input outlined dense v-model="sponsorship.supporter"  class="text_color">
               </q-input>
             </div>
             <div class="q-mb-md">
@@ -39,6 +40,7 @@
                 outlined
                 dense
                 type="number"
+                class="text_color"
               >
               </q-input>
             </div>
@@ -48,12 +50,13 @@
                 v-model="sponsorship.comment"
                 outlined
                 dense
+                class="text_color"
                 type="textarea"
                 placeholder="Provide any comment about this sponsorship"
               />
             </div>
-            <div class="row q-mt-lg justify-end">
-              <div class="col-md-2 col-sm-2 col-xs-2">
+            <div class="flex q-mt-lg justify-end">
+              <div>
                 <ButtonVue
                   class="form_button"
                   label="Save"
@@ -115,11 +118,22 @@ export default {
         })
       })
       return data;
+    },
+
+    getSelectedSponsorship() {
+      return this.setFormField(this.$store.getters.getSelectedSponsorship);
     }
   },
+  watch:{
+    getSelectedSponsorship() {
+      return this.setFormField(this.$store.getters.getSelectedSponsorship);
+    }
+  },
+
   methods: {
     onAddSponsorship() {
       this.loading = true;
+      let saved_sponsorship = this.$store.getters.getSelectedSponsorship;
       let payload = {
         url: `/api/protected/activity-supports`,
         data: {
@@ -142,16 +156,7 @@ export default {
           data: [],
         },
       };
-      this.$store
-        .dispatch("postRequest", payload)
-        .then(() => {
-          this.resetForm();
-          this.getSponsorships(payload.data.payment_item_id);
-        })
-        .finally(() => {
-          this.$emit("close-right-drawer");
-          this.loading = false;
-        });
+      this.dispatchAction(payload, saved_sponsorship.id);
     },
 
 
@@ -163,6 +168,41 @@ export default {
 
       return this.sponsorship;
     },
+
+    dispatchAction(payload, id){
+      if(id == null){
+        this.$store.dispatch("postRequest", payload).then(() => {
+          this.getAllSponsorships();
+          this.resetForm()
+        }).finally(() => {
+          this.$emit("close-right-drawer");
+          this.loading = false;
+        })
+      }else {
+        payload.url = `/api/protected/activity-supports/${id}`
+        this.$store.dispatch("putRequest", payload).then(() => {
+          this.getAllSponsorships();
+          this.resetForm()
+        }).finally(() => {
+          this.$emit("close-right-drawer");
+          this.loading = false;
+        })
+      }
+    },
+
+
+    setFormField(data) {
+      if(data != null) {
+        this.sponsorship.id = data.id;
+        this.sponsorship.amount_deposited = parseFloat(data.amount_deposited);
+        this.sponsorship.comment = data.comment;
+        this.sponsorship.supporter = data.supporter;
+        this.sponsorship.payment_item_id = {label:data.payment_item.name, value:data.payment_item.id}
+      }
+
+      return this.sponsorship;
+    }
+
   },
   components: {
     ButtonVue,
@@ -175,14 +215,18 @@ export default {
 .form_field {
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 500;
-  font-size: 11px;
+  font-weight: 400;
+  font-size: 12px;
   align-items: center;
   letter-spacing: 0.01em;
   color: $grey2;
 }
 
 .instruction_info {
+  color: $grey2;
+}
+
+.text_color {
   color: $grey2;
 }
 </style>

@@ -120,6 +120,7 @@
               @search-members-contribution="searchMemberContribution"
               @report-generation="reportGeneration"
               @view-sponsorship="viewSponsorship"
+              @edit-sponsorship="editSponsorship"
             />
           </q-card-section>
         </q-card>
@@ -339,6 +340,11 @@ export default {
     viewSponsorship(data) {
       this.updateDrawer(data);
     },
+
+    editSponsorship(data){
+      this.updateDrawer(data);
+    },
+
 
     resetAllForms() {
       this.$store.dispatch("setUpdatedPayCategories", null)

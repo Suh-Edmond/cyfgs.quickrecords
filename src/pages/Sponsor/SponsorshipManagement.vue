@@ -87,6 +87,7 @@
             :message="message"
             :total="getTotalSponsorship"
             @view-sponsorship="viewSponsorship"
+            @edit-sponsorship="editSponsorship"
           >
           </SponsorshipTable>
         </div>
@@ -105,9 +106,9 @@ export default {
   mixins: [PaymentItemMixin, SponsorshipMixin, HelperMixin],
 
   mounted() {
-    if(this.$store.getters.getPaymentActivities.length = 0){
+    // if(this.$store.getters.getPaymentActivities.length = 0){
       this.fetchPaymentActivities();
-    }
+    // }
 
   },
 
@@ -256,7 +257,11 @@ export default {
 
     viewSponsorship(data) {
       this.$emit("view-sponsorship", data);
-    }
+    },
+
+    editSponsorship(data) {
+      this.$emit("edit-sponsorship", data);
+    },
   },
   components: {
     SponsorshipTable,

@@ -40,6 +40,22 @@
               >
                 <q-menu>
                   <q-list style="width: 180px" bordered separator>
+                       <!-- edit support -->
+                       <q-item
+                      clickable
+                      v-close-popup
+                      @click="onEditSupport(props.row)"
+                    >
+                      <q-item-section avatar>
+                        <span>
+                          <q-icon name="edit" size="xs" class="edit" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="edit">Edit</q-item-label>
+                      </q-item-section>
+                    </q-item>
+
                     <!-- view support -->
                     <q-item
                       clickable
@@ -265,6 +281,16 @@ export default {
       this.$emit("view-sponsorship", payload);
     },
 
+    onEditSupport(data){
+      let payload = {
+        data: data,
+        tab: "Sponsorship Management",
+      };
+
+      this.$store.dispatch("setSelectedSponsorship", data);
+
+      this.$emit("edit-sponsorship", payload)
+    },
     onDeleteSupport(data) {},
 
     onDeclineRecord(data, type) {},

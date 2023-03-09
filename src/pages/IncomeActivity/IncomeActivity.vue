@@ -281,7 +281,7 @@ export default {
 
     getIncomeActivities() {
       let data = [];
-      if(this.$store.getters.getIncomeActivities.length > 0){
+      if(this.$store.getters.getIncomeActivities != null){
         this.$store.getters.getIncomeActivities.forEach((ele) => {
           data.push({
             counter:

@@ -1,17 +1,17 @@
 <template>
   <div class="q-pa-md">
     <div class="q-ml-sm q-mb-lg">
-      <label class="text-muted"
+      <label class="text-muted q-ml-sm"
         >All fields with <span class="text-red">*</span> are required</label
       >
     </div>
     <div class="q-mt-md q-mx-md">
       <q-form @submit="onAddSaving" class="q-gutter-md">
         <div>
-          <label for="name" class="form_field">Member Name <span class="text-red">*</span>
+          <label for="name" class="form_field"
+            >Member Name <span class="text-red">*</span>
           </label>
-          <q-select outlined dense v-model="saving.user_id" use-input hide-selected fill-input input-debounce="0"
-            :options="members" @filter="filterMembers" :disable="isMemberExist">
+          <q-select outlined dense v-model="saving.user_id" :options="members">
             <template v-slot:no-option>
               <q-item>
                 <q-item-section class="text-grey"> No results </q-item-section>
@@ -20,18 +20,38 @@
           </q-select>
         </div>
         <div>
-          <label for="credential" class="form_field q-mt-ms">Amount <span class="text-red">*</span></label>
-          <q-input v-model="saving.amount_deposited" outlined dense type="number" />
+          <label for="credential" class="form_field q-mt-ms"
+            >Amount <span class="text-red">*</span></label
+          >
+          <q-input
+            v-model="saving.amount_deposited"
+            outlined
+            dense
+            type="number"
+          />
         </div>
         <div>
-          <label for="credential" class="form_field">Comment <span class="text-red">*</span></label>
-          <q-input v-model="saving.comment" outlined dense type="textarea"
-            placeholder="Provide any comment about this saving" />
+          <label for="credential" class="form_field"
+            >Comment <span class="text-red">*</span></label
+          >
+          <q-input
+            v-model="saving.comment"
+            outlined
+            dense
+            type="textarea"
+            placeholder="Provide any comment about this saving"
+          />
         </div>
         <div class="row q-mt-lg justify-end">
           <div class="col-md-2 col-sm-2 col-xs-2">
-            <ButtonVue class="form_button" :label="label_save" :loading="loading" :color="color"
-              :disabled="validateForm" :no_caps="no_caps">
+            <ButtonVue
+              class="form_button"
+              :label="label_save"
+              :loading="loading"
+              :color="color"
+              :disabled="validateForm"
+              :no_caps="no_caps"
+            >
             </ButtonVue>
           </div>
         </div>
@@ -48,7 +68,7 @@ import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
 export default {
   mixins: [memberMixinVue, organisationMixinVue, UserSavingMixinVue],
 
-  created() {
+  mounted() {
     let heading = "Member Savings Information";
     this.$emit("set-heading", heading);
 
@@ -57,9 +77,8 @@ export default {
     this.setFormFields(null);
 
     this.getMembers();
-    console.log(this.members);
-  },
 
+  },
 
   data() {
     return {
@@ -113,10 +132,9 @@ export default {
           value: ele.id,
         });
       });
-
+      console.log(this.members);
       return this.members;
     },
-
 
     onAddSaving() {
       let payload = {
@@ -160,7 +178,7 @@ export default {
       // });
 
       // return data;
-      if (val === '') {
+      if (val === "") {
         // update(() => {
         //   this.members = stringOptions
 
@@ -170,7 +188,9 @@ export default {
         // })
         // return
         const needle = val.toLowerCase();
-        this.members = this.members.filter(v => v.label.toLowerCase().indexOf(needle) > -1)
+        this.members = this.members.filter(
+          (v) => v.label.toLowerCase().indexOf(needle) > -1
+        );
       }
 
       // update(() => {

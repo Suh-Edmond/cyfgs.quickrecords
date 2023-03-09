@@ -39,7 +39,9 @@
             </q-select>
             <small
               v-if="
-                (contribution.payment_category_id != null && payment_items.length == 0 && contribution.payment_item_id == null)
+                contribution.payment_category_id != null &&
+                payment_items.length == 0 &&
+                contribution.payment_item_id == null
               "
               class="noPaymentItems"
               >No Payment items found under this category</small
@@ -195,7 +197,9 @@ export default {
 
     let organisation_id = this.getOrganisationId;
 
-    this.getOrganisationMembers(organisation_id. false);
+    if (this.$store.getters.getMembers.length == 0) {
+      this.getOrganisationMembers(organisation_id.false);
+    }
 
     if (this.getPaymentCategories.length == 0) {
       this.fetchCategories(organisation_id, false);
@@ -400,12 +404,12 @@ export default {
         .then(() => {
           let data = {
             payment_item_id: payment_item_id,
-            year:null,
-            month:null,
-            date:null,
-            status:null,
-            date_range:null
-          }
+            year: null,
+            month: null,
+            date: null,
+            status: null,
+            date_range: null,
+          };
           this.filterMembersContributions(data);
           this.resetForm();
         })
@@ -414,7 +418,6 @@ export default {
           this.loading = false;
         });
     },
-
   },
   components: {
     ButtonVue,

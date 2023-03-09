@@ -253,7 +253,7 @@
               <q-avatar
                 size="150px"
                 font-size="52px"
-                color="grey"
+                color="grey-3"
                 v-if="organisation.logo == null"
               >
               </q-avatar>
@@ -350,6 +350,7 @@
 import ButtonVue from "src/components/Button.vue";
 import FileConstants from "src/components/Constants/FileConstants.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
+import { Notify, Platform } from 'quasar';
 
 export default {
   mixins: [organisationMixinVue],
@@ -464,6 +465,12 @@ export default {
       this.$store.dispatch("getRequest", payload).then((res) => {
         if (res !== undefined) {
           this.setOrganisationInfo();
+        }else {
+          Notify.create({
+            type: "info",
+            message: "Organisation not yet created! Please fill the fields to add organisation",
+            position: !Platform.is.mobile ? "top-right": "bottom"
+          })
         }
       });
     },

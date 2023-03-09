@@ -37,5 +37,7 @@ export default function () {
     filtered_contributions:null,
     intermediate_tabs:[],
     member_contributions:[],
+    payment_activities:[],
+    sponsorships:[],
   };
 }

@@ -1,5 +1,10 @@
 <template>
   <div class="q-pa-md">
+    <div class="q-ml-sm q-mb-lg">
+      <label class="text-muted q-pl-sm info"
+        >All fields with <span class="text-red">*</span> are required</label
+      >
+    </div>
     <div class="q-mt-md q-mx-md">
       <q-form @submit="onAddPaymentItem" class="q-gutter-md">
         <div>
@@ -173,6 +178,7 @@ export default {
           .dispatch("postRequest", payload)
           .then(() => {
             this.getPaymentItemsByCategory(category.id);
+            this.resetForm();
           })
           .finally(() => {
             this.loading = false;
@@ -185,6 +191,7 @@ export default {
           .dispatch("putRequest", payload)
           .then(() => {
             this.getPaymentItemsByCategory(category.id);
+            this.resetForm()
           })
           .finally(() => {
             this.loading = false;
@@ -220,6 +227,10 @@ export default {
   font-size: 11px;
   align-items: center;
   letter-spacing: 0.01em;
+  color: $grey2;
+}
+
+.info {
   color: $grey2;
 }
 </style>

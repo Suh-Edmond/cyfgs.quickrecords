@@ -1,5 +1,10 @@
 <template>
   <div class="q-pa-md">
+    <div class="q-ml-sm q-mb-lg">
+      <label class="text-muted q-ml-sm"
+        >All fields with <span class="text-red">*</span> are required</label
+      >
+    </div>
     <div class="q-mt-md q-mx-md" v-if="!getEditState">
       <q-form @submit="onAddExpenditureItem" class="q-gutter-sm">
         <div>
@@ -31,7 +36,7 @@
           </q-input>
         </div>
         <div>
-          <label for="credential" class="form_field">Comment</label>
+          <label for="credential" class="form_field">Comment <span class="text-red">*</span></label>
           <q-input v-model="expenditure_item.comment" outlined dense autogrow class="q-mb-md" />
         </div>
 

@@ -2,42 +2,94 @@
   <q-page>
     <!-- spinners -->
     <div class="flex justify-center">
-      <q-spinner-ios color="primary" size="2em" class="q-mb-lg" v-if="getLoadingState" />
+      <q-spinner-ios
+        color="primary"
+        size="2em"
+        class="q-mb-lg"
+        v-if="getLoadingState"
+      />
     </div>
 
-    <NotFound :message="getNotFoundMsg" v-if="getExpenditureItemDetails.length == 0 && !getLoadingState"></NotFound>
+    <NotFound
+      :message="getNotFoundMsg"
+      v-if="getExpenditureItemDetails.length == 0 && !getLoadingState"
+    ></NotFound>
 
     <div v-if="getExpenditureItemDetails.length > 0 && !getLoadingState">
       <!-- header for filter categories -->
-      <div class="row q-ml-xs q-pt-xs" :class="$q.screen.lg ? 'q-pa-sm' : ''" :style="
-        $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-      ">
+      <div
+        class="row q-ml-xs q-pt-xs"
+        :class="$q.screen.lg ? 'q-pa-sm' : ''"
+        :style="
+          $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+        "
+      >
         <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
-          <q-select v-model="status" outlined dense :options="statuses" label="Select Status" @input="filterItems" />
+          <q-select
+            v-model="status"
+            outlined
+            dense
+            :options="statuses"
+            label="Select Status"
+            @input="filterItems"
+          />
         </div>
         <q-space />
         <div class="button q-pb-xs">
-          <q-btn :label="label_download" :loading="loading" :color="color_print" :disabled="false" no-caps
-            icon-right="print" @click="downloadExpenditureItemDetails"></q-btn>
+          <q-btn
+            :label="label_download"
+            :loading="loading"
+            :color="color_print"
+            :disabled="false"
+            no-caps
+            icon-right="print"
+            @click="downloadExpenditureItemDetails"
+          ></q-btn>
         </div>
       </div>
       <!-- table for categories -->
       <div>
         <div class="row q-pt-sm">
           <div class="col-md-12 col-xs-12 col-sm-12" v-show="!start_filter">
-            <CategoryTable :columns="columns" :data="getExpenditureItemDetails" :label="label" :message="message"
-              :title="getExpenditureItemName" :show_payment_category="false" :show_payment_item="false"
-              :show_expenditure_category="false" :show_expenditure_item="false" :show_expenditure_item_detail="true"
-              @edit-expenditure-item-detail="editExpenditureItemDetail">
+            <CategoryTable
+              :columns="columns"
+              :data="getExpenditureItemDetails"
+              :label="label"
+              :message="message"
+              :title="getExpenditureItemName"
+              :show_payment_category="false"
+              :show_payment_item="false"
+              :show_expenditure_category="false"
+              :show_expenditure_item="false"
+              :show_expenditure_item_detail="true"
+              @edit-expenditure-item-detail="editExpenditureItemDetail"
+              :expenditure_item_amount="getExpenditureItemAmount"
+              :total_amount_given="getTotalAmountGiven"
+              :total_amount_spent="getTotalAmountSpent"
+              :balance="getTotalBalance"
+            >
             </CategoryTable>
           </div>
 
           <!-- table for filtered results -->
           <div class="col-md-12 col-xs-12 col-sm-12" v-show="start_filter">
-            <CategoryTable :columns="columns" :data="filtered_items" :label="label" :message="message"
-              :title="getExpenditureItemName" :show_payment_category="false" :show_payment_item="false"
-              :show_expenditure_category="false" :show_expenditure_item="false" :show_expenditure_item_detail="true"
-              @edit-expenditure-item-detail="editExpenditureItemDetail">
+            <CategoryTable
+              :columns="columns"
+              :data="filtered_items"
+              :label="label"
+              :message="message"
+              :title="getExpenditureItemName"
+              :show_payment_category="false"
+              :show_payment_item="false"
+              :show_expenditure_category="false"
+              :show_expenditure_item="false"
+              :show_expenditure_item_detail="true"
+              @edit-expenditure-item-detail="editExpenditureItemDetail"
+              :expenditure_item_amount="getExpenditureItemAmount"
+              :total_amount_given="getTotalAmountGiven"
+              :total_amount_spent="getTotalAmountSpent"
+              :balance="getTotalBalance"
+            >
             </CategoryTable>
           </div>
         </div>
@@ -110,7 +162,7 @@ export default {
       ],
       label: "Delete",
       message: "Are you sure you want to delete this Expenditure Item Detail?",
-      statuses: [ "PENDING","APPROVED", "DECLINED", "ALL"],
+      statuses: ["PENDING", "APPROVED", "DECLINED", "ALL"],
       status: null,
       filtered_items: [],
     };
@@ -122,7 +174,8 @@ export default {
         this.$store.getters.getExpenditureItemDetails.data.forEach((ele) => {
           data.push({
             counter:
-              this.$store.getters.getExpenditureItemDetails.data.indexOf(ele) + 1,
+              this.$store.getters.getExpenditureItemDetails.data.indexOf(ele) +
+              1,
             name: ele.name,
             amount_given: ele.amount_given,
             amount_spent: ele.amount_spent,
@@ -160,6 +213,22 @@ export default {
     getLoadingState() {
       return this.$store.getters.getFetchingState;
     },
+
+    getExpenditureItemAmount() {
+      return this.$store.getters.getExpenditureItemDetails.total_item_amount;
+    },
+
+    getTotalAmountGiven() {
+      return this.$store.getters.getExpenditureItemDetails.total_amount_given;
+    },
+
+    getTotalAmountSpent() {
+      return this.$store.getters.getExpenditureItemDetails.total_amount_spent;
+    },
+
+    getTotalBalance() {
+      return this.$store.getters.getExpenditureItemDetails.total_balance;
+    },
   },
   methods: {
     editExpenditureItemDetail(data) {
@@ -179,13 +248,14 @@ export default {
     },
 
     filterItems() {
-      let expenditure_category = this.$store.getters.getCurrentExpenditureCategory;
+      let expenditure_category =
+        this.$store.getters.getCurrentExpenditureCategory;
       let expenditure_item = this.$store.getters.getCurrentExpenditureItem;
       this.filtered_items = [];
 
       this.$router.push({
         path: `/dashboard/expenditure-categories/${expenditure_category.id}/items/${expenditure_item.id}/details`,
-        query: {status: this.status },
+        query: { status: this.status },
       });
 
       let payload = {
@@ -252,6 +322,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

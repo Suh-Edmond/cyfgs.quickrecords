@@ -61,6 +61,10 @@
             :show_expenditure_category="false"
             :show_expenditure_item="false"
             :show_expenditure_item_detail="true"
+            :expenditure_item_amount="getExpenditureItemAmount"
+            :total_amount_given="getTotalAmountGiven"
+            :total_amount_spent="getTotalAmountSpent"
+            :balance="getTotalBalance"
           >
           </CategoryTable>
         </div>
@@ -78,6 +82,10 @@
             :show_expenditure_category="false"
             :show_expenditure_item="false"
             :show_expenditure_item_detail="true"
+            :expenditure_item_amount="getExpenditureItemAmount"
+            :total_amount_given="getTotalAmountGiven"
+            :total_amount_spent="getTotalAmountSpent"
+            :balance="getTotalBalance"
           >
           </CategoryTable>
         </div>
@@ -177,6 +185,22 @@ export default {
 
     getNotFoundMsg() {
       return `Ooops!! No Details were recorded for this Expenditure Item [${this.getExpenditureItemName}].`;
+    },
+
+    getExpenditureItemAmount() {
+      return this.$store.getters.getExpenditureItemDetails.total_item_amount;
+    },
+
+    getTotalAmountGiven() {
+      return this.$store.getters.getExpenditureItemDetails.total_amount_given
+    },
+
+    getTotalAmountSpent() {
+      return this.$store.getters.getExpenditureItemDetails.total_amount_spent;
+    },
+
+    getTotalBalance() {
+      return this.$store.getters.getExpenditureItemDetails.total_balance
     },
 
     getExpenditureDetails() {

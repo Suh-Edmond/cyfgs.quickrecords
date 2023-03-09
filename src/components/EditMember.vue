@@ -29,6 +29,11 @@
 
       <q-tab-panels v-model="tab" animated>
         <q-tab-panel name="Personal Information">
+          <div class="q-ml-lg">
+            <label class="text-muted"
+              >All fields with <span class="text-red">*</span> are
+              required</label>
+          </div>
           <div class="q-mx-lg q-pt-md">
             <q-form @submit="onUpdateMember" class="q-gutter-md">
               <div>
@@ -103,7 +108,12 @@
           </div>
           <div class="q-mx-sm" v-if="!show_spinner">
             <q-list>
-              <q-item v-for="role in user_roles" :key="role.name" v-ripple class="q-mb-sm">
+              <q-item
+                v-for="role in user_roles"
+                :key="role.name"
+                v-ripple
+                class="q-mb-sm"
+              >
                 <q-item-section avatar v-if="role.name == 'MEMBER'">
                   <q-avatar color="primary" text-color="white" size="35px">
                     M</q-avatar
@@ -134,23 +144,24 @@
                 </q-item-section>
                 <q-item-section>
                   <q-item-label>{{ role.name }}</q-item-label>
-                  <q-item-label caption  class="text-sm"
+                  <q-item-label caption class="text-sm"
                     >Updated by:
-                    <span>
-                      {{ role.updated_by }}</span
-                    ></q-item-label
+                    <span> {{ role.updated_by }}</span></q-item-label
                   >
                 </q-item-section>
 
-
-                <q-item-section side top >
-                  <q-item-label caption
-                    >
+                <q-item-section side top>
+                  <q-item-label caption>
                     <span
                       >{{ formDateTime(role.updated_at) }}
                     </span></q-item-label
                   >
-                  <q-btn flat round @click="showRemoveRoleDialog(role)" v-if="role.name !== 'MEMBER'">
+                  <q-btn
+                    flat
+                    round
+                    @click="showRemoveRoleDialog(role)"
+                    v-if="role.name !== 'MEMBER'"
+                  >
                     <q-icon name="close" color="negative">
                       <q-tooltip>Remove</q-tooltip>
                     </q-icon>
@@ -425,8 +436,8 @@ export default {
         to_on_fail: "none",
         error_msg: "An Error occurred! Please try again",
         has_commit: false,
-        show_feedback:false,
-        show_spinner:false,
+        show_feedback: false,
+        show_spinner: false,
         commit: "none",
         to_be_store_data: {
           required: false,

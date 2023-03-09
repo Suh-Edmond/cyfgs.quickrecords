@@ -118,6 +118,7 @@
               @edit-contribution="editContribution"
               @search-member-saving="searchMemberSaving"
               @search-members-contribution="searchMemberContribution"
+              @report-generation="reportGeneration"
             />
           </q-card-section>
         </q-card>
@@ -327,6 +328,10 @@ export default {
     },
 
     searchMemberContribution(data) {
+      this.updateDrawer(data);
+    },
+
+    reportGeneration(data) {
       this.updateDrawer(data);
     },
 

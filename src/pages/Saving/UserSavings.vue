@@ -2,32 +2,70 @@
   <q-page>
     <!-- spinners -->
     <div class="flex justify-center">
-      <q-spinner-ios color="primary" size="2em" class="q-mb-lg" v-if="getLoadingState" />
+      <q-spinner-ios
+        color="primary"
+        size="2em"
+        class="q-mb-lg"
+        v-if="getLoadingState"
+      />
     </div>
 
-    <NotFound :message="not_found_msg" v-if="getMemberSavings.length == 0 && !getLoadingState"></NotFound>
+    <NotFound
+      :message="not_found_msg"
+      v-if="getMemberSavings.length == 0 && !getLoadingState"
+    ></NotFound>
 
     <div v-if="getMemberSavings.length > 0 && !getLoadingState">
       <!-- header for filter categories -->
-      <div class="row q-ml-xs q-pt-xs" :class="$q.screen.lg ? 'q-pa-sm' : ''" :style="
-        $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-      ">
+      <div
+        class="row q-ml-xs q-pt-xs"
+        :class="$q.screen.lg ? 'q-pa-sm' : ''"
+        :style="
+          $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+        "
+      >
         <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
-          <q-select v-model="status" outlined dense :options="statuses" label="Select Status" @input="filterSavings" />
+          <q-select
+            v-model="status"
+            outlined
+            dense
+            :options="statuses"
+            label="Select Status"
+            @input="filterSavings"
+          />
         </div>
         <q-space />
         <div class="button q-pb-xs">
-          <q-btn :label="label_download" :loading="loading" :color="color_print" :disabled="false" no-caps
-            icon-right="print" @click="downloadSavings"></q-btn>
+          <q-btn
+            :label="label_download"
+            :loading="loading"
+            :color="color_print"
+            :disabled="false"
+            no-caps
+            icon-right="print"
+            @click="downloadSavings"
+          ></q-btn>
         </div>
       </div>
       <!-- table for savings -->
       <div class="row q-pt-sm" v-if="!start_filter">
         <div class="col-md-12 col-xs-12 col-sm-12">
-          <TableVue :columns="columns" :data="getMemberSavings" :label="label" :message="message"
-            :title="getCurrentMemberName" :show_savings="false" :show_member_savings="true"
-            :show_income_activity="false" :show_members="false" :show_contribution="false"
-            @view-member-saving="ViewMemberSaving" @edit-member-saving="editMemberSaving">
+          <TableVue
+            :columns="columns"
+            :data="getMemberSavings"
+            :label="label"
+            :message="message"
+            :title="getCurrentMemberName"
+            :show_savings="false"
+            :show_member_savings="true"
+            :show_income_activity="false"
+            :show_members="false"
+            :show_contribution="false"
+            :total_saving="getMemberTotalSaving"
+            @view-member-saving="ViewMemberSaving"
+            @edit-member-saving="editMemberSaving"
+
+          >
           </TableVue>
         </div>
       </div>
@@ -35,10 +73,21 @@
       <!-- table for filter savings -->
       <div class="row q-pt-sm" v-if="start_filter">
         <div class="col-md-12 col-xs-12 col-sm-12">
-          <TableVue :columns="columns" :data="filtered_savings" :label="label" :message="message"
-            :title="getCurrentMemberName" :show_savings="false" :show_member_savings="true"
-            :show_income_activity="false" :show_members="false" :show_contribution="false"
-            @view-member-saving="ViewMemberSaving" @edit-member-saving="editMemberSaving">
+          <TableVue
+            :columns="columns"
+            :data="filtered_savings"
+            :label="label"
+            :message="message"
+            :title="getCurrentMemberName"
+            :show_savings="false"
+            :show_member_savings="true"
+            :show_income_activity="false"
+            :show_members="false"
+            :total_saving="getMemberTotalSaving"
+            :show_contribution="false"
+            @view-member-saving="ViewMemberSaving"
+            @edit-member-saving="editMemberSaving"
+          >
           </TableVue>
         </div>
       </div>
@@ -102,7 +151,7 @@ export default {
           name: "action",
           label: "Action",
           field: "action",
-          align:"left"
+          align: "left",
         },
       ],
       label: "Delete",
@@ -150,6 +199,10 @@ export default {
     getLoadingState() {
       return this.$store.getters.getFetchingState;
     },
+
+    getMemberTotalSaving() {
+      return this.$store.getters.getMemberSavings.total_savings;
+    },
   },
   methods: {
     ViewMemberSaving(data) {
@@ -196,6 +249,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

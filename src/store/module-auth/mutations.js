@@ -145,3 +145,11 @@ export function SET_INTERMEDIATE_TABS(state, data) {
 export function SET_MEMBER_CONTRIBUTIONS(state, data) {
   state.member_contributions = data;
 }
+
+export function SET_PAYMENT_ACTIVITIES(state, data) {
+  state.payment_activities = data
+}
+
+export function SET_SPONSORSHIPS(state, data) {
+  state.sponsorships = data
+}

@@ -89,6 +89,7 @@
             :show_income_activity="false"
             :show_members="true"
             :show_contribution="false"
+            :total_members="getMembers.length"
             @fetch-members="getOrganisationMembers"
           >
           </TableVue>
@@ -106,6 +107,7 @@
             :show_income_activity="false"
             :show_members="true"
             :show_contribution="false"
+            :total_members="filteredMembers.length"
             @fetch-members="getOrganisationMembers"
           >
           </TableVue>

@@ -98,10 +98,14 @@
                       class="q-pr-xs gender_icon"
                     ></q-icon
                   ></span>
+                  <span
+                  class="q-pr-xs"></span>
                   Gender:
                   <span class="value value_code gender">{{
                     getUserInfo.gender
-                  }}</span></label
+                  }}</span>
+                  <span class="value value_code q-pl-lg" v-if="getUserInfo.gender == null">Not Set</span>
+                  </label
                 >
               </div>
               <div class="flex q-pb-lg">
@@ -202,6 +206,17 @@
                   >
                   <q-input v-model="user.name" outlined dense type="text" />
                 </div>
+                <div>
+                <label for="credential" class="form_field"
+                  >Gender <span class="text-red">*</span></label
+                >
+                <q-select
+                  v-model="user.gender"
+                  outlined
+                  dense
+                  :options="gender_options"
+                />
+              </div>
                 <div>
                   <label for="credential" class="form_field">Email</label>
                   <q-input v-model="user.email" outlined dense type="email" />
@@ -394,6 +409,7 @@ export default {
       user: {
         name: LocalStorage.getItem("data").name,
         email: LocalStorage.getItem("data").email,
+        gender: LocalStorage.getItem("data").gender,
         address: LocalStorage.getItem("data").address,
         occupation: LocalStorage.getItem("data").occupation,
         user_id: LocalStorage.getItem("data").id,
@@ -411,6 +427,7 @@ export default {
       is_confirm_pwd: true,
       is_old_pwd: true,
       no_caps: true,
+      gender_options: ["MALE", "FEMALE", "OTHER"],
     };
   },
   computed: {
@@ -584,7 +601,7 @@ export default {
         commit: "none",
         has_commit: false,
       };
-      this.$store.dispatch("uploadImageRequest", payload).then((res) => {
+      this.$store.dispatch("uploadImageRequest", payload).then(() => {
         let get_file_payload = {
           url: `/api/v1/protected/file?directory=${directory}&fileCategory=${fileCategory}&fileName=${e.target.files[0].name}`,
           data: formData,

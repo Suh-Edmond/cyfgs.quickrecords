@@ -270,16 +270,16 @@
       <!-- slot for table headings -->
       <template v-slot:top-left>
         <div class="text-h6 title" v-show="show_payment_item">
-          Category: {{ title }}
+          Payment Category: {{ title }}
         </div>
         <div
           class="text-h6 title"
           v-show="show_expenditure_item && title != null"
         >
-          Category: {{ title }}
+          Expenditure Category: {{ title }}
         </div>
         <div class="text-h6 title" v-show="show_expenditure_item_detail">
-          Item: {{ title }}
+          Expenditure Item: {{ title }}
         </div>
       </template>
 
@@ -302,6 +302,27 @@
         </q-input>
       </template>
     </q-table>
+
+    <!-- slots for totals -->
+    <q-card v-if="show_expenditure_item_detail">
+      <q-card-section>
+        <div class="text-bold">
+           <div class="q-pb-sm">
+            Total Expenditure Item Amount: {{ expenditure_item_amount }} XAF
+           </div>
+           <div class="q-pb-sm">
+            Total Amount Given: {{ total_amount_given }} XAF
+           </div>
+           <div class="q-pb-sm">
+            Total Amount Spent: {{ total_amount_spent }} XAF
+           </div>
+           <div class="q-pb-sm">
+            Total Balance: {{ balance }} XAF
+           </div>
+        </div>
+      </q-card-section>
+    </q-card>
+
 
     <!-- confirmation delete category dialog -->
     <q-dialog v-model="dialog" v-if="dialog">
@@ -439,6 +460,22 @@ export default {
       type: Boolean,
       required: false,
     },
+    expenditure_item_amount: {
+      type: Number,
+      required:false
+    },
+    total_amount_given: {
+      type: Number,
+      required:false
+    },
+    total_amount_spent :{
+      type: Number,
+      required:false
+    },
+    balance: {
+      type: Number,
+      required:false
+    }
   },
 
   data() {

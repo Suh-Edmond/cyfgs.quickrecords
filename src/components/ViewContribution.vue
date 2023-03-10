@@ -1,101 +1,73 @@
 <template>
   <div class="q-pa-md">
-    <div class="q-mt-sm">
+    <div class="q-px-md">
       <div class="flex q-pb-md">
-        <label for="name" class="label"><span> <q-icon name="category" size="xs" /> </span> Payment Item:
+        <label for="name" class="label"><span> <q-icon name="category" size="xs" class="q-pr-sm" /> </span>Payment Activity:
           <span class="value value_item">{{ getSelectedContribution.payment_item_name }}</span></label>
       </div>
       <div class="flex q-pb-md">
-        <label for="name" class="label"><span> <q-icon name="monetization_on" size="xs" /> </span> Total Amount Payable:
+        <label for="name" class="label"><span> <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span>Total Amount Payable:
           <span class="value value_amount">{{ Number(getSelectedContribution.payment_item_amount).toLocaleString() }}
             XAF</span></label>
       </div>
       <div class="flex q-pb-md">
-        <label for="name" class="label"><span> <q-icon name="check" size="xs" /> </span> Complusory:
+        <label for="name" class="label"><span> <q-icon name="check" size="xs" class="q-pr-sm" /> </span>Complusory:
           <span class="value value_complusory" v-if="getSelectedContribution.payment_item_complusory">YES</span>
           <span class="value value_complusory" v-if="!getSelectedContribution.payment_item_complusory">NO</span></label>
 
       </div>
       <div class="flex q-pb-md">
-        <label for="name" class="label"><span> <q-icon name="person" size="xs" /> </span>  Member's Name:
+        <label for="name" class="label"><span> <q-icon name="person" size="xs" class="q-pr-sm"/> </span>Member's Name:
           <span class="value value_name">{{ getSelectedContribution.user_name }}</span></label>
       </div>
       <div class="flex q-pb-md">
-        <label for="name" class="label"> <span> <q-icon name="monetization_on" size="xs" /> </span> Amount:
+        <label for="name" class="label"> <span> <q-icon name="monetization_on" size="xs" class="q-pr-sm"/> </span>Amount:
           <span class="value value_amount_paid">{{ Number(getSelectedContribution.amount_deposited).toLocaleString() }}
             XAF</span></label>
       </div>
       <div class="flex q-pb-md">
-        <label for="name" class="label"><span> <q-icon name="monetization_on" size="xs" /> </span> Total Amount Paid:
+        <label for="name" class="label"><span> <q-icon name="monetization_on" size="xs" class="q-pr-sm"/> </span>Total Amount Paid:
           <span class="value value_amount_total">{{ Number(computeTotalAmountContributed).toLocaleString() }}
             XAF</span></label>
       </div>
       <div class="flex q-pb-md">
-        <label for="name" class="label"> <span> <q-icon name="monetization_on" size="xs" /> </span> Balance: <span
+        <label for="name" class="label"> <span> <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span>Balance: <span
             class="value value_balance">{{ Number(getSelectedContribution.balance).toLocaleString() }} XAF</span></label>
       </div>
       <div class="flex q-pb-md">
-        <label for="name" class="label"><span> <q-icon name="schedule" size="xs" /> </span> Payment Date:
+        <label for="name" class="label"><span> <q-icon name="schedule" size="xs" class="q-pr-sm"/> </span>Payment Date:
           <span class="value value_date">{{ getFormatedCreatedDate }}</span></label>
       </div>
       <div class="flex q-pb-md">
-        <label for="status" class="label" v-show="getSelectedContribution.approve == 'DECLINED'"><span> <q-icon name="check_circle" size="xs" /> </span> Transaction Status:
+        <label for="status" class="label" v-show="getSelectedContribution.approve == 'DECLINED'"><span> <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span>Transaction Status:
           <span class=" value_trxn unapproved_color">{{getSelectedContribution.approve}}</span></label>
-        <label for="status" class="label" v-show="getSelectedContribution.approve == 'APPROVED'"><span> <q-icon name="check_circle" size="xs" /> </span> Transaction Status:
+        <label for="status" class="label" v-show="getSelectedContribution.approve == 'APPROVED'"><span> <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span>Transaction Status:
           <span class=" value_trxn approved_color"> {{getSelectedContribution.approve}}</span></label>
-          <label for="status" class="label" v-show="getSelectedContribution.approve == 'PENDING'"><span> <q-icon name="check_circle" size="xs" /> </span> Transaction Status:
+          <label for="status" class="label" v-show="getSelectedContribution.approve == 'PENDING'"><span> <q-icon name="check_circle" size="xs" class="q-pr-sm"/> </span>Transaction Status:
           <span class=" value_trxn pending_color"> {{getSelectedContribution.approve}}</span></label>
       </div>
       <div class="flex q-pb-md">
-        <label for="name" class="label" v-show="getSelectedContribution.status == 'INCOMPLETE'"><span> <q-icon name="check_circle" size="xs" /> </span> Payment Status:
+        <label for="name" class="label" v-show="getSelectedContribution.status == 'INCOMPLETE'"><span> <q-icon name="check_circle" size="xs" class="q-pr-sm"/> </span>Payment Status:
           <span class="unapproved_color q-pl-md value_status">{{ getSelectedContribution.status }}</span></label>
 
-        <label for="name" class="label" v-show="getSelectedContribution.status == 'COMPLETE'"><span> <q-icon name="check_circle" size="xs" /> </span> Payment Status:
+        <label for="name" class="label" v-show="getSelectedContribution.status == 'COMPLETE'"><span> <q-icon name="check_circle" size="xs" class="q-pr-sm"/> </span>Payment Status:
           <span class="value text-secondary q-pl-md value_status">{{ getSelectedContribution.status }}</span></label>
       </div>
       <div class="flex q-pb-lg">
-        <label for="name" class="label"><span> <q-icon name="badge" size="xs" /> </span> Transaction code:
+        <label for="name" class="label"><span> <q-icon name="badge" size="xs" class="q-pr-sm"/> </span>Transaction code:
           <span class="value  q-pl-md value_code">{{ getSelectedContribution.code }}</span></label>
       </div>
       <div class="flex q-pb-lg">
-        <label for="name" class="label"><span> <q-icon name="person" size="xs" /> </span> Created By:
+        <label for="name" class="label"><span> <q-icon name="person" size="xs" class="q-pr-sm"/> </span>Created By:
           <span class="value  q-pl-md value_created_by">{{ getSelectedContribution.updated_by }}</span></label>
       </div>
       <div class="flex q-pb-md">
-        <label for="name" class="label"><span> <q-icon name="description" size="xs" /> </span> Comment: </label>
+        <label for="name" class="label"><span> <q-icon name="description" size="xs" class="q-pr-sm"/> </span>Comment: </label>
       </div>
       <p class="value_comment">
           {{ getSelectedContribution.comment }}
         </p>
     </div>
-    <!-- edit contribution has been remove -->
-    <!-- <div align="end" class="q-mt-md">
-      <q-btn color="primary" no-caps size="sm" round @click="editContribution">
-        <q-icon name="edit" size="xs"></q-icon>
-      </q-btn>
-    </div> -->
-
-
-
-
-    <!-- image for receipt for contribution -->
-    <q-dialog v-model="show_image" :position="position">
-      <q-card style="width: 360px" :class="$q.screen.lg ? 'q-mr-md' : 'q-mx-sm'">
-        <q-bar>
-          <div></div>
-          <q-space />
-          <q-btn dense flat icon="close" v-close-popup>
-            <q-tooltip>Close</q-tooltip>
-          </q-btn>
-        </q-bar>
-        <q-card-section>
-          <div>
-            <q-img src="https://cdn.quasar.dev/img/mountains.jpg" spinner-color="white"
-              style="height: 100%; width: 100%px" />
-          </div>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
   </div>
 </template>
 
@@ -243,7 +215,7 @@ export default {
 }
 
 .value_name {
-  padding-left: 2.5rem;
+  padding-left: 3.9rem;
 }
 
 .value_item {
@@ -251,47 +223,44 @@ export default {
 }
 
 .value_amount {
-  padding-left: 0.2rem;
+  padding-left: 1.5rem;
 }
 
 .value_date {
-  padding-left: 3.6rem;
+  padding-left: 4.9rem;
 }
 
 .value_trxn {
-  padding-left: 1.9rem;
+  padding-left: 3.1rem;
 }
 
 .value_status {
-  padding-left: 3rem;
-}
-
-.value_code {
-  padding-left: 2.4rem;
-}
-
-.value_amount_paid {
-  padding-left: 6rem;
-}
-
-.value_amount_total {
-  padding-left: 1.8rem;
-}
-
-.value_balance {
-  padding-left: 6rem;
-}
-
-.button {
-  width: 90px;
-}
-
-.value_complusory {
   padding-left: 4.4rem;
 }
 
+.value_code {
+  padding-left: 4rem;
+}
+
+.value_amount_paid {
+  padding-left: 7.2rem;
+}
+
+.value_amount_total {
+  padding-left: 3rem;
+}
+
+.value_balance {
+  padding-left: 7.2rem;
+}
+
+
+.value_complusory {
+  padding-left: 5.5rem;
+}
+
 .value_created_by {
-  padding-left: 5rem;
+  padding-left: 6.5rem;
 }
 
 .pending_color {

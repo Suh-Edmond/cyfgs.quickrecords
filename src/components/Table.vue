@@ -412,11 +412,17 @@
     <!-- confirmation dialog for delete -->
     <q-dialog v-model="dialog" v-if="dialog">
       <q-card>
-        <q-card-section>
-          <div>
-            <label class="q-ml-sm text-dark">{{ message }}</label>
+        <q-card-section class="q-pa-lg">
+          <div class="q-mb-sm">
+            <label class="message text-dark">{{ message }}</label>
           </div>
-          <div class="text-weight-bold text-center">{{ deleted_row.name }}</div>
+          <div class="text-weight-bold text-left text-red" v-if="!show_contribution">Name: <span class="q-pl-md" :class="show_members?'name':' q-ml-md'">{{ deleted_row.name }}</span></div>
+          <div class="text-weight-bold text-left text-red" v-if="show_contribution">Member's Name: <span class="member_name">{{ deleted_row.user_name }}</span></div>
+          <div class="text-weight-bold text-left text-red" v-if="show_members">Telephone: <span class="q-pl-md">{{ deleted_row.telephone }}</span></div>
+          <div class="text-weight-bold text-left text-red" v-if="show_income_activity"> Amount: <span class="amount">{{ Number(deleted_row.amount).toLocaleString() }} XAF</span></div>
+          <div class="text-weight-bold text-left text-red" v-if="show_contribution"> Amount Deposited: <span class="amount">{{ Number(deleted_row.amount_deposited).toLocaleString() }} XAF</span></div>
+          <div class="text-weight-bold text-left text-red" v-if="show_income_activity"> Date: <span class="date">{{ getDate(deleted_row.date) }}</span></div>
+          <div class="text-weight-bold text-left text-red" v-if="show_contribution">Payment Activity: <span class="payment_item_name">{{ deleted_row.payment_item_name }}</span></div>
         </q-card-section>
         <q-card-actions align="right">
           <q-btn
@@ -651,6 +657,11 @@ export default {
     };
   },
   methods: {
+    getDate(date){
+      return moment(date).format(
+        "MMMM Do YYYY"
+      );
+    },
     onEditMember(data) {
       let payload = {
         url: `/api/protected/organisations/users/${data.id}`,
@@ -1005,8 +1016,9 @@ export default {
 
 
 .dialog_button {
-  font-size: small;
+  font-size: .9rem;
   font-weight: 500;
+  margin-bottom: .5rem;
 }
 
 .approve_btn {
@@ -1040,5 +1052,34 @@ export default {
 
 .title{
   font-size: small;
+}
+.message {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 15px;
+  align-items: center;
+  letter-spacing: 0.01em;
+  color: $grey2;
+}
+
+.name {
+  margin-left: 1.8rem;
+}
+
+.date {
+  margin-left: 2.6rem;
+}
+
+.amount {
+  margin-left: 1.2rem;
+}
+
+.payment_item_name {
+  margin-left: 1.8rem;
+}
+
+.member_name {
+  margin-left: 2.1rem;
 }
 </style>

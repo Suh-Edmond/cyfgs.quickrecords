@@ -420,4 +420,12 @@ export default {
   letter-spacing: 0.01em;
   color: $grey2;
 }
+
+.approve {
+  color: $secondary;
+}
+
+.decline {
+  color: $orange;
+}
 </style>

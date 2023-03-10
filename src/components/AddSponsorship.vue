@@ -133,7 +133,7 @@ export default {
   methods: {
     onAddSponsorship() {
       this.loading = true;
-      let saved_sponsorship = this.$store.getters.getSelectedSponsorship;
+      let saved_sponsorship_id = this.$store.getters.getSelectedSponsorship != null ? this.$store.getters.getSelectedSponsorship.id : null;
       let payload = {
         url: `/api/protected/activity-supports`,
         data: {
@@ -156,7 +156,7 @@ export default {
           data: [],
         },
       };
-      this.dispatchAction(payload, saved_sponsorship.id);
+      this.dispatchAction(payload, saved_sponsorship_id);
     },
 
 

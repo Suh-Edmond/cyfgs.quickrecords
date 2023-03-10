@@ -30,7 +30,7 @@
 
           <q-td key="action" :props="props">
             <!-- button to handle edit, view and delete of row data -->
-            <q-btn flat round>
+            <q-btn flat round v-if="!checkTreasurerRole()">
               <q-icon
                 name="more_vert"
                 size="xs"
@@ -222,6 +222,7 @@
 <script>
 import { LocalStorage } from "quasar";
 import SponsorshipMixin from "src/mixins/SponsorshipMixin.vue";
+import moment from "moment";
 
 export default {
   mixins:[SponsorshipMixin],
@@ -297,9 +298,19 @@ export default {
       this.deleted_row = data
     },
 
-    onDeclineRecord(data, type) {},
+    onDeclineRecord(row, state) {
+      this.show_approve_dialog = true;
+      this.approve_data = row;
+      this.chosen_state = state;
+      this.approve_msg = ` ${Number(row.amount_deposited).toLocaleString() } XAF Sponsorship by ${row.supporter} for ${row.payment_item.name}?`;
+    },
 
-    onApprovedRecord(data, type) {},
+    onApprovedRecord(row, state) {
+      this.show_approve_dialog = true;
+      this.approve_data = row;
+      this.chosen_state = state;
+      this.approve_msg = ` ${Number(row.amount_deposited).toLocaleString() } XAF Sponsorship by ${row.supporter} for ${row.payment_item.name}?`;
+    },
 
     checkTreasurerRole() {
       const treasurer_role = LocalStorage.getItem("data").roles.find(
@@ -331,7 +342,35 @@ export default {
       });
     },
 
-    onChangeRecordState() {},
+    onChangeRecordState() {
+      let state = this.chosen_state == 'Approve' ? 'APPROVED':'DECLINED'
+      let payload = {
+        url: `/api/protected/sponsorships/${this.approve_data.id}/approve?type=${state}`,
+        msg: `Sponsorship has been ${this.chosen_state} successfully`,
+        data: null,
+        color: "default",
+        to_on_ok: "none",
+        to_on_fail: "none",
+        show_feedback: true,
+        error_msg: "An Error occurred! Please try again",
+        has_commit: false,
+        commit: "none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.$store.dispatch("putRequest", payload).then((res) => {
+        if (res.status == 200) {
+         if(this.approve_data.payment_item == null){
+          this.getAllSponsorships();
+         }else{
+          this.getSponsorships(this.approve_data.payment_item.id);
+         }
+        }
+      });
+    },
   },
   components: {},
 };
@@ -369,14 +408,7 @@ export default {
 .decline_btn {
   background-color: $orange;
   color: white;
-}
-
-.approve {
-  color: $secondary;
-}
-
-.decline {
-  color: $orange;
+  margin-right: 3rem;
 }
 
 .message {

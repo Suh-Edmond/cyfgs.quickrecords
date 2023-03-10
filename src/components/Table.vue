@@ -1037,4 +1037,8 @@ export default {
 .decline {
   color: $orange;
 }
+
+.title{
+  font-size: small;
+}
 </style>

@@ -17,6 +17,8 @@
 
     <div v-if="getExpenditureItems.length > 0 && !getLoadingState">
       <!-- header for filter categories -->
+
+
       <div
         class="row q-ml-xs q-pt-xs"
         :class="$q.screen.lg ? 'q-pa-sm' : ''"
@@ -26,27 +28,63 @@
       >
         <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
           <q-select
+            v-model="payment_item_id"
+            outlined
+            dense
+            :options="getPaymentActivities"
+            label="Select payment activity"
+          >
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey"> No results </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
+        </div>
+        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-pl-md">
+          <q-select
             v-model="status"
             outlined
             dense
             :options="statuses"
-            label="Select Status"
-            @input="filterItems"
-          />
+            label="Select status"
+          >
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey"> No results </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
         </div>
-        <q-space />
-        <div class="button q-pb-xs">
-          <q-btn
-            label="Print"
-            :loading="loading"
-            color="positive"
-            :disabled="false"
-            no-caps
-            icon-right="print"
-            @click="downloadExpenditureItems"
-          ></q-btn>
+        <div class="col-md-6 col-lg-6 col-xs-12 col-sm-12 flex q-pl-md">
+          <div>
+            <q-btn
+              label="Filter"
+              color="primary"
+              :disabled="validateFilter"
+              no-caps
+              icon-right="filter_list"
+              @click="filterItems"
+            >
+            </q-btn>
+          </div>
+          <q-space />
+          <div class="button q-pb-xs">
+            <q-btn
+              label="Print"
+              :loading="loading"
+              color="positive"
+              :disabled="false"
+              no-caps
+              icon-right="print"
+              @click="downloadExpenditureItems"
+
+            ></q-btn>
+          </div>
         </div>
       </div>
+
+
       <!-- table for categories -->
       <div>
         <div class="row q-pt-sm">
@@ -74,10 +112,11 @@
               :data="filtered_items"
               :label="label"
               :message="message"
-              :title="getExpenditureCategoryName"
+              :title="getTableTitle"
               :show_payment_category="false"
               :show_payment_item="false"
               :show_expenditure_category="false"
+              :show_expenditure_item_name="true"
               :show_expenditure_item="true"
               @edit-expenditure-item="editExpenditureItem"
               @show-expenditure-item-details="showExpenditureItemDetails"
@@ -156,12 +195,16 @@ export default {
       label: "Delete",
       message: "Are you sure you want to delete this Expenditure Item?",
       statuses: ["PENDING", "APPROVED", "DECLINED", "ALL"],
-      status: null,
+      status: "",
       start_filter: false,
       filtered_items: [],
+      payment_item_id:null
     };
   },
   computed: {
+    validateFilter (){
+      return this.payment_item_id == null;
+    },
     getExpenditureItems() {
       let items = [];
       items = this.getExpenditureItemsFromState();
@@ -172,13 +215,37 @@ export default {
       return this.$store.getters.getCurrentExpenditureCategory.name;
     },
 
+    getTableTitle(){
+      let title = ""
+      if(this.payment_item_id != null){
+        title = `Expenditures for ${this.payment_item_id.label}`
+      }
+      return title;
+    },
+
     getNotFoundMsgForPaymentItems() {
-      return `Ooops!! No Expenditure Items found for this Category [${this.$store.getters.getCurrentExpenditureCategory.name}]. Click the add button to add Expenditure Items.`;
+      let title = "";
+      if(this.$store.getters.getCurrentExpenditureCategory != null){
+        title = `Ooops!! No Expenditure Items found for this Category [${this.$store.getters.getCurrentExpenditureCategory.name}]. Click the add button to add Expenditure Items.`;
+      }
+      return title
     },
 
     getLoadingState() {
       return this.$store.getters.getFetchingState;
-    }
+    },
+
+    getPaymentActivities() {
+      let data = [];
+      this.$store.getters.getPaymentActivities.forEach((ele) => {
+        data.push({
+          label: ele.name,
+          value: ele.id,
+          amount: ele.amount,
+        });
+      });
+      return data;
+    },
   },
   methods: {
     editExpenditureItem(data) {
@@ -241,8 +308,8 @@ export default {
     downloadExpenditureItems() {
       let expenditure_category_id =
         this.$store.getters.getCurrentExpenditureCategory.id;
-      let state = this.status === "APPROVED" ? 1 : 0;
-      let url = `/api/protected/expenditure-items/download?expenditure_category_id=${expenditure_category_id}&status=${state}`;
+      let payment_item_id = this.payment_item_id != null ? this.payment_item_id.value : "";
+      let url = `/api/protected/expenditure-categories/expenditure-items/download?expenditure_category_id=${expenditure_category_id}&status=${this.status}&payment_item_id=${payment_item_id}`;
       let file_name = "Expenditure_Items.pdf";
       this.loading = this.downloadPdf(url, file_name);
     },
@@ -255,11 +322,11 @@ export default {
 
       this.$router.push({
         path: `/dashboard/expenditure-categories/${expenditure_category.id}/items`,
-        query: { status: this.status },
+        query: { payment_item_id: this.payment_item_id.label, status: this.status },
       });
 
       let payload = {
-        url: `/api/protected/expenditure-categories/${expenditure_category.id}/expenditure-items?status=${this.status}`,
+        url: `/api/protected/expenditure-items/payment-items/${this.payment_item_id.value}?status=${this.status}`,
         msg: "none",
         color: "default",
         status: "none",
@@ -304,7 +371,6 @@ export default {
       return this.filtered_items;
     },
 
-
     fetchPaymentActivities() {
       let payload = {
         status: "none",
@@ -324,7 +390,7 @@ export default {
         },
       };
       this.$store.dispatch("getRequest", payload).then(() => {});
-    }
+    },
   },
   components: {
     NotFound,

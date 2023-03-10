@@ -18,7 +18,19 @@ export default {
       }
 
       return items;
-    }
+    },
+
+    getPaymentActivities() {
+      let data = [];
+      this.$store.getters.getPaymentActivities.forEach((ele) => {
+        data.push({
+          label: ele.name,
+          value: ele.id,
+          amount: ele.amount,
+        });
+      });
+      return data;
+    },
   },
 
 

@@ -274,9 +274,15 @@
         </div>
         <div
           class="text-h6 title"
-          v-show="show_expenditure_item && title != null"
+          v-show="show_expenditure_item && title != null && !show_expenditure_item_name"
         >
           Expenditure Category: {{ title }}
+        </div>
+        <div
+          class="text-h6 title"
+          v-show="show_expenditure_item_name"
+        >
+          {{ title }}
         </div>
         <div class="text-h6 title" v-show="show_expenditure_item_detail">
           Expenditure Item: {{ title }}
@@ -467,6 +473,10 @@ export default {
     },
     balance: {
       type: Number,
+      required:false
+    },
+    show_expenditure_item_name:{
+      type: Boolean,
       required:false
     }
   },

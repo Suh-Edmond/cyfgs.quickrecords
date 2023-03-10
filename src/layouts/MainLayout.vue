@@ -321,7 +321,7 @@
               </q-item-section>
             </q-item>
           </q-list>
-          <q-list padding>
+          <q-list padding class="logout">
             <q-item
               clickable
               v-ripple
@@ -704,5 +704,10 @@ export default {
 .sponsorship_icon {
   color: $grey2;
   width: 1.13rem;
+}
+
+.logout {
+  position: absolute;
+  top: 91%;
 }
 </style>

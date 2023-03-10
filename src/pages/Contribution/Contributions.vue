@@ -305,9 +305,11 @@ export default {
     },
 
     getTableTitleForSearchContributions() {
-      return this.$store.getters.getSearchSavingParams != undefined
+      let title = ""
+      title = this.$store.getters.getSearchSavingParams != undefined
         ? `Members Contributions for ${this.$store.getters.getSearchSavingParams.payment_item_id.name}, Amount Payable:  ${Number(this.$store.getters.getSearchSavingParams.payment_item_id.amount).toLocaleString()} XAF`
         : "";
+      return title
     },
   },
 

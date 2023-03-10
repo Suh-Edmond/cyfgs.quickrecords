@@ -141,12 +141,12 @@
         </div>
       </div>
 
-      <div class="row justify-end q-mt-lg">
-        <div class="col-md-3 col-sm-3 col-xs-3">
+      <div class="flex justify-end q-mt-lg">
+        <div class="q-mr-xl">
           <q-btn label="Reset" color="primary" no-caps outline @click="reset()">
           </q-btn>
         </div>
-        <div class="col-md-3 col-sm-3 col-xs-3 col-lg-3">
+        <div>
           <q-btn
             class="filter_btn"
             label="Filter"

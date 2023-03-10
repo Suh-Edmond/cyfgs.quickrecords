@@ -56,7 +56,6 @@
               color="primary"
               :disabled="validateFilter"
               no-caps
-              :loading="loading_filter"
               icon-right="filter_list"
               @click="filterSponsorship"
             >
@@ -116,7 +115,6 @@ export default {
     return {
       statuses: ["PENDING", "APPROVED", "DECLINED", "ALL"],
       status: "",
-      loading_filter: false,
       columns: [
         {
           name: "counter",
@@ -225,7 +223,6 @@ export default {
   },
   methods: {
     filterSponsorship() {
-      this.loading_filter = true;
       let payload = {
         status: "none",
         url: `/api/protected/sponsorships/search?payment_item_id=${this.payment_item_id.value}&status=${this.status}`,
@@ -244,7 +241,6 @@ export default {
         },
       };
       this.$store.dispatch("getRequest", payload).then(() => {
-        this.loading_filter = false
       })
 
     },

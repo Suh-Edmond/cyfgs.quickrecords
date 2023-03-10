@@ -1,7 +1,7 @@
 <template>
   <div class="q-pa-md">
     <div class="q-ml-sm q-mb-lg">
-      <label class="text-muted"
+      <label class="text-muted info"
         >All fields with <span class="text-red">*</span> are required</label
       >
     </div>
@@ -189,5 +189,10 @@ export default {
   text-align: center;
   align-items: center;
   letter-spacing: 0.01em;
+}
+
+
+.info {
+  color: $grey2;
 }
 </style>

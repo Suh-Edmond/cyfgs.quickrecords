@@ -155,6 +155,24 @@
                         <q-item-label class="details">View</q-item-label>
                       </q-item-section>
                     </q-item>
+                    <!-- view expenditure item -->
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onViewExpenditureItem(props.row)"
+                      v-if="show_expenditure_item"
+                    >
+                      <q-item-section avatar>
+                        <span>
+                          <q-icon name="visibility" size="xs" class="details" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="details">View</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <q-separator v-if="show_expenditure_item" />
+                    <!-- edit expenditure item -->
                     <q-item
                       clickable
                       v-close-popup
@@ -170,6 +188,9 @@
                         <q-item-label class="details">Edit</q-item-label>
                       </q-item-section>
                     </q-item>
+
+
+                    <!-- show all details for expenditures -->
                     <q-separator v-if="show_expenditure_item" />
                     <q-item
                       clickable
@@ -179,7 +200,7 @@
                     >
                       <q-item-section avatar>
                         <span>
-                          <q-icon name="visibility" size="xs" class="details" />
+                          <q-icon name="info" size="xs" class="details" />
                         </span>
                       </q-item-section>
                       <q-item-section>
@@ -804,6 +825,14 @@ export default {
     showDetails(data) {
       this.$store.dispatch("setExpenditureItemName", data.name);
       this.getExpenditureDetailsByItemId(data.id);
+    },
+
+    onViewExpenditureItem(data) {
+      let payload = {
+        data: data,
+        tab: "Expenditure Activity Information",
+      };
+      this.$emit("view-expenditure-item", payload);
     }
   },
   components: {},

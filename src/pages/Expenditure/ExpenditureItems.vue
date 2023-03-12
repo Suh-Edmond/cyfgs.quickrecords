@@ -100,6 +100,7 @@
               :show_expenditure_category="false"
               :show_expenditure_item="true"
               @edit-expenditure-item="editExpenditureItem"
+              @view-expenditure-item="viewExpenditureItem"
               @show-expenditure-item-details="showExpenditureItemDetails"
             >
             </CategoryTable>
@@ -119,6 +120,7 @@
               :show_expenditure_item_name="true"
               :show_expenditure_item="true"
               @edit-expenditure-item="editExpenditureItem"
+              @view-expenditure-item="viewExpenditureItem"
               @show-expenditure-item-details="showExpenditureItemDetails"
             >
             </CategoryTable>
@@ -256,6 +258,13 @@ export default {
       this.$emit("edit-expenditure-item", data);
     },
 
+    viewExpenditureItem(data) {
+      console.log(data);
+      this.$store.dispatch("setUpdatedExpenditureItem", data.data);
+
+      this.$emit("view-expenditure-item", data);
+    },
+
     showExpenditureItemDetails(data) {
       this.$store.dispatch("setCurrentExpenditureItem", {
         id: data.expenditure_item.id,
@@ -290,7 +299,7 @@ export default {
           date: ele.date,
           comment: ele.comment,
           approve: ele.approve,
-          expenditure_category_id: ele.expenditure_category_id,
+          expenditure_category: ele.expenditure_category,
           created_at: ele.created_at,
           updated_at: ele.updated_at,
           updated_by: ele.updated_by,
@@ -299,6 +308,7 @@ export default {
           total_amount_spent: ele.total_amount_spent,
           total_balance: ele.total_balance,
           type: "EXPENDITURE_ITEMS",
+          payment_item:ele.payment_item
         });
       });
 

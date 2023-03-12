@@ -109,6 +109,7 @@
               @update-payment-item="updatePaymentItem"
               @update-expenditure-category="updateExpenditureCategory"
               @edit-expenditure-item="editExpenditureItem"
+              @view-expenditure-item="viewExpenditureItem"
               @edit-expenditure-item-detail="editExpenditureItemDetail"
               @edit-member-saving="editMemberSaving"
               @view-member-saving="viewMemberSaving"
@@ -268,6 +269,12 @@ export default {
     editExpenditureItem(data) {
       this.updateDrawer(data);
     },
+
+
+    viewExpenditureItem(data) {
+      this.updateDrawer(data);
+    },
+
     editExpenditureItemDetail(data) {
       this.updateDrawer(data);
     },

@@ -195,7 +195,7 @@
                     <q-item
                       clickable
                       v-close-popup
-                      @click="onViewExpenditureItemDetail(props.row)"
+                      @click="onViewExpenditureItemDetails(props.row)"
                       v-if="show_expenditure_item"
                     >
                       <q-item-section avatar>
@@ -207,6 +207,22 @@
                         <q-item-label class="details">Details</q-item-label>
                       </q-item-section>
                     </q-item>
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onViewItemDetail(props.row)"
+                      v-if="show_expenditure_item_detail"
+                    >
+                      <q-item-section avatar>
+                        <span>
+                          <q-icon name="visibility" size="xs" class="details" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="details">View</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <q-separator v-if="show_expenditure_item_detail" />
                     <q-item
                       clickable
                       v-close-popup
@@ -603,7 +619,7 @@ export default {
       });
     },
 
-    onViewExpenditureItemDetail(expenditure_item) {
+    onViewExpenditureItemDetails(expenditure_item) {
       let has_intermediate_tab = true;
       let category = this.$store.getters.getCurrentExpenditureCategory;
       this.$router.push({
@@ -638,6 +654,14 @@ export default {
         tab: "Expenditure Item Details",
       };
       this.$emit("edit-expenditure-item-detail", payload);
+    },
+
+    onViewItemDetail(data) {
+      let payload = {
+        data: data,
+        tab: "Expenditure Activity Detail Information",
+      };
+      this.$emit("view-expenditure-item-detail", payload);
     },
 
     deletedRow(deleted_data) {

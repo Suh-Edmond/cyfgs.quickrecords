@@ -111,6 +111,7 @@
               @edit-expenditure-item="editExpenditureItem"
               @view-expenditure-item="viewExpenditureItem"
               @edit-expenditure-item-detail="editExpenditureItemDetail"
+              @view-expenditure-item-detail="viewExpenditureItemDetail"
               @edit-member-saving="editMemberSaving"
               @view-member-saving="viewMemberSaving"
               @edit-income-activity="editIncomeActivity"
@@ -276,6 +277,10 @@ export default {
     },
 
     editExpenditureItemDetail(data) {
+      this.updateDrawer(data);
+    },
+
+    viewExpenditureItemDetail(data){
       this.updateDrawer(data);
     },
     getCurrentRightDrawerTab() {

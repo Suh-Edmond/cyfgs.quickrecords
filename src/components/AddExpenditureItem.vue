@@ -5,7 +5,7 @@
         >All fields with <span class="text-red">*</span> are required</label
       >
     </div>
-    <div class="q-mt-md q-mx-md" v-if="!getEditState">
+    <div class="q-mt-md q-mx-md">
       <q-form @submit="onAddExpenditureItem" class="q-gutter-sm">
         <div class="q-mb-md">
           <label for="name" class="form_field"
@@ -102,92 +102,16 @@
           <div>
             <ButtonVue
               class="form_button"
-              :label="label_save"
+              :label="'Save'"
               :loading="loading"
-              :color="color"
+              :color="'primary'"
               :disabled="validateForm"
-              :no_caps="no_caps"
+              :no_caps="true"
             >
             </ButtonVue>
           </div>
         </div>
       </q-form>
-    </div>
-    <div class="q-mt-md" v-if="getEditState">
-      <div class="q-mb-md">
-        <label for="expenditure_category_name" class="field"
-          >Expenditure Category:
-          <span class="field_value q-pl-md">{{
-            getCurrentExpenditureCategory.name
-          }}</span></label
-        >
-      </div>
-      <div class="q-mb-md">
-        <label for="expenditure_item" class="field"
-          >Expenditure Item:
-          <span class="field_value item_value">{{
-            getUpdatedExpenditureFromState.name
-          }}</span></label
-        >
-      </div>
-      <div class="q-mb-md">
-        <label for="venue" class="field"
-          >Venue:
-          <span class="field_value item_venue">{{
-            getUpdatedExpenditureFromState.venue
-          }}</span></label
-        >
-      </div>
-      <div class="q-mb-md">
-        <label for="date" class="field"
-          >Date:
-          <span class="field_value item_date">{{
-            getUpdatedExpenditureFromState.date
-          }}</span></label
-        >
-      </div>
-      <div class="q-mb-md">
-        <label for="amount" class="field"
-          >Amount:
-          <span class="field_value item_amount">
-            {{ getUpdatedExpenditureFromState.amount }} XAF</span
-          ></label
-        >
-      </div>
-      <div class="q-mb-md">
-        <label
-          for="status"
-          class="field"
-          v-show="!getUpdatedExpenditureFromState.approve"
-          >Status:
-          <span class="field_value item_statue unapproved_color">
-            UNAPPROVED</span
-          ></label
-        >
-        <label
-          for="status"
-          class="field"
-          v-show="getUpdatedExpenditureFromState.approve"
-          >Status:
-          <span class="field_value item_statue approved_color">
-            APPROVED</span
-          ></label
-        >
-      </div>
-      <div class="q-mb-md">
-        <label for="comment" class="field">Comment:</label>
-        <p>{{ getUpdatedExpenditureFromState.comment }}.</p>
-      </div>
-
-      <div class="row q-mt-lg justify-end">
-        <q-btn
-          round
-          color="primary"
-          icon="edit"
-          size="sm"
-          @click="showEditForm"
-        />
-      </div>
     </div>
   </div>
 </template>
@@ -198,15 +122,15 @@ import expenditureItemMixinVue from "src/mixins/expenditureItemMixin.vue";
 export default {
   mixins: [expenditureItemMixinVue],
 
-  created() {
+  mounted() {
     let heading = "Expenditure Item Information";
     this.$emit("set-heading", heading);
+
+    this.setFormFields(this.$store.getters.getUpdatedExpenditureItem);
   },
   data() {
     return {
-      label_save: "Save",
       loading: false,
-      color: "primary",
       expenditure_item: {
         expenditure_category_id: null,
         venue: null,
@@ -218,9 +142,6 @@ export default {
         payment_item_id: null,
         id: null,
       },
-      position: "right",
-      dialog: false,
-      no_caps: true,
     };
   },
   computed: {
@@ -233,26 +154,7 @@ export default {
         ? true
         : false;
     },
-    checkIfExistExpenditureItem() {
-      return this.expenditure_item.expenditure_category_id !== null &&
-        this.expenditure_item.name !== null &&
-        this.expenditure_item.amount
-        ? true
-        : false;
-    },
-    getExpenditureCategories() {
-      let data = [];
-      this.$store.getters.getExpenditureCategories.forEach((ele) => {
-        data.push({
-          label: ele.name,
-          value: ele.id,
-        });
-      });
-      return data;
-    },
-    getEditState() {
-      return this.$store.getters.getEditState;
-    },
+
     getCurrentExpenditureCategory() {
       return this.$store.getters.getCurrentExpenditureCategory;
     },
@@ -271,6 +173,15 @@ export default {
       });
       return data;
     },
+
+    getUpdatedExpenditureItem() {
+      return this.setFormFields(this.$store.getters.getUpdatedExpenditureItem);
+    },
+  },
+  watch: {
+    getUpdatedExpenditureItem() {
+      return this.setFormFields(this.$store.getters.getUpdatedExpenditureItem);
+    },
   },
   methods: {
     onAddExpenditureItem() {
@@ -283,7 +194,7 @@ export default {
           date: this.expenditure_item.date,
           payment_item_id: this.expenditure_item.payment_item_id.value,
           amount: this.expenditure_item.amount,
-          comment: this.expenditure_item.comment
+          comment: this.expenditure_item.comment,
         },
         msg: "Expenditure Item save Successfully",
         color: "default",
@@ -313,20 +224,23 @@ export default {
 
       return this.expenditure_item;
     },
-    showEditForm() {
-      this.$store.dispatch("setEditState", false);
-      this.setFormFields(this.$store.getters.getUpdatedExpenditureItem);
-    },
 
     setFormFields(data) {
-      this.expenditure_item.expenditure_category_id =
-        data.expenditure_category_id;
-      this.expenditure_item.venue = data.venue;
-      this.expenditure_item.date = data.date;
-      this.expenditure_item.name = data.name;
-      this.expenditure_item.comment = data.comment;
-      this.expenditure_item.amount = data.amount;
-      this.expenditure_item.id = data.id;
+      if (data != null) {
+        this.expenditure_item.expenditure_category_id =
+          data.expenditure_category_id;
+        this.expenditure_item.venue = data.venue;
+        this.expenditure_item.date = data.date;
+        this.expenditure_item.name = data.name;
+        this.expenditure_item.comment = data.comment;
+        this.expenditure_item.amount = data.amount;
+        this.expenditure_item.id = data.id;
+        this.expenditure_item.payment_item_id = {
+          label: data.payment_item.name,
+          value: data.payment_item.id,
+          amount: data.payment_item.amount,
+        };
+      }
 
       return this.expenditure_item;
     },

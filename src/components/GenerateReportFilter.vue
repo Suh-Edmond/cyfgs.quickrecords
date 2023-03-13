@@ -19,7 +19,7 @@
       </div>
 
       <div>
-        <q-btn class="form_button" :label="label" :loading="loading" :color="color" :disabled="validateForm"
+        <q-btn class="form_button" :label="label" :loading="loading" :color="color" :disabled="validateForm" @click="generateReport"
           :no_caps="no_caps">
           <q-icon name="arrow_forward" size="xs" class="q-pl-lg"></q-icon>
         </q-btn>
@@ -158,6 +158,31 @@ export default {
       });
 
       return this.payment_items;
+    },
+
+    generateReport(){
+      let payload = {
+        status: "none",
+        url: `/api/protected/activity/${this.activity.value}/generate-report`,
+        has_path_val: true,
+        show_feedback: false,
+        show_spinner: false,
+        msg: "none",
+        color: "default",
+        error_msg: "default",
+        commit: "SET_ACTIVITY_REPORT_DATA",
+        has_commit: true,
+        to_be_store_data: {
+          required: true,
+          has_value: false,
+          data: null,
+        },
+      };
+      this.$store.dispatch("getRequest", payload).then((res) => {
+         this.$emit("close-right-drawer");
+
+      });
+
     }
   },
   components: {

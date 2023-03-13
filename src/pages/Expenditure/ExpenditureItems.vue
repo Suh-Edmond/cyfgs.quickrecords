@@ -195,7 +195,7 @@ export default {
       ],
       data: [],
       label: "Delete",
-      message: "Are you sure you want to delete this Expenditure Item?",
+      message: "Are you sure you want to delete this Expenditure Activity?",
       statuses: ["PENDING", "APPROVED", "DECLINED", "ALL"],
       status: "",
       start_filter: false,
@@ -228,7 +228,7 @@ export default {
     getNotFoundMsgForPaymentItems() {
       let title = "";
       if(this.$store.getters.getCurrentExpenditureCategory != null){
-        title = `Ooops!! No Expenditure Items found for this Category [${this.$store.getters.getCurrentExpenditureCategory.name}]. Click the add button to add Expenditure Items.`;
+        title = `Ooops!! No Expenditure Activity found under this Category [${this.$store.getters.getCurrentExpenditureCategory.name}]. Click the add button to add Expenditure Items.`;
       }
       return title
     },

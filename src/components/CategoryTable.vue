@@ -85,7 +85,7 @@
           <q-td
             key="state"
             :props="props"
-            v-if="(show_expenditure_item || show_expenditure_item_detail)"
+            v-if="show_expenditure_item || show_expenditure_item_detail"
           >
             {{ props.row.approve }}
           </q-td>
@@ -95,7 +95,9 @@
               flat
               round
               v-if="
-                (show_expenditure_item || show_payment_category || show_payment_item||
+                (show_expenditure_item ||
+                  show_payment_category ||
+                  show_payment_item ||
                   show_expenditure_category ||
                   show_expenditure_item_detail) &&
                 !checkTreasurerRole()
@@ -188,7 +190,6 @@
                         <q-item-label class="details">Edit</q-item-label>
                       </q-item-section>
                     </q-item>
-
 
                     <!-- show all details for expenditures -->
                     <q-separator v-if="show_expenditure_item" />
@@ -311,14 +312,15 @@
         </div>
         <div
           class="text-h6 title"
-          v-show="show_expenditure_item && title != null && !show_expenditure_item_name"
+          v-show="
+            show_expenditure_item &&
+            title != null &&
+            !show_expenditure_item_name
+          "
         >
           Expenditure Category: {{ title }}
         </div>
-        <div
-          class="text-h6 title"
-          v-show="show_expenditure_item_name"
-        >
+        <div class="text-h6 title" v-show="show_expenditure_item_name">
           {{ title }}
         </div>
         <div class="text-h6 title" v-show="show_expenditure_item_detail">
@@ -350,37 +352,64 @@
     <q-card v-if="show_expenditure_item_detail">
       <q-card-section>
         <div class="text-bold">
-           <div class="q-pb-sm">
+          <div class="q-pb-sm">
             Total Expenditure Item Amount: {{ expenditure_item_amount }} XAF
-           </div>
-           <div class="q-pb-sm">
+          </div>
+          <div class="q-pb-sm">
             Total Amount Given: {{ total_amount_given }} XAF
-           </div>
-           <div class="q-pb-sm">
+          </div>
+          <div class="q-pb-sm">
             Total Amount Spent: {{ total_amount_spent }} XAF
-           </div>
-           <div class="q-pb-sm">
-            Total Balance: {{ balance }} XAF
-           </div>
+          </div>
+          <div class="q-pb-sm">Total Balance: {{ balance }} XAF</div>
         </div>
       </q-card-section>
     </q-card>
-
 
     <!-- confirmation delete category dialog -->
     <q-dialog v-model="dialog" v-if="dialog">
       <q-card>
         <q-card-section>
-          <div>
-            <label class="q-ml-sm text-dark">{{ message }}</label>
+          <div class="q-mb-md">
+            <label class="text-dark message">{{ message }}</label>
           </div>
-          <div class="text-weight-bold text-center">{{ deleted_row.name }}</div>
+          <div class="text-weight-bold text-left text-red">
+            Name: <span :class="!show_expenditure_item_detail ?'delete_item_name':'detail_name' ">{{ deleted_row.name }}</span>
+          </div>
+          <div
+            class="text-weight-bold text-left text-red"
+            v-if="!show_expenditure_category && !show_expenditure_item_detail && !show_payment_category"
+          >
+            Amount:
+            <span class="q-pl-md"
+              >{{ Number(deleted_row.amount).toLocaleString() }} XAF</span
+            >
+          </div>
+          <div
+            class="text-weight-bold text-left text-red"
+            v-if="show_expenditure_item_detail"
+          >
+            Amount Given:
+            <span class="q-pl-md"
+              >{{ Number(deleted_row.amount_given).toLocaleString() }} XAF</span
+            >
+          </div>
+          <div
+            class="text-weight-bold text-left text-red"
+            v-if="show_expenditure_item_detail"
+          >
+            Amount Spent:
+            <span class="q-pl-md"
+              >{{ Number(deleted_row.amount_spent).toLocaleString() }} XAF</span
+            >
+          </div>
         </q-card-section>
 
         <q-card-actions align="right">
           <q-btn
             :label="label_cancel"
             :color="'primary'"
+            class="dialog_button"
             :disabled="false"
             :loading="loading"
             :no_caps="false"
@@ -390,6 +419,7 @@
           <q-btn
             :label="label"
             :color="'primary'"
+            class="dialog_button"
             :disabled="false"
             :loading="loading"
             :no_caps="false"
@@ -498,24 +528,24 @@ export default {
     },
     expenditure_item_amount: {
       type: Number,
-      required:false
+      required: false,
     },
     total_amount_given: {
       type: Number,
-      required:false
+      required: false,
     },
-    total_amount_spent :{
+    total_amount_spent: {
       type: Number,
-      required:false
+      required: false,
     },
     balance: {
       type: Number,
-      required:false
+      required: false,
     },
-    show_expenditure_item_name:{
+    show_expenditure_item_name: {
       type: Boolean,
-      required:false
-    }
+      required: false,
+    },
   },
 
   data() {
@@ -537,9 +567,7 @@ export default {
       approve_msg: null,
     };
   },
-  computed: {
-
-  },
+  computed: {},
   methods: {
     checkTreasurerRole() {
       const treasurer_role = LocalStorage.getItem("data").roles.find(
@@ -609,11 +637,10 @@ export default {
     },
 
     showPaymentItems(payment_items) {
-      this.$emit("show-payment-items", { payment_items});
+      this.$emit("show-payment-items", { payment_items });
     },
 
     showExpenditureItems(expenditure_items) {
-
       this.$emit("show-expenditure-items", {
         expenditure_items,
       });
@@ -836,13 +863,13 @@ export default {
     },
 
     callFetchDataAfterApproveAction(data) {
-      switch(data.type) {
+      switch (data.type) {
         case "EXPENDITURE_ITEMS":
           this.getExpendituresByCategory(data.expenditure_category_id);
-        break;
+          break;
         case "EXPENDITURE_DETAILS":
           this.getExpenditureDetailsByItemId(data.expenditure_item_id);
-        break;
+          break;
       }
     },
 
@@ -857,7 +884,7 @@ export default {
         tab: "Expenditure Activity Information",
       };
       this.$emit("view-expenditure-item", payload);
-    }
+    },
   },
   components: {},
 };
@@ -912,8 +939,9 @@ export default {
 }
 
 .dialog_button {
-  font-size: 9px;
-  font-weight: 300;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
 }
 
 .approve_btn {
@@ -938,5 +966,21 @@ export default {
 
 .decline {
   color: $orange;
+}
+
+.message {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 15px;
+  align-items: center;
+  letter-spacing: 0.01em;
+  color: $grey2;
+}
+.delete_item_name {
+  padding-left: 1.8rem;
+}
+.detail_name {
+  padding-left: 4.3rem;
 }
 </style>

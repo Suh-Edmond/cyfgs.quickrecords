@@ -80,7 +80,6 @@ import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
 import PaymentCategoryMixin from "src/mixins/PaymentCategoryMixin.vue";
 import ContributionsMixinVue from "src/mixins/ContributionsMixin.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
-import ButtonVue from "src/components/Button.vue";
 
 export default {
   mixins: [
@@ -161,12 +160,13 @@ export default {
     },
 
     generateReport(){
+      this.loading = true;
       let payload = {
         status: "none",
         url: `/api/protected/activity/${this.activity.value}/generate-report`,
         has_path_val: true,
         show_feedback: false,
-        show_spinner: false,
+        show_spinner: true,
         msg: "none",
         color: "default",
         error_msg: "default",
@@ -180,7 +180,7 @@ export default {
       };
       this.$store.dispatch("getRequest", payload).then((res) => {
          this.$emit("close-right-drawer");
-
+          this.loading = false
       });
 
     }

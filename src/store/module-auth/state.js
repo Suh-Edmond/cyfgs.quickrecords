@@ -40,6 +40,5 @@ export default function () {
     payment_activities:[],
     sponsorships:[],
     selected_sponsorship:null,
-    activity_report_data:[]
   };
 }

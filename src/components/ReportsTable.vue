@@ -1,5 +1,9 @@
 <template>
   <div class="q-pa-xs">
+    <!-- table heading -->
+    <div class="text-center">
+      <label for="title" class="text-h5 heading">{{ heading }}</label>
+    </div>
     <!-- table for incomes -->
     <q-table
       :data="income_data"
@@ -34,7 +38,7 @@
           <q-th class="text-bold total_heading">
             Total Income:
           </q-th>
-          <q-th class="text-bold total_value">
+          <q-th class="text-bold total_income_value">
             {{ Number(total_income).toLocaleString() }} XAF
           </q-th>
         </q-tr>
@@ -91,19 +95,25 @@
             {{ Number(total_balance).toLocaleString() }} XAF
           </q-th>
         </q-tr>
-      </template>
-    </q-table>
-
-    <!-- slot for calculating balances -->
-    <q-card>
-      <q-card-section>
-        <div class="text-bold">
-          <div>
-            Net Balance: <span class="q-pl-xl">{{ Number(net_balance).toLocaleString() }} XAF</span>
+        <div class="text-bold q-pt-lg q-pb-md">
+          <!-- <div class="q-pt-sm">
+            Total Income: <span class="income_value">{{ Number(total_income).toLocaleString() }} XAF</span>
+          </div>
+          <div  class="q-pt-sm">
+            Given Expenditure: <span class="estimated_expenditure">{{ Number(total_amount_given).toLocaleString() }} XAF</span>
+          </div>
+          <div  class="q-pt-sm">
+            Actual Expenditure : <span class="actual_expenditure">{{ Number(total_amount_spent).toLocaleString() }} XAF</span>
+          </div>
+          <div  class="q-pt-sm">
+            Actual Expenditure : <span class="actual_expenditure">{{ Number(total_amount_spent).toLocaleString() }} XAF</span>
+          </div> -->
+          <div  class="q-pt-sm q-pb-md balance_details">
+            Net Balance (Total income   -   Actual expenditure + Total balance): <span class="net_balance">{{ Number(net_balance).toLocaleString() }} XAF</span>
           </div>
         </div>
-      </q-card-section>
-    </q-card>
+      </template>
+    </q-table>
   </div>
 </template>
 <script>
@@ -152,6 +162,14 @@ export default {
     net_balance: {
       required: false,
       type: Number,
+    },
+    total_estimated_amount:{
+      required: false,
+      type: Number,
+    },
+    heading:{
+      type: String,
+      required:true
     }
   },
 
@@ -176,28 +194,44 @@ export default {
   font-size: medium;
 }
 
-.total_value {
-  padding-left: 12rem;
+.total_income_value {
+  padding-left: 31.2rem;
+  font-size: 14px;
 }
 .total {
   padding-left: 7.6rem;
+  font-size: 14px;
 }
 .total_given {
   padding-left: 16.8rem;
+  font-size: 14px;
 }
 
 .total_spent {
-  padding-left: 16.8rem;
+  padding-left: 15.9rem;
+  font-size: 14px;
 }
-
 .balance {
-  padding-left: 17.2rem;
+  padding-left: 16.5rem;
+  font-size: 14px;
+}
+.balance_details {
+  font-size: 14px;
 }
 .total_heading {
-  padding-left: 10.4rem;
+  padding-left: 11.5rem;
+  font-size: 14px;
 }
-
-.total_value {
-  padding-left: 36.5rem;
+.net_balance {
+  padding-left: 1rem;
+}
+.heading {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: bolder;
+  font-size: 17px;
+  align-items: center;
+  letter-spacing: 0.01em;
+  color: $dark;
 }
 </style>

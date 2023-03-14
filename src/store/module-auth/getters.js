@@ -162,7 +162,3 @@ export function getSponsorships(state) {
 export function getSelectedSponsorship(state) {
   return state.selected_sponsorship;
 }
-
-export function getActivityReportData(state) {
-  return state.activity_report_data
-}

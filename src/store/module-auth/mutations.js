@@ -158,6 +158,3 @@ export function SET_SELECTED_SPONSORSHIP(state, data) {
   state.selected_sponsorship = data
 }
 
-export function SET_ACTIVITY_REPORT_DATA(state, data) {
-  state.activity_report_data = data
-}

@@ -7,7 +7,6 @@
       row-key="index"
       :table-header-style="{ backgroundColor: '#5384ae', color: '#FFFFFF' }"
       :filter="filter"
-      :pagination.sync="pagination"
     >
       <template v-slot:top-left>
         <div class="text-h6 title" v-show="show_member_savings">
@@ -15,7 +14,11 @@
         </div>
         <div
           class="text-h6 title"
-          v-show="show_contribution || show_member_contribution || show_income_activity"
+          v-show="
+            show_contribution ||
+            show_member_contribution ||
+            show_income_activity
+          "
         >
           {{ title }}
         </div>
@@ -365,49 +368,94 @@
           </template>
         </q-input>
       </template>
+      <template v-slot:bottom>
+        <!-- members contributions -->
+        <q-tr v-if="total_contribution > 0">
+          <q-th class="text-bold total_label" v-if="show_contribution">
+            Total Members Contribution:
+          </q-th>
+          <q-th v-if="show_contribution" class="total_value">
+            {{ Number(total_contribution).toLocaleString() }} XAF
+          </q-th>
+        </q-tr>
+        <!-- member contribution -->
+        <div class="text-bold q-pb-md" v-if="show_member_contribution">
+          <div class="q-pt-sm">
+              Amount Contributed:
+              <span class="total_value">
+                {{ Number(total_contribution).toLocaleString() }} XAF
+              </span>
+          </div>
+          <div>
+            <!-- member balance contribution -->
+            <q-tr>
+              Total Balance:
+              <span class="total_contribution_balance">
+                {{ Number(total_balance).toLocaleString() }} XAF
+              </span>
+            </q-tr>
+          </div>
+        </div>
+
+        <!-- income  -->
+        <q-tr>
+          <q-th
+            class="text-bold total_label"
+            v-if="show_income_activity && total_income > 0"
+          >
+            Total Income:
+          </q-th>
+          <q-th
+            class="total_value"
+            v-if="show_income_activity && total_income > 0"
+          >
+            {{ Number(total_income).toLocaleString() }} XAF
+          </q-th>
+        </q-tr>
+
+        <!-- members -->
+        <q-tr>
+          <q-th
+            class="text-bold total_label"
+            v-if="show_members && total_members > 0"
+          >
+            Total Members:
+          </q-th>
+          <q-th class="total_value" v-if="show_members && total_members > 0">
+            {{ total_members }}
+          </q-th>
+        </q-tr>
+
+        <!-- member savings-->
+        <q-tr>
+          <q-th
+            class="text-bold total_label"
+            v-if="show_member_savings && total_saving > 0"
+          >
+            Total Amount Saved:
+          </q-th>
+          <q-th
+            class="total_value"
+            v-if="show_member_savings && total_saving > 0"
+          >
+            {{ Number(total_saving).toLocaleString() }} XAF
+          </q-th>
+        </q-tr>
+
+        <!-- members savings-->
+        <q-tr>
+          <q-th
+            class="text-bold total_label"
+            v-if="show_savings && total_saving > 0"
+          >
+            Total Members Savings:
+          </q-th>
+          <q-th class="total_value" v-if="show_savings && total_saving > 0">
+            {{ Number(total_saving).toLocaleString() }} XAF
+          </q-th>
+        </q-tr>
+      </template>
     </q-table>
-    <!-- members total card -->
-    <q-card v-if="show_members && total_members > 0">
-      <q-card-section>
-        <div class="text-bold">Total Members: {{ total_members }}</div>
-      </q-card-section>
-    </q-card>
-
-    <!-- income total card -->
-    <q-card v-if="show_income_activity && total_income > 0">
-      <q-card-section>
-        <div class="text-bold">Total Income: {{ total_income }} XAF</div>
-      </q-card-section>
-    </q-card>
-
-    <!-- member saving total card -->
-    <q-card v-if="show_member_savings && total_saving > 0">
-      <q-card-section>
-        <div class="text-bold">Total Amount Saved: {{ total_saving }} XAF</div>
-      </q-card-section>
-    </q-card>
-
-    <!-- savings total card -->
-    <q-card v-if="show_savings && total_saving > 0">
-      <q-card-section>
-        <div class="text-bold">
-          Total Members Savings: {{ total_saving }} XAF
-        </div>
-      </q-card-section>
-    </q-card>
-    <q-card v-if="total_contribution > 0">
-      <q-card-section>
-        <div class="text-bold" v-if="show_contribution">
-          Total Members Contribution: {{ total_contribution }} XAF
-        </div>
-        <div class="text-bold" v-if="show_member_contribution">
-          Total Contribution: {{ total_contribution }} XAF
-        </div>
-        <div class="text-bold" v-if="show_member_contribution">
-          Total Balance: {{ total_balance }} XAF
-        </div>
-      </q-card-section>
-    </q-card>
 
     <!-- confirmation dialog for delete -->
     <q-dialog v-model="dialog" v-if="dialog">
@@ -416,13 +464,61 @@
           <div class="q-mb-sm">
             <label class="message text-dark">{{ message }}</label>
           </div>
-          <div class="text-weight-bold text-left text-red" v-if="!show_contribution">Name: <span class="q-pl-md" :class="show_members?'name':' q-ml-md'">{{ deleted_row.name }}</span></div>
-          <div class="text-weight-bold text-left text-red" v-if="show_contribution">Member's Name: <span class="member_name">{{ deleted_row.user_name }}</span></div>
-          <div class="text-weight-bold text-left text-red" v-if="show_members">Telephone: <span class="q-pl-md">{{ deleted_row.telephone }}</span></div>
-          <div class="text-weight-bold text-left text-red" v-if="show_income_activity"> Amount: <span class="amount">{{ Number(deleted_row.amount).toLocaleString() }} XAF</span></div>
-          <div class="text-weight-bold text-left text-red" v-if="show_contribution"> Amount Deposited: <span class="amount">{{ Number(deleted_row.amount_deposited).toLocaleString() }} XAF</span></div>
-          <div class="text-weight-bold text-left text-red" v-if="show_income_activity"> Date: <span class="date">{{ getDate(deleted_row.date) }}</span></div>
-          <div class="text-weight-bold text-left text-red" v-if="show_contribution">Payment Activity: <span class="payment_item_name">{{ deleted_row.payment_item_name }}</span></div>
+          <div
+            class="text-weight-bold text-left text-red"
+            v-if="!show_contribution"
+          >
+            Name:
+            <span class="q-pl-md" :class="show_members ? 'name' : ' q-ml-md'">{{
+              deleted_row.name
+            }}</span>
+          </div>
+          <div
+            class="text-weight-bold text-left text-red"
+            v-if="show_contribution"
+          >
+            Member's Name:
+            <span class="member_name">{{ deleted_row.user_name }}</span>
+          </div>
+          <div class="text-weight-bold text-left text-red" v-if="show_members">
+            Telephone: <span class="q-pl-md">{{ deleted_row.telephone }}</span>
+          </div>
+          <div
+            class="text-weight-bold text-left text-red"
+            v-if="show_income_activity"
+          >
+            Amount:
+            <span class="amount"
+              >{{ Number(deleted_row.amount).toLocaleString() }} XAF</span
+            >
+          </div>
+          <div
+            class="text-weight-bold text-left text-red"
+            v-if="show_contribution"
+          >
+            Amount Deposited:
+            <span class="amount"
+              >{{
+                Number(deleted_row.amount_deposited).toLocaleString()
+              }}
+              XAF</span
+            >
+          </div>
+          <div
+            class="text-weight-bold text-left text-red"
+            v-if="show_income_activity"
+          >
+            Date: <span class="date">{{ getDate(deleted_row.date) }}</span>
+          </div>
+          <div
+            class="text-weight-bold text-left text-red"
+            v-if="show_contribution"
+          >
+            Payment Activity:
+            <span class="payment_item_name">{{
+              deleted_row.payment_item_name
+            }}</span>
+          </div>
         </q-card-section>
         <q-card-actions align="right">
           <q-btn
@@ -657,10 +753,8 @@ export default {
     };
   },
   methods: {
-    getDate(date){
-      return moment(date).format(
-        "MMMM Do YYYY"
-      );
+    getDate(date) {
+      return moment(date).format("MMMM Do YYYY");
     },
     onEditMember(data) {
       let payload = {
@@ -1014,11 +1108,10 @@ export default {
   color: $dark;
 }
 
-
 .dialog_button {
-  font-size: .9rem;
+  font-size: 0.9rem;
   font-weight: 500;
-  margin-bottom: .5rem;
+  margin-bottom: 0.5rem;
 }
 
 .approve_btn {
@@ -1050,9 +1143,10 @@ export default {
   color: $orange;
 }
 
-.title{
+.title {
   font-size: small;
 }
+
 .message {
   font-family: "Roboto";
   font-style: normal;
@@ -1081,5 +1175,18 @@ export default {
 
 .member_name {
   margin-left: 2.1rem;
+}
+
+.total_label {
+  font-size: 13px;
+}
+
+.total_value {
+  padding-left: 2rem;
+  font-size: 13px;
+}
+
+.total_contribution_balance {
+ padding-left: 4.2rem;
 }
 </style>

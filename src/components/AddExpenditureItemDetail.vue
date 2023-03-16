@@ -27,7 +27,11 @@
             outlined
             dense
             type="number"
+            @input="validateExpenditureAmountGiven"
           />
+          <small v-if="validateExpenditureAmountGiven" class="text-red">
+                <b>Amount given can not be more than Estimated Amount for the Activity</b>
+              </small>
         </div>
         <div class="q-mb-md">
           <label for="credential" class="form_field"
@@ -52,8 +56,8 @@
             placeholder="Provide any comment about this expenditure"
           />
         </div>
-        <div class="row q-mt-lg justify-end">
-          <div class="col-md-2 col-sm-2 col-xs-2">
+        <div class="flex q-mt-lg justify-end">
+          <div>
             <ButtonVue
               class="form_button"
               :label="'Save'"
@@ -102,6 +106,9 @@ export default {
         this.expenditure_item_detail.amount_spent == null
         ? true
         : false;
+    },
+    validateExpenditureAmountGiven(){
+      return this.expenditure_item_detail.amount_given != 0 && (this.$store.getters.getCurrentExpenditureItem.amount > this.expenditure_item_detail.amount_given) ? false : true;
     },
     getCurrentExpenditureItem() {
       return this.$store.getters.getCurrentExpenditureItem;

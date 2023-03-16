@@ -67,7 +67,8 @@
               :expenditure_item_amount="getExpenditureItemAmount"
               :total_amount_given="getTotalAmountGiven"
               :total_amount_spent="getTotalAmountSpent"
-              :balance="getTotalBalance"
+              :balance="getBalance"
+              :total_balance="getTotalBalance"
             >
             </CategoryTable>
           </div>
@@ -90,7 +91,8 @@
               :expenditure_item_amount="getExpenditureItemAmount"
               :total_amount_given="getTotalAmountGiven"
               :total_amount_spent="getTotalAmountSpent"
-              :balance="getTotalBalance"
+              :balance="getBalance"
+              :total_balance="getTotalBalance"
             >
             </CategoryTable>
           </div>
@@ -228,6 +230,9 @@ export default {
       return this.$store.getters.getExpenditureItemDetails.total_amount_spent;
     },
 
+    getBalance(){
+      return this.getTotalAmountGiven - this.getTotalAmountSpent
+    },
     getTotalBalance() {
       return this.$store.getters.getExpenditureItemDetails.total_balance;
     },

@@ -8,7 +8,7 @@
       :table-header-style="{ backgroundColor: '#5384ae', color: '#FFFFFF' }"
       class="col-xs-12"
       :filter="filter"
-      :pagination.sync="pagination"
+      hide-pagination
     >
       <template v-slot:body="props">
         <q-tr :props="props">
@@ -139,14 +139,18 @@
           </template>
         </q-input>
       </template>
+
+      <template v-slot:bottom>
+        <q-tr>
+          <q-th class="text-bold total">
+            Total:
+          </q-th>
+          <q-th class="text-bold total_given">
+            {{ Number(total).toLocaleString() }} XAF
+          </q-th>
+        </q-tr>
+      </template>
     </q-table>
-    <q-card v-if="data.length > 0">
-      <q-card-section>
-        <div class="text-bold">
-          Total Amount: {{ total }} XAF
-        </div>
-      </q-card-section>
-    </q-card>
 
     <!-- confirmation dialog for delete -->
     <q-dialog v-model="dialog" v-if="dialog">
@@ -427,5 +431,14 @@ export default {
 
 .decline {
   color: $orange;
+}
+
+.total {
+  // padding-left: 1rem;
+  font-size: 13px;
+}
+.total_given {
+  padding-left: 3rem;
+  font-size: 13px;
 }
 </style>

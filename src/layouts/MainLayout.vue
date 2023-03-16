@@ -476,11 +476,6 @@
           @set-heading="setHeading" >
 
         </EditMemberContribution>
-        <GenerateReportFilter  @close-right-drawer="closeRightDrawer"
-          @set-heading="setHeading" v-if="current_tab == 'Generate Reports'">
-
-        </GenerateReportFilter>
-
         <AddSponsorship
           v-if="current_tab == 'Sponsorship Management'"
           @close-right-drawer="closeRightDrawer"
@@ -522,7 +517,6 @@ import ViewMemberSaving from "src/components/ViewMemberSaving.vue";
 import SearchSavings from "src/components/SearchSavings.vue";
 import SearchContribution from "src/components/SearchContribution.vue";
 import EditMemberContribution from "src/components/EditMemberContribution.vue";
-import GenerateReportFilter from "src/components/GenerateReportFilter.vue";
 import AddSponsorship from "src/components/AddSponsorship.vue";
 import ViewSponsorshipVue from "src/components/ViewSponsorship.vue";
 import ViewExpenditureItemVue from 'src/components/ViewExpenditureItem.vue';
@@ -636,7 +630,6 @@ export default {
     SearchSavings,
     SearchContribution,
     EditMemberContribution,
-    GenerateReportFilter,
     AddSponsorship,
     ViewSponsorshipVue,
     ViewExpenditureItemVue,
@@ -650,10 +643,6 @@ export default {
   box-sizing: border-box;
 }
 
-.header {
-  height: 120px;
-  border-bottom-left-radius: 2rem;
-}
 
 .content {
   background-color: $grey1;

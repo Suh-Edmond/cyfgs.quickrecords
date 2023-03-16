@@ -8,7 +8,6 @@
       :table-header-style="{ backgroundColor: '#5384ae', color: '#FFFFFF' }"
       class="col-xs-12"
       :filter="filter"
-      :pagination.sync="pagination"
     >
       <template v-slot:body="props">
         <q-tr :props="props">
@@ -346,25 +345,33 @@
           </template>
         </q-input>
       </template>
-    </q-table>
 
-    <!-- slots for totals -->
-    <q-card v-if="show_expenditure_item_detail">
-      <q-card-section>
-        <div class="text-bold">
-          <div class="q-pb-sm">
-            Total Expenditure Item Amount: {{ expenditure_item_amount }} XAF
+      <template v-slot:bottom>
+
+          <q-tr v-if="show_expenditure_item_detail">
+            <q-td class="text-bold total_label"> Total: </q-td>
+            <q-td class="text-bold total_given">
+              {{ Number(total_amount_given).toLocaleString() }} XAF
+            </q-td>
+
+            <q-td class="text-bold total_spent">
+              {{ Number(total_amount_spent).toLocaleString() }} XAF
+            </q-td>
+
+            <q-td class="text-bold balance">
+              {{ Number(balance).toLocaleString() }} XAF
+            </q-td>
+          </q-tr>
+        <div class="text-bold q-pt-sm" v-if="show_expenditure_item_detail">
+          <div  class="q-pt-md q-pb-xs balance_details">
+            Estimated Expenditure Amount: <span class="expenditure_amount">{{ Number(expenditure_item_amount).toLocaleString() }} XAF</span>
           </div>
-          <div class="q-pb-sm">
-            Total Amount Given: {{ total_amount_given }} XAF
+          <div  class="q-pt-sm q-pb-lg balance_details">
+            Net Balance (Estimated Expenditure Amount   -   Amount Spent + Total balance): <span class="net_balance">{{ Number(total_balance).toLocaleString() }} XAF</span>
           </div>
-          <div class="q-pb-sm">
-            Total Amount Spent: {{ total_amount_spent }} XAF
-          </div>
-          <div class="q-pb-sm">Total Balance: {{ balance }} XAF</div>
         </div>
-      </q-card-section>
-    </q-card>
+      </template>
+    </q-table>
 
     <!-- confirmation delete category dialog -->
     <q-dialog v-model="dialog" v-if="dialog">
@@ -374,11 +381,23 @@
             <label class="text-dark message">{{ message }}</label>
           </div>
           <div class="text-weight-bold text-left text-red">
-            Name: <span :class="!show_expenditure_item_detail ?'delete_item_name':'detail_name' ">{{ deleted_row.name }}</span>
+            Name:
+            <span
+              :class="
+                !show_expenditure_item_detail
+                  ? 'delete_item_name'
+                  : 'detail_name'
+              "
+              >{{ deleted_row.name }}</span
+            >
           </div>
           <div
             class="text-weight-bold text-left text-red"
-            v-if="!show_expenditure_category && !show_expenditure_item_detail && !show_payment_category"
+            v-if="
+              !show_expenditure_category &&
+              !show_expenditure_item_detail &&
+              !show_payment_category
+            "
           >
             Amount:
             <span class="q-pl-md"
@@ -539,6 +558,10 @@ export default {
       required: false,
     },
     balance: {
+      type: Number,
+      required: false,
+    },
+    total_balance: {
       type: Number,
       required: false,
     },
@@ -968,6 +991,25 @@ export default {
   color: $orange;
 }
 
+.total_label {
+  font-size: 13px;
+  padding-left: 6rem;
+}
+
+.total_given {
+  font-size: 13px;
+  padding-left: 23.6rem;
+}
+
+.total_spent {
+  font-size: 13px;
+  padding-left: 13.4rem;
+}
+
+.balance {
+  padding-left: 12rem;
+  font-size: 13px;
+}
 .message {
   font-family: "Roboto";
   font-style: normal;
@@ -982,5 +1024,17 @@ export default {
 }
 .detail_name {
   padding-left: 4.3rem;
+}
+
+.balance_details {
+  font-size: 13px;
+  padding-left: 6rem;
+}
+.net_balance {
+  padding-left: 1rem;
+}
+
+.expenditure_amount {
+  padding-left: 17.8rem;
 }
 </style>

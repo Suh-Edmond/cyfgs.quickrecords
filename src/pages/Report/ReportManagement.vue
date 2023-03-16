@@ -89,10 +89,11 @@
                     <q-btn
                       class="form_button q-mb-md"
                       :label="label"
-                      :loading="loading"
+                      :loading="is_fetching"
                       :color="color"
                       :disabled="group != 2"
                       :no_caps="no_caps"
+                      @click="generateQuarterlyReport"
                     >
                       <q-icon
                         name="arrow_forward"
@@ -175,8 +176,8 @@
           ></q-btn>
         </div>
       </div>
-      <!-- table for contributions -->
-      <div class="row q-pt-sm" v-if="income_per_activity.length > 0">
+      <!-- table for report by activity -->
+      <div class="row q-pt-sm" v-if="show_activity_report">
         <div class="col-md-12 col-xs-12 col-sm-12">
           <ReportsTable
             :income_title="title"
@@ -196,6 +197,15 @@
           </ReportsTable>
         </div>
       </div>
+
+      <!-- quarterly report table -->
+      <div class="row q-pt-sm" v-if="show_quarterly_report">
+        <div class="col-md-12 col-xs-12 col-sm-12">
+          <QuarterlyReportTable :heading="heading"
+          >
+          </QuarterlyReportTable>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -203,6 +213,7 @@
 <script>
 import ReportsTable from "src/components/ReportsTable.vue";
 import HelperMixin from "src/mixins/HelperMixin.vue";
+import QuarterlyReportTable from "src/components/QuarterlyReportTable.vue";
 
 export default {
   mixins:[HelperMixin],
@@ -210,6 +221,8 @@ export default {
 
   data() {
     return {
+      show_quarterly_report:false,
+      show_activity_report:false,
       payment_item_id: null,
       loading: false,
       columns: [
@@ -396,11 +409,19 @@ export default {
             this.validateDownloadBtn(res.data);
             this.total_estimated_amount = res.data[2];
           }
+          this.show_activity_report = true;
         })
         .finally(() => {
           this.is_fetching = false;
           this.show_menu = false;
+
         });
+    },
+    generateQuarterlyReport(){
+      // this.is_fetching = true
+      this.show_quarterly_report = true
+      this.heading = 'Quarterly Report from January-March 2023';
+      return this.show_quarterly_report;
     },
     getActivityReportIncomeData(data) {
       data.forEach((ele) => {
@@ -472,6 +493,7 @@ export default {
   },
   components: {
     ReportsTable,
+    QuarterlyReportTable
   },
 };
 </script>

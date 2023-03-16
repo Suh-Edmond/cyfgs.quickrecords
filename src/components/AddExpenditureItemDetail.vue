@@ -29,7 +29,7 @@
             type="number"
             @input="validateExpenditureAmountGiven"
           />
-          <small v-if="validateExpenditureAmountGiven" class="text-red">
+          <small v-if="is_valid_amount_given" class="text-red">
                 <b>Amount given can not be more than Estimated Amount for the Activity</b>
               </small>
         </div>
@@ -96,6 +96,7 @@ export default {
         picture: null,
         id: null,
       },
+      is_valid_amount_given:false
     };
   },
 
@@ -106,9 +107,6 @@ export default {
         this.expenditure_item_detail.amount_spent == null
         ? true
         : false;
-    },
-    validateExpenditureAmountGiven(){
-      return this.expenditure_item_detail.amount_given != 0 && (this.$store.getters.getCurrentExpenditureItem.amount > this.expenditure_item_detail.amount_given) ? false : true;
     },
     getCurrentExpenditureItem() {
       return this.$store.getters.getCurrentExpenditureItem;
@@ -222,6 +220,13 @@ export default {
             this.resetForm();
             this.$store.dispatch("setUpdatedExpenditureItemDetail", null);
           });
+      }
+    },
+
+    validateExpenditureAmountGiven(){
+      if (this.$store.getters.getCurrentExpenditureItem.amount > this.expenditure_item_detail.amount_given) {
+        console.log(1);
+        this.is_valid_amount_given = true;
       }
     },
   },

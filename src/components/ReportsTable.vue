@@ -96,18 +96,6 @@
           </q-th>
         </q-tr>
         <div class="text-bold q-pt-lg q-pb-md">
-          <!-- <div class="q-pt-sm">
-            Total Income: <span class="income_value">{{ Number(total_income).toLocaleString() }} XAF</span>
-          </div>
-          <div  class="q-pt-sm">
-            Given Expenditure: <span class="estimated_expenditure">{{ Number(total_amount_given).toLocaleString() }} XAF</span>
-          </div>
-          <div  class="q-pt-sm">
-            Actual Expenditure : <span class="actual_expenditure">{{ Number(total_amount_spent).toLocaleString() }} XAF</span>
-          </div>
-          <div  class="q-pt-sm">
-            Actual Expenditure : <span class="actual_expenditure">{{ Number(total_amount_spent).toLocaleString() }} XAF</span>
-          </div> -->
           <div  class="q-pt-sm q-pb-md balance_details">
             Net Balance (Total income   -   Actual expenditure + Total balance): <span class="net_balance">{{ Number(net_balance).toLocaleString() }} XAF</span>
           </div>
@@ -170,7 +158,8 @@ export default {
     heading:{
       type: String,
       required:true
-    }
+    },
+
   },
 
   data() {

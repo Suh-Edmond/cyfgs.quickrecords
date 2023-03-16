@@ -215,14 +215,14 @@ export default {
     },
 
     downloadContributions() {
+      console.log(this.$router.currentRoute.params.item_id);
       let payment_item_id = this.$router.currentRoute.params.item_id;
       let user_id = this.$router.currentRoute.params.id;
 
       let url = `/api/protected/download-user-contributions?payment_item_id=${payment_item_id}&user_id=${user_id}`;
 
       let file_name =
-        "Member's Contribution for " +
-        this.$store.getters.getSearchSavingParams.payment_item_id.name +
+        "Member's Contribution for "
         ".pdf";
       this.loading = this.downloadPdf(url, file_name);
     },

@@ -1,7 +1,7 @@
 <template>
   <div class="q-pa-md">
-    <div class="q-mt-sm">
-      <div class="q-my-md">
+    <div>
+      <div class="q-mb-md">
         <label for="heading" class="text">Filter by user information </label>
       </div>
       <!-- search by name of member -->
@@ -98,10 +98,16 @@
         </div>
       </div>
 
-      <div class="row">
-        <q-btn class="filter_btn" label="Filter" :loading="loading" :color="color" :disabled="validateForm" no-caps
+      <div class="flex justify-end q-mb-lg">
+        <div class="q-mr-xl">
+          <q-btn label="Reset" color="primary" no-caps outline @click="resetForm()">
+          </q-btn>
+        </div>
+        <div>
+          <q-btn class="filter_btn" label="Filter" :loading="loading" :color="color" :disabled="validateForm" no-caps
           full-width @click="filterByDuration()">
         </q-btn>
+        </div>
       </div>
     </div>
   </div>
@@ -270,6 +276,10 @@ export default {
         range: this.param.date_range,
       });
     },
+
+    resetForm() {
+
+    }
   },
   components: {},
 };

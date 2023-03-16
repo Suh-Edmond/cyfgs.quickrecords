@@ -27,8 +27,28 @@ export default {
           data: null,
         },
       };
-      this.$store.dispatch("getRequest", payload).then(() => {
-      });
+      this.$store.dispatch("getRequest", payload).then(() => {});
+    },
+
+    getAllSponsorships() {
+      let payload = {
+        status: "none",
+        url: `/api/protected/sponsorships`,
+        has_path_val: true,
+        show_feedback: false,
+        show_spinner: true,
+        msg: "none",
+        color: "default",
+        error_msg: "default",
+        commit: "SET_SPONSORSHIPS",
+        has_commit: true,
+        to_be_store_data: {
+          required: true,
+          has_value: false,
+          data: null,
+        },
+      };
+      this.$store.dispatch("getRequest", payload).then(() => {});
     },
   },
 };

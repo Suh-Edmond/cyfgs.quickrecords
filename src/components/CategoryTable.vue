@@ -8,7 +8,6 @@
       :table-header-style="{ backgroundColor: '#5384ae', color: '#FFFFFF' }"
       class="col-xs-12"
       :filter="filter"
-      :pagination.sync="pagination"
     >
       <template v-slot:body="props">
         <q-tr :props="props">
@@ -85,7 +84,7 @@
           <q-td
             key="state"
             :props="props"
-            v-if="(show_expenditure_item || show_expenditure_item_detail)"
+            v-if="show_expenditure_item || show_expenditure_item_detail"
           >
             {{ props.row.approve }}
           </q-td>
@@ -95,7 +94,9 @@
               flat
               round
               v-if="
-                (show_expenditure_item || show_payment_category || show_payment_item||
+                (show_expenditure_item ||
+                  show_payment_category ||
+                  show_payment_item ||
                   show_expenditure_category ||
                   show_expenditure_item_detail) &&
                 !checkTreasurerRole()
@@ -155,6 +156,24 @@
                         <q-item-label class="details">View</q-item-label>
                       </q-item-section>
                     </q-item>
+                    <!-- view expenditure item -->
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onViewExpenditureItem(props.row)"
+                      v-if="show_expenditure_item"
+                    >
+                      <q-item-section avatar>
+                        <span>
+                          <q-icon name="visibility" size="xs" class="details" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="details">View</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <q-separator v-if="show_expenditure_item" />
+                    <!-- edit expenditure item -->
                     <q-item
                       clickable
                       v-close-popup
@@ -170,12 +189,29 @@
                         <q-item-label class="details">Edit</q-item-label>
                       </q-item-section>
                     </q-item>
+
+                    <!-- show all details for expenditures -->
                     <q-separator v-if="show_expenditure_item" />
                     <q-item
                       clickable
                       v-close-popup
-                      @click="onViewExpenditureItemDetail(props.row)"
+                      @click="onViewExpenditureItemDetails(props.row)"
                       v-if="show_expenditure_item"
+                    >
+                      <q-item-section avatar>
+                        <span>
+                          <q-icon name="info" size="xs" class="details" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="details">Details</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onViewItemDetail(props.row)"
+                      v-if="show_expenditure_item_detail"
                     >
                       <q-item-section avatar>
                         <span>
@@ -183,9 +219,10 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="details">Details</q-item-label>
+                        <q-item-label class="details">View</q-item-label>
                       </q-item-section>
                     </q-item>
+                    <q-separator v-if="show_expenditure_item_detail" />
                     <q-item
                       clickable
                       v-close-popup
@@ -274,9 +311,16 @@
         </div>
         <div
           class="text-h6 title"
-          v-show="show_expenditure_item && title != null"
+          v-show="
+            show_expenditure_item &&
+            title != null &&
+            !show_expenditure_item_name
+          "
         >
           Expenditure Category: {{ title }}
+        </div>
+        <div class="text-h6 title" v-show="show_expenditure_item_name">
+          {{ title }}
         </div>
         <div class="text-h6 title" v-show="show_expenditure_item_detail">
           Expenditure Item: {{ title }}
@@ -301,50 +345,90 @@
           </template>
         </q-input>
       </template>
-    </q-table>
 
-    <!-- slots for totals -->
-    <q-card v-if="show_expenditure_item_detail">
-      <q-card-section>
-        <div class="text-bold">
-           <div class="q-pb-sm">
-            Total Expenditure Item Amount: {{ expenditure_item_amount }} XAF
-           </div>
-           <div class="q-pb-sm">
-            Total Amount Given: {{ total_amount_given }} XAF
-           </div>
-           <div class="q-pb-sm">
-            Total Amount Spent: {{ total_amount_spent }} XAF
-           </div>
-           <div class="q-pb-sm">
-            Total Balance: {{ balance }} XAF
-           </div>
+      <template v-slot:bottom>
+
+          <q-tr v-if="show_expenditure_item_detail">
+            <q-td class="text-bold total_label"> Total: </q-td>
+            <q-td class="text-bold total_given">
+              {{ Number(total_amount_given).toLocaleString() }} XAF
+            </q-td>
+
+            <q-td class="text-bold total_spent">
+              {{ Number(total_amount_spent).toLocaleString() }} XAF
+            </q-td>
+
+            <q-td class="text-bold balance">
+              {{ Number(balance).toLocaleString() }} XAF
+            </q-td>
+          </q-tr>
+        <div class="text-bold q-pt-sm" v-if="show_expenditure_item_detail">
+          <div  class="q-pt-md q-pb-xs balance_details">
+            Estimated Expenditure Amount: <span class="expenditure_amount">{{ Number(expenditure_item_amount).toLocaleString() }} XAF</span>
+          </div>
+          <div  class="q-pt-sm q-pb-lg balance_details">
+            Net Balance (Estimated Expenditure Amount   -   Amount Spent + Total balance): <span class="net_balance">{{ Number(total_balance).toLocaleString() }} XAF</span>
+          </div>
         </div>
-      </q-card-section>
-    </q-card>
-
+      </template>
+    </q-table>
 
     <!-- confirmation delete category dialog -->
     <q-dialog v-model="dialog" v-if="dialog">
       <q-card>
         <q-card-section>
-          <div>
-            <!-- <q-avatar
-              icon="warning"
-              class="warning_image"
-              size="30px"
-              color="yellow"
-              text-color="white"
-            /> -->
-            <label class="q-ml-sm text-dark">{{ message }}</label>
+          <div class="q-mb-md">
+            <label class="text-dark message">{{ message }}</label>
           </div>
-          <div class="text-weight-bold text-center">{{ deleted_row.name }}</div>
+          <div class="text-weight-bold text-left text-red">
+            Name:
+            <span
+              :class="
+                !show_expenditure_item_detail
+                  ? 'delete_item_name'
+                  : 'detail_name'
+              "
+              >{{ deleted_row.name }}</span
+            >
+          </div>
+          <div
+            class="text-weight-bold text-left text-red"
+            v-if="
+              !show_expenditure_category &&
+              !show_expenditure_item_detail &&
+              !show_payment_category
+            "
+          >
+            Amount:
+            <span class="q-pl-md"
+              >{{ Number(deleted_row.amount).toLocaleString() }} XAF</span
+            >
+          </div>
+          <div
+            class="text-weight-bold text-left text-red"
+            v-if="show_expenditure_item_detail"
+          >
+            Amount Given:
+            <span class="q-pl-md"
+              >{{ Number(deleted_row.amount_given).toLocaleString() }} XAF</span
+            >
+          </div>
+          <div
+            class="text-weight-bold text-left text-red"
+            v-if="show_expenditure_item_detail"
+          >
+            Amount Spent:
+            <span class="q-pl-md"
+              >{{ Number(deleted_row.amount_spent).toLocaleString() }} XAF</span
+            >
+          </div>
         </q-card-section>
 
         <q-card-actions align="right">
           <q-btn
             :label="label_cancel"
             :color="'primary'"
+            class="dialog_button"
             :disabled="false"
             :loading="loading"
             :no_caps="false"
@@ -354,6 +438,7 @@
           <q-btn
             :label="label"
             :color="'primary'"
+            class="dialog_button"
             :disabled="false"
             :loading="loading"
             :no_caps="false"
@@ -462,20 +547,28 @@ export default {
     },
     expenditure_item_amount: {
       type: Number,
-      required:false
+      required: false,
     },
     total_amount_given: {
       type: Number,
-      required:false
+      required: false,
     },
-    total_amount_spent :{
+    total_amount_spent: {
       type: Number,
-      required:false
+      required: false,
     },
     balance: {
       type: Number,
-      required:false
-    }
+      required: false,
+    },
+    total_balance: {
+      type: Number,
+      required: false,
+    },
+    show_expenditure_item_name: {
+      type: Boolean,
+      required: false,
+    },
   },
 
   data() {
@@ -497,9 +590,7 @@ export default {
       approve_msg: null,
     };
   },
-  computed: {
-
-  },
+  computed: {},
   methods: {
     checkTreasurerRole() {
       const treasurer_role = LocalStorage.getItem("data").roles.find(
@@ -569,17 +660,16 @@ export default {
     },
 
     showPaymentItems(payment_items) {
-      this.$emit("show-payment-items", { payment_items});
+      this.$emit("show-payment-items", { payment_items });
     },
 
     showExpenditureItems(expenditure_items) {
-
       this.$emit("show-expenditure-items", {
         expenditure_items,
       });
     },
 
-    onViewExpenditureItemDetail(expenditure_item) {
+    onViewExpenditureItemDetails(expenditure_item) {
       let has_intermediate_tab = true;
       let category = this.$store.getters.getCurrentExpenditureCategory;
       this.$router.push({
@@ -614,6 +704,14 @@ export default {
         tab: "Expenditure Item Details",
       };
       this.$emit("edit-expenditure-item-detail", payload);
+    },
+
+    onViewItemDetail(data) {
+      let payload = {
+        data: data,
+        tab: "Expenditure Activity Detail Information",
+      };
+      this.$emit("view-expenditure-item-detail", payload);
     },
 
     deletedRow(deleted_data) {
@@ -788,20 +886,28 @@ export default {
     },
 
     callFetchDataAfterApproveAction(data) {
-      switch(data.type) {
+      switch (data.type) {
         case "EXPENDITURE_ITEMS":
           this.getExpendituresByCategory(data.expenditure_category_id);
-        break;
+          break;
         case "EXPENDITURE_DETAILS":
           this.getExpenditureDetailsByItemId(data.expenditure_item_id);
-        break;
+          break;
       }
     },
 
     showDetails(data) {
       this.$store.dispatch("setExpenditureItemName", data.name);
       this.getExpenditureDetailsByItemId(data.id);
-    }
+    },
+
+    onViewExpenditureItem(data) {
+      let payload = {
+        data: data,
+        tab: "Expenditure Activity Information",
+      };
+      this.$emit("view-expenditure-item", payload);
+    },
   },
   components: {},
 };
@@ -856,8 +962,9 @@ export default {
 }
 
 .dialog_button {
-  font-size: 9px;
-  font-weight: 300;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
 }
 
 .approve_btn {
@@ -882,5 +989,52 @@ export default {
 
 .decline {
   color: $orange;
+}
+
+.total_label {
+  font-size: 13px;
+  padding-left: 6rem;
+}
+
+.total_given {
+  font-size: 13px;
+  padding-left: 23.6rem;
+}
+
+.total_spent {
+  font-size: 13px;
+  padding-left: 13.4rem;
+}
+
+.balance {
+  padding-left: 12rem;
+  font-size: 13px;
+}
+.message {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 15px;
+  align-items: center;
+  letter-spacing: 0.01em;
+  color: $grey2;
+}
+.delete_item_name {
+  padding-left: 1.8rem;
+}
+.detail_name {
+  padding-left: 4.3rem;
+}
+
+.balance_details {
+  font-size: 13px;
+  padding-left: 6rem;
+}
+.net_balance {
+  padding-left: 1rem;
+}
+
+.expenditure_amount {
+  padding-left: 17.8rem;
 }
 </style>

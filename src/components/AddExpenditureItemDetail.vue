@@ -1,11 +1,11 @@
 <template>
   <div class="q-pa-md">
-    <div class="q-ml-sm q-mb-lg">
-      <label class="text-muted q-ml-sm"
+    <div class="q-ml-sm q-mb-md">
+      <label class="text-muted q-ml-sm info"
         >All fields with <span class="text-red">*</span> are required</label
       >
     </div>
-    <div class="q-mt-md q-mx-md" v-if="!getEditState">
+    <div class="q-mt-md q-mx-md">
       <q-form @submit="onAddExpenditureItemDetail" class="q-gutter-sm">
         <div class="q-mb-md">
           <label for="credential" class="form_field"
@@ -27,7 +27,11 @@
             outlined
             dense
             type="number"
+            @input="validateExpenditureAmountGiven"
           />
+          <small v-if="is_valid_amount_given" class="text-red">
+                <b>Amount given can not be more than Estimated Amount for the Activity</b>
+              </small>
         </div>
         <div class="q-mb-md">
           <label for="credential" class="form_field"
@@ -42,164 +46,30 @@
           </q-input>
         </div>
         <div class="q-mb-md">
-          <label for="credential" class="form_field">Comment  <span class="text-red">*</span></label>
+          <label for="credential" class="form_field">Comment</label>
           <q-input
             v-model="expenditure_item_detail.comment"
-            outlined
             dense
-            autogrow
+            class="text_color"
+            type="textarea"
+            outlined
+            placeholder="Provide any comment about this expenditure"
           />
         </div>
-
-        <div class="q-mb-md">
-          <label for="credential" class="form_field">Receipt (Optional)</label>
-          <q-file
-            outlined
-            v-model="expenditure_item_detail.picture"
-            dense
-            class="q-mb-md"
-          >
-            <template v-slot:prepend>
-              <q-icon name="attach_file" />
-            </template>
-          </q-file>
-        </div>
-        <div class="row q-mt-lg justify-end">
-          <div class="col-md-2 col-sm-2 col-xs-2">
+        <div class="flex q-mt-lg justify-end">
+          <div>
             <ButtonVue
               class="form_button"
-              :label="label_save"
+              :label="'Save'"
               :loading="loading"
-              :color="color"
+              :color="'primary'"
               :disabled="validateForm"
-              :no_caps="no_caps"
+              :no_caps="true"
             >
             </ButtonVue>
           </div>
         </div>
       </q-form>
-    </div>
-    <div class="q-mt-md" v-if="getEditState">
-      <div class="q-mb-md">
-        <label for="expenditure_category_name" class="field"
-          >Expenditure Item:
-          <span class="field_value q-pl-md">{{
-            getCurrentExpenditureItem.name
-          }}</span></label
-        >
-      </div>
-      <div class="q-mb-md">
-        <label for="expenditure_category_name" class="field"
-          >Item Amount:
-          <span class="field_value item_amount"
-            >{{
-              Number(
-                getUpdatedExpenditureItemDetailFromState.total_item_amount
-              ).toLocaleString()
-            }}
-            XAF</span
-          ></label
-        >
-      </div>
-      <div class="q-mb-md">
-        <label for="expenditure_item" class="field"
-          >Expenditure Detail:
-          <span class="field_value detail_name">{{
-            getUpdatedExpenditureItemDetailFromState.name
-          }}</span></label
-        >
-      </div>
-      <div class="q-mb-md">
-        <label for="venue" class="field"
-          >Amount Given:
-          <span class="field_value detail_amount"
-            >{{
-              Number(
-                getUpdatedExpenditureItemDetailFromState.amount_given
-              ).toLocaleString()
-            }}
-            XAF</span
-          ></label
-        >
-      </div>
-      <div class="q-mb-md">
-        <label for="date" class="field"
-          >Amount Spent:
-          <span class="field_value detail_amount"
-            >{{
-              Number(
-                getUpdatedExpenditureItemDetailFromState.amount_spent
-              ).toLocaleString()
-            }}
-            XAF</span
-          ></label
-        >
-      </div>
-      <div class="q-mb-md">
-        <label for="amount" class="field"
-          >Balance:
-          <span class="field_value item_bal">
-            {{
-              Number(
-                getUpdatedExpenditureItemDetailFromState.balance
-              ).toLocaleString()
-            }}
-            XAF</span
-          ></label
-        >
-      </div>
-      <div class="q-mb-md">
-        <label
-          for="status"
-          class="field"
-          v-show="!getUpdatedExpenditureItemDetailFromState.approve"
-          >Status:
-          <span class="field_value item_statue unapproved_color">
-            UNAPPROVED</span
-          ></label
-        >
-        <label
-          for="status"
-          class="field"
-          v-show="getUpdatedExpenditureItemDetailFromState.approve"
-          >Status:
-          <span class="field_value item_statue approved_color">
-            APPROVED</span
-          ></label
-        >
-      </div>
-      <div class="q-mb-md">
-        <label for="comment" class="field">Comment:</label>
-        <p>{{ getUpdatedExpenditureItemDetailFromState.comment }}.</p>
-      </div>
-
-      <div class="q-mb-md">
-        <label for="amount" class="field"
-          >Created Date:
-          <span class="field_value detail_date">
-            {{ getFormatDetailCreatedDate }}
-          </span></label
-        >
-      </div>
-
-      <div class="q-mb-md">
-        <label for="amount" class="field"
-          >Created By:
-          <span class="field_value detail_created_by">
-            {{ getUpdatedExpenditureItemDetailFromState.updated_by }}
-          </span></label
-        >
-      </div>
-
-      <div class="row q-mt-xl justify-end">
-        <q-btn
-          round
-          color="primary"
-          icon="edit"
-          size="sm"
-          @click="showEditForm"
-        />
-      </div>
     </div>
   </div>
 </template>
@@ -211,26 +81,22 @@ import moment from "moment";
 export default {
   mixins: [ExpenditureItemDetailMixinVue],
   created() {
-    let heading = "Expenditure Item Detail Information";
+    let heading = "Expenditure activity detail information";
     this.$emit("set-heading", heading);
   },
   data() {
     return {
-      label_save: "Save",
       loading: false,
-      color: "primary",
       expenditure_item_detail: {
         expenditure_item_id: this.$store.getters.getCurrentExpenditureItem.id,
         amount_spent: 0,
         name: null,
-        comment: null,
+        comment: " ",
         amount_given: 0,
         picture: null,
         id: null,
       },
-      position: "right",
-      dialog: false,
-      no_caps: true,
+      is_valid_amount_given:false
     };
   },
 
@@ -242,10 +108,6 @@ export default {
         ? true
         : false;
     },
-
-    getEditState() {
-      return this.$store.getters.getEditState;
-    },
     getCurrentExpenditureItem() {
       return this.$store.getters.getCurrentExpenditureItem;
     },
@@ -255,10 +117,18 @@ export default {
     getFormatDetailCreatedDate() {
       return moment(
         this.$store.getters.getUpdatedExpenditureItemDetail.created_at
-      ).format("MMMM Do YYYY, h:mm:ss a");
+      ).format("MMMM Do YYYY");
     },
-  },
 
+    setFormUpdateDetail(){
+      return this.setFormFields(this.$store.getters.getUpdatedExpenditureItemDetail);
+    }
+  },
+  watch:{
+    setFormUpdateDetail(){
+      return this.setFormFields(this.$store.getters.getUpdatedExpenditureItemDetail);
+    }
+  },
   methods: {
     onAddExpenditureItemDetail() {
       let item = this.$store.getters.getCurrentExpenditureItem;
@@ -296,13 +166,9 @@ export default {
     },
 
 
-    showEditForm() {
-      this.$store.dispatch("setEditState", false);
-      this.setFormFields(this.$store.getters.getUpdatedExpenditureItemDetail);
-    },
-
 
     setFormFields(data) {
+     if(data != null){
       this.expenditure_item_detail.expenditure_item_id =
         data.expenditure_item_id;
       this.expenditure_item_detail.name = data.name;
@@ -310,6 +176,7 @@ export default {
       this.expenditure_item_detail.amount_given = data.amount_given;
       this.expenditure_item_detail.amount_spent = data.amount_spent;
       this.expenditure_item_detail.id = data.id;
+     }
 
       return this.expenditure_item_detail;
     },
@@ -352,8 +219,14 @@ export default {
             this.loading = false;
             this.resetForm();
             this.$store.dispatch("setUpdatedExpenditureItemDetail", null);
-            this.$store.dispatch("setEditState", false);
           });
+      }
+    },
+
+    validateExpenditureAmountGiven(){
+      if (this.$store.getters.getCurrentExpenditureItem.amount > this.expenditure_item_detail.amount_given) {
+        console.log(1);
+        this.is_valid_amount_given = true;
       }
     },
   },
@@ -429,5 +302,9 @@ export default {
 
 .approved_color {
   color: #27ae60;
+}
+
+.info {
+  color: $grey2;
 }
 </style>

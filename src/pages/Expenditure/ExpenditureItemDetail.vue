@@ -63,10 +63,12 @@
               :show_expenditure_item="false"
               :show_expenditure_item_detail="true"
               @edit-expenditure-item-detail="editExpenditureItemDetail"
+              @view-expenditure-item-detail="viewExpenditureItemDetail"
               :expenditure_item_amount="getExpenditureItemAmount"
               :total_amount_given="getTotalAmountGiven"
               :total_amount_spent="getTotalAmountSpent"
-              :balance="getTotalBalance"
+              :balance="getBalance"
+              :total_balance="getTotalBalance"
             >
             </CategoryTable>
           </div>
@@ -85,10 +87,12 @@
               :show_expenditure_item="false"
               :show_expenditure_item_detail="true"
               @edit-expenditure-item-detail="editExpenditureItemDetail"
+              @view-expenditure-item-detail="viewExpenditureItemDetail"
               :expenditure_item_amount="getExpenditureItemAmount"
               :total_amount_given="getTotalAmountGiven"
               :total_amount_spent="getTotalAmountSpent"
-              :balance="getTotalBalance"
+              :balance="getBalance"
+              :total_balance="getTotalBalance"
             >
             </CategoryTable>
           </div>
@@ -207,7 +211,7 @@ export default {
     },
 
     getNotFoundMsg() {
-      return `Ooops!! No Details has been recorded for this Expenditure Item [${this.getExpenditureItemName}]. Click the add button to add Expenditure Item Details.`;
+      return `Ooops!! No Detail(s) has been recorded under for [${this.getExpenditureItemName}]. Click the add button to add details.`;
     },
 
     getLoadingState() {
@@ -226,6 +230,9 @@ export default {
       return this.$store.getters.getExpenditureItemDetails.total_amount_spent;
     },
 
+    getBalance(){
+      return this.getTotalAmountGiven - this.getTotalAmountSpent
+    },
     getTotalBalance() {
       return this.$store.getters.getExpenditureItemDetails.total_balance;
     },
@@ -237,6 +244,14 @@ export default {
       this.$store.dispatch("setEditState", true);
 
       this.$emit("edit-expenditure-item-detail", data);
+    },
+
+    viewExpenditureItemDetail(data) {
+      this.$store.dispatch("setUpdatedExpenditureItemDetail", data.data);
+
+      this.$store.dispatch("setEditState", true);
+
+      this.$emit("view-expenditure-item-detail", data);
     },
 
     downloadExpenditureItemDetails() {

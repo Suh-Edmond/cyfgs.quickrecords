@@ -153,3 +153,8 @@ export function SET_PAYMENT_ACTIVITIES(state, data) {
 export function SET_SPONSORSHIPS(state, data) {
   state.sponsorships = data
 }
+
+export function SET_SELECTED_SPONSORSHIP(state, data) {
+  state.selected_sponsorship = data
+}
+

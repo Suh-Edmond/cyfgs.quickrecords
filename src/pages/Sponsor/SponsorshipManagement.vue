@@ -56,7 +56,6 @@
               color="primary"
               :disabled="validateFilter"
               no-caps
-              :loading="loading_filter"
               icon-right="filter_list"
               @click="filterSponsorship"
             >
@@ -68,10 +67,11 @@
               label="Print"
               :loading="loading"
               color="positive"
-              :disabled="false"
+              :disabled="validateDownload"
               no-caps
               icon-right="print"
               @click="downloadSponsorship"
+
             ></q-btn>
           </div>
         </div>
@@ -85,6 +85,8 @@
             :title="setTableTitle"
             :message="message"
             :total="getTotalSponsorship"
+            @view-sponsorship="viewSponsorship"
+            @edit-sponsorship="editSponsorship"
           >
           </SponsorshipTable>
         </div>
@@ -97,20 +99,19 @@
 import SponsorshipTable from "src/components/SponsorshipTable.vue";
 import PaymentItemMixin from "src/mixins/PaymentItemMixin.vue";
 import SponsorshipMixin from "src/mixins/SponsorshipMixin.vue";
+import HelperMixin from "src/mixins/HelperMixin.vue";
 
 export default {
-  mixins: [PaymentItemMixin, SponsorshipMixin],
+  mixins: [PaymentItemMixin, SponsorshipMixin, HelperMixin],
 
   mounted() {
-    this.fetchPaymentActivities();
+      this.fetchPaymentActivities();
   },
 
   data() {
     return {
       statuses: ["PENDING", "APPROVED", "DECLINED", "ALL"],
       status: "",
-      no_caps: true,
-      loading_filter: false,
       columns: [
         {
           name: "counter",
@@ -164,9 +165,13 @@ export default {
       return this.payment_item_id != null ? false : true;
     },
 
+    validateDownload(){
+      return this.getData.length == 0;
+    },
+
     getTotalSponsorship() {
       let total = 0;
-      this.$store.getters.getSponsorship.forEach((ele) => {
+      this.$store.getters.getSponsorships.forEach((ele) => {
         total += parseFloat(ele.amount_deposited);
       });
       return total;
@@ -185,8 +190,8 @@ export default {
     },
 
     setTableTitle() {
-      return this.$store.getters.getSponsorship.length > 0
-        ? `Sponsorships for ${this.$store.getters.getSponsorship[0].payment_item.name}`
+      return this.$store.getters.getSponsorships.length > 0
+        ? `Sponsorships for ${this.$store.getters.getSponsorships[0].payment_item.name}`
         : "";
     },
 
@@ -195,9 +200,9 @@ export default {
     },
     getData() {
       let data = [];
-      this.$store.getters.getSponsorship.forEach((ele) => {
+      this.$store.getters.getSponsorships.forEach((ele) => {
           data.push({
-            counter: this.$store.getters.getSponsorship.indexOf(ele) + 1,
+            counter: this.$store.getters.getSponsorships.indexOf(ele) + 1,
             supporter: ele.supporter,
             amount_deposited: ele.amount_deposited,
             code: ele.code,
@@ -207,6 +212,7 @@ export default {
             created_at: ele.created_at,
             updated_at: ele.updated_at,
             updated_by: ele.updated_by,
+            comment:ele.comment
           });
         });
       return data;
@@ -214,7 +220,6 @@ export default {
   },
   methods: {
     filterSponsorship() {
-      this.loading_filter = true;
       let payload = {
         status: "none",
         url: `/api/protected/sponsorships/search?payment_item_id=${this.payment_item_id.value}&status=${this.status}`,
@@ -233,15 +238,23 @@ export default {
         },
       };
       this.$store.dispatch("getRequest", payload).then(() => {
-        this.loading_filter = false
-      }).finally(() => {
-        this.payment_item_id = null;
-      this.status = null;
-      });
+      })
 
     },
 
-    downloadSponsorship() {},
+    downloadSponsorship() {
+      let url = `/api/protected/sponsorships/download?payment_item_id=${this.payment_item_id.value}&status=${this.status}`;
+      let file_name = "Sponsorships.pdf";
+      this.loading = this.downloadPdf(url, file_name);
+    },
+
+    viewSponsorship(data) {
+      this.$emit("view-sponsorship", data);
+    },
+
+    editSponsorship(data) {
+      this.$emit("edit-sponsorship", data);
+    },
   },
   components: {
     SponsorshipTable,

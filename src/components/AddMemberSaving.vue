@@ -1,7 +1,7 @@
 <template>
   <div class="q-pa-md">
     <div class="q-ml-sm q-mb-lg">
-      <label class="text-muted q-ml-sm"
+      <label class="text-muted q-ml-sm instruction_info"
         >All fields with <span class="text-red">*</span> are required</label
       >
     </div>
@@ -42,8 +42,8 @@
             placeholder="Provide any comment about this saving"
           />
         </div>
-        <div class="row q-mt-lg justify-end">
-          <div class="col-md-2 col-sm-2 col-xs-2">
+        <div class="flex q-mt-lg justify-end">
+          <div>
             <ButtonVue
               class="form_button"
               :label="label_save"
@@ -132,7 +132,6 @@ export default {
           value: ele.id,
         });
       });
-      console.log(this.members);
       return this.members;
     },
 
@@ -269,22 +268,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.add_member_title {
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 29px;
-  align-items: center;
-  text-align: center;
-  letter-spacing: 0.01em;
-  color: #5384ae;
-  text-transform: capitalize;
-}
-
-.button {
-  width: 100%;
-}
 
 .form_field {
   font-family: "Roboto";
@@ -296,18 +279,9 @@ export default {
   color: $grey2;
 }
 
-.or_option {
-  font-weight: bolder;
-}
 
-.help_text {
-  color: $dark;
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 13px;
-  text-align: center;
-  align-items: center;
-  letter-spacing: 0.01em;
+
+.instruction_info {
+  color: $grey2;
 }
 </style>

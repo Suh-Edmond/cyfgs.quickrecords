@@ -1,8 +1,9 @@
 <template>
-  <div class="q-pa-lg">
-    <div class="q-mt-sm">
+  <div class="q-pa-md">
+    <div>
       <div class="flex q-pb-md">
         <label for="name" class="field"
+          ><span> <q-icon name="category" size="xs" class="q-pr-sm" /> </span
           >Name:
           <span class="field_value field_name">{{
             getCurrentIncomeActivity.name
@@ -11,14 +12,36 @@
       </div>
       <div class="flex q-pb-md">
         <label for="name" class="field"
+          ><span>
+            <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
           >Amount:
-          <span class="field_value q-pl-md"
-            >{{ Number(getCurrentIncomeActivity.amount).toLocaleString() }} XAF</span
+          <span class="field_value field_amount"
+            >{{
+              Number(getCurrentIncomeActivity.amount).toLocaleString()
+            }}
+            XAF</span
           ></label
         >
       </div>
       <div class="flex q-pb-md">
         <label for="name" class="field"
+          ><span> <q-icon name="category" size="xs" class="q-pr-sm" /> </span
+          >Payment Activity:
+          <span
+            class="field_value field_item"
+            v-if="getCurrentIncomeActivity.payment_item != null"
+            >{{ getCurrentIncomeActivity.payment_item.name }}</span
+          >
+          <span
+            class="field_value field_item"
+            v-if="getCurrentIncomeActivity.payment_item == null"
+            >None</span
+          >
+        </label>
+      </div>
+      <div class="flex q-pb-md">
+        <label for="name" class="field"
+          ><span> <q-icon name="schedule" size="xs" class="q-pr-sm" /> </span
           >Date:
           <span class="field_value field_date">{{
             getFormatIncomeDate
@@ -27,6 +50,7 @@
       </div>
       <div class="flex q-pb-md">
         <label for="name" class="field"
+          ><span> <q-icon name="location_on" size="xs" class="q-pr-sm" /> </span
           >Venue:
           <span class="field_value field_venue">{{
             getCurrentIncomeActivity.venue
@@ -34,22 +58,44 @@
         >
       </div>
       <div class="flex q-pb-md">
-        <label for="status" class="field" v-show="getCurrentIncomeActivity.approve == 'DECLINED'"
+        <label
+          for="status"
+          class="field"
+          v-show="getCurrentIncomeActivity.approve == 'DECLINED'"
+          ><span>
+            <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span
           >Status:
-          <span class="item_statue unapproved_color">{{getCurrentIncomeActivity.approve}}</span></label
+          <span class="item_statue unapproved_color">{{
+            getCurrentIncomeActivity.approve
+          }}</span></label
         >
-        <label for="status" class="field" v-show="getCurrentIncomeActivity.approve == 'APPROVED'"
+        <label
+          for="status"
+          class="field"
+          v-show="getCurrentIncomeActivity.approve == 'APPROVED'"
+          ><span>
+            <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span
           >Status:
-          <span class="item_statue approved_color"> {{getCurrentIncomeActivity.approve}}</span></label
+          <span class="item_statue approved_color">
+            {{ getCurrentIncomeActivity.approve }}</span
+          ></label
         >
-        <label for="status" class="field" v-show="getCurrentIncomeActivity.approve == 'PENDING'"
+        <label
+          for="status"
+          class="field"
+          v-show="getCurrentIncomeActivity.approve == 'PENDING'"
+          ><span>
+            <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span
           >Status:
-          <span class="item_statue pending_color"> {{getCurrentIncomeActivity.approve}}</span></label
+          <span class="item_statue pending_color">
+            {{ getCurrentIncomeActivity.approve }}</span
+          ></label
         >
       </div>
 
       <div class="q-mb-md">
         <label for="amount" class="field"
+          ><span> <q-icon name="person" size="xs" class="q-pr-sm" /> </span
           >Created By:
           <span class="field_value detail_created_by">
             {{ getCurrentIncomeActivity.updated_by }}
@@ -57,43 +103,18 @@
         >
       </div>
       <div class="flex q-pb-md">
-        <label for="name" class="field">Comment: </label><br/>
-        <div>{{ getCurrentIncomeActivity.description }}</div>
+        <label for="name" class="field"
+          ><span> <q-icon name="description" size="xs" class="q-pr-sm" /> </span
+          >Comment: <span class="field_value description" v-if="getCurrentIncomeActivity.description == null">
+        None
+      </span>
+        </label>
       </div>
+      <p class="field_value" v-if="getCurrentIncomeActivity.description != null">
+        {{ getCurrentIncomeActivity.description }}
+      </p>
 
-      <!-- <div class="flex">
-        <q-card class="image_card" @click="show_image = true">
-          <q-img src="https://cdn.quasar.dev/img/mountains.jpg" basic>
-            <div class="absolute-bottom text-caption text-center">
-              Uploaded Image
-            </div>
-          </q-img>
-        </q-card>
-      </div> -->
     </div>
-    <q-dialog v-model="show_image" :position="position">
-      <q-card
-        style="width: 360px"
-        :class="$q.screen.lg ? 'q-mr-md' : 'q-mx-sm'"
-      >
-        <q-bar>
-          <div></div>
-          <q-space />
-          <q-btn dense flat icon="close" v-close-popup>
-            <q-tooltip>Close</q-tooltip>
-          </q-btn>
-        </q-bar>
-        <q-card-section>
-          <div>
-            <q-img
-              src="https://cdn.quasar.dev/img/mountains.jpg"
-              spinner-color="white"
-              style="height: 100%; width: 100%px"
-            />
-          </div>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
   </div>
 </template>
 
@@ -106,10 +127,7 @@ export default {
     this.$emit("set-heading", heading);
   },
   data() {
-    return {
-      show_image: false,
-      position: "right",
-    };
+    return {};
   },
 
   computed: {
@@ -129,12 +147,11 @@ export default {
       );
     },
 
-    getCurrentIncomeActivity(){
+    getCurrentIncomeActivity() {
       return this.$store.getters.getCurrentIncomeActivity;
-    }
+    },
   },
-  methods: {
-  },
+  methods: {},
 };
 </script>
 
@@ -178,11 +195,11 @@ export default {
 }
 
 .field_venue {
-  padding-left: 1.7rem;
+  padding-left: 6rem;
 }
 
 .item_statue {
-  padding-left: 1.7rem;
+  padding-left: 6rem;
 }
 
 .field_value {
@@ -195,14 +212,26 @@ export default {
   color: $dark;
 }
 .field_name {
-  padding-left: 1.6rem;
+  padding-left: 6rem;
+}
+
+.field_amount {
+  padding-left: 5.2rem;
+}
+
+.field_item {
+  padding-left: 1.7rem;
 }
 
 .field_date {
-  padding-left: 2.4rem;
+  padding-left: 6.5rem;
 }
 
 .detail_created_by {
-  padding-left: 0.2rem;
+  padding-left: 4.2rem;
+}
+
+.description {
+  padding-left: 4.6rem;
 }
 </style>

@@ -58,6 +58,14 @@ export function handleRequestResponse({}, payload) {
         name: payload.to_on_fail,
       });
     }
+
+    // if(payload.forbidden_err != undefined){
+    //   Notify.create({
+    //     message: payload.forbidden_err.message,
+    //     type: "info",
+    //     position: Platform.is.mobile ? "bottom" : "top-right",
+    //   });
+    // }
   }
 }
 
@@ -219,6 +227,7 @@ export function putRequest({ dispatch }, payload) {
             ? payload.error_msg
             : error.response.data.message,
         status_code: 404,
+        forbidden_err:error.response.data
       };
       dispatch("handleRequestResponse", handle_fail_res_payload);
     });
@@ -487,4 +496,8 @@ export function setPaymentActivities({commit}, data) {
 
 export function setSponsorship({commit}, data) {
   commit("SET_SPONSORSHIPS", data)
+}
+
+export function setSelectedSponsorship({commit}, data) {
+  commit("SET_SELECTED_SPONSORSHIP", data);
 }

@@ -109,7 +109,9 @@
               @update-payment-item="updatePaymentItem"
               @update-expenditure-category="updateExpenditureCategory"
               @edit-expenditure-item="editExpenditureItem"
+              @view-expenditure-item="viewExpenditureItem"
               @edit-expenditure-item-detail="editExpenditureItemDetail"
+              @view-expenditure-item-detail="viewExpenditureItemDetail"
               @edit-member-saving="editMemberSaving"
               @view-member-saving="viewMemberSaving"
               @edit-income-activity="editIncomeActivity"
@@ -119,6 +121,8 @@
               @search-member-saving="searchMemberSaving"
               @search-members-contribution="searchMemberContribution"
               @report-generation="reportGeneration"
+              @view-sponsorship="viewSponsorship"
+              @edit-sponsorship="editSponsorship"
             />
           </q-card-section>
         </q-card>
@@ -266,7 +270,17 @@ export default {
     editExpenditureItem(data) {
       this.updateDrawer(data);
     },
+
+
+    viewExpenditureItem(data) {
+      this.updateDrawer(data);
+    },
+
     editExpenditureItemDetail(data) {
+      this.updateDrawer(data);
+    },
+
+    viewExpenditureItemDetail(data){
       this.updateDrawer(data);
     },
     getCurrentRightDrawerTab() {
@@ -335,7 +349,16 @@ export default {
       this.updateDrawer(data);
     },
 
-    resetAllForms(tab) {
+    viewSponsorship(data) {
+      this.updateDrawer(data);
+    },
+
+    editSponsorship(data){
+      this.updateDrawer(data);
+    },
+
+
+    resetAllForms() {
       this.$store.dispatch("setUpdatedPayCategories", null)
       this.$store.dispatch("setUpdatedPaymentItem", null);
       this.$store.dispatch("setUpdatedExpenditureCategory", null);

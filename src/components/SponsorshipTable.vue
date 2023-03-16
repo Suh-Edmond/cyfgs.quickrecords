@@ -8,7 +8,7 @@
       :table-header-style="{ backgroundColor: '#5384ae', color: '#FFFFFF' }"
       class="col-xs-12"
       :filter="filter"
-      :pagination.sync="pagination"
+      hide-pagination
     >
       <template v-slot:body="props">
         <q-tr :props="props">
@@ -30,7 +30,7 @@
 
           <q-td key="action" :props="props">
             <!-- button to handle edit, view and delete of row data -->
-            <q-btn flat round>
+            <q-btn flat round v-if="!checkTreasurerRole()">
               <q-icon
                 name="more_vert"
                 size="xs"
@@ -40,7 +40,23 @@
               >
                 <q-menu>
                   <q-list style="width: 180px" bordered separator>
-                    <!-- edit support -->
+                       <!-- edit support -->
+                       <q-item
+                      clickable
+                      v-close-popup
+                      @click="onEditSupport(props.row)"
+                    >
+                      <q-item-section avatar>
+                        <span>
+                          <q-icon name="edit" size="xs" class="edit" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="edit">Edit</q-item-label>
+                      </q-item-section>
+                    </q-item>
+
+                    <!-- view support -->
                     <q-item
                       clickable
                       v-close-popup
@@ -53,21 +69,6 @@
                       </q-item-section>
                       <q-item-section>
                         <q-item-label class="edit">View</q-item-label>
-                      </q-item-section>
-                    </q-item>
-
-                    <q-item
-                      clickable
-                      v-close-popup
-                      @click="onEditSupport(props.row)"
-                    >
-                      <q-item-section avatar>
-                        <span>
-                          <q-icon name="edit" size="xs" class="edit" />
-                        </span>
-                      </q-item-section>
-                      <q-item-section>
-                        <q-item-label class="edit">Edit</q-item-label>
                       </q-item-section>
                     </q-item>
 
@@ -138,43 +139,46 @@
           </template>
         </q-input>
       </template>
+
+      <template v-slot:bottom>
+        <q-tr>
+          <q-th class="text-bold total">
+            Total:
+          </q-th>
+          <q-th class="text-bold total_given">
+            {{ Number(total).toLocaleString() }} XAF
+          </q-th>
+        </q-tr>
+      </template>
     </q-table>
-    <q-card v-if="data.length > 0">
-      <q-card-section>
-        <div class="text-bold">
-          Total Amount: {{ total }} XAF
-        </div>
-      </q-card-section>
-    </q-card>
 
     <!-- confirmation dialog for delete -->
     <q-dialog v-model="dialog" v-if="dialog">
       <q-card>
-        <q-card-section>
-          <div>
-            <label class="q-ml-sm text-dark">{{ message }}</label>
+        <q-card-section class="q-pa-lg">
+          <div class="q-mb-md">
+            <label class="text-dark message">{{ message }}</label>
           </div>
-          <div class="text-weight-bold text-center">{{ deleted_row.name }}</div>
+          <div class="text-weight-bold text-left text-red">Sponsor:  <span class="q-pl-md">{{ deleted_row.supporter }}</span> </div>
+          <div class="text-weight-bold text-left text-red"> Amount: <span class="q-pl-md">{{ Number(deleted_row.amount_deposited).toLocaleString() }} XAF</span></div>
         </q-card-section>
         <q-card-actions align="right">
           <q-btn
             label="Cancel"
-            :color="'primary'"
+            color="primary"
             :disabled="false"
             :loading="loading"
-            :no_caps="true"
-            :flat="true"
+            flat
             class="dialog_button"
             v-close-popup
           ></q-btn>
           <q-btn
-            :label="label"
-            :color="'primary'"
+            label="Delete"
+            color="primary"
             class="dialog_button"
             :disabled="false"
             :loading="loading"
-            :no_caps="false"
-            :flat="true"
+            flat
             v-close-popup
             @click="deleteRow(deleted_row)"
           ></q-btn>
@@ -221,8 +225,11 @@
 </template>
 <script>
 import { LocalStorage } from "quasar";
+import SponsorshipMixin from "src/mixins/SponsorshipMixin.vue";
+import moment from "moment";
 
 export default {
+  mixins:[SponsorshipMixin],
   props: {
     columns: {
       type: Array,
@@ -271,14 +278,43 @@ export default {
   },
   computed: {},
   methods: {
-    onViewSupport(data) {},
-    onEditSupport(data) {},
+    onViewSupport(data) {
+      let payload = {
+        data: data,
+        tab: "View Sponsorship",
+      };
+      this.$store.dispatch("setSelectedSponsorship", data);
+      this.$emit("view-sponsorship", payload);
+    },
 
-    onDeleteSupport(data) {},
+    onEditSupport(data){
+      let payload = {
+        data: data,
+        tab: "Sponsorship Management",
+      };
 
-    onDeclineRecord(data, type) {},
+      this.$store.dispatch("setSelectedSponsorship", data);
 
-    onApprovedRecord(data, type) {},
+      this.$emit("edit-sponsorship", payload)
+    },
+    onDeleteSupport(data) {
+      this.dialog = true;
+      this.deleted_row = data
+    },
+
+    onDeclineRecord(row, state) {
+      this.show_approve_dialog = true;
+      this.approve_data = row;
+      this.chosen_state = state;
+      this.approve_msg = ` ${Number(row.amount_deposited).toLocaleString() } XAF Sponsorship by ${row.supporter} for ${row.payment_item.name}?`;
+    },
+
+    onApprovedRecord(row, state) {
+      this.show_approve_dialog = true;
+      this.approve_data = row;
+      this.chosen_state = state;
+      this.approve_msg = ` ${Number(row.amount_deposited).toLocaleString() } XAF Sponsorship by ${row.supporter} for ${row.payment_item.name}?`;
+    },
 
     checkTreasurerRole() {
       const treasurer_role = LocalStorage.getItem("data").roles.find(
@@ -287,9 +323,58 @@ export default {
       return treasurer_role != undefined;
     },
 
-    deleteRow(data) {},
+    deleteRow(data) {
+      let payload = {
+        url: `/api/protected/sponsorships/${data.id}`,
+        msg: "Sponsorship deleted successfully",
+        status: "success",
+        color: "default",
+        to_on_ok: "none",
+        show_feedback: true,
+        to_on_fail: "none",
+        error_msg: "An Error occurred! Please try again",
+        has_commit: false,
+        commit: "none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.$store.dispatch("deleteRequest", payload).then(() => {
+        this.getAllSponsorships();
+      });
+    },
 
-    onChangeRecordState() {},
+    onChangeRecordState() {
+      let state = this.chosen_state == 'Approve' ? 'APPROVED':'DECLINED'
+      let payload = {
+        url: `/api/protected/sponsorships/${this.approve_data.id}/approve?type=${state}`,
+        msg: `Sponsorship has been ${this.chosen_state} successfully`,
+        data: null,
+        color: "default",
+        to_on_ok: "none",
+        to_on_fail: "none",
+        show_feedback: true,
+        error_msg: "An Error occurred! Please try again",
+        has_commit: false,
+        commit: "none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.$store.dispatch("putRequest", payload).then((res) => {
+        if (res.status == 200) {
+         if(this.approve_data.payment_item == null){
+          this.getAllSponsorships();
+         }else{
+          this.getSponsorships(this.approve_data.payment_item.id);
+         }
+        }
+      });
+    },
   },
   components: {},
 };
@@ -308,13 +393,10 @@ export default {
   color: $primary;
 }
 
-.title {
-  font-size: medium;
-}
-
 .dialog_button {
-  font-size: small;
+  font-size: .9rem;
   font-weight: 500;
+  margin-bottom: .5rem;
 }
 
 .approve_btn {
@@ -330,6 +412,17 @@ export default {
 .decline_btn {
   background-color: $orange;
   color: white;
+  margin-right: 3rem;
+}
+
+.message {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 15px;
+  align-items: center;
+  letter-spacing: 0.01em;
+  color: $grey2;
 }
 
 .approve {
@@ -338,5 +431,14 @@ export default {
 
 .decline {
   color: $orange;
+}
+
+.total {
+  // padding-left: 1rem;
+  font-size: 13px;
+}
+.total_given {
+  padding-left: 3rem;
+  font-size: 13px;
 }
 </style>

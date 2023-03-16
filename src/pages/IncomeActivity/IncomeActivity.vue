@@ -26,16 +26,12 @@
       >
         <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
           <q-select
-            v-model="year"
+            v-model="payment_item_id"
             outlined
             dense
-            :options="years"
-            label="Select year"
+            :options="getPaymentActivities"
+            label="Select payment activity"
             input-debounce="0"
-            @filter="filterYears"
-            use-input
-            hide-selected
-            fill-input
           >
             <template v-slot:no-option>
               <q-item>
@@ -44,7 +40,7 @@
             </template>
           </q-select>
         </div>
-        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-pl-md">
+        <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12 q-pl-md">
           <q-select
             v-model="month"
             outlined
@@ -64,7 +60,7 @@
             </template>
           </q-select>
         </div>
-        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-pl-md">
+        <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12 q-pl-md">
           <q-select
             v-model="status"
             outlined
@@ -84,12 +80,12 @@
             </template>
           </q-select>
         </div>
-        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 flex q-pl-md">
+        <div class="col-md-5 col-lg-5 col-xs-12 col-sm-12 flex q-pl-md">
           <div>
             <q-btn
-              :label="label_fetch"
+              label="Filter"
               :loading="loading_filter"
-              :color="color"
+              color="primary"
               :disabled="validateFilter"
               no-caps
               icon-right="filter_list"
@@ -100,9 +96,9 @@
           <q-space />
           <div class="button q-pb-xs">
             <q-btn
-              :label="label_download"
+              label="Print"
               :loading="loading"
-              :color="color_print"
+              color="positive"
               :disabled="false"
               no-caps
               icon-right="print"
@@ -144,8 +140,10 @@
             :show_contribution="false"
             :show_members="false"
             :total_income="total_income_amount"
+            :title="getTableTitle"
             @edit-income-activity="editIncomeActivity"
             @view-income-activity="viewIncomeActivity"
+
           >
           </TableVue>
         </div>
@@ -167,14 +165,18 @@ export default {
   mounted() {
     let organisation_id = this.getOrganisationId;
     this.getOrganisationIncomeActivities(organisation_id);
+
+    if(this.$store.getters.getPaymentActivities.length == 0){
+      this.fetchPaymentActivities();
+    }
+
   },
 
   data() {
     return {
       not_found_msg:
         "Ooops!! No Income Activity has been recorded. Click the add button to add income activity.",
-      year: "",
-      years: ["2020", "2021", "2022", "2023", "2024"],
+      payment_item_id: null,
       month: "",
       months: [
         "January",
@@ -192,13 +194,7 @@ export default {
       ],
       statuses: ["PENDING","APPROVED", "DECLINED", "ALL"],
       status: "",
-      search: null,
-      label_fetch: "Filter",
-      color: "primary",
-      no_caps: true,
       loading_filter: false,
-      label_download: "Print",
-      color_print: "positive",
       columns: [
         {
           name: "counter",
@@ -264,17 +260,32 @@ export default {
     },
 
     getTotalIncome() {
-      return this.$store.getters.getIncomeActivities.total_amount;
+      let total = 0;
+      this.$store.getters.getIncomeActivities.forEach(ele => {
+        total += ele.amount
+      })
+      return total;
+    },
+
+    getTableTitle() {
+      let title = "";
+      if(this.filteredActivities.length > 0) {
+        if(this.payment_item_id != null) {
+         title = `Income Raised for ${this.filteredActivities[0].payment_item.name}`;
+        }else {
+          title = `Income Raised for the month of ${this.month}`;
+        }
+      }
+      return  title;
     },
 
     getIncomeActivities() {
       let data = [];
-
-      if (this.$store.getters.getIncomeActivities != null) {
-        this.$store.getters.getIncomeActivities.data.forEach((ele) => {
+      if(this.$store.getters.getIncomeActivities != null){
+        this.$store.getters.getIncomeActivities.forEach((ele) => {
           data.push({
             counter:
-              this.$store.getters.getIncomeActivities.data.indexOf(ele) + 1,
+              this.$store.getters.getIncomeActivities.indexOf(ele) + 1,
             name: ele.name,
             amount: ele.amount,
             id: ele.id,
@@ -283,6 +294,7 @@ export default {
             type: "INCOME_ACTIVITIES",
             date: ele.date,
             venue: ele.venue,
+            payment_item:ele.payment_item,
             organisation_id: ele.organisation_id,
             created_at: ele.created_at,
             updated_by: ele.updated_by,
@@ -295,16 +307,21 @@ export default {
     getLoadingState() {
       return this.$store.getters.getFetchingState;
     },
+
+
+    getPaymentActivities() {
+      let data = [];
+      this.$store.getters.getPaymentActivities.forEach((ele) => {
+        data.push({
+          label: ele.name,
+          value: ele.id,
+          amount: ele.amount,
+        });
+      });
+      return data;
+    },
   },
   methods: {
-    filterYears(val, update, abort) {
-      update(() => {
-        const needle = val.toLowerCase();
-        this.years = this.years.filter(
-          (v) => v.toLowerCase().indexOf(needle) > -1
-        );
-      });
-    },
     filterMonths(val, update, abort) {
       update(() => {
         const needle = val.toLowerCase();
@@ -336,15 +353,17 @@ export default {
       this.total_income_amount = 0;
 
       let id = this.getOrganisationId;
+      let payment_item_name = this.payment_item_id != null ? this.payment_item_id.label : "";
+      let payment_item_value = this.payment_item_id != null ? this.payment_item_id.value : "";
 
       this.$router.push({
-        path: `/dashboard/income-activities?year=${this.year}&month=${this.month}&status=${this.status}`,
-        query: { year: this.year, month:this.month, status:this.status },
+        path: `/dashboard/income-activities?payment_item=${payment_item_name}&month=${this.month}&status=${this.status}`,
+        query: { payment_item: payment_item_name, month:this.month, status:this.status },
       });
 
       let payload = {
         status: "none",
-        url: `/api/protected/organisations/income-activities/search?organisation_id=${id}&month=${this.month}&year=${this.year}&status=${this.status}`,
+        url: `/api/protected/organisations/income-activities/search?organisation_id=${id}&month=${this.month}&payment_item_id=${payment_item_value}&status=${this.status}`,
         has_path_val: true,
         show_feedback: false,
         show_spinner:true,
@@ -366,10 +385,10 @@ export default {
           this.loading_filter = false;
           this.start_filter = true;
 
-          res.data.data.forEach((ele) => {
+          res.data.forEach((ele) => {
             this.total_income_amount+= ele.amount
             this.filteredActivities.push({
-              counter: res.data.data.indexOf(ele) + 1,
+              counter: res.data.indexOf(ele) + 1,
               name: ele.name,
               amount: ele.amount,
               id: ele.id,
@@ -379,6 +398,7 @@ export default {
               date: ele.date,
               venue: ele.venue,
               organisation_id: ele.organisation_id,
+              payment_item:ele.payment_item,
               created_at: ele.created_at,
               updated_by: ele.updated_by,
             });
@@ -390,13 +410,35 @@ export default {
     },
 
     downloadIncomeActivity() {
-      let id = this.getOrganisationId;
+      const id = this.getOrganisationId;
+      let payment_item_id = this.payment_item_id != null ? this.payment_item_id.value : "";
 
-      let url = `/api/protected/organisations/income-activities/generate-pdf?organisation_id=${id}`;
+      let url = `/api/protected/organisations/income-activities/generate-pdf?organisation_id=${id}&month=${this.month}&payment_item_id=${payment_item_id}&status=${this.status}`;
 
       let file_name = "Organisation_Income_Activities.pdf";
 
       this.loading = this.downloadPdf(url, file_name);
+    },
+
+    fetchPaymentActivities() {
+      let payload = {
+        status: "none",
+        url: `/api/protected/payment-items`,
+        has_path_val: true,
+        show_feedback: false,
+        show_spinner: false,
+        msg: "none",
+        color: "default",
+        error_msg: "default",
+        commit: "SET_PAYMENT_ACTIVITIES",
+        has_commit: true,
+        to_be_store_data: {
+          required: true,
+          has_value: false,
+          data: null,
+        },
+      };
+      this.$store.dispatch("getRequest", payload).then(() => {});
     },
   },
   components: {

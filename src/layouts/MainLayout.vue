@@ -321,7 +321,7 @@
               </q-item-section>
             </q-item>
           </q-list>
-          <q-list padding>
+          <q-list padding class="logout">
             <q-item
               clickable
               v-ripple
@@ -476,16 +476,22 @@
           @set-heading="setHeading" >
 
         </EditMemberContribution>
-        <GenerateReportFilter  @close-right-drawer="closeRightDrawer"
-          @set-heading="setHeading" v-if="current_tab == 'Generate Reports'">
-
-        </GenerateReportFilter>
-
         <AddSponsorship
           v-if="current_tab == 'Sponsorship Management'"
           @close-right-drawer="closeRightDrawer"
           @set-heading="setHeading"
         ></AddSponsorship>
+        <ViewSponsorshipVue v-if="current_tab == 'View Sponsorship'" @close-right-drawer="closeRightDrawer"
+          @set-heading="setHeading">
+        </ViewSponsorshipVue>
+
+        <ViewExpenditureItemVue v-if="current_tab == 'Expenditure Activity Information'" @close-right-drawer="closeRightDrawer"
+          @set-heading="setHeading">
+        </ViewExpenditureItemVue>
+        <ViewExpenditureItemDetail  v-if="current_tab == 'Expenditure Activity Detail Information'"
+          @close-right-drawer="closeRightDrawer"
+          @set-heading="setHeading">
+        </ViewExpenditureItemDetail>
       </q-page>
     </q-drawer>
   </q-layout>
@@ -511,8 +517,10 @@ import ViewMemberSaving from "src/components/ViewMemberSaving.vue";
 import SearchSavings from "src/components/SearchSavings.vue";
 import SearchContribution from "src/components/SearchContribution.vue";
 import EditMemberContribution from "src/components/EditMemberContribution.vue";
-import GenerateReportFilter from "src/components/GenerateReportFilter.vue";
 import AddSponsorship from "src/components/AddSponsorship.vue";
+import ViewSponsorshipVue from "src/components/ViewSponsorship.vue";
+import ViewExpenditureItemVue from 'src/components/ViewExpenditureItem.vue';
+import ViewExpenditureItemDetail from "src/components/ViewExpenditureItemDetail.vue";
 
 export default {
   mixins: [organisationMixinVue],
@@ -622,8 +630,10 @@ export default {
     SearchSavings,
     SearchContribution,
     EditMemberContribution,
-    GenerateReportFilter,
-    AddSponsorship
+    AddSponsorship,
+    ViewSponsorshipVue,
+    ViewExpenditureItemVue,
+    ViewExpenditureItemDetail
   },
 };
 </script>
@@ -633,10 +643,6 @@ export default {
   box-sizing: border-box;
 }
 
-.header {
-  height: 120px;
-  border-bottom-left-radius: 2rem;
-}
 
 .content {
   background-color: $grey1;
@@ -699,5 +705,10 @@ export default {
 .sponsorship_icon {
   color: $grey2;
   width: 1.13rem;
+}
+
+.logout {
+  position: absolute;
+  top: 91%;
 }
 </style>

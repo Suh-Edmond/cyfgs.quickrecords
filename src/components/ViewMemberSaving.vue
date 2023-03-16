@@ -1,87 +1,66 @@
 <template>
   <div class="q-px-lg q-pt-md">
-    <div class="q-mt-sm" v-if="getEditState">
+    <div v-if="getEditState">
       <div class="q-mb-md">
-        <label for="name" class="field"
-          >Member Name:
+        <label for="name" class="field"><span> <q-icon name="person" size="xs" class="q-pr-sm" /> </span>Member Name:
           <span class="field_value item_value">{{
             getCurrentMemberSaving.name
-          }}</span></label
-        >
+          }}</span></label>
       </div>
       <div class="q-mb-md">
-        <label for="email" class="field"
-          >Email:
+        <label for="email" class="field"><span> <q-icon name="email" size="xs" class="q-pr-sm" /> </span>Email:
           <span class="field_value item_venue">{{
             getCurrentMemberSaving.email
-          }}</span></label
-        >
+          }}</span></label>
       </div>
       <div class="q-mb-md">
-        <label for="telephone" class="field"
-          >Telephone:
+        <label for="telephone" class="field"><span> <q-icon name="phone" size="xs" class="q-pr-sm" /> </span>Telephone:
           <span class="field_value item_tel">{{
             getCurrentMemberSaving.telephone
-          }}</span></label
-        >
+          }}</span></label>
       </div>
       <div class="q-mb-md">
-        <label for="amount" class="field"
-          >Amount Deposited:
+        <label for="amount" class="field"><span>
+            <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span>Amount Deposited:
           <span class="field_value item_amount">
-            {{ Number(getCurrentMemberSaving.amount_deposited).toLocaleString() }} XAF</span
-          ></label
-        >
+            {{
+              Number(getCurrentMemberSaving.amount_deposited).toLocaleString()
+            }}
+            XAF</span></label>
       </div>
       <div class="q-mb-md">
-        <label
-          for="status"
-          class="field"
-          v-show="getCurrentMemberSaving.approve == 'DECLINED'"
-          >Status:
+        <label for="status" class="field" v-show="getCurrentMemberSaving.approve == 'DECLINED'"><span>
+            <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span>Transaction Status:
           <span class="field_value item_statue unapproved_color">
-            {{getCurrentMemberSaving.approve}}</span
-          ></label
-        >
-        <label
-          for="status"
-          class="field"
-          v-show="getCurrentMemberSaving.approve == 'APPROVED'"
-          >Status:
+            {{ getCurrentMemberSaving.approve }}</span></label>
+        <label for="status" class="field" v-show="getCurrentMemberSaving.approve == 'APPROVED'"><span>
+            <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span>Transaction Status:
           <span class="field_value item_statue approved_color">
-            {{getCurrentMemberSaving.approve}}</span
-          ></label
-        >
-        <label
-          for="status"
-          class="field"
-          v-show="getCurrentMemberSaving.approve == 'PENDING'"
-          >Status:
+            {{ getCurrentMemberSaving.approve }}</span></label>
+        <label for="status" class="field" v-show="getCurrentMemberSaving.approve == 'PENDING'"><span>
+            <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span>Transaction Status:
           <span class="field_value item_statue pending_color">
-            {{getCurrentMemberSaving.approve}}</span
-          ></label
-        >
+            {{ getCurrentMemberSaving.approve }}</span></label>
       </div>
       <div class="q-mb-md">
-        <label for="amount" class="field"
-          >Created Date:
+        <label for="amount" class="field"><span>
+            <q-icon name="schedule" size="xs" class="q-pr-sm" /> </span>Created Date:
           <span class="field_value detail_date">
             {{ getFormatSavingCreatedDate }}
-          </span></label
-        >
+          </span></label>
       </div>
 
       <div class="q-mb-md">
-        <label for="amount" class="field"
+        <label for="amount" class="field"><span> <q-icon name="person" size="xs" class="q-pr-sm" /> </span
           >Created By:
           <span class="field_value detail_created_by">
             {{ getCurrentMemberSaving.updated_by }}
-          </span></label
-        >
+          </span></label>
       </div>
       <div class="q-mb-md">
-        <label for="comment" class="field">Comment:</label>
-        <p>{{ getCurrentMemberSaving.comment }}.</p>
+        <label for="comment" class="field"><span> <q-icon name="description" size="xs" class="q-pr-sm" /> </span
+          >Comment:</label>
+        <p class="value_comment">{{ getCurrentMemberSaving.comment }}.</p>
       </div>
     </div>
   </div>
@@ -95,14 +74,11 @@ export default {
     this.$emit("set-heading", heading);
   },
 
-
   data() {
-    return {
-    };
+    return {};
   },
 
   computed: {
-
     getEditState() {
       return this.$store.getters.getEditState;
     },
@@ -110,18 +86,15 @@ export default {
     getFormatSavingCreatedDate() {
       return moment(
         this.$store.getters.getCurrentMemberSaving.created_at
-      ).format("MMMM Do YYYY, h:mm:ss a");
+      ).format("MMMM Do YYYY");
     },
 
-    getCurrentMemberSaving(){
+    getCurrentMemberSaving() {
       return this.$store.getters.getCurrentMemberSaving;
-    }
+    },
   },
 
-  methods :{
-
-
-  }
+  methods: {},
 };
 </script>
 
@@ -164,7 +137,7 @@ export default {
 }
 
 .item_statue {
-  padding: 5.7rem;
+  padding: .7rem;
 }
 
 .unapproved_color {
@@ -191,5 +164,17 @@ export default {
   font-size: 15px;
   line-height: 27px;
   letter-spacing: 0.005em;
+}
+
+.value_comment {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 27px;
+  text-align: start;
+  letter-spacing: 0.005em;
+  color: $dark;
+  padding-left: 1.5rem;
 }
 </style>

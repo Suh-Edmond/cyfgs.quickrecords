@@ -79,8 +79,8 @@
                 >
                 <q-input v-model="user.occupation" outlined dense type="text" />
               </div>
-              <div class="row q-mt-lg justify-end">
-                <div class="col-md-2 col-sm-2 col-xs-2">
+              <div class="flex q-mt-lg justify-end">
+                <div>
                   <ButtonVue
                     :label="label_save"
                     :loading="loading"
@@ -307,9 +307,10 @@ export default {
       this.loading = true;
       this.$store
         .dispatch("uploadFileRequest", payload)
-        .then(() => {})
-        .finally(() => {
+        .then(() => {
           this.getOrganisationMembers(id, true);
+        })
+        .finally(() => {
           this.loading = false;
           this.file = null;
           this.$emit("close-right-drawer");

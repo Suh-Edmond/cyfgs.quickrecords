@@ -16,7 +16,7 @@
               class="q-gutter-md q-mt-lg q-px-md"
             >
               <div>
-                <label for="credential" class="form_field">Telephone</label>
+                <label for="credential" class="form_field">Telephone <span class="text-red">*</span></label>
                 <q-input
                   v-model="user.credential"
                   outlined
@@ -28,7 +28,7 @@
                 />
               </div>
               <div>
-                <label for="password" class="form_field">Password</label>
+                <label for="password" class="form_field">Password <span class="text-red">*</span></label>
                 <q-input
                   v-model="user.password"
                   :type="isPwd ? 'password' : 'text'"
@@ -45,7 +45,7 @@
                 </q-input>
               </div>
               <div class="q-mt-lg">
-                <ButtonVue
+                <q-btn
                   class="form_button q-pa-xs"
                   :label="label_sigin"
                   :loading="loading"
@@ -53,7 +53,8 @@
                   :color="color"
                   :no_caps="no_caps"
                 >
-                </ButtonVue>
+                <q-icon name="arrow_forward" size="xs" class="q-pl-lg"></q-icon>
+                </q-btn>
                 <span class="forgot_password text-right"
                   >Forgot Password ?</span
                 >
@@ -67,7 +68,6 @@
 </template>
 
 <script>
-import ButtonVue from "src/components/Button.vue";
 import { SessionStorage } from "quasar";
 import organisationMixin from "src/mixins/organisationMixin.vue";
 
@@ -133,7 +133,6 @@ export default {
     },
   },
   components: {
-    ButtonVue,
   },
 };
 </script>

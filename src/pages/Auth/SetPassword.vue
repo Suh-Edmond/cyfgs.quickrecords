@@ -30,7 +30,7 @@
               v-show="!is_exist_user"
             >
               <div>
-                <label for="credential" class="form_field">Telephone</label>
+                <label for="credential" class="form_field">Telephone <span class="text-red">*</span></label>
                 <q-input
                   v-model="check_user.credential"
                   outlined
@@ -42,7 +42,7 @@
                 />
               </div>
               <div>
-                <ButtonVue
+                <q-btn
                   class="form_button q-mt-md q-pa-xs"
                   :label="label_continue"
                   :loading="loading"
@@ -50,7 +50,8 @@
                   :color="color"
                   :no_caps="no_caps"
                 >
-                </ButtonVue>
+                <q-icon name="arrow_forward" size="xs" class="q-pl-lg"></q-icon>
+                </q-btn>
                 <div class="row q-mb-xl justify-end">
                   <span class="account_text" v-if="!$q.screen.lg"
                     >Don't Have an Account ?
@@ -69,7 +70,7 @@
               v-show="is_exist_user"
             >
               <div>
-                <label for="credential" class="form_field">Telephone</label>
+                <label for="credential" class="form_field">Telephone <span class="text-red">*</span></label>
                 <q-input
                   v-model="user.credential"
                   outlined
@@ -81,7 +82,7 @@
                 />
               </div>
               <div>
-                <label for="password" class="form_field">Password</label>
+                <label for="password" class="form_field">Password <span class="text-red">*</span></label>
                 <q-input
                   v-model="user.password"
                   :type="isPwd ? 'password' : 'text'"
@@ -99,7 +100,7 @@
               </div>
               <div>
                 <label for="password_confirmation" class="form_field"
-                  >Confirm Password</label
+                  >Confirm Password <span class="text-red">*</span></label
                 >
                 <q-input
                   v-model="user.password_confirmation"
@@ -121,7 +122,7 @@
                 </q-input>
               </div>
               <div>
-                <ButtonVue
+                <q-btn
                   class="form_button q-pa-xs"
                   :label="label_sigin"
                   :loading="loading"
@@ -129,7 +130,8 @@
                   :disabled="validatePasswordMatch"
                   :no_caps="no_caps"
                 >
-                </ButtonVue>
+                <q-icon name="arrow_forward" size="xs" class="q-pl-lg"></q-icon>
+                </q-btn>
                 <div
                   class="row q-mb-xl"
                   :class="!$q.screen.lg ? 'justify-evenly' : 'justify-end'"
@@ -152,7 +154,6 @@
 </template>
 
 <script>
-import ButtonVue from "src/components/Button.vue";
 import { LocalStorage, SessionStorage } from "quasar";
 import organisationMixin from "src/mixins/organisationMixin.vue";
 export default {
@@ -267,7 +268,6 @@ export default {
     },
   },
   components: {
-    ButtonVue,
   },
 }
 </script>

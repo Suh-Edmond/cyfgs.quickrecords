@@ -123,14 +123,20 @@ export function uploadFileRequest({ dispatch }, payload) {
         show_feedback: payload.show_feedback,
         status: payload.status,
         color: payload.color,
-        msg: payload.msg ? payload.msg : "default",
+        msg: payload.msg,
         to_on_ok: "none",
+        to_be_store_data: {
+          has_value: payload.to_be_store_data.has_value,
+          required: payload.to_be_store_data.required,
+          data: payload.to_be_store_data.has_value
+            ? payload.to_be_store_data.data
+            : [],
+        },
       };
       dispatch("handleRequestResponse", handle_response_payload);
       return res;
     })
     .catch((error) => {
-      if (error.response != "undefined") {
         let handle_error_payload = {
           status: "fail",
           color: "negative",
@@ -143,7 +149,6 @@ export function uploadFileRequest({ dispatch }, payload) {
           status_code: 404,
         };
         dispatch("handleRequestResponse", handle_error_payload);
-      }
     });
 }
 
@@ -227,7 +232,6 @@ export function putRequest({ dispatch }, payload) {
             ? payload.error_msg
             : error.response.data.message,
         status_code: 404,
-        forbidden_err:error.response.data
       };
       dispatch("handleRequestResponse", handle_fail_res_payload);
     });

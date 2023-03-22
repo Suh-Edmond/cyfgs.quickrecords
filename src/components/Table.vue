@@ -7,6 +7,7 @@
       row-key="index"
       :table-header-style="{ backgroundColor: '#5384ae', color: '#FFFFFF' }"
       :filter="filter"
+      :rows-per-page-options="[0]"
     >
       <template v-slot:top-left>
         <div class="text-h6 title" v-show="show_member_savings">
@@ -149,7 +150,7 @@
                       clickable
                       v-close-popup
                       @click="onEditMember(props.row)"
-                      v-show="show_members"
+                      v-if="show_members"
                     >
                       <q-item-section avatar>
                         <span>
@@ -166,7 +167,7 @@
                       clickable
                       v-close-popup
                       @click="onInviteMember(props.row)"
-                      v-show="checkPresidentRole()"
+                      v-if="checkPresidentRole() && show_members"
                     >
                       <q-item-section avatar>
                         <span>
@@ -576,20 +577,9 @@
               >
             </div>
             <div>
-              <q-btn round color="secondary" size="md" @click="whatsappInvite()"
-                ><i class="bi bi-whatsapp"></i
-              ></q-btn>
+              <q-btn round color="secondary" size="sm" @click="whatsappInvite()"
+                ><img src="../../src/assets/whatsapp.png" class="whatsapp_icon" ></q-btn>
               <q-tooltip>Invite via Whatsapp</q-tooltip>
-            </div>
-            <div>
-              <q-btn
-                round
-                color="primary"
-                icon="facebook"
-                size="md"
-                @click="faceBookInvite()"
-              />
-              <q-tooltip>Invite via Facebook</q-tooltip>
             </div>
           </div>
         </q-card-section>
@@ -786,7 +776,6 @@ export default {
       this.member_to_be_invited = data;
     },
 
-    emailInvite() {},
 
     whatsappInvite() {
       let msg = this.invite_msg_subject + "\n\n" + this.invite_msg;
@@ -796,7 +785,6 @@ export default {
       window.open(whatsapp_url);
     },
 
-    faceBookInvite() {},
 
     checkPresidentRole() {
       const president_role = LocalStorage.getItem("data").roles.find(
@@ -1052,7 +1040,7 @@ export default {
           this.getOrganisationIncomeActivities(organisation_id);
           break;
         case "MEMBERS_SAVINGS":
-          search_savings_url = `/api/protected/user-savings?organisation_id=${organisation_id}&status=${status}&name=${name}&amount_deposited=${amount_deposited}&year=${year}&month=${month}&date=${date}&date_range=${date_range}`;
+          search_savings_url = `/api/protected/user-savings?organisation_id=${organisation_id}&status=${payload.status}&name=${payload.name}&amount_deposited=${payload.amount_deposited}&year=${payload.year}&month=${payload.month}&date=${payload.date}&date_range=${payload.date_range}`;
           this.filterSaving(search_savings_url);
           break;
         case "MEMBERS_CONTRIBUTIONS":
@@ -1188,5 +1176,9 @@ export default {
 
 .total_contribution_balance {
  padding-left: 4.2rem;
+}
+
+.whatsapp_icon {
+  width: 2.7rem;
 }
 </style>

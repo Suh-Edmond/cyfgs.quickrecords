@@ -89,7 +89,7 @@
             :show_income_activity="false"
             :show_members="true"
             :show_contribution="false"
-            :total_members="getMembers.length"
+            :total_members="computeTotalMembership"
             @fetch-members="getOrganisationMembers"
           >
           </TableVue>
@@ -237,6 +237,10 @@ export default {
         });
       });
       return data;
+    },
+
+    computeTotalMembership(){
+      return this.getMembers.length;
     },
 
     getLoadingState() {

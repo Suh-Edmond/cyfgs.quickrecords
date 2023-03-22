@@ -14,7 +14,7 @@
             <div class="q-pa-md">
               <q-form @submit="onSubmit" class="q-gutter-md">
                 <div class="q-pb-md">
-                  <label for="name" class="form_field">Name</label>
+                  <label for="name" class="form_field">Name <span class="text-red">*</span></label>
                   <q-input
                     v-model="user.name"
                     outlined
@@ -24,7 +24,7 @@
                   />
                 </div>
                 <div class="q-pb-md">
-                  <label for="telephone" class="form_field">Telephone</label>
+                  <label for="telephone" class="form_field">Telephone <span class="text-red">*</span></label>
                   <q-input
                     v-model="user.telephone"
                     outlined
@@ -48,7 +48,7 @@
                   </q-input>
                 </div>
                 <div class="q-pb-md">
-                  <label for="password" class="form_field">Password</label>
+                  <label for="password" class="form_field">Password <span class="text-red">*</span></label>
                   <q-input
                     v-model="user.password"
                     :type="is_pwd ? 'password' : 'text'"
@@ -66,7 +66,7 @@
                 </div>
                 <div class="q-pb-sm">
                   <label for="confirm_password" class="form_field"
-                    >Confirm Password</label
+                    >Confirm Password <span class="text-red">*</span></label
                   >
                   <q-input
                     v-model="user.password_confirmation"
@@ -89,7 +89,7 @@
                   </q-input>
                 </div>
                 <div class="bottom">
-                  <ButtonVue
+                  <q-btn
                     class="form_button"
                     :label="label_sigup"
                     :loading="loading"
@@ -97,7 +97,8 @@
                     :color="color"
                     :no_caps="true"
                   >
-                  </ButtonVue>
+                  <q-icon name="arrow_forward" size="xs" class="q-pl-lg"></q-icon>
+                  </q-btn>
                   <div class="account_text" v-if="!$q.screen.lg">
                     Already Have an Account ?<router-link
                       to="/auth/login"
@@ -117,7 +118,6 @@
 </template>
 
 <script>
-import ButtonVue from "src/components/Button.vue";
 export default {
   name: "PageIndex",
   data() {
@@ -185,7 +185,6 @@ export default {
     },
   },
   components: {
-    ButtonVue,
   },
 };
 </script>

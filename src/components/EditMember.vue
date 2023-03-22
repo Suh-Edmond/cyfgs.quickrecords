@@ -207,26 +207,23 @@
       </q-tab-panels>
     </div>
 
-    <q-dialog v-model="show_dialog" :position="position">
-      <q-card>
+    <q-dialog v-model="show_dialog" position="right">
+      <q-card :style="{ width: image_width }">
         <q-card-section>
-          <div>
-            <q-avatar
-              icon="warning"
-              class="warning_image"
-              size="30px"
-              color="yellow"
-              text-color="white"
-            />
-            <span class="q-ml-sm text-dark warning_text"
-              >Are you sure you want to remove this role ?</span
-            >
+          <div class="text-left q-pb-md">
+            <label class="text-dark message">Are you sure you want to remove this role ?</label>
           </div>
           <div
-            class="text-weight-medium text-center diaglog_info"
+            class="text-weight-medium text-left diaglog_info"
             v-if="show_dialog"
           >
-            {{ role_deleted.name }}
+            Member: <span>{{ user.name }}</span>
+          </div>
+          <div
+            class="text-weight-medium text-left diaglog_info q-pt-sm"
+            v-if="show_dialog"
+          >
+           Role: <span class="q-pl-lg">{{ role_deleted.name }}</span>
           </div>
         </q-card-section>
         <q-card-actions align="right">
@@ -235,13 +232,13 @@
             color="primary"
             no_caps
             flat
-            size="sm"
+            class="dialog_button"
             v-close-popup
           ></q-btn>
           <q-btn
             :label="label"
             color="primary"
-            size="sm"
+            class="dialog_button"
             @click="removeUserRole"
             no_caps
             flat
@@ -294,6 +291,7 @@ export default {
       role: null,
       label: "Remove",
       position: "right",
+      image_width: "400px",
       message: "Are you sure  you want to remove this role ?",
       show_dialog: false,
       user_roles: [],
@@ -563,19 +561,27 @@ export default {
   color: #333333;
 }
 
-.warning_image {
-  color: yellow;
+.dialog_button {
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
 }
-
 .text-color {
   color: $grey2;
 }
 
-.warning_text {
-  font-size: small;
+.message {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 15px;
+  align-items: center;
+  letter-spacing: 0.01em;
+  color: $grey2;
 }
 
 .diaglog_info {
-  font-size: smaller;
+  font-size: small;
+  color: red;
 }
 </style>

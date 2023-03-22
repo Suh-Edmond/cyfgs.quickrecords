@@ -53,7 +53,7 @@
           </q-input>
         </div>
         <div class="q-mb-md">
-          <label for="name" class="form_field">Payment Activity </label>
+          <label for="name" class="form_field">Payment Activity <span class="text-red">*</span></label>
           <q-select
             outlined
             dense

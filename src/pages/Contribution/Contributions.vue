@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/no-side-effects-in-computed-properties -->
 <template>
   <div class="q-pa-sm">
     <!-- spinner when fetching data -->
@@ -180,6 +181,12 @@ export default {
           field: "balance",
         },
         {
+          name: "state", ///this has to be changed to approve word not state so it is consistent
+          align: "left",
+          label: "Transaction Status",
+          field: "state",
+        },
+        {
           name: "action",
           label: "Action",
           field: "action",
@@ -208,6 +215,8 @@ export default {
     },
     getMembersContributionsByPaymentItem() {
       let data = [];
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+      this.total_contribution = 0.0;
 
       if (this.$store.getters.getMembersContributionsByPaymentItem != null) {
         this.$store.getters.getMembersContributionsByPaymentItem.data.forEach(
@@ -270,6 +279,9 @@ export default {
 
     getFilteredContributions() {
       let data = [];
+       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+      this.total_contribution = 0.0;
+
       if (this.$store.getters.getFilteredContributions != null) {
         this.$store.getters.getFilteredContributions.forEach((ele) => {
           this.total_contribution+=ele.total_amount_deposited
@@ -305,9 +317,10 @@ export default {
     },
 
     getTableTitleForSearchContributions() {
-      let title = ""
-      title = this.$store.getters.getSearchSavingParams != undefined
-        ? `Members Contributions for ${this.$store.getters.getSearchSavingParams.payment_item_id.name}, Amount Payable:  ${Number(this.$store.getters.getSearchSavingParams.payment_item_id.amount).toLocaleString()} XAF`
+      let title = "";
+      let search_data = this.$store.getters.getSearchSavingParams;
+      title = search_data != undefined && search_data.payment_item_id != undefined
+        ? `Members Contributions for ${search_data.payment_item_id.name}, Amount Payable:  ${Number(search_data.payment_item_id.amount).toLocaleString()} XAF`
         : "";
       return title
     },

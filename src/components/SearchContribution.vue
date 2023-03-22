@@ -237,11 +237,11 @@ export default {
       param: {
         payment_category_id: null,
         payment_item_id: null,
-        month: null,
-        year: null,
-        range: null,
-        date: null,
-        date_range: null,
+        month: "",
+        year: "",
+        range: "",
+        date: "",
+        date_range: "",
       },
       position: "right",
       error_bal: false,
@@ -296,10 +296,10 @@ export default {
     },
 
     filterByDuration(status) {
-      let state = status == null ? null : status;
+
       let payload = {
         organisation_id: this.getOrganisationId,
-        status: state,
+        status: status == null ? "": status,
         payment_category_id: this.param.payment_category_id,
         payment_item_id: this.param.payment_item_id,
         year: this.param.year,
@@ -313,11 +313,11 @@ export default {
     reset() {
       this.param.payment_category_id = null;
       this.param.payment_item_id = null;
-      this.param.month = null;
-      this.param.year = null;
-      this.param.range = null;
-      this.param.date = null;
-      this.param.date_range = null;
+      this.param.month = "";
+      this.param.year = "";
+      this.param.range = "";
+      this.param.date = "";
+      this.param.date_range = "";
     },
   },
   components: {},

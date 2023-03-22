@@ -156,15 +156,14 @@
 import NotFound from "src/components/NotFound.vue";
 import TableVue from "src/components/Table.vue";
 import IncomeActivityMixinVue from "src/mixins/IncomeActivityMixin.vue";
-import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
 
 export default {
-  mixins: [IncomeActivityMixinVue, organisationMixinVue, HelperMixinVue],
+  mixins: [IncomeActivityMixinVue, HelperMixinVue],
 
   mounted() {
-    let organisation_id = this.getOrganisationId;
-    this.getOrganisationIncomeActivities(organisation_id);
+    let organisation = this.$store.getters.getOrganisation;
+    this.getOrganisationIncomeActivities(organisation.id);
 
     if(this.$store.getters.getPaymentActivities.length == 0){
       this.fetchPaymentActivities();
@@ -233,7 +232,7 @@ export default {
         {
           name: "state",
           align: "left",
-          label: "Status",
+          label: "Transaction Status",
           field: "state",
           sortable: true,
         },
@@ -352,7 +351,7 @@ export default {
       this.filteredActivities = [];
       this.total_income_amount = 0;
 
-      let id = this.getOrganisationId;
+      let id = this.this.$store.getters.getOrganisation.id;
       let payment_item_name = this.payment_item_id != null ? this.payment_item_id.label : "";
       let payment_item_value = this.payment_item_id != null ? this.payment_item_id.value : "";
 
@@ -410,7 +409,7 @@ export default {
     },
 
     downloadIncomeActivity() {
-      const id = this.getOrganisationId;
+      const id = this.this.$store.getters.getOrganisation.id;
       let payment_item_id = this.payment_item_id != null ? this.payment_item_id.value : "";
 
       let url = `/api/protected/organisations/income-activities/generate-pdf?organisation_id=${id}&month=${this.month}&payment_item_id=${payment_item_id}&status=${this.status}`;

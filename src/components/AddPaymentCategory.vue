@@ -25,8 +25,8 @@
             placeholder="Please provide a description about the category"
           />
         </div>
-        <div class="row q-mt-lg justify-end">
-          <div class="col-md-2 col-sm-2 col-xs-2">
+        <div class="flex q-mt-lg justify-end">
+          <div>
             <ButtonVue
               class="form_button"
               :label="label_save"

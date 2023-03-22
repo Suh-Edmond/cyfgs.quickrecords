@@ -227,7 +227,6 @@ export function putRequest({ dispatch }, payload) {
             ? payload.error_msg
             : error.response.data.message,
         status_code: 404,
-        forbidden_err:error.response.data
       };
       dispatch("handleRequestResponse", handle_fail_res_payload);
     });

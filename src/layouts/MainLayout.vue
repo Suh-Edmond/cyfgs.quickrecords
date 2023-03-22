@@ -55,7 +55,7 @@
                   false
                 )
               "
-              v-if="checkRole(['PRESIDENT', null])"
+              v-if="checkRole(['PRESIDENT', null, null])"
               to="/dashboard/organisation-management"
             >
               <q-item-section
@@ -82,7 +82,7 @@
               @click="
                 setItem({ name: 'Member Management', selected: true }, true)
               "
-              v-if="checkRole(['PRESIDENT', 'FINANCIAL_SECRETARY'])"
+              v-if="checkRole(['PRESIDENT', 'FINANCIAL_SECRETARY', null])"
               to="/dashboard/members"
               :disable="getOrganisation == null"
             >
@@ -124,8 +124,9 @@
               @click="
                 setItem({ name: 'Payment Categories', selected: true }, true)
               "
-              v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER'])"
+              v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER', 'PRESIDENT'])"
               to="/dashboard/payment-categories"
+              :disable="getOrganisation == null"
             >
               <q-item-section
                 avatar
@@ -153,8 +154,9 @@
                   true
                 )
               "
-              v-if="checkRole(['FINANCIAL_SECRETARY', null])"
+              v-if="checkRole(['FINANCIAL_SECRETARY', null, 'PRESIDENT'])"
               to="/dashboard/expenditure-categories"
+              :disable="getOrganisation == null"
             >
               <q-item-section
                 avatar
@@ -177,8 +179,9 @@
               :active-class="item.name == 'Expenditures' ? 'item' : 'item_text'"
               :active="item.name == 'Expenditures'"
               @click="setItem({ name: 'Expenditures', selected: true }, true)"
-              v-if="checkRole([null, 'TREASURER'])"
+              v-if="checkRole([null, 'TREASURER', 'PRESIDENT'])"
               to="/dashboard/expenditures"
+              :disable="getOrganisation == null"
             >
               <q-item-section
                 avatar
@@ -197,8 +200,9 @@
               "
               :active="item.name == 'Member Savings'"
               @click="setItem({ name: 'Member Savings', selected: true }, true)"
-              v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER'])"
+              v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER', 'PRESIDENT'])"
               to="/dashboard/members-savings"
+              :disable="getOrganisation == null"
             >
               <q-item-section
                 avatar
@@ -223,8 +227,9 @@
               @click="
                 setItem({ name: 'Income Activities', selected: true }, true)
               "
-              v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER'])"
+              v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER', 'PRESIDENT'])"
               to="/dashboard/income-activities"
+              :disable="getOrganisation == null"
             >
               <q-item-section
                 avatar
@@ -249,8 +254,9 @@
               @click="
                 setItem({ name: 'Members Contributions', selected: true }, true)
               "
-              v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER'])"
+              v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER', 'PRESIDENT'])"
               :to="{ name: 'members_contributions' }"
+              :disable="getOrganisation == null"
             >
               <q-item-section
                 avatar
@@ -277,8 +283,9 @@
               @click="
                 setItem({ name: 'Sponsorship Management', selected: true }, true)
               "
-              v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER'])"
+              v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER', 'PRESIDENT'])"
               :to="{ name: 'sponsorship' }"
+              :disable="getOrganisation == null"
             >
               <q-item-section
                 avatar
@@ -305,8 +312,9 @@
               @click="
                 setItem({ name: 'Reports Generation', selected: true }, false)
               "
-              v-if="checkRole(['FINANCIAL_SECRETARY'])"
+              v-if="checkRole(['FINANCIAL_SECRETARY', 'PRESIDENT', null])"
               :to="{ name: 'report_generation' }"
+              :disable="getOrganisation == null"
             >
               <q-item-section
                 avatar
@@ -580,7 +588,7 @@ export default {
         user_roles.push(role.name);
       });
       return user_roles.includes(tab_roles[0]) ||
-        user_roles.includes(tab_roles[1])
+        user_roles.includes(tab_roles[1]) || user_roles.includes(tab_roles[2])
         ? true
         : false;
     },

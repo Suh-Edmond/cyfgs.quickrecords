@@ -7,6 +7,7 @@
       row-key="index"
       :table-header-style="{ backgroundColor: '#5384ae', color: '#FFFFFF' }"
       :filter="filter"
+      :rows-per-page-options="[0]"
     >
       <template v-slot:top-left>
         <div class="text-h6 title" v-show="show_member_savings">
@@ -576,20 +577,9 @@
               >
             </div>
             <div>
-              <q-btn round color="secondary" size="md" @click="whatsappInvite()"
-                ><i class="bi bi-whatsapp"></i
-              ></q-btn>
+              <q-btn round color="secondary" size="sm" @click="whatsappInvite()"
+                ><img src="../../src/assets/whatsapp.png" class="whatsapp_icon" ></q-btn>
               <q-tooltip>Invite via Whatsapp</q-tooltip>
-            </div>
-            <div>
-              <q-btn
-                round
-                color="primary"
-                icon="facebook"
-                size="md"
-                @click="faceBookInvite()"
-              />
-              <q-tooltip>Invite via Facebook</q-tooltip>
             </div>
           </div>
         </q-card-section>
@@ -786,7 +776,6 @@ export default {
       this.member_to_be_invited = data;
     },
 
-    emailInvite() {},
 
     whatsappInvite() {
       let msg = this.invite_msg_subject + "\n\n" + this.invite_msg;
@@ -796,7 +785,6 @@ export default {
       window.open(whatsapp_url);
     },
 
-    faceBookInvite() {},
 
     checkPresidentRole() {
       const president_role = LocalStorage.getItem("data").roles.find(
@@ -1188,5 +1176,9 @@ export default {
 
 .total_contribution_balance {
  padding-left: 4.2rem;
+}
+
+.whatsapp_icon {
+  width: 2.7rem;
 }
 </style>

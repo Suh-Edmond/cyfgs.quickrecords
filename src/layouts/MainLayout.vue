@@ -179,7 +179,7 @@
               :active-class="item.name == 'Expenditures' ? 'item' : 'item_text'"
               :active="item.name == 'Expenditures'"
               @click="setItem({ name: 'Expenditures', selected: true }, true)"
-              v-if="checkRole([null, 'TREASURER', 'PRESIDENT'])"
+              v-if="checkRole([null, 'TREASURER', null])"
               to="/dashboard/expenditures"
               :disable="getOrganisation == null"
             >

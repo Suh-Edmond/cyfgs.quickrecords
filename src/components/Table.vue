@@ -150,7 +150,7 @@
                       clickable
                       v-close-popup
                       @click="onEditMember(props.row)"
-                      v-show="show_members"
+                      v-if="show_members"
                     >
                       <q-item-section avatar>
                         <span>
@@ -167,7 +167,7 @@
                       clickable
                       v-close-popup
                       @click="onInviteMember(props.row)"
-                      v-show="checkPresidentRole()"
+                      v-if="checkPresidentRole() && show_members"
                     >
                       <q-item-section avatar>
                         <span>

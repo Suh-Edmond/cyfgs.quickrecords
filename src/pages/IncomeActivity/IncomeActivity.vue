@@ -233,7 +233,7 @@ export default {
         {
           name: "state",
           align: "left",
-          label: "Status",
+          label: "Transaction Status",
           field: "state",
           sortable: true,
         },

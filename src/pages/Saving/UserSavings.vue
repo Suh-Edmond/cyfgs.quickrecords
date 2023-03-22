@@ -131,7 +131,7 @@ export default {
         {
           name: "approve",
           align: "left",
-          label: "Status",
+          label: "Transaction Status",
           field: "approve",
         },
         {
@@ -143,7 +143,7 @@ export default {
         {
           name: "state",
           align: "left",
-          label: "Status",
+          label: "Saving Status",
           field: "state",
           sortable: true,
         },

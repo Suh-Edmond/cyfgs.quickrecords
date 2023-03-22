@@ -404,11 +404,11 @@ export default {
         .then(() => {
           let data = {
             payment_item_id: payment_item_id,
-            year: null,
-            month: null,
-            date: null,
-            status: null,
-            date_range: null,
+            year: "",
+            month: "",
+            date: "",
+            status: "",
+            date_range: "",
           };
           this.filterMembersContributions(data);
           this.resetForm();

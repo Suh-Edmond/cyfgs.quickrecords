@@ -35,7 +35,7 @@ export default {
         path: `/dashboard/contributions`,
         query: {
           organisation_id: data.organisation_id,
-          payment_item_id: data.payment_item_id.label,
+          payment_item_id: data.payment_item_id != undefined ? data.payment_item_id.label : "",
           status: data.status,
           year: data.year,
           month: data.month,
@@ -45,7 +45,6 @@ export default {
         },
       });
       this.loading = true;
-      console.log(data.payment_item_id);
       let id =
         data.payment_item_id.value != undefined
           ? data.payment_item_id.value

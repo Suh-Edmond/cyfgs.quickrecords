@@ -1040,7 +1040,7 @@ export default {
           this.getOrganisationIncomeActivities(organisation_id);
           break;
         case "MEMBERS_SAVINGS":
-          search_savings_url = `/api/protected/user-savings?organisation_id=${organisation_id}&status=${status}&name=${name}&amount_deposited=${amount_deposited}&year=${year}&month=${month}&date=${date}&date_range=${date_range}`;
+          search_savings_url = `/api/protected/user-savings?organisation_id=${organisation_id}&status=${payload.status}&name=${payload.name}&amount_deposited=${payload.amount_deposited}&year=${payload.year}&month=${payload.month}&date=${payload.date}&date_range=${payload.date_range}`;
           this.filterSaving(search_savings_url);
           break;
         case "MEMBERS_CONTRIBUTIONS":

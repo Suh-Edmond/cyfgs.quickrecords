@@ -202,58 +202,58 @@ export default {
   },
   methods: {
     filterByUserInfo() {
-      let organisation_id = this.getOrganisationId;
+      let organisation = this.$store.getters.getOrganisation;
       this.$router.push({
         path: `/dashboard/members-savings`,
-        query: { organisation_id: organisation_id, name: this.param.name },
+        query: { organisation_id: organisation.name, name: this.param.name },
       });
-      let url = `/api/protected/user-savings?organisation_id=${organisation_id}&name=${this.param.name}`;
+      let url = `/api/protected/user-savings?organisation_id=${organisation.id}&name=${this.param.name}`;
       this.filterSaving(url);
       this.$store.dispatch("setSearchSavingsParams", {
-        organisation_id: organisation_id,
+        organisation_id: organisation.id,
         name: this.param.name,
       });
       this.param.name = ""
     },
 
     filterByAmount() {
-      let organisation_id = this.getOrganisationId;
+      let organisation = this.$store.getters.getOrganisation;
       this.$router.push({
         path: `/dashboard/members-savings`,
         query: {
-          organisation_id: organisation_id,
+          organisation: organisation.id,
           amount_deposited: this.param.amount_deposited,
         },
       });
-      let url = `/api/protected/user-savings?organisation_id=${organisation_id}&amount_deposited=${this.param.amount_deposited}`;
+      let url = `/api/protected/user-savings?organisation_id=${organisation.id}&amount_deposited=${this.param.amount_deposited}`;
       this.filterSaving(url);
       this.$store.dispatch("setSearchSavingsParams", {
-        organisation_id: organisation_id,
+        organisation_id: organisation.id,
         amount_deposited: this.param.amount_deposited,
       });
       this.param.amount_deposited = 0
     },
 
     filterByStatus(status) {
-      let organisation_id = this.getOrganisationId;
+      let organisation = this.$store.getters.getOrganisation;
       this.$router.push({
         path: `/dashboard/members-savings`,
-        query: { organisation_id: organisation_id, status: status },
+        query: { organisation: organisation.id, status: status },
       });
-      let url = `/api/protected/user-savings?organisation_id=${organisation_id}&status=${status}`;
+      let url = `/api/protected/user-savings?organisation_id=${organisation.id}&status=${status}`;
       this.filterSaving(url);
       this.$store.dispatch("setSearchSavingsParams", {
-        organisation_id: organisation_id,
+        organisation_id: organisation.id,
         status: status
       });
     },
 
     filterByDuration() {
-      let organisation_id = this.getOrganisationId;
+      let organisation = this.$store.getters.getOrganisation;
       this.$router.push({
         path: `/dashboard/members-savings`,
         query: {
-          organisation_id: organisation_id,
+          organisation: organisation.id,
           year: this.param.year,
           month: this.param.month,
           date: this.param.date,
@@ -261,7 +261,7 @@ export default {
         },
       });
 
-      let url = `/api/protected/user-savings?organisation_id=${organisation_id}&year=${this.param.year}&month=${this.param.month}&date=${this.param.date}&range=${this.param.date_range}`;
+      let url = `/api/protected/user-savings?organisation_id=${organisation.id}&year=${this.param.year}&month=${this.param.month}&date=${this.param.date}&range=${this.param.date_range}`;
       this.filterSaving(url);
       this.param.year = "";
       this.param.month = "";
@@ -269,7 +269,7 @@ export default {
       this.param.date_range = "";
 
       this.$store.dispatch("setSearchSavingsParams", {
-        organisation_id: organisation_id,
+        organisation_id: organisation.id,
         year: this.param.year,
         month: this.param.month,
         date: this.param.date,

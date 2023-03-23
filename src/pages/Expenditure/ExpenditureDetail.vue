@@ -278,6 +278,7 @@ export default {
       this.show_spinner = false;
       return this.filtered_items;
     },
+
   },
   components: {
     NotFound,

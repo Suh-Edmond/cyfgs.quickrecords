@@ -56,7 +56,6 @@
               :show_payment_item="false"
               :show_expenditure_category="false"
               :show_expenditure_item="true"
-              @show-expenditure-items="showExpenditureItem"
             >
             </CategoryTable>
           </div>

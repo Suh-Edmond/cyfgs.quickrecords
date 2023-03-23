@@ -716,7 +716,8 @@ export default {
       };
       this.$store.dispatch("putRequest", payload).then((res) => {
         if (res.status == 200) {
-          this.callFetchDataAfterApproveAction(this.approve_data);
+          let expenditure_category = this.$store.getters.getExpenditureCategory;
+          this.callFetchDataAfterApproveAction(this.approve_data, expenditure_category.id);
         }
       });
     },
@@ -968,10 +969,10 @@ export default {
       return this.approve_msg;
     },
 
-    callFetchDataAfterApproveAction(data) {
+    callFetchDataAfterApproveAction(data, expenditure_category_id) {
       switch (data.type) {
         case "EXPENDITURE_ITEMS":
-          this.getExpendituresByCategory(data.expenditure_category_id);
+          this.getExpendituresByCategory(expenditure_category_id);
           break;
         case "EXPENDITURE_DETAILS":
           this.getExpenditureDetailsByItemId(data.expenditure_item_id);
@@ -982,6 +983,17 @@ export default {
     showDetails(data) {
       this.$store.dispatch("setExpenditureItemName", data.name);
       this.getExpenditureDetailsByItemId(data.id);
+
+      const intermediate_tabs = Array.from(
+        this.$store.getters.getIntermediateTabs
+      );
+
+      intermediate_tabs.push({
+        name: "Details",
+        has_intermediate_tab: true,
+      });
+
+      this.$store.dispatch("setIntermediateTabs", intermediate_tabs);
     },
 
     onViewExpenditureItem(data) {

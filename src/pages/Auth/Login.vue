@@ -52,6 +52,7 @@
                   :disabled="validateLogin"
                   :color="color"
                   :no_caps="no_caps"
+                  type="submit"
                 >
                 <q-icon name="arrow_forward" size="xs" class="q-pl-lg"></q-icon>
                 </q-btn>
@@ -123,9 +124,13 @@ export default {
       };
       this.$store
         .dispatch("postRequest", payload)
-        .then(() => {
-          SessionStorage.set("to_tab", 'Dashboard');
-          this.getOrganisationInfo();
+        .then((res) => {
+          if(res.data != undefined){
+            SessionStorage.set("to_tab", 'Dashboard');
+            this.getOrganisationInfo();
+          }
+        }).catch((error) => {
+
         })
         .finally(() => {
           this.loading = false;

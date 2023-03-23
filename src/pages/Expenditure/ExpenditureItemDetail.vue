@@ -207,7 +207,7 @@ export default {
     },
 
     getExpenditureItemName() {
-      return this.$store.getters.getCurrentExpenditureItem.name;
+      return this.$store.getters.getCurrentExpenditureItem != null ? this.$store.getters.getCurrentExpenditureItem.name : "";
     },
 
     getNotFoundMsg() {

@@ -8,6 +8,7 @@
       :table-header-style="{ backgroundColor: '#5384ae', color: '#FFFFFF' }"
       class="col-xs-12"
       :filter="filter"
+      :rows-per-page-options="[0]"
       hide-pagination
     >
       <template v-slot:body="props">

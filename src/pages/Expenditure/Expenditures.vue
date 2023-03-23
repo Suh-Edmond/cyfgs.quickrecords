@@ -243,7 +243,7 @@ export default {
     },
 
     downloadExpenditureItems() {
-      let expenditure_category_id = this.expenditure_category_id;
+      let expenditure_category_id = this.expenditure_category_id != null ? this.expenditure_category_id.value: "";
       let state = this.status === "APPROVED" ? 1 : 0;
       let url = `/api/protected/expenditure-items/download?expenditure_category_id=${expenditure_category_id}&status=${state}`;
       let file_name = "Expenditure_Items.pdf";

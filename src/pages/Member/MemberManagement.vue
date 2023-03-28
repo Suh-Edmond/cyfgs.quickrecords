@@ -208,7 +208,7 @@ export default {
         },
       ],
       not_found_msg:
-        "Ooops!! You don't have any Register Member click the button to add Members.",
+        "Ooops!! You don't have any Member click the button to add Members.",
       label_print: "Print",
       color_print: "positive",
       loading_filter: false,

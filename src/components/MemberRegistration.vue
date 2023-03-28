@@ -1,0 +1,371 @@
+<template>
+  <div class="q-pa-sm">
+    <div>
+      <q-tabs
+        v-model="tab"
+        dense
+        class="text-grey q-pt-xs"
+        active-color="primary"
+        indicator-color="primary"
+        align="justify"
+        narrow-indicator
+      >
+        <q-tab name="Add Member" label="Add Member" no-caps icon="person_add" />
+        <q-tab
+          name="Upload File"
+          label="Upload File"
+          no-caps
+          icon="file_upload"
+        />
+      </q-tabs>
+
+      <q-separator />
+
+      <q-tab-panels v-model="tab" animated>
+        <q-tab-panel name="Add Member">
+          <div class="q-mx-md">
+            <q-form @submit="onAddMember" class="q-gutter-md">
+              <div class="text-subtitle2 text-left text-primary q-pt-xs">
+                Personal Information
+              </div>
+              <small class="hint"
+                >All fields with <span class="text-red">*</span> are
+                required</small
+              >
+              <div>
+                <label for="credential" class="form_field"
+                  >Name <span class="text-red">*</span></label
+                >
+                <q-input v-model="user.name" outlined dense type="text" />
+              </div>
+              <div>
+                <label for="credential" class="form_field"
+                  >Gender <span class="text-red">*</span></label
+                >
+                <q-select
+                  v-model="user.gender"
+                  outlined
+                  dense
+                  :options="gender_options"
+                />
+              </div>
+              <div>
+                <label for="credential" class="form_field">Email</label>
+                <q-input v-model="user.email" outlined dense type="email" />
+              </div>
+              <div>
+                <label for="credential" class="form_field"
+                  >Telephone <span class="text-red">*</span></label
+                >
+                <q-input
+                  v-model="user.telephone"
+                  outlined
+                  dense
+                  type="tel"
+                  mask="(+###) ### - ### - ###"
+                  unmasked-value
+                  hint="Example: (+237) ### - ### - ###"
+                />
+              </div>
+              <div>
+                <label for="credential" class="form_field"
+                  >Address <span class="text-red">*</span></label
+                >
+                <q-input v-model="user.address" outlined dense type="text" />
+              </div>
+              <div>
+                <label for="credential" class="form_field"
+                  >Occupation <span class="text-red">*</span></label
+                >
+                <q-input v-model="user.occupation" outlined dense type="text" />
+              </div>
+              <div class="flex q-mt-lg justify-end">
+                <div>
+                  <ButtonVue
+                    :label="label_save"
+                    :loading="loading"
+                    :color="color"
+                    :disabled="validateForm"
+                    :no_caps="no_caps"
+                  >
+                  </ButtonVue>
+                </div>
+              </div>
+            </q-form>
+          </div>
+        </q-tab-panel>
+        <q-tab-panel name="Upload File">
+          <div>
+            <q-form @submit="uploadFile">
+              <div class="text-subtitle2 text-center text-primary">
+                Import Members from an Excel File
+                <span class="q-pl-md">
+                  <q-btn flat @click="openHelp">
+                    <q-icon name="help_outline" size="sm"> </q-icon>
+                    <q-tooltip> Help </q-tooltip>
+                  </q-btn>
+                </span>
+              </div>
+              <div class="row q-gutter-md flex flex-center q-pt-md">
+                <div class="col-md-8 col-sm-12 col-xs-12">
+                  <q-file
+                    outlined
+                    v-model="file"
+                    dense
+                    label="Choose file"
+                    accept="xls, .xlsx, .xlsm, .csv"
+                    counter
+                  >
+                    <template v-slot:prepend>
+                      <q-icon name="attach_file" />
+                    </template>
+                  </q-file>
+                </div>
+                <div class="col-md-2 col-sm-12 col-xs-12 q-pb-md">
+                  <ButtonVue
+                    class="form_button"
+                    :label="label_upload"
+                    :loading="loading"
+                    :color="color"
+                    :disabled="validateFormUpload"
+                    :no_caps="no_caps"
+                  >
+                  </ButtonVue>
+                </div>
+              </div>
+            </q-form>
+          </div>
+        </q-tab-panel>
+      </q-tab-panels>
+    </div>
+    <q-dialog v-model="dialog" :position="position">
+      <q-card :style="{ width: image_width }" class="q-ma-md">
+        <q-bar class="bg-primary">
+          <div></div>
+          <q-space />
+
+          <q-btn dense flat icon="close" v-close-popup class="text-white">
+            <q-tooltip>Close</q-tooltip>
+          </q-btn>
+        </q-bar>
+        <q-card-section
+          class="row flex flex-center csv_image_card"
+          @click="full_width = true"
+        >
+          <div>
+            <div class="q-pb-md help_text">
+              Below is a structure of an example excel file to upload members
+            </div>
+            <div class="q-mx-lg">
+              <q-img
+                src="../assets/example_csv_upload.png"
+                spinner-color="white"
+                class="q-px-sm"
+                style="width: 100%; height: 100%"
+              />
+            </div>
+          </div>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
+
+    <!-- example csv file to be uploaded in full width-->
+    <q-dialog v-model="full_width" full-width>
+      <q-card>
+        <q-bar class="bg-primary">
+          <div></div>
+          <q-space />
+
+          <q-btn dense flat icon="close" v-close-popup class="text-white">
+            <q-tooltip>Close</q-tooltip>
+          </q-btn>
+        </q-bar>
+        <q-card-section>
+          <div class="q-pb-md help_text">
+            Below is a structure of an example excel file to upload members
+          </div>
+        </q-card-section>
+
+        <q-card-section class="q-pa-md">
+          <q-img
+            src="../assets/example_csv_upload.png"
+            spinner-color="white"
+            class="q-px-md"
+          />
+        </q-card-section>
+      </q-card>
+    </q-dialog>
+  </div>
+</template>
+<script>
+import ButtonVue from "src/components/Button.vue";
+import memberMixinVue from "src/mixins/memberMixin.vue";
+import organisationMixinVue from "src/mixins/organisationMixin.vue";
+
+export default {
+  mixins: [memberMixinVue, organisationMixinVue],
+  created() {
+    let heading = "Add Members to the Organisation";
+    this.$emit("set-heading", heading);
+  },
+  data() {
+    return {
+      full_width: false,
+      image_width: "370px",
+      label_save: "Save",
+      loading: false,
+      color: "primary",
+      user: {
+        name: null,
+        email: null,
+        telephone: null,
+        address: null,
+        occupation: null,
+        gender: null,
+      },
+      gender_options: ["MALE", "FEMALE", "OTHER"],
+      file: null,
+      label_upload: "Import",
+      position: "right",
+      dialog: false,
+      no_caps: true,
+      tab: "Add Member",
+    };
+  },
+  computed: {
+    validateForm() {
+      return this.user.name === null ||
+        this.user.telephone == null ||
+        this.user.gender == null ||
+        this.user.address == null ||
+        this.user.occupation == null
+        ? true
+        : false;
+    },
+    validateFormUpload() {
+      return this.file == null ? true : false;
+    },
+  },
+  methods: {
+    onAddMember() {
+      let id = this.getOrganisationId;
+      this.loading = true;
+      let payload = {
+        url: `/api/protected/organisations/${id}/add-users`,
+        data: this.user,
+        msg: "Member added Successfully",
+        color: "default",
+        to_on_ok: "none",
+        to_on_fail: "none",
+        show_feedback: true,
+        error_msg: "An Error occurred! Please try again",
+        has_commit: false,
+        commit: "none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.$store
+        .dispatch("postRequest", payload)
+        .then(() => {
+          this.getOrganisationMembers(id, true);
+        })
+        .finally(() => {
+          this.loading = false;
+          this.resetForm();
+          this.$emit("close-right-drawer");
+        });
+    },
+    openHelp() {
+      this.dialog = true;
+    },
+
+    uploadFile(event) {
+      const formData = new FormData();
+      formData.append("file", this.file);
+      let id = this.getOrganisationId;
+      let payload = {
+        url: `/api/protected/organisations/${id}/import-users`,
+        msg: "Members uploaded successfully",
+        data: formData,
+        color: "default",
+        show_feedback: true,
+        status: "success",
+        to_on_ok: "none",
+        to_on_fail: "none",
+        error_msg: "An Error occurred! Please try again",
+        has_commit: false,
+        commit: "none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.loading = true;
+      this.$store
+        .dispatch("uploadFileRequest", payload)
+        .then(() => {
+          this.getOrganisationMembers(id, true);
+        })
+        .finally(() => {
+          this.loading = false;
+          this.file = null;
+          this.$emit("close-right-drawer");
+        });
+    },
+
+    resetForm() {
+      this.user.name = null;
+      this.user.email = null;
+      this.user.telephone = null;
+      this.user.address = null;
+      this.user.occupation = null;
+      this.user.gender = null;
+
+      return this.user;
+    },
+  },
+  components: {
+    ButtonVue,
+  },
+};
+</script>
+
+<style scoped lang="scss">
+.csv_image_card {
+  cursor: pointer;
+}
+
+.hint {
+  color: $grey2;
+  font-size: smaller;
+}
+
+.form_field {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 11px;
+  align-items: center;
+  letter-spacing: 0.01em;
+  color: $grey2;
+}
+
+.or_option {
+  font-weight: bolder;
+}
+
+.help_text {
+  color: $dark;
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  text-align: center;
+  align-items: center;
+  letter-spacing: 0.01em;
+}
+</style>

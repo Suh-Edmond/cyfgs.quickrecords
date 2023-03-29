@@ -113,16 +113,6 @@ const routes = [
         },
       },
       {
-        name:"members_registration",
-        path:"/dashboard/registered-members",
-        component: () => import("src/pages/Member/RegistrationManagement.vue"),
-        meta: {
-          middleware: "auth",
-          role: "MEMBER",
-          has_intermediate_tab:false
-        },
-      },
-      {
         name: "expenditure_category",
         path: "/dashboard/expenditure-categories",
         component: () => import("src/pages/Expenditure/ExpenditureCategory.vue"),

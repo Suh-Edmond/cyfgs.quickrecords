@@ -10,125 +10,54 @@
         align="justify"
         narrow-indicator
       >
-        <q-tab name="Add Member" label="Add Member" no-caps icon="person_add" />
         <q-tab
-          name="Upload File"
-          label="Upload File"
+          name="Registration"
+          label="Registration"
           no-caps
-          icon="file_upload"
+          icon="person_add"
         />
       </q-tabs>
 
-      <q-separator />
-
       <q-tab-panels v-model="tab" animated>
-        <q-tab-panel name="Add Member">
-          <div class="q-mx-md">
-            <q-form @submit="onAddMember" class="q-gutter-md">
-              <div class="text-subtitle2 text-left text-primary q-pt-xs">
-                Personal Information
-              </div>
-              <small class="hint"
+        <q-tab-panel name="Registration">
+          <div class="q-mx-md q-mt-md">
+            <q-form @submit="onRegisterMember" class="q-gutter-md">
+              <label class="hint"
                 >All fields with <span class="text-red">*</span> are
-                required</small
+                required</label
               >
               <div>
                 <label for="credential" class="form_field"
-                  >Name <span class="text-red">*</span></label
+                  >Year <span class="text-red">*</span></label
                 >
-                <q-input v-model="user.name" outlined dense type="text" />
+                <q-select v-model="user.year" outlined dense :options="years" />
               </div>
               <div>
                 <label for="credential" class="form_field"
-                  >Gender <span class="text-red">*</span></label
+                  >Member <span class="text-red">*</span></label
                 >
                 <q-select
-                  v-model="user.gender"
+                  v-model="user.user_id"
                   outlined
                   dense
-                  :options="gender_options"
+                  :options="fetchMembersFromStore"
                 />
               </div>
-              <div>
-                <label for="credential" class="form_field">Email</label>
-                <q-input v-model="user.email" outlined dense type="email" />
-              </div>
+
               <div>
                 <label for="credential" class="form_field"
-                  >Telephone <span class="text-red">*</span></label
+                  >Amount <span class="text-red">*</span></label
                 >
-                <q-input
-                  v-model="user.telephone"
-                  outlined
-                  dense
-                  type="tel"
-                  mask="(+###) ### - ### - ###"
-                  unmasked-value
-                  hint="Example: (+237) ### - ### - ###"
-                />
-              </div>
-              <div>
-                <label for="credential" class="form_field"
-                  >Address <span class="text-red">*</span></label
-                >
-                <q-input v-model="user.address" outlined dense type="text" />
-              </div>
-              <div>
-                <label for="credential" class="form_field"
-                  >Occupation <span class="text-red">*</span></label
-                >
-                <q-input v-model="user.occupation" outlined dense type="text" />
+                <q-input v-model="user.amount" outlined dense type="number" />
               </div>
               <div class="flex q-mt-lg justify-end">
                 <div>
                   <ButtonVue
-                    :label="label_save"
+                    label="Save"
                     :loading="loading"
-                    :color="color"
+                    color="primary"
                     :disabled="validateForm"
-                    :no_caps="no_caps"
-                  >
-                  </ButtonVue>
-                </div>
-              </div>
-            </q-form>
-          </div>
-        </q-tab-panel>
-        <q-tab-panel name="Upload File">
-          <div>
-            <q-form @submit="uploadFile">
-              <div class="text-subtitle2 text-center text-primary">
-                Import Members from an Excel File
-                <span class="q-pl-md">
-                  <q-btn flat @click="openHelp">
-                    <q-icon name="help_outline" size="sm"> </q-icon>
-                    <q-tooltip> Help </q-tooltip>
-                  </q-btn>
-                </span>
-              </div>
-              <div class="row q-gutter-md flex flex-center q-pt-md">
-                <div class="col-md-8 col-sm-12 col-xs-12">
-                  <q-file
-                    outlined
-                    v-model="file"
-                    dense
-                    label="Choose file"
-                    accept="xls, .xlsx, .xlsm, .csv"
-                    counter
-                  >
-                    <template v-slot:prepend>
-                      <q-icon name="attach_file" />
-                    </template>
-                  </q-file>
-                </div>
-                <div class="col-md-2 col-sm-12 col-xs-12 q-pb-md">
-                  <ButtonVue
-                    class="form_button"
-                    :label="label_upload"
-                    :loading="loading"
-                    :color="color"
-                    :disabled="validateFormUpload"
-                    :no_caps="no_caps"
+                   :no_caps="true"
                   >
                   </ButtonVue>
                 </div>
@@ -138,63 +67,6 @@
         </q-tab-panel>
       </q-tab-panels>
     </div>
-    <q-dialog v-model="dialog" :position="position">
-      <q-card :style="{ width: image_width }" class="q-ma-md">
-        <q-bar class="bg-primary">
-          <div></div>
-          <q-space />
-
-          <q-btn dense flat icon="close" v-close-popup class="text-white">
-            <q-tooltip>Close</q-tooltip>
-          </q-btn>
-        </q-bar>
-        <q-card-section
-          class="row flex flex-center csv_image_card"
-          @click="full_width = true"
-        >
-          <div>
-            <div class="q-pb-md help_text">
-              Below is a structure of an example excel file to upload members
-            </div>
-            <div class="q-mx-lg">
-              <q-img
-                src="../assets/example_csv_upload.png"
-                spinner-color="white"
-                class="q-px-sm"
-                style="width: 100%; height: 100%"
-              />
-            </div>
-          </div>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
-
-    <!-- example csv file to be uploaded in full width-->
-    <q-dialog v-model="full_width" full-width>
-      <q-card>
-        <q-bar class="bg-primary">
-          <div></div>
-          <q-space />
-
-          <q-btn dense flat icon="close" v-close-popup class="text-white">
-            <q-tooltip>Close</q-tooltip>
-          </q-btn>
-        </q-bar>
-        <q-card-section>
-          <div class="q-pb-md help_text">
-            Below is a structure of an example excel file to upload members
-          </div>
-        </q-card-section>
-
-        <q-card-section class="q-pa-md">
-          <q-img
-            src="../assets/example_csv_upload.png"
-            spinner-color="white"
-            class="q-px-md"
-          />
-        </q-card-section>
-      </q-card>
-    </q-dialog>
   </div>
 </template>
 <script>
@@ -205,55 +77,59 @@ import organisationMixinVue from "src/mixins/organisationMixin.vue";
 export default {
   mixins: [memberMixinVue, organisationMixinVue],
   created() {
-    let heading = "Add Members to the Organisation";
+    let heading = "Register Member(s) to the Organisation";
     this.$emit("set-heading", heading);
+
+    let id = this.$store.getters.getOrganisation.id
+    this.getOrganisationMembers(id, true);
   },
   data() {
     return {
       full_width: false,
       image_width: "370px",
-      label_save: "Save",
       loading: false,
-      color: "primary",
       user: {
-        name: null,
-        email: null,
-        telephone: null,
-        address: null,
-        occupation: null,
-        gender: null,
+        user_id: null,
+        year: null,
+        amount: 0.0,
       },
-      gender_options: ["MALE", "FEMALE", "OTHER"],
-      file: null,
-      label_upload: "Import",
-      position: "right",
+      years: [{"label":"2022", "value":"2022"}, {"label":"2023", "value":"2023"}, {"label":"2024", "value":"2024"}, {"label":"2025", "value":"2025"}],
+      registered_members: [],
       dialog: false,
-      no_caps: true,
-      tab: "Add Member",
+      tab: "Registration",
     };
   },
   computed: {
     validateForm() {
-      return this.user.name === null ||
-        this.user.telephone == null ||
-        this.user.gender == null ||
-        this.user.address == null ||
-        this.user.occupation == null
+      return this.user.amount == 0.0 ||
+        this.user.user_id == null ||
+        this.user.year == null
         ? true
         : false;
     },
-    validateFormUpload() {
-      return this.file == null ? true : false;
+
+    fetchMembersFromStore() {
+      let data = [];
+      this.$store.getters.getMembers.forEach((member) => {
+        data.push({
+          label: member.name,
+          value:member.id
+        });
+      });
+      return data;
     },
   },
   methods: {
-    onAddMember() {
-      let id = this.getOrganisationId;
+    onRegisterMember() {
       this.loading = true;
       let payload = {
-        url: `/api/protected/organisations/${id}/add-users`,
-        data: this.user,
-        msg: "Member added Successfully",
+        url: `/api/protected/members-registration`,
+        data: {
+          amount:this.user.amount,
+          year :this.user.year.value,
+          user_id:this.user.user_id.value
+        },
+        msg: "Member registered Successfully",
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
@@ -269,64 +145,21 @@ export default {
       };
       this.$store
         .dispatch("postRequest", payload)
-        .then(() => {
-          this.getOrganisationMembers(id, true);
-        })
+        .then(() => {})
         .finally(() => {
           this.loading = false;
           this.resetForm();
           this.$emit("close-right-drawer");
         });
     },
-    openHelp() {
-      this.dialog = true;
-    },
-
-    uploadFile(event) {
-      const formData = new FormData();
-      formData.append("file", this.file);
-      let id = this.getOrganisationId;
-      let payload = {
-        url: `/api/protected/organisations/${id}/import-users`,
-        msg: "Members uploaded successfully",
-        data: formData,
-        color: "default",
-        show_feedback: true,
-        status: "success",
-        to_on_ok: "none",
-        to_on_fail: "none",
-        error_msg: "An Error occurred! Please try again",
-        has_commit: false,
-        commit: "none",
-        to_be_store_data: {
-          required: false,
-          has_value: false,
-          data: [],
-        },
-      };
-      this.loading = true;
-      this.$store
-        .dispatch("uploadFileRequest", payload)
-        .then(() => {
-          this.getOrganisationMembers(id, true);
-        })
-        .finally(() => {
-          this.loading = false;
-          this.file = null;
-          this.$emit("close-right-drawer");
-        });
-    },
 
     resetForm() {
-      this.user.name = null;
-      this.user.email = null;
-      this.user.telephone = null;
-      this.user.address = null;
-      this.user.occupation = null;
-      this.user.gender = null;
+      this.user.user_id = null;
+      this.user.amount = 0.0;
+      this.user.year = null;
 
       return this.user;
-    },
+    }
   },
   components: {
     ButtonVue,
@@ -341,7 +174,7 @@ export default {
 
 .hint {
   color: $grey2;
-  font-size: smaller;
+  font-size: small;
 }
 
 .form_field {

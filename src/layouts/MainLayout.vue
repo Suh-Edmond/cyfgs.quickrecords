@@ -103,32 +103,6 @@
             <q-item
               clickable
               v-ripple
-              :active-class="
-                item.name == 'Member Registration' ? 'item' : 'item_text'
-              "
-              :active="item.name == 'Member Registration'"
-              @click="
-                setItem({ name: 'Member Registration', selected: true }, true)
-              "
-              v-if="checkRole(['PRESIDENT', 'FINANCIAL_SECRETARY', null])"
-              :to="{ name: 'members_registration' }"
-              :disable="getOrganisation == null"
-            >
-              <q-item-section
-                avatar
-                :class="
-                  item.name == 'Member Registration' ? 'item_icon' : 'item_text'
-                "
-              >
-                <q-icon name="person_add" size="xs" />
-              </q-item-section>
-              <q-item-section class="item_name">
-                Member Registration
-              </q-item-section>
-            </q-item>
-            <q-item
-              clickable
-              v-ripple
               :active-class="item.name == 'Settings' ? 'item' : 'item_text'"
               :active="item.name == 'Settings'"
               @click="setItem({ name: 'Settings', selected: true }, false)"
@@ -373,7 +347,7 @@
               </q-item-section>
             </q-item>
           </q-list>
-          <q-list padding class="logout">
+          <!-- <q-list padding class="logout">
             <q-item
               clickable
               v-ripple
@@ -385,7 +359,7 @@
               </q-item-section>
               <q-item-section class="item_name"> Logout </q-item-section>
             </q-item>
-          </q-list>
+          </q-list> -->
         </div>
       </div>
     </q-drawer>
@@ -553,6 +527,10 @@
           @set-heading="setHeading"
         >
         </ViewExpenditureItemDetail>
+        <MemberRegistration v-if="current_tab == 'Member Registration'"
+          @close-right-drawer="closeRightDrawer"
+          @set-heading="setHeading">
+        </MemberRegistration>
       </q-page>
     </q-drawer>
   </q-layout>
@@ -582,6 +560,7 @@ import AddSponsorship from "src/components/AddSponsorship.vue";
 import ViewSponsorshipVue from "src/components/ViewSponsorship.vue";
 import ViewExpenditureItemVue from "src/components/ViewExpenditureItem.vue";
 import ViewExpenditureItemDetail from "src/components/ViewExpenditureItemDetail.vue";
+import MemberRegistration from "src/components/MemberRegistration.vue";
 
 export default {
   mixins: [organisationMixinVue],
@@ -696,6 +675,7 @@ export default {
     ViewSponsorshipVue,
     ViewExpenditureItemVue,
     ViewExpenditureItemDetail,
+    MemberRegistration
   },
 };
 </script>

@@ -9,15 +9,9 @@
         v-if="getLoadingState"
       />
     </div>
-    <!-- no members found -->
-    <div>
-      <NotFound
-        :message="not_found_msg"
-        v-if="getMembers.length == 0 && !getLoadingState"
-      ></NotFound>
-    </div>
 
-    <div v-if="getMembers.length > 0 && !getLoadingState">
+
+    <div>
       <!-- header for filter members -->
       <div
         class="row q-ml-xs"
@@ -31,11 +25,11 @@
           :class="$q.screen.lg ? 'q-pr-md' : ''"
         >
           <q-select
-            v-model="gender"
+            v-model="has_register"
             outlined
             dense
-            :options="genders"
-            label="Select gender"
+            :options="registrationStatuses"
+            label="Select status"
           />
         </div>
         <div
@@ -50,35 +44,48 @@
             label="Select year"
           />
         </div>
-        <div :class="$q.screen.lg ? 'q-pr-md' : ''">
-          <q-btn
-            :label="label_fetch_user"
-            :loading="loading_filter"
-            :color="color"
-            :disabled="validateFilter"
-            @click="filterMembers"
-            no-caps
-            icon-right="filter_list"
-          >
-          </q-btn>
+        <div
+          class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+          :class="$q.screen.lg ? 'q-pr-md' : ''"
+        >
+          <q-select
+            v-model="gender"
+            outlined
+            dense
+            :options="genders"
+            label="Select gender"
+          />
         </div>
-        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12"></div>
-
-        <div :style="$q.screen.lg ? 'margin-left:76px' : ''">
-          <q-btn
-            :label="label_print"
-            :loading="loading"
-            :color="color_print"
-            :disabled="false"
-            no-caps
-            icon-right="print"
-            @click="downloadMembers"
-          ></q-btn>
+        <div class="flex col-md-3 col-lg-3 col-xs-12 col-sm-12">
+          <div :class="$q.screen.lg ? 'q-pr-md' : ''">
+            <q-btn
+              label="Filter"
+              :loading="loading_filter"
+              color="primary"
+              :disabled="validateFilter"
+              @click="filterMembers"
+              no-caps
+              icon-right="filter_list"
+            >
+            </q-btn>
+          </div>
+          <q-space />
+          <div>
+            <q-btn
+              label="Print"
+              :loading="loading"
+              color="positive"
+              :disabled="false"
+              no-caps
+              icon-right="print"
+              @click="downloadMembers"
+            ></q-btn>
+          </div>
         </div>
       </div>
       <!-- table for members -->
       <div class="row q-pt-sm">
-        <div class="col-md-12 col-xs-12 col-sm-12" v-show="!start_filter">
+        <div class="col-md-12 col-xs-12 col-sm-12">
           <TableVue
             :columns="columns"
             :data="getMembers"
@@ -94,31 +101,12 @@
           >
           </TableVue>
         </div>
-
-        <!-- Table to be display when members are filtered -->
-        <div class="col-md-12 col-xs-12 col-sm-12" v-show="start_filter">
-          <TableVue
-            :columns="columns"
-            :data="filteredMembers"
-            :label="label"
-            @update-member="updateMember"
-            :message="message"
-            :show_savings="false"
-            :show_income_activity="false"
-            :show_members="true"
-            :show_contribution="false"
-            :total_members="filteredMembers.length"
-            @fetch-members="getOrganisationMembers"
-          >
-          </TableVue>
-        </div>
       </div>
     </div>
   </q-page>
 </template>
 <script>
 import TableVue from "src/components/Table.vue";
-import NotFound from "src/components/NotFound.vue";
 import memberMixin from "src/mixins/memberMixin.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
@@ -132,21 +120,17 @@ export default {
   },
   data() {
     return {
-      organisation: null,
-      member_total: 0,
-      year: null,
+      year: "",
+      has_register: null,
       years: ["2020", "2021", "2022", "2023", "2024"],
-      label_fetch_user: "Filter",
       loading: false,
       start_filter: false,
-      color: "primary",
       no_caps: true,
       genders: ["MALE", "FEMALE", "ALL", "OTHER"],
-      gender: null,
-      search: "",
+      registrationStatuses: ["REGISTERED", "NOT_REGISTERED"],
+      gender: "",
       message: "Are you sure you want to delete this Member?",
       label: "Delete",
-      is_fetching: false,
       columns: [
         {
           name: "counter",
@@ -200,6 +184,13 @@ export default {
           sortable: true,
         },
         {
+          name: "has_register",
+          align: "left",
+          label: "Status",
+          field: "has_register",
+          sortable: true,
+        },
+        {
           name: "action",
           label: "Action",
           field: "action",
@@ -209,16 +200,12 @@ export default {
       ],
       not_found_msg:
         "Ooops!! You don't have any Member click the button to add Members.",
-      label_print: "Print",
-      color_print: "positive",
       loading_filter: false,
-      filteredMembers: [],
-      start_spinner:false,
     };
   },
   computed: {
     validateFilter() {
-      return this.year == null && this.gender == null ? true : false;
+      return this.has_register == null ? true : false;
     },
     getMembers() {
       let data = [];
@@ -234,17 +221,18 @@ export default {
           id: member.id,
           email: member.email,
           organisation_id: member.organisation_id,
+          has_register: member.has_register,
         });
       });
       return data;
     },
 
-    computeTotalMembership(){
+    computeTotalMembership() {
       return this.getMembers.length;
     },
 
     getLoadingState() {
-      return this.$store.getters.getFetchingState
+      return this.$store.getters.getFetchingState;
     },
   },
 
@@ -257,24 +245,25 @@ export default {
     filterMembers() {
       this.$router.push({
         path: "/dashboard/members",
-        query: { year: this.year, gender: this.gender },
+        query: {
+          has_register: this.has_register,
+          year: this.year,
+          gender: this.gender,
+        },
       });
-
-      this.filteredMembers = [];
-      let id = this.getOrganisationId;
       let payload = {
         status: "none",
-        url: `/api/protected/organisations/filter-users?organisation_id=${id}&gender=${this.gender}&year=${this.year}`,
+        url: `/api/protected/organisations/filter-users?has_register=${this.has_register}&gender=${this.gender}&year=${this.year}`,
         has_path_val: true,
         show_feedback: false,
-        show_spinner:true,
+        show_spinner: true,
         msg: "none",
         color: "default",
         error_msg: "default",
-        commit: "none",
-        has_commit: false,
+        commit: "SET_MEMBERS",
+        has_commit: true,
         to_be_store_data: {
-          required: true,
+          required: false,
           has_value: false,
           data: null,
         },
@@ -282,30 +271,14 @@ export default {
       this.loading_filter = true;
       this.$store
         .dispatch("getRequest", payload)
-        .then((res) => {
-          this.start_filter = true;
-          res.data.forEach((member) => {
-            this.filteredMembers.push({
-              counter: res.data.indexOf(member) + 1,
-              name: member.name,
-              telephone: member.telephone,
-              gender: member.gender,
-              address: member.address,
-              occupation: member.occupation,
-              id: member.id,
-              email: member.email,
-              organisation_id: member.organisation_id,
-            });
-          });
-        })
+        .then(() => {})
         .finally(() => {
           this.loading_filter = false;
         });
     },
 
     downloadMembers() {
-      let id = this.getOrganisationId;
-      let url = `/api/protected/organisations/download-users?organisation_id=${id}&gender=${this.gender}&year=${this.year}`;
+      let url = `/api/protected/organisations/download-users?has_register=${this.has_register}&gender=${this.gender}&year=${this.year}`;
       let file_name = "Organisation_Members.pdf";
       this.loading = this.downloadPdf(url, file_name);
     },
@@ -313,9 +286,7 @@ export default {
 
   components: {
     TableVue,
-    NotFound,
   },
 };
 </script>
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

@@ -62,6 +62,12 @@
           <q-td key="occupation" :props="props" v-if="show_members">
             {{ props.row.occupation }}
           </q-td>
+          <q-td key="has_register" :props="props" v-if="show_members && props.row.has_register == 'NOT_REGISTERED'" class="not_registered">
+            {{ props.row.has_register }}
+          </q-td>
+          <q-td key="has_register" :props="props" v-if="show_members && props.row.has_register == 'REGISTERED'" class="registered">
+            {{ props.row.has_register }}
+          </q-td>
           <q-td
             key="amount_deposited"
             :props="props"
@@ -143,8 +149,8 @@
                 class="menu_icon"
                 clickable
               >
-                <q-menu>
-                  <q-list style="width: 180px" bordered separator>
+                <q-menu >
+                  <q-list bordered separator style="width: 210px">
                     <!-- edit member -->
                     <q-item
                       clickable
@@ -176,6 +182,23 @@
                       </q-item-section>
                       <q-item-section>
                         <q-item-label class="edit">Invite Member</q-item-label>
+                      </q-item-section>
+                    </q-item>
+
+                    <!-- register members -->
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onRegisterMember(props.row)"
+                      v-if="checkRole() && show_members"
+                    >
+                      <q-item-section avatar>
+                        <span>
+                          <q-icon name="person_add" size="xs" class="edit" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="edit">Register Member</q-item-label>
                       </q-item-section>
                     </q-item>
 
@@ -793,6 +816,17 @@ export default {
       return president_role != undefined;
     },
 
+    checkRole() {
+      const president_role = LocalStorage.getItem("data").roles.find(
+        (role) => role.name == "PRESIDENT" || role.name == "FINANCIAL_SECRETARY"
+      );
+      return president_role != undefined;
+    },
+
+    onRegisterMember(data) {
+
+    },
+
     deleteRow(data) {
       let payload = {
         url: `/api/protected/users/${data.id}`,
@@ -1180,5 +1214,13 @@ export default {
 
 .whatsapp_icon {
   width: 2.7rem;
+}
+
+.not_registered {
+  color: $orange;
+}
+
+.registered {
+  color: $secondary;
 }
 </style>

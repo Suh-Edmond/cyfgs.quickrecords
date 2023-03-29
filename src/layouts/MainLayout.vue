@@ -83,7 +83,7 @@
               @click="
                 setItem({ name: 'Member Management', selected: true }, true)
               "
-              v-if="checkRole(['PRESIDENT', 'FINANCIAL_SECRETARY', null])"
+              v-if="checkRole(['PRESIDENT', 'FINANCIAL_SECRETARY', 'TREASURER'])"
               :to="{ name: 'members' }"
               :disable="getOrganisation == null"
             >
@@ -527,7 +527,7 @@
           @set-heading="setHeading"
         >
         </ViewExpenditureItemDetail>
-        <MemberRegistration v-if="current_tab == 'Member Registration'"
+        <MemberRegistration v-if="current_tab == 'Register Member'"
           @close-right-drawer="closeRightDrawer"
           @set-heading="setHeading">
         </MemberRegistration>

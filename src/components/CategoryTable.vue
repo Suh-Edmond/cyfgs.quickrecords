@@ -104,7 +104,7 @@
               "
             >
               <q-icon
-                name="more_vert"
+                name="menu"
                 size="xs"
                 color="primary"
                 class="menu_icon"

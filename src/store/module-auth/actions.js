@@ -506,3 +506,7 @@ export function setSponsorship({commit}, data) {
 export function setSelectedSponsorship({commit}, data) {
   commit("SET_SELECTED_SPONSORSHIP", data);
 }
+
+export function setMemberToRegister({commit}, data) {
+  commit("SET_MEMBER_TO_REGISTER", data);
+}

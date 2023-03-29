@@ -98,6 +98,7 @@
             :show_contribution="false"
             :total_members="computeTotalMembership"
             @fetch-members="getOrganisationMembers"
+            @register-member="registerMember"
           >
           </TableVue>
         </div>
@@ -149,13 +150,6 @@ export default {
           sortable: true,
         },
         {
-          name: "email",
-          align: "left",
-          label: "Email",
-          field: "email",
-          sortable: true,
-        },
-        {
           name: "gender",
           align: "left",
           label: "Gender",
@@ -170,24 +164,17 @@ export default {
           sortable: true,
         },
         {
-          name: "address",
-          align: "left",
-          label: "Address",
-          field: "address",
-          sortable: true,
-        },
-        {
-          name: "occupation",
-          align: "left",
-          label: "Occupation",
-          field: "occupation",
-          sortable: true,
-        },
-        {
           name: "has_register",
           align: "left",
-          label: "Status",
+          label: "Registeration Status",
           field: "has_register",
+          sortable: true,
+        },
+        {
+          name: "approve",
+          align: "left",
+          label: "Payment Status",
+          field: "approve",
           sortable: true,
         },
         {
@@ -222,6 +209,10 @@ export default {
           email: member.email,
           organisation_id: member.organisation_id,
           has_register: member.has_register,
+          has_paid:member.has_paid,
+          type:"MEMBERS",
+          approve:member.approve,
+          year:member.year
         });
       });
       return data;
@@ -240,6 +231,11 @@ export default {
     updateMember(data) {
       this.$emit("update-member", data);
       this.$store.dispatch("updateMember", data.data);
+    },
+
+    registerMember(data) {
+      this.$store.dispatch("setMemberToRegister", data.data)
+      this.$emit("register-member", data);
     },
 
     filterMembers() {

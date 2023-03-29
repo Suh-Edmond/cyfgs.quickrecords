@@ -123,6 +123,7 @@
               @report-generation="reportGeneration"
               @view-sponsorship="viewSponsorship"
               @edit-sponsorship="editSponsorship"
+              @register-member="registerMember"
             />
           </q-card-section>
         </q-card>
@@ -242,6 +243,9 @@ export default {
         current_tab: data.tab,
         data: data.data,
       });
+    },
+    registerMember(data){
+      this.updateDrawer(data);
     },
     updatePaymentCategory(data) {
       this.updateDrawer(data);

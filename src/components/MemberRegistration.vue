@@ -1,71 +1,47 @@
 <template>
   <div class="q-pa-sm">
-    <div>
-      <q-tabs
-        v-model="tab"
-        dense
-        class="text-grey q-pt-xs"
-        active-color="primary"
-        indicator-color="primary"
-        align="justify"
-        narrow-indicator
-      >
-        <q-tab
-          name="Registration"
-          label="Registration"
-          no-caps
-          icon="person_add"
-        />
-      </q-tabs>
+    <div class="q-mx-md q-mt-md">
+      <q-form @submit="onRegisterMember" class="q-gutter-md">
+        <label class="hint"
+          >All fields with <span class="text-red">*</span> are required</label
+        >
+        <div>
+          <label for="credential" class="form_field"
+            >Member's Name<span class="text-red">*</span></label
+          >
+          <q-input
+            v-model="user.user_id"
+            outlined
+            dense
+            disable
 
-      <q-tab-panels v-model="tab" animated>
-        <q-tab-panel name="Registration">
-          <div class="q-mx-md q-mt-md">
-            <q-form @submit="onRegisterMember" class="q-gutter-md">
-              <label class="hint"
-                >All fields with <span class="text-red">*</span> are
-                required</label
-              >
-              <div>
-                <label for="credential" class="form_field"
-                  >Year <span class="text-red">*</span></label
-                >
-                <q-select v-model="user.year" outlined dense :options="years" />
-              </div>
-              <div>
-                <label for="credential" class="form_field"
-                  >Member <span class="text-red">*</span></label
-                >
-                <q-select
-                  v-model="user.user_id"
-                  outlined
-                  dense
-                  :options="fetchMembersFromStore"
-                />
-              </div>
-
-              <div>
-                <label for="credential" class="form_field"
-                  >Amount <span class="text-red">*</span></label
-                >
-                <q-input v-model="user.amount" outlined dense type="number" />
-              </div>
-              <div class="flex q-mt-lg justify-end">
-                <div>
-                  <ButtonVue
-                    label="Save"
-                    :loading="loading"
-                    color="primary"
-                    :disabled="validateForm"
-                   :no_caps="true"
-                  >
-                  </ButtonVue>
-                </div>
-              </div>
-            </q-form>
+          />
+        </div>
+        <div>
+          <label for="credential" class="form_field"
+            >Year <span class="text-red">*</span></label
+          >
+          <q-select v-model="user.year" outlined dense :options="years" />
+        </div>
+        <div>
+          <label for="credential" class="form_field"
+            >Amount <span class="text-red">*</span></label
+          >
+          <q-input v-model="user.amount" outlined dense type="number" />
+        </div>
+        <div class="flex q-mt-lg justify-end">
+          <div>
+            <ButtonVue
+              label="Save"
+              :loading="loading"
+              color="primary"
+              :disabled="validateForm"
+              :no_caps="true"
+            >
+            </ButtonVue>
           </div>
-        </q-tab-panel>
-      </q-tab-panels>
+        </div>
+      </q-form>
     </div>
   </div>
 </template>
@@ -77,26 +53,26 @@ import organisationMixinVue from "src/mixins/organisationMixin.vue";
 export default {
   mixins: [memberMixinVue, organisationMixinVue],
   created() {
-    let heading = "Register Member(s) to the Organisation";
+    let heading = "Register Member to the Organisation";
     this.$emit("set-heading", heading);
 
-    let id = this.$store.getters.getOrganisation.id
+    let id = this.$store.getters.getOrganisation.id;
     this.getOrganisationMembers(id, true);
   },
   data() {
     return {
-      full_width: false,
-      image_width: "370px",
       loading: false,
       user: {
-        user_id: null,
+        user_id: this.$store.getters.getMemberToRegister.name,
         year: null,
         amount: 0.0,
       },
-      years: [{"label":"2022", "value":"2022"}, {"label":"2023", "value":"2023"}, {"label":"2024", "value":"2024"}, {"label":"2025", "value":"2025"}],
-      registered_members: [],
-      dialog: false,
-      tab: "Registration",
+      years: [
+        { label: "2022", value: "2022" },
+        { label: "2023", value: "2023" },
+        { label: "2024", value: "2024" },
+        { label: "2025", value: "2025" },
+      ],
     };
   },
   computed: {
@@ -107,17 +83,6 @@ export default {
         ? true
         : false;
     },
-
-    fetchMembersFromStore() {
-      let data = [];
-      this.$store.getters.getMembers.forEach((member) => {
-        data.push({
-          label: member.name,
-          value:member.id
-        });
-      });
-      return data;
-    },
   },
   methods: {
     onRegisterMember() {
@@ -125,9 +90,9 @@ export default {
       let payload = {
         url: `/api/protected/members-registration`,
         data: {
-          amount:this.user.amount,
-          year :this.user.year.value,
-          user_id:this.user.user_id.value
+          amount: this.user.amount,
+          year: this.user.year.value,
+          user_id: this.$store.getters.getMemberToRegister.id,
         },
         msg: "Member registered Successfully",
         color: "default",
@@ -145,7 +110,10 @@ export default {
       };
       this.$store
         .dispatch("postRequest", payload)
-        .then(() => {})
+        .then(() => {
+          let id = this.$store.getters.getOrganisation.id;
+          this.getOrganisationMembers(id, true);
+        })
         .finally(() => {
           this.loading = false;
           this.resetForm();
@@ -159,7 +127,7 @@ export default {
       this.user.year = null;
 
       return this.user;
-    }
+    },
   },
   components: {
     ButtonVue,
@@ -168,10 +136,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.csv_image_card {
-  cursor: pointer;
-}
-
 .hint {
   color: $grey2;
   font-size: small;
@@ -181,24 +145,9 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 11px;
+  font-size: 12px;
   align-items: center;
   letter-spacing: 0.01em;
   color: $grey2;
-}
-
-.or_option {
-  font-weight: bolder;
-}
-
-.help_text {
-  color: $dark;
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 12px;
-  text-align: center;
-  align-items: center;
-  letter-spacing: 0.01em;
 }
 </style>

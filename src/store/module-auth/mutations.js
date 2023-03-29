@@ -158,3 +158,7 @@ export function SET_SELECTED_SPONSORSHIP(state, data) {
   state.selected_sponsorship = data
 }
 
+export function SET_MEMBER_TO_REGISTER(state,data) {
+  state.member_to_register = data;
+}
+

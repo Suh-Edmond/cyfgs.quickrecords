@@ -33,7 +33,7 @@
             <!-- button to handle edit, view and delete of row data -->
             <q-btn flat round v-if="!checkTreasurerRole()">
               <q-icon
-                name="more_vert"
+                name="menu"
                 size="xs"
                 color="primary"
                 class="menu_icon"

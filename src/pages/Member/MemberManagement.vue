@@ -99,6 +99,7 @@
             :total_members="computeTotalMembership"
             @fetch-members="getOrganisationMembers"
             @register-member="registerMember"
+            @view-member="viewMember"
           >
           </TableVue>
         </div>
@@ -212,7 +213,11 @@ export default {
           has_paid:member.has_paid,
           type:"MEMBERS",
           approve:member.approve,
-          year:member.year
+          year:member.year,
+          roles:member.roles,
+          created_at: member.created_at,
+          updated_at: member.updated_at,
+          picture  : member.picture,
         });
       });
       return data;
@@ -236,6 +241,11 @@ export default {
     registerMember(data) {
       this.$store.dispatch("setMemberToRegister", data.data)
       this.$emit("register-member", data);
+    },
+
+    viewMember(data) {
+      this.$store.dispatch("setCurrentMember", data.data);
+      this.$emit('view-member', data);
     },
 
     filterMembers() {

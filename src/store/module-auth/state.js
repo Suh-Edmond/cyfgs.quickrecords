@@ -40,6 +40,7 @@ export default function () {
     payment_activities:[],
     sponsorships:[],
     selected_sponsorship:null,
-    member_to_register:null
+    member_to_register:null,
+    current_member:null
   };
 }

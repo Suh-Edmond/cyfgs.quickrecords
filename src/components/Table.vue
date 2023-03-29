@@ -1130,8 +1130,6 @@ export default {
           this.register_member_name = data.name;
           this.approve_msg = `Member Registration`;
       }
-
-      console.log(data);
       return this.approve_msg;
     },
 
@@ -1200,7 +1198,11 @@ export default {
     },
 
     onViewMember(data) {
-      this.$emit('view-member', data);
+      let payload = {
+        data: data,
+        tab: "Member Profile",
+      };
+      this.$emit('view-member', payload);
     },
   },
   components: {},

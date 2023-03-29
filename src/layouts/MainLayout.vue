@@ -83,7 +83,9 @@
               @click="
                 setItem({ name: 'Member Management', selected: true }, true)
               "
-              v-if="checkRole(['PRESIDENT', 'FINANCIAL_SECRETARY', 'TREASURER'])"
+              v-if="
+                checkRole(['PRESIDENT', 'FINANCIAL_SECRETARY', 'TREASURER'])
+              "
               :to="{ name: 'members' }"
               :disable="getOrganisation == null"
             >
@@ -527,10 +529,18 @@
           @set-heading="setHeading"
         >
         </ViewExpenditureItemDetail>
-        <MemberRegistration v-if="current_tab == 'Register Member'"
+        <MemberRegistration
+          v-if="current_tab == 'Register Member'"
           @close-right-drawer="closeRightDrawer"
-          @set-heading="setHeading">
+          @set-heading="setHeading"
+        >
         </MemberRegistration>
+        <ViewMember
+          v-if="current_tab == 'Member Profile'"
+          @close-right-drawer="closeRightDrawer"
+          @set-heading="setHeading"
+        >
+        </ViewMember>
       </q-page>
     </q-drawer>
   </q-layout>
@@ -561,6 +571,7 @@ import ViewSponsorshipVue from "src/components/ViewSponsorship.vue";
 import ViewExpenditureItemVue from "src/components/ViewExpenditureItem.vue";
 import ViewExpenditureItemDetail from "src/components/ViewExpenditureItemDetail.vue";
 import MemberRegistration from "src/components/MemberRegistration.vue";
+import ViewMember from "src/components/ViewMember.vue";
 
 export default {
   mixins: [organisationMixinVue],
@@ -675,7 +686,8 @@ export default {
     ViewSponsorshipVue,
     ViewExpenditureItemVue,
     ViewExpenditureItemDetail,
-    MemberRegistration
+    MemberRegistration,
+    ViewMember,
   },
 };
 </script>

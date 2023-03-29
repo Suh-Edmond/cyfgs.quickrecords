@@ -124,6 +124,7 @@
               @view-sponsorship="viewSponsorship"
               @edit-sponsorship="editSponsorship"
               @register-member="registerMember"
+              @view-member="viewMember"
             />
           </q-card-section>
         </q-card>
@@ -247,6 +248,13 @@ export default {
     registerMember(data){
       this.updateDrawer(data);
     },
+
+
+    viewMember(data){
+      this.updateDrawer(data);
+    },
+
+
     updatePaymentCategory(data) {
       this.updateDrawer(data);
     },

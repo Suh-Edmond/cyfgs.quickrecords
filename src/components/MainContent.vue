@@ -123,6 +123,8 @@
               @report-generation="reportGeneration"
               @view-sponsorship="viewSponsorship"
               @edit-sponsorship="editSponsorship"
+              @register-member="registerMember"
+              @view-member="viewMember"
             />
           </q-card-section>
         </q-card>
@@ -243,6 +245,16 @@ export default {
         data: data.data,
       });
     },
+    registerMember(data){
+      this.updateDrawer(data);
+    },
+
+
+    viewMember(data){
+      this.updateDrawer(data);
+    },
+
+
     updatePaymentCategory(data) {
       this.updateDrawer(data);
     },

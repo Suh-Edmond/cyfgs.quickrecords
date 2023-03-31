@@ -8,6 +8,7 @@
       :table-header-style="{ backgroundColor: '#5384ae', color: '#FFFFFF' }"
       class="col-xs-12"
       :filter="filter"
+      :rows-per-page-options="[0]"
       hide-pagination
     >
       <template v-slot:body="props">
@@ -32,7 +33,7 @@
             <!-- button to handle edit, view and delete of row data -->
             <q-btn flat round v-if="!checkTreasurerRole()">
               <q-icon
-                name="more_vert"
+                name="menu"
                 size="xs"
                 color="primary"
                 class="menu_icon"

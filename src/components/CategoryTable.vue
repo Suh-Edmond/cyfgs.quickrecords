@@ -8,6 +8,7 @@
       :table-header-style="{ backgroundColor: '#5384ae', color: '#FFFFFF' }"
       class="col-xs-12"
       :filter="filter"
+      :rows-per-page-options="[0]"
     >
       <template v-slot:body="props">
         <q-tr :props="props">
@@ -103,7 +104,7 @@
               "
             >
               <q-icon
-                name="more_vert"
+                name="menu"
                 size="xs"
                 color="primary"
                 class="menu_icon"
@@ -264,13 +265,16 @@
               dense
               color="teal"
               padding="5px 7px"
-              label="View more"
+              label="View details"
               v-if="show_expenditure_item && checkTreasurerRole()"
               class="view"
               @click="showDetails(props.row)"
               :to="{ name: 'expenditure_detail', params: { id: props.row.id } }"
-            />
+            >
+              <q-icon name="visibility" size="xs" class="q-pl-md"></q-icon>
+            </q-btn>
 
+            <!-- approved btn for expenditure item details -->
             <q-btn
               class="decline_btn"
               dense
@@ -280,12 +284,12 @@
               no-caps
               @click="onDeclineRecord(props.row, 'Decline')"
               v-if="
-                (show_expenditure_item || show_expenditure_item_detail) &&
+                show_expenditure_item_detail &&
                 checkTreasurerRole() &&
                 props.row.approve == 'PENDING'
               "
             />
-
+            <!-- decline btn for expenditure item details -->
             <q-btn
               class="approve_btn"
               dense
@@ -295,9 +299,42 @@
               no-caps
               @click="onApprovedRecord(props.row, 'Approve')"
               v-if="
-                (show_expenditure_item || show_expenditure_item_detail) &&
+                show_expenditure_item_detail &&
                 checkTreasurerRole() &&
                 props.row.approve == 'PENDING'
+              "
+            />
+
+            <!-- approved btn for expenditure items -->
+            <q-btn
+              class="decline_btn"
+              dense
+              size="md"
+              padding="5px 7px"
+              label="Decline"
+              no-caps
+              @click="onDeclineRecord(props.row, 'Decline')"
+              v-if="
+                show_expenditure_item &&
+                checkTreasurerRole() &&
+                props.row.approve == 'PENDING' &&
+                props.row.show_state_action
+              "
+            />
+            <!-- decline btn for expenditure items -->
+            <q-btn
+              class="approve_btn"
+              dense
+              size="md"
+              padding="5px 7px"
+              label="Approve"
+              no-caps
+              @click="onApprovedRecord(props.row, 'Approve')"
+              v-if="
+                show_expenditure_item &&
+                checkTreasurerRole() &&
+                props.row.approve == 'PENDING' &&
+                props.row.show_state_action
               "
             />
           </q-td>
@@ -347,27 +384,72 @@
       </template>
 
       <template v-slot:bottom>
+        <q-tr v-if="show_expenditure_item_detail">
+          <q-td
+            class="text-bold"
+            :class="checkTreasurerRole() ? 'total' : 'total_label'"
+          >
+            Total:
+          </q-td>
+          <q-td
+            class="text-bold"
+            :class="checkTreasurerRole() ? 'amount_given' : 'total_given'"
+          >
+            {{ Number(total_amount_given).toLocaleString() }} XAF
+          </q-td>
 
-          <q-tr v-if="show_expenditure_item_detail">
-            <q-td class="text-bold total_label"> Total: </q-td>
-            <q-td class="text-bold total_given">
-              {{ Number(total_amount_given).toLocaleString() }} XAF
-            </q-td>
+          <q-td
+            class="text-bold"
+            :class="checkTreasurerRole() ? 'amount_spent' : 'total_spent'"
+          >
+            {{ Number(total_amount_spent).toLocaleString() }} XAF
+          </q-td>
 
-            <q-td class="text-bold total_spent">
-              {{ Number(total_amount_spent).toLocaleString() }} XAF
-            </q-td>
-
-            <q-td class="text-bold balance">
-              {{ Number(balance).toLocaleString() }} XAF
-            </q-td>
-          </q-tr>
+          <q-td
+            class="text-bold"
+            :class="checkTreasurerRole() ? 'balance_treasurer_view' : 'balance'"
+          >
+            {{ Number(balance).toLocaleString() }} XAF
+          </q-td>
+        </q-tr>
         <div class="text-bold q-pt-sm" v-if="show_expenditure_item_detail">
-          <div  class="q-pt-md q-pb-xs balance_details">
-            Estimated Expenditure Amount: <span class="expenditure_amount">{{ Number(expenditure_item_amount).toLocaleString() }} XAF</span>
+          <div
+            class="q-pt-md q-pb-xs text-info"
+            :class="
+              checkTreasurerRole()
+                ? 'balance_details_treasurer'
+                : 'balance_details'
+            "
+            v-if="checkTreasurerRole()"
+          >
+            NB: Only APPROVED records are used for calculating balances
           </div>
-          <div  class="q-pt-sm q-pb-lg balance_details">
-            Net Balance (Estimated Expenditure Amount   -   Amount Spent + Total balance): <span class="net_balance">{{ Number(total_balance).toLocaleString() }} XAF</span>
+          <div
+            class="q-pt-md q-pb-xs"
+            :class="
+              checkTreasurerRole()
+                ? 'balance_details_treasurer'
+                : 'balance_details'
+            "
+          >
+            Estimated Expenditure Amount:
+            <span class="expenditure_amount"
+              >{{ Number(expenditure_item_amount).toLocaleString() }} XAF</span
+            >
+          </div>
+          <div
+            class="q-pt-sm q-pb-lg"
+            :class="
+              checkTreasurerRole()
+                ? 'balance_details_treasurer'
+                : 'balance_details'
+            "
+          >
+            Net Balance (Estimated Expenditure Amount - Amount Spent + Total
+            balance):
+            <span class="net_balance"
+              >{{ Number(total_balance).toLocaleString() }} XAF</span
+            >
           </div>
         </div>
       </template>
@@ -569,6 +651,7 @@ export default {
       type: Boolean,
       required: false,
     },
+
   },
 
   data() {
@@ -633,7 +716,8 @@ export default {
       };
       this.$store.dispatch("putRequest", payload).then((res) => {
         if (res.status == 200) {
-          this.callFetchDataAfterApproveAction(this.approve_data);
+          let expenditure_category = this.$store.getters.getExpenditureCategory;
+          this.callFetchDataAfterApproveAction(this.approve_data, expenditure_category.id);
         }
       });
     },
@@ -885,10 +969,10 @@ export default {
       return this.approve_msg;
     },
 
-    callFetchDataAfterApproveAction(data) {
+    callFetchDataAfterApproveAction(data, expenditure_category_id) {
       switch (data.type) {
         case "EXPENDITURE_ITEMS":
-          this.getExpendituresByCategory(data.expenditure_category_id);
+          this.getExpendituresByCategory(expenditure_category_id);
           break;
         case "EXPENDITURE_DETAILS":
           this.getExpenditureDetailsByItemId(data.expenditure_item_id);
@@ -899,6 +983,17 @@ export default {
     showDetails(data) {
       this.$store.dispatch("setExpenditureItemName", data.name);
       this.getExpenditureDetailsByItemId(data.id);
+
+      const intermediate_tabs = Array.from(
+        this.$store.getters.getIntermediateTabs
+      );
+
+      intermediate_tabs.push({
+        name: "Details",
+        has_intermediate_tab: true,
+      });
+
+      this.$store.dispatch("setIntermediateTabs", intermediate_tabs);
     },
 
     onViewExpenditureItem(data) {
@@ -995,19 +1090,35 @@ export default {
   font-size: 13px;
   padding-left: 6rem;
 }
-
+.total {
+  font-size: 13px;
+  padding-left: 4.8rem;
+}
 .total_given {
   font-size: 13px;
-  padding-left: 23.6rem;
+  padding-left: 20.8rem;
 }
-
+.amount_given {
+  font-size: 13px;
+  padding-left: 13rem;
+}
 .total_spent {
   font-size: 13px;
-  padding-left: 13.4rem;
+  padding-left: 14.4rem;
+}
+
+.amount_spent {
+  font-size: 13px;
+  padding-left: 8.9rem;
 }
 
 .balance {
-  padding-left: 12rem;
+  padding-left: 12.8rem;
+  font-size: 13px;
+}
+
+.balance_treasurer_view {
+  padding-left: 7.8rem;
   font-size: 13px;
 }
 .message {
@@ -1029,6 +1140,11 @@ export default {
 .balance_details {
   font-size: 13px;
   padding-left: 6rem;
+}
+
+.balance_details_treasurer {
+  font-size: 13px;
+  padding-left: 5rem;
 }
 .net_balance {
   padding-left: 1rem;

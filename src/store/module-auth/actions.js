@@ -92,7 +92,6 @@ export function postRequest({ dispatch }, payload) {
         },
       };
       dispatch("handleRequestResponse", handle_response_payload);
-
       return res;
     })
     .catch((error) => {
@@ -104,10 +103,12 @@ export function postRequest({ dispatch }, payload) {
         fail_msg:
           payload.error_msg != "default"
             ? payload.error_msg
-            : error.response.data.message,
+            : error.response.message,
         status_code: 404,
       };
       dispatch("handleRequestResponse", handle_error_payload);
+      console.log(error.response);
+      return error;
     });
 }
 
@@ -504,4 +505,12 @@ export function setSponsorship({commit}, data) {
 
 export function setSelectedSponsorship({commit}, data) {
   commit("SET_SELECTED_SPONSORSHIP", data);
+}
+
+export function setMemberToRegister({commit}, data) {
+  commit("SET_MEMBER_TO_REGISTER", data);
+}
+
+export function setCurrentMember({commit}, data) {
+  commit("SET_CURRENT_MEMBER", data);
 }

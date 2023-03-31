@@ -64,7 +64,8 @@
             :expenditure_item_amount="getExpenditureItemAmount"
             :total_amount_given="getTotalAmountGiven"
             :total_amount_spent="getTotalAmountSpent"
-            :balance="getTotalBalance"
+            :balance="getBalance"
+            :total_balance="getTotalBalance"
           >
           </CategoryTable>
         </div>
@@ -85,7 +86,8 @@
             :expenditure_item_amount="getExpenditureItemAmount"
             :total_amount_given="getTotalAmountGiven"
             :total_amount_spent="getTotalAmountSpent"
-            :balance="getTotalBalance"
+            :balance="getBalance"
+            :total_balance="getTotalBalance"
           >
           </CategoryTable>
         </div>
@@ -154,7 +156,7 @@ export default {
         {
           name: "state",
           align: "left",
-          label: "Status",
+          label: "Transaction Status",
           field: "state",
           sortable: true,
         },
@@ -192,15 +194,27 @@ export default {
     },
 
     getTotalAmountGiven() {
-      return this.$store.getters.getExpenditureItemDetails.total_amount_given
+      let total = 0.0
+      this.$store.getters.getExpenditureItemDetails.data.filter((ele) => ele.approve == "APPROVED").map(ele => ele.amount_given).forEach(ele => {
+        total += ele;
+      });
+      return total;
     },
 
     getTotalAmountSpent() {
-      return this.$store.getters.getExpenditureItemDetails.total_amount_spent;
+      let total = 0.0
+      this.$store.getters.getExpenditureItemDetails.data.filter((ele) => ele.approve == "APPROVED").map(ele => ele.amount_spent).forEach(ele => {
+        total += ele;
+      });
+      return total;
+    },
+
+    getBalance (){
+      return (this.getTotalAmountGiven - this.getTotalAmountSpent);
     },
 
     getTotalBalance() {
-      return this.$store.getters.getExpenditureItemDetails.total_balance
+      return (this.getExpenditureItemAmount - this.getTotalAmountSpent) + this.getBalance
     },
 
     getExpenditureDetails() {
@@ -232,22 +246,11 @@ export default {
       }
       return data;
     },
+
   },
   methods: {
     downloadExpenditureItemDetails() {
       let expenditure_item_id = this.$router.currentRoute.params.id;
-      // let status = "";
-      // switch (this.status) {
-      //   case "APPROVED":
-      //     status = 1;
-      //     break;
-      //   case "UNAPPROVED":
-      //     status = 0;
-      //     break;
-      //   case "ALL":
-      //     status = 2;
-      //     break;
-      // }
       let url = `/api/protected/expenditure-item-details/download?expenditure_item_id=${expenditure_item_id}&status=${this.status}`;
       let file_name = "Expenditure_Item_Details.pdf";
       this.loading = this.downloadPdf(url, file_name);
@@ -275,6 +278,7 @@ export default {
       this.show_spinner = false;
       return this.filtered_items;
     },
+
   },
   components: {
     NotFound,

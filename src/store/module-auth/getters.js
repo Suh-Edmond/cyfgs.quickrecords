@@ -162,3 +162,11 @@ export function getSponsorships(state) {
 export function getSelectedSponsorship(state) {
   return state.selected_sponsorship;
 }
+
+export function getMemberToRegister(state) {
+  return state.member_to_register
+}
+
+export function getCurrentMember(state) {
+  return state.current_member;
+}

@@ -56,7 +56,6 @@
               :show_payment_item="false"
               :show_expenditure_category="false"
               :show_expenditure_item="true"
-              @show-expenditure-items="showExpenditureItem"
             >
             </CategoryTable>
           </div>
@@ -113,7 +112,7 @@ export default {
         {
           name: "amount",
           align: "left",
-          label: "Amount (XAF)",
+          label: "Estimated Amount (XAF)",
           field: "amount",
           sortable: true,
         },
@@ -134,7 +133,7 @@ export default {
         {
           name: "state",
           align: "left",
-          label: "Status",
+          label: "Transaction Status",
           field: "state",
           sortable: true,
         },
@@ -195,6 +194,7 @@ export default {
             total_amount_spent: ele.total_amount_spent,
             total_balance: ele.total_balance,
             type: "EXPENDITURE_ITEMS",
+            show_state_action: this.checkIfExpendituredetailsStatus(ele.expenditure_details)
           });
         });
       }
@@ -202,10 +202,17 @@ export default {
     },
 
     getExpenditureCategoryName() {
-      return this.$store.getters.getExpenditureCategory != null ? this.$store.getters.getExpenditureCategory.name : ""
-    }
+      return this.$store.getters.getExpenditureCategory != null
+        ? this.$store.getters.getExpenditureCategory.name
+        : "";
+    },
   },
   methods: {
+    //this check to ensure if an expenditure item can be approve/decline
+    //so the negation will be used
+    checkIfExpendituredetailsStatus(data) {
+      return data.filter((ele) => ele.approve == "PENDING").length == 0;
+    },
     fetchExpenditureCategories() {
       let organisationId = this.getOrganisationId;
       let payload = {
@@ -236,7 +243,7 @@ export default {
     },
 
     downloadExpenditureItems() {
-      let expenditure_category_id = this.expenditure_category_id;
+      let expenditure_category_id = this.expenditure_category_id != null ? this.expenditure_category_id.value: "";
       let state = this.status === "APPROVED" ? 1 : 0;
       let url = `/api/protected/expenditure-items/download?expenditure_category_id=${expenditure_category_id}&status=${state}`;
       let file_name = "Expenditure_Items.pdf";
@@ -267,7 +274,10 @@ export default {
         },
       };
       this.$store.dispatch("getRequest", payload).then(() => {
-        this.$store.dispatch("setExpenditureCategory", selected_expenditure_category)
+        this.$store.dispatch(
+          "setExpenditureCategory",
+          selected_expenditure_category
+        );
       });
     },
   },

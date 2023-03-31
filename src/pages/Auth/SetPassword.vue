@@ -49,6 +49,7 @@
                   :disabled="!validatePhone"
                   :color="color"
                   :no_caps="no_caps"
+                  type="submit"
                 >
                 <q-icon name="arrow_forward" size="xs" class="q-pl-lg"></q-icon>
                 </q-btn>
@@ -129,6 +130,7 @@
                   :color="color"
                   :disabled="validatePasswordMatch"
                   :no_caps="no_caps"
+                  type="submit"
                 >
                 <q-icon name="arrow_forward" size="xs" class="q-pl-lg"></q-icon>
                 </q-btn>

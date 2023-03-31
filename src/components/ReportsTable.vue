@@ -12,6 +12,7 @@
       hide-pagination
       :table-header-style="{ backgroundColor: '#5384ae', color: '#FFFFFF' }"
       class="col-xs-12"
+      :rows-per-page-options="[0]"
     >
       <template v-slot:body="props">
         <q-tr :props="props">
@@ -53,6 +54,7 @@
       :table-header-style="{ backgroundColor: '#5384ae', color: '#FFFFFF' }"
       class="col-xs-12"
       hide-pagination
+      :rows-per-page-options="[0]"
     >
       <template v-slot:body="props">
         <q-tr :props="props">

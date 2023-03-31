@@ -11,8 +11,7 @@
       />
     </div>
 
-
-      <!-- contributions available -->
+    <!-- contributions available -->
     <div v-if="!checkTreasurerRole()">
       <div
         class="row q-ml-xs q-pt-md justify-between"
@@ -59,7 +58,7 @@
             :show_member_savings="false"
             :show_contribution="true"
             :show_member_contribution="false"
-            :total_contribution="total_contribution"
+            :total_contribution="computeTotalContributions"
             @view-contribution="viewContribution"
             @edit-contribution="editContribution"
             :title="getTableTitleForSearchContributions"
@@ -116,7 +115,7 @@
             :show_members="false"
             :show_member_contribution="false"
             :show_contribution="true"
-            :total_contribution="total_contribution"
+            :total_contribution="computeTotalContributionsForFilteredRecord"
             :title="getTableTitleForSearchContributions"
           >
           </TableVue>
@@ -131,14 +130,18 @@ import TableVue from "src/components/Table.vue";
 import PaymentCategoryMixinVue from "src/mixins/PaymentCategoryMixin.vue";
 import PaymentItemMixinVue from "src/mixins/PaymentItemMixin.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
-import HelperMixinVue from 'src/mixins/HelperMixin.vue';
+import HelperMixinVue from "src/mixins/HelperMixin.vue";
 import { LocalStorage } from "quasar";
 
 export default {
-  mixins: [PaymentCategoryMixinVue, PaymentItemMixinVue, organisationMixinVue, HelperMixinVue],
+  mixins: [
+    PaymentCategoryMixinVue,
+    PaymentItemMixinVue,
+    organisationMixinVue,
+    HelperMixinVue,
+  ],
 
-  mounted() {
-  },
+  mounted() {},
 
   data() {
     return {
@@ -196,7 +199,6 @@ export default {
       start_filter: false,
       filteredContributions: [],
       loading_filter: false,
-      total_contribution:0.0
     };
   },
   computed: {
@@ -206,29 +208,37 @@ export default {
 
     getTableData() {
       let data = [];
-      if(this.getMembersContributionsByPaymentItem.length != 0) {
+      if (this.getMembersContributionsByPaymentItem.length != 0) {
         data = this.getMembersContributionsByPaymentItem;
-      }else {
+      } else {
         data = this.getFilteredContributions;
       }
       return data;
     },
+    computeTotalContributions() {
+      let total = 0.0;
+      if(this.$store.getters.getMembersContributionsByPaymentItem != null){
+        this.$store.getters.getMembersContributionsByPaymentItem.data
+        .filter((ele) => ele.approve == "APPROVED")
+        .map((ele) => ele.total_amount_deposited)
+        .forEach((amount) => {
+          total += amount;
+        });
+      }
+      return total;
+    },
     getMembersContributionsByPaymentItem() {
       let data = [];
-      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-      this.total_contribution = 0.0;
-
       if (this.$store.getters.getMembersContributionsByPaymentItem != null) {
         this.$store.getters.getMembersContributionsByPaymentItem.data.forEach(
           (ele) => {
-            this.total_contribution += ele.total_amount_deposited
             data.push({
               counter:
                 this.$store.getters.getMembersContributionsByPaymentItem.data.indexOf(
                   ele
                 ) + 1,
               amount_deposited: ele.amount_deposited,
-              total_amount_deposited:ele.total_amount_deposited,
+              total_amount_deposited: ele.total_amount_deposited,
               id: ele.id,
               approve: ele.approve,
               balance: ele.balance,
@@ -279,16 +289,14 @@ export default {
 
     getFilteredContributions() {
       let data = [];
-       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-      this.total_contribution = 0.0;
 
       if (this.$store.getters.getFilteredContributions != null) {
         this.$store.getters.getFilteredContributions.forEach((ele) => {
-          this.total_contribution+=ele.total_amount_deposited
           data.push({
-            counter: this.$store.getters.getFilteredContributions.indexOf(ele) + 1,
+            counter:
+              this.$store.getters.getFilteredContributions.indexOf(ele) + 1,
             amount_deposited: ele.amount_deposited,
-            total_amount_deposited:ele.total_amount_deposited,
+            total_amount_deposited: ele.total_amount_deposited,
             id: ele.id,
             approve: ele.approve,
             balance: ele.balance,
@@ -312,6 +320,19 @@ export default {
       return data;
     },
 
+    computeTotalContributionsForFilteredRecord() {
+      let total = 0.0;
+      if (this.$store.getters.getFilteredContributions != null) {
+        this.$store.getters.getFilteredContributions
+          .filter((ele) => ele.approve == "APPROVED")
+          .map((ele) => ele.total_amount_deposited)
+          .forEach((amount) => {
+            total += amount;
+          });
+      }
+      return total;
+    },
+
     getLoadingState() {
       return this.$store.getters.getFetchingState;
     },
@@ -319,16 +340,19 @@ export default {
     getTableTitleForSearchContributions() {
       let title = "";
       let search_data = this.$store.getters.getSearchSavingParams;
-      title = search_data != undefined && search_data.payment_item_id != undefined
-        ? `Members Contributions for ${search_data.payment_item_id.name}, Amount Payable:  ${Number(search_data.payment_item_id.amount).toLocaleString()} XAF`
-        : "";
-      return title
+      title =
+        search_data != undefined && search_data.payment_item_id != undefined
+          ? `Members Contributions for ${
+              search_data.payment_item_id.name
+            }, Amount Payable:  ${Number(
+              search_data.payment_item_id.amount
+            ).toLocaleString()} XAF`
+          : "";
+      return title;
     },
   },
 
-  watch: {
-
-  },
+  watch: {},
 
   methods: {
     checkTreasurerRole() {
@@ -385,7 +409,7 @@ export default {
             this.filteredContributions.push({
               counter: res.data.data.indexOf(ele) + 1,
               amount_deposited: ele.amount_deposited,
-              total_amount_deposited:ele.total_amount_deposited,
+              total_amount_deposited: ele.total_amount_deposited,
               id: ele.id,
               approve: ele.approve,
               balance: ele.balance,
@@ -421,13 +445,17 @@ export default {
     },
 
     downloadContributions() {
-      let payment_item_id = this.$store.getters.getSearchSavingParams.payment_item_id.id;
+      let payment_item_id =
+        this.$store.getters.getSearchSavingParams.payment_item_id.id;
       let month = this.$store.getters.getSearchSavingParams.month;
       let year = this.$store.getters.getSearchSavingParams.year;
-      let status = this.$store.getters.getSearchSavingParams.status
+      let status = this.$store.getters.getSearchSavingParams.status;
       let url = `/api/protected/download-contributions?payment_item_id=${payment_item_id}&month=${month}&year=${year}&status=${status}`;
 
-      let file_name = "Member's Contribution for "+this.$store.getters.getSearchSavingParams.payment_item_id.name +".pdf";
+      let file_name =
+        "Member's Contribution for " +
+        this.$store.getters.getSearchSavingParams.payment_item_id.name +
+        ".pdf";
       this.loading = this.downloadPdf(url, file_name);
     },
   },
@@ -437,5 +465,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

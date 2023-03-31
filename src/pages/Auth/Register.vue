@@ -96,6 +96,7 @@
                     :disabled="!validateForm"
                     :color="color"
                     :no_caps="true"
+                    type="submit"
                   >
                   <q-icon name="arrow_forward" size="xs" class="q-pl-lg"></q-icon>
                   </q-btn>

@@ -99,7 +99,6 @@
             :total_members="computeTotalMembership"
             @fetch-members="getOrganisationMembers"
             @register-member="registerMember"
-            @view-member="viewMember"
           >
           </TableVue>
         </div>
@@ -241,11 +240,6 @@ export default {
     registerMember(data) {
       this.$store.dispatch("setMemberToRegister", data.data)
       this.$emit("register-member", data);
-    },
-
-    viewMember(data) {
-      this.$store.dispatch("setCurrentMember", data.data);
-      this.$emit('view-member', data);
     },
 
     filterMembers() {

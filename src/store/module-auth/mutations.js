@@ -162,7 +162,4 @@ export function SET_MEMBER_TO_REGISTER(state,data) {
   state.member_to_register = data;
 }
 
-export function SET_CURRENT_MEMBER(state, data) {
-state.current_member = data;
-}
 

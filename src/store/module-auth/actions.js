@@ -510,7 +510,3 @@ export function setSelectedSponsorship({commit}, data) {
 export function setMemberToRegister({commit}, data) {
   commit("SET_MEMBER_TO_REGISTER", data);
 }
-
-export function setCurrentMember({commit}, data) {
-  commit("SET_CURRENT_MEMBER", data);
-}

@@ -535,12 +535,6 @@
           @set-heading="setHeading"
         >
         </MemberRegistration>
-        <ViewMember
-          v-if="current_tab == 'Member Profile'"
-          @close-right-drawer="closeRightDrawer"
-          @set-heading="setHeading"
-        >
-        </ViewMember>
       </q-page>
     </q-drawer>
   </q-layout>
@@ -687,7 +681,6 @@ export default {
     ViewExpenditureItemVue,
     ViewExpenditureItemDetail,
     MemberRegistration,
-    ViewMember,
   },
 };
 </script>

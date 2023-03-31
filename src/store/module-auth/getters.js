@@ -166,7 +166,3 @@ export function getSelectedSponsorship(state) {
 export function getMemberToRegister(state) {
   return state.member_to_register
 }
-
-export function getCurrentMember(state) {
-  return state.current_member;
-}

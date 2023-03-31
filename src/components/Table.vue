@@ -272,8 +272,14 @@
               "
             />
 
-            <!-- menu to  view members -->
-            <q-btn flat round v-if="show_members && checkTreasurerRole()">
+            <!-- button to handle edit, view and delete of row data -->
+            <q-btn
+              flat
+              round
+              v-if="
+                !show_savings && !show_member_savings && !checkTreasurerRole()
+              "
+            >
               <q-icon
                 name="menu"
                 size="xs"
@@ -282,7 +288,8 @@
                 clickable
               >
                 <q-menu>
-                  <q-list bordered separator style="width: 190px">
+                  <q-list bordered separator style="width: 210px">
+                    <!-- view member profile -->
                     <q-item
                       clickable
                       v-close-popup
@@ -301,28 +308,6 @@
                         <q-item-label class="edit">View Profile</q-item-label>
                       </q-item-section>
                     </q-item>
-                  </q-list>
-                </q-menu>
-              </q-icon>
-            </q-btn>
-
-            <!-- button to handle edit, view and delete of row data -->
-            <q-btn
-              flat
-              round
-              v-if="
-                !show_savings && !show_member_savings && !checkTreasurerRole()
-              "
-            >
-              <q-icon
-                name="menu"
-                size="xs"
-                color="primary"
-                class="menu_icon"
-                clickable
-              >
-                <q-menu>
-                  <q-list bordered separator style="width: 210px">
                     <!-- edit member -->
                     <q-item
                       clickable
@@ -1198,11 +1183,7 @@ export default {
     },
 
     onViewMember(data) {
-      let payload = {
-        data: data,
-        tab: "Member Profile",
-      };
-      this.$emit('view-member', payload);
+      this.$router.push({name: 'member_profile', params:{id:data.id}});
     },
   },
   components: {},
@@ -1261,7 +1242,7 @@ export default {
 .approve_btn {
   background-color: $secondary;
   color: white;
- margin-right: 3rem;
+  margin-right: 3rem;
 }
 
 .approve_card {

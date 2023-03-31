@@ -308,23 +308,6 @@
                         <q-item-label class="edit">View Profile</q-item-label>
                       </q-item-section>
                     </q-item>
-                    <!-- edit member -->
-                    <q-item
-                      clickable
-                      v-close-popup
-                      @click="onEditMember(props.row)"
-                      v-if="show_members"
-                    >
-                      <q-item-section avatar>
-                        <span>
-                          <q-icon name="edit" size="xs" class="edit" />
-                        </span>
-                      </q-item-section>
-                      <q-item-section>
-                        <q-item-label class="edit">Edit</q-item-label>
-                      </q-item-section>
-                    </q-item>
-
                     <!-- invite members to the app -->
                     <q-item
                       clickable
@@ -850,30 +833,6 @@ export default {
   methods: {
     getDate(date) {
       return moment(date).format("MMMM Do YYYY");
-    },
-    onEditMember(data) {
-      let payload = {
-        url: `/api/protected/organisations/users/${data.id}`,
-        data: this.user,
-        msg: "Member information updated successfully",
-        status: "none",
-        color: "default",
-        show_feedback: true,
-        to_on_ok: "none",
-        to_on_fail: "none",
-        error_msg: "An Error occurred! Please try again",
-        has_commit: false,
-        commit: "none",
-        show_spinner: false,
-        to_be_store_data: {
-          required: false,
-          has_value: false,
-          data: [],
-        },
-      };
-      this.$store.dispatch("getRequest", payload).then((res) => {
-        this.$emit("update-member", { data: res.data, tab: "EditMember" });
-      });
     },
 
     onInviteMember(data) {

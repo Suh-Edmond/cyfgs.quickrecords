@@ -104,7 +104,6 @@
           <q-card-section class="content">
             <router-view
               @start-loading="startLoading"
-              @update-member="updateMember"
               @update-payment-category="updatePaymentCategory"
               @update-payment-item="updatePaymentItem"
               @update-expenditure-category="updateExpenditureCategory"
@@ -235,14 +234,6 @@ export default {
         data.pop();
       }
       this.$store.dispatch("setIntermediateTabs", Array.from(data));
-    },
-    updateMember(data) {
-      this.right = true;
-      this.$emit("show-right-drawer", {
-        right: this.right,
-        current_tab: data.tab,
-        data: data.data,
-      });
     },
     registerMember(data){
       this.updateDrawer(data);

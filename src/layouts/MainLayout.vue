@@ -424,12 +424,6 @@
           @close-right-drawer="closeRightDrawer"
           @set-heading="setHeading"
         ></AddMember>
-        <EditMember
-          v-if="current_tab == 'EditMember'"
-          @close-right-drawer="closeRightDrawer"
-          @set-heading="setHeading"
-        >
-        </EditMember>
         <AddPaymentCategory
           v-if="current_tab == 'Payment Categories'"
           @close-right-drawer="closeRightDrawer"
@@ -544,7 +538,6 @@
 import MainContent from "src/components/MainContent.vue";
 import { LocalStorage, SessionStorage } from "quasar";
 import AddMember from "src/components/AddMember.vue";
-import EditMember from "src/components/EditMember.vue";
 import AddPaymentCategory from "src/components/AddPaymentCategory.vue";
 import AddPaymentItem from "src/components/AddPaymentItem.vue";
 import AddExpenditureCategory from "src/components/AddExpenditureCategory.vue";
@@ -660,7 +653,6 @@ export default {
   components: {
     MainContent,
     AddMember,
-    EditMember,
     AddPaymentCategory,
     AddPaymentItem,
     AddExpenditureCategory,

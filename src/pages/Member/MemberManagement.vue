@@ -90,7 +90,6 @@
             :columns="columns"
             :data="getMembers"
             :label="label"
-            @update-member="updateMember"
             :message="message"
             :show_savings="false"
             :show_income_activity="false"
@@ -232,11 +231,6 @@ export default {
   },
 
   methods: {
-    updateMember(data) {
-      this.$emit("update-member", data);
-      this.$store.dispatch("updateMember", data.data);
-    },
-
     registerMember(data) {
       this.$store.dispatch("setMemberToRegister", data.data)
       this.$emit("register-member", data);

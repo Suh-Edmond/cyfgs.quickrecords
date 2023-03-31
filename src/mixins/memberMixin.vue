@@ -31,7 +31,32 @@ export default {
       }).finally(() => {
         this.$emit("start-loading", false);
       })
-    }
+    },
+
+    getMemberProfile(id) {
+      console.log(id);
+      let payload = {
+        url: `/api/protected/organisations/users/${id}`,
+        data: "",
+        status: "none",
+        show_feedback: false,
+        msg: "none",
+        color: "default",
+        show_spinner: true,
+        error_msg: "default",
+        commit: "SET_CURRENT_MEMBER",
+        has_commit: true,
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.$store
+        .dispatch("getRequest", payload)
+        .then(() => {})
+        .catch((e) => {});
+    },
   }
 }
 </script>

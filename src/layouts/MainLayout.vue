@@ -565,7 +565,6 @@ import ViewSponsorshipVue from "src/components/ViewSponsorship.vue";
 import ViewExpenditureItemVue from "src/components/ViewExpenditureItem.vue";
 import ViewExpenditureItemDetail from "src/components/ViewExpenditureItemDetail.vue";
 import MemberRegistration from "src/components/MemberRegistration.vue";
-import ViewMember from "src/components/ViewMember.vue";
 
 export default {
   mixins: [organisationMixinVue],

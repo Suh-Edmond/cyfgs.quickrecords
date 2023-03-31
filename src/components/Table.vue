@@ -1183,6 +1183,7 @@ export default {
     },
 
     onViewMember(data) {
+      this.getMemberProfile(data.id)
       this.$router.push({name: 'member_profile', params:{id:data.id}});
     },
   },

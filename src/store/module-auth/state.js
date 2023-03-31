@@ -41,5 +41,6 @@ export default function () {
     sponsorships:[],
     selected_sponsorship:null,
     member_to_register:null,
+    current_member:null
   };
 }

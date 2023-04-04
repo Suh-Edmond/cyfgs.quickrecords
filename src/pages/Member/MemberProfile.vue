@@ -225,7 +225,7 @@
           class="q-mt-md has_register q-pa-sm"
           v-if="getCurrentMember.has_register == 'REGISTERED'"
         >
-          <label for="register">Member has Completed registration</label>
+          <label for="register">Member has Completed Registration</label>
         </div>
 
         <div
@@ -269,18 +269,18 @@
                     <q-td key="name" :props="props">
                       {{ props.row.name }}
                     </q-td>
-                    <q-td key="is_complusory" :props="props">
-                      {{ props.row.is_complusory }}
+                    <q-td key="is_compulsory" :props="props">
+                      {{ props.row.is_compulsory }}
                     </q-td>
                     <q-td key="amount" :props="props">
-                      {{ props.row.amount }}
+                      {{ Number(props.row.amount).toLocaleString() }}
                     </q-td>
                     <q-td key="has_pay" :props="props">
                       <q-checkbox
                         v-model="props.row.has_pay"
                         dense
                         size="sm"
-                        @input="computeTotal(props.row)"
+                        @input="computeTotal(props.row, $event)"
                       />
                     </q-td>
                   </q-tr>
@@ -304,14 +304,16 @@
             ></q-input>
           </div>
           <div class="q-pl-lg">
-            <ButtonVue
+            <q-btn
+
               label="Make Payment"
-              :loading="loading"
               color="primary"
-              :disabled="true"
-              :no_caps="no_caps"
+              :disabled="validatePayment"
+              no-caps
+              @click="showPaymentDialog"
             >
-            </ButtonVue>
+            <q-icon size="xs" name="arrow_forward" class="q-pl-md"></q-icon>
+            </q-btn>
           </div>
         </div>
         <!-- paid items -->
@@ -338,20 +340,20 @@
                     <q-td key="name" :props="props">
                       {{ props.row.name }}
                     </q-td>
-                    <q-td key="is_complusory" :props="props">
-                      {{ props.row.is_complusory }}
-                    </q-td>
                     <q-td key="amount" :props="props">
-                      {{ props.row.amount }}
-                    </q-td>
-                    <q-td key="amount_paid" :props="props">
-                      {{ props.row.amount_paid }}
+                      {{ Number(props.row.amount).toLocaleString() }}
                     </q-td>
                     <q-td key="balance" :props="props">
-                      {{ props.row.balance }}
+                      {{ Number(props.row.balance).toLocaleString() }}
+                    </q-td>
+                    <q-td key="payment_status" :props="props">
+                      {{ props.row.payment_status }}
                     </q-td>
                     <q-td key="approve" :props="props">
                       {{ props.row.approve }}
+                    </q-td>
+                    <q-td key="created_at" :props="props">
+                      {{ props.row.created_at }}
                     </q-td>
                   </q-tr>
                 </template>
@@ -496,7 +498,7 @@
             Role: <span class="q-pl-md">{{ role_deleted.name }}</span>
           </div>
         </q-card-section>
-        <q-card-actions align="right">
+        <q-card-actions align="left">
           <q-btn
             label="Cancel"
             color="primary"
@@ -519,6 +521,59 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+
+    <!-- approve payment -->
+    <q-dialog v-model="show_payment_dialog">
+      <q-card style="min-width: 600px" class="q-pa-xs">
+        <q-card-section class="row items-center q-pb-sm">
+          <div class="text-h6 confirm_payment_title">Confirm Payment(s)</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+        <q-card-section>
+          <div>
+            <q-markup-table flat>
+              <thead>
+                <tr class="text-weight-bold">
+                  <th class="text-left text-weight-bold">S/N</th>
+                  <th class="text-left text-weight-bold">Payment Item</th>
+                  <th class="text-left text-weight-bold">Amount (XAF)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(item, index) in selected_items" :key="item.id">
+                  <td class="text-left">{{index + 1}}</td>
+                  <td class="text-left">{{item.name}}</td>
+                  <td class="text-left">{{item.amount}}</td>
+                </tr>
+                <tr>
+                  <td class="text-left text-weight-bold">Total</td>
+                  <td class="text-left"></td>
+                  <td class="text-left text-weight-bold">{{ total_amount_payable }} XAF</td>
+                </tr>
+
+              </tbody>
+            </q-markup-table>
+          </div>
+        </q-card-section>
+
+        <q-card-section class="q-mb-md">
+            <div class="flex justify-end">
+              <q-btn
+                icon-right="check"
+                  class="form_button"
+                  label="Confirm"
+                  :loading="loading_payment"
+                  color="primary"
+                  :disabled="false"
+                  no-caps
+                  @click="onConfirmPayment"
+                >
+                </q-btn>
+            </div>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
@@ -537,6 +592,8 @@ export default {
     this.getUserRoles();
     this.getAllRoles();
     this.setFormField();
+    this.getMembersDebts(false);
+    this.getMembersContributions(false);
   },
 
   data() {
@@ -553,7 +610,10 @@ export default {
       edit_profile: false,
       show_role_dialog: false,
       role_deleted: null,
+      show_payment_dialog: false,
       no_caps: true,
+      selected_items: [],
+      loading_payment:false,
       columns: [
         {
           name: "counter",
@@ -572,10 +632,10 @@ export default {
           sortable: true,
         },
         {
-          name: "is_complusory",
+          name: "is_compulsory",
           align: "left",
           label: "Complusory",
-          field: "is_complusory",
+          field: "is_compulsory",
           sortable: true,
         },
         {
@@ -587,50 +647,7 @@ export default {
         },
         { name: "has_pay", label: "Action", field: "has_pay", align: "left" },
       ],
-      data: [
-        {
-          counter: 1,
-          name: "Frozen Yogurt",
-          amount: 500,
-          is_complusory: "YES",
-          has_pay: false,
-        },
-        {
-          counter: 2,
-          name: "Frozen Yogurt",
-          amount: 500,
-          is_complusory: "YES",
-          has_pay: false,
-        },
-        {
-          counter: 3,
-          name: "Frozen Yogurt",
-          amount: 500,
-          is_complusory: "YES",
-          has_pay: false,
-        },
-        {
-          counter: 4,
-          name: "Frozen Yogurt",
-          amount: 500,
-          is_complusory: "YES",
-          has_pay: false,
-        },
-        {
-          counter: 5,
-          name: "Frozen Yogurt",
-          amount: 500,
-          is_complusory: "YES",
-          has_pay: false,
-        },
-        {
-          counter: 6,
-          name: "Frozen Yogurt",
-          amount: 500,
-          is_complusory: "YES",
-          has_pay: false,
-        },
-      ],
+      data: [],
       columns1: [
         {
           name: "counter",
@@ -649,17 +666,10 @@ export default {
           sortable: true,
         },
         {
-          name: "is_complusory",
-          align: "left",
-          label: "Complusory",
-          field: "is_complusory",
-          sortable: true,
-        },
-        {
-          name: "amount_paid",
+          name: "amount",
           align: "left",
           label: "Amount Paid (XAF)",
-          field: "amount_paid",
+          field: "amount",
           sortable: true,
         },
         {
@@ -670,74 +680,32 @@ export default {
           sortable: true,
         },
         {
+          name: "payment_status",
+          label: "Payment Status",
+          field: "payment_status",
+          align: "left",
+        },
+        {
           name: "approve",
           label: "Transaction Status",
           field: "approve",
           align: "left",
         },
-      ],
-      data1: [
         {
-          counter: 1,
-          name: "Frozen Yogurt",
-          amount: 500,
-          is_complusory: "YES",
-          balance: 0.0,
-          amount_paid: 300.0,
-          approve: "COMPLETED",
-        },
-        {
-          counter: 2,
-          name: "Frozen Yogurt",
-          amount: 500,
-          is_complusory: "YES",
-          amount_paid: 300.0,
-          balance: 0.0,
-          approve: "COMPLETED",
-        },
-        {
-          counter: 3,
-          name: "Frozen Yogurt",
-          amount: 500,
-          amount_paid: 300.0,
-          is_complusory: "YES",
-          balance: 0.0,
-          approve: "COMPLETED",
-        },
-        {
-          counter: 4,
-          name: "Frozen Yogurt",
-          amount: 500,
-          amount_paid: 300.0,
-          is_complusory: "YES",
-          balance: 0.0,
-          approve: "COMPLETED",
-        },
-        {
-          counter: 5,
-          name: "Frozen Yogurt",
-          amount: 500,
-          amount_paid: 300.0,
-          is_complusory: "YES",
-          balance: 0.0,
-          approve: "COMPLETED",
-        },
-        {
-          counter: 6,
-          name: "Frozen Yogurt",
-          amount: 500,
-          amount_paid: 300.0,
-          is_complusory: "YES",
-          balance: 0.0,
-          approve: "COMPLETED",
+          name: "created_at",
+          label: "Payment Date",
+          field: "created_at",
+          align: "left",
         },
       ],
-      total_amount_payable: 0.0,
+      data1: [],
+      total_amount_payable: 0,
       role: null,
       gender_options: ["MALE", "FEMALE", "OTHER"],
       user_roles: [],
       show_remove_role_dialog: false,
       is_fetching: false,
+      current_year:"2023",
     };
   },
   computed: {
@@ -757,6 +725,10 @@ export default {
         this.user.gender == null
         ? true
         : false;
+    },
+
+    validatePayment() {
+      return this.total_amount_payable > 0 ? false : true;
     },
 
     validateAddRole() {
@@ -800,6 +772,14 @@ export default {
     },
   },
   methods: {
+    getFormatedDate(created_at) {
+      return moment(created_at).format(
+        "MMMM Do YYYY"
+      );
+    },
+    showPaymentDialog() {
+      this.show_payment_dialog = true;
+    },
     formDateTime(date) {
       return moment(date).format("MMMM Do YYYY");
     },
@@ -908,10 +888,17 @@ export default {
       });
     },
 
-    computeTotal(data) {
-      if (data.has_paid) {
+    computeTotal(data, evt) {
+      if (evt) {
         this.total_amount_payable += data.amount;
+        this.total_amount_payable = parseFloat(this.total_amount_payable);
+        this.selected_items.push(data);
+      } else {
+        this.total_amount_payable -= data.amount;
+        this.total_amount_payable = parseFloat(this.total_amount_payable);
+        this.selected_items = this.selected_items.filter((ele) => ele.id != data.id);
       }
+      return this.total_amount_payable;
     },
 
     showAddRole() {
@@ -999,6 +986,134 @@ export default {
         this.getUserRoles(id);
       });
     },
+
+    onConfirmPayment() {
+      this.loading_payment = true;
+      let payload = {
+        data:this.buildPayloadData(),
+        url: `/api/protected/contributions/bulk-payments`,
+        msg: "Payment made successfully",
+        color: "default",
+        to_on_ok: "none",
+        status: "success",
+        to_on_fail: "none",
+        show_feedback: true,
+        error_msg: "An Error occurred! Please try again",
+        has_commit: false,
+        commit: "none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      }
+      this.$store.dispatch("postRequest", payload).then(() => {
+        this.loading_payment = false;
+        this.show_payment_dialog = false;
+        this.getMembersDebts(true);
+        this.getMembersContributions(true);
+        this.selected_items = [];
+        this.total_amount_payable = 0;
+      });
+    },
+
+    buildPayloadData(){
+      let data = []
+      this.selected_items.forEach((ele) => {
+        data.push({
+          user_id:this.$store.getters.getCurrentMember.id,
+          payment_item_id:ele.id,
+          amount_deposited:parseInt(ele.amount),
+          is_compulsory:ele.is_compulsory,
+          type:ele.type,
+          year:this.current_year,
+          comment:"BULK PAYMENT",
+        })
+      })
+      return data;
+    },
+
+    getMembersDebts(show_spinner){
+      this.data = [];
+      let id = this.$route.params.id;
+      let current_year = "2023"
+      let payload = {
+        data:"none",
+        url: `/api/protected/contributions/members/debts?user_id=${id}&year=${current_year}`,
+        msg: "none",
+        color: "default",
+        to_on_ok: "none",
+        status: "success",
+        to_on_fail: "none",
+        show_feedback: false,
+        show_spinner:show_spinner,
+        error_msg: "An Error occurred! Please try again",
+        has_commit: false,
+        commit: "none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      }
+      this.$store.dispatch("getRequest", payload).then((res) => {
+        if(res.data.length > 0) {
+          res.data.forEach((ele) => {
+            this.data.push({
+              counter: res.data.indexOf(ele) + 1,
+              name: ele.name,
+              is_compulsory:ele.is_compulsory,
+              amount:ele.amount,
+              type:ele.type,
+              has_pay:ele.has_pay,
+              id:ele.id
+            })
+          })
+        }
+      });
+    },
+
+    getMembersContributions(show_spinner){
+      this.data1 = [];
+      let id = this.$route.params.id;
+      let current_year = "2023"
+      let payload = {
+        data:"none",
+        url: `/api/protected/contributions/members/paid?user_id=${id}&year=${current_year}`,
+        msg: "none",
+        color: "default",
+        to_on_ok: "none",
+        status: "success",
+        to_on_fail: "none",
+        show_feedback: false,
+        show_spinner:show_spinner,
+        error_msg: "An Error occurred! Please try again",
+        has_commit: false,
+        commit: "none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      }
+      this.$store.dispatch("getRequest", payload).then((res) => {
+        if(res.data.length > 0) {
+          res.data.forEach((ele) => {
+            this.data1.push({
+              counter: res.data.indexOf(ele) + 1,
+              payment_item_id:ele.payment_item_id,
+              name: ele.name,
+              amount:ele.amount,
+              balance:ele.balance,
+              payment_status:ele.payment_status,
+              approve:ele.approve,
+              created_at:this.getFormatedDate(ele.created_at),
+              id:ele.id
+            })
+          })
+        }
+      });
+    }
   },
   components: {
     ButtonVue,
@@ -1070,7 +1185,17 @@ export default {
   text-align: center;
   letter-spacing: 0.005em;
 }
-
+.confirm_payment_title {
+  color: $primary;
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 24px;
+  align-items: center;
+  text-align: center;
+  letter-spacing: 0.005em;
+}
 .contribution_item_header {
   color: $dark;
   font-family: "Roboto";
@@ -1110,10 +1235,10 @@ export default {
 
 .camara {
   position: absolute;
-  top: 19%;
+  top: 23%;
   left: 21%;
   cursor: pointer;
-  color: $grey8;
+  color: $grey5;
 }
 
 .phone {

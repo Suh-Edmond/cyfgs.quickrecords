@@ -1145,6 +1145,17 @@ export default {
     onViewMember(data) {
       this.getMemberProfile(data.id)
       this.$router.push({name: 'member_profile', params:{id:data.id}});
+
+      const intermediate_tabs = Array.from(
+        this.$store.getters.getIntermediateTabs
+      );
+
+      intermediate_tabs.push({
+        name: "Member Profile",
+        has_intermediate_tab: true,
+      });
+
+      this.$store.dispatch("setIntermediateTabs", intermediate_tabs);
     },
   },
   components: {},

@@ -92,7 +92,7 @@
               size="md"
               dense
               no-caps
-              v-show="requires_add && !checkTreasurerRole()"
+              v-show="requires_add && !checkTreasurerRole() && !verifyRequiredAdd()"
               @click="showRightDrawer"
               class="q-pa-xs"
             />
@@ -362,6 +362,10 @@ export default {
       this.$store.dispatch("setUpdatedExpenditureItemDetail", null);
       this.$store.dispatch("setUpdatedMemberSaving", null);
       this.$store.dispatch("setUpdatedIncomeActivity", null);
+    },
+
+    verifyRequiredAdd(){
+      return this.$route.name === 'member_profile'? true:false;
     }
   },
 };

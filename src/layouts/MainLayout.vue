@@ -603,14 +603,20 @@ export default {
 
       this.$store.dispatch("setIntermediateTabs", []);
     },
+
+
     updateRightDrawer({ right, current_tab, data }) {
       this.current_tab = current_tab;
       this.right = right;
       this.data = data;
     },
+
+
     updateLeftDrawer(left) {
       this.left = left;
     },
+
+
     checkRole(tab_roles) {
       let user_roles = [];
       LocalStorage.getItem("data").roles.forEach((role) => {
@@ -622,6 +628,9 @@ export default {
         ? true
         : false;
     },
+
+
+
     logoutUser() {
       let payload = {
         to_on_ok: "Login",
@@ -638,14 +647,24 @@ export default {
       };
       this.$store.dispatch("logoutUser", payload);
     },
+
+
+
+
     goBack() {
       this.right = !this.right;
       this.$store.dispatch("setEditState", false);
     },
+
+
+
     closeRightDrawer() {
       this.right = !this.right;
       this.$store.dispatch("setEditState", false);
     },
+
+
+
     setHeading(data) {
       this.heading = data;
     },

@@ -34,7 +34,6 @@ export default {
     },
 
     getMemberProfile(id) {
-      console.log(id);
       let payload = {
         url: `/api/protected/organisations/users/${id}`,
         data: "",

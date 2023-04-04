@@ -346,10 +346,19 @@
                     <q-td key="balance" :props="props">
                       {{ Number(props.row.balance).toLocaleString() }}
                     </q-td>
-                    <q-td key="payment_status" :props="props">
+                    <q-td key="payment_status" :props="props" v-if="props.row.payment_status == 'COMPLETE'" class="status_approve_completed">
                       {{ props.row.payment_status }}
                     </q-td>
-                    <q-td key="approve" :props="props">
+                    <q-td key="payment_status" :props="props" v-if="props.row.payment_status == 'INCOMPLETE'" class="status_decline_not_completed">
+                      {{ props.row.payment_status }}
+                    </q-td>
+                    <q-td key="approve" :props="props" class="status_approve_completed" v-if="props.row.approve =='APPROVED'">
+                      {{ props.row.approve }}
+                    </q-td>
+                    <q-td key="approve" :props="props" class="status_pending" v-if="props.row.approve == 'PENDING'">
+                      {{ props.row.approve }}
+                    </q-td>
+                    <q-td key="approve" :props="props" class="status_decline_not_completed" v-if="props.row.approve == 'DECLINED'">
                       {{ props.row.approve }}
                     </q-td>
                     <q-td key="created_at" :props="props">
@@ -1302,5 +1311,17 @@ export default {
   line-height: 27px;
   letter-spacing: 0.005em;
   color: $dark;
+}
+
+.status_decline_not_completed {
+  color: $orange;
+}
+
+.status_approve_completed {
+  color: $secondary;
+}
+
+.status_pending {
+  color: $info;
 }
 </style>

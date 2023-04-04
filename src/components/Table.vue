@@ -294,6 +294,7 @@
                       clickable
                       v-close-popup
                       @click="onViewMember(props.row)"
+                      v-if="checkPresidentRole() && show_members"
                     >
                       <q-item-section avatar>
                         <span>

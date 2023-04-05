@@ -60,7 +60,7 @@
               >My Roles:
               <q-list>
                 <q-item
-                  v-for="role in user_roles"
+                  v-for="role in fetchUserRoles"
                   :key="role.id"
                   v-ripple
                   class="q-mb-sm"
@@ -507,7 +507,7 @@
             Role: <span class="q-pl-md">{{ role_deleted.name }}</span>
           </div>
         </q-card-section>
-        <q-card-actions align="left">
+        <q-card-actions align="right">
           <q-btn
             label="Cancel"
             color="primary"
@@ -592,17 +592,14 @@ import ButtonVue from "src/components/Button.vue";
 import moment from "moment";
 import organisationMixin from "src/mixins/organisationMixin.vue";
 import memberMixin from "src/mixins/memberMixin.vue";
-import roleMixin from "src/mixins/roleMixin.vue";
 
 export default {
-  mixins: [organisationMixin, memberMixin, roleMixin],
+  mixins: [organisationMixin, memberMixin],
 
   mounted() {
-    this.getUserRoles();
-    this.getAllRoles();
-    this.setFormField();
     this.getMembersDebts(false);
     this.getMembersContributions(false);
+    this.setFormField();
   },
 
   data() {
@@ -779,6 +776,13 @@ export default {
       );
       return has_president_role != undefined;
     },
+
+    fetchUserRoles(){
+      this.$store.getters.getCurrentMember.roles.forEach((ele) => {
+        this.user_roles.push(ele);
+      })
+      return this.user_roles;
+    },
   },
   methods: {
     getFormatedDate(created_at) {
@@ -797,6 +801,8 @@ export default {
       this.role_deleted = role;
       this.show_remove_role_dialog = true;
     },
+
+
     setFormField() {
       if (this.$store.getters.getCurrentMember != null) {
         this.user.name = this.$store.getters.getCurrentMember.name;
@@ -810,6 +816,8 @@ export default {
 
       return this.user;
     },
+
+
     onUpdateMember() {
       this.is_fetching = true;
       let payload = {
@@ -838,15 +846,23 @@ export default {
         })
         .finally(() => {});
     },
+
+
     showEditProfile() {
       return (this.edit_profile = true);
     },
+
+
     showEditPassword() {
       return (this.edit_password = true);
     },
+
+
     openFileUpload() {
       document.getElementById("logo").click();
     },
+
+
     onFileChanged(e) {
       const formData = new FormData();
       formData.append("file", e.target.files[0]);
@@ -897,6 +913,8 @@ export default {
       });
     },
 
+
+
     computeTotal(data, evt) {
       if (evt) {
         this.total_amount_payable += data.amount;
@@ -910,8 +928,32 @@ export default {
       return this.total_amount_payable;
     },
 
+
+
     showAddRole() {
+      this.getAllRoles();
       this.show_role_dialog = true;
+    },
+
+
+    getAllRoles() {
+      let payload = {
+        url: `/api/protected/roles`,
+        msg: "none",
+        color: "default",
+        status:"none",
+        error_msg: "An Error occurred! Please try again",
+        has_commit: true,
+        show_spinner:false,
+        commit: "SET_ROLES",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.$store.dispatch("getRequest", payload).then(() => {
+      });
     },
 
     onAddRole() {
@@ -939,7 +981,7 @@ export default {
       this.$store.dispatch("postRequest", payload).then(() => {
         this.loading = false;
         this.role = null;
-        this.getUserRoles(user_id);
+        this.getMemberProfile(user_id)
         this.show_role_dialog = false;
       });
     },
@@ -992,7 +1034,7 @@ export default {
         },
       };
       this.$store.dispatch("deleteRequest", payload).then(() => {
-        this.getUserRoles(id);
+        this.getMemberProfile(id);
       });
     },
 
@@ -1025,7 +1067,6 @@ export default {
         this.total_amount_payable = 0;
       });
     },
-
     buildPayloadData(){
       let data = []
       this.selected_items.forEach((ele) => {

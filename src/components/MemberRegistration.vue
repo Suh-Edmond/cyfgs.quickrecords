@@ -7,7 +7,7 @@
         >
         <div>
           <label for="credential" class="form_field"
-            >Member's Name<span class="text-red">*</span></label
+            >Member's Name</label
           >
           <q-input
             v-model="user.user_id"
@@ -21,13 +21,13 @@
           <label for="credential" class="form_field"
             >Year <span class="text-red">*</span></label
           >
-          <q-select v-model="user.year" outlined dense :options="years" />
+          <q-select v-model="user.year" outlined dense :options="years" label="Select year" />
         </div>
         <div>
           <label for="credential" class="form_field"
-            >Amount <span class="text-red">*</span></label
+            >Amount </label
           >
-          <q-input v-model="user.amount" outlined dense type="number" />
+          <q-input v-model="user.amount" outlined dense type="number" disable />
         </div>
         <div class="flex q-mt-lg justify-end">
           <div>
@@ -52,16 +52,19 @@ import organisationMixinVue from "src/mixins/organisationMixin.vue";
 
 export default {
   mixins: [memberMixinVue, organisationMixinVue],
-  created() {
+  mounted() {
     let heading = "Register Member to the Organisation";
     this.$emit("set-heading", heading);
 
     let id = this.$store.getters.getOrganisation.id;
     this.getOrganisationMembers(id, true);
+
+    this.getRegistrationAmount();
   },
   data() {
     return {
       loading: false,
+      registration_item:null,
       user: {
         user_id: this.$store.getters.getMemberToRegister.name,
         year: null,
@@ -90,7 +93,7 @@ export default {
       let payload = {
         url: `/api/protected/members-registration`,
         data: {
-          amount: this.user.amount,
+          payment_item_id: this.registration_item.id,
           year: this.user.year.value,
           user_id: this.$store.getters.getMemberToRegister.id,
         },
@@ -127,6 +130,36 @@ export default {
       this.user.year = null;
 
       return this.user;
+    },
+
+    getRegistrationAmount() {
+      let payload = {
+        status: "none",
+        url: `/api/protected/payment-items/type`,
+        has_path_val: true,
+        show_feedback: false,
+        show_spinner: false,
+        msg: "none",
+        color: "default",
+        error_msg: "default",
+        commit: "none",
+        has_commit: false,
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: null,
+        },
+      };
+      this.$store
+        .dispatch("getRequest", payload)
+        .then((res) => {
+          if(res.data.length > 0){
+            this.registration_item = res.data[0];
+            this.user.amount = this.registration_item.amount
+          }
+        })
+        .finally(() => {
+        });
     },
   },
   components: {

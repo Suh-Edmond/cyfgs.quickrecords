@@ -1214,7 +1214,7 @@ export default {
 .approve_btn {
   background-color: $secondary;
   color: white;
-  margin-right: 3rem;
+  margin-right: 2.5rem;
 }
 
 .approve_card {
@@ -1230,7 +1230,7 @@ export default {
 .decline_btn_saving {
   background-color: $orange;
   color: white;
-  margin-right: 5rem;
+  margin-right: 3rem;
 }
 
 .approve {

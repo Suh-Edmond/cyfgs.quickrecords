@@ -44,6 +44,18 @@
         </div>
         <div>
           <label for="credential" class="form_field"
+            >Type <span class="text-red">*</span></label
+          >
+          <q-select v-model="payment_item.type" outlined dense :options="payment_item_types" label="Select type"/>
+        </div>
+        <div>
+          <label for="credential" class="form_field"
+            >Frequency <span class="text-red">*</span></label
+          >
+          <q-select v-model="payment_item.frequency" outlined dense :options="frequencies" label="Select frequency" />
+        </div>
+        <div>
+          <label for="credential" class="form_field"
             >Description <span class="text-red">*</span></label
           >
           <q-input
@@ -102,20 +114,24 @@ export default {
         description: null,
         id: null,
         payment_category_id: null,
-        amount: 0,
+        type:null,
+        frequency:null,
+        amount:0.0
       },
+      payment_item_types:['REGISTRATION', 'OTHER'],
+      frequencies:['YEARLY', 'NORMAL']
     };
   },
   computed: {
     validateForm() {
-      return this.payment_item.name === null ||
-        this.payment_item.description === null ||
-        this.payment_item.amount === 0
+      return this.payment_item.name == null ||
+        this.payment_item.description == null ||
+        this.payment_item.type == null || this.payment_item.frequency == null || this.payment_item.amount == 0.0
         ? true
         : false;
     },
 
-    
+
 
     getUpdatedPaymentItem() {
       return this.setFormFields(this.$store.getters.getUpdatedPaymentItem);
@@ -133,7 +149,15 @@ export default {
       let category = this.$store.getters.getCurrentPaymentCategory;
       let payload = {
         url: this.setAddUpdatePaymentItemUrl(this.payment_item, category),
-        data: this.payment_item,
+        data: {
+          name:this.payment_item.name,
+          amount:this.payment_item.amount,
+          type:this.payment_item.type,
+          amount:this.payment_item.amount,
+          frequency:this.payment_item.frequency,
+          complusory:this.payment_item.complusory,
+          description:this.payment_item.description
+        },
         msg: "Payment Category save Successfully",
         color: "default",
         to_on_ok: "none",
@@ -153,7 +177,9 @@ export default {
 
     resetForm() {
       this.payment_item.name = null;
-      this.payment_item.amount = 0;
+      this.payment_item.type = null;
+      this.payment_item.amount = 0.0
+      this.payment_item.frequency = null
       (this.payment_item.description = null),
         (this.payment_item.complusory = true);
       this.payment_item.id = null;
@@ -181,11 +207,12 @@ export default {
           .then(() => {
             this.getPaymentItemsByCategory(category.id);
             this.resetForm();
+            this.$emit("close-right-drawer");
           })
           .finally(() => {
             this.loading = false;
             this.resetForm();
-            this.$emit("close-right-drawer");
+
           });
       } else {
         this.loading = true;
@@ -194,11 +221,11 @@ export default {
           .then(() => {
             this.getPaymentItemsByCategory(category.id);
             this.resetForm()
+            this.$emit("close-right-drawer");
           })
           .finally(() => {
             this.loading = false;
             this.resetForm();
-            this.$emit("close-right-drawer");
           });
       }
     },
@@ -207,9 +234,11 @@ export default {
       if (data != null) {
         (this.payment_item.name = data.name),
           (this.payment_item.payment_category_id = data.payment_category_id);
-        this.payment_item.amount = data.amount;
+        this.payment_item.frequency = data.frequency;
         this.payment_item.description = data.description;
         this.payment_item.id = data.id;
+        this.payment_item.amount = data.amount;
+        this.payment_item.type = data.type.value
         this.payment_item.complusory = data.complusory == 1 ? true : false; //because the complusory field value is returned as either 1 or 0
       }
       return this.payment_item;

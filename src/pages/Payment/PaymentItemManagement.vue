@@ -24,16 +24,46 @@
           $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
         "
       >
-        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
+        <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12 ">
           <q-select
             v-model="is_complusory"
             outlined
             dense
             :options="statuses"
-            label="Select Status"
-            @input="filterPaymentItems"
+            label="Select status"
           />
         </div>
+        <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12 q-ml-md">
+          <q-select
+            v-model="type"
+            outlined
+            dense
+            :options="payment_item_types"
+            label="Select type"
+          />
+        </div>
+        <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12 q-ml-md">
+          <q-select
+            v-model="frequency"
+            outlined
+            dense
+            :options="frequencies"
+            label="Select frequency"
+          />
+        </div>
+        <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12 q-ml-md">
+          <q-btn
+              label="Filter"
+              :loading="loading_filter"
+              color="primary"
+              :disabled="validateFilter"
+              @click="filterPaymentItems"
+              no-caps
+              icon-right="filter_list"
+            >
+            </q-btn>
+        </div>
+
         <q-space />
         <div class="button q-pb-xs">
           <q-btn
@@ -128,6 +158,13 @@ export default {
           sortable: true,
         },
         {
+          name: "amount",
+          align: "center",
+          label: "Amount(XAF)",
+          field: "amount",
+          sortable: true,
+        },
+        {
           name: "complusory",
           required: true,
           label: "Complusory",
@@ -137,10 +174,21 @@ export default {
           sortable: true,
         },
         {
-          name: "amount",
-          align: "center",
-          label: "Amount(XAF)",
-          field: "amount",
+          name: "payment_item_type",
+          required: true,
+          label: "Type",
+          align: "left",
+          field: (row) => row.name,
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "frequency",
+          required: true,
+          label: "Frequency",
+          align: "left",
+          field: (row) => row.name,
+          format: (val) => `${val}`,
           sortable: true,
         },
         {
@@ -154,9 +202,14 @@ export default {
       data: [],
       label: "Delete",
       message: "Are you sure you want to delete this Payment Item?",
-      statuses: ["COMPLUSORY", "NOT COMPLUSORY"],
-      is_complusory: null,
+      statuses: [{label:"COMPLUSORY", value:true}, {label:"NOT COMPLUSORY", value:false}],
+      is_complusory: "",
       filteredPaymentItems: [],
+      type:"",
+      frequency:"",
+      frequencies:['YEARLY', 'NORMAL'],
+      payment_item_types:['REGISTRATION', 'OTHER'],
+      loading_filter:false,
     };
   },
   computed: {
@@ -176,6 +229,10 @@ export default {
     getLoadingState() {
       return this.$store.getters.getFetchingState;
     },
+
+    validateFilter(){
+      return this.is_complusory == null && this.frequency == null && this.type == null ? true: false
+    }
   },
 
   methods: {
@@ -197,11 +254,13 @@ export default {
             name: ele.name,
             amount: ele.amount,
             id: ele.id,
-            complusory: ele.complusory ? "YES" : "NO",
+            complusory: ele.complusory,
             payment_category_id: ele.payment_category_id,
             description: ele.description,
             payment_category_name: ele.payment_category_name,
             type: "PAYMENT_ITEMS",
+            payment_item_type:ele.type,
+            frequency:ele.frequency
           });
         });
       }
@@ -219,13 +278,12 @@ export default {
       let id = this.$store.getters.getCurrentPaymentCategory.id;
       this.$router.push({
         path: `/dashboard/payment-categories/${id}/items`,
-        query: { status: this.is_complusory },
+        query: { status: this.is_complusory, type:this.type, frequency:this.frequency },
       });
 
       this.filteredPaymentItems = [];
-      let is_complusory = this.is_complusory == "COMPLUSORY" ? 1 : 0; //1 means true and 0 means false
       let payload = {
-        url: `/api/protected/filter-payment-items?payment_category_id=${id}&complusory=${is_complusory}`,
+        url: `/api/protected/filter-payment-items?payment_category_id=${id}&is_complusory=${this.is_complusory.value}&type=${this.type}&frequency=${this.frequency}`,
         msg: "none",
         color: "default",
         status: "none",
@@ -253,6 +311,8 @@ export default {
             description: ele.description,
             payment_category_name: ele.payment_category_name,
             type: "PAYMENT_ITEMS",
+            payment_item_type:ele.type,
+            frequency:ele.frequency
           });
         });
       });

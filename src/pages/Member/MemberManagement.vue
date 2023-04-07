@@ -90,7 +90,6 @@
             :columns="columns"
             :data="getMembers"
             :label="label"
-            @update-member="updateMember"
             :message="message"
             :show_savings="false"
             :show_income_activity="false"
@@ -99,7 +98,6 @@
             :total_members="computeTotalMembership"
             @fetch-members="getOrganisationMembers"
             @register-member="registerMember"
-            @view-member="viewMember"
           >
           </TableVue>
         </div>
@@ -193,11 +191,11 @@ export default {
   },
   computed: {
     validateFilter() {
-      return this.has_register == null ? true : false;
+      return this.has_register == null && this.year =="" && this.gender == "" ? true : false;
     },
     getMembers() {
       let data = [];
-
+      console.log(this.$store.getters.getMembers);
       this.$store.getters.getMembers.forEach((member) => {
         data.push({
           counter: this.$store.getters.getMembers.indexOf(member) + 1,
@@ -233,19 +231,9 @@ export default {
   },
 
   methods: {
-    updateMember(data) {
-      this.$emit("update-member", data);
-      this.$store.dispatch("updateMember", data.data);
-    },
-
     registerMember(data) {
       this.$store.dispatch("setMemberToRegister", data.data)
       this.$emit("register-member", data);
-    },
-
-    viewMember(data) {
-      this.$store.dispatch("setCurrentMember", data.data);
-      this.$emit('view-member', data);
     },
 
     filterMembers() {

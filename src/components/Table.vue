@@ -252,10 +252,8 @@
               label="Decline"
               no-caps
               @click="onDeclineRecord(props.row, 'Decline')"
-              v-show="
-                (checkTreasurerRole() && props.row.approve == 'PENDING') ||
-                (props.row.has_paid &&
-                  props.row.has_register == 'NOT_REGISTERED')
+              v-if="
+                (checkPresidentTreasurerRole() && props.row.approve == 'PENDING')
               "
             />
 
@@ -265,46 +263,10 @@
               label="Approve"
               no-caps
               @click="onApprovedRecord(props.row, 'Approve')"
-              v-show="
-                (checkTreasurerRole() && props.row.approve == 'PENDING') ||
-                (props.row.has_paid &&
-                  props.row.has_register == 'NOT_REGISTERED')
+              v-if="
+                (checkPresidentTreasurerRole() && props.row.approve == 'PENDING')
               "
             />
-
-            <!-- menu to  view members -->
-            <q-btn flat round v-if="show_members && checkTreasurerRole()">
-              <q-icon
-                name="menu"
-                size="xs"
-                color="primary"
-                class="menu_icon"
-                clickable
-              >
-                <q-menu>
-                  <q-list bordered separator style="width: 190px">
-                    <q-item
-                      clickable
-                      v-close-popup
-                      @click="onViewMember(props.row)"
-                    >
-                      <q-item-section avatar>
-                        <span>
-                          <q-icon
-                            name="account_circle"
-                            size="xs"
-                            class="edit"
-                          />
-                        </span>
-                      </q-item-section>
-                      <q-item-section>
-                        <q-item-label class="edit">View Profile</q-item-label>
-                      </q-item-section>
-                    </q-item>
-                  </q-list>
-                </q-menu>
-              </q-icon>
-            </q-btn>
 
             <!-- button to handle edit, view and delete of row data -->
             <q-btn
@@ -323,23 +285,26 @@
               >
                 <q-menu>
                   <q-list bordered separator style="width: 210px">
-                    <!-- edit member -->
+                    <!-- view member profile -->
                     <q-item
                       clickable
                       v-close-popup
-                      @click="onEditMember(props.row)"
-                      v-if="show_members"
+                      @click="onViewMember(props.row)"
+                      v-if="checkPresidentRole() && show_members"
                     >
                       <q-item-section avatar>
                         <span>
-                          <q-icon name="edit" size="xs" class="edit" />
+                          <q-icon
+                            name="account_circle"
+                            size="xs"
+                            class="edit"
+                          />
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="edit">Edit</q-item-label>
+                        <q-item-label class="edit">View Profile</q-item-label>
                       </q-item-section>
                     </q-item>
-
                     <!-- invite members to the app -->
                     <q-item
                       clickable
@@ -866,30 +831,6 @@ export default {
     getDate(date) {
       return moment(date).format("MMMM Do YYYY");
     },
-    onEditMember(data) {
-      let payload = {
-        url: `/api/protected/organisations/users/${data.id}`,
-        data: this.user,
-        msg: "Member information updated successfully",
-        status: "none",
-        color: "default",
-        show_feedback: true,
-        to_on_ok: "none",
-        to_on_fail: "none",
-        error_msg: "An Error occurred! Please try again",
-        has_commit: false,
-        commit: "none",
-        show_spinner: false,
-        to_be_store_data: {
-          required: false,
-          has_value: false,
-          data: [],
-        },
-      };
-      this.$store.dispatch("getRequest", payload).then((res) => {
-        this.$emit("update-member", { data: res.data, tab: "EditMember" });
-      });
-    },
 
     onInviteMember(data) {
       this.show_invite = true;
@@ -1044,6 +985,14 @@ export default {
       );
       return treasurer_role != undefined;
     },
+
+    checkPresidentTreasurerRole(){
+      const treasurer_role = LocalStorage.getItem("data").roles.find(
+        (role) => role.name == "TREASURER" || "PRESIDENT"
+      );
+      return treasurer_role != undefined;
+    },
+
     onApprovedRecord(row, state) {
       this.show_approve_dialog = true;
       this.approve_data = row;
@@ -1107,7 +1056,7 @@ export default {
     setApproveFeedbackMsg(data) {
       let msg = `Record was ${this.chosen_state} successfully`;
       if (data.type == "MEMBERS") {
-        msg = "Member registration approved successfully";
+        msg = `Member registration ${this.chosen_state} successfully`;
       }
       return msg;
     },
@@ -1198,11 +1147,19 @@ export default {
     },
 
     onViewMember(data) {
-      let payload = {
-        data: data,
-        tab: "Member Profile",
-      };
-      this.$emit('view-member', payload);
+      this.getMemberProfile(data.id)
+      this.$router.push({name: 'member_profile', params:{id:data.id}});
+
+      const intermediate_tabs = Array.from(
+        this.$store.getters.getIntermediateTabs
+      );
+
+      intermediate_tabs.push({
+        name: "Member Profile",
+        has_intermediate_tab: true,
+      });
+
+      this.$store.dispatch("setIntermediateTabs", intermediate_tabs);
     },
   },
   components: {},
@@ -1261,7 +1218,7 @@ export default {
 .approve_btn {
   background-color: $secondary;
   color: white;
- margin-right: 3rem;
+  margin-right: 2.5rem;
 }
 
 .approve_card {
@@ -1277,7 +1234,7 @@ export default {
 .decline_btn_saving {
   background-color: $orange;
   color: white;
-  margin-right: 5rem;
+  margin-right: 3rem;
 }
 
 .approve {

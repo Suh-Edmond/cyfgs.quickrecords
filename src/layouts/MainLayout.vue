@@ -424,12 +424,6 @@
           @close-right-drawer="closeRightDrawer"
           @set-heading="setHeading"
         ></AddMember>
-        <EditMember
-          v-if="current_tab == 'EditMember'"
-          @close-right-drawer="closeRightDrawer"
-          @set-heading="setHeading"
-        >
-        </EditMember>
         <AddPaymentCategory
           v-if="current_tab == 'Payment Categories'"
           @close-right-drawer="closeRightDrawer"
@@ -535,12 +529,6 @@
           @set-heading="setHeading"
         >
         </MemberRegistration>
-        <ViewMember
-          v-if="current_tab == 'Member Profile'"
-          @close-right-drawer="closeRightDrawer"
-          @set-heading="setHeading"
-        >
-        </ViewMember>
       </q-page>
     </q-drawer>
   </q-layout>
@@ -550,7 +538,6 @@
 import MainContent from "src/components/MainContent.vue";
 import { LocalStorage, SessionStorage } from "quasar";
 import AddMember from "src/components/AddMember.vue";
-import EditMember from "src/components/EditMember.vue";
 import AddPaymentCategory from "src/components/AddPaymentCategory.vue";
 import AddPaymentItem from "src/components/AddPaymentItem.vue";
 import AddExpenditureCategory from "src/components/AddExpenditureCategory.vue";
@@ -571,7 +558,6 @@ import ViewSponsorshipVue from "src/components/ViewSponsorship.vue";
 import ViewExpenditureItemVue from "src/components/ViewExpenditureItem.vue";
 import ViewExpenditureItemDetail from "src/components/ViewExpenditureItemDetail.vue";
 import MemberRegistration from "src/components/MemberRegistration.vue";
-import ViewMember from "src/components/ViewMember.vue";
 
 export default {
   mixins: [organisationMixinVue],
@@ -617,14 +603,20 @@ export default {
 
       this.$store.dispatch("setIntermediateTabs", []);
     },
+
+
     updateRightDrawer({ right, current_tab, data }) {
       this.current_tab = current_tab;
       this.right = right;
       this.data = data;
     },
+
+
     updateLeftDrawer(left) {
       this.left = left;
     },
+
+
     checkRole(tab_roles) {
       let user_roles = [];
       LocalStorage.getItem("data").roles.forEach((role) => {
@@ -636,6 +628,9 @@ export default {
         ? true
         : false;
     },
+
+
+
     logoutUser() {
       let payload = {
         to_on_ok: "Login",
@@ -652,14 +647,24 @@ export default {
       };
       this.$store.dispatch("logoutUser", payload);
     },
+
+
+
+
     goBack() {
       this.right = !this.right;
       this.$store.dispatch("setEditState", false);
     },
+
+
+
     closeRightDrawer() {
       this.right = !this.right;
       this.$store.dispatch("setEditState", false);
     },
+
+
+
     setHeading(data) {
       this.heading = data;
     },
@@ -667,7 +672,6 @@ export default {
   components: {
     MainContent,
     AddMember,
-    EditMember,
     AddPaymentCategory,
     AddPaymentItem,
     AddExpenditureCategory,
@@ -687,7 +691,6 @@ export default {
     ViewExpenditureItemVue,
     ViewExpenditureItemDetail,
     MemberRegistration,
-    ViewMember,
   },
 };
 </script>

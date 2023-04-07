@@ -92,7 +92,7 @@
               size="md"
               dense
               no-caps
-              v-show="requires_add && !checkTreasurerRole()"
+              v-show="requires_add && !checkTreasurerRole() && !verifyRequiredAdd()"
               @click="showRightDrawer"
               class="q-pa-xs"
             />
@@ -104,7 +104,6 @@
           <q-card-section class="content">
             <router-view
               @start-loading="startLoading"
-              @update-member="updateMember"
               @update-payment-category="updatePaymentCategory"
               @update-payment-item="updatePaymentItem"
               @update-expenditure-category="updateExpenditureCategory"
@@ -124,7 +123,6 @@
               @view-sponsorship="viewSponsorship"
               @edit-sponsorship="editSponsorship"
               @register-member="registerMember"
-              @view-member="viewMember"
             />
           </q-card-section>
         </q-card>
@@ -237,23 +235,9 @@ export default {
       }
       this.$store.dispatch("setIntermediateTabs", Array.from(data));
     },
-    updateMember(data) {
-      this.right = true;
-      this.$emit("show-right-drawer", {
-        right: this.right,
-        current_tab: data.tab,
-        data: data.data,
-      });
-    },
     registerMember(data){
       this.updateDrawer(data);
     },
-
-
-    viewMember(data){
-      this.updateDrawer(data);
-    },
-
 
     updatePaymentCategory(data) {
       this.updateDrawer(data);
@@ -378,6 +362,10 @@ export default {
       this.$store.dispatch("setUpdatedExpenditureItemDetail", null);
       this.$store.dispatch("setUpdatedMemberSaving", null);
       this.$store.dispatch("setUpdatedIncomeActivity", null);
+    },
+
+    verifyRequiredAdd(){
+      return this.$route.name === 'member_profile'? true:false;
     }
   },
 };

@@ -18,9 +18,6 @@
           <q-td key="name" :props="props">
             {{ props.row.name }}
           </q-td>
-          <q-td key="complusory" :props="props" v-if="show_payment_item">
-            {{ props.row.complusory }}
-          </q-td>
           <q-td key="item" :props="props" v-if="show_payment_category">
             <q-btn
               flat
@@ -54,6 +51,15 @@
             v-if="show_payment_item || show_expenditure_item"
           >
             {{ Number(props.row.amount).toLocaleString() }}
+          </q-td>
+          <q-td key="complusory" :props="props" v-if="show_payment_item">
+            {{ props.row.complusory == 1? 'YES': 'NO' }}
+          </q-td>
+          <q-td key="payment_item_type" :props="props" v-if="show_payment_item">
+            {{ props.row.payment_item_type }}
+          </q-td>
+          <q-td key="frequency" :props="props" v-if="show_payment_item">
+            {{ props.row.frequency }}
           </q-td>
           <q-td
             key="amount_given"

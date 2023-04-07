@@ -270,7 +270,7 @@
                       {{ props.row.name }}
                     </q-td>
                     <q-td key="is_compulsory" :props="props">
-                      {{ props.row.is_compulsory }}
+                      {{ props.row.is_compulsory == 1? 'YES':'NO' }}
                     </q-td>
                     <q-td key="amount" :props="props">
                       {{ Number(props.row.amount).toLocaleString() }}
@@ -1063,6 +1063,7 @@ export default {
         this.show_payment_dialog = false;
         this.getMembersDebts(true);
         this.getMembersContributions(true);
+        this.getMemberProfile(this.$store.getters.getCurrentMember.id)
         this.selected_items = [];
         this.total_amount_payable = 0;
       });
@@ -1075,7 +1076,7 @@ export default {
           payment_item_id:ele.id,
           amount_deposited:parseInt(ele.amount),
           is_compulsory:ele.is_compulsory,
-          type:ele.type,
+          code:ele.code,
           year:this.current_year,
           comment:"BULK PAYMENT",
         })
@@ -1116,7 +1117,9 @@ export default {
               amount:ele.amount,
               type:ele.type,
               has_pay:ele.has_pay,
-              id:ele.id
+              id:ele.id,
+              code:ele.code,
+              frequency:ele.frequency
             })
           })
         }

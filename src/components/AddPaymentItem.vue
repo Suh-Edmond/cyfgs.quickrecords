@@ -118,8 +118,8 @@ export default {
         frequency:null,
         amount:0.0
       },
-      payment_item_types:['REGISTRATION', 'OTHER'],
-      frequencies:['YEARLY', 'NORMAL']
+      payment_item_types:['REGISTRATION', 'NORMAL'],
+      frequencies:['YEARLY','MONTHLY' ,'NONE']
     };
   },
   computed: {
@@ -178,8 +178,8 @@ export default {
     resetForm() {
       this.payment_item.name = null;
       this.payment_item.type = null;
-      this.payment_item.amount = 0.0
-      this.payment_item.frequency = null
+      this.payment_item.amount = 0.0;
+      this.payment_item.frequency = null;
       (this.payment_item.description = null),
         (this.payment_item.complusory = true);
       this.payment_item.id = null;

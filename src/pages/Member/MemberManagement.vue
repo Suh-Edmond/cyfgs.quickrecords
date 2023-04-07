@@ -195,7 +195,6 @@ export default {
     },
     getMembers() {
       let data = [];
-      console.log(this.$store.getters.getMembers);
       this.$store.getters.getMembers.forEach((member) => {
         data.push({
           counter: this.$store.getters.getMembers.indexOf(member) + 1,

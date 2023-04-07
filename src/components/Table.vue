@@ -886,7 +886,8 @@ export default {
         },
       };
       this.$store.dispatch("deleteRequest", payload).then(() => {
-        this.$emit("fetch-members", data.organisation_id);
+        let organisation_id = this.$store.getters.getOrganisation.id
+        this.$emit("fetch-members", organisation_id);
       });
     },
 

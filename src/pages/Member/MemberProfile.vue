@@ -1071,7 +1071,7 @@ export default {
         this.total_amount_payable = 0;
         this.getMembersDebts(true);
         this.getMembersContributions(true);
-        this.getMemberProfile(this.$store.getters.getCurrentMember.id);
+        // this.getMemberProfile(this.$store.getters.getCurrentMember.id);
 
       });
     },
@@ -1092,7 +1092,6 @@ export default {
     },
 
     getMembersDebts(show_spinner){
-      this.data = [];
       this.due_amount = 0.0;
       let id = this.$route.params.id;
       let current_year = "2023"
@@ -1136,7 +1135,6 @@ export default {
     },
 
     getMembersContributions(show_spinner){
-      this.data1 = [];
       this.amount_paid = 0.0;
       let id = this.$route.params.id;
       let current_year = "2023"

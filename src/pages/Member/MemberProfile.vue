@@ -258,7 +258,7 @@
               >
                 <template v-slot:top-left>
                   <div class="text-h6 contribution_item_header">
-                    Payment Items
+                    Payment Items: {{ Number(due_amount).toLocaleString() }} XAF
                   </div>
                 </template>
                 <template v-slot:body="props">
@@ -330,7 +330,7 @@
                 }"
               >
                 <template v-slot:top-left>
-                  <div class="text-h6 contribution_item_header">Paid Items</div>
+                  <div class="text-h6 contribution_item_header">Paid Items: {{ Number(amount_paid).toLocaleString() }} XAF</div>
                 </template>
                 <template v-slot:body="props">
                   <q-tr :props="props">
@@ -712,6 +712,8 @@ export default {
       show_remove_role_dialog: false,
       is_fetching: false,
       current_year:"2023",
+      due_amount:0.0,
+      amount_paid:0.0
     };
   },
   computed: {
@@ -778,6 +780,7 @@ export default {
     },
 
     fetchUserRoles(){
+      this.$store.dispatch("setRoles", []);
       this.$store.getters.getCurrentMember.roles.forEach((ele) => {
         this.user_roles.push(ele);
       })
@@ -987,6 +990,7 @@ export default {
     },
 
     getUserRoles() {
+      this.user_roles = [];
       let id = this.$route.params.id;
       let payload = {
         url: `/api/protected/roles/users/${id}`,
@@ -1061,11 +1065,14 @@ export default {
       this.$store.dispatch("postRequest", payload).then(() => {
         this.loading_payment = false;
         this.show_payment_dialog = false;
-        this.getMembersDebts(true);
-        this.getMembersContributions(true);
-        this.getMemberProfile(this.$store.getters.getCurrentMember.id)
+        this.data =[];
+        this.data1 = [];
         this.selected_items = [];
         this.total_amount_payable = 0;
+        this.getMembersDebts(true);
+        this.getMembersContributions(true);
+        this.getMemberProfile(this.$store.getters.getCurrentMember.id);
+
       });
     },
     buildPayloadData(){
@@ -1086,6 +1093,7 @@ export default {
 
     getMembersDebts(show_spinner){
       this.data = [];
+      this.due_amount = 0.0;
       let id = this.$route.params.id;
       let current_year = "2023"
       let payload = {
@@ -1110,6 +1118,7 @@ export default {
       this.$store.dispatch("getRequest", payload).then((res) => {
         if(res.data.length > 0) {
           res.data.forEach((ele) => {
+            this.due_amount +=ele.amount;
             this.data.push({
               counter: res.data.indexOf(ele) + 1,
               name: ele.name,
@@ -1128,6 +1137,7 @@ export default {
 
     getMembersContributions(show_spinner){
       this.data1 = [];
+      this.amount_paid = 0.0;
       let id = this.$route.params.id;
       let current_year = "2023"
       let payload = {
@@ -1152,6 +1162,7 @@ export default {
       this.$store.dispatch("getRequest", payload).then((res) => {
         if(res.data.length > 0) {
           res.data.forEach((ele) => {
+            this.amount_paid += ele.amount;
             this.data1.push({
               counter: res.data.indexOf(ele) + 1,
               payment_item_id:ele.payment_item_id,
@@ -1254,7 +1265,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 13px;
+  font-size: 15px;
   line-height: 24px;
   align-items: center;
   text-align: center;

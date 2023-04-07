@@ -252,10 +252,8 @@
               label="Decline"
               no-caps
               @click="onDeclineRecord(props.row, 'Decline')"
-              v-show="
-                (checkTreasurerRole() && props.row.approve == 'PENDING') ||
-                (props.row.has_paid &&
-                  props.row.has_register == 'NOT_REGISTERED')
+              v-if="
+                (checkPresidentTreasurerRole() && props.row.approve == 'PENDING')
               "
             />
 
@@ -265,10 +263,8 @@
               label="Approve"
               no-caps
               @click="onApprovedRecord(props.row, 'Approve')"
-              v-show="
-                (checkTreasurerRole() && props.row.approve == 'PENDING') ||
-                (props.row.has_paid &&
-                  props.row.has_register == 'NOT_REGISTERED')
+              v-if="
+                (checkPresidentTreasurerRole() && props.row.approve == 'PENDING')
               "
             />
 
@@ -989,6 +985,14 @@ export default {
       );
       return treasurer_role != undefined;
     },
+
+    checkPresidentTreasurerRole(){
+      const treasurer_role = LocalStorage.getItem("data").roles.find(
+        (role) => role.name == "TREASURER" || "PRESIDENT"
+      );
+      return treasurer_role != undefined;
+    },
+
     onApprovedRecord(row, state) {
       this.show_approve_dialog = true;
       this.approve_data = row;
@@ -1052,7 +1056,7 @@ export default {
     setApproveFeedbackMsg(data) {
       let msg = `Record was ${this.chosen_state} successfully`;
       if (data.type == "MEMBERS") {
-        msg = "Member registration approved successfully";
+        msg = `Member registration ${this.chosen_state} successfully`;
       }
       return msg;
     },

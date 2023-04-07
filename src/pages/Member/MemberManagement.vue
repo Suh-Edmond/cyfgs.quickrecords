@@ -191,11 +191,11 @@ export default {
   },
   computed: {
     validateFilter() {
-      return this.has_register == null ? true : false;
+      return this.has_register == null && this.year =="" && this.gender == "" ? true : false;
     },
     getMembers() {
       let data = [];
-
+      console.log(this.$store.getters.getMembers);
       this.$store.getters.getMembers.forEach((member) => {
         data.push({
           counter: this.$store.getters.getMembers.indexOf(member) + 1,

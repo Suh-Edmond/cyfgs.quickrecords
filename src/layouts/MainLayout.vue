@@ -101,7 +101,7 @@
                 Member Management
               </q-item-section>
             </q-item>
-
+          
             <q-item
               clickable
               v-ripple
@@ -109,6 +109,7 @@
               :active="item.name == 'Settings'"
               @click="setItem({ name: 'Settings', selected: true }, false)"
               v-if="checkRole(['PRESIDENT', null])"
+              :disable="getOrganisation == null"
             >
               <q-item-section
                 avatar
@@ -349,19 +350,6 @@
               </q-item-section>
             </q-item>
           </q-list>
-          <!-- <q-list padding class="logout">
-            <q-item
-              clickable
-              v-ripple
-              :active-class="item.name == 'Logout' ? 'item' : 'item_text'"
-              @click="logoutUser"
-            >
-              <q-item-section avatar class="item_text">
-                <q-icon name="logout" size="xs" />
-              </q-item-section>
-              <q-item-section class="item_name"> Logout </q-item-section>
-            </q-item>
-          </q-list> -->
         </div>
       </div>
     </q-drawer>

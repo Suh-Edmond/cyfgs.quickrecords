@@ -246,7 +246,7 @@
         <!-- payment items -->
         <div class="q-ml-lg">
           <div class="row">
-            <div class="col-12">
+            <div class="col-md-12 col-sm-12 col-xs-12">
               <q-table
                 :data="data"
                 :columns="columns"
@@ -1115,7 +1115,8 @@ export default {
         },
       }
       this.$store.dispatch("getRequest", payload).then((res) => {
-        if(res.data.length > 0) {
+        console.log(res);
+        if(res != undefined && res.data.length > 0) {
           res.data.forEach((ele) => {
             this.due_amount +=ele.amount;
             this.data.push({

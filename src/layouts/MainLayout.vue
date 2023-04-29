@@ -101,7 +101,7 @@
                 Member Management
               </q-item-section>
             </q-item>
-          
+
             <q-item
               clickable
               v-ripple
@@ -110,6 +110,7 @@
               @click="setItem({ name: 'Settings', selected: true }, false)"
               v-if="checkRole(['PRESIDENT', null])"
               :disable="getOrganisation == null"
+              :to="{name: 'settings'}"
             >
               <q-item-section
                 avatar

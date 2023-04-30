@@ -41,6 +41,8 @@ export default function () {
     sponsorships:[],
     selected_sponsorship:null,
     member_to_register:null,
-    current_member:null
+    current_member:null,
+    current_year:null,
+    reg_amount:0.0
   };
 }

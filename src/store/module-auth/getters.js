@@ -170,3 +170,11 @@ export function getMemberToRegister(state) {
 export function getCurrentMember(state) {
   return state.current_member;
 }
+
+export function getCurrentYear(state) {
+  return state.current_year;
+}
+
+export function getRegAmount(state) {
+  return state.reg_amount
+}

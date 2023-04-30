@@ -1,16 +1,13 @@
 <template>
   <div class="q-pa-sm">
-    <div class="q-mx-md q-mt-md">
+    <div class="q-mx-md q-mt-lg">
       <q-form @submit="onRegisterMember" class="q-gutter-md">
-        <label class="hint"
-          >All fields with <span class="text-red">*</span> are required</label
-        >
         <div>
           <label for="credential" class="form_field"
             >Member's Name</label
           >
           <q-input
-            v-model="user.user_id"
+            v-model="user.user_name"
             outlined
             dense
             disable
@@ -19,9 +16,9 @@
         </div>
         <div>
           <label for="credential" class="form_field"
-            >Year <span class="text-red">*</span></label
+            >Year</label
           >
-          <q-select v-model="user.year" outlined dense :options="years" label="Select year" />
+          <q-input v-model="user.year" outlined dense disable/>
         </div>
         <div>
           <label for="credential" class="form_field"
@@ -35,8 +32,8 @@
               label="Save"
               :loading="loading"
               color="primary"
-              :disabled="validateForm"
               :no_caps="true"
+              :disabled="false"
             >
             </ButtonVue>
           </div>
@@ -55,37 +52,18 @@ export default {
   mounted() {
     let heading = "Register Member to the Organisation";
     this.$emit("set-heading", heading);
-
-    let id = this.$store.getters.getOrganisation.id;
-    this.getOrganisationMembers(id, true);
-
-    this.getRegistrationAmount();
   },
   data() {
     return {
       loading: false,
-      registration_item:null,
       user: {
-        user_id: this.$store.getters.getMemberToRegister.name,
-        year: null,
-        amount: 0.0,
+        user_name: this.$store.getters.getMemberToRegister != null ? this.$store.getters.getMemberToRegister.name : null,
+        year: this.$store.getters.getCurrentYear != null ? this.$store.getters.getCurrentYear.year : null,
+        amount: this.$store.getters.getRegAmount != null ? this.$store.getters.getRegAmount[0].amount : null,
       },
-      years: [
-        { label: "2022", value: "2022" },
-        { label: "2023", value: "2023" },
-        { label: "2024", value: "2024" },
-        { label: "2025", value: "2025" },
-      ],
     };
   },
   computed: {
-    validateForm() {
-      return this.user.amount == 0.0 ||
-        this.user.user_id == null ||
-        this.user.year == null
-        ? true
-        : false;
-    },
   },
   methods: {
     onRegisterMember() {
@@ -93,8 +71,6 @@ export default {
       let payload = {
         url: `/api/protected/members-registration`,
         data: {
-          payment_item_id: this.registration_item.id,
-          year: this.user.year.value,
           user_id: this.$store.getters.getMemberToRegister.id,
         },
         msg: "Member registered Successfully",
@@ -132,35 +108,6 @@ export default {
       return this.user;
     },
 
-    getRegistrationAmount() {
-      let payload = {
-        status: "none",
-        url: `/api/protected/payment-items/type`,
-        has_path_val: true,
-        show_feedback: false,
-        show_spinner: false,
-        msg: "none",
-        color: "default",
-        error_msg: "default",
-        commit: "none",
-        has_commit: false,
-        to_be_store_data: {
-          required: false,
-          has_value: false,
-          data: null,
-        },
-      };
-      this.$store
-        .dispatch("getRequest", payload)
-        .then((res) => {
-          if(res.data.length > 0){
-            this.registration_item = res.data[0];
-            this.user.amount = this.registration_item.amount
-          }
-        })
-        .finally(() => {
-        });
-    },
   },
   components: {
     ButtonVue,

@@ -514,3 +514,7 @@ export function setMemberToRegister({commit}, data) {
 export function setCurrentMember({commit}, data) {
   commit("SET_CURRENT_MEMBER", data);
 }
+
+export function setCurrentYear({commit}, data) {
+  commit("SET_CURRENT_YEAR", data)
+}

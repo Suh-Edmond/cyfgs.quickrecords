@@ -300,6 +300,11 @@
             </div>
           </div>
         </div>
+
+        <!-- div for registration fee -->
+        <div v-if="tag == 'Registration_fee'" class="q-ml-lg">
+            <RegistrationFeeTable :columns="reg_table_columns" :data="reg_table_data" :table_header="table_header"></RegistrationFeeTable>
+        </div>
       </div>
     </div>
 
@@ -315,7 +320,7 @@
         <q-card-section class="q-pt-none">
           <q-form @submit="onAddYear" class="q-gutter-md">
             <div>
-              <q-input v-model="year" outlined dense>
+              <q-input v-model="year" outlined dense default-view="years">
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
                     <q-popup-proxy
@@ -323,7 +328,7 @@
                       transition-show="scale"
                       transition-hide="scale"
                     >
-                      <q-date v-model="year">
+                      <q-date v-model="year" >
                         <div class="row items-center justify-end">
                           <q-btn
                             v-close-popup
@@ -422,6 +427,7 @@
 <script>
 import ButtonVue from "src/components/Button.vue";
 import moment from "moment";
+import RegistrationFeeTable from "src/components/RegistrationFeeTable.vue";
 export default {
   mounted() {
     this.getSessions();
@@ -475,26 +481,9 @@ export default {
           field: "updated_by",
           sortable: true,
         },
-        { name: "action", label: "Action", field: "action", align: "left" },
+        { name: "action", label: "", field: "action", align: "center" },
       ],
-      data: [
-        {
-          counter: 1,
-          year: "2023",
-          status: "ACTIVE",
-          created_at: "2023-04-20 21:52:14",
-          updated_at: "2023-04-20 21:52:14",
-          updated_by: "Edmond",
-        },
-        {
-          counter: 2,
-          year: "2022",
-          status: "IN_ACTIVE",
-          created_at: "2023-04-20 21:52:14",
-          updated_at: "2023-04-20 21:52:14",
-          updated_by: "Edmond",
-        },
-      ],
+      data:[],
       tag: "Year",
       show_add_year: false,
       is_fetching: false,
@@ -507,7 +496,51 @@ export default {
 
       },
       year_statuses:['ACTIVE', 'IN_ACTIVE'],
-
+      reg_table_columns: [
+      {
+          name: "counter",
+          required: true,
+          label: "S/N",
+          align: "left",
+          field: "counter",
+        },
+        {
+          name: "name",
+          required: true,
+          label: "Name",
+          align: "left",
+          field: (row) => row.name,
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "amount",
+          align: "left",
+          label: "Amount",
+          field: "amount",
+          sortable: true,
+        },
+        {
+          name: "is_complusory",
+          align: "left",
+          label: "Compulsory",
+          field: "is_complusory",
+          sortable: true,
+        },
+        { name: "action", label: "", field: "action", align: "center" },
+      ],
+      reg_table_data:[
+      {
+          counter: 1,
+          name: "Members Registration Fee",
+          amount:500.0,
+          is_complusory:true,
+          created_at: "2023-04-20 21:52:14",
+          updated_at: "2023-04-20 21:52:14",
+          updated_by: "Edmond",
+        },
+      ],
+      table_header:"Member's Registration Fee"
     };
   },
   computed: {
@@ -579,7 +612,7 @@ export default {
         if (res) {
           res.data.forEach((ele) => {
             this.data.push({
-              counter: res.data.indexOf(ele),
+              counter: res.data.indexOf(ele) + 1,
               id: ele.id,
               year: ele.year,
               status: ele.status,
@@ -629,6 +662,7 @@ export default {
 
   components: {
     ButtonVue,
+    RegistrationFeeTable
   },
 };
 </script>

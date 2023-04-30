@@ -847,11 +847,14 @@ export default {
           this.is_fetching = false;
           this.getMemberProfile(this.user.user_id);
         })
-        .finally(() => {});
+        .finally(() => {
+          this.user_roles = [];
+        });
     },
 
 
     showEditProfile() {
+      this.setFormField();
       return (this.edit_profile = true);
     },
 
@@ -911,6 +914,7 @@ export default {
             };
             this.$store.dispatch("putRequest", update_user).then(() => {
               this.getMemberProfile(user.id);
+              this.user_roles = [];
             });
           });
       });

@@ -116,7 +116,14 @@
   </q-page>
 </template>
 <script>
+import CurrentYearMixinVue from 'src/mixins/CurrentYearMixin.vue';
+import RegistrationAmountMixin from 'src/mixins/RegistrationAmountMixin.vue';
 export default {
+  mixins:[CurrentYearMixinVue, RegistrationAmountMixin],
+  mounted(){
+    this.fetchCurrentYear();
+    this.getRegistrationAmount();
+  },
   data() {
     return {
     }

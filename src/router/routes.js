@@ -256,6 +256,17 @@ const routes = [
         },
       },
 
+      {
+        name: "settings",
+        path: "/dashboard/settings",
+        component: () => import("src/pages/Settings/Settings.vue"),
+        meta: {
+          middleware: "auth",
+          role: "MEMBER",
+          has_intermediate_tab:false
+        },
+      },
+
     ],
   },
 

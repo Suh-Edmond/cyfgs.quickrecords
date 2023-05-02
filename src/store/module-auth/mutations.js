@@ -166,3 +166,11 @@ export function SET_CURRENT_MEMBER(state, data) {
 state.current_member = data;
 }
 
+export function SET_CURRENT_YEAR(state, data) {
+  state.current_year = data;
+}
+
+export function SET_REG_AMOUNT(state, data) {
+  state.reg_amount = data
+}
+

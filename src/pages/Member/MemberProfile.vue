@@ -246,7 +246,7 @@
         <!-- payment items -->
         <div class="q-ml-lg">
           <div class="row">
-            <div class="col-12">
+            <div class="col-md-12 col-sm-12 col-xs-12">
               <q-table
                 :data="data"
                 :columns="columns"
@@ -847,11 +847,14 @@ export default {
           this.is_fetching = false;
           this.getMemberProfile(this.user.user_id);
         })
-        .finally(() => {});
+        .finally(() => {
+          this.user_roles = [];
+        });
     },
 
 
     showEditProfile() {
+      this.setFormField();
       return (this.edit_profile = true);
     },
 
@@ -911,6 +914,7 @@ export default {
             };
             this.$store.dispatch("putRequest", update_user).then(() => {
               this.getMemberProfile(user.id);
+              this.user_roles = [];
             });
           });
       });
@@ -1071,7 +1075,7 @@ export default {
         this.total_amount_payable = 0;
         this.getMembersDebts(true);
         this.getMembersContributions(true);
-        this.getMemberProfile(this.$store.getters.getCurrentMember.id);
+        // this.getMemberProfile(this.$store.getters.getCurrentMember.id);
 
       });
     },
@@ -1092,7 +1096,6 @@ export default {
     },
 
     getMembersDebts(show_spinner){
-      this.data = [];
       this.due_amount = 0.0;
       let id = this.$route.params.id;
       let current_year = "2023"
@@ -1116,7 +1119,8 @@ export default {
         },
       }
       this.$store.dispatch("getRequest", payload).then((res) => {
-        if(res.data.length > 0) {
+        console.log(res);
+        if(res != undefined && res.data.length > 0) {
           res.data.forEach((ele) => {
             this.due_amount +=ele.amount;
             this.data.push({
@@ -1136,7 +1140,6 @@ export default {
     },
 
     getMembersContributions(show_spinner){
-      this.data1 = [];
       this.amount_paid = 0.0;
       let id = this.$route.params.id;
       let current_year = "2023"

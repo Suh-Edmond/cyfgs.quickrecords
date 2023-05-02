@@ -320,27 +320,7 @@
         <q-card-section class="q-pt-none">
           <q-form @submit="onAddYear" class="q-gutter-md">
             <div>
-              <q-input v-model="year" outlined dense default-view="years">
-                <template v-slot:append>
-                  <q-icon name="event" class="cursor-pointer">
-                    <q-popup-proxy
-                      ref="qDateProxy"
-                      transition-show="scale"
-                      transition-hide="scale"
-                    >
-                      <q-date v-model="year" >
-                        <div class="row items-center justify-end">
-                          <q-btn
-                            v-close-popup
-                            label="Close"
-                            color="primary"
-                            flat
-                          />
-                        </div>
-                      </q-date>
-                    </q-popup-proxy>
-                  </q-icon>
-                </template>
+              <q-input v-model="year" outlined dense >
               </q-input>
             </div>
             <div class="q-mt-lg flex justify-end">

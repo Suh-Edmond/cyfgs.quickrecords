@@ -1,116 +1,152 @@
 <template>
   <q-page>
-    <NotFound :message="not_found_msg" v-if="income_activities.length == 0"></NotFound>
-    <!-- header for filter categories -->
-    <div
-      class="row q-ml-xs q-pt-xs"
-      v-if="income_activities.length > 0"
-      :class="$q.screen.lg ? 'q-pa-sm' : ''"
-      :style="
-        $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-      "
-    >
-      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
-        <q-select
-          v-model="year"
-          outlined
-          dense
-          :options="years"
-          label="Select year"
-          input-debounce="0"
-          @filter="filterYears"
-          use-input
-          hide-selected
-          fill-input
-        >
-          <template v-slot:no-option>
-            <q-item>
-              <q-item-section class="text-grey"> No results </q-item-section>
-            </q-item>
-          </template>
-        </q-select>
-      </div>
-      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-pl-md">
-        <q-select
-          v-model="month"
-          outlined
-          dense
-          :options="months"
-          label="Select month"
-          input-debounce="0"
-          @filter="filterMonths"
-          use-input
-          hide-selected
-          fill-input
-        >
-          <template v-slot:no-option>
-            <q-item>
-              <q-item-section class="text-grey"> No results </q-item-section>
-            </q-item>
-          </template>
-        </q-select>
-      </div>
-      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-pl-md">
-        <q-select
-          v-model="status"
-          outlined
-          dense
-          :options="statuses"
-          label="Select status"
-          input-debounce="0"
-          @filter="filterStatus"
-          use-input
-          hide-selected
-          fill-input
-        >
-          <template v-slot:no-option>
-            <q-item>
-              <q-item-section class="text-grey"> No results </q-item-section>
-            </q-item>
-          </template>
-        </q-select>
-      </div>
-      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 flex q-pl-md">
-        <div>
-          <ButtonVue
-            :label="label_fetch"
-            :loading="loading"
-            :color="color"
-            :disabled="validateFilter"
-            :no_caps="no_caps"
-            icon_right="filter_list"
-          >
-          </ButtonVue>
-        </div>
-        <q-space />
-        <div class="button q-pb-xs">
-          <ButtonVue
-            :label="label_download"
-            :loading="loading"
-            :color="color_print"
-            :disabled="false"
-            :no_caps="no_caps"
-            icon_right="print"
-          ></ButtonVue>
-        </div>
-      </div>
+    <!-- spinners -->
+    <div class="flex justify-center">
+      <q-spinner-ios
+        color="primary"
+        size="2em"
+        class="q-mb-lg"
+        v-if="getLoadingState"
+      />
     </div>
-    <!-- table for categories -->
-    <div class="row q-pt-sm">
-      <div class="col-md-12 col-xs-12 col-sm-12">
-        <TableVue
-          :columns="columns"
-          :data="data"
-          :label="label"
-          :message="message"
-          :name="name"
-          :show_savings="false"
-          :show_income_activity="true"
-          :show_members="false"
-          @edit-income-activity="editIncomeActivity"
-          @view-income-activity="viewIncomeActivity"
-        >
-        </TableVue>
+
+    <NotFound
+      :message="not_found_msg"
+      v-if="getIncomeActivities.length == 0 && !getLoadingState"
+    ></NotFound>
+
+    <div v-if="getIncomeActivities.length > 0 && !getLoadingState">
+      <!-- header for filter categories -->
+      <div
+        class="row q-ml-xs q-pt-xs"
+        :class="$q.screen.lg ? 'q-pa-sm' : ''"
+        :style="
+          $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+        "
+      >
+        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
+          <q-select
+            v-model="payment_item_id"
+            outlined
+            dense
+            :options="getPaymentActivities"
+            label="Select payment activity"
+            input-debounce="0"
+          >
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey"> No results </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
+        </div>
+        <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12 q-pl-md">
+          <q-select
+            v-model="month"
+            outlined
+            dense
+            :options="months"
+            label="Select month"
+            input-debounce="0"
+            @filter="filterMonths"
+            use-input
+            hide-selected
+            fill-input
+          >
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey"> No results </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
+        </div>
+        <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12 q-pl-md">
+          <q-select
+            v-model="status"
+            outlined
+            dense
+            :options="statuses"
+            label="Select status"
+            input-debounce="0"
+            @filter="filterStatus"
+            use-input
+            hide-selected
+            fill-input
+          >
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey"> No results </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
+        </div>
+        <div class="col-md-5 col-lg-5 col-xs-12 col-sm-12 flex q-pl-md">
+          <div>
+            <q-btn
+              label="Filter"
+              :loading="loading_filter"
+              color="primary"
+              :disabled="validateFilter"
+              no-caps
+              icon-right="filter_list"
+              @click="filterIncomeActivity"
+            >
+            </q-btn>
+          </div>
+          <q-space />
+          <div class="button q-pb-xs">
+            <q-btn
+              label="Print"
+              :loading="loading"
+              color="positive"
+              :disabled="false"
+              no-caps
+              icon-right="print"
+              @click="downloadIncomeActivity"
+            ></q-btn>
+          </div>
+        </div>
+      </div>
+      <!-- table for activities -->
+      <div class="row q-pt-sm" v-if="!start_filter">
+        <div class="col-md-12 col-xs-12 col-sm-12">
+          <TableVue
+            :columns="columns"
+            :data="getIncomeActivities"
+            :label="label"
+            :message="message"
+            :show_savings="false"
+            :show_income_activity="true"
+            :show_contribution="false"
+            :total_income="getTotalIncome"
+            :show_members="false"
+            @edit-income-activity="editIncomeActivity"
+            @view-income-activity="viewIncomeActivity"
+          >
+          </TableVue>
+        </div>
+      </div>
+
+      <!-- table for filtered activities -->
+      <div class="row q-pt-sm" v-if="start_filter">
+        <div class="col-md-12 col-xs-12 col-sm-12">
+          <TableVue
+            :columns="columns"
+            :data="filteredActivities"
+            :label="label"
+            :message="message"
+            :show_savings="false"
+            :show_income_activity="true"
+            :show_contribution="false"
+            :show_members="false"
+            :total_income="total_income_amount"
+            :title="getTableTitle"
+            @edit-income-activity="editIncomeActivity"
+            @view-income-activity="viewIncomeActivity"
+
+          >
+          </TableVue>
+        </div>
       </div>
     </div>
   </q-page>
@@ -119,16 +155,28 @@
 <script>
 import NotFound from "src/components/NotFound.vue";
 import TableVue from "src/components/Table.vue";
-import ButtonVue from "src/components/Button.vue";
+import IncomeActivityMixinVue from "src/mixins/IncomeActivityMixin.vue";
+import HelperMixinVue from "src/mixins/HelperMixin.vue";
+
 export default {
+  mixins: [IncomeActivityMixinVue, HelperMixinVue],
+
+  mounted() {
+    let organisation = this.$store.getters.getOrganisation;
+    this.getOrganisationIncomeActivities(organisation.id);
+
+    if(this.$store.getters.getPaymentActivities.length == 0){
+      this.fetchPaymentActivities();
+    }
+
+  },
+
   data() {
     return {
       not_found_msg:
-        "Ooops!! No Income Activity has been recorded. click the add button to add income activity.",
-      income_activities: [{}],
-      year: null,
-      years: ["2020", "2021", "2022", "2023", "2024"],
-      month: null,
+        "Ooops!! No Income Activity has been recorded. Click the add button to add income activity.",
+      payment_item_id: null,
+      month: "",
       months: [
         "January",
         "February",
@@ -143,22 +191,16 @@ export default {
         "November",
         "December",
       ],
-      statuses: ["APPROVED", "UNAPPROVED"],
-      status: null,
-      search: null,
-      label_fetch: "Filter",
-      color: "primary",
-      no_caps: true,
-      loading: false,
-      label_download: "Print",
-      color_print: "positive",
+      statuses: ["PENDING","APPROVED", "DECLINED", "ALL"],
+      status: "",
+      loading_filter: false,
       columns: [
         {
-          name: "id",
+          name: "counter",
           required: true,
           label: "S/N",
           align: "left",
-          field: "id",
+          field: "counter",
         },
         {
           name: "name",
@@ -188,96 +230,25 @@ export default {
           field: "venue",
         },
         {
+          name: "state",
+          align: "left",
+          label: "Transaction Status",
+          field: "state",
+          sortable: true,
+        },
+        {
           name: "action",
           label: "Action",
           field: "action",
-        },
-      ],
-      data: [
-        {
-          id: 1,
-          name: "Frozen Yogurt",
-          venue: "Sandpit Bakweri Town",
-          date: "2023/01/09",
-          amount: 50000,
-          action: "",
-        },
-        {
-          id: 2,
-          name: "Ice cream sandwich",
-          venue: "Sandpit Bakweri Town",
-          date: "2023/01/09",
-          amount: 50000,
-          action: "",
-        },
-        {
-          id: 3,
-          name: "Eclair",
-          venue: "Sandpit Bakweri Town",
-          date: "2023/01/09",
-          amount: 50000,
-          action: "",
-        },
-        {
-          id: 4,
-          name: "Cupcake",
-          venue: "Molyko Buea",
-          date: "2022/09/12",
-          amount: 50000,
-          action: "",
-        },
-        {
-          id: 5,
-          name: "Gingerbread",
-          venue: "Molyko Buea",
-          date: "2022/09/12",
-          amount: 50000,
-          action: "",
-        },
-        {
-          id: 6,
-          name: "Jelly bean",
-          venue: "Molyko Buea",
-          date: "2022/09/12",
-          amount: 50000,
-          action: "",
-        },
-        {
-          id: 7,
-          name:"Jelly Brown",
-          venue: "Molyko Buea",
-          date: "2022/09/12",
-          amount: 50000,
-          action: "",
-        },
-        {
-          id: 8,
-          name: "Honeycomb",
-          venue: "Sandpit Bakweri Town",
-          date: "2022/09/12",
-          amount: 50000,
-          action: "",
-        },
-        {
-          id: 9,
-          name: "Donut",
-          venue: "Sandpit Bakweri Town",
-          date: "2022/09/12",
-          amount: 50000,
-          action: "",
-        },
-        {
-          id: 10,
-          name: "KitKat",
-          venue: "Sandpit Bakweri Town",
-          date: "2022/09/12",
-          amount: 50000,
-          action: "",
+          align:"left"
         },
       ],
       label: "Delete",
       message: "Are you sure you want to delete this Income Activity ?",
-      name: "Harvest ThanksGiven",
+      filteredActivities: [],
+      start_filter: false,
+      loading: false,
+      total_income_amount:0,
     };
   },
   computed: {
@@ -286,16 +257,70 @@ export default {
         ? false
         : true;
     },
+
+    getTotalIncome() {
+      let total = 0;
+      this.$store.getters.getIncomeActivities.forEach(ele => {
+        total += ele.amount
+      })
+      return total;
+    },
+
+    getTableTitle() {
+      let title = "";
+      if(this.filteredActivities.length > 0) {
+        if(this.payment_item_id != null) {
+         title = `Income Raised for ${this.filteredActivities[0].payment_item.name}`;
+        }else {
+          title = `Income Raised for the month of ${this.month}`;
+        }
+      }
+      return  title;
+    },
+
+    getIncomeActivities() {
+      let data = [];
+      if(this.$store.getters.getIncomeActivities != null){
+        this.$store.getters.getIncomeActivities.forEach((ele) => {
+          data.push({
+            counter:
+              this.$store.getters.getIncomeActivities.indexOf(ele) + 1,
+            name: ele.name,
+            amount: ele.amount,
+            id: ele.id,
+            approve: ele.approve,
+            description: ele.description,
+            type: "INCOME_ACTIVITIES",
+            date: ele.date,
+            venue: ele.venue,
+            payment_item:ele.payment_item,
+            organisation_id: ele.organisation_id,
+            created_at: ele.created_at,
+            updated_by: ele.updated_by,
+          });
+        });
+      }
+      return data;
+    },
+
+    getLoadingState() {
+      return this.$store.getters.getFetchingState;
+    },
+
+
+    getPaymentActivities() {
+      let data = [];
+      this.$store.getters.getPaymentActivities.forEach((ele) => {
+        data.push({
+          label: ele.name,
+          value: ele.id,
+          amount: ele.amount,
+        });
+      });
+      return data;
+    },
   },
   methods: {
-    filterYears(val, update, abort) {
-      update(() => {
-        const needle = val.toLowerCase();
-        this.years = this.years.filter(
-          (v) => v.toLowerCase().indexOf(needle) > -1
-        );
-      });
-    },
     filterMonths(val, update, abort) {
       update(() => {
         const needle = val.toLowerCase();
@@ -304,6 +329,7 @@ export default {
         );
       });
     },
+
     filterStatus(val, update, abort) {
       update(() => {
         const needle = val.toLowerCase();
@@ -312,24 +338,113 @@ export default {
         );
       });
     },
-    editIncomeActivity(data){
-      this.$emit("edit-income-activity", data)
+
+    editIncomeActivity(data) {
+      this.$emit("edit-income-activity", data);
     },
-    viewIncomeActivity(data){
-      console.log(data);
+
+    viewIncomeActivity(data) {
       this.$emit("view-income-activity", data);
-    }
+    },
+
+    filterIncomeActivity() {
+      this.filteredActivities = [];
+      this.total_income_amount = 0;
+
+      let id = this.this.$store.getters.getOrganisation.id;
+      let payment_item_name = this.payment_item_id != null ? this.payment_item_id.label : "";
+      let payment_item_value = this.payment_item_id != null ? this.payment_item_id.value : "";
+
+      this.$router.push({
+        path: `/dashboard/income-activities?payment_item=${payment_item_name}&month=${this.month}&status=${this.status}`,
+        query: { payment_item: payment_item_name, month:this.month, status:this.status },
+      });
+
+      let payload = {
+        status: "none",
+        url: `/api/protected/organisations/income-activities/search?organisation_id=${id}&month=${this.month}&payment_item_id=${payment_item_value}&status=${this.status}`,
+        has_path_val: true,
+        show_feedback: false,
+        show_spinner:true,
+        msg: "none",
+        color: "default",
+        error_msg: "default",
+        commit: "none",
+        has_commit: false,
+        to_be_store_data: {
+          required: true,
+          has_value: false,
+          data: null,
+        },
+      };
+      this.loading_filter = true;
+      this.$store
+        .dispatch("getRequest", payload)
+        .then((res) => {
+          this.loading_filter = false;
+          this.start_filter = true;
+
+          res.data.forEach((ele) => {
+            this.total_income_amount+= ele.amount
+            this.filteredActivities.push({
+              counter: res.data.indexOf(ele) + 1,
+              name: ele.name,
+              amount: ele.amount,
+              id: ele.id,
+              approve: ele.approve,
+              description: ele.description,
+              type: "INCOME_ACTIVITIES",
+              date: ele.date,
+              venue: ele.venue,
+              organisation_id: ele.organisation_id,
+              payment_item:ele.payment_item,
+              created_at: ele.created_at,
+              updated_by: ele.updated_by,
+            });
+          });
+        })
+        .finally(() => {
+          this.loading_filter = false;
+        });
+    },
+
+    downloadIncomeActivity() {
+      const id = this.this.$store.getters.getOrganisation.id;
+      let payment_item_id = this.payment_item_id != null ? this.payment_item_id.value : "";
+
+      let url = `/api/protected/organisations/income-activities/generate-pdf?organisation_id=${id}&month=${this.month}&payment_item_id=${payment_item_id}&status=${this.status}`;
+
+      let file_name = "Organisation_Income_Activities.pdf";
+
+      this.loading = this.downloadPdf(url, file_name);
+    },
+
+    fetchPaymentActivities() {
+      let payload = {
+        status: "none",
+        url: `/api/protected/payment-items`,
+        has_path_val: true,
+        show_feedback: false,
+        show_spinner: false,
+        msg: "none",
+        color: "default",
+        error_msg: "default",
+        commit: "SET_PAYMENT_ACTIVITIES",
+        has_commit: true,
+        to_be_store_data: {
+          required: true,
+          has_value: false,
+          data: null,
+        },
+      };
+      this.$store.dispatch("getRequest", payload).then(() => {});
+    },
   },
   components: {
     NotFound,
     TableVue,
-    ButtonVue,
   },
 };
 </script>
 
-<style lang="scss" scoped>
-.search {
-  cursor: pointer;
-}
-</style>
+<style lang="scss" scoped></style>

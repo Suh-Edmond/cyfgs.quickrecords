@@ -1,10 +1,12 @@
 import { LocalStorage, Notify, Platform } from "quasar";
 import { axios } from "src/boot/axios";
 
-const API_URL = process.env.BASE_URL[0];
+const API_URL = process.env.API_BASE_URL
 
-export function handleRequestResponse({ commit }, payload) {
-  if (payload.status == "success") {
+const FILE_UPLOAD_URL = process.env.FILE_UPLOAD_URL;
+
+export function handleRequestResponse({}, payload) {
+  if (payload.status == "success" && payload.show_feedback) {
     if (payload.msg == "default") {
       Notify.create({
         type: "positive",
@@ -35,19 +37,19 @@ export function handleRequestResponse({ commit }, payload) {
       });
     }
   }
-  if (payload.status == "fail") {
+  if (payload.status == "fail" && payload.show_feedback) {
     if (payload.fail_msg == "default") {
       Notify.create({
-        color: payload.color != "default" ? payload.color : "negative",
-        type: "negative",
+        color: payload.color != "default" ? payload.color : "info",
+        type: "info",
         message: "Action did not complete successfully",
         position: Platform.is.mobile ? "bottom" : "top-right",
       });
     } else if (payload.fail_msg) {
       Notify.create({
-        color: payload.color != "default" ? payload.color : "negative",
+        color: payload.color != "default" ? payload.color : "info",
         message: payload.fail_msg,
-        type: "negative",
+        type: "info",
         position: Platform.is.mobile ? "bottom" : "top-right",
       });
     }
@@ -56,16 +58,25 @@ export function handleRequestResponse({ commit }, payload) {
         name: payload.to_on_fail,
       });
     }
+
+    // if(payload.forbidden_err != undefined){
+    //   Notify.create({
+    //     message: payload.forbidden_err.message,
+    //     type: "info",
+    //     position: Platform.is.mobile ? "bottom" : "top-right",
+    //   });
+    // }
   }
 }
 
-export function postRequest({ commit, dispatch }, payload) {
+export function postRequest({ dispatch }, payload) {
   return axios
     .post(API_URL + payload.url, payload.data, payload.headers)
     .then((res) => {
       let handle_response_payload = {
         data: res.data,
         status: "success",
+        show_feedback: payload.show_feedback,
         color: payload.color,
         msg: payload.msg ? payload.msg : "default",
         to_on_ok: payload.to_on_ok,
@@ -81,60 +92,40 @@ export function postRequest({ commit, dispatch }, payload) {
         },
       };
       dispatch("handleRequestResponse", handle_response_payload);
-
       return res;
     })
     .catch((error) => {
-      let handle_response_payload = {
+      let handle_error_payload = {
         status: "fail",
+        show_feedback: payload.show_feedback,
         color: "negative",
         to_on_fail: payload.to_on_fail,
         fail_msg:
           payload.error_msg != "default"
             ? payload.error_msg
-            : error.response.data.message,
-        status_code: error.response.status,
+            : error.response.message,
+        status_code: 404,
       };
-      dispatch("handleRequestResponse", handle_response_payload);
+      dispatch("handleRequestResponse", handle_error_payload);
+      console.log(error.response);
+      return error;
     });
 }
 
-export function uploadFileRequest({commit, dispatch}, payload){
-  return axios.post(API_URL+payload.url, payload.data, { "Content-Type": "multipart/form-data"}).then((res) =>{
-    let handle_response_payload = {
-      data: res.data,
-      status: "success",
-      color: payload.color,
-      msg: payload.msg ? payload.msg : "default",
-      to_on_ok: payload.to_on_ok,
-    };
-    dispatch("handleRequestResponse", handle_response_payload);
-    return res;
-  }).catch((error) => {
-    let handle_response_payload = {
-      status: "fail",
-      color: "negative",
-      to_on_fail: payload.to_on_fail,
-      fail_msg:
-        payload.error_msg != "default"
-          ? payload.error_msg
-          : error.response.data.message,
-      status_code: error.response.status,
-    };
-    dispatch("handleRequestResponse", handle_response_payload);
-  })
-}
-
-export function getRequest({ commit, dispatch }, payload) {
+//upload excel files for users
+export function uploadFileRequest({ dispatch }, payload) {
   return axios
-    .get(API_URL+payload.url)
+    .post(API_URL + payload.url, payload.data, {
+      "Content-Type": "multipart/form-data",
+    })
     .then((res) => {
       let handle_response_payload = {
-        data: res.data,
-        status: payload.status ? payload.status : "success",
+        data: "",
+        show_feedback: payload.show_feedback,
+        status: payload.status,
         color: payload.color,
-        msg: payload.msg ? payload.msg : "default",
-        to_on_ok: payload.to_on_ok,
+        msg: payload.msg,
+        to_on_ok: "none",
         to_be_store_data: {
           has_value: payload.to_be_store_data.has_value,
           required: payload.to_be_store_data.required,
@@ -143,19 +134,62 @@ export function getRequest({ commit, dispatch }, payload) {
             : [],
         },
       };
-      if(payload.has_commit){
-        console.log(res.data.data);
-        commit(payload.commit, res.data.data)
+      dispatch("handleRequestResponse", handle_response_payload);
+      return res;
+    })
+    .catch((error) => {
+        let handle_error_payload = {
+          status: "fail",
+          color: "negative",
+          to_on_fail: "none",
+          show_feedback: payload.show_feedback,
+          fail_msg:
+            payload.error_msg != "default"
+              ? payload.error_msg
+              : error.response.data.message,
+          status_code: 404,
+        };
+        dispatch("handleRequestResponse", handle_error_payload);
+    });
+}
+
+export function getRequest({ commit, dispatch }, payload) {
+  if(payload.show_spinner){
+    commit("SET_IS_FETCHING", true);
+  }
+  return axios
+    .get(API_URL + payload.url)
+    .then((res) => {
+     if(payload.show_spinner){
+      commit("SET_IS_FETCHING", false);
+     }
+      let handle_response_payload = {
+        data: res.data,
+        status: payload.status ? payload.status : "success",
+        show_feedback: payload.show_feedback,
+        color: payload.color,
+        msg: payload.msg ? payload.msg : "default",
+        to_on_ok: payload.to_on_ok,
+        to_be_store_data: {
+          has_value: payload.to_be_store_data.has_value,
+          required: payload.to_be_store_data.required,
+          data: payload.to_be_store_data.has_value
+            ? payload.to_be_store_data.data
+            : res.data,
+        },
+      };
+      if (payload.has_commit) {
+        commit(payload.commit, res.data.data);
       }
       dispatch("handleRequestResponse", handle_response_payload);
       return res.data;
     })
     .catch((error) => {
-      console.log(error);
       let handle_fail_res_payload = {
-        status: payload.status ? payload.status : "fail",
+        status: "fail",
         color: "negative",
         to_on_fail: payload.to_on_fail,
+        show_feedback: payload.show_feedback,
         fail_msg:
           payload.error_msg != "default"
             ? payload.error_msg
@@ -166,13 +200,14 @@ export function getRequest({ commit, dispatch }, payload) {
     });
 }
 
-export function putRequest({ commit, dispatch }, payload) {
+export function putRequest({ dispatch }, payload) {
   return axios
-    .put(API_URL+payload.url, payload.data)
+    .put(API_URL + payload.url, payload.data)
     .then((res) => {
       let handle_response_payload = {
         data: res.data,
         status: payload.status ? payload.status : "success",
+        show_feedback: payload.show_feedback,
         color: payload.color,
         msg: payload.msg ? payload.msg : "default",
         to_on_ok: payload.to_on_ok,
@@ -192,32 +227,34 @@ export function putRequest({ commit, dispatch }, payload) {
         status: payload.status ? payload.status : "fail",
         color: "negative",
         to_on_fail: payload.to_on_fail,
+        show_feedback: payload.show_feedback,
         fail_msg:
           payload.error_msg != "default"
             ? payload.error_msg
             : error.response.data.message,
-        status_code: error.response.status,
+        status_code: 404,
       };
       dispatch("handleRequestResponse", handle_fail_res_payload);
     });
 }
 
-export function deleteRequest({ commit }, payload) {
+export function deleteRequest({ dispatch }, payload) {
   return axios
-    .delete(API_URL+payload.url)
+    .delete(API_URL + payload.url)
     .then((res) => {
       let handle_response_payload = {
-        data: res.data,
         status: payload.status ? payload.status : "success",
         color: payload.color,
         msg: payload.msg ? payload.msg : "default",
         to_on_ok: payload.to_on_ok,
+        to_on_fail: payload.to_on_fail,
+        show_feedback: payload.show_feedback,
         to_be_store_data: {
           has_value: payload.to_be_store_data.has_value,
           required: payload.to_be_store_data.required,
           data: payload.to_be_store_data.has_value
             ? payload.to_be_store_data.data
-            : [],
+            : res.data,
         },
       };
       dispatch("handleRequestResponse", handle_response_payload);
@@ -227,32 +264,257 @@ export function deleteRequest({ commit }, payload) {
       let handle_fail_res_payload = {
         status: payload.status ? payload.status : "fail",
         color: "negative",
+        show_feedback: payload.show_feedback,
         to_on_fail: payload.to_on_fail,
         fail_msg:
           payload.error_msg != "default"
             ? payload.error_msg
             : error.response.data.message,
-        status_code: error.response.status,
+        status_code: 404,
       };
       dispatch("handleRequestResponse", handle_fail_res_payload);
     });
+}
+
+export function downloadPdf({}, payload) {
+  return axios
+    .get(API_URL + payload.url, {
+      "Content-Type": "application/pdf",
+      responseType: "blob",
+    })
+    .then((res) => {
+      var fileURL = window.URL.createObjectURL(new Blob([res.data]));
+      var fileLink = document.createElement("a");
+      fileLink.href = fileURL;
+      fileLink.setAttribute("download", payload.file_name);
+      document.body.appendChild(fileLink);
+      fileLink.click();
+    })
+    .catch((error) => {
+      return error;
+    });
+}
+
+//upload any other files being used in the system
+export async function uploadImageRequest({ commit, dispatch }, payload) {
+  return axios
+    .post(FILE_UPLOAD_URL + payload.url, payload.data, {
+      withCredentials: false,
+    })
+    .then((res) => {
+      let handle_response_payload = {
+        data: "",
+        status: payload.status,
+        color: payload.color,
+        msg: payload.msg ? payload.msg : "default",
+        to_on_ok: "none",
+      };
+      dispatch("handleRequestResponse", handle_response_payload);
+      return res;
+    })
+    .catch((error) => {
+      if (error.response != "undefined") {
+        let handle_error_payload = {
+          status: "fail",
+          color: "negative",
+          to_on_fail: "none",
+          fail_msg:
+            payload.error_msg != "default"
+              ? payload.error_msg
+              : error.response.data.message,
+          status_code: 404,
+        };
+        dispatch("handleRequestResponse", handle_error_payload);
+      }
+    });
+}
+
+//fetch uploaded files
+export async function fetchUploadedImageRequest({}, payload) {
+  const res = await axios.get(FILE_UPLOAD_URL + payload.url, {
+    withCredentials: false,
+  });
+  return res;
+}
+
+export function setFetchingState({ commit }, payload) {
+  commit("SET_IS_FETCHING", payload);
 }
 
 export function setRoles({ commit }, roles) {
   commit("SET_ROLES", roles);
 }
 
-export function logoutUser({ commit }, payload) {
+export function logoutUser({}, payload) {
   LocalStorage.remove("data");
   LocalStorage.remove("credential");
+  LocalStorage.remove("organisation");
   this.$router.push({
     name: payload.to_on_ok,
   });
-  commit("SET_ROLES", []);
 }
 
 export function setOrganisation({ commit }, data) {
   commit("SET_ORGANISATION", data);
 }
 
+export function updateMember({ commit }, data) {
+  commit("UPDATE_MEMBER", data);
+}
 
+export function setPayCategories({ commit }, data) {
+  commit("SET_PAYMENT_CATEGORIES", data);
+}
+
+export function setUpdatedPayCategories({ commit }, data) {
+  commit("UPDATE_PAYMENT_CATEGORY", data);
+}
+
+export function setNavigationTabByUserRole() {
+  let role = LocalStorage.getItem("data").roles.find(
+    (role) => role.name === "PRESIDENT"
+  );
+  return role == undefined;
+}
+
+export function setCurrentPaymentCategory({ commit }, data) {
+  commit("SET_CURRENT_PAYMENT_CATEGORY", data);
+}
+
+export function setUpdatedPaymentItem({ commit }, data) {
+  commit("SET_UPDATED_PAYMENT_ITEM", data);
+}
+
+export function setCurrentPaymentItem({ commit }, data) {
+  commit("SET_CURRENT_PAYMENT_ITEM", data);
+}
+
+export function setExpenditureCategories({ commit }, data) {
+  commit("SET_EXPENDITURE_CATEGORIES", data);
+}
+
+export function setUpdatedExpenditureCategory({ commit }, data) {
+  commit("UPDATE_EXPENDITURE_CATEGORY", data);
+}
+
+export function setExpenditureItems({ commit }, data) {
+  commit("SET_EXPENDITURE_ITEMS", data);
+}
+
+export function setCurrentExpenditureCategory({ commit }, data) {
+  commit("SET_CURRENT_EXPENDITURE_CATEGORY", data);
+}
+
+export function setUpdatedExpenditureItem({ commit }, data) {
+  commit("SET_UPDATED_EXPENDITURE_ITEM", data);
+}
+
+export function setEditState({ commit }, data) {
+  commit("SET_EDIT_STATE", data);
+}
+
+export function setExpenditureItemDetails({ commit }, data) {
+  commit("SET_EXPENDITURE_ITEM_DETAIL", data);
+}
+
+export function setCurrentExpenditureItem({ commit }, data) {
+  commit("SET_CURRENT_EXPENDITURE_ITEM", data);
+}
+
+export function setUpdatedExpenditureItemDetail({ commit }, data) {
+  commit("SET_UPDATED_EXPENDITURE_ITEM_DETAIL", data);
+}
+
+export function setOrganisationMembersSavings({ commit }, data) {
+  commit("SET_ORGANISATION_MEMBERS_SAVINGS", data);
+}
+
+export function setMemberSavings({ commit }, data) {
+  commit("SET_MEMBER_SAVINGS", data);
+}
+
+export function setOrganisationIncomeActivities({ commit }, data) {
+  commit("SET_INCOME_ACTIVITIES", data);
+}
+
+export function setUpdatedMemberSaving({ commit }, data) {
+  commit("SET_UPDATED_MEMBER_SAVING", data);
+}
+
+export function setCurrentMemberSaving({ commit }, data) {
+  commit("SET_CURRENT_MEMBER_SAVING", data);
+}
+
+export function setUpdatedIncomeActivity({ commit }, data) {
+  commit("SET_UPDATED_INCOME_ACTIVITY", data);
+}
+
+export function setCurrentIncomeActivity({ commit }, data) {
+  commit("SET_CURRENT_INCOME_ACTIVITY", data);
+}
+
+export function setMembersContributions({ commit }, data) {
+  commit("SET_MEMBERS_CONTRIBUTIONS_PER_ITEM", data);
+}
+
+export function setSelectedContribution({ commit }, data) {
+  commit("SET_SELECTED_CONTRIBUTON", data);
+}
+
+export function setExpenditures({commit}, data){
+  commit("SET_EXPENDITURES", data)
+}
+
+export function setExpenditureCategory({commit}, data){
+  commit("SET_EXPENDITURE_CATEGORY", data)
+}
+
+export function setSavings({commit}, data) {
+  commit("SET_SAVINGS", data);
+}
+
+
+export function setExpenditureItemName({commit}, data) {
+  commit("SET_EXPENDITURE_ITEM_NAME", data);
+}
+
+export function setSearchSavingsParams({commit}, data) {
+  commit("SET_SEARCH_SAVING_PARAMS", data);
+}
+
+
+export function setFilteredContributions({commit}, data) {
+  commit("SET_FILTERED_CONTRIBUTIONS", data);
+}
+
+export function setIntermediateTabs({commit}, data) {
+  commit("SET_INTERMEDIATE_TABS", data);
+}
+
+export function setMemberContributions({commit}, data) {
+  commit("SET_MEMBER_CONTRIBUTIONS", data);
+}
+
+export function setPaymentActivities({commit}, data) {
+  commit("SET_PAYMENT_ACTIVITIES", data);
+}
+
+export function setSponsorship({commit}, data) {
+  commit("SET_SPONSORSHIPS", data)
+}
+
+export function setSelectedSponsorship({commit}, data) {
+  commit("SET_SELECTED_SPONSORSHIP", data);
+}
+
+export function setMemberToRegister({commit}, data) {
+  commit("SET_MEMBER_TO_REGISTER", data);
+}
+
+export function setCurrentMember({commit}, data) {
+  commit("SET_CURRENT_MEMBER", data);
+}
+
+export function setCurrentYear({commit}, data) {
+  commit("SET_CURRENT_YEAR", data)
+}

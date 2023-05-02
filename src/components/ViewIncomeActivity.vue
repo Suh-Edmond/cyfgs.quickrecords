@@ -1,144 +1,237 @@
 <template>
-  <div class="q-pa-sm">
-    <div class="text_h6 text-center q-pt-xs q-pb-md add_member_title">
-      Income Activity Information
-    </div>
+  <div class="q-pa-md">
     <div>
-      <div class="flex q-pb-sm">
-        <label for="name" class="label">Name:
-          <span class="value q-pl-md">Singing during in a Visit to Mr Nkom Emmaunual</span></label>
+      <div class="flex q-pb-md">
+        <label for="name" class="field"
+          ><span> <q-icon name="category" size="xs" class="q-pr-sm" /> </span
+          >Name:
+          <span class="field_value field_name">{{
+            getCurrentIncomeActivity.name
+          }}</span></label
+        >
       </div>
-      <div class="flex q-pb-sm">
-        <label for="name" class="label">Amount:
-          <span class="value q-pl-sm">30000 XAF</span></label>
+      <div class="flex q-pb-md">
+        <label for="name" class="field"
+          ><span>
+            <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
+          >Amount:
+          <span class="field_value field_amount"
+            >{{
+              Number(getCurrentIncomeActivity.amount).toLocaleString()
+            }}
+            XAF</span
+          ></label
+        >
       </div>
-      <div class="flex q-pb-sm">
-        <label for="name" class="label">Date:
-          <span class="value q-pl-lg">Monday 31st October 2022</span></label>
-      </div>
-      <div class="flex q-pb-sm">
-        <label for="name" class="label">Venue:
-          <span class="value q-pl-md">Sandpit Bakweri Town</span></label>
-      </div>
-      <div class="flex q-pb-sm">
-        <label for="name" class="label">Status:
-          <span class="value text-secondary q-pl-md">APPROVED</span></label>
-      </div>
-      <div class="flex q-pb-sm">
-        <label for="name" class="label">Comment:
+      <div class="flex q-pb-md">
+        <label for="name" class="field"
+          ><span> <q-icon name="category" size="xs" class="q-pr-sm" /> </span
+          >Payment Activity:
+          <span
+            class="field_value field_item"
+            v-if="getCurrentIncomeActivity.payment_item != null"
+            >{{ getCurrentIncomeActivity.payment_item.name }}</span
+          >
+          <span
+            class="field_value field_item"
+            v-if="getCurrentIncomeActivity.payment_item == null"
+            >None</span
+          >
         </label>
-        <p class="value_comment">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Hic debitis veritatis dicta
-          ipsum
-          quibusdam nihil, molestias ea soluta nam reiciendis. Repudiandae itaque consectetur laboriosam eum maxime, vel
-          maiores quidem ipsa.</p>
+      </div>
+      <div class="flex q-pb-md">
+        <label for="name" class="field"
+          ><span> <q-icon name="schedule" size="xs" class="q-pr-sm" /> </span
+          >Date:
+          <span class="field_value field_date">{{
+            getFormatIncomeDate
+          }}</span></label
+        >
+      </div>
+      <div class="flex q-pb-md">
+        <label for="name" class="field"
+          ><span> <q-icon name="location_on" size="xs" class="q-pr-sm" /> </span
+          >Venue:
+          <span class="field_value field_venue">{{
+            getCurrentIncomeActivity.venue
+          }}</span></label
+        >
+      </div>
+      <div class="flex q-pb-md">
+        <label
+          for="status"
+          class="field"
+          v-show="getCurrentIncomeActivity.approve == 'DECLINED'"
+          ><span>
+            <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span
+          >Status:
+          <span class="item_statue unapproved_color">{{
+            getCurrentIncomeActivity.approve
+          }}</span></label
+        >
+        <label
+          for="status"
+          class="field"
+          v-show="getCurrentIncomeActivity.approve == 'APPROVED'"
+          ><span>
+            <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span
+          >Status:
+          <span class="item_statue approved_color">
+            {{ getCurrentIncomeActivity.approve }}</span
+          ></label
+        >
+        <label
+          for="status"
+          class="field"
+          v-show="getCurrentIncomeActivity.approve == 'PENDING'"
+          ><span>
+            <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span
+          >Status:
+          <span class="item_statue pending_color">
+            {{ getCurrentIncomeActivity.approve }}</span
+          ></label
+        >
       </div>
 
-      <div class="flex">
-        <q-card class="image_card" @click="show_image = true">
-          <q-img src="https://cdn.quasar.dev/img/mountains.jpg" basic>
-            <div class="absolute-bottom text-caption text-center">
-              Uploaded Image
-            </div>
-          </q-img>
-        </q-card>
+      <div class="q-mb-md">
+        <label for="amount" class="field"
+          ><span> <q-icon name="person" size="xs" class="q-pr-sm" /> </span
+          >Created By:
+          <span class="field_value detail_created_by">
+            {{ getCurrentIncomeActivity.updated_by }}
+          </span></label
+        >
       </div>
+      <div class="flex q-pb-md">
+        <label for="name" class="field"
+          ><span> <q-icon name="description" size="xs" class="q-pr-sm" /> </span
+          >Comment: <span class="field_value description" v-if="getCurrentIncomeActivity.description == null">
+        None
+      </span>
+        </label>
+      </div>
+      <p class="field_value" v-if="getCurrentIncomeActivity.description != null">
+        {{ getCurrentIncomeActivity.description }}
+      </p>
+
     </div>
-    <q-dialog v-model="show_image" :position="position">
-      <q-card style="width: 360px" :class="$q.screen.lg?'q-mr-md':'q-mx-sm'">
-        <q-bar>
-          <div></div>
-          <q-space />
-          <q-btn dense flat icon="close" v-close-popup>
-            <q-tooltip>Close</q-tooltip>
-          </q-btn>
-        </q-bar>
-        <q-card-section>
-          <div>
-            <q-img src="https://cdn.quasar.dev/img/mountains.jpg" spinner-color="white" style="height: 100%; width: 100%px" />
-          </div>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
   </div>
-
 </template>
 
 <script>
+import moment from "moment";
+
 export default {
+  created() {
+    let heading = "Income Activity Information";
+    this.$emit("set-heading", heading);
+  },
   data() {
-    return {
-      show_image: false,
-      position: "right",
-    };
+    return {};
   },
-  computed:{
 
+  computed: {
+    getEditState() {
+      return this.$store.getters.getEditState;
+    },
+
+    getFormatIncomeCreatedDate() {
+      return moment(
+        this.$store.getters.getCurrentIncomeActivity.created_at
+      ).format("MMMM Do YYYY");
+    },
+
+    getFormatIncomeDate() {
+      return moment(this.$store.getters.getCurrentIncomeActivity.date).format(
+        "MMMM Do YYYY"
+      );
+    },
+
+    getCurrentIncomeActivity() {
+      return this.$store.getters.getCurrentIncomeActivity;
+    },
   },
-  methods:{
-
-  }
+  methods: {},
 };
 </script>
 
 <style lang="scss" scoped>
-.add_member_title {
+.unapproved_color {
+  color: #f2994a;
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
+  font-size: 15px;
+  line-height: 27px;
+  letter-spacing: 0.005em;
+}
+
+.approved_color {
+  color: #27ae60;
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 27px;
+  letter-spacing: 0.005em;
+}
+.pending_color {
+  color: $info;
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 27px;
+  letter-spacing: 0.005em;
+}
+.field {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 400;
   font-size: 14px;
-  line-height: 29px;
-  align-items: center;
-  text-align: center;
+  line-height: 11px;
   letter-spacing: 0.01em;
-  color: $primary;
-  text-transform: capitalize;
+  color: $grey5;
 }
 
-.label {
+.field_venue {
+  padding-left: 6rem;
+}
+
+.item_statue {
+  padding-left: 6rem;
+}
+
+.field_value {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 13px;
-  line-height: 24px;
-  text-align: start;
-  letter-spacing: 0.01em;
-  color: $grey2;
-}
-
-.value {
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 13px;
+  font-size: 15px;
   line-height: 27px;
-  text-align: right;
   letter-spacing: 0.005em;
   color: $dark;
 }
-
-.value_comment {
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 13px;
-  line-height: 27px;
-  text-align: start;
-  letter-spacing: 0.005em;
-  color: $dark;
+.field_name {
+  padding-left: 6rem;
 }
 
-.image {
-  height: 100px;
-  width: 100px;
+.field_amount {
+  padding-left: 5.2rem;
 }
 
-.image_card {
-  width: 100%;
-  max-width: 150px;
-  cursor: pointer;
+.field_item {
+  padding-left: 1.7rem;
 }
 
-.card {
-  width: 100%;
+.field_date {
+  padding-left: 6.5rem;
+}
+
+.detail_created_by {
+  padding-left: 4.2rem;
+}
+
+.description {
+  padding-left: 4.6rem;
 }
 </style>

@@ -1,97 +1,287 @@
 <template>
-  <div class="q-pa-sm">
-    <div class="text_h6 text-center q-pt-xs q-pb-md add_member_title">
-      Expenditure Item Information
+  <div class="q-pa-md">
+    <div class="q-ml-sm q-mb-lg">
+      <label class="text-muted q-ml-sm info"
+        >All fields with <span class="text-red">*</span> are required</label
+      >
     </div>
-    <div>
-      <div>
-        <q-form @submit="onAddExpenditureItem" class="q-gutter-sm">
+    <div class="q-mt-md q-mx-md">
+      <q-form @submit="onAddExpenditureItem" class="q-gutter-sm">
+        <div class="q-mb-md">
+          <label for="name" class="form_field"
+            >Payment Activity <span class="text-red">*</span>
+          </label>
+          <q-select
+            outlined
+            dense
+            v-model="expenditure_item.payment_item_id"
+            placeholder="Type name to search..."
+            :options="getPaymentActivities"
+            input-debounce="0"
+            class="text_color"
+          >
+          </q-select>
+        </div>
+        <div>
+          <label for="credential" class="form_field"
+            >Name <span class="text-red">*</span></label
+          >
+          <q-input
+            v-model="expenditure_item.name"
+            outlined
+            dense
+            type="text"
+            class="q-mb-md"
+          />
+        </div>
+        <div>
+          <label for="credential" class="form_field"
+            >Estimated Amount <span class="text-red">*</span></label
+          >
+          <q-input
+            v-model="expenditure_item.amount"
+            outlined
+            dense
+            type="number"
+            class="q-mb-md"
+          />
+        </div>
+        <div>
+          <label for="credential" class="form_field"
+            >Venue <span class="text-red">*</span></label
+          >
+          <q-input
+            v-model="expenditure_item.venue"
+            outlined
+            dense
+            type="text"
+            class="q-mb-md"
+          />
+        </div>
+        <div>
+          <label for="credential" class="form_field"
+            >Date <span class="text-red">*</span></label
+          >
+          <q-input
+            v-model="expenditure_item.date"
+            outlined
+            dense
+            class="q-mb-md"
+          >
+            <template v-slot:append>
+              <q-icon name="event" class="cursor-pointer">
+                <q-popup-proxy
+                  ref="qDateProxy"
+                  transition-show="scale"
+                  transition-hide="scale"
+                >
+                  <q-date v-model="expenditure_item.date">
+                    <div class="row items-center justify-end">
+                      <q-btn v-close-popup label="Close" color="primary" flat />
+                    </div>
+                  </q-date>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
+        </div>
+        <div>
+          <label for="credential" class="form_field"
+            >Comment <span class="text-red">*</span></label
+          >
+          <q-input
+            v-model="expenditure_item.comment"
+            outlined
+            dense
+            class="text_color"
+            type="textarea"
+            placeholder="Provide any comment about this expenditure"
+          />
+        </div>
+        <div class="flex q-mt-lg justify-end">
           <div>
-            <label for="credential" class="form_field">Expenditure Category <span class="text-red">*</span></label>
-            <q-select v-model="expenditure_item.expenditure_category_id" outlined dense :disabled="checkIfExistExpenditureItem"
-              :options="expenditure_categories" />
-          </div>
-          <div>
-            <label for="credential" class="form_field">Name <span class="text-red">*</span></label>
-            <q-input v-model="expenditure_item.name" outlined dense type="text" />
-          </div>
-          <div>
-            <label for="credential" class="form_field">Amount <span class="text-red">*</span></label>
-            <q-input v-model="expenditure_item.amount" outlined dense type="number" />
-          </div>
-          <div>
-            <label for="credential" class="form_field">Venue <span class="text-red">*</span></label>
-            <q-input v-model="expenditure_item.venue" outlined dense type="text" />
-          </div>
-          <div>
-            <label for="credential" class="form_field">Date <span class="text-red">*</span></label>
-            <q-input v-model="expenditure_item.date" outlined dense type="date"  />
-          </div>
-          <div>
-            <label for="credential" class="form_field">Comment</label>
-            <q-input v-model="expenditure_item.comment" outlined dense autogrow />
-          </div>
-
-          <div>
-            <label for="credential" class="form_field">Image</label>
-            <q-uploader
-              style="width:100%"
-              url="http://localhost:4444/upload"
-              label="Restricted to images"
-              flat
-              bordered
-              multiple
-              accept="image/jpg, image/png,image/jpeg"
-              @rejected="onRejected"
-            />
-          </div>
-
-          <div class="q-mt-md">
-            <ButtonVue class="form_button" :label="label_save" :loading="loading" :color="color"
-              :disabled="validateForm" :no_caps="no_caps">
+            <ButtonVue
+              class="form_button"
+              :label="'Save'"
+              :loading="loading"
+              :color="'primary'"
+              :disabled="validateForm"
+              :no_caps="true"
+            >
             </ButtonVue>
           </div>
-        </q-form>
-      </div>
+        </div>
+      </q-form>
     </div>
   </div>
 </template>
 <script>
 import ButtonVue from "src/components/Button.vue";
-export default {
+import expenditureItemMixinVue from "src/mixins/expenditureItemMixin.vue";
 
+export default {
+  mixins: [expenditureItemMixinVue],
+
+  mounted() {
+    let heading = "Expenditure Item Information";
+    this.$emit("set-heading", heading);
+
+    this.setFormFields(this.$store.getters.getUpdatedExpenditureItem);
+  },
   data() {
     return {
-      label_save: "Save",
       loading: false,
-      color: "primary",
       expenditure_item: {
         expenditure_category_id: null,
         venue: null,
         date: null,
         name: null,
         comment: null,
-        amount: null
+        amount: 0.0,
+        picture: null,
+        payment_item_id: null,
+        id: null,
       },
-      position: "right",
-      dialog: false,
-      no_caps: true,
-      expenditure_categories: [{ "lable": 1, "value": "Funerals" }]
     };
   },
   computed: {
     validateForm() {
-      return this.expenditure_item.amount === null || this.expenditure_item.name === null || this.expenditure_item.expenditure_category_id === null || this.expenditure_item.date === null || this.expenditure_item.venue ? true : false;
+      return this.expenditure_item.amount === 0 ||
+        this.expenditure_item.name === null ||
+        this.expenditure_item.date === null ||
+        this.expenditure_item.venue === null ||
+        this.expenditure_item.payment_item_id === null
+        ? true
+        : false;
     },
-    checkIfExistExpenditureItem(){
-      return this.expenditure_item.expenditure_category_id !== null && this.expenditure_item.name !== null && this.expenditure_item.amount ? true : false
-    }
+
+    getCurrentExpenditureCategory() {
+      return this.$store.getters.getCurrentExpenditureCategory;
+    },
+    getUpdatedExpenditureFromState() {
+      return this.$store.getters.getUpdatedExpenditureItem;
+    },
+
+    getPaymentActivities() {
+      let data = [];
+      this.$store.getters.getPaymentActivities.forEach((ele) => {
+        data.push({
+          label: ele.name,
+          value: ele.id,
+          amount: ele.amount,
+        });
+      });
+      return data;
+    },
+
+    getUpdatedExpenditureItem() {
+      return this.setFormFields(this.$store.getters.getUpdatedExpenditureItem);
+    },
+  },
+  watch: {
+    getUpdatedExpenditureItem() {
+      return this.setFormFields(this.$store.getters.getUpdatedExpenditureItem);
+    },
   },
   methods: {
     onAddExpenditureItem() {
-      this.$emit("close-right-drawer");
+      let category = this.$store.getters.getCurrentExpenditureCategory;
+      let payload = {
+        url: this.setActionUrl(this.expenditure_item.id, category),
+        data: {
+          name: this.expenditure_item.name,
+          venue: this.expenditure_item.venue,
+          date: this.expenditure_item.date,
+          payment_item_id: this.expenditure_item.payment_item_id.value,
+          amount: this.expenditure_item.amount,
+          comment: this.expenditure_item.comment,
+        },
+        msg: "Expenditure Item save Successfully",
+        color: "default",
+        to_on_ok: "none",
+        to_on_fail: "none",
+        show_feedback: true,
+        error_msg: "An Error occurred! Please try again",
+        has_commit: false,
+        commit: "none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.setDispatchAction(this.expenditure_item.id, payload);
     },
-    onRejected(){}
+    resetForm() {
+      this.expenditure_item.name = null;
+      this.expenditure_item.amount = 0;
+      this.expenditure_item.venue = null;
+      this.expenditure_item.date = null;
+      this.expenditure_item.comment = null;
+      this.expenditure_item.expenditure_category_id = null;
+      this.expenditure_item.id = null;
+      this.expenditure_item.payment_item_id = null;
+
+      return this.expenditure_item;
+    },
+
+    setFormFields(data) {
+      if (data != null) {
+        this.expenditure_item.expenditure_category_id =
+          data.expenditure_category_id;
+        this.expenditure_item.venue = data.venue;
+        this.expenditure_item.date = data.date;
+        this.expenditure_item.name = data.name;
+        this.expenditure_item.comment = data.comment;
+        this.expenditure_item.amount = data.amount;
+        this.expenditure_item.id = data.id;
+        this.expenditure_item.payment_item_id = {
+          label: data.payment_item.name,
+          value: data.payment_item.id,
+          amount: data.payment_item.amount,
+        };
+      }
+
+      return this.expenditure_item;
+    },
+
+    setActionUrl(id, category) {
+      let url = "";
+      if (id === null) {
+        url = `/api/protected/expenditure-categories/${category.id}/expenditure-items`;
+      } else {
+        url = `/api/protected/expenditure-categories/${category.id}/expenditure-items/${id}`;
+      }
+      return url;
+    },
+
+    setDispatchAction(id, payload) {
+      this.loading = true;
+      if (id === null) {
+        this.$store
+          .dispatch("postRequest", payload)
+          .then(() => {
+            this.getExpenditureItemsByCategory();
+          })
+          .finally(() => {
+            this.$emit("close-right-drawer");
+            this.loading = false;
+            this.resetForm();
+          });
+      } else {
+        this.$store
+          .dispatch("putRequest", payload)
+          .then(() => {
+            this.getExpenditureItemsByCategory();
+          })
+          .finally(() => {
+            this.$emit("close-right-drawer");
+            this.loading = false;
+            this.resetForm();
+            this.$store.dispatch("setUpdatedExpenditureItem", null);
+          });
+      }
+    },
   },
   components: {
     ButtonVue,
@@ -100,23 +290,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.add_member_title {
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 29px;
-  align-items: center;
-  text-align: center;
-  letter-spacing: 0.01em;
-  color: #5384ae;
-  text-transform: capitalize;
-}
-
-.button {
-  width: 100%;
-}
-
 .form_field {
   font-family: "Roboto";
   font-style: normal;
@@ -127,18 +300,56 @@ export default {
   color: $grey2;
 }
 
-.or_option {
-  font-weight: bolder;
+.field {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 11px;
+
+  letter-spacing: 0.01em;
+  color: $grey5;
 }
 
-.help_text {
-  color: $dark;
+.field_value {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 13px;
-  text-align: center;
-  align-items: center;
-  letter-spacing: 0.01em;
+  font-size: 15px;
+  line-height: 27px;
+  letter-spacing: 0.005em;
+  color: $dark;
+}
+
+.item_value {
+  padding-left: 2.8rem;
+}
+
+.item_venue {
+  padding-left: 7rem;
+}
+
+.item_date {
+  padding-left: 7.8rem;
+}
+
+.item_amount {
+  padding-left: 6.4rem;
+}
+
+.item_statue {
+  padding: 7.1rem;
+}
+
+.unapproved_color {
+  color: #f2994a;
+}
+
+.approved_color {
+  color: #27ae60;
+}
+
+.info {
+  color: $grey2;
 }
 </style>

@@ -1,5 +1,4 @@
 <template>
-
   <q-page>
     <q-header class="bg-primary text-white header">
       <q-toolbar>
@@ -12,16 +11,16 @@
           v-if="$q.screen.lt.md"
         />
         <q-toolbar-title class="toolbar_title">
-          Welcome President
+          Welcome {{ auth_user_role }}
         </q-toolbar-title>
         <div>
           <q-avatar size="xl">
             <span class="material-icons"> account_circle </span>
           </q-avatar>
-          Suh Edmond
+          {{ auth_name }}
           <q-btn-dropdown flat>
             <q-list>
-              <q-item clickable v-close-popup>
+              <q-item clickable v-close-popup :to="{name:'member_account'}">
                 <q-item-section avatar>
                   <span>
                     <q-icon name="person" size="sm" />
@@ -54,7 +53,6 @@
       class="main_content"
       :style="$q.screen.lg ? 'margin-left: .5rem;' : ''"
     >
-    <q-linear-progress  indeterminate  color="white" size="5px" v-if="loading"/>
       <q-card class="header_section">
         <q-card-section class="content_header">
           <div class="row">
@@ -65,43 +63,38 @@
                 icon="arrow_back"
                 flat
                 dense
-                @click="goBack"
+                @click="goBack(null)"
               />
             </label>
             <div class="q-pa-xs">
-              <span class="q-pl-sm title">{{ item.name }}</span>
-              <span class="q-pl-sm">
-                <q-icon
-                  size="1.5em"
-                  name="chevron_right"
-                  color="primary"
-                  v-if="has_intermediate_tab"
-              /></span>
-              <span class="q-pl-sm title" v-if="has_intermediate_tab">{{
-                intermediate_tab
+              <span class="q-pl-sm title tab" @click="goBack(item.name)">{{
+                item.name
               }}</span>
-              <span class="q-pl-sm">
-                <q-icon
-                  size="1.5em"
-                  name="chevron_right"
-                  color="primary"
-                  v-if="has_intermediate_tab2"
-              /></span>
-              <span class="q-pl-sm title" v-if="has_intermediate_tab2">{{
-                intermediate_tab2
-              }}</span>
+
+              <span v-if="getIntermediateTabs.length > 0">
+                <span
+                  class="q-pl-sm tab"
+                  v-for="tab in getIntermediateTabs"
+                  :key="tab.index"
+                  @click="goBack(null)"
+                >
+                  <q-icon size="1.5em" name="chevron_right" color="primary" />
+                  <span class="q-pl-sm title">{{ tab.name }}</span></span
+                >
+              </span>
             </div>
             <q-space />
             <q-btn
               color="primary"
               icon-right="add"
               label="Add"
-              flat
+              push
               size="md"
               dense
               no-caps
-              v-show="requires_add"
+              v-show="requires_add && !checkTreasurerRole() && !verifyRequiredAdd()"
               @click="showRightDrawer"
+              class="q-pa-xs"
             />
           </div>
         </q-card-section>
@@ -111,20 +104,25 @@
           <q-card-section class="content">
             <router-view
               @start-loading="startLoading"
-              @update-member="updateMember"
               @update-payment-category="updatePaymentCategory"
-              @show-payment-items="showPaymentItems"
               @update-payment-item="updatePaymentItem"
               @update-expenditure-category="updateExpenditureCategory"
-              @show-expenditure-items="showExpenditureItems"
               @edit-expenditure-item="editExpenditureItem"
-              @show-expenditure-item-details="showExpenditureItemDetails"
+              @view-expenditure-item="viewExpenditureItem"
               @edit-expenditure-item-detail="editExpenditureItemDetail"
+              @view-expenditure-item-detail="viewExpenditureItemDetail"
               @edit-member-saving="editMemberSaving"
+              @view-member-saving="viewMemberSaving"
               @edit-income-activity="editIncomeActivity"
               @view-income-activity="viewIncomeActivity"
               @view-contribution="viewContribution"
               @edit-contribution="editContribution"
+              @search-member-saving="searchMemberSaving"
+              @search-members-contribution="searchMemberContribution"
+              @report-generation="reportGeneration"
+              @view-sponsorship="viewSponsorship"
+              @edit-sponsorship="editSponsorship"
+              @register-member="registerMember"
             />
           </q-card-section>
         </q-card>
@@ -144,10 +142,16 @@
 </template>
 
 <script>
-import { SessionStorage } from "quasar";
+import { LocalStorage, SessionStorage } from "quasar";
 
 export default {
-  created() {},
+  mounted() {
+    this.auth_name = LocalStorage.getItem("data").name;
+    this.auth_user_role = this.formatUserRole(
+      LocalStorage.getItem("data").roles.find((role) => role.name !== "MEMBER")
+        .name
+    );
+  },
   props: {
     item: {
       type: Object,
@@ -160,6 +164,8 @@ export default {
   },
   data() {
     return {
+      auth_name: LocalStorage.getItem("data").name,
+      auth_user_role: null,
       left: false,
       year: new Date().getFullYear(),
       right: false,
@@ -167,22 +173,35 @@ export default {
       intermediate_tab: "",
       has_intermediate_tab: false,
       intermediate_tab2: "",
-      has_intermediate_tab2:false,
-      loading:false,
+      has_intermediate_tab2: false,
+      loading: false,
     };
   },
 
+  computed: {
+    getIntermediateTabs() {
+      let data = [];
+      Array.from(this.$store.getters.getIntermediateTabs).forEach((ele) => {
+        data.push({
+          name: ele.name,
+          has_intermediate_tab: ele.has_intermediate_tab,
+        });
+      });
+      return data;
+    },
+  },
+
   methods: {
-    startLoading(data){
+    startLoading(data) {
       this.loading = data;
     },
     showRightDrawer() {
       this.right = true;
-
       this.$emit("show-right-drawer", {
         right: this.right,
         current_tab: this.getCurrentRightDrawerTab(),
       });
+      this.resetAllForms(this.getCurrentRightDrawerTab());
     },
     showLeftDrawer() {
       this.left = !this.left;
@@ -195,50 +214,43 @@ export default {
         color: "default",
         to_on_fail: "none",
         error_msg: "default",
+        show_feedback: true,
         to_be_store_data: {
           required: false,
           has_value: false,
           data: [],
         },
       };
-      this.$store.dispatch("auth/logoutUser", payload);
+      this.$store.dispatch("logoutUser", payload);
     },
-    goBack() {
+    goBack(tab) {
       history.back();
-     if(SessionStorage.getItem("has_intermediate_tab2")){
-      this.has_intermediate_tab2 = false;
-      SessionStorage.set("has_intermediate_tab2", false);
-      SessionStorage.remove("intermediate_tab2");
-     }else {
-      this.has_intermediate_tab = false;
-      SessionStorage.set("has_intermediate_tab", false);
-      SessionStorage.remove("intermediate_tab");
-     }
+      let data = [];
+      data = Array.from(this.$store.getters.getIntermediateTabs);
+      if (tab == "Expenditure Categories") {
+        data.pop();
+        data.pop();
+      } else {
+        data.pop();
+      }
+      this.$store.dispatch("setIntermediateTabs", Array.from(data));
     },
-    updateMember(data) {
-      console.log(data);
-      this.right = true;
-      this.$emit("show-right-drawer", {
-        right: this.right,
-        current_tab: data.tab,
-        data: data.data,
-      });
+    registerMember(data){
+      this.updateDrawer(data);
     },
+
     updatePaymentCategory(data) {
       this.updateDrawer(data);
     },
-    showPaymentItems(data) {
-      this.has_intermediate_tab = data.has_intermediate_tab;
-      this.getIntermediateTab();
-    },
-    getIntermediateTab() {
-      this.intermediate_tab = SessionStorage.getItem("intermediate_tab");
-      this.intermediate_tab2 = SessionStorage.getItem("intermediate_tab2") !== "undefined" ? SessionStorage.getItem("intermediate_tab2"): ""
-      return this.intermediate_tab;
-    },
+
     updatePaymentItem(data) {
       this.updateDrawer(data);
     },
+
+    viewMemberSaving(data) {
+      this.updateDrawer(data);
+    },
+
     updateDrawer(data) {
       this.right = true;
       this.$emit("show-right-drawer", {
@@ -250,53 +262,112 @@ export default {
     updateExpenditureCategory(data) {
       this.updateDrawer(data);
     },
-    showExpenditureItems(data) {
-      this.has_intermediate_tab = data.has_intermediate_tab;
-      this.getIntermediateTab();
-    },
+
     editExpenditureItem(data) {
       this.updateDrawer(data);
     },
-    showExpenditureItemDetails(data) {
-      this.has_intermediate_tab = data.has_intermediate_tab;
-      this.has_intermediate_tab2 = SessionStorage.getItem("has_intermediate_tab2");
-      this.getIntermediateTab();
+
+
+    viewExpenditureItem(data) {
+      this.updateDrawer(data);
     },
-    editExpenditureItemDetail(data){
-      this.updateDrawer(data)
+
+    editExpenditureItemDetail(data) {
+      this.updateDrawer(data);
     },
-    getCurrentRightDrawerTab(){
+
+    viewExpenditureItemDetail(data){
+      this.updateDrawer(data);
+    },
+    getCurrentRightDrawerTab() {
       let tab = "";
-      if(SessionStorage.getItem("intermediate_tab") === null && SessionStorage.getItem("intermediate_tab2") === null){
+      if (Array.from(this.$store.getters.getIntermediateTabs).length == 0) {
         tab = SessionStorage.getItem("to_tab");
       }
-      if(SessionStorage.getItem("intermediate_tab") !== null && SessionStorage.getItem("intermediate_tab2") === null){
-        tab = SessionStorage.getItem("intermediate_tab");
+      if (Array.from(this.$store.getters.getIntermediateTabs).length == 1) {
+        tab = Array.from(this.$store.getters.getIntermediateTabs)[0].name;
       }
-      if(SessionStorage.getItem("intermediate_tab2") !== null){
-        tab = SessionStorage.getItem("intermediate_tab2");
+      if (Array.from(this.$store.getters.getIntermediateTabs).length == 2) {
+        tab = Array.from(this.$store.getters.getIntermediateTabs)[1].name;
       }
-
       return tab;
     },
-    editMemberSaving(data){
-      this.updateDrawer(data)
-    },
-    editIncomeActivity(data){
-      this.updateDrawer(data)
-    },
-    viewIncomeActivity(data){
-      console.log(data);
-      this.updateDrawer(data)
-    },
-    viewContribution(data){
-      this.updateDrawer(data)
-    },
-    editContribution(data){
+    editMemberSaving(data) {
       this.updateDrawer(data);
+    },
+    editIncomeActivity(data) {
+      this.updateDrawer(data);
+    },
+    viewIncomeActivity(data) {
+      this.updateDrawer(data);
+    },
+    viewContribution(data) {
+      this.updateDrawer(data);
+    },
+
+    editContribution(data) {
+      this.updateDrawer(data);
+    },
+
+    formatUserRole(role) {
+      let user_role = null;
+      if (role === "FINANCIAL_SECRETARY") {
+        user_role = "Financial Secretary";
+      }
+      if (role === "TREASURER") {
+        user_role = "Treasurer";
+      }
+      if (role === "PRESIDENT") {
+        user_role = "President";
+      }
+      if (role === "AUDITOR") {
+        user_role = "Auditor";
+      }
+      return user_role;
+    },
+
+    searchMemberSaving(data) {
+      this.updateDrawer(data);
+    },
+
+    checkTreasurerRole() {
+      const treasurer_role = LocalStorage.getItem("data").roles.find(
+        (role) => role.name == "TREASURER"
+      );
+      return treasurer_role != undefined;
+    },
+
+    searchMemberContribution(data) {
+      this.updateDrawer(data);
+    },
+
+    reportGeneration(data) {
+      this.updateDrawer(data);
+    },
+
+    viewSponsorship(data) {
+      this.updateDrawer(data);
+    },
+
+    editSponsorship(data){
+      this.updateDrawer(data);
+    },
+
+
+    resetAllForms() {
+      this.$store.dispatch("setUpdatedPayCategories", null)
+      this.$store.dispatch("setUpdatedPaymentItem", null);
+      this.$store.dispatch("setUpdatedExpenditureCategory", null);
+      this.$store.dispatch("setUpdatedExpenditureItem", null);
+      this.$store.dispatch("setUpdatedExpenditureItemDetail", null);
+      this.$store.dispatch("setUpdatedMemberSaving", null);
+      this.$store.dispatch("setUpdatedIncomeActivity", null);
+    },
+
+    verifyRequiredAdd(){
+      return this.$route.name === 'member_profile'? true:false;
     }
   },
-  computed: {},
 };
 </script>
 
@@ -374,5 +445,9 @@ export default {
   color: $primary;
   font-weight: 500;
   font-size: smaller;
+}
+
+.tab {
+  cursor: pointer;
 }
 </style>

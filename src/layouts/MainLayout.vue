@@ -12,14 +12,15 @@
       <div>
         <div class="bg-white left_drawer">
           <div class="bg-transparent q-pa-sm flex flex-center">
-            <q-avatar size="70px">
-              <!-- <img src="https://cdn.quasar.dev/logo-v2/svg/logo.svg" /> -->
+            <q-avatar size="90px" v-if="getOrganisation != null">
+              <q-img :src="getOrganisation.logo"> </q-img>
             </q-avatar>
           </div>
           <div
             class="text-weight-bold text-center organisation_name q-mb-md q-pa-xs"
+            v-if="getOrganisation != null"
           >
-            Brother’s Corner CYF Great Soppo Buea
+            {{ getOrganisation.name }}
           </div>
         </div>
         <div class="nav">
@@ -30,7 +31,6 @@
               v-ripple
               :active-class="item.name == 'Dashboard' ? 'item' : 'item_text'"
               @click="setItem({ name: 'Dashboard', selected: true }, false)"
-              v-if="checkRole(['PRESIDENT', null])"
               to="/dashboard"
             >
               <q-item-section
@@ -55,8 +55,8 @@
                   false
                 )
               "
-              v-if="checkRole(['PRESIDENT', null])"
-              to="/dashboard/organisation-management"
+              v-if="checkRole(['PRESIDENT', null, null])"
+              :to="{ name: 'organisation' }"
             >
               <q-item-section
                 avatar
@@ -72,6 +72,7 @@
                 Organisation Management
               </q-item-section>
             </q-item>
+
             <q-item
               clickable
               v-ripple
@@ -82,8 +83,11 @@
               @click="
                 setItem({ name: 'Member Management', selected: true }, true)
               "
-              v-if="checkRole(['PRESIDENT', 'FINANCIAL_SECRETARY'])"
-              to="/dashboard/members"
+              v-if="
+                checkRole(['PRESIDENT', 'FINANCIAL_SECRETARY', 'TREASURER'])
+              "
+              :to="{ name: 'members' }"
+              :disable="getOrganisation == null"
             >
               <q-item-section
                 avatar
@@ -97,6 +101,7 @@
                 Member Management
               </q-item-section>
             </q-item>
+
             <q-item
               clickable
               v-ripple
@@ -104,6 +109,8 @@
               :active="item.name == 'Settings'"
               @click="setItem({ name: 'Settings', selected: true }, false)"
               v-if="checkRole(['PRESIDENT', null])"
+              :disable="getOrganisation == null"
+              :to="{name: 'settings'}"
             >
               <q-item-section
                 avatar
@@ -123,8 +130,11 @@
               @click="
                 setItem({ name: 'Payment Categories', selected: true }, true)
               "
-              v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER'])"
-              to="/dashboard/payment-categories"
+              v-if="
+                checkRole(['FINANCIAL_SECRETARY', 'TREASURER', 'PRESIDENT'])
+              "
+              :to="{ name: 'payment_category' }"
+              :disable="getOrganisation == null"
             >
               <q-item-section
                 avatar
@@ -152,8 +162,9 @@
                   true
                 )
               "
-              v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER'])"
-              to="/dashboard/expenditure-categories"
+              v-if="checkRole(['FINANCIAL_SECRETARY', null, 'PRESIDENT'])"
+              :to="{ name: 'expenditure_category' }"
+              :disable="getOrganisation == null"
             >
               <q-item-section
                 avatar
@@ -173,13 +184,35 @@
             <q-item
               clickable
               v-ripple
+              :active-class="item.name == 'Expenditures' ? 'item' : 'item_text'"
+              :active="item.name == 'Expenditures'"
+              @click="setItem({ name: 'Expenditures', selected: true }, true)"
+              v-if="checkRole([null, 'TREASURER', null])"
+              :to="{ name: 'expenditures' }"
+              :disable="getOrganisation == null"
+            >
+              <q-item-section
+                avatar
+                :class="item.name == 'Expenditures' ? 'item_icon' : 'item_text'"
+              >
+                <q-icon name="monetization_on" size="xs" />
+              </q-item-section>
+              <q-item-section class="item_name"> Expenditures </q-item-section>
+            </q-item>
+
+            <q-item
+              clickable
+              v-ripple
               :active-class="
                 item.name == 'Member Savings' ? 'item' : 'item_text'
               "
               :active="item.name == 'Member Savings'"
               @click="setItem({ name: 'Member Savings', selected: true }, true)"
-              v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER'])"
-              to="/dashboard/members-savings"
+              v-if="
+                checkRole(['FINANCIAL_SECRETARY', 'TREASURER', 'PRESIDENT'])
+              "
+              :to="{ name: 'savings' }"
+              :disable="getOrganisation == null"
             >
               <q-item-section
                 avatar
@@ -204,8 +237,11 @@
               @click="
                 setItem({ name: 'Income Activities', selected: true }, true)
               "
-              v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER'])"
-              to="/dashboard/income-activities"
+              v-if="
+                checkRole(['FINANCIAL_SECRETARY', 'TREASURER', 'PRESIDENT'])
+              "
+              :to="{ name: 'income_activity' }"
+              :disable="getOrganisation == null"
             >
               <q-item-section
                 avatar
@@ -230,8 +266,11 @@
               @click="
                 setItem({ name: 'Members Contributions', selected: true }, true)
               "
-              v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER'])"
+              v-if="
+                checkRole(['FINANCIAL_SECRETARY', 'TREASURER', 'PRESIDENT'])
+              "
               :to="{ name: 'members_contributions' }"
+              :disable="getOrganisation == null"
             >
               <q-item-section
                 avatar
@@ -252,13 +291,52 @@
               clickable
               v-ripple
               :active-class="
+                item.name == 'Sponsorship Management' ? 'item' : 'item_text'
+              "
+              :active="item.name == 'Sponsorship Management'"
+              @click="
+                setItem(
+                  { name: 'Sponsorship Management', selected: true },
+                  true
+                )
+              "
+              v-if="
+                checkRole(['FINANCIAL_SECRETARY', 'TREASURER', 'PRESIDENT'])
+              "
+              :to="{ name: 'sponsorship' }"
+              :disable="getOrganisation == null"
+            >
+              <q-item-section
+                avatar
+                :class="
+                  item.name == 'Sponsorship Management'
+                    ? 'item_icon'
+                    : 'item_text'
+                "
+              >
+                <img
+                  src="../../src/assets/sponsorship.png"
+                  class="sponsorship_icon"
+                />
+              </q-item-section>
+              <q-item-section class="item_name"
+                >Sponsorship Management
+              </q-item-section>
+            </q-item>
+
+            <q-item
+              clickable
+              v-ripple
+              :active-class="
                 item.name == 'Reports Generation' ? 'item' : 'item_text'
               "
               :active="item.name == 'Reports Generation'"
               @click="
                 setItem({ name: 'Reports Generation', selected: true }, false)
               "
-              v-if="checkRole(['FINANCIAL_SECRETARY', 'TREASURER'])"
+              v-if="checkRole(['FINANCIAL_SECRETARY', 'PRESIDENT', null])"
+              :to="{ name: 'report_generation' }"
+              :disable="getOrganisation == null"
             >
               <q-item-section
                 avatar
@@ -271,19 +349,6 @@
               <q-item-section class="item_name">
                 Reports Generation
               </q-item-section>
-            </q-item>
-          </q-list>
-          <q-list padding>
-            <q-item
-              clickable
-              v-ripple
-              :active-class="item.name == 'Logout' ? 'item' : 'item_text'"
-              @click="logoutUser"
-            >
-              <q-item-section avatar class="item_text">
-                <q-icon name="logout" size="xs" />
-              </q-item-section>
-              <q-item-section class="item_name"> Logout </q-item-section>
             </q-item>
           </q-list>
         </div>
@@ -310,7 +375,7 @@
     >
       <q-page>
         <q-card class="bar" flat>
-          <div class="flex">
+          <div class="flex q-pa-xs">
             <div>
               <q-btn
                 dense
@@ -322,6 +387,11 @@
                 size="sm"
               >
               </q-btn>
+            </div>
+            <div class="flex flex-center">
+              <label for="heading" class="heading text-white q-pl-lg text_h6">{{
+                heading
+              }}</label>
             </div>
             <q-space />
             <div>
@@ -341,43 +411,113 @@
         <AddMember
           v-if="current_tab == 'Member Management'"
           @close-right-drawer="closeRightDrawer"
+          @set-heading="setHeading"
         ></AddMember>
-        <EditMember v-if="current_tab == 'EditMember'" :data="data"  @close-right-drawer="closeRightDrawer"></EditMember>
         <AddPaymentCategory
           v-if="current_tab == 'Payment Categories'"
           @close-right-drawer="closeRightDrawer"
+          @set-heading="setHeading"
         >
         </AddPaymentCategory>
         <AddPaymentItem
           v-if="current_tab == 'Payment Items'"
           @close-right-drawer="closeRightDrawer"
+          @set-heading="setHeading"
         ></AddPaymentItem>
         <AddExpenditureCategory
           v-if="current_tab == 'Expenditure Categories'"
+          @close-right-drawer="closeRightDrawer"
+          @set-heading="setHeading"
         ></AddExpenditureCategory>
         <AddExpenditureItem
           v-if="current_tab == 'Expenditure Items'"
+          @close-right-drawer="closeRightDrawer"
+          @set-heading="setHeading"
         ></AddExpenditureItem>
         <AddExpenditureItemDetail
           v-if="current_tab == 'Expenditure Item Details'"
+          @close-right-drawer="closeRightDrawer"
+          @set-heading="setHeading"
         ></AddExpenditureItemDetail>
         <AddMemberSavingVue
           v-if="current_tab == 'Member Savings'"
+          @close-right-drawer="closeRightDrawer"
+          @set-heading="setHeading"
         ></AddMemberSavingVue>
+        <ViewMemberSaving
+          v-if="current_tab == 'View Member Saving'"
+          @close-right-drawer="closeRightDrawer"
+          @set-heading="setHeading"
+        >
+        </ViewMemberSaving>
         <AddIncomeActivity
           v-if="current_tab == 'Income Activities'"
+          @close-right-drawer="closeRightDrawer"
+          @set-heading="setHeading"
         ></AddIncomeActivity>
         <ViewIncomeActivity
           v-if="current_tab == 'View Income Activity'"
+          @close-right-drawer="closeRightDrawer"
+          @set-heading="setHeading"
         ></ViewIncomeActivity>
         <ViewContribution
           v-if="current_tab == 'View Contribution'"
+          @set-heading="setHeading"
           @edit-contribution="updateRightDrawer"
         >
         </ViewContribution>
         <AddContribution
           v-if="current_tab == 'Members Contributions'"
+          @close-right-drawer="closeRightDrawer"
+          @set-heading="setHeading"
         ></AddContribution>
+        <SearchSavings
+          v-if="current_tab == 'Search Savings'"
+          @close-right-drawer="closeRightDrawer"
+          @set-heading="setHeading"
+        >
+        </SearchSavings>
+        <SearchContribution
+          v-if="current_tab == 'Search Members Contributions'"
+          @close-right-drawer="closeRightDrawer"
+          @set-heading="setHeading"
+        >
+        </SearchContribution>
+        <EditMemberContribution
+          v-if="current_tab == 'Edit Member Contribution'"
+          @close-right-drawer="closeRightDrawer"
+          @set-heading="setHeading"
+        >
+        </EditMemberContribution>
+        <AddSponsorship
+          v-if="current_tab == 'Sponsorship Management'"
+          @close-right-drawer="closeRightDrawer"
+          @set-heading="setHeading"
+        ></AddSponsorship>
+        <ViewSponsorshipVue
+          v-if="current_tab == 'View Sponsorship'"
+          @close-right-drawer="closeRightDrawer"
+          @set-heading="setHeading"
+        >
+        </ViewSponsorshipVue>
+        <ViewExpenditureItemVue
+          v-if="current_tab == 'Expenditure Activity Information'"
+          @close-right-drawer="closeRightDrawer"
+          @set-heading="setHeading"
+        >
+        </ViewExpenditureItemVue>
+        <ViewExpenditureItemDetail
+          v-if="current_tab == 'Expenditure Activity Detail Information'"
+          @close-right-drawer="closeRightDrawer"
+          @set-heading="setHeading"
+        >
+        </ViewExpenditureItemDetail>
+        <MemberRegistration
+          v-if="current_tab == 'Register Member'"
+          @close-right-drawer="closeRightDrawer"
+          @set-heading="setHeading"
+        >
+        </MemberRegistration>
       </q-page>
     </q-drawer>
   </q-layout>
@@ -387,7 +527,6 @@
 import MainContent from "src/components/MainContent.vue";
 import { LocalStorage, SessionStorage } from "quasar";
 import AddMember from "src/components/AddMember.vue";
-import EditMember from "src/components/EditMember.vue";
 import AddPaymentCategory from "src/components/AddPaymentCategory.vue";
 import AddPaymentItem from "src/components/AddPaymentItem.vue";
 import AddExpenditureCategory from "src/components/AddExpenditureCategory.vue";
@@ -398,8 +537,22 @@ import AddIncomeActivity from "src/components/AddIncomeActivity.vue";
 import ViewIncomeActivity from "src/components/ViewIncomeActivity.vue";
 import ViewContribution from "src/components/ViewContribution.vue";
 import AddContribution from "src/components/AddContribution.vue";
+import organisationMixinVue from "src/mixins/organisationMixin.vue";
+import ViewMemberSaving from "src/components/ViewMemberSaving.vue";
+import SearchSavings from "src/components/SearchSavings.vue";
+import SearchContribution from "src/components/SearchContribution.vue";
+import EditMemberContribution from "src/components/EditMemberContribution.vue";
+import AddSponsorship from "src/components/AddSponsorship.vue";
+import ViewSponsorshipVue from "src/components/ViewSponsorship.vue";
+import ViewExpenditureItemVue from "src/components/ViewExpenditureItem.vue";
+import ViewExpenditureItemDetail from "src/components/ViewExpenditureItemDetail.vue";
+import MemberRegistration from "src/components/MemberRegistration.vue";
 
 export default {
+  mixins: [organisationMixinVue],
+  mounted() {
+    this.getOrganisationInfo();
+  },
   data() {
     return {
       left: false,
@@ -410,48 +563,70 @@ export default {
         selected: true,
       },
       requires_add: false,
-      right_drawer_width: 400,
+      right_drawer_width: 480,
       current_tab: "",
       right_drawer_tab: "",
       data: null,
-
+      heading: "",
     };
   },
+  computed: {
+    getOrganisation() {
+      return this.$store.getters.getOrganisation;
+    },
+  },
+  watch: {},
   methods: {
     setItem(item, requires_add) {
       this.item.name = item.name;
+
       this.requires_add = requires_add;
+
       this.item.selected = true;
+
       SessionStorage.set("from_tab", SessionStorage.getItem("to_tab"));
+
       SessionStorage.set("to_tab", item.name);
+
       SessionStorage.set("requires_add", this.requires_add);
 
+      this.$store.dispatch("setIntermediateTabs", []);
     },
+
+
     updateRightDrawer({ right, current_tab, data }) {
       this.current_tab = current_tab;
       this.right = right;
       this.data = data;
-
     },
+
+
     updateLeftDrawer(left) {
       this.left = left;
     },
+
+
     checkRole(tab_roles) {
       let user_roles = [];
       LocalStorage.getItem("data").roles.forEach((role) => {
         user_roles.push(role.name);
       });
       return user_roles.includes(tab_roles[0]) ||
-        user_roles.includes(tab_roles[1])
+        user_roles.includes(tab_roles[1]) ||
+        user_roles.includes(tab_roles[2])
         ? true
         : false;
     },
+
+
+
     logoutUser() {
       let payload = {
         to_on_ok: "Login",
         msg: "Logout Successful",
         color: "default",
         to_on_fail: "none",
+        show_feedback: false,
         error_msg: "default",
         to_be_store_data: {
           required: false,
@@ -459,19 +634,33 @@ export default {
           data: [],
         },
       };
-      this.$store.dispatch("auth/logoutUser", payload);
+      this.$store.dispatch("logoutUser", payload);
     },
-    goBack() {},
+
+
+
+
+    goBack() {
+      this.right = !this.right;
+      this.$store.dispatch("setEditState", false);
+    },
+
+
+
     closeRightDrawer() {
       this.right = !this.right;
+      this.$store.dispatch("setEditState", false);
     },
 
 
+
+    setHeading(data) {
+      this.heading = data;
+    },
   },
   components: {
     MainContent,
     AddMember,
-    EditMember,
     AddPaymentCategory,
     AddPaymentItem,
     AddExpenditureCategory,
@@ -482,6 +671,15 @@ export default {
     ViewIncomeActivity,
     ViewContribution,
     AddContribution,
+    ViewMemberSaving,
+    SearchSavings,
+    SearchContribution,
+    EditMemberContribution,
+    AddSponsorship,
+    ViewSponsorshipVue,
+    ViewExpenditureItemVue,
+    ViewExpenditureItemDetail,
+    MemberRegistration,
   },
 };
 </script>
@@ -489,11 +687,6 @@ export default {
 <style scoped lang="scss">
 * {
   box-sizing: border-box;
-}
-
-.header {
-  height: 120px;
-  border-bottom-left-radius: 2rem;
 }
 
 .content {
@@ -552,5 +745,19 @@ export default {
   border-bottom-right-radius: 0px;
   border-top-left-radius: 0px;
   border-top-right-radius: 0px;
+}
+
+.sponsorship_icon {
+  color: $grey2;
+  width: 1.13rem;
+}
+
+.logout {
+  position: absolute;
+  top: 91%;
+}
+
+.expand {
+  color: red;
 }
 </style>

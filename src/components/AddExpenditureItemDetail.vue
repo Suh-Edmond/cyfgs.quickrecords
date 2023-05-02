@@ -1,92 +1,234 @@
 <template>
-  <div class="q-pa-sm">
-    <div class="text_h6 text-center q-pt-xs q-pb-md add_member_title">
-      Expenditure Item Detail Information
+  <div class="q-pa-md">
+    <div class="q-ml-sm q-mb-md">
+      <label class="text-muted q-ml-sm info"
+        >All fields with <span class="text-red">*</span> are required</label
+      >
     </div>
-    <div>
-      <div>
-        <q-form @submit="onAddExpenditureItemDetail" class="q-gutter-sm">
+    <div class="q-mt-md q-mx-md">
+      <q-form @submit="onAddExpenditureItemDetail" class="q-gutter-sm">
+        <div class="q-mb-md">
+          <label for="credential" class="form_field"
+            >Name <span class="text-red">*</span></label
+          >
+          <q-input
+            v-model="expenditure_item_detail.name"
+            outlined
+            dense
+            type="text"
+          />
+        </div>
+        <div class="q-mb-md">
+          <label for="credential" class="form_field"
+            >Amount Given<span class="text-red">*</span></label
+          >
+          <q-input
+            v-model="expenditure_item_detail.amount_given"
+            outlined
+            dense
+            type="number"
+            @input="validateExpenditureAmountGiven"
+          />
+          <small v-if="is_valid_amount_given" class="text-red">
+                <b>Amount given can not be more than Estimated Amount for the Activity</b>
+              </small>
+        </div>
+        <div class="q-mb-md">
+          <label for="credential" class="form_field"
+            >Amount Spent<span class="text-red">*</span></label
+          >
+          <q-input
+            v-model="expenditure_item_detail.amount_spent"
+            outlined
+            dense
+            type="number"
+          >
+          </q-input>
+        </div>
+        <div class="q-mb-md">
+          <label for="credential" class="form_field">Comment</label>
+          <q-input
+            v-model="expenditure_item_detail.comment"
+            dense
+            class="text_color"
+            type="textarea"
+            outlined
+            placeholder="Provide any comment about this expenditure"
+          />
+        </div>
+        <div class="flex q-mt-lg justify-end">
           <div>
-            <label for="credential" class="form_field">Expenditure Item <span class="text-red">*</span></label>
-            <q-select v-model="expenditure_item_detail.expenditure_item_id" outlined dense :disabled="checkIfExistExpenditureItemDetail"
-              :options="expenditure_items" />
-          </div>
-          <div>
-            <label for="credential" class="form_field">Name <span class="text-red">*</span></label>
-            <q-input v-model="expenditure_item_detail.name" outlined dense type="text" />
-          </div>
-          <div>
-            <label for="credential" class="form_field">Amount Given<span class="text-red">*</span></label>
-            <q-input v-model="expenditure_item_detail.amount_given" outlined dense type="number" />
-          </div>
-          <div>
-            <label for="credential" class="form_field">Amount Spent<span class="text-red">*</span></label>
-            <q-input v-model="expenditure_item_detail.amount_spent" outlined dense type="number" />
-          </div>
-          <div>
-            <label for="credential" class="form_field">Comment</label>
-            <q-input v-model="expenditure_item_detail.comment" outlined dense autogrow />
-          </div>
-
-          <div>
-            <label for="credential" class="form_field">Receipt(Optional)</label>
-            <q-uploader
-              style="width:100%"
-              url="http://localhost:4444/upload"
-              label="Restricted to images"
-              flat
-              bordered
-              multiple
-              accept="image/jpg, image/png,image/jpeg"
-              @rejected="onRejected"
-            />
-          </div>
-
-          <div class="q-mt-md">
-            <ButtonVue class="form_button" :label="label_save" :loading="loading" :color="color"
-              :disabled="validateForm" :no_caps="no_caps">
+            <ButtonVue
+              class="form_button"
+              :label="'Save'"
+              :loading="loading"
+              :color="'primary'"
+              :disabled="validateForm"
+              :no_caps="true"
+            >
             </ButtonVue>
           </div>
-        </q-form>
-      </div>
+        </div>
+      </q-form>
     </div>
   </div>
 </template>
 <script>
 import ButtonVue from "src/components/Button.vue";
-export default {
+import ExpenditureItemDetailMixinVue from "src/mixins/ExpenditureItemDetailMixin.vue";
+import moment from "moment";
 
+export default {
+  mixins: [ExpenditureItemDetailMixinVue],
+  created() {
+    let heading = "Expenditure activity detail information";
+    this.$emit("set-heading", heading);
+  },
   data() {
     return {
-      label_save: "Save",
       loading: false,
-      color: "primary",
       expenditure_item_detail: {
-        expenditure_item_id: null,
-        amount_spent: null,
+        expenditure_item_id: this.$store.getters.getCurrentExpenditureItem.id,
+        amount_spent: 0,
         name: null,
-        comment: null,
-        amount_given: null
+        comment: " ",
+        amount_given: 0,
+        picture: null,
+        id: null,
       },
-      position: "right",
-      dialog: false,
-      no_caps: true,
-      expenditure_items: [{ "lable": 1, "value": "Funerals" }]
+      is_valid_amount_given:false
     };
   },
+
   computed: {
     validateForm() {
-      return this.expenditure_item_detail.amount_given === null || this.expenditure_item_detail.name === null || this.expenditure_item_detail.expenditure_item_id === null || this.expenditure_item_detail.amount_spent === null ? true : false;
+      return this.expenditure_item_detail.amount_given == null ||
+        this.expenditure_item_detail.name == null ||
+        this.expenditure_item_detail.amount_spent == null
+        ? true
+        : false;
     },
-    checkIfExistExpenditureItemDetail(){
-      return this.expenditure_item_detail.expenditure_item_id !== null && this.expenditure_item_detail.name !== null && this.expenditure_item_detail.amount_given && this.expenditure_item_detail.amount_spent ? true : false
+    getCurrentExpenditureItem() {
+      return this.$store.getters.getCurrentExpenditureItem;
+    },
+    getUpdatedExpenditureItemDetailFromState() {
+      return this.$store.getters.getUpdatedExpenditureItemDetail;
+    },
+    getFormatDetailCreatedDate() {
+      return moment(
+        this.$store.getters.getUpdatedExpenditureItemDetail.created_at
+      ).format("MMMM Do YYYY");
+    },
+
+    setFormUpdateDetail(){
+      return this.setFormFields(this.$store.getters.getUpdatedExpenditureItemDetail);
+    }
+  },
+  watch:{
+    setFormUpdateDetail(){
+      return this.setFormFields(this.$store.getters.getUpdatedExpenditureItemDetail);
     }
   },
   methods: {
     onAddExpenditureItemDetail() {
-      this.$emit("close-right-drawer");
+      let item = this.$store.getters.getCurrentExpenditureItem;
+      let payload = {
+        url: this.setActionUrl(this.expenditure_item_detail.id, item),
+        data: this.expenditure_item_detail,
+        msg: "Expenditure Item detail save Successfully",
+        color: "default",
+        to_on_ok: "none",
+        to_on_fail: "none",
+        show_feedback: true,
+        error_msg: "An Error occurred! Please try again",
+        has_commit: false,
+        commit: "none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.setDispatchAction(this.expenditure_item_detail.id, payload);
     },
-    onRejected(){}
+
+
+    resetForm() {
+      this.expenditure_item_detail.name = null;
+      this.expenditure_item_detail.amount_spent = 0;
+      this.expenditure_item_detail.amount_given = 0;
+      this.expenditure_item_detail.comment = null;
+      // this.expenditure_item_detail.expenditure_item_id = null;
+      this.expenditure_item_detail.picture = null;
+      // this.expenditure_item_detail.id = null;
+
+      return this.expenditure_item_detail;
+    },
+
+
+
+    setFormFields(data) {
+     if(data != null){
+      this.expenditure_item_detail.expenditure_item_id =
+        data.expenditure_item_id;
+      this.expenditure_item_detail.name = data.name;
+      this.expenditure_item_detail.comment = data.comment;
+      this.expenditure_item_detail.amount_given = data.amount_given;
+      this.expenditure_item_detail.amount_spent = data.amount_spent;
+      this.expenditure_item_detail.id = data.id;
+     }
+
+      return this.expenditure_item_detail;
+    },
+
+    setActionUrl(id, item) {
+      let url = "";
+      if (id === null) {
+        url = `/api/protected/expenditure-items/${item.id}/details`;
+      } else {
+        url = `/api/protected/expenditure-details/${id}/update`;
+      }
+      return url;
+    },
+
+    setDispatchAction(id, payload) {
+      this.loading = true;
+      if (id === null) {
+        this.$store
+          .dispatch("postRequest", payload)
+          .then(() => {
+            this.getExpenditureDetailsByItemId(
+              payload.data.expenditure_item_id
+            );
+          })
+          .finally(() => {
+            this.$emit("close-right-drawer");
+            this.loading = false;
+            this.resetForm();
+          });
+      } else {
+        this.$store
+          .dispatch("putRequest", payload)
+          .then(() => {
+            this.getExpenditureDetailsByItemId(
+              payload.data.expenditure_item_id
+            );
+          })
+          .finally(() => {
+            this.$emit("close-right-drawer");
+            this.loading = false;
+            this.resetForm();
+            this.$store.dispatch("setUpdatedExpenditureItemDetail", null);
+          });
+      }
+    },
+
+    validateExpenditureAmountGiven(){
+      if (this.$store.getters.getCurrentExpenditureItem.amount > this.expenditure_item_detail.amount_given) {
+        console.log(1);
+        this.is_valid_amount_given = true;
+      }
+    },
   },
   components: {
     ButtonVue,
@@ -95,23 +237,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.add_member_title {
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 29px;
-  align-items: center;
-  text-align: center;
-  letter-spacing: 0.01em;
-  color: #5384ae;
-  text-transform: capitalize;
-}
-
-.button {
-  width: 100%;
-}
-
 .form_field {
   font-family: "Roboto";
   font-style: normal;
@@ -122,18 +247,64 @@ export default {
   color: $grey2;
 }
 
-.or_option {
-  font-weight: bolder;
+.field {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 11px;
+
+  letter-spacing: 0.01em;
+  color: $grey5;
 }
 
-.help_text {
-  color: $dark;
+.field_value {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 13px;
-  text-align: center;
-  align-items: center;
-  letter-spacing: 0.01em;
+  font-size: 15px;
+  line-height: 27px;
+  letter-spacing: 0.005em;
+  color: $dark;
+}
+
+.detail_name {
+  padding-left: 0.6rem;
+}
+
+.item_amount {
+  padding-left: 2.5rem;
+}
+
+.detail_amount {
+  padding-left: 2.3rem;
+}
+
+.item_bal {
+  padding-left: 4.8rem;
+}
+
+.detail_date {
+  padding-left: 3rem;
+}
+
+.detail_created_by {
+  padding-left: 3.7rem;
+}
+
+.item_statue {
+  padding: 5.5rem;
+}
+
+.unapproved_color {
+  color: #f2994a;
+}
+
+.approved_color {
+  color: #27ae60;
+}
+
+.info {
+  color: $grey2;
 }
 </style>

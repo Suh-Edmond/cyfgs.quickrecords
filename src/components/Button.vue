@@ -1,7 +1,10 @@
 <template>
-  <q-btn :color="color" :label="label" :flat="flat" class="button" type="submit"  :loading="loading" :disable="disabled" :no-caps="no_caps" :icon-right="icon_right">
+  <q-btn :color="color" :label="label" :flat="flat" class="button" type="submit"   :loading="loading" :disable="disabled" :no-caps="no_caps" :icon-right="icon_right">
     <template v-slot:loading>
-          <q-spinner-ios />
+      <q-spinner
+        color="white"
+        :size="size"
+      />
         </template>
   </q-btn>
 </template>
@@ -9,6 +12,10 @@
 <script>
 export default {
   props: {
+    size: {
+      required: false,
+      type:Number
+    },
     label: {
      required:true
     },

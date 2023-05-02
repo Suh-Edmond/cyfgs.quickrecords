@@ -1,48 +1,76 @@
 <template>
   <q-page>
-    <NotFound
-      :message="not_found_msg"
-      v-if="payment_categories.length == 0"
-    ></NotFound>
+    <!-- spinners -->
+    <div class="flex justify-center">
+      <q-spinner-ios
+        color="primary"
+        size="2em"
+        class="q-mb-lg"
+        v-if="getLoadingState"
+      />
+    </div>
+
+    <NotFound :message="not_found_msg" v-if="getData.length == 0 && !getLoadingState"></NotFound>
+
+
     <!-- header for filter categories -->
-    <div
-      class="row q-ml-xs q-pt-xs"
-      v-if="payment_categories.length > 0"
-      :class="$q.screen.lg ? 'q-pa-sm' : ''"
-      :style="
-        $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-      "
-    >
-      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
-        <q-select
-          v-model="year"
-          outlined
-          dense
-          :options="years"
-          label="Select year"
-        />
+    <div v-if="getData.length > 0 && !getLoadingState">
+      <div
+        class="row q-ml-xs q-pt-xs"
+        :class="$q.screen.lg ? 'q-pa-sm' : ''"
+        :style="
+          $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+        "
+      >
+        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
+          <q-select
+            v-model="year"
+            outlined
+            dense
+            :options="years"
+            label="Select year"
+            @input="filterPaymentCategories"
+          />
+        </div>
+        <q-space />
+        <div class="button q-pb-xs">
+          <q-btn
+            :label="label_download"
+            :loading="loading"
+            :color="color_print"
+            :disabled="false"
+            no-caps
+            icon-right="print"
+            @click="downloadPaymentCategory"
+          ></q-btn>
+        </div>
       </div>
-      <q-space />
-      <div class="button q-pb-xs">
-      <ButtonVue
-        :label="label_download"
-        :loading="loading"
-        :color="color_print"
-        :disabled="false"
-        :no_caps="no_caps"
-        icon_right="print"
-      ></ButtonVue>
-    </div>
-    </div>
-    <!-- table for categories -->
-    <div class="row q-pt-sm">
-      <div class="col-md-12 col-xs-12 col-sm-12">
+      <!-- table for categories -->
+      <div class="row q-pt-sm">
+        <div class="col-md-12 col-xs-12 col-sm-12" v-show="!start_filter">
+          <CategoryTable
+            :columns="columns"
+            :data="getData"
+            :label="label"
+            :message="message"
+            @show-payment-items="showPaymentItems"
+            @update-payment-category="updatePaymentCategory"
+            :show_payment_category="true"
+            :show_payment_item="false"
+            :show_expenditure_category="false"
+            :show_expenditure_item="false"
+          >
+          </CategoryTable>
+        </div>
+      </div>
+
+      <!-- table for filtered categories -->
+      <div class="col-md-12 col-xs-12 col-sm-12" v-show="start_filter">
         <CategoryTable
           :columns="columns"
-          :data="data"
+          :data="filteredPaymentCategories"
           :label="label"
           :message="message"
-          :name="name"
           @show-payment-items="showPaymentItems"
           @update-payment-category="updatePaymentCategory"
           :show_payment_category="true"
@@ -59,30 +87,36 @@
 <script>
 import NotFound from "src/components/NotFound.vue";
 import CategoryTable from "src/components/CategoryTable.vue";
-import ButtonVue from "src/components/Button.vue";
-import { SessionStorage } from 'quasar';
+import PaymentCategoryMixinVue from "src/mixins/PaymentCategoryMixin.vue";
+import HelperMixinVue from "src/mixins/HelperMixin.vue";
+
 export default {
+  mixins: [PaymentCategoryMixinVue, HelperMixinVue],
+  mounted() {
+    let id = this.$store.getters.getOrganisation.id;
+    this.fetchCategories(id, true);
+  },
   data() {
     return {
       not_found_msg:
-        "Ooops!! No Payment Categories found. click the add button to add Payment Categories.",
-      payment_categories: [{ id: "1" }],
+        "Ooops!! No Payment Categories found. Click the add button to add Payment Categories.",
       year: null,
       years: ["2020", "2021", "2022", "2023", "2024"],
       search: null,
       label_fetch: "Filter",
+      is_fetching: true,
       color: "primary",
-      no_caps: true,
       loading: false,
-      label_download:"Print",
-      color_print:"positive",
+      start_filter: false,
+      label_download: "Print",
+      color_print: "positive",
       columns: [
         {
-          name: "id",
+          name: "counter",
           required: true,
           label: "S/N",
           align: "left",
-          field: "id",
+          field: "counter",
         },
         {
           name: "name",
@@ -105,106 +139,137 @@ export default {
           field: "action",
         },
       ],
-      data: [
-        {
-          id: 1,
-          name: "Frozen Yogurt",
-          item: "View Payment Items",
-          action: "",
-        },
-        {
-          id: 2,
-          name: "Ice cream sandwich",
-          item: "View Payment Items",
-          action: "",
-        },
-        {
-          id: 3,
-          name: "Eclair",
-          item: "View Payment Items",
-          action: "",
-        },
-        {
-          id: 4,
-          name: "Cupcake",
-          item: "View Payment Items",
-          action: "",
-        },
-        {
-          id: 5,
-          name: "Gingerbread",
-          item: "View Payment Items",
-          action: "",
-        },
-        {
-          id: 6,
-          name: "Jelly bean",
-          item: "View Payment Items",
-          action: "",
-        },
-        {
-          id: 7,
-          name: "Lollipop",
-          item: "View Payment Items",
-          action: "",
-        },
-        {
-          id: 8,
-          name: "Honeycomb",
-          item: "View Payment Items",
-          action: "",
-        },
-        {
-          id: 9,
-          name: "Donut",
-          item: "View Payment Items",
-          action: "",
-        },
-        {
-          id: 10,
-          name: "KitKat",
-          item: "View Payment Items",
-          action: "",
-        },
-      ],
       label: "Delete",
       message: "Are you sure you want to delete this Payment Category?",
-      name:"Harvest ThanksGiven"
+      filteredPaymentCategories: [],
     };
   },
   computed: {
-    validateFilter() {
-      return true;
+    getData() {
+      let data = [];
+
+      this.$store.getters.getPaymentCategories.forEach((element) => {
+        data.push({
+          counter:
+            this.$store.getters.getPaymentCategories.indexOf(element) + 1,
+          name: element.name,
+          item: "View Payment Items",
+          id: element.id,
+          description: element.description,
+          type: "PAYMENT_CATEGORY",
+          organisation_id: element.organisation_id,
+        });
+      });
+
+      return data;
     },
-    getPaymentItem() {
-      if (!this.show_payment_items) {
-        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-        this.title = "Payment Categories";
-      } else {
-        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-        this.title = "Harvest ThanksGiven > Harvest Thanksgiven 2022";
-      }
-      return this.title;
+
+    getLoadingState() {
+      return this.$store.getters.getFetchingState
     },
   },
+
+  watch: {
+    getLoadingState() {
+      return this.$store.getters.getFetchingState
+    },
+  },
+
+
   methods: {
     updatePaymentCategory(data) {
+      this.$store.dispatch("setUpdatedPayCategories", data.data);
+
       this.$emit("update-payment-category", data);
     },
     showPaymentItems(data) {
-      //make request
-      SessionStorage.set("intermediate_tab", "Payment Items")
-      SessionStorage.set("has_intermediate_tab", true)
-      this.$emit("show-payment-items", data);
+      this.getPaymentItemsByCategory(data.payment_items.id);
+
+      let intermediate_tabs = [];
+
+      intermediate_tabs.push({name: "Payment Items", has_intermediate_tab: true})
+
+      this.$store.dispatch("setIntermediateTabs", intermediate_tabs)
+
+      this.$store.dispatch("setCurrentPaymentCategory", data.payment_items);
     },
-    updatePaymentItems(data){
+
+    updatePaymentItems(data) {
       this.$emit("update-payment-item", data);
-    }
+    },
+
+    filterPaymentCategories() {
+      this.$router.push({
+        path: "/dashboard/payment-categories",
+        query: { year: this.year},
+      });
+
+      this.filteredPaymentCategories = [];
+
+      let organisationId = this.getOrganisationId;
+      let payload = {
+        url: `/api/protected/filter-payment-categories?organisation_id=${organisationId}&year=${this.year}`,
+        msg: "none",
+        color: "default",
+        status: "none",
+        error_msg: "An Error occurred! Could not fetch payment categories",
+        has_commit: false,
+        show_feedback: false,
+        show_spinner:true,
+        commit: "none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.$store.dispatch("getRequest", payload).then((res) => {
+        this.start_filter = true;
+        res.data.forEach((element) => {
+          this.filteredPaymentCategories.push({
+            counter: res.data.indexOf(element) + 1,
+            name: element.name,
+            item: "View Payment Items",
+            id: element.id,
+            description: element.description,
+            type: "PAYMENT_CATEGORY",
+            organisation_id: element.organisation_id,
+          });
+        });
+      });
+    },
+
+    downloadPaymentCategory() {
+      let id = this.getOrganisationId;
+      let url = `/api/protected/download-payment-categories?organisation_id=${id}&year=${this.year}`;
+      let file_name = "Organisation_Payment_Categories.pdf";
+      this.loading = this.downloadPdf(url, file_name);
+    },
+
+    getPaymentItemsByCategory(id) {
+      let payload = {
+        status: "none",
+        url: `/api/protected/payment-categories/${id}/payment-items`,
+        has_path_val: true,
+        show_feedback: false,
+        show_spinner:true,
+        msg: "none",
+        color: "default",
+        error_msg: "default",
+        commit: "SET_PAYMENT_ITEMS",
+        has_commit: true,
+        to_be_store_data: {
+          required: true,
+          has_value: false,
+          data: null,
+        },
+      };
+      this.$store.dispatch("getRequest", payload).then(() => {});
+    },
   },
   components: {
     NotFound,
     CategoryTable,
-    ButtonVue
   },
 };
 </script>

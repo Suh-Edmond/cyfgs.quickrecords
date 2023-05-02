@@ -1,12 +1,10 @@
 <template>
   <q-page>
-    <div class="text-center member_not_found">
-      <h6>
+    <div class="text-center member_not_found ">
+      <p>
         {{message}}
-        <q-avatar>
-          <img src="../assets/arrow.svg" alt="">
-        </q-avatar>
-      </h6>
+        <!-- <span class="arrow"><img src="../assets/arrow.png" alt=""  width="100px"></span> -->
+      </p>
     </div>
   </q-page>
 </template>
@@ -27,14 +25,17 @@ export default {
 </script>
 <style lang="scss" scoped>
 .member_not_found {
-  font-family: "Inter";
+  font-family: "Roboto";
   font-style: normal;
-  font-weight: 500;
-  font-size: 32px;
-  line-height: 39px;
+  font-weight: 400;
+  font-size: medium;
   align-items: center;
   text-align: center;
   letter-spacing: 0.005em;
   color: $grey5;
+}
+
+.arrow {
+  color: $dark;
 }
 </style>

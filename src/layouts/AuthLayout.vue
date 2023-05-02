@@ -6,16 +6,16 @@
           <span class="app_name">Financial</span>Assistant
         </q-toolbar-title>
         <div class="header_note" v-show="$q.screen.lg">
-          <div class="account_text" v-show="hasAccount">
+          <div class="account_text" v-show="hasAccount && isSignUpEnable">
             Don't Have an Account ?
           </div>
-          <div class="account_text__signup" v-show="hasAccount" >
+          <div class="account_text__signup" v-show="hasAccount && isSignUpEnable" >
             <router-link to="/auth/register" class="sign_link"><span @click="checkAccountExist">SIGN UP</span></router-link>
           </div>
-          <div class="account_text" v-show="!hasAccount">
+          <div class="account_text" v-show="!hasAccount && isSignUpEnable">
             Already Have an Account ?
           </div>
-          <div class="account_text__signup" v-show="!hasAccount" >
+          <div class="account_text__signup" v-show="!hasAccount && isSignUpEnable" >
             <router-link to="/auth/login" class="sign_link"><span @click="checkAccountExist">SIGN IN</span></router-link>
           </div>
           <div class="q-pa-md header_language">
@@ -74,12 +74,18 @@
 
 <script>
 export default {
+
   data() {
     return {
       year: new Date().getFullYear(),
       language: "EN",
-      hasAccount: true
+      hasAccount: true,
     };
+  },
+  computed: {
+    isSignUpEnable() {
+      return this.$router.currentRoute.meta.enableSignUp;
+    }
   },
   methods: {
     onItemClick(lang) {

@@ -1,254 +1,468 @@
+<!-- eslint-disable vue/no-side-effects-in-computed-properties -->
 <template>
   <div class="q-pa-sm">
-    <!-- no contributions available -->
-    <NotFound :message="not_found_msg" v-if="contributions.length == 0"></NotFound>
+    <!-- spinner when fetching data -->
+    <div class="flex justify-center">
+      <q-spinner-ios
+        color="primary"
+        size="2em"
+        class="q-mb-lg"
+        v-if="getLoadingState"
+      />
+    </div>
+
     <!-- contributions available -->
-    <div class="row q-ml-xs" v-if="contributions.length > 0" :class="$q.screen.lg ? 'q-pa-sm' : ''" :style="
-      $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-    ">
-      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12" :class="$q.screen.lg ? 'q-pr-md' : ''">
-        <q-select v-model="payment_category_item_id" outlined dense :options="payment_items"
-          label="Select payment item" />
+    <div v-if="!checkTreasurerRole()">
+      <div
+        class="row q-ml-xs q-pt-md justify-between"
+        :class="$q.screen.lg ? 'q-pa-md' : ''"
+        :style="
+          $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+        "
+      >
+        <div>
+          <q-btn
+            :label="label_fetch"
+            :color="color"
+            :disabled="false"
+            no-caps
+            icon-right="filter_list"
+            @click="openSearchBar()"
+          >
+          </q-btn>
+        </div>
+        <q-space />
+        <div class="button q-pb-xs">
+          <q-btn
+            :label="label_download"
+            :loading="loading"
+            :color="color_print"
+            :disabled="getTableData == 0"
+            no-caps
+            icon-right="print"
+            @click="downloadContributions()"
+          ></q-btn>
+        </div>
       </div>
-      <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12" :class="$q.screen.lg ? 'q-pr-md' : ''">
-        <q-select v-model="year" outlined dense :options="years" label="Select year" />
-      </div>
-      <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12" :class="$q.screen.lg ? 'q-pr-md' : ''">
-        <q-select v-model="month" outlined dense :options="months" label="Select month" input-debounce="0"
-          @filter="filterMonths" use-input hide-selected fill-input />
-      </div>
-      <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12" :class="$q.screen.lg ? 'q-pr-md' : ''">
-        <q-select v-model="status" outlined dense :options="statuses" label="Select status" />
-      </div>
-      <div :class="$q.screen.lg ? 'q-pr-md' : ''">
-        <ButtonVue :label="label_fetch_user" :loading="loading" :color="color" :disabled="validateFilter"
-          :no_caps="no_caps" icon_right="filter_list">
-        </ButtonVue>
-      </div>
-      <div :style="$q.screen.lg ? 'margin-left:76px' : ''">
-        <ButtonVue :label="label_print" :loading="loading" :color="color_print" :disabled="false" :no_caps="no_caps"
-          icon_right="print" size="sm"></ButtonVue>
+      <!-- table for contributions -->
+      <div class="row q-pt-sm">
+        <div class="col-md-12 col-xs-12 col-sm-12">
+          <TableVue
+            :columns="columns"
+            :data="getTableData"
+            :label="label"
+            :message="message"
+            :show_savings="false"
+            :show_income_activity="false"
+            :show_members="false"
+            :show_member_savings="false"
+            :show_contribution="true"
+            :show_member_contribution="false"
+            :total_contribution="computeTotalContributions"
+            @view-contribution="viewContribution"
+            @edit-contribution="editContribution"
+            :title="getTableTitleForSearchContributions"
+          >
+          </TableVue>
+        </div>
       </div>
     </div>
-    <!-- table for savings -->
-    <div class="row q-pt-sm">
-      <div class="col-md-12 col-xs-12 col-sm-12">
-        <TableVue
-          :columns="columns"
-          :data="data"
-          :label="label"
-          :message="message"
-          :name="name"
-          :show_savings="false"
-          :show_income_activity="false"
-          :show_members="false"
-          :show_member_savings="false"
-          :show_contribution="true"
-          :member_name="member_name"
-          @view-contribution="viewContribution"
-          @edit-contribution="editContribution"
-        >
-        </TableVue>
+
+    <!-- table for filtered savings so they can be approve/decline-->
+    <div v-if="checkTreasurerRole()">
+      <div
+        class="row q-ml-xs q-pt-md justify-between"
+        :class="$q.screen.lg ? 'q-pa-md' : ''"
+        :style="
+          $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+        "
+      >
+        <div>
+          <q-btn
+            :label="label_fetch"
+            :color="color"
+            :disabled="false"
+            no-caps
+            icon-right="filter_list"
+            @click="openSearchBar()"
+          >
+          </q-btn>
+        </div>
+        <q-space />
+        <div class="button q-pb-xs">
+          <q-btn
+            :label="label_download"
+            :loading="loading"
+            :color="color_print"
+            :disabled="getFilteredContributions.length == 0"
+            no-caps
+            icon-right="print"
+            @click="downloadContributions()"
+          ></q-btn>
+        </div>
+      </div>
+
+      <!-- table for filtered savings -->
+      <div class="row q-pt-sm">
+        <div class="col-md-12 col-xs-12 col-sm-12">
+          <TableVue
+            :columns="columns"
+            :data="getFilteredContributions"
+            :label="label"
+            :message="message"
+            :show_savings="false"
+            :show_income_activity="false"
+            :show_members="false"
+            :show_member_contribution="false"
+            :show_contribution="true"
+            :total_contribution="computeTotalContributionsForFilteredRecord"
+            :title="getTableTitleForSearchContributions"
+          >
+          </TableVue>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import NotFound from "src/components/NotFound.vue";
 import TableVue from "src/components/Table.vue";
-import ButtonVue from "src/components/Button.vue";
+import PaymentCategoryMixinVue from "src/mixins/PaymentCategoryMixin.vue";
+import PaymentItemMixinVue from "src/mixins/PaymentItemMixin.vue";
+import organisationMixinVue from "src/mixins/organisationMixin.vue";
+import HelperMixinVue from "src/mixins/HelperMixin.vue";
+import { LocalStorage } from "quasar";
+
 export default {
+  mixins: [
+    PaymentCategoryMixinVue,
+    PaymentItemMixinVue,
+    organisationMixinVue,
+    HelperMixinVue,
+  ],
+
+  mounted() {},
+
   data() {
     return {
-      contributions: [{}],
-      not_found_msg:
-        "Ooops!! No Contributions have been record, click the add to record contribution.",
       label_print: "Print",
       color_print: "positive",
-      payment_category_item_id: null,
-      year: null,
-      years: ["2020", "2021", "2022", "2023", "2024"],
-      label_fetch_user: "Filter",
+      payment_item_id: null,
+      label_fetch: "Filter",
+      label_download: "Print",
       loading: false,
       color: "primary",
-      no_caps: true,
-      payment_items: [],
       message: "Are you sure you want to delete this member's contribution ?",
       label: "Delete",
-      name:"test",
-      month: null,
-      member_name:"Name: Suh Edmond, Amount Paid: 500 XAF",
-      months: [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December",
-      ],
-      statuses: ["INCOMPLETE", "COMPLETE"],
-      status: null,
-      search: null,
       columns: [
         {
-          name: "id",
+          name: "counter",
           required: true,
           label: "S/N",
           align: "left",
-          field: "id",
+          field: "counter",
         },
         {
-          name: "name",
+          name: "user_name",
           required: true,
-          label: "Name",
+          label: "Member's Name",
           align: "left",
-          field: (row) => row.name,
+          field: (row) => row.user_name,
           format: (val) => `${val}`,
           sortable: true,
         },
         {
-          name: "amount",
+          name: "total_amount_deposited",
           align: "left",
-          label: "Amount Deposited (XAF)",
-          field: "amount",
+          label: "Total Amount Deposited (XAF)",
+          field: "total_amount_deposited",
         },
         {
-          name: "status",
+          name: "balance",
           align: "left",
-          label: "Status",
-          field: "status",
+          label: "Balance (XAF)",
+          field: "balance",
         },
         {
-          name: "date",
+          name: "state", ///this has to be changed to approve word not state so it is consistent
           align: "left",
-          label: "Date",
-          field: "date",
+          label: "Transaction Status",
+          field: "state",
         },
         {
           name: "action",
           label: "Action",
           field: "action",
+          align: "left",
         },
       ],
-      data: [
-        {
-          id: 1,
-          name: "Frozen Yogurt",
-          status: "APPROVED",
-          date: "2022/01/09",
-          amount: 50000,
-          action: "",
-        },
-        {
-          id: 2,
-          name: "Ice cream sandwich",
-          status: "APPROVED",
-          date: "2022/01/09",
-          amount: 50000,
-          action: "",
-        },
-        {
-          id: 3,
-          name: "Eclair",
-          status: "APPROVED",
-          date: "2022/01/09",
-          amount: 50000,
-          action: "",
-        },
-        {
-          id: 4,
-          name: "Cupcake",
-          status: "UNAPPROVED",
-          date: "2022/02/02",
-          amount: 50000,
-          action: "",
-        },
-        {
-          id: 5,
-          name: "Gingerbread",
-          status: "UNAPPROVED",
-          date: "2022/02/02",
-          amount: 50000,
-          action: "",
-        },
-        {
-          id: 6,
-          name: "Jelly bean",
-          status: "UNAPPROVED",
-          date: "2022/02/02",
-          amount: 50000,
-          action: "",
-        },
-        {
-          id: 7,
-          status: "UNAPPROVED",
-          date: "2022/02/02",
-          amount: 50000,
-          action: "",
-        },
-        {
-          id: 8,
-          name: "Honeycomb",
-          status: "APPROVED",
-          date: "2022/02/02",
-          amount: 50000,
-          action: "",
-        },
-        {
-          id: 9,
-          name: "Donut",
-          status: "APPROVED",
-          date: "2022/02/02",
-          amount: 50000,
-          action: "",
-        },
-        {
-          id: 10,
-          name: "KitKat",
-          status: "APPROVED",
-          date: "2022/02/02",
-          amount: 50000,
-          action: "",
-        },
-      ],
-    }
+      start_filter: false,
+      filteredContributions: [],
+      loading_filter: false,
+    };
   },
   computed: {
     validateFilter() {
-      return this.payment_category_item_id !== null || this.month !== null || this.year !== null || this.status !== null ? false : true;
-    }
-  },
-  methods: {
-    filterMonths(val, update, abort) {
-      update(() => {
-        const needle = val.toLowerCase();
-        this.months = this.months.filter(
-          (v) => v.toLowerCase().indexOf(needle) > -1
+      return this.payment_item_id !== null ? false : true;
+    },
+
+    getTableData() {
+      let data = [];
+      if (this.getMembersContributionsByPaymentItem.length != 0) {
+        data = this.getMembersContributionsByPaymentItem;
+      } else {
+        data = this.getFilteredContributions;
+      }
+      return data;
+    },
+    computeTotalContributions() {
+      let total = 0.0;
+      if(this.$store.getters.getMembersContributionsByPaymentItem != null){
+        this.$store.getters.getMembersContributionsByPaymentItem.data
+        .filter((ele) => ele.approve == "APPROVED")
+        .map((ele) => ele.total_amount_deposited)
+        .forEach((amount) => {
+          total += amount;
+        });
+      }
+      return total;
+    },
+    getMembersContributionsByPaymentItem() {
+      let data = [];
+      if (this.$store.getters.getMembersContributionsByPaymentItem != null) {
+        this.$store.getters.getMembersContributionsByPaymentItem.data.forEach(
+          (ele) => {
+            data.push({
+              counter:
+                this.$store.getters.getMembersContributionsByPaymentItem.data.indexOf(
+                  ele
+                ) + 1,
+              amount_deposited: ele.amount_deposited,
+              total_amount_deposited: ele.total_amount_deposited,
+              id: ele.id,
+              approve: ele.approve,
+              balance: ele.balance,
+              payment_item_amount: ele.payment_item_amount,
+              payment_item_id: ele.payment_item_id,
+              payment_item_complusory: ele.payment_item_complusory,
+              payment_item_name: ele.payment_item_name,
+              comment: ele.comment,
+              code: ele.code,
+              type: "MEMBERS_CONTRIBUTIONS",
+              organisation_id: ele.organisation_id,
+              created_at: ele.created_at,
+              updated_by: ele.updated_by,
+              status: ele.status,
+              user_id: ele.user_id,
+              user_name: ele.user_name,
+              user_telephone: ele.user_telephone,
+            });
+          }
         );
-      });
+      }
+      return data;
     },
-    viewContribution(data){
-      this.$emit('view-contribution', data)
+
+    setTableTitle() {
+      let name = "";
+      let amount = 0;
+      let title = "";
+      if (this.$store.getters.getCurrentPaymentItem != null) {
+        name = this.$store.getters.getCurrentPaymentItem.name;
+        amount = this.$store.getters.getCurrentPaymentItem.amount;
+      }
+      if (
+        this.$store.getters.getCurrentPaymentItem != null &&
+        this.$store.getters.getCurrentContributionPaymentItem != null
+      ) {
+        title =
+          `Contributions for ${name}, Amount Payable: ` +
+          Number(amount).toLocaleString() +
+          "  XAF";
+      }
+      return title;
     },
-    editContribution(data){
+
+    checkIsExistPaymentItem() {
+      return this.getPaymentItems.length > 0;
+    },
+
+    getFilteredContributions() {
+      let data = [];
+
+      if (this.$store.getters.getFilteredContributions != null) {
+        this.$store.getters.getFilteredContributions.forEach((ele) => {
+          data.push({
+            counter:
+              this.$store.getters.getFilteredContributions.indexOf(ele) + 1,
+            amount_deposited: ele.amount_deposited,
+            total_amount_deposited: ele.total_amount_deposited,
+            id: ele.id,
+            approve: ele.approve,
+            balance: ele.balance,
+            payment_item_amount: ele.payment_item_amount,
+            payment_item_id: ele.payment_item_id,
+            payment_item_complusory: ele.payment_item_complusory,
+            payment_item_name: ele.payment_item_name,
+            comment: ele.comment,
+            code: ele.code,
+            type: "MEMBERS_CONTRIBUTIONS",
+            complusory: ele.complusory,
+            created_at: ele.created_at,
+            updated_by: ele.updated_by,
+            status: ele.status,
+            user_id: ele.user_id,
+            user_name: ele.user_name,
+            user_telephone: ele.user_telephone,
+          });
+        });
+      }
+      return data;
+    },
+
+    computeTotalContributionsForFilteredRecord() {
+      let total = 0.0;
+      if (this.$store.getters.getFilteredContributions != null) {
+        this.$store.getters.getFilteredContributions
+          .filter((ele) => ele.approve == "APPROVED")
+          .map((ele) => ele.total_amount_deposited)
+          .forEach((amount) => {
+            total += amount;
+          });
+      }
+      return total;
+    },
+
+    getLoadingState() {
+      return this.$store.getters.getFetchingState;
+    },
+
+    getTableTitleForSearchContributions() {
+      let title = "";
+      let search_data = this.$store.getters.getSearchSavingParams;
+      title =
+        search_data != undefined && search_data.payment_item_id != undefined
+          ? `Members Contributions for ${
+              search_data.payment_item_id.name
+            }, Amount Payable:  ${Number(
+              search_data.payment_item_id.amount
+            ).toLocaleString()} XAF`
+          : "";
+      return title;
+    },
+  },
+
+  watch: {},
+
+  methods: {
+    checkTreasurerRole() {
+      const treasurer_role = LocalStorage.getItem("data").roles.find(
+        (role) => role.name == "TREASURER"
+      );
+      return treasurer_role != undefined;
+    },
+
+    viewContribution(data) {
+      this.$emit("view-contribution", data);
+    },
+
+    editContribution(data) {
+      this.$store.dispatch("setSelectedContribution", data.data);
+
       this.$emit("edit-contribution", data);
-    }
+    },
+
+    getSelectedPaymentItem() {
+      let item = null;
+      item = this.$store.getters.getPaymentItems.data.filter(
+        (ele) => ele.id === this.payment_item_id.value
+      );
+      this.$store.dispatch("setCurrentPaymentItem", item[0]); //set the state with the first element from the filtered array
+    },
+
+    filterContributions() {
+      this.filteredContributions = [];
+      let payload = {
+        status: "none",
+        url: `/api/protected/organisation/contributions/search?payment_item_id=${this.payment_item_id.value}&month=${this.month}&year=${this.year}&status=${this.status}`,
+        has_path_val: true,
+        show_feedback: false,
+        show_spinner: true,
+        msg: "none",
+        color: "default",
+        error_msg: "default",
+        commit: "none",
+        has_commit: false,
+        to_be_store_data: {
+          required: true,
+          has_value: false,
+          data: null,
+        },
+      };
+      this.loading_filter = true;
+      this.$store
+        .dispatch("getRequest", payload)
+        .then((res) => {
+          this.start_filter = true;
+
+          res.data.data.forEach((ele) => {
+            this.filteredContributions.push({
+              counter: res.data.data.indexOf(ele) + 1,
+              amount_deposited: ele.amount_deposited,
+              total_amount_deposited: ele.total_amount_deposited,
+              id: ele.id,
+              approve: ele.approve,
+              balance: ele.balance,
+              payment_item_amount: ele.payment_item_amount,
+              payment_item_id: ele.payment_item_id,
+              payment_item_complusory: ele.payment_item_complusory,
+              payment_item_name: ele.payment_item_name,
+              comment: ele.comment,
+              code: ele.code,
+              type: "MEMBERS_CONTRIBUTIONS",
+              complusory: ele.complusory,
+              created_at: ele.created_at,
+              updated_by: ele.updated_by,
+              status: ele.status,
+              user_id: ele.user_id,
+              user_name: ele.user_name,
+              user_telephone: ele.user_telephone,
+            });
+          });
+        })
+        .finally(() => {
+          this.loading_filter = false;
+        });
+    },
+
+    openSearchBar() {
+      let payload = {
+        data: null,
+        tab: "Search Members Contributions",
+      };
+
+      this.$emit("search-members-contribution", payload);
+    },
+
+    downloadContributions() {
+      let payment_item_id =
+        this.$store.getters.getSearchSavingParams.payment_item_id.id;
+      let month = this.$store.getters.getSearchSavingParams.month;
+      let year = this.$store.getters.getSearchSavingParams.year;
+      let status = this.$store.getters.getSearchSavingParams.status;
+      let url = `/api/protected/download-contributions?payment_item_id=${payment_item_id}&month=${month}&year=${year}&status=${status}`;
+
+      let file_name =
+        "Member's Contribution for " +
+        this.$store.getters.getSearchSavingParams.payment_item_id.name +
+        ".pdf";
+      this.loading = this.downloadPdf(url, file_name);
+    },
   },
   components: {
-    NotFound,
-    ButtonVue,
-    TableVue
-  }
-}
+    TableVue,
+  },
+};
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

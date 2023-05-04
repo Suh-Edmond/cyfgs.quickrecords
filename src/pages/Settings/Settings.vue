@@ -9,6 +9,7 @@
         v-if="getLoadingState"
       />
     </div>
+
     <div class="row q-px-sm">
       <div class="col-md-3 col-sm-12 col-xs-12">
         <div class="items">
@@ -20,15 +21,17 @@
             <q-item
               clickable
               v-ripple
-              @click="getCurrentItem('Year')"
-              :active-class="tag == 'Year' ? 'active_item' : ''"
-              :active="tag == 'Year'"
+              @click="getCurrentItem('Session')"
+              :active-class="tag == 'Session' ? 'active_item' : ''"
+              :active="tag == 'Session'"
             >
               <q-item-section avatar top>
                 <q-icon
                   name="folder"
                   :class="
-                    tag == 'Year' ? 'icon_color_active' : 'icon_color_in_active'
+                    tag == 'Session'
+                      ? 'icon_color_active'
+                      : 'icon_color_in_active'
                   "
                   size="xs"
                 ></q-icon>
@@ -36,17 +39,17 @@
               <q-item-section>
                 <q-item-label
                   :class="
-                    tag == 'Year'
+                    tag == 'Session'
                       ? 'text_header_active'
                       : 'text_header_in_active'
                   "
-                  >Year</q-item-label
+                  >Session</q-item-label
                 >
                 <q-item-label
                   caption
-                  :class="tag == 'Year' ? 'text_active' : 'text_in_active'"
+                  :class="tag == 'Session' ? 'text_active' : 'text_in_active'"
                 >
-                  Set the current year for the organisation
+                  Set the current Session for the organisation
                 </q-item-label>
               </q-item-section>
             </q-item>
@@ -60,7 +63,7 @@
             >
               <q-item-section avatar top>
                 <q-icon
-                  name="folder"
+                  name="monetization_on"
                   :class="
                     tag == 'Registration_fee'
                       ? 'icon_color_active'
@@ -214,12 +217,39 @@
           </q-list>
         </div>
       </div>
+
       <div class="col-md-9 col-sm-12 col-xs-12">
-        <!-- div for Year -->
-        <div v-if="tag == 'Year'">
+        <!-- div for Sessions -->
+        <div v-if="tag == 'Session'">
           <div class="q-ml-lg">
             <div class="row">
-              <div class="col-12">
+              <div class="col-12 q-mb-sm">
+                <div class="flex justify-end">
+                  <q-btn
+                    label="Add"
+                    dense
+                    size="sm"
+                    color="primary"
+                    no-caps
+                    class="q-pa-xs"
+                    icon-right="add"
+                    @click="show_add_year = true"
+                  >
+                    <q-tooltip> Add session </q-tooltip>
+                  </q-btn>
+                </div>
+              </div>
+
+              <!-- not session has been set -->
+              <div class="col-12 q-mt-lg" v-if="data.length == 0">
+                <NotFound
+                  :message="'Current session has not been set. Pleasse the add button to set current session'"
+                ></NotFound>
+              </div>
+              <!-- end of not found component -->
+
+              <!-- table for sessions -->
+              <div class="col-12" v-if="data.length > 0">
                 <q-table
                   :data="data"
                   :columns="columns"
@@ -228,30 +258,19 @@
                     backgroundColor: '#5384ae',
                     color: '#FFFFFF',
                   }"
+                  flat
                 >
+                  <!-- table header -->
                   <template v-slot:top-left>
                     <div>
-                      <label for="title" class="title">Set Current Year</label>
+                      <label for="title" class="title">Sessions</label>
                     </div>
                   </template>
-                  <template v-slot:top-right>
-                    <div>
-                      <q-btn
-                        label="Add"
-                        dense
-                        size="sm"
-                        color="primary"
-                        no-caps
-                        class="q-pa-xs"
-                        icon-right="add"
-                        @click="show_add_year = true"
-                      >
-                        <q-tooltip> Set new year </q-tooltip>
-                      </q-btn>
-                    </div>
-                  </template>
+                  <!-- end of table header -->
+
+                  <!-- start table body -->
                   <template v-slot:body="props">
-                    <q-tr :props="props">
+                    <q-tr :props="props" class="text-bold">
                       <q-td key="counter" :props="props">
                         {{ props.row.counter }}
                       </q-td>
@@ -274,12 +293,6 @@
                       >
                         {{ props.row.status }}
                       </q-td>
-                      <q-td key="created_at" :props="props">
-                        {{ formDateTime(props.row.created_at) }}
-                      </q-td>
-                      <q-td key="updated_at" :props="props">
-                        {{ formDateTime(props.row.updated_at) }}
-                      </q-td>
                       <q-td key="updated_by" :props="props">
                         {{ props.row.updated_by }}
                       </q-td>
@@ -290,20 +303,28 @@
                           class="edit_year q-mr-xl"
                           @click="editYear(props.row)"
                         >
-                        <q-tooltip>edit</q-tooltip>
+                          <q-tooltip>edit</q-tooltip>
                         </q-icon>
                       </q-td>
                     </q-tr>
                   </template>
+                  <!-- end table body -->
                 </q-table>
               </div>
+              <!-- end of table for session -->
             </div>
           </div>
         </div>
 
         <!-- div for registration fee -->
         <div v-if="tag == 'Registration_fee'" class="q-ml-lg">
-            <RegistrationFeeTable :columns="reg_table_columns" :data="reg_table_data" :table_header="table_header"></RegistrationFeeTable>
+          <RegistrationFeeTable
+            :columns="reg_table_columns"
+            :data="reg_table_data"
+            :table_header="table_header"
+            :loading="getLoadingState"
+            @fetch-registration-fee="getRegFee"
+          ></RegistrationFeeTable>
         </div>
       </div>
     </div>
@@ -312,7 +333,7 @@
     <q-dialog v-model="show_add_year">
       <q-card style="min-width: 400px" class="q-px-md q-pt-sm q-pb-md">
         <q-card-section class="row items-center q-pb-lg">
-          <div class="text-h6 add_year">Add Year</div>
+          <div class="text-h6 add_year">Add Session</div>
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
@@ -320,8 +341,7 @@
         <q-card-section class="q-pt-none">
           <q-form @submit="onAddYear" class="q-gutter-md">
             <div>
-              <q-input v-model="year" outlined dense >
-              </q-input>
+              <q-input v-model="year" outlined dense> </q-input>
             </div>
             <div class="q-mt-lg flex justify-end">
               <div class="q-mt-xs">
@@ -341,11 +361,11 @@
       </q-card>
     </q-dialog>
 
-     <!--update year dialog -->
-     <q-dialog v-model="show_edit_year">
+    <!--update year dialog -->
+    <q-dialog v-model="show_edit_year">
       <q-card style="min-width: 400px" class="q-px-md q-pt-sm q-pb-sm">
         <q-card-section class="row items-center q-pb-lg">
-          <div class="text-h6 add_year">Update Year</div>
+          <div class="text-h6 add_year">Update Session</div>
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
@@ -353,27 +373,7 @@
         <q-card-section class="q-pt-none">
           <q-form @submit="onUpdateYear" class="q-gutter-md">
             <div>
-              <q-input v-model="updated_year.year" outlined disable dense >
-                <template v-slot:append>
-                  <q-icon name="event" class="cursor-pointer text-bold">
-                    <q-popup-proxy
-                      ref="qDateProxy"
-                      transition-show="scale"
-                      transition-hide="scale"
-                    >
-                      <q-date v-model="year">
-                        <div class="row items-center justify-end">
-                          <q-btn
-                            v-close-popup
-                            label="Close"
-                            color="primary"
-                            flat
-                          />
-                        </div>
-                      </q-date>
-                    </q-popup-proxy>
-                  </q-icon>
-                </template>
+              <q-input v-model="updated_year.year" outlined disable dense>
               </q-input>
             </div>
             <div class="q-mt-lg">
@@ -393,6 +393,7 @@
                   :loading="is_fetching"
                   color="primary"
                   :no_caps="true"
+                  :disabled="false"
                 >
                 </ButtonVue>
               </div>
@@ -408,6 +409,7 @@
 import ButtonVue from "src/components/Button.vue";
 import moment from "moment";
 import RegistrationFeeTable from "src/components/RegistrationFeeTable.vue";
+import NotFound from "src/components/NotFound.vue";
 export default {
   mounted() {
     this.getSessions();
@@ -441,43 +443,28 @@ export default {
           sortable: true,
         },
         {
-          name: "created_at",
-          align: "left",
-          label: "Created At",
-          field: "created_at",
-          sortable: true,
-        },
-        {
-          name: "updated_at",
-          align: "left",
-          label: "Updated At",
-          field: "updated_at",
-          sortable: true,
-        },
-        {
           name: "updated_by",
           align: "left",
-          label: "Creator",
+          label: "Created By",
           field: "updated_by",
           sortable: true,
         },
-        { name: "action", label: "", field: "action", align: "center" },
+        { name: "action", label: "Action", field: "action", align: "left" },
       ],
-      data:[],
-      tag: "Year",
+      data: [],
+      tag: "Session",
       show_add_year: false,
       is_fetching: false,
       year: null,
-      show_edit_year:false,
-      updated_year:{
-        year:null,
-        status:null,
-        id:null,
-
+      show_edit_year: false,
+      updated_year: {
+        year: null,
+        status: null,
+        id: null,
       },
-      year_statuses:['ACTIVE', 'IN_ACTIVE'],
+      year_statuses: ["ACTIVE", "IN_ACTIVE"],
       reg_table_columns: [
-      {
+        {
           name: "counter",
           required: true,
           label: "S/N",
@@ -485,19 +472,24 @@ export default {
           field: "counter",
         },
         {
-          name: "name",
-          required: true,
-          label: "Name",
+          name: "amount",
           align: "left",
-          field: (row) => row.name,
-          format: (val) => `${val}`,
+          label: "Amount (XAF)",
+          field: "amount",
           sortable: true,
         },
         {
-          name: "amount",
+          name: "frequency",
           align: "left",
-          label: "Amount",
-          field: "amount",
+          label: "Frequency",
+          field: "frequency",
+          sortable: true,
+        },
+        {
+          name: "status",
+          align: "left",
+          label: "Status",
+          field: "status",
           sortable: true,
         },
         {
@@ -507,20 +499,10 @@ export default {
           field: "is_complusory",
           sortable: true,
         },
-        { name: "action", label: "", field: "action", align: "center" },
+        { name: "action", label: "Action", field: "action", align: "left" },
       ],
-      reg_table_data:[
-      {
-          counter: 1,
-          name: "Members Registration Fee",
-          amount:500.0,
-          is_complusory:true,
-          created_at: "2023-04-20 21:52:14",
-          updated_at: "2023-04-20 21:52:14",
-          updated_by: "Edmond",
-        },
-      ],
-      table_header:"Member's Registration Fee"
+      reg_table_data: [],
+      table_header: "Member's Registration Fee",
     };
   },
   computed: {
@@ -539,8 +521,12 @@ export default {
     getCurrentItem(type) {
       this.tag = type;
       switch (this.tag) {
-        case "Year":
+        case "Session":
           this.getSessions();
+          break;
+        case "Registration_fee":
+          this.getRegFee();
+          break;
       }
     },
     onAddYear() {
@@ -571,6 +557,7 @@ export default {
         })
         .finally(() => {});
     },
+
     getSessions() {
       let payload = {
         url: `/api/protected/sessions`,
@@ -578,6 +565,7 @@ export default {
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
+        show_spinner: true,
         show_feedback: false,
         error_msg: "An Error occurred! Please try again",
         has_commit: false,
@@ -610,7 +598,8 @@ export default {
       this.updated_year = data;
       this.show_edit_year = true;
     },
-    onUpdateYear(){
+
+    onUpdateYear() {
       this.is_fetching = true;
       let payload = {
         url: `/api/protected/sessions/update?id${this.updated_year.id}&status=${this.updated_year.status}`,
@@ -638,11 +627,51 @@ export default {
         })
         .finally(() => {});
     },
+
+    getRegFee() {
+      let payload = {
+        url: `/api/protected/registration_fees`,
+        msg: "none",
+        color: "default",
+        to_on_ok: "none",
+        to_on_fail: "none",
+        show_spinner: true,
+        show_feedback: false,
+        error_msg: "An Error occurred! Please try again",
+        has_commit: false,
+        commit: "none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.$store.dispatch("getRequest", payload).then((res) => {
+        this.reg_table_data = [];
+        if (res) {
+          res.data.forEach((ele) => {
+            this.reg_table_data.push({
+              counter: res.data.indexOf(ele) + 1,
+              id: ele.id,
+              amount: ele.amount,
+              frequency: ele.frequency,
+              status: ele.status,
+              is_compulsory: ele.is_compulsory,
+              created_at: ele.created_at,
+              updated_at: ele.updated_at,
+              updated_by: ele.updated_by,
+            });
+          });
+        }
+        return this.reg_table_data;
+      });
+    },
   },
 
   components: {
     ButtonVue,
-    RegistrationFeeTable
+    RegistrationFeeTable,
+    NotFound,
   },
 };
 </script>
@@ -658,7 +687,7 @@ export default {
   letter-spacing: 0.005em;
 }
 .alert {
-  color:$grey5;
+  color: $grey5;
 }
 .title {
   color: $primary;

@@ -11,7 +11,7 @@
     </div>
 
     <div class="row q-px-sm">
-      <div class="col-md-3 col-sm-12 col-xs-12">
+      <div class="col-md-4 col-sm-12 col-xs-12">
         <div class="items">
           <q-list bordered padding>
             <q-item-label header class="setting_title"
@@ -27,7 +27,7 @@
             >
               <q-item-section avatar top>
                 <q-icon
-                  name="folder"
+                  name="timer"
                   :class="
                     tag == 'Session'
                       ? 'icon_color_active'
@@ -218,102 +218,16 @@
         </div>
       </div>
 
-      <div class="col-md-9 col-sm-12 col-xs-12">
+      <div class="col-md-8 col-sm-12 col-xs-12">
         <!-- div for Sessions -->
-        <div v-if="tag == 'Session'">
-          <div class="q-ml-lg">
-            <div class="row">
-              <div class="col-12 q-mb-sm">
-                <div class="flex justify-end">
-                  <q-btn
-                    label="Add"
-                    dense
-                    size="sm"
-                    color="primary"
-                    no-caps
-                    class="q-pa-xs"
-                    icon-right="add"
-                    @click="show_add_year = true"
-                  >
-                    <q-tooltip> Add session </q-tooltip>
-                  </q-btn>
-                </div>
-              </div>
-
-              <!-- not session has been set -->
-              <div class="col-12 q-mt-lg" v-if="data.length == 0">
-                <NotFound
-                  :message="'Current session has not been set. Pleasse the add button to set current session'"
-                ></NotFound>
-              </div>
-              <!-- end of not found component -->
-
-              <!-- table for sessions -->
-              <div class="col-12" v-if="data.length > 0">
-                <q-table
-                  :data="data"
-                  :columns="columns"
-                  row-key="index"
-                  :table-header-style="{
-                    backgroundColor: '#5384ae',
-                    color: '#FFFFFF',
-                  }"
-                  flat
-                >
-                  <!-- table header -->
-                  <template v-slot:top-left>
-                    <div>
-                      <label for="title" class="title">Sessions</label>
-                    </div>
-                  </template>
-                  <!-- end of table header -->
-
-                  <!-- start table body -->
-                  <template v-slot:body="props">
-                    <q-tr :props="props" class="text-bold">
-                      <q-td key="counter" :props="props">
-                        {{ props.row.counter }}
-                      </q-td>
-                      <q-td key="year" :props="props">
-                        {{ props.row.year }}
-                      </q-td>
-                      <q-td
-                        key="status"
-                        :props="props"
-                        class="status_active"
-                        v-if="props.row.status == 'ACTIVE'"
-                      >
-                        {{ props.row.status }}
-                      </q-td>
-                      <q-td
-                        key="status"
-                        :props="props"
-                        class="status_in_active"
-                        v-if="props.row.status == 'IN_ACTIVE'"
-                      >
-                        {{ props.row.status }}
-                      </q-td>
-                      <q-td key="updated_by" :props="props">
-                        {{ props.row.updated_by }}
-                      </q-td>
-                      <q-td key="action" :props="props">
-                        <q-icon
-                          name="edit"
-                          size="xs"
-                          class="edit_year q-mr-xl"
-                          @click="editYear(props.row)"
-                        >
-                          <q-tooltip>edit</q-tooltip>
-                        </q-icon>
-                      </q-td>
-                    </q-tr>
-                  </template>
-                  <!-- end table body -->
-                </q-table>
-              </div>
-              <!-- end of table for session -->
-            </div>
-          </div>
+        <div v-if="tag == 'Session'" class="q-ml-lg">
+          <SessionsTable
+            :data="data"
+            :columns="columns"
+            :loading="getLoadingState"
+            :table_header="session_table_header"
+            @fetch-sessions="getSessions"
+          ></SessionsTable>
         </div>
 
         <!-- div for registration fee -->
@@ -409,7 +323,7 @@
 import ButtonVue from "src/components/Button.vue";
 import moment from "moment";
 import RegistrationFeeTable from "src/components/RegistrationFeeTable.vue";
-import NotFound from "src/components/NotFound.vue";
+import SessionsTable from "src/components/SessionsTable.vue";
 export default {
   mounted() {
     this.getSessions();
@@ -503,6 +417,7 @@ export default {
       ],
       reg_table_data: [],
       table_header: "Member's Registration Fee",
+      session_table_header: "Sessions",
     };
   },
   computed: {
@@ -578,6 +493,7 @@ export default {
       };
       this.$store.dispatch("getRequest", payload).then((res) => {
         if (res) {
+          this.data = [];
           res.data.forEach((ele) => {
             this.data.push({
               counter: res.data.indexOf(ele) + 1,
@@ -671,7 +587,7 @@ export default {
   components: {
     ButtonVue,
     RegistrationFeeTable,
-    NotFound,
+    SessionsTable,
   },
 };
 </script>

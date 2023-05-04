@@ -110,7 +110,8 @@
     <q-dialog v-model="show_add_fee">
       <q-card style="min-width: 450px" class="q-px-md q-pt-sm q-pb-sm">
         <q-card-section class="row items-center q-pb-lg">
-          <div class="text-h6 add_year">Add Member's Registration Fee</div>
+          <div class="text-h6 add_year" v-if="fee.id == null">Add Member's Registration Fee</div>
+          <div class="text-h6 add_year" v-else>Update Member's Registration Fee</div>
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>

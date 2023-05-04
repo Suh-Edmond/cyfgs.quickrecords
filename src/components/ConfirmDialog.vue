@@ -121,7 +121,7 @@ export default {
       required: true,
     },
     data: {
-      type: Object,
+      type: Object || null,
       required: true,
     },
     show_members: {

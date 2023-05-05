@@ -82,11 +82,11 @@
           <div>
             <ButtonVue
               class="form_button"
-              :label="label_save"
+              label="Save"
               :loading="loading"
-              :color="color"
+              color="primary"
               :disabled="validateForm"
-              :no_caps="no_caps"
+              :no_caps="true"
             >
             </ButtonVue>
           </div>
@@ -99,8 +99,6 @@
 import ButtonVue from "src/components/Button.vue";
 import PaymentItemMixin from "src/mixins/PaymentItemMixin.vue";
 import PaymentItemMixinVue from "src/mixins/PaymentItemMixin.vue";
-import PaymentItemTypeVue from "./Constants/PaymentItemType.vue";
-import PaymentItemFrequencyVue from "./Constants/PaymentItemFrequency.vue";
 
 export default {
   mixins: [PaymentItemMixin, PaymentItemMixinVue],
@@ -112,16 +110,13 @@ export default {
 
   data() {
     return {
-      label_save: "Save",
       loading: false,
-      color: "primary",
       payment_category: {
         name: null,
         description: null,
       },
       position: "right",
       dialog: false,
-      no_caps: true,
       payment_item: {
         compulsory: true,
         name: null,
@@ -133,16 +128,16 @@ export default {
         amount: 0.0,
       },
       payment_item_types: [
-        PaymentItemTypeVue.ALL_MEMBERS,
-        PaymentItemTypeVue.A_MEMBER,
-        PaymentItemTypeVue.MEMBER_WITH_ROLES,
-        PaymentItemTypeVue.MEMBERS_WITHOUT_ROLES,
-        PaymentItemTypeVue.GROUPED_MEMBERS,
+        "ALL_MEMBERS",
+        "A_MEMBER",
+        "MEMBERS_WITH_ROLES",
+        "MEMBERS_WITHOUT_ROLES",
+        "GROUPED_MEMBERS",
       ],
       frequencies: [
-        PaymentItemFrequencyVue.YEARLY,
-        PaymentItemFrequencyVue.MONTHLY,
-        PaymentItemFrequencyVue.ONE_TIME,
+        "YEARLY",
+        "MONTHLY",
+        "ONE_TIME",
       ],
     };
   },
@@ -260,8 +255,8 @@ export default {
         this.payment_item.description = data.description;
         this.payment_item.id = data.id;
         this.payment_item.amount = data.amount;
-        this.payment_item.type = data.type.value;
-        this.payment_item.compulsory = data.compulsory == 1 ? true : false; //because the complusory field value is returned as either 1 or 0
+        this.payment_item.type = data.payment_item_type;
+        this.payment_item.compulsory = data.compulsory == 1 ? true : false;
       }
       return this.payment_item;
     },

@@ -11,7 +11,8 @@
       :rows-per-page-options="[0]"
     >
       <template v-slot:body="props">
-        <q-tr :props="props">
+        <!-- table body for payment category -->
+        <q-tr :props="props" v-if="show_payment_category">
           <q-td key="counter" :props="props">
             {{ props.row.counter }}
           </q-td>
@@ -28,87 +29,9 @@
               {{ props.row.item }}
             </q-btn>
           </q-td>
-          <q-td
-            key="expenditure_items"
-            :props="props"
-            v-if="show_expenditure_category"
-          >
-            <q-btn
-              flat
-              class="view_items"
-              @click="showExpenditureItems(props.row)"
-              :to="{
-                name: 'expenditure_items',
-                params: { id: props.row.id },
-              }"
-            >
-              {{ props.row.expenditure_items }}
-            </q-btn>
-          </q-td>
-          <q-td
-            key="amount"
-            :props="props"
-            v-if="show_payment_item || show_expenditure_item"
-          >
-            {{ Number(props.row.amount).toLocaleString() }}
-          </q-td>
-          <q-td key="complusory" :props="props" v-if="show_payment_item">
-            {{ props.row.complusory == 1? 'YES': 'NO' }}
-          </q-td>
-          <q-td key="payment_item_type" :props="props" v-if="show_payment_item">
-            {{ props.row.payment_item_type }}
-          </q-td>
-          <q-td key="frequency" :props="props" v-if="show_payment_item">
-            {{ props.row.frequency }}
-          </q-td>
-          <q-td
-            key="amount_given"
-            :props="props"
-            v-if="show_expenditure_item_detail"
-          >
-            {{ Number(props.row.amount_given).toLocaleString() }}
-          </q-td>
-          <q-td
-            key="amount_spent"
-            :props="props"
-            v-if="show_expenditure_item_detail"
-          >
-            {{ Number(props.row.amount_spent).toLocaleString() }}
-          </q-td>
-          <q-td
-            key="balance"
-            :props="props"
-            v-if="show_expenditure_item_detail"
-          >
-            {{ Number(props.row.balance).toLocaleString() }}
-          </q-td>
-          <q-td key="venue" :props="props" v-if="show_expenditure_item">
-            {{ props.row.venue }}
-          </q-td>
-          <q-td key="date" :props="props" v-if="show_expenditure_item">
-            {{ getFormatedDate(props.row.date) }}
-          </q-td>
-          <q-td
-            key="state"
-            :props="props"
-            v-if="show_expenditure_item || show_expenditure_item_detail"
-          >
-            {{ props.row.approve }}
-          </q-td>
           <q-td key="action" :props="props">
             <!-- buttons for edit, view and delete table data row -->
-            <q-btn
-              flat
-              round
-              v-if="
-                (show_expenditure_item ||
-                  show_payment_category ||
-                  show_payment_item ||
-                  show_expenditure_category ||
-                  show_expenditure_item_detail) &&
-                !checkTreasurerRole()
-              "
-            >
+            <q-btn flat round v-if="!checkTreasurerRole()">
               <q-icon
                 name="menu"
                 size="xs"
@@ -133,6 +56,61 @@
                         <q-item-label class="details">View</q-item-label>
                       </q-item-section>
                     </q-item>
+                    <q-separator />
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onDelete(props.row, 'PAYMENT_CATEGORY')"
+                    >
+                      <q-item-section avatar>
+                        <span>
+                          <q-icon name="delete" size="xs" color="red" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="text-red">Delete</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                  </q-list>
+                </q-menu>
+              </q-icon>
+            </q-btn>
+          </q-td>
+        </q-tr>
+        <!-- end of table body for payment category -->
+
+        <!-- table body for payment items -->
+        <q-tr :props="props" v-if="show_payment_item">
+          <q-td key="counter" :props="props">
+            {{ props.row.counter }}
+          </q-td>
+          <q-td key="name" :props="props">
+            {{ props.row.name }}
+          </q-td>
+          <q-td key="amount" :props="props">
+            {{ Number(props.row.amount).toLocaleString() }}
+          </q-td>
+          <q-td key="compulsory" :props="props">
+            {{ props.row.compulsory == 1 ? "YES" : "NO" }}
+          </q-td>
+          <q-td key="payment_item_type" :props="props">
+            {{ props.row.payment_item_type }}
+          </q-td>
+          <q-td key="frequency" :props="props">
+            {{ props.row.frequency }}
+          </q-td>
+          <q-td key="action" :props="props">
+            <!-- buttons for edit, view and delete table data row -->
+            <q-btn flat round v-if="!checkTreasurerRole()">
+              <q-icon
+                name="menu"
+                size="xs"
+                color="primary"
+                class="menu_icon"
+                clickable
+              >
+                <q-menu>
+                  <q-list>
                     <q-item
                       clickable
                       v-close-popup
@@ -148,108 +126,11 @@
                         <q-item-label class="details">View</q-item-label>
                       </q-item-section>
                     </q-item>
-                    <q-item
-                      clickable
-                      v-close-popup
-                      @click="onViewExpenditureCategory(props.row)"
-                      v-if="show_expenditure_category"
-                    >
-                      <q-item-section avatar>
-                        <span>
-                          <q-icon name="visibility" size="xs" class="details" />
-                        </span>
-                      </q-item-section>
-                      <q-item-section>
-                        <q-item-label class="details">View</q-item-label>
-                      </q-item-section>
-                    </q-item>
-                    <!-- view expenditure item -->
-                    <q-item
-                      clickable
-                      v-close-popup
-                      @click="onViewExpenditureItem(props.row)"
-                      v-if="show_expenditure_item"
-                    >
-                      <q-item-section avatar>
-                        <span>
-                          <q-icon name="visibility" size="xs" class="details" />
-                        </span>
-                      </q-item-section>
-                      <q-item-section>
-                        <q-item-label class="details">View</q-item-label>
-                      </q-item-section>
-                    </q-item>
-                    <q-separator v-if="show_expenditure_item" />
-                    <!-- edit expenditure item -->
-                    <q-item
-                      clickable
-                      v-close-popup
-                      @click="onEditExpenditureItem(props.row)"
-                      v-if="show_expenditure_item"
-                    >
-                      <q-item-section avatar>
-                        <span>
-                          <q-icon name="edit" size="xs" class="details" />
-                        </span>
-                      </q-item-section>
-                      <q-item-section>
-                        <q-item-label class="details">Edit</q-item-label>
-                      </q-item-section>
-                    </q-item>
-
-                    <!-- show all details for expenditures -->
-                    <q-separator v-if="show_expenditure_item" />
-                    <q-item
-                      clickable
-                      v-close-popup
-                      @click="onViewExpenditureItemDetails(props.row)"
-                      v-if="show_expenditure_item"
-                    >
-                      <q-item-section avatar>
-                        <span>
-                          <q-icon name="info" size="xs" class="details" />
-                        </span>
-                      </q-item-section>
-                      <q-item-section>
-                        <q-item-label class="details">Details</q-item-label>
-                      </q-item-section>
-                    </q-item>
-                    <q-item
-                      clickable
-                      v-close-popup
-                      @click="onViewItemDetail(props.row)"
-                      v-if="show_expenditure_item_detail"
-                    >
-                      <q-item-section avatar>
-                        <span>
-                          <q-icon name="visibility" size="xs" class="details" />
-                        </span>
-                      </q-item-section>
-                      <q-item-section>
-                        <q-item-label class="details">View</q-item-label>
-                      </q-item-section>
-                    </q-item>
-                    <q-separator v-if="show_expenditure_item_detail" />
-                    <q-item
-                      clickable
-                      v-close-popup
-                      @click="onEditExpenditureItemDetail(props.row)"
-                      v-if="show_expenditure_item_detail"
-                    >
-                      <q-item-section avatar>
-                        <span>
-                          <q-icon name="edit" size="xs" class="details" />
-                        </span>
-                      </q-item-section>
-                      <q-item-section>
-                        <q-item-label class="details">Edit</q-item-label>
-                      </q-item-section>
-                    </q-item>
                     <q-separator />
                     <q-item
                       clickable
                       v-close-popup
-                      @click="onDelete(props.row)"
+                      @click="onDelete(props.row, 'PAYMENT_ITEMS')"
                     >
                       <q-item-section avatar>
                         <span>
@@ -264,87 +145,9 @@
                 </q-menu>
               </q-icon>
             </q-btn>
-
-            <!-- buttons for view details, approve and decline row data -->
-            <q-btn
-              no-caps
-              dense
-              color="teal"
-              padding="5px 7px"
-              label="View details"
-              v-if="show_expenditure_item && checkTreasurerRole()"
-              class="view"
-              @click="showDetails(props.row)"
-              :to="{ name: 'expenditure_detail', params: { id: props.row.id } }"
-            >
-              <q-icon name="visibility" size="xs" class="q-pl-md"></q-icon>
-            </q-btn>
-
-            <!-- approved btn for expenditure item details -->
-            <q-btn
-              class="decline_btn"
-              dense
-              size="md"
-              padding="5px 7px"
-              label="Decline"
-              no-caps
-              @click="onDeclineRecord(props.row, 'Decline')"
-              v-if="
-                show_expenditure_item_detail &&
-                checkTreasurerRole() &&
-                props.row.approve == 'PENDING'
-              "
-            />
-            <!-- decline btn for expenditure item details -->
-            <q-btn
-              class="approve_btn"
-              dense
-              size="md"
-              padding="5px 7px"
-              label="Approve"
-              no-caps
-              @click="onApprovedRecord(props.row, 'Approve')"
-              v-if="
-                show_expenditure_item_detail &&
-                checkTreasurerRole() &&
-                props.row.approve == 'PENDING'
-              "
-            />
-
-            <!-- approved btn for expenditure items -->
-            <q-btn
-              class="decline_btn"
-              dense
-              size="md"
-              padding="5px 7px"
-              label="Decline"
-              no-caps
-              @click="onDeclineRecord(props.row, 'Decline')"
-              v-if="
-                show_expenditure_item &&
-                checkTreasurerRole() &&
-                props.row.approve == 'PENDING' &&
-                props.row.show_state_action
-              "
-            />
-            <!-- decline btn for expenditure items -->
-            <q-btn
-              class="approve_btn"
-              dense
-              size="md"
-              padding="5px 7px"
-              label="Approve"
-              no-caps
-              @click="onApprovedRecord(props.row, 'Approve')"
-              v-if="
-                show_expenditure_item &&
-                checkTreasurerRole() &&
-                props.row.approve == 'PENDING' &&
-                props.row.show_state_action
-              "
-            />
           </q-td>
         </q-tr>
+        <!-- end of table body for payment items -->
       </template>
 
       <!-- slot for table headings -->
@@ -538,6 +341,18 @@
       </q-card>
     </q-dialog>
 
+    <div v-if="dialog">
+      <ConfirmDialog
+        :data="deleted_row"
+        :msg="delete_msg"
+        :type="type"
+        :show_expenditure_category="computeShowConfirmDialogDetail()"
+        :show_payment_category="computeShowConfirmDialogDetail()"
+        :show_payment_item="computeShowConfirmDialogDetail()"
+        @cancel-dialog="cancelDialog"
+      ></ConfirmDialog>
+    </div>
+
     <!-- confirmation dialog for approve and decline row data -->
     <q-dialog v-model="show_approve_dialog" v-if="show_approve_dialog">
       <q-card class="approve_card">
@@ -580,6 +395,7 @@ import PaymentCategoryMixinVue from "src/mixins/PaymentCategoryMixin.vue";
 import expenditureItemMixinVue from "src/mixins/expenditureItemMixin.vue";
 import ExpenditureItemDetailMixinVue from "src/mixins/ExpenditureItemDetailMixin.vue";
 import moment from "moment";
+import ConfirmDialog from "./ConfirmDialog.vue";
 
 export default {
   mixins: [
@@ -657,7 +473,6 @@ export default {
       type: Boolean,
       required: false,
     },
-
   },
 
   data() {
@@ -665,7 +480,6 @@ export default {
       label_download: "Print",
       loading: false,
       color: "positive",
-      no_caps: true,
       dialog: false,
       show_approve_dialog: false,
       deleted_row: null,
@@ -677,6 +491,9 @@ export default {
         rowsPerPage: 15, // current rows per page being displayed
       },
       approve_msg: null,
+      type: null,
+      delete_msg: "",
+      show_confirm_dialog_detail: false,
     };
   },
   computed: {},
@@ -723,7 +540,10 @@ export default {
       this.$store.dispatch("putRequest", payload).then((res) => {
         if (res.status == 200) {
           let expenditure_category = this.$store.getters.getExpenditureCategory;
-          this.callFetchDataAfterApproveAction(this.approve_data, expenditure_category.id);
+          this.callFetchDataAfterApproveAction(
+            this.approve_data,
+            expenditure_category.id
+          );
         }
       });
     },
@@ -744,11 +564,42 @@ export default {
       this.$emit("update-payment-item", payload);
     },
 
-    onDelete(row) {
-      this.deleted_row = row;
-      this.dialog = true;
+    computeShowConfirmDialogDetail() {
+      let show_confirm_dialog_detail = false;
+      switch (this.type) {
+        case "PAYMENT_CATEGORY":
+          show_confirm_dialog_detail = true;
+          break;
+        case "PAYMENT_ITEM":
+          show_confirm_dialog_detail = true;
+          break;
+      }
+      return show_confirm_dialog_detail;
     },
 
+    onDelete(row, type) {
+      this.deleted_row = row;
+      this.dialog = true;
+      this.type = type;
+      switch (this.type) {
+        case "PAYMENT_CATEGORY":
+          this.delete_msg =
+            "Are you sure you want to delete this Payment Category?";
+          break;
+        case "PAYMENT_ITEM":
+          this.delete_msg =
+            "Are you sure you want to delete this Payment Item?";
+          break;
+      }
+    },
+
+    cancelDialog() {
+      this.type = null;
+      this.dialog = false;
+    },
+
+
+    
     showPaymentItems(payment_items) {
       this.$emit("show-payment-items", { payment_items });
     },
@@ -1010,7 +861,9 @@ export default {
       this.$emit("view-expenditure-item", payload);
     },
   },
-  components: {},
+  components: {
+    ConfirmDialog,
+  },
 };
 </script>
 <style lang="scss" scoped>

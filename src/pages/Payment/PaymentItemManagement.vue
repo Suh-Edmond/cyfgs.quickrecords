@@ -24,16 +24,16 @@
           $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
         "
       >
-        <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12 ">
+        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 ">
           <q-select
-            v-model="is_complusory"
+            v-model="is_compulsory"
             outlined
             dense
             :options="statuses"
             label="Select status"
           />
         </div>
-        <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12 q-ml-md">
+        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-ml-md">
           <q-select
             v-model="type"
             outlined
@@ -42,7 +42,7 @@
             label="Select type"
           />
         </div>
-        <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12 q-ml-md">
+        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-ml-md">
           <q-select
             v-model="frequency"
             outlined
@@ -51,7 +51,7 @@
             label="Select frequency"
           />
         </div>
-        <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12 q-ml-md">
+        <div class="col-md-1 col-lg-1 col-xs-12 col-sm-12 q-ml-md">
           <q-btn
               label="Filter"
               :loading="loading_filter"
@@ -132,14 +132,8 @@ export default {
   data() {
     return {
       not_found_msg: "",
-      search: null,
       start_filter: false,
-      label_fetch: "Filter",
-      color: "primary",
-      no_caps: true,
       loading: false,
-      label_download: "Print",
-      color_print: "positive",
       columns: [
         {
           name: "counter",
@@ -165,9 +159,9 @@ export default {
           sortable: true,
         },
         {
-          name: "complusory",
+          name: "compulsory",
           required: true,
-          label: "Complusory",
+          label: "Compulsory",
           align: "left",
           field: (row) => row.name,
           format: (val) => `${val}`,
@@ -203,21 +197,21 @@ export default {
       label: "Delete",
       message: "Are you sure you want to delete this Payment Item?",
       statuses: [{label:"COMPLUSORY", value:true}, {label:"NOT COMPLUSORY", value:false}],
-      is_complusory: "",
+      is_compulsory: "",
       filteredPaymentItems: [],
       type:"",
       frequency:"",
       payment_item_types: [
-        PaymentItemTypeVue.ALL_MEMBERS,
-        PaymentItemTypeVue.A_MEMBER,
-        PaymentItemTypeVue.MEMBER_WITH_ROLES,
-        PaymentItemTypeVue.MEMBERS_WITHOUT_ROLES,
-        PaymentItemTypeVue.GROUPED_MEMBERS,
+        "ALL_MEMBERS",
+        "A_MEMBER",
+        "MEMBERS_WITH_ROLES",
+        "MEMBERS_WITHOUT_ROLES",
+        "GROUPED_MEMBERS"
       ],
       frequencies: [
-        PaymentItemFrequencyVue.YEARLY,
-        PaymentItemFrequencyVue.MONTHLY,
-        PaymentItemFrequencyVue.ONE_TIME,
+        "YEARLY",
+        "MONTHLY",
+        "ONE_TIME",
       ],
       loading_filter:false,
     };
@@ -241,7 +235,7 @@ export default {
     },
 
     validateFilter(){
-      return this.is_complusory == null && this.frequency == null && this.type == null ? true: false
+      return this.is_compulsory == null && this.frequency == null && this.type == null ? true: false
     }
   },
 
@@ -264,7 +258,7 @@ export default {
             name: ele.name,
             amount: ele.amount,
             id: ele.id,
-            complusory: ele.complusory,
+            compulsory: ele.compulsory,
             payment_category_id: ele.payment_category_id,
             description: ele.description,
             payment_category_name: ele.payment_category_name,
@@ -288,12 +282,12 @@ export default {
       let id = this.$store.getters.getCurrentPaymentCategory.id;
       this.$router.push({
         path: `/dashboard/payment-categories/${id}/items`,
-        query: { status: this.is_complusory, type:this.type, frequency:this.frequency },
+        query: { status: this.is_compulsory, type:this.type, frequency:this.frequency },
       });
 
       this.filteredPaymentItems = [];
       let payload = {
-        url: `/api/protected/filter-payment-items?payment_category_id=${id}&is_complusory=${this.is_complusory.value}&type=${this.type}&frequency=${this.frequency}`,
+        url: `/api/protected/filter-payment-items?payment_category_id=${id}&is_compulsory=${this.is_compulsory.value}&type=${this.type}&frequency=${this.frequency}`,
         msg: "none",
         color: "default",
         status: "none",
@@ -336,7 +330,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.search {
-  cursor: pointer;
-}
 </style>

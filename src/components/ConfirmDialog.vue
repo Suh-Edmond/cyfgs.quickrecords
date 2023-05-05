@@ -78,6 +78,15 @@
             </div>
           </div>
           <!-- end of registration fee -->
+
+          <!-- payment category -->
+          <div v-if="show_payment_category || show_expenditure_category">
+            <div class="text-weight-bold text-left text-red">
+              Name:
+              <span class="amount">{{ data.name }} </span>
+            </div>
+          </div>
+          <!-- end of payment category -->
         </q-card-section>
 
         <q-card-actions align="right">
@@ -140,6 +149,26 @@ export default {
       type: Boolean,
       required: false,
     },
+    show_payment_category: {
+      type: Boolean,
+      required: false,
+    },
+    show_expenditure_item: {
+      type: Boolean,
+      required: false,
+    },
+    show_expenditure_category: {
+      type: Boolean,
+      required: false,
+    },
+    show_payment_item: {
+      type: Boolean,
+      required: false,
+    },
+    show_expenditure_item_detail: {
+      type: Boolean,
+      required: false,
+    },
   },
   data() {
     return {
@@ -186,6 +215,21 @@ export default {
           break;
         case "MEMBERS":
           url = `/api/protected/users/${this.data.id}`;
+          break;
+        case "PAYMENT_CATEGORY":
+          url = `/api/protected/organisations/${this.data.organisation_id}/payment-categories/${this.data.id}`;
+          break;
+        case "PAYMENT_ITEMS":
+          url = `/api/protected/payment-categories/${this.data.payment_category_id}/payment-items/${this.data.id}`;
+          break;
+        case "EXPENDITURE_CATEGORY":
+          url = `/api/protected/organisations/${this.data.organisation_id}/expenditure-categories/${this.data.id}`;
+          break;
+        case "EXPENDITURE_ITEMS":
+          url = `/api/protected/expenditure-categories/${this.data.expenditure_category_id}/expenditure-items/${this.data.id}`;
+          break;
+        case "EXPENDITURE_DETAILS":
+          url = `/api/protected/expenditure-item-details/${this.data.id}`;
           break;
       }
       return url;

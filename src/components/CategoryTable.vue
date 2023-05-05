@@ -11,6 +11,7 @@
       :rows-per-page-options="[0]"
     >
       <template v-slot:body="props">
+
         <!-- table body for payment category -->
         <q-tr :props="props" v-if="show_payment_category">
           <q-td key="counter" :props="props">
@@ -44,7 +45,7 @@
                     <q-item
                       clickable
                       v-close-popup
-                      @click="onViewCategory(props.row)"
+                      @click="onViewPaymentCategory(props.row)"
                       v-if="show_payment_category"
                     >
                       <q-item-section avatar>
@@ -78,6 +79,8 @@
           </q-td>
         </q-tr>
         <!-- end of table body for payment category -->
+
+
 
         <!-- table body for payment items -->
         <q-tr :props="props" v-if="show_payment_item">
@@ -148,6 +151,7 @@
           </q-td>
         </q-tr>
         <!-- end of table body for payment items -->
+
       </template>
 
       <!-- slot for table headings -->
@@ -265,82 +269,6 @@
     </q-table>
 
     <!-- confirmation delete category dialog -->
-    <q-dialog v-model="dialog" v-if="dialog">
-      <q-card>
-        <q-card-section>
-          <div class="q-mb-md">
-            <label class="text-dark message">{{ message }}</label>
-          </div>
-          <div class="text-weight-bold text-left text-red">
-            Name:
-            <span
-              :class="
-                !show_expenditure_item_detail
-                  ? 'delete_item_name'
-                  : 'detail_name'
-              "
-              >{{ deleted_row.name }}</span
-            >
-          </div>
-          <div
-            class="text-weight-bold text-left text-red"
-            v-if="
-              !show_expenditure_category &&
-              !show_expenditure_item_detail &&
-              !show_payment_category
-            "
-          >
-            Amount:
-            <span class="q-pl-md"
-              >{{ Number(deleted_row.amount).toLocaleString() }} XAF</span
-            >
-          </div>
-          <div
-            class="text-weight-bold text-left text-red"
-            v-if="show_expenditure_item_detail"
-          >
-            Amount Given:
-            <span class="q-pl-md"
-              >{{ Number(deleted_row.amount_given).toLocaleString() }} XAF</span
-            >
-          </div>
-          <div
-            class="text-weight-bold text-left text-red"
-            v-if="show_expenditure_item_detail"
-          >
-            Amount Spent:
-            <span class="q-pl-md"
-              >{{ Number(deleted_row.amount_spent).toLocaleString() }} XAF</span
-            >
-          </div>
-        </q-card-section>
-
-        <q-card-actions align="right">
-          <q-btn
-            :label="label_cancel"
-            :color="'primary'"
-            class="dialog_button"
-            :disabled="false"
-            :loading="loading"
-            :no_caps="false"
-            v-close-popup
-            :flat="true"
-          ></q-btn>
-          <q-btn
-            :label="label"
-            :color="'primary'"
-            class="dialog_button"
-            :disabled="false"
-            :loading="loading"
-            :no_caps="false"
-            v-close-popup
-            @click="deletedRow(deleted_row)"
-            :flat="true"
-          ></q-btn>
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
-
     <div v-if="dialog">
       <ConfirmDialog
         :data="deleted_row"
@@ -350,43 +278,10 @@
         :show_payment_category="computeShowConfirmDialogDetail()"
         :show_payment_item="computeShowConfirmDialogDetail()"
         @cancel-dialog="cancelDialog"
+        @delete-row="deleteRow"
       ></ConfirmDialog>
     </div>
 
-    <!-- confirmation dialog for approve and decline row data -->
-    <q-dialog v-model="show_approve_dialog" v-if="show_approve_dialog">
-      <q-card class="approve_card">
-        <q-card-section>
-          <div class="row">
-            <div class="col-md-12">
-              <label for="msg">
-                <span class="text-weight-bold"
-                  >Do you want to {{ chosen_state }} {{ approve_msg }}</span
-                >
-              </label>
-            </div>
-          </div>
-        </q-card-section>
-
-        <q-card-actions align="right">
-          <q-btn
-            :class="chosen_state == 'Approve' ? 'approve' : 'decline'"
-            size="md"
-            label="Cancel"
-            flat
-            v-close-popup
-          />
-          <q-btn
-            :class="chosen_state == 'Approve' ? 'approve' : 'decline'"
-            size="md"
-            :label="chosen_state"
-            flat
-            @click="onChangeRecordState()"
-            v-close-popup
-          />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
   </div>
 </template>
 <script>
@@ -477,14 +372,11 @@ export default {
 
   data() {
     return {
-      label_download: "Print",
       loading: false,
-      color: "positive",
       dialog: false,
       show_approve_dialog: false,
       deleted_row: null,
       showTable: true,
-      label_cancel: "Cancel",
       filter: "",
       approve_data: null,
       pagination: {
@@ -505,56 +397,20 @@ export default {
       return treasurer_role != undefined;
     },
 
-    onApprovedRecord(row, state) {
-      this.show_approve_dialog = true;
-      this.approve_data = row;
-      this.chosen_state = state;
-      this.setApproveWarningMsgByType(row);
+
+    showPaymentItems(data){
+      this.$emit("show-payment-items", { data });
     },
 
-    onDeclineRecord(row, state) {
-      this.show_approve_dialog = true;
-      this.approve_data = row;
-      this.chosen_state = state;
-      this.setApproveWarningMsgByType(row);
-    },
 
-    onChangeRecordState() {
-      let payload = {
-        url: this.setApproveUrlBaseOnType(this.approve_data),
-        msg: this.setApproveFeedbackMsg(this.approve_data),
-        data: null,
-        color: "default",
-        to_on_ok: "none",
-        to_on_fail: "none",
-        show_feedback: true,
-        error_msg: "An Error occurred! Please try again",
-        has_commit: false,
-        commit: "none",
-        to_be_store_data: {
-          required: false,
-          has_value: false,
-          data: [],
-        },
-      };
-      this.$store.dispatch("putRequest", payload).then((res) => {
-        if (res.status == 200) {
-          let expenditure_category = this.$store.getters.getExpenditureCategory;
-          this.callFetchDataAfterApproveAction(
-            this.approve_data,
-            expenditure_category.id
-          );
-        }
-      });
-    },
-
-    onViewCategory(categories) {
+    onViewPaymentCategory(categories) {
       let payload = {
         data: categories,
         tab: "Payment Categories",
       };
       this.$emit("update-payment-category", payload);
     },
+
 
     onViewPaymentItem(payment_items) {
       let payload = {
@@ -563,6 +419,7 @@ export default {
       };
       this.$emit("update-payment-item", payload);
     },
+
 
     computeShowConfirmDialogDetail() {
       let show_confirm_dialog_detail = false;
@@ -576,6 +433,7 @@ export default {
       }
       return show_confirm_dialog_detail;
     },
+
 
     onDelete(row, type) {
       this.deleted_row = row;
@@ -593,273 +451,17 @@ export default {
       }
     },
 
-    cancelDialog() {
-      this.type = null;
+
+    deleteRow(){
+      this.$emit("delete-row", this.deleted_row);
+    },
+
+    cancelDialog(){
       this.dialog = false;
-    },
-
-
-    
-    showPaymentItems(payment_items) {
-      this.$emit("show-payment-items", { payment_items });
-    },
-
-    showExpenditureItems(expenditure_items) {
-      this.$emit("show-expenditure-items", {
-        expenditure_items,
-      });
-    },
-
-    onViewExpenditureItemDetails(expenditure_item) {
-      let has_intermediate_tab = true;
-      let category = this.$store.getters.getCurrentExpenditureCategory;
-      this.$router.push({
-        name: "expenditure_item_details",
-        params: { id: category.id, item_id: expenditure_item.id },
-      });
-      this.$emit("show-expenditure-item-details", {
-        expenditure_item,
-        has_intermediate_tab,
-      });
-    },
-
-    onViewExpenditureCategory(expenditure_category) {
-      let payload = {
-        data: expenditure_category,
-        tab: "Expenditure Categories",
-      };
-      this.$emit("update-expenditure-category", payload);
-    },
-
-    onEditExpenditureItem(expenditure_item) {
-      let payload = {
-        data: expenditure_item,
-        tab: "Expenditure Items",
-      };
-      this.$emit("edit-expenditure-item", payload);
-    },
-
-    onEditExpenditureItemDetail(expenditure_item_detail) {
-      let payload = {
-        data: expenditure_item_detail,
-        tab: "Expenditure Item Details",
-      };
-      this.$emit("edit-expenditure-item-detail", payload);
-    },
-
-    onViewItemDetail(data) {
-      let payload = {
-        data: data,
-        tab: "Expenditure Activity Detail Information",
-      };
-      this.$emit("view-expenditure-item-detail", payload);
-    },
-
-    deletedRow(deleted_data) {
-      let payload = {
-        url: this.setDeletedUrlBaseOnType(deleted_data),
-        msg: this.setDeleteFeedbackMsg(deleted_data),
-        color: "default",
-        to_on_ok: "none",
-        to_on_fail: "none",
-        show_feedback: true,
-        error_msg: "An Error occurred! Please try again",
-        has_commit: false,
-        commit: "none",
-        to_be_store_data: {
-          required: false,
-          has_value: false,
-          data: [],
-        },
-      };
-      this.$store.dispatch("deleteRequest", payload).then(() => {
-        this.callFetchDataBaseOnType(deleted_data);
-      });
-    },
-
-    setDeletedUrlBaseOnType(row) {
-      let url = "";
-      switch (row.type) {
-        case "PAYMENT_CATEGORY":
-          url = `/api/protected/organisations/${row.organisation_id}/payment-categories/${row.id}`;
-          break;
-        case "PAYMENT_ITEMS":
-          url = `/api/protected/payment-categories/${row.payment_category_id}/payment-items/${row.id}`;
-          break;
-        case "EXPENDITURE_CATEGORY":
-          url = `/api/protected/organisations/${row.organisation_id}/expenditure-categories/${row.id}`;
-          break;
-        case "EXPENDITURE_ITEMS":
-          url = `/api/protected/expenditure-categories/${row.expenditure_category_id}/expenditure-items/${row.id}`;
-          break;
-        case "EXPENDITURE_DETAILS":
-          url = `/api/protected/expenditure-item-details/${row.id}`;
-          break;
-      }
-      return url;
-    },
-
-    setDeleteFeedbackMsg(row) {
-      let msg = "";
-      switch (row.type) {
-        case "PAYMENT_CATEGORY":
-          msg = `Payment Category deleted successfully`;
-          break;
-        case "PAYMENT_ITEMS":
-          msg = `Payment Item deleted successfully`;
-          break;
-        case "EXPENDITURE_CATEGORY":
-          msg = `Expenditure Category deleted successfully`;
-          break;
-        case "EXPENDITURE_ITEMS":
-          msg = `Expenditure Item deleted successfully`;
-          break;
-        case "EXPENDITURE_DETAILS":
-          msg = `Expenditure Item detail deleted successfully`;
-          break;
-      }
-
-      return msg;
-    },
-
-    callFetchDataBaseOnType(row) {
-      switch (row.type) {
-        case "PAYMENT_CATEGORY":
-          this.fetchCategories(false);
-          break;
-
-        case "PAYMENT_ITEMS":
-          this.getPaymentItemsByCategory(row.payment_category_id);
-          break;
-
-        case "EXPENDITURE_CATEGORY":
-          this.fetchExpenditureCategories(row.organisation_id);
-          break;
-
-        case "EXPENDITURE_ITEMS":
-          this.getExpenditureItemsByCategory();
-          break;
-
-        case "EXPENDITURE_DETAILS":
-          this.getExpenditureDetailsByItemId(row.expenditure_item_id);
-          break;
-      }
-    },
-
-    getPaymentItemsByCategory(id) {
-      let payload = {
-        status: "none",
-        url: `/api/protected/payment-categories/${id}/payment-items`,
-        has_path_val: true,
-        show_feedback: false,
-        show_spinner: true,
-        msg: "none",
-        color: "default",
-        error_msg: "default",
-        commit: "SET_PAYMENT_ITEMS",
-        has_commit: true,
-        to_be_store_data: {
-          required: true,
-          has_value: false,
-          data: null,
-        },
-      };
-      this.$store.dispatch("getRequest", payload).then(() => {});
-    },
-
-    fetchExpenditureCategories(organisation_id) {
-      let payload = {
-        url: `/api/protected/organisations/${organisation_id}/expenditure-categories`,
-        msg: "none",
-        color: "default",
-        status: "none",
-        error_msg: "An Error occurred! Could not fetch payment categories",
-        has_commit: true,
-        show_feedback: false,
-        show_spinner: true,
-        commit: "SET_EXPENDITURE_CATEGORIES",
-        to_be_store_data: {
-          required: false,
-          has_value: false,
-          data: [],
-        },
-      };
-      this.$store.dispatch("getRequest", payload).then(() => {});
-    },
-
-    getFormatedDate(date) {
-      return moment(date).format("MMMM Do YYYY");
-    },
-
-    setApproveUrlBaseOnType(data) {
-      let url = "";
-      let type = this.chosen_state == "Approve" ? "APPROVED" : "DECLINED";
-      switch (data.type) {
-        case "EXPENDITURE_ITEMS":
-          url = `/api/protected/expenditure-items/${data.id}/approve?type=${type}`;
-          break;
-        case "EXPENDITURE_DETAILS":
-          url = `/api/protected/expenditure-details/${data.id}/approve?type=${type}`;
-          break;
-      }
-      return url;
-    },
-
-    setApproveFeedbackMsg() {
-      let msg = `Record was ${this.chosen_state} successfully`;
-      return msg;
-    },
-
-    setApproveWarningMsgByType(data) {
-      let date = "";
-      switch (data.type) {
-        case "EXPENDITURE_ITEMS":
-          date = moment(data.date).format("MMMM Do YYYY");
-          this.approve_msg = ` ${data.amount}  F CFA Expenditure for ${data.name} on the ${date} at ${data.venue} ?`;
-          break;
-        case "EXPENDITURE_DETAILS":
-          date = moment(data.created_at).format("MMMM Do YYYY");
-          this.approve_msg = ` ${data.amount_given} F CFA Spent for ${data.name} on the ${date} ?`;
-          break;
-      }
-
-      return this.approve_msg;
-    },
-
-    callFetchDataAfterApproveAction(data, expenditure_category_id) {
-      switch (data.type) {
-        case "EXPENDITURE_ITEMS":
-          this.getExpendituresByCategory(expenditure_category_id);
-          break;
-        case "EXPENDITURE_DETAILS":
-          this.getExpenditureDetailsByItemId(data.expenditure_item_id);
-          break;
-      }
-    },
-
-    showDetails(data) {
-      this.$store.dispatch("setExpenditureItemName", data.name);
-      this.getExpenditureDetailsByItemId(data.id);
-
-      const intermediate_tabs = Array.from(
-        this.$store.getters.getIntermediateTabs
-      );
-
-      intermediate_tabs.push({
-        name: "Details",
-        has_intermediate_tab: true,
-      });
-
-      this.$store.dispatch("setIntermediateTabs", intermediate_tabs);
-    },
-
-    onViewExpenditureItem(data) {
-      let payload = {
-        data: data,
-        tab: "Expenditure Activity Information",
-      };
-      this.$emit("view-expenditure-item", payload);
-    },
+      this.type = null;
+      this.delete_msg = "";
+      this.show_confirm_dialog_detail = false
+    }
   },
   components: {
     ConfirmDialog,

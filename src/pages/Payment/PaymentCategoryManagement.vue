@@ -53,12 +53,13 @@
             :data="getData"
             :label="label"
             :message="message"
-            @show-payment-items="showPaymentItems"
-            @update-payment-category="updatePaymentCategory"
             :show_payment_category="true"
             :show_payment_item="false"
             :show_expenditure_category="false"
             :show_expenditure_item="false"
+            @delete-row="deleteRow"
+            @show-payment-items="showPaymentItems"
+            @update-payment-category="updatePaymentCategory"
           >
           </CategoryTable>
         </div>
@@ -283,6 +284,28 @@ export default {
       };
       this.$store.dispatch("getRequest", payload).then(() => {});
     },
+
+    deleteRow(data){
+      let payload = {
+        url: `/api/protected/organisations/${data.organisation_id}/payment-categories/${data.id}`,
+        msg:`Payment Category deleted successfully`,
+        color: "default",
+        to_on_ok: "none",
+        to_on_fail: "none",
+        show_feedback: true,
+        error_msg: "An Error occurred! Please try again",
+        has_commit: false,
+        commit: "none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.$store.dispatch("deleteRequest", payload).then(() => {
+        this.fetchCategories(data.organisation_id, true)
+      });
+    }
   },
   components: {
     NotFound,

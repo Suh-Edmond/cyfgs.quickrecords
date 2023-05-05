@@ -409,10 +409,6 @@ export function setUpdatedExpenditureItem({ commit }, data) {
   commit("SET_UPDATED_EXPENDITURE_ITEM", data);
 }
 
-export function setEditState({ commit }, data) {
-  commit("SET_EDIT_STATE", data);
-}
-
 export function setExpenditureItemDetails({ commit }, data) {
   commit("SET_EXPENDITURE_ITEM_DETAIL", data);
 }

@@ -65,10 +65,6 @@ export function getUpdatedExpenditureItem(state) {
   return state.updated_expenditure_item;
 }
 
-export function getEditState(state) {
-  return state.is_edit_state;
-}
-
 export function getExpenditureItemDetails(state) {
   return state.expenditure_item_details;
 }
@@ -177,4 +173,8 @@ export function getCurrentYear(state) {
 
 export function getRegAmount(state) {
   return state.reg_amount
+}
+
+export function getSessions(state) {
+  return state.sessions;
 }

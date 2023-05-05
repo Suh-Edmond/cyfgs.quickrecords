@@ -4,6 +4,10 @@ export default function () {
     organisation:null,
     members:[],
     is_fetching: false,
+    sessions:[],
+
+
+
     updated_member: null,
     payment_categories:[],
     updated_payment_category:null,
@@ -15,7 +19,6 @@ export default function () {
     expenditure_items:[],
     current_expenditure_category: null,
     updated_expenditure_item:null,
-    is_edit_state:false,
     expenditure_item_details:null,
     current_expenditure_item:null,
     updated_expenditure_item_detail:null,

@@ -37,7 +37,7 @@
 
           <!-- members details -->
           <div class="text-weight-bold text-left text-red" v-if="show_members">
-            Telephone: <span class="q-pl-md">{{ data.telephone }}</span>
+            Name: <span class="q-pl-md">{{ data.name }}</span>
           </div>
           <!-- end of members -->
 
@@ -184,6 +184,9 @@ export default {
         case "REGISTRATION_FEE":
           url = `/api/protected/registration_fees/${this.data.id}`;
           break;
+        case "MEMBERS":
+          url = `/api/protected/users/${this.data.id}`;
+          break;
       }
       return url;
     },
@@ -194,6 +197,9 @@ export default {
         case "REGISTRATION_FEE":
           msg = `Registration fee deleted successfully`;
           break;
+        case "MEMBERS":
+          msg = "Member deleted successfully";
+          break;
       }
       return msg;
     },
@@ -202,6 +208,9 @@ export default {
       switch (this.type) {
         case "REGISTRATION_FEE":
           this.$emit("fetch-registration-fee");
+          break;
+        case "MEMBERS":
+          this.$emit("fetch-members");
           break;
       }
     },

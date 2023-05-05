@@ -52,14 +52,15 @@ export default {
   mounted() {
     let heading = "Register Member to the Organisation";
     this.$emit("set-heading", heading);
+    this.setFormField();
   },
   data() {
     return {
       loading: false,
       user: {
-        user_name: this.$store.getters.getMemberToRegister != null ? this.$store.getters.getMemberToRegister.name : null,
-        year: this.$store.getters.getCurrentYear != null ? this.$store.getters.getCurrentYear.year : null,
-        amount: this.$store.getters.getRegAmount != null ? this.$store.getters.getRegAmount[0].amount : null,
+        user_name: null,
+        year:  null,
+        amount:  null,
       },
     };
   },
@@ -108,6 +109,12 @@ export default {
       return this.user;
     },
 
+    setFormField(){
+      this.user.year = this.$store.getters.getCurrentYear.year;
+      this.user.amount = this.$store.getters.getRegAmount.amount;
+      this.user.user_name = this.$store.getters.getMemberToRegister.name;
+      return this.user;
+    }
   },
   components: {
     ButtonVue,

@@ -310,6 +310,7 @@ export default {
             this.session.status = SessionStatusVue.ACTIVE;
             this.session.id = null;
             this.session.year = null;
+            location.reload();
           });
     }
   },

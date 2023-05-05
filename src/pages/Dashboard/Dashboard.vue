@@ -123,6 +123,7 @@ export default {
   mounted(){
     this.fetchCurrentYear();
     this.getRegistrationAmount();
+    this.getSessions();
   },
   data() {
     return {

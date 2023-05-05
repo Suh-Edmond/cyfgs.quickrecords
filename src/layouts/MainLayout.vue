@@ -642,14 +642,12 @@ export default {
 
     goBack() {
       this.right = !this.right;
-      this.$store.dispatch("setEditState", false);
     },
 
 
 
     closeRightDrawer() {
       this.right = !this.right;
-      this.$store.dispatch("setEditState", false);
     },
 
 

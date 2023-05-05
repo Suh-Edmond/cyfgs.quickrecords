@@ -61,10 +61,6 @@ export function SET_CURRENT_PAYMENT_ITEM(state, data) {
   state.current_payment_item = data
 }
 
-export function SET_EDIT_STATE(state, data) {
-  state.is_edit_state = data
-}
-
 export function SET_EXPENDITURE_ITEM_DETAIL(state, data) {
   state.expenditure_item_details = data
 }
@@ -172,5 +168,9 @@ export function SET_CURRENT_YEAR(state, data) {
 
 export function SET_REG_AMOUNT(state, data) {
   state.reg_amount = data
+}
+
+export function SET_SESSIONS(state, data) {
+  state.sessions = data;
 }
 

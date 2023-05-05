@@ -28,41 +28,27 @@
         </div>
       </template>
       <template v-slot:body="props">
-        <q-tr :props="props">
+        <!-- body for members -->
+        <q-tr :props="props" class="text-bold" v-if="show_members">
           <q-td key="counter" :props="props">
             {{ props.row.counter }}
           </q-td>
-          <q-td
-            key="name"
-            :props="props"
-            v-if="!show_contribution || !show_member_contribution"
-          >
+
+          <q-td key="name" :props="props">
             {{ props.row.name }}
           </q-td>
-          <q-td
-            key="user_name"
-            :props="props"
-            v-if="show_contribution || show_member_contribution"
-          >
-            {{ props.row.user_name }}
-          </q-td>
-          <q-td key="email" :props="props" v-if="show_savings">
-            {{ props.row.email }}
-          </q-td>
-          <q-td key="gender" :props="props" v-if="show_members">
+
+          <q-td key="gender" :props="props">
             {{ props.row.gender }}
           </q-td>
-          <q-td
-            key="telephone"
-            :props="props"
-            v-if="show_savings || show_members"
-          >
+
+          <q-td key="telephone" :props="props">
             {{ props.row.telephone }}
           </q-td>
           <q-td
             key="has_register"
             :props="props"
-            v-if="show_members && props.row.has_register == 'NOT_REGISTERED'"
+            v-if="props.row.has_register == 'NOT_REGISTERED'"
             class="not_registered"
           >
             {{ props.row.has_register }}
@@ -70,34 +56,15 @@
           <q-td
             key="has_register"
             :props="props"
-            v-if="show_members && props.row.has_register == 'REGISTERED'"
+            v-if="props.row.has_register == 'REGISTERED'"
             class="registered"
           >
             {{ props.row.has_register }}
           </q-td>
           <q-td
-            key="amount_deposited"
-            :props="props"
-            v-if="
-              show_savings || show_member_savings || show_member_contribution
-            "
-          >
-            {{ Number(props.row.amount_deposited).toLocaleString() }}
-          </q-td>
-          <q-td
-            key="total_amount_deposited"
-            :props="props"
-            v-if="show_contribution"
-          >
-            {{ Number(props.row.total_amount_deposited).toLocaleString() }}
-          </q-td>
-          <q-td
             key="approve"
             :props="props"
-            v-if="
-              show_member_savings ||
-              (show_members && props.row.approve == 'PENDING')
-            "
+            v-if="props.row.approve == 'PENDING'"
             class="text-info"
           >
             {{ props.row.approve }}
@@ -105,155 +72,29 @@
           <q-td
             key="approve"
             :props="props"
-            v-if="
-              show_member_savings ||
-              (show_members && props.row.approve == 'APPROVED')
-            "
+            v-if="props.row.approve == ''"
+          >
+            {{ props.row.approve }}
+          </q-td>
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'APPROVED'"
             class="registered"
           >
             {{ props.row.approve }}
           </q-td>
-          <q-td
-            key="approve"
-            :props="props"
-            v-if="
-              show_member_savings ||
-              (show_members && props.row.approve == 'DECLINED')
-            "
-            class="not_registered"
-          >
-            {{ props.row.approve }}
-          </q-td>
-          <q-td
-            key="approve"
-            :props="props"
-            v-if="show_members && props.row.approve == ''"
-          >
-          </q-td>
-          <q-td
-            key="amount"
-            :props="props"
-            v-show="show_income_activity || show_contribution"
-          >
-            {{ Number(props.row.amount).toLocaleString() }}
-          </q-td>
-          <q-td
-            key="balance"
-            :props="props"
-            v-if="show_contribution || show_member_contribution"
-          >
-            {{ Number(props.row.balance).toLocaleString() }}
-          </q-td>
-          <q-td key="status" :props="props" v-if="show_member_contribution">
-            {{ props.row.status }}
-          </q-td>
-          <q-td
-            key="date"
-            :props="props"
-            v-if="show_savings || show_member_savings || show_income_activity"
-          >
-            {{ getFormatedDate(props.row.date) }}
-          </q-td>
-          <q-td key="date" :props="props" v-if="show_member_contribution">
-            {{ getFormatedDate(props.row.created_at) }}
-          </q-td>
-          <q-td key="venue" :props="props" v-if="show_income_activity">
-            {{ props.row.venue }}
-          </q-td>
-          <q-td
-            key="state"
-            :props="props"
-            v-if="
-              show_member_savings ||
-              show_savings ||
-              show_income_activity ||
-              show_contribution ||
-              show_member_contribution
-            "
-          >
-            {{ props.row.approve }}
-          </q-td>
-          <q-td key="code" :props="props" v-if="show_member_contribution">
-            {{ props.row.code }}
-          </q-td>
+
           <q-td key="action" :props="props">
-            <!-- button for view all savings by member -->
-            <q-btn
-              flat
-              class="view_savings q-py-xs"
-              @click="showMemberSavings(props.row)"
-              :to="{ name: 'user_savings', params: { id: props.row.user_id } }"
-              v-if="show_savings && !checkTreasurerRole()"
-            >
-              View All Savings
-            </q-btn>
-
-            <!-- menu to handle edit and view details of a single saving -->
-            <q-btn
-              flat
-              round
-              v-if="show_member_savings && !checkTreasurerRole()"
-            >
-              <q-icon
-                name="menu"
-                size="xs"
-                color="primary"
-                class="menu_icon"
-                clickable
-              >
-                <q-menu>
-                  <q-list bordered separator>
-                    <!-- edit and view savings -->
-                    <q-item
-                      clickable
-                      v-close-popup
-                      @click="onEditMemberSaving(props.row)"
-                    >
-                      <q-item-section avatar>
-                        <span>
-                          <q-icon name="edit" size="xs" class="edit" />
-                        </span>
-                      </q-item-section>
-                      <q-item-section>
-                        <q-item-label class="edit">Edit</q-item-label>
-                      </q-item-section>
-                    </q-item>
-
-                    <q-item
-                      clickable
-                      v-close-popup
-                      @click="onViewMemberSaving(props.row)"
-                    >
-                      <q-item-section avatar>
-                        <span>
-                          <q-icon name="visibility" size="xs" class="edit" />
-                        </span>
-                      </q-item-section>
-                      <q-item-section>
-                        <q-item-label class="edit">View</q-item-label>
-                      </q-item-section>
-                    </q-item>
-                  </q-list>
-                </q-menu>
-              </q-icon>
-            </q-btn>
-
             <!-- buttons for approve and decline row data -->
             <q-btn
-              :class="
-                show_savings ||
-                show_income_activity ||
-                show_contribution ||
-                show_members
-                  ? 'decline_btn_saving'
-                  : 'decline_btn'
-              "
+              class="decline_btn_saving"
               size="md"
               label="Decline"
               no-caps
               @click="onDeclineRecord(props.row, 'Decline')"
               v-if="
-                (checkPresidentTreasurerRole() && props.row.approve == 'PENDING')
+                checkPresidentTreasurerRole() && props.row.approve == 'PENDING'
               "
             />
 
@@ -264,18 +105,12 @@
               no-caps
               @click="onApprovedRecord(props.row, 'Approve')"
               v-if="
-                (checkPresidentTreasurerRole() && props.row.approve == 'PENDING')
+                checkPresidentTreasurerRole() && props.row.approve == 'PENDING'
               "
             />
 
-            <!-- button to handle edit, view and delete of row data -->
-            <q-btn
-              flat
-              round
-              v-if="
-                !show_savings && !show_member_savings && !checkTreasurerRole()
-              "
-            >
+            <!-- button to handle edit, view and delete, invite and register  a member -->
+            <q-btn flat round v-if="!checkTreasurerRole()">
               <q-icon
                 name="menu"
                 size="xs"
@@ -290,7 +125,7 @@
                       clickable
                       v-close-popup
                       @click="onViewMember(props.row)"
-                      v-if="checkPresidentRole() && show_members"
+                      v-if="checkPresidentRole()"
                     >
                       <q-item-section avatar>
                         <span>
@@ -310,7 +145,7 @@
                       clickable
                       v-close-popup
                       @click="onInviteMember(props.row)"
-                      v-if="checkPresidentRole() && show_members"
+                      v-if="checkPresidentRole()"
                     >
                       <q-item-section avatar>
                         <span>
@@ -327,7 +162,7 @@
                       clickable
                       v-close-popup
                       @click="onRegisterMember(props.row)"
-                      v-if="checkRole() && show_members"
+                      v-if="checkRole()"
                     >
                       <q-item-section avatar>
                         <span>
@@ -341,78 +176,11 @@
                       </q-item-section>
                     </q-item>
 
-                    <!-- edit, view income activities -->
-                    <q-item
-                      clickable
-                      v-close-popup
-                      @click="onEditIncomeActivity(props.row)"
-                      v-show="show_income_activity"
-                    >
-                      <q-item-section avatar>
-                        <span>
-                          <q-icon name="edit" size="xs" class="edit" />
-                        </span>
-                      </q-item-section>
-                      <q-item-section>
-                        <q-item-label class="edit">Edit</q-item-label>
-                      </q-item-section>
-                    </q-item>
-
-                    <q-item
-                      clickable
-                      v-close-popup
-                      @click="onViewIncomeActivity(props.row)"
-                      v-show="show_income_activity"
-                    >
-                      <q-item-section avatar>
-                        <span>
-                          <q-icon name="visibility" size="xs" class="edit" />
-                        </span>
-                      </q-item-section>
-                      <q-item-section>
-                        <q-item-label class="edit">View</q-item-label>
-                      </q-item-section>
-                    </q-item>
-
-                    <!-- edit and view contributions -->
-                    <q-item
-                      clickable
-                      v-close-popup
-                      @click="onViewContribution(props.row)"
-                      v-show="show_member_contribution"
-                    >
-                      <q-item-section avatar>
-                        <span>
-                          <q-icon name="info" size="xs" class="edit" />
-                        </span>
-                      </q-item-section>
-                      <q-item-section>
-                        <q-item-label class="edit">View</q-item-label>
-                      </q-item-section>
-                    </q-item>
-
-                    <q-item
-                      clickable
-                      v-close-popup
-                      @click="onViewAllMemberContributions(props.row)"
-                      v-show="show_contribution"
-                    >
-                      <q-item-section avatar>
-                        <span>
-                          <q-icon name="info" size="xs" class="edit" />
-                        </span>
-                      </q-item-section>
-                      <q-item-section>
-                        <q-item-label class="edit">Details</q-item-label>
-                      </q-item-section>
-                    </q-item>
-
                     <!-- deleted specify row -->
                     <q-item
                       clickable
                       v-close-popup
                       @click="onDeleteMember(props.row)"
-                      v-show="!show_member_savings"
                     >
                       <q-item-section avatar>
                         <span>
@@ -429,6 +197,7 @@
             </q-btn>
           </q-td>
         </q-tr>
+        <!-- end of body for members -->
       </template>
       <template v-slot:top-right>
         <q-input
@@ -536,94 +305,16 @@
       </template>
     </q-table>
 
-    <!-- confirmation dialog for delete -->
-    <q-dialog v-model="dialog" v-if="dialog">
-      <q-card>
-        <q-card-section class="q-pa-lg">
-          <div class="q-mb-sm">
-            <label class="message text-dark">{{ message }}</label>
-          </div>
-          <div
-            class="text-weight-bold text-left text-red"
-            v-if="!show_contribution"
-          >
-            Name:
-            <span class="q-pl-md" :class="show_members ? 'name' : ' q-ml-md'">{{
-              deleted_row.name
-            }}</span>
-          </div>
-          <div
-            class="text-weight-bold text-left text-red"
-            v-if="show_contribution"
-          >
-            Member's Name:
-            <span class="member_name">{{ deleted_row.user_name }}</span>
-          </div>
-          <div class="text-weight-bold text-left text-red" v-if="show_members">
-            Telephone: <span class="q-pl-md">{{ deleted_row.telephone }}</span>
-          </div>
-          <div
-            class="text-weight-bold text-left text-red"
-            v-if="show_income_activity"
-          >
-            Amount:
-            <span class="amount"
-              >{{ Number(deleted_row.amount).toLocaleString() }} XAF</span
-            >
-          </div>
-          <div
-            class="text-weight-bold text-left text-red"
-            v-if="show_contribution"
-          >
-            Amount Deposited:
-            <span class="amount"
-              >{{
-                Number(deleted_row.amount_deposited).toLocaleString()
-              }}
-              XAF</span
-            >
-          </div>
-          <div
-            class="text-weight-bold text-left text-red"
-            v-if="show_income_activity"
-          >
-            Date: <span class="date">{{ getDate(deleted_row.date) }}</span>
-          </div>
-          <div
-            class="text-weight-bold text-left text-red"
-            v-if="show_contribution"
-          >
-            Payment Activity:
-            <span class="payment_item_name">{{
-              deleted_row.payment_item_name
-            }}</span>
-          </div>
-        </q-card-section>
-        <q-card-actions align="right">
-          <q-btn
-            :label="label_cancel"
-            :color="'primary'"
-            :disabled="false"
-            :loading="loading"
-            :no_caps="true"
-            :flat="true"
-            class="dialog_button"
-            v-close-popup
-          ></q-btn>
-          <q-btn
-            :label="label"
-            :color="'primary'"
-            class="dialog_button"
-            :disabled="false"
-            :loading="loading"
-            :no_caps="false"
-            :flat="true"
-            v-close-popup
-            @click="deleteRow(deleted_row)"
-          ></q-btn>
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
+    <div v-if="dialog">
+      <ConfirmDialogVue
+        :data="deleted_row"
+        :type="type"
+        :msg="delete_msg"
+        :show_members="computeShowConfirmDialogDetail()"
+        @fetch-members="fetchMembers"
+        @cancel-dialog="cancelDialog"
+      ></ConfirmDialogVue>
+    </div>
 
     <!-- dialog for invite members. -->
     <q-dialog v-model="show_invite" position="top">
@@ -692,7 +383,7 @@
           <q-btn
             :class="chosen_state == 'Approve' ? 'approve' : 'decline'"
             size="md"
-            :label="label_cancel"
+            label="Cancel"
             flat
             v-close-popup
           />
@@ -716,6 +407,7 @@ import { LocalStorage } from "quasar";
 import moment from "moment";
 import ContributionsMixinVue from "src/mixins/ContributionsMixin.vue";
 import memberMixin from "src/mixins/memberMixin.vue";
+import ConfirmDialogVue from "./ConfirmDialog.vue";
 
 export default {
   mixins: [
@@ -800,13 +492,9 @@ export default {
   },
   data() {
     return {
-      label_download: "Print",
       loading: false,
-      color: "positive",
-      no_caps: true,
       dialog: false,
       filter: "",
-      label_cancel: "Cancel",
       pagination: {
         rowsPerPage: 15, // current rows per page being displayed
       },
@@ -825,8 +513,14 @@ export default {
       approve_msg: null,
       approve_data: null,
       register_member_name: null,
+      type: null,
+      delete_msg: "",
+      show_confirm_dialog_detail: false,
     };
   },
+
+  computed: {},
+
   methods: {
     getDate(date) {
       return moment(date).format("MMMM Do YYYY");
@@ -867,117 +561,41 @@ export default {
       this.$emit("register-member", payload);
     },
 
-    deleteRow(data) {
-      let payload = {
-        url: `/api/protected/users/${data.id}`,
-        msg: "Member successfully deleted",
-        status: "success",
-        color: "default",
-        to_on_ok: "none",
-        show_feedback: true,
-        to_on_fail: "none",
-        error_msg: "An Error occurred! Please try again",
-        has_commit: false,
-        commit: "none",
-        to_be_store_data: {
-          required: false,
-          has_value: false,
-          data: [],
-        },
-      };
-      this.$store.dispatch("deleteRequest", payload).then(() => {
-        let organisation_id = this.$store.getters.getOrganisation.id
-        this.$emit("fetch-members", organisation_id);
+    onViewMember(data) {
+      this.getMemberProfile(data.id);
+      this.$router.push({ name: "member_profile", params: { id: data.id } });
+
+      const intermediate_tabs = Array.from(
+        this.$store.getters.getIntermediateTabs
+      );
+
+      intermediate_tabs.push({
+        name: "Member Profile",
+        has_intermediate_tab: true,
       });
+
+      this.$store.dispatch("setIntermediateTabs", intermediate_tabs);
+    },
+
+    fetchMembers() {
+      return this.$emit("fetch-members");
     },
 
     onDeleteMember(data) {
       this.deleted_row = data;
       this.dialog = true;
+      this.type = "MEMBERS";
+      this.delete_msg = "Are you sure you want to delete this Member ?";
     },
 
-    showMemberSavings(data) {
-      this.getMemberSavings(data.user_id);
-    },
-
-    onEditMemberSaving(data) {
-      let payload = {
-        data: data,
-        tab: "Member Savings",
-      };
-      this.$store.dispatch("setEditState", false);
-
-      this.$store.dispatch("setUpdatedMemberSaving", data);
-
-      this.$emit("edit-member-saving", payload);
-    },
-
-    onViewMemberSaving(data) {
-      let payload = {
-        data: data,
-        tab: "View Member Saving",
-      };
-      this.$store.dispatch("setEditState", true);
-
-      this.$store.dispatch("setCurrentMemberSaving", data);
-
-      this.$emit("view-member-saving", payload);
-    },
-
-    onEditIncomeActivity(data) {
-      let payload = {
-        data: data,
-        tab: "Income Activities",
-      };
-
-      this.$store.dispatch("setEditState", false);
-
-      this.$store.dispatch("setUpdatedIncomeActivity", data);
-
-      this.$emit("edit-income-activity", payload);
-    },
-
-    onViewIncomeActivity(data) {
-      let payload = {
-        data: data,
-        tab: "View Income Activity",
-      };
-      this.$store.dispatch("setEditState", false);
-
-      this.$store.dispatch("setCurrentIncomeActivity", data);
-
-      this.$emit("view-income-activity", payload);
-    },
-
-    onViewAllMemberContributions(data) {
-      this.$router.push({
-        name: "member_contributions",
-        params: { item_id: data.payment_item_id, id: data.user_id },
-      });
-    },
-
-    onViewContribution(data) {
-      let payload = {
-        data: data,
-        tab: "View Contribution",
-      };
-
-      this.$store.dispatch("setSelectedContribution", data);
-
-      this.$store.dispatch("setEditState", true);
-
-      this.$emit("view-contribution", payload);
-    },
-
-    onAllContribution(data) {
-      this.$router.push({
-        name: "member_contributions",
-        params: { id: data.id },
-      });
-    },
-
-    getFormatedDate(date) {
-      return moment(date).format("MMMM Do YYYY");
+    computeShowConfirmDialogDetail() {
+      let show_confirm_dialog_detail = false;
+      switch (this.type) {
+        case "MEMBERS":
+          show_confirm_dialog_detail = true;
+          break;
+      }
+      return show_confirm_dialog_detail;
     },
 
     checkTreasurerRole() {
@@ -987,7 +605,7 @@ export default {
       return treasurer_role != undefined;
     },
 
-    checkPresidentTreasurerRole(){
+    checkPresidentTreasurerRole() {
       const treasurer_role = LocalStorage.getItem("data").roles.find(
         (role) => role.name == "TREASURER" || "PRESIDENT"
       );
@@ -1147,23 +765,15 @@ export default {
       }
     },
 
-    onViewMember(data) {
-      this.getMemberProfile(data.id)
-      this.$router.push({name: 'member_profile', params:{id:data.id}});
-
-      const intermediate_tabs = Array.from(
-        this.$store.getters.getIntermediateTabs
-      );
-
-      intermediate_tabs.push({
-        name: "Member Profile",
-        has_intermediate_tab: true,
-      });
-
-      this.$store.dispatch("setIntermediateTabs", intermediate_tabs);
+    cancelDialog() {
+      this.type = null;
+      this.dialog = false;
     },
+
   },
-  components: {},
+  components: {
+    ConfirmDialogVue,
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -1248,6 +858,7 @@ export default {
 
 .title {
   font-size: small;
+  font-weight: bold;
 }
 
 .message {

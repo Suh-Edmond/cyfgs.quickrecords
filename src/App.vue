@@ -5,14 +5,13 @@
 </template>
 
 <script>
-import { SessionStorage } from 'quasar'
+import { SessionStorage } from "quasar";
+
 export default {
-  name: 'App',
+  name: "App",
 
-  created(){
-    SessionStorage.set('from_tab', 'Dashboard')
-  }
-
-  
-}
+  created() {
+    SessionStorage.set("from_tab", "Dashboard");
+  },
+};
 </script>

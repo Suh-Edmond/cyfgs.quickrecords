@@ -27,7 +27,7 @@
             v-model="year"
             outlined
             dense
-            :options="years"
+            :options="getSessions"
             label="Select year"
             @input="filterPaymentCategories"
           />
@@ -35,9 +35,9 @@
         <q-space />
         <div class="button q-pb-xs">
           <q-btn
-            :label="label_download"
+            label="Print"
             :loading="loading"
-            :color="color_print"
+            color="positive"
             :disabled="false"
             no-caps
             icon-right="print"
@@ -101,15 +101,9 @@ export default {
       not_found_msg:
         "Ooops!! No Payment Categories found. Click the add button to add Payment Categories.",
       year: null,
-      years: ["2020", "2021", "2022", "2023", "2024"],
-      search: null,
-      label_fetch: "Filter",
       is_fetching: true,
-      color: "primary",
       loading: false,
       start_filter: false,
-      label_download: "Print",
-      color_print: "positive",
       columns: [
         {
           name: "counter",
@@ -167,6 +161,26 @@ export default {
     getLoadingState() {
       return this.$store.getters.getFetchingState
     },
+
+    getSessions() {
+      let data = [];
+      let current_session = this.$store.getters.getCurrentYear;
+      this.$store.getters.getSessions.forEach((ele) => {
+        if (ele.year == current_session.year && ele.id == current_session.id) {
+          data.push({
+            value: ele.id,
+            label: ele.year + " Current Year",
+          });
+        } else {
+          data.push({
+            value: ele.id,
+            label: ele.year,
+          });
+        }
+      });
+
+      return data;
+    },
   },
 
   watch: {
@@ -201,14 +215,15 @@ export default {
     filterPaymentCategories() {
       this.$router.push({
         path: "/dashboard/payment-categories",
-        query: { year: this.year},
+        query: { year: this.year.label},
       });
 
       this.filteredPaymentCategories = [];
+      let year = this.year.label.substring(0, 4);
 
-      let organisationId = this.getOrganisationId;
+      let organisationId = this.$store.getters.getOrganisation.id;
       let payload = {
-        url: `/api/protected/filter-payment-categories?organisation_id=${organisationId}&year=${this.year}`,
+        url: `/api/protected/filter-payment-categories?organisation_id=${organisationId}&year=${year}`,
         msg: "none",
         color: "default",
         status: "none",
@@ -240,8 +255,10 @@ export default {
     },
 
     downloadPaymentCategory() {
-      let id = this.getOrganisationId;
-      let url = `/api/protected/download-payment-categories?organisation_id=${id}&year=${this.year}`;
+      let year = this.year.label.substring(0, 4);
+
+      let organisationId = this.$store.getters.getOrganisation.id;
+      let url = `/api/protected/download-payment-categories?organisation_id=${organisationId}&year=${year}`;
       let file_name = "Organisation_Payment_Categories.pdf";
       this.loading = this.downloadPdf(url, file_name);
     },
@@ -275,7 +292,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.search {
-  cursor: pointer;
-}
+
 </style>

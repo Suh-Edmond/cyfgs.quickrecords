@@ -10,7 +10,6 @@
       />
     </div>
 
-
     <div>
       <!-- header for filter members -->
       <div
@@ -40,7 +39,7 @@
             v-model="year"
             outlined
             dense
-            :options="years"
+            :options="getSessions"
             label="Select year"
           />
         </div>
@@ -96,7 +95,7 @@
             :show_members="true"
             :show_contribution="false"
             :total_members="computeTotalMembership"
-            @fetch-members="getOrganisationMembers"
+            @fetch-members="onFetchMembers"
             @register-member="registerMember"
           >
           </TableVue>
@@ -122,10 +121,8 @@ export default {
     return {
       year: "",
       has_register: null,
-      years: ["2020", "2021", "2022", "2023", "2024"],
       loading: false,
       start_filter: false,
-      no_caps: true,
       genders: ["MALE", "FEMALE", "ALL", "OTHER"],
       registrationStatuses: ["REGISTERED", "NOT_REGISTERED"],
       gender: "",
@@ -184,14 +181,14 @@ export default {
           sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
         },
       ],
-      not_found_msg:
-        "Ooops!! You don't have any Member click the button to add Members.",
       loading_filter: false,
     };
   },
   computed: {
     validateFilter() {
-      return this.has_register == null && this.year =="" && this.gender == "" ? true : false;
+      return this.has_register == null && this.year == "" && this.gender == ""
+        ? true
+        : false;
     },
     getMembers() {
       let data = [];
@@ -207,14 +204,14 @@ export default {
           email: member.email,
           organisation_id: member.organisation_id,
           has_register: member.has_register,
-          has_paid:member.has_paid,
-          type:"MEMBERS",
-          approve:member.approve,
-          year:member.year,
-          roles:member.roles,
+          has_paid: member.has_paid,
+          type: "MEMBERS",
+          approve: member.approve,
+          year: member.year,
+          roles: member.roles,
           created_at: member.created_at,
           updated_at: member.updated_at,
-          picture  : member.picture,
+          picture: member.picture,
         });
       });
       return data;
@@ -227,11 +224,31 @@ export default {
     getLoadingState() {
       return this.$store.getters.getFetchingState;
     },
+
+    getSessions() {
+      let data = [];
+      let current_session = this.$store.getters.getCurrentYear;
+      this.$store.getters.getSessions.forEach((ele) => {
+        if (ele.year == current_session.year && ele.id == current_session.id) {
+          data.push({
+            value: ele.id,
+            label: ele.year + " Current Year",
+          });
+        } else {
+          data.push({
+            value: ele.id,
+            label: ele.year,
+          });
+        }
+      });
+
+      return data;
+    },
   },
 
   methods: {
     registerMember(data) {
-      this.$store.dispatch("setMemberToRegister", data.data)
+      this.$store.dispatch("setMemberToRegister", data.data);
       this.$emit("register-member", data);
     },
 
@@ -275,6 +292,11 @@ export default {
       let file_name = "Organisation_Members.pdf";
       this.loading = this.downloadPdf(url, file_name);
     },
+
+    onFetchMembers(){
+      let id = this.$store.getters.getOrganisation.id;
+      this.getOrganisationMembers(id, true);
+    }
   },
 
   components: {

@@ -113,14 +113,14 @@
                 clickable
               >
                 <q-menu>
-                  <q-list>
+                  <q-list style="width: 190px" bordered separator>
                     <q-item
                       clickable
                       v-close-popup
                       @click="onViewPaymentItem(props.row)"
                       v-if="show_payment_item"
                     >
-                      <q-item-section avatar>
+                      <q-item-section avatar class="q-mr-lg">
                         <span>
                           <q-icon name="visibility" size="xs" class="details" />
                         </span>
@@ -135,7 +135,7 @@
                       v-close-popup
                       @click="onDelete(props.row, 'PAYMENT_ITEMS')"
                     >
-                      <q-item-section avatar>
+                      <q-item-section avatar class="q-mr-lg">
                         <span>
                           <q-icon name="delete" size="xs" color="red" />
                         </span>
@@ -427,7 +427,7 @@ export default {
         case "PAYMENT_CATEGORY":
           show_confirm_dialog_detail = true;
           break;
-        case "PAYMENT_ITEM":
+        case "PAYMENT_ITEMS":
           show_confirm_dialog_detail = true;
           break;
       }
@@ -444,7 +444,7 @@ export default {
           this.delete_msg =
             "Are you sure you want to delete this Payment Category?";
           break;
-        case "PAYMENT_ITEM":
+        case "PAYMENT_ITEMS":
           this.delete_msg =
             "Are you sure you want to delete this Payment Item?";
           break;

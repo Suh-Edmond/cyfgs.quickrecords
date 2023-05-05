@@ -86,12 +86,13 @@
             :label="label"
             :message="message"
             :title="getPaymentCategoryName"
-            @update-payment-category="updatePaymentCategory"
             :show_payment_category="false"
             :show_payment_item="true"
-            @update-payment-item="updatePaymentItems"
             :show_expenditure_category="false"
             :show_expenditure_item="false"
+            @update-payment-item="updatePaymentItems"
+            @delete-row="deleteRow"
+            @update-payment-category="updatePaymentCategory"
           >
           </CategoryTable>
         </div>
@@ -122,6 +123,7 @@
 import NotFound from "src/components/NotFound.vue";
 import CategoryTable from "src/components/CategoryTable.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
+import PaymentItemMixin from "src/mixins/PaymentItemMixin.vue";
 
 export default {
   mixins: [HelperMixinVue],
@@ -321,6 +323,50 @@ export default {
         });
       });
     },
+
+    getPaymentItemsByCategory(id) {
+      let payload = {
+        status: "none",
+        url: `/api/protected/payment-categories/${id}/payment-items`,
+        has_path_val: true,
+        show_feedback: false,
+        show_spinner:true,
+        msg: "none",
+        color: "default",
+        error_msg: "default",
+        commit: "SET_PAYMENT_ITEMS",
+        has_commit: true,
+        to_be_store_data: {
+          required: true,
+          has_value: false,
+          data: null,
+        },
+      };
+      this.$store.dispatch("getRequest", payload).then(() => { });
+    },
+
+
+    deleteRow(data){
+      let payload = {
+        url: `/api/protected/payment-categories/${data.payment_category_id}/payment-items/${data.id}`,
+        msg:`Payment Category deleted successfully`,
+        color: "default",
+        to_on_ok: "none",
+        to_on_fail: "none",
+        show_feedback: true,
+        error_msg: "An Error occurred! Please try again",
+        has_commit: false,
+        commit: "none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.$store.dispatch("deleteRequest", payload).then(() => {
+        this.getPaymentItemsByCategory(data.payment_category_id)
+      });
+    }
   },
   components: {
     NotFound,

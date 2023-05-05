@@ -44,18 +44,6 @@
         </div>
         <div>
           <label for="credential" class="form_field"
-            >Type <span class="text-red">*</span></label
-          >
-          <q-select
-            v-model="payment_item.type"
-            outlined
-            dense
-            :options="payment_item_types"
-            label="Select type"
-          />
-        </div>
-        <div>
-          <label for="credential" class="form_field"
             >Frequency <span class="text-red">*</span></label
           >
           <q-select
@@ -64,6 +52,31 @@
             dense
             :options="frequencies"
             label="Select frequency"
+          />
+        </div>
+        <div>
+          <label for="credential" class="form_field"
+            >Type <span class="text-red">*</span></label
+          >
+          <q-select
+            v-model="payment_item.type"
+            outlined
+            dense
+            :options="payment_item_types"
+            label="Select type"
+            @input="handlePaymentItemType()"
+          />
+        </div>
+        <div v-if="payment_item.type == 'A_MEMBER'">
+          <label for="credential" class="form_field"
+            >Search Member <span class="text-red">*</span></label
+          >
+          <q-select
+            v-model="payment_item.reference"
+            outlined
+            dense
+            :options="getMembers"
+            label=""
           />
         </div>
         <div>
@@ -99,9 +112,10 @@
 import ButtonVue from "src/components/Button.vue";
 import PaymentItemMixin from "src/mixins/PaymentItemMixin.vue";
 import PaymentItemMixinVue from "src/mixins/PaymentItemMixin.vue";
+import memberMixin from "src/mixins/memberMixin.vue";
 
 export default {
-  mixins: [PaymentItemMixin, PaymentItemMixinVue],
+  mixins: [PaymentItemMixin, PaymentItemMixinVue, memberMixin],
 
   created() {
     let heading = "Payment Item Information";
@@ -120,12 +134,13 @@ export default {
       payment_item: {
         compulsory: true,
         name: null,
-        description: null,
+        description: "",
         id: null,
         payment_category_id: null,
         type: null,
         frequency: null,
         amount: 0.0,
+        reference:null
       },
       payment_item_types: [
         "ALL_MEMBERS",
@@ -139,6 +154,7 @@ export default {
         "MONTHLY",
         "ONE_TIME",
       ],
+      members:[]
     };
   },
   computed: {
@@ -154,6 +170,17 @@ export default {
     getUpdatedPaymentItem() {
       return this.setFormFields(this.$store.getters.getUpdatedPaymentItem);
     },
+
+    getMembers() {
+      let data = [];
+      this.$store.getters.getMembers.forEach((member) => {
+        data.push({
+          label: member.name,
+          value: member.id,
+        });
+      });
+      return data;
+    }
   },
 
   watch: {
@@ -175,8 +202,9 @@ export default {
           frequency: this.payment_item.frequency,
           compulsory: this.payment_item.compulsory,
           description: this.payment_item.description,
+          reference: this.payment_item.reference.value
         },
-        msg: "Payment Category save Successfully",
+        msg: "Payment Item save Successfully",
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
@@ -198,7 +226,8 @@ export default {
       this.payment_item.type = null;
       this.payment_item.amount = 0.0;
       this.payment_item.frequency = null;
-      (this.payment_item.description = null),
+      this.payment_item.reference = null;
+      (this.payment_item.description = ""),
         (this.payment_item.compulsory = true);
       this.payment_item.id = null;
       this.payment_item.payment_category_id = null;
@@ -260,6 +289,13 @@ export default {
       }
       return this.payment_item;
     },
+
+    handlePaymentItemType(){
+      if(this.$store.getters.getMembers.length == 0){
+        let organisation_id = this.$store.getters.getOrganisation.id;
+        this.getOrganisationMembers(organisation_id, false);
+      }
+    }
   },
   components: {
     ButtonVue,

@@ -197,8 +197,10 @@ export default {
 
       this.$emit("update-payment-category", data);
     },
+
+
     showPaymentItems(data) {
-      this.getPaymentItemsByCategory(data.payment_items.id);
+      this.getPaymentItemsByCategory(data.data.id);
 
       let intermediate_tabs = [];
 
@@ -206,7 +208,7 @@ export default {
 
       this.$store.dispatch("setIntermediateTabs", intermediate_tabs)
 
-      this.$store.dispatch("setCurrentPaymentCategory", data.payment_items);
+      this.$store.dispatch("setCurrentPaymentCategory", data.data);
     },
 
     updatePaymentItems(data) {
@@ -287,8 +289,8 @@ export default {
 
     deleteRow(data){
       let payload = {
-        url: `/api/protected/organisations/${data.organisation_id}/payment-categories/${data.id}`,
-        msg:`Payment Category deleted successfully`,
+        url: `/api/protected/payment-categories/${data.payment_category_id}/payment-items/${data.id}`,
+        msg:`Payment Item deleted successfully`,
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",

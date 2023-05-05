@@ -28,14 +28,14 @@
           <div class="q-gutter-sm q-ml-lg">
             <q-radio
               dense
-              v-model="payment_item.complusory"
+              v-model="payment_item.compulsory"
               :val="true"
               label="YES"
               size="xs"
             />
             <q-radio
               dense
-              v-model="payment_item.complusory"
+              v-model="payment_item.compulsory"
               :val="false"
               label="NO"
               size="xs"
@@ -46,17 +46,29 @@
           <label for="credential" class="form_field"
             >Type <span class="text-red">*</span></label
           >
-          <q-select v-model="payment_item.type" outlined dense :options="payment_item_types" label="Select type"/>
+          <q-select
+            v-model="payment_item.type"
+            outlined
+            dense
+            :options="payment_item_types"
+            label="Select type"
+          />
         </div>
         <div>
           <label for="credential" class="form_field"
             >Frequency <span class="text-red">*</span></label
           >
-          <q-select v-model="payment_item.frequency" outlined dense :options="frequencies" label="Select frequency" />
+          <q-select
+            v-model="payment_item.frequency"
+            outlined
+            dense
+            :options="frequencies"
+            label="Select frequency"
+          />
         </div>
         <div>
           <label for="credential" class="form_field"
-            >Description <span class="text-red">*</span></label
+            >Description </label
           >
           <q-input
             v-model="payment_item.description"
@@ -87,6 +99,8 @@
 import ButtonVue from "src/components/Button.vue";
 import PaymentItemMixin from "src/mixins/PaymentItemMixin.vue";
 import PaymentItemMixinVue from "src/mixins/PaymentItemMixin.vue";
+import PaymentItemTypeVue from "./Constants/PaymentItemType.vue";
+import PaymentItemFrequencyVue from "./Constants/PaymentItemFrequency.vue";
 
 export default {
   mixins: [PaymentItemMixin, PaymentItemMixinVue],
@@ -109,29 +123,38 @@ export default {
       dialog: false,
       no_caps: true,
       payment_item: {
-        complusory: true,
+        compulsory: true,
         name: null,
         description: null,
         id: null,
         payment_category_id: null,
-        type:null,
-        frequency:null,
-        amount:0.0
+        type: null,
+        frequency: null,
+        amount: 0.0,
       },
-      payment_item_types:['REGISTRATION', 'NORMAL'],
-      frequencies:['YEARLY','MONTHLY' ,'NONE']
+      payment_item_types: [
+        PaymentItemTypeVue.ALL_MEMBERS,
+        PaymentItemTypeVue.A_MEMBER,
+        PaymentItemTypeVue.MEMBER_WITH_ROLES,
+        PaymentItemTypeVue.MEMBERS_WITHOUT_ROLES,
+        PaymentItemTypeVue.GROUPED_MEMBERS,
+      ],
+      frequencies: [
+        PaymentItemFrequencyVue.YEARLY,
+        PaymentItemFrequencyVue.MONTHLY,
+        PaymentItemFrequencyVue.ONE_TIME,
+      ],
     };
   },
   computed: {
     validateForm() {
       return this.payment_item.name == null ||
-        this.payment_item.description == null ||
-        this.payment_item.type == null || this.payment_item.frequency == null || this.payment_item.amount == 0.0
+        this.payment_item.type == null ||
+        this.payment_item.frequency == null ||
+        this.payment_item.amount == 0.0
         ? true
         : false;
     },
-
-
 
     getUpdatedPaymentItem() {
       return this.setFormFields(this.$store.getters.getUpdatedPaymentItem);
@@ -150,13 +173,13 @@ export default {
       let payload = {
         url: this.setAddUpdatePaymentItemUrl(this.payment_item, category),
         data: {
-          name:this.payment_item.name,
-          amount:this.payment_item.amount,
-          type:this.payment_item.type,
-          amount:this.payment_item.amount,
-          frequency:this.payment_item.frequency,
-          complusory:this.payment_item.complusory,
-          description:this.payment_item.description
+          name: this.payment_item.name,
+          amount: this.payment_item.amount,
+          type: this.payment_item.type,
+          amount: this.payment_item.amount,
+          frequency: this.payment_item.frequency,
+          compulsory: this.payment_item.compulsory,
+          description: this.payment_item.description,
         },
         msg: "Payment Category save Successfully",
         color: "default",
@@ -181,7 +204,7 @@ export default {
       this.payment_item.amount = 0.0;
       this.payment_item.frequency = null;
       (this.payment_item.description = null),
-        (this.payment_item.complusory = true);
+        (this.payment_item.compulsory = true);
       this.payment_item.id = null;
       this.payment_item.payment_category_id = null;
 
@@ -212,7 +235,6 @@ export default {
           .finally(() => {
             this.loading = false;
             this.resetForm();
-
           });
       } else {
         this.loading = true;
@@ -220,7 +242,7 @@ export default {
           .dispatch("putRequest", payload)
           .then(() => {
             this.getPaymentItemsByCategory(category.id);
-            this.resetForm()
+            this.resetForm();
             this.$emit("close-right-drawer");
           })
           .finally(() => {
@@ -238,8 +260,8 @@ export default {
         this.payment_item.description = data.description;
         this.payment_item.id = data.id;
         this.payment_item.amount = data.amount;
-        this.payment_item.type = data.type.value
-        this.payment_item.complusory = data.complusory == 1 ? true : false; //because the complusory field value is returned as either 1 or 0
+        this.payment_item.type = data.type.value;
+        this.payment_item.compulsory = data.compulsory == 1 ? true : false; //because the complusory field value is returned as either 1 or 0
       }
       return this.payment_item;
     },

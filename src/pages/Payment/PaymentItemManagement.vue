@@ -67,9 +67,9 @@
         <q-space />
         <div class="button q-pb-xs">
           <q-btn
-            :label="label_download"
+            label="Print"
             :loading="loading"
-            :color="color_print"
+            color="positive"
             :disabled="false"
             no-caps
             icon-right="print"
@@ -207,8 +207,18 @@ export default {
       filteredPaymentItems: [],
       type:"",
       frequency:"",
-      frequencies:['YEARLY', 'NORMAL'],
-      payment_item_types:['REGISTRATION', 'OTHER'],
+      payment_item_types: [
+        PaymentItemTypeVue.ALL_MEMBERS,
+        PaymentItemTypeVue.A_MEMBER,
+        PaymentItemTypeVue.MEMBER_WITH_ROLES,
+        PaymentItemTypeVue.MEMBERS_WITHOUT_ROLES,
+        PaymentItemTypeVue.GROUPED_MEMBERS,
+      ],
+      frequencies: [
+        PaymentItemFrequencyVue.YEARLY,
+        PaymentItemFrequencyVue.MONTHLY,
+        PaymentItemFrequencyVue.ONE_TIME,
+      ],
       loading_filter:false,
     };
   },

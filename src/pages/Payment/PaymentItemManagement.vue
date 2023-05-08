@@ -229,7 +229,11 @@ export default {
     },
 
     getNotFoundMsgForPaymentItems() {
-      return `Ooops!! No Payment Items found for Category [${this.$store.getters.getCurrentPaymentCategory.name}]. Click the add button to add Payment Items.`;
+      let msg = "";
+      if(this.$store.getters.getCurrentPaymentCategory != undefined){
+        msg = `Ooops!! No Payment Items found for Category [${this.$store.getters.getCurrentPaymentCategory.name}]. Click the add button to add Payment Items.`;
+      }
+      return msg;
     },
 
     getLoadingState() {

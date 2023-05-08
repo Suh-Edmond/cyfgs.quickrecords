@@ -67,22 +67,118 @@
             @input="handlePaymentItemType()"
           />
         </div>
+
+        <!-- when the payment item type is A_MEMBER -->
         <div v-if="payment_item.type == 'A_MEMBER'">
-          <label for="credential" class="form_field"
-            >Search Member <span class="text-red">*</span></label
-          >
+          <div v-if="references.length == 0">
+            <label for="title" class="q-mt-sm form_field"
+              >Select Member <span class="text-red">*</span></label
+            >
+          </div>
+          <div v-if="references.length > 0">
+            <label for="title" class="q-mt-sm form_field"
+              >Selected Member:</label
+            >
+            <div class="q-gutter-sm q-mb-lg">
+              <q-btn
+                color="primary"
+                class="ref_btn"
+                v-for="ref in references"
+                :key="ref.value"
+                @click="removeSelectedReference(ref)"
+                >{{ ref.label }}
+                <q-icon name="clear" class="q-pl-sm" size="xs"></q-icon>
+                <q-tooltip>Remove member</q-tooltip>
+              </q-btn>
+            </div>
+          </div>
+
           <q-select
+            :class="references.length > 0 ? 'q-mt-lg' : ''"
             v-model="payment_item.reference"
+            :options="members"
+            label="Type member's name"
             outlined
             dense
-            :options="getMembers"
-            label=""
-          />
-        </div>
-        <div>
-          <label for="credential" class="form_field"
-            >Description </label
+            @input="selectMember()"
+            use-input
+            input-debounce="0"
+            @filter="filterFn"
+            clearable
+            v-if="references.length == 0"
           >
+            <template v-slot:append v-if="start_filtering">
+              <q-spinner color="primary" size="1.2em" :thickness="5" />
+            </template>
+
+            <!-- no member found message -->
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey">
+                  No member found
+                </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
+        </div>
+
+        <!-- When the type is GROUPED_MEMBERS -->
+        <div v-if="payment_item.type == 'GROUPED_MEMBERS'">
+          <div v-if="references.length == 0">
+            <label for="title" class="q-mt-sm form_field"
+              >Select Members <span class="text-red">*</span></label
+            >
+          </div>
+          <div v-if="references.length > 0">
+            <label for="title" class="q-mt-sm form_field"
+              >Selected Members:</label
+            >
+            <div class="q-gutter-sm q-mb-lg">
+              <q-btn
+                color="primary"
+                class="ref_btn"
+                v-for="ref in references"
+                :key="ref.value"
+                @click="removeSelectedReference(ref)"
+                >{{ ref.label }}
+                <q-icon name="clear" class="q-pl-sm" size="xs"></q-icon>
+                <q-tooltip>Remove member</q-tooltip>
+              </q-btn>
+            </div>
+          </div>
+
+          <q-select
+            :class="references.length > 0 ? 'q-mt-lg' : ''"
+            v-model="payment_item.reference"
+            :options="members"
+            label="Type member's name"
+            multiple
+            outlined
+            dense
+            @input="selectMember()"
+            use-input
+            input-debounce="0"
+            @filter="filterFn"
+            clearable
+          >
+            <template v-slot:append v-if="start_filtering">
+              <q-spinner color="primary" size="1.2em" :thickness="5" />
+            </template>
+
+            <!-- no member found message -->
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey">
+                  No member found
+                </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
+        </div>
+        <!-- END OF SELECTIONS -->
+
+        <div class="q-mt-lg">
+          <label for="credential" class="form_field">Description </label>
           <q-input
             v-model="payment_item.description"
             outlined
@@ -109,6 +205,7 @@
   </div>
 </template>
 <script>
+import { Notify, Platform } from "quasar";
 import ButtonVue from "src/components/Button.vue";
 import PaymentItemMixin from "src/mixins/PaymentItemMixin.vue";
 import PaymentItemMixinVue from "src/mixins/PaymentItemMixin.vue";
@@ -140,7 +237,7 @@ export default {
         type: null,
         frequency: null,
         amount: 0.0,
-        reference:null
+        reference: null,
       },
       payment_item_types: [
         "ALL_MEMBERS",
@@ -149,12 +246,10 @@ export default {
         "MEMBERS_WITHOUT_ROLES",
         "GROUPED_MEMBERS",
       ],
-      frequencies: [
-        "YEARLY",
-        "MONTHLY",
-        "ONE_TIME",
-      ],
-      members:[]
+      frequencies: ["YEARLY", "MONTHLY", "ONE_TIME"],
+      members: [],
+      references: [],
+      start_filtering: false,
     };
   },
   computed: {
@@ -170,17 +265,6 @@ export default {
     getUpdatedPaymentItem() {
       return this.setFormFields(this.$store.getters.getUpdatedPaymentItem);
     },
-
-    getMembers() {
-      let data = [];
-      this.$store.getters.getMembers.forEach((member) => {
-        data.push({
-          label: member.name,
-          value: member.id,
-        });
-      });
-      return data;
-    }
   },
 
   watch: {
@@ -202,7 +286,7 @@ export default {
           frequency: this.payment_item.frequency,
           compulsory: this.payment_item.compulsory,
           description: this.payment_item.description,
-          reference: this.payment_item.reference.value
+          reference: this.buildStringOfReferences(this.references),
         },
         msg: "Payment Item save Successfully",
         color: "default",
@@ -259,6 +343,7 @@ export default {
           .finally(() => {
             this.loading = false;
             this.resetForm();
+            this.references = [];
           });
       } else {
         this.loading = true;
@@ -268,6 +353,7 @@ export default {
             this.getPaymentItemsByCategory(category.id);
             this.resetForm();
             this.$emit("close-right-drawer");
+            this.references = [];
           })
           .finally(() => {
             this.loading = false;
@@ -290,12 +376,100 @@ export default {
       return this.payment_item;
     },
 
-    handlePaymentItemType(){
-      if(this.$store.getters.getMembers.length == 0){
+    handlePaymentItemType() {
+      this.references = [];
+      this.payment_item.reference = null;
+      if (this.$store.getters.getMembers.length == 0) {
         let organisation_id = this.$store.getters.getOrganisation.id;
         this.getOrganisationMembers(organisation_id, false);
+        this.getReferences();
+      } else {
+        this.getReferences();
       }
-    }
+    },
+
+    getReferences() {
+      this.members = [];
+      this.$store.getters.getMembers.forEach((member) => {
+        this.members.push({
+          label: member.name,
+          value: member.id,
+        });
+      });
+      return this.members;
+    },
+
+    selectMember() {
+      let selected = null;
+      if (this.payment_item.type == "A_MEMBER") {
+        selected = JSON.parse(JSON.stringify(this.payment_item.reference));
+        this.references.push({ label: selected.label, value: selected.value });
+        this.payment_item.reference = null;
+        this.members = this.members.filter(
+          (member) => member.value != selected.value
+        );
+      } else {
+        selected =
+          JSON.parse(JSON.stringify(this.payment_item.reference)) != undefined
+            ? JSON.parse(JSON.stringify(this.payment_item.reference))[0]
+            : null;
+        if (selected != null) {
+          const exist = this.references.find(
+            (ele) => ele.value == selected.value
+          );
+          if (exist == undefined) {
+            this.references.push({
+              label: selected.label,
+              value: selected.value,
+            });
+            this.payment_item.reference = null;
+            this.members = this.members.filter(
+              (member) => member.value != selected.value
+            );
+          } else {
+            Notify.create({
+              type: "info",
+              message: "Member has already been selected",
+              position: Platform.is.mobile ? "bottom" : "top-right",
+            });
+          }
+        }
+      }
+      return this.members;
+    },
+
+    removeSelectedReference(ref) {
+      this.references = this.references.filter(
+        (reference) => reference.value != ref.value
+      );
+      this.members.push(ref);
+      return this.references;
+    },
+
+    filterFn(val, update, abort) {
+      if (val.length < 2) {
+        this.start_filtering = false;
+        abort();
+        return;
+      }
+
+      update(() => {
+        this.start_filtering = true;
+        this.members = this.getReferences();
+        this.members = this.members.filter((v) =>
+          v.label.toLowerCase().includes(val.toLowerCase())
+        );
+        return this.members;
+      });
+    },
+
+    buildStringOfReferences(references) {
+      let ref_str = "";
+      for (let index = 0; index < references.length; index++) {
+        ref_str += references[index].value + "/";
+      }
+      return ref_str;
+    },
   },
   components: {
     ButtonVue,
@@ -308,7 +482,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 11px;
+  font-size: 12.8px;
   align-items: center;
   letter-spacing: 0.01em;
   color: $grey2;
@@ -316,5 +490,15 @@ export default {
 
 .info {
   color: $grey2;
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 13px;
+  align-items: center;
+  letter-spacing: 0.01em;
+}
+
+.ref_btn {
+  font-size: smaller;
 }
 </style>

@@ -1163,7 +1163,7 @@ export default {
         },
       }
       this.$store.dispatch("getRequest", payload).then((res) => {
-        if(res.data.length > 0) {
+        if(res != undefined) {
           res.data.forEach((ele) => {
             this.amount_paid += ele.amount;
             this.data1.push({

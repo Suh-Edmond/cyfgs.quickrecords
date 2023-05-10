@@ -94,6 +94,7 @@
             @delete-row="deleteRow"
             @update-payment-category="updatePaymentCategory"
             @show-references="showReferences"
+            @view-payment-item="viewPaymentItem"
           >
           </CategoryTable>
         </div>
@@ -105,13 +106,14 @@
             :label="label"
             :message="message"
             :title="getPaymentCategoryName"
-            @update-payment-category="updatePaymentCategory"
             :show_payment_category="false"
             :show_payment_item="true"
-            @update-payment-item="updatePaymentItems"
             :show_expenditure_category="false"
             :show_expenditure_item="false"
+            @update-payment-category="updatePaymentCategory"
+            @update-payment-item="updatePaymentItems"
             @show-references="showReferences"
+            @view-payment-item="viewPaymentItem"
           >
           </CategoryTable>
         </div>
@@ -351,7 +353,11 @@ export default {
 
       this.$emit("update-payment-item", data);
     },
+    viewPaymentItem(data){
+      this.$store.dispatch("setUpdatedPaymentItem", data.data);
 
+      this.$emit("view-payment-item", data);
+    },
     getPaymentItemsFromState() {
       let items = [];
       if (this.$store.getters.getPaymentItems) {
@@ -369,6 +375,9 @@ export default {
             payment_item_type: ele.type,
             frequency: ele.frequency,
             references: ele.references,
+            created_at:ele.created_at,
+            updated_at:ele.updated_at,
+            updated_by:ele.updated_by
           });
         });
       }

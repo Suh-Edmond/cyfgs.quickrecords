@@ -137,7 +137,7 @@
                 clickable
               >
                 <q-menu>
-                  <q-list style="width: 190px" bordered separator>
+                  <q-list style="width: 180px" bordered separator>
                     <q-item
                       clickable
                       v-close-popup
@@ -154,6 +154,21 @@
                       </q-item-section>
                     </q-item>
                     <q-separator />
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onEditPaymentItem(props.row)"
+                      v-if="show_payment_item"
+                    >
+                      <q-item-section avatar class="q-mr-lg">
+                        <span>
+                          <q-icon name="edit" size="xs" class="details" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="details">Edit</q-item-label>
+                      </q-item-section>
+                    </q-item>
                     <q-item
                       clickable
                       v-close-popup
@@ -437,6 +452,14 @@ export default {
 
 
     onViewPaymentItem(payment_items) {
+      let payload = {
+        data: payment_items,
+        tab: "View Payment Item",
+      };
+      this.$emit("view-payment-item", payload);
+    },
+
+    onEditPaymentItem(payment_items) {
       let payload = {
         data: payment_items,
         tab: "Payment Items",

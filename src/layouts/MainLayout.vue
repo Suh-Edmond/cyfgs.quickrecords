@@ -518,6 +518,12 @@
           @set-heading="setHeading"
         >
         </MemberRegistration>
+
+        <ViewPaymentItem  v-if="current_tab == 'View Payment Item'"
+          @close-right-drawer="closeRightDrawer"
+          @set-heading="setHeading">
+
+        </ViewPaymentItem>
       </q-page>
     </q-drawer>
   </q-layout>
@@ -547,6 +553,7 @@ import ViewSponsorshipVue from "src/components/ViewSponsorship.vue";
 import ViewExpenditureItemVue from "src/components/ViewExpenditureItem.vue";
 import ViewExpenditureItemDetail from "src/components/ViewExpenditureItemDetail.vue";
 import MemberRegistration from "src/components/MemberRegistration.vue";
+import ViewPaymentItem from "src/components/ViewPaymentItem.vue";
 
 export default {
   mixins: [organisationMixinVue],
@@ -678,6 +685,7 @@ export default {
     ViewExpenditureItemVue,
     ViewExpenditureItemDetail,
     MemberRegistration,
+    ViewPaymentItem
   },
 };
 </script>

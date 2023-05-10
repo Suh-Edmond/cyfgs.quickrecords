@@ -372,6 +372,7 @@ export default {
         this.payment_item.amount = data.amount;
         this.payment_item.type = data.payment_item_type;
         this.payment_item.compulsory = data.compulsory == 1 ? true : false;
+        this.references = JSON.parse(JSON.stringify(data.references))
       }
       return this.payment_item;
     },

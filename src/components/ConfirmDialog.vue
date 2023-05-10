@@ -41,6 +41,12 @@
           </div>
           <!-- end of members -->
 
+          <!-- a_member details -->
+          <div class="text-weight-bold text-left text-red" v-if="show_member">
+            Name: <span class="q-pl-md">{{ data.name }}</span>
+          </div>
+          <!-- end of member -->
+
           <!-- income_activity details -->
           <div v-if="show_income_activity">
             <div class="text-weight-bold text-left text-red">
@@ -95,7 +101,7 @@
             :color="'primary'"
             :disabled="false"
             :loading="false"
-            :no_caps="true"
+            no-caps
             :flat="true"
             class="dialog_button"
             @click="cancelDialog"
@@ -107,7 +113,7 @@
             class="dialog_button"
             :disabled="false"
             :loading="false"
-            :no_caps="false"
+            no-caps
             :flat="true"
             v-close-popup
             @click="deleteRow()"
@@ -166,6 +172,10 @@ export default {
       required: false,
     },
     show_expenditure_item_detail: {
+      type: Boolean,
+      required: false,
+    },
+    show_member: {
       type: Boolean,
       required: false,
     },

@@ -6,7 +6,7 @@
       :columns="columns"
       row-key="id"
       :table-header-style="{ backgroundColor: '#5384ae', color: '#FFFFFF' }"
-      class="col-xs-12"
+      class="col-xs-12 text-bold"
       :filter="filter"
       :rows-per-page-options="[0]"
     >
@@ -83,7 +83,7 @@
 
 
         <!-- table body for payment items -->
-        <q-tr :props="props" v-if="show_payment_item">
+        <q-tr :props="props" v-if="show_payment_item" class="text-bold">
           <q-td key="counter" :props="props">
             {{ props.row.counter }}
           </q-td>
@@ -96,11 +96,35 @@
           <q-td key="compulsory" :props="props">
             {{ props.row.compulsory == 1 ? "YES" : "NO" }}
           </q-td>
+          <q-td key="frequency" :props="props">
+            {{ props.row.frequency }}
+          </q-td>
           <q-td key="payment_item_type" :props="props">
             {{ props.row.payment_item_type }}
           </q-td>
-          <q-td key="frequency" :props="props">
-            {{ props.row.frequency }}
+          <q-td key="reference" :props="props" >
+            <!-- button for view member -->
+            <q-btn
+            no-caps
+              color="primary"
+              class="view_items"
+              @click="showReferences(props.row)"
+              v-if="props.row.payment_item_type == 'A_MEMBER'"
+            >
+              View Member
+            </q-btn>
+
+            <!-- button for view members -->
+            <q-btn
+            no-caps
+            color="primary"
+              class="view_items"
+              @click="showReferences(props.row)"
+              v-if="props.row.payment_item_type == 'GROUPED_MEMBERS'"
+            >
+              View Members
+            </q-btn>
+
           </q-td>
           <q-td key="action" :props="props">
             <!-- buttons for edit, view and delete table data row -->
@@ -420,7 +444,9 @@ export default {
       this.$emit("update-payment-item", payload);
     },
 
-
+    showReferences(data){
+      this.$emit('show-references', data);
+    },
     computeShowConfirmDialogDetail() {
       let show_confirm_dialog_detail = false;
       switch (this.type) {

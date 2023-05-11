@@ -125,7 +125,7 @@ import moment from "moment";
 export default {
   mixins: [ExpenditureItemDetailMixinVue],
   mounted() {
-    let heading = "Expenditure Activity Detail Information";
+    let heading = "Expenditure Item Detail Information";
     this.$emit("set-heading", heading);
   },
   data() {

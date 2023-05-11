@@ -37,9 +37,9 @@
         <q-space />
         <div class="button q-pb-xs">
           <q-btn
-            :label="label_download"
+            label="Print"
             :loading="loading"
-            :color="color_print"
+            color="positive"
             :disabled="false"
             no-caps
             icon-right="print"
@@ -62,13 +62,14 @@
               :show_expenditure_category="false"
               :show_expenditure_item="false"
               :show_expenditure_item_detail="true"
-              @edit-expenditure-item-detail="editExpenditureItemDetail"
-              @view-expenditure-item-detail="viewExpenditureItemDetail"
               :expenditure_item_amount="getExpenditureItemAmount"
               :total_amount_given="getTotalAmountGiven"
               :total_amount_spent="getTotalAmountSpent"
               :balance="getBalance"
               :total_balance="getTotalBalance"
+              @edit-expenditure-item-detail="editExpenditureItemDetail"
+              @view-expenditure-item-detail="viewExpenditureItemDetail"
+              @delete-row="onDeleteRow"
             >
             </CategoryTable>
           </div>
@@ -86,13 +87,14 @@
               :show_expenditure_category="false"
               :show_expenditure_item="false"
               :show_expenditure_item_detail="true"
-              @edit-expenditure-item-detail="editExpenditureItemDetail"
-              @view-expenditure-item-detail="viewExpenditureItemDetail"
               :expenditure_item_amount="getExpenditureItemAmount"
               :total_amount_given="getTotalAmountGiven"
               :total_amount_spent="getTotalAmountSpent"
               :balance="getBalance"
               :total_balance="getTotalBalance"
+              @edit-expenditure-item-detail="editExpenditureItemDetail"
+              @view-expenditure-item-detail="viewExpenditureItemDetail"
+              @delete-row="onDeleteRow"
             >
             </CategoryTable>
           </div>
@@ -106,18 +108,14 @@
 import NotFound from "src/components/NotFound.vue";
 import CategoryTable from "src/components/CategoryTable.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
+import ExpenditureItemDetailMixinVue from "src/mixins/ExpenditureItemDetailMixin.vue";
 
 export default {
-  mixins: [HelperMixinVue],
+  mixins: [HelperMixinVue, ExpenditureItemDetailMixinVue],
   data() {
     return {
       start_filter: false,
-      label_fetch: "Filter",
-      color: "primary",
-      no_caps: true,
       loading: false,
-      label_download: "Print",
-      color_print: "positive",
       columns: [
         {
           name: "counter",
@@ -137,23 +135,30 @@ export default {
         },
         {
           name: "amount_given",
-          align: "center",
+          align: "left",
           label: "Amount Given (XAF)",
           field: "amount_given",
           sortable: true,
         },
         {
           name: "amount_spent",
-          align: "center",
+          align: "left",
           label: "Amount Spent (XAF)",
           field: "amount_spent",
           sortable: true,
         },
         {
           name: "balance",
-          align: "center",
+          align: "left",
           label: "Balance (XAF)",
           field: "balance",
+          sortable: true,
+        },
+        {
+          name: "approve",
+          align: "left",
+          label: "Status",
+          field: "approve",
           sortable: true,
         },
         {
@@ -207,7 +212,9 @@ export default {
     },
 
     getExpenditureItemName() {
-      return this.$store.getters.getCurrentExpenditureItem != null ? this.$store.getters.getCurrentExpenditureItem.name : "";
+      return this.$store.getters.getCurrentExpenditureItem != null
+        ? this.$store.getters.getCurrentExpenditureItem.name
+        : "";
     },
 
     getNotFoundMsg() {
@@ -230,8 +237,8 @@ export default {
       return this.$store.getters.getExpenditureItemDetails.total_amount_spent;
     },
 
-    getBalance(){
-      return this.getTotalAmountGiven - this.getTotalAmountSpent
+    getBalance() {
+      return this.getTotalAmountGiven - this.getTotalAmountSpent;
     },
     getTotalBalance() {
       return this.$store.getters.getExpenditureItemDetails.total_balance;
@@ -240,17 +247,11 @@ export default {
   methods: {
     editExpenditureItemDetail(data) {
       this.$store.dispatch("setUpdatedExpenditureItemDetail", data.data);
-
-      this.$store.dispatch("setEditState", true);
-
       this.$emit("edit-expenditure-item-detail", data);
     },
 
     viewExpenditureItemDetail(data) {
       this.$store.dispatch("setUpdatedExpenditureItemDetail", data.data);
-
-      this.$store.dispatch("setEditState", true);
-
       this.$emit("view-expenditure-item-detail", data);
     },
 
@@ -328,6 +329,28 @@ export default {
         url = `/api/protected/expenditure-items/${expenditure_item_id}/details`;
       }
       return url;
+    },
+
+    onDeleteRow(data) {
+      let payload = {
+        url: `/api/protected/expenditure-item-details/${data.id}`,
+        msg: `Expenditure item detail deleted successfully`,
+        color: "default",
+        to_on_ok: "none",
+        to_on_fail: "none",
+        show_feedback: true,
+        error_msg: "An Error occurred! Please try again",
+        has_commit: false,
+        commit: "none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.$store.dispatch("deleteRequest", payload).then(() => {
+        this.getExpenditureDetailsByItemId(data.expenditure_item_id.id);
+      });
     },
   },
   components: {

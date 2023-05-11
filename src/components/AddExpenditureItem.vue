@@ -48,7 +48,7 @@
         </div>
         <div>
           <label for="credential" class="form_field"
-            >Venue <span class="text-red">*</span></label
+            >Venue </label
           >
           <q-input
             v-model="expenditure_item.venue"
@@ -87,7 +87,7 @@
         </div>
         <div>
           <label for="credential" class="form_field"
-            >Comment <span class="text-red">*</span></label
+            >Comment </label
           >
           <q-input
             v-model="expenditure_item.comment"
@@ -149,7 +149,6 @@ export default {
       return this.expenditure_item.amount === 0 ||
         this.expenditure_item.name === null ||
         this.expenditure_item.date === null ||
-        this.expenditure_item.venue === null ||
         this.expenditure_item.payment_item_id === null
         ? true
         : false;

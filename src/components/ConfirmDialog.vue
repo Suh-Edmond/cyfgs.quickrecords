@@ -7,6 +7,24 @@
           <div class="q-mb-sm text-left">
             <label class="message">{{ msg }}</label
             ><br />
+            <small class="warning_caption">
+              <span v-if="show_payment_category"
+                >All payments recorded under this category will be lost.</span
+              >
+              <span v-if="show_expenditure_category"
+                >All expenditures recorded under this category will be
+                lost.</span
+              >
+              <span v-if="show_expenditure_item"
+                >All details of this expenditure will be lost.</span
+              > </small
+            ><br
+              v-if="
+                show_payment_category ||
+                show_expenditure_category ||
+                show_expenditure_item
+              "
+            />
             <small class="warning_caption">This action can not be undone</small>
           </div>
 
@@ -93,6 +111,36 @@
             </div>
           </div>
           <!-- end of payment category -->
+
+          <!-- Expenditure Item -->
+          <div
+            class="text-weight-bold text-left text-red"
+            v-if="show_expenditure_item"
+          >
+            Name:
+            <span class="payment_item_name">{{ data.name }}</span>
+          </div>
+          <!-- end of Expenditure Item -->
+
+          <!-- Expenditure Item details -->
+          <div v-if="show_expenditure_item_detail">
+            <div class="text-weight-bold text-left text-red">
+              Name: <span class="frequency">{{ data.name }}</span>
+            </div>
+            <div class="text-weight-bold text-left text-red">
+              Amount Given:
+              <span class="amount"
+                >{{ Number(data.amount_given).toLocaleString() }} XAF</span
+              >
+            </div>
+            <div class="text-weight-bold text-left text-red">
+              Amount Spent:
+              <span class="amount"
+                >{{ Number(data.amount_spent).toLocaleString() }} XAF</span
+              >
+            </div>
+          </div>
+          <!-- end of Expenditure Item -->
         </q-card-section>
 
         <q-card-actions align="right">
@@ -235,6 +283,10 @@ export default {
 .warning_caption {
   color: $grey2;
   font-weight: 500;
+  font-size: 13px;
+}
+
+.category_warning {
   font-size: 13px;
 }
 </style>

@@ -7,7 +7,17 @@
           <div class="q-mb-sm text-left">
             <label class="message">{{ msg }}</label
             ><br />
-            <small class="warning_caption">All <span v-if="type == 'PAYMENT_CATEGORY'">Payments</span> <span v-else>Expenditures</span> recorded under this Category will be lost.</small><br/>
+            <small class="warning_caption">
+              <span v-if="show_payment_category"
+                >All payments recorded under this category will be lost.</span
+              >
+              <span v-if="show_expenditure_category"
+                >All expenditures recorded under this category will be
+                lost.</span>
+              <span v-if="show_expenditure_item"
+              >All details of this expenditure will be
+              lost.</span>
+            </small><br/>
             <small class="warning_caption">This action can not be undone</small>
           </div>
 
@@ -94,6 +104,16 @@
             </div>
           </div>
           <!-- end of payment category -->
+
+          <!-- Expenditure Item -->
+          <div
+            class="text-weight-bold text-left text-red"
+            v-if="show_expenditure_item"
+          >
+            Name:
+            <span class="payment_item_name">{{ data.name }}</span>
+          </div>
+          <!-- end of Expenditure Item -->
         </q-card-section>
 
         <q-card-actions align="right">

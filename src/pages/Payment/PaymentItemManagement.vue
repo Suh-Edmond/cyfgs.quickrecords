@@ -113,6 +113,7 @@
             @update-payment-category="updatePaymentCategory"
             @update-payment-item="updatePaymentItems"
             @show-references="showReferences"
+            @delete-row="deleteRow"
             @view-payment-item="viewPaymentItem"
           >
           </CategoryTable>
@@ -179,7 +180,13 @@
             </div>
           </q-card-section>
           <q-card-actions align="right" class="q-pa-lg">
-            <q-btn  label="OK" v-close-popup color="primary" size="md" @click="fetchPaymentItems()"/>
+            <q-btn
+              label="OK"
+              v-close-popup
+              color="primary"
+              size="md"
+              @click="fetchPaymentItems()"
+            />
           </q-card-actions>
         </q-card>
       </q-dialog>
@@ -310,7 +317,7 @@ export default {
       deleted_row: null,
       delete_msg: "",
       show_delete_dialog: false,
-      selected_payment_item:null
+      selected_payment_item: null,
     };
   },
   computed: {
@@ -353,7 +360,7 @@ export default {
 
       this.$emit("update-payment-item", data);
     },
-    viewPaymentItem(data){
+    viewPaymentItem(data) {
       this.$store.dispatch("setUpdatedPaymentItem", data.data);
 
       this.$emit("view-payment-item", data);
@@ -375,9 +382,9 @@ export default {
             payment_item_type: ele.type,
             frequency: ele.frequency,
             references: ele.references,
-            created_at:ele.created_at,
-            updated_at:ele.updated_at,
-            updated_by:ele.updated_by
+            created_at: ele.created_at,
+            updated_at: ele.updated_at,
+            updated_by: ele.updated_by,
           });
         });
       }
@@ -508,16 +515,15 @@ export default {
     removeReference(reference) {
       this.show_delete_dialog = true;
       this.deleted_row = reference;
-      this.delete_msg =
-        "Are you sure you want to remove this Member?";
+      this.delete_msg = "Are you sure you want to remove this Member?";
     },
 
-    removeMember(){
+    removeMember() {
       let payload = {
         url: `/api/protected/payment-items/update/reference`,
-        data:{
-          id:this.selected_payment_item,
-          reference_id:this.deleted_row.id
+        data: {
+          id: this.selected_payment_item,
+          reference_id: this.deleted_row.id,
         },
         msg: `Member remove successfully`,
         color: "default",
@@ -535,18 +541,18 @@ export default {
       };
       this.$store.dispatch("putRequest", payload).then(() => {
         this.getPaymentItemsReferences(this.selected_payment_item);
-        this.show_delete_dialog = false
+        this.show_delete_dialog = false;
       });
     },
 
-    cancelDialog(){
+    cancelDialog() {
       this.dialog = false;
       this.type = null;
       this.delete_msg = "";
-      this.show_delete_dialog = false
+      this.show_delete_dialog = false;
     },
 
-    getPaymentItemsReferences(id){
+    getPaymentItemsReferences(id) {
       let payload = {
         status: "none",
         url: `/api/protected/payment-items/${id}/references`,
@@ -568,13 +574,13 @@ export default {
       this.$store.dispatch("getRequest", payload).then((res) => {
         res.data.forEach((ele) => {
           this.references.push(ele);
-        })
+        });
       });
     },
 
-    fetchPaymentItems(){
-      this.getPaymentItemsByCategory(this.$route.params.id)
-    }
+    fetchPaymentItems() {
+      this.getPaymentItemsByCategory(this.$route.params.id);
+    },
   },
   components: {
     NotFound,

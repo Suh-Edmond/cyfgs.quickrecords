@@ -53,7 +53,9 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="details q-pl-lg">View</q-item-label>
+                        <q-item-label class="details q-pl-lg"
+                          >View</q-item-label
+                        >
                       </q-item-section>
                     </q-item>
                     <q-separator />
@@ -68,7 +70,9 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="text-red q-pl-lg">Delete</q-item-label>
+                        <q-item-label class="text-red q-pl-lg"
+                          >Delete</q-item-label
+                        >
                       </q-item-section>
                     </q-item>
                   </q-list>
@@ -228,7 +232,9 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="details q-pl-lg">View</q-item-label>
+                        <q-item-label class="details q-pl-lg"
+                          >View</q-item-label
+                        >
                       </q-item-section>
                     </q-item>
                     <q-separator />
@@ -243,7 +249,9 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="text-red q-pl-lg">Delete</q-item-label>
+                        <q-item-label class="text-red q-pl-lg"
+                          >Delete</q-item-label
+                        >
                       </q-item-section>
                     </q-item>
                   </q-list>
@@ -253,6 +261,102 @@
           </q-td>
         </q-tr>
         <!-- end of table body for expenditure category -->
+
+        <!-- table body for expenditure items -->
+        <q-tr :props="props" v-if="show_expenditure_item">
+          <q-td key="counter" :props="props">
+            {{ props.row.counter }}
+          </q-td>
+          <q-td key="name" :props="props">
+            {{ props.row.name }}
+          </q-td>
+          <q-td key="amount" :props="props">
+            {{ Number(props.row.amount).toLocaleString() }}
+          </q-td>
+          <q-td key="venue" :props="props">
+            {{ props.row.venue }}
+          </q-td>
+          <q-td key="date" :props="props">
+            {{ getFormatedDate(props.row.date) }}
+          </q-td>
+          <q-td key="action" :props="props">
+            <!-- buttons for edit, view and delete table data row -->
+            <q-btn flat round v-if="!checkTreasurerRole()">
+              <q-icon
+                name="menu"
+                size="xs"
+                color="primary"
+                class="menu_icon"
+                clickable
+              >
+                <q-menu>
+                  <q-list style="width: 180px" bordered separator>
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onViewExpenditureItem(props.row)"
+                    >
+                      <q-item-section avatar class="q-mr-lg">
+                        <span>
+                          <q-icon name="visibility" size="xs" class="details" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="details">View</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <q-separator />
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onEditExpenditureItem(props.row)"
+                    >
+                      <q-item-section avatar class="q-mr-lg">
+                        <span>
+                          <q-icon name="edit" size="xs" class="details" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="details">Edit</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <q-separator />
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onViewExpenditureItemDetails(props.row)"
+                    >
+                      <q-item-section avatar class="q-mr-lg">
+                        <span>
+                          <q-icon name="info" size="xs" class="details" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="details">Details</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <q-separator />
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onDelete(props.row, 'EXPENDITURE_ITEMS')"
+                    >
+                      <q-item-section avatar class="q-mr-lg">
+                        <span>
+                          <q-icon name="delete" size="xs" color="red" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="text-red">Delete</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                  </q-list>
+                </q-menu>
+              </q-icon>
+            </q-btn>
+          </q-td>
+        </q-tr>
+        <!-- end of table body for expenditure items -->
       </template>
 
       <!-- slot for table headings -->
@@ -375,9 +479,10 @@
         :data="deleted_row"
         :msg="delete_msg"
         :type="type"
-        :show_expenditure_category="computeShowConfirmDialogDetail()"
-        :show_payment_category="computeShowConfirmDialogDetail()"
-        :show_payment_item="computeShowConfirmDialogDetail()"
+        :show_expenditure_category="show_expenditure_category"
+        :show_payment_category="show_payment_category"
+        :show_payment_item="show_payment_item"
+        :show_expenditure_item="show_expenditure_item"
         @cancel-dialog="cancelDialog"
         @delete-row="deleteRow"
       ></ConfirmDialog>
@@ -490,6 +595,10 @@ export default {
   },
   computed: {},
   methods: {
+    getFormatedDate(date) {
+      return moment(date).format("MMMM Do YYYY");
+    },
+
     checkTreasurerRole() {
       const treasurer_role = LocalStorage.getItem("data").roles.find(
         (role) => role.name == "TREASURER"
@@ -559,8 +668,12 @@ export default {
             "Are you sure you want to delete this Payment Item ?";
           break;
         case "EXPENDITURE_CATEGORY":
-        this.delete_msg =
+          this.delete_msg =
             "Are you sure you want to delete this Expenditure Category ?";
+          break;
+        case "EXPENDITURE_ITEMS":
+          this.delete_msg =
+            "Are you sure you want to delete this Expenditure Item ?";
           break;
       }
     },
@@ -590,6 +703,34 @@ export default {
       this.$emit("update-expenditure-category", payload);
     },
 
+    onViewExpenditureItem(data) {
+      let payload = {
+        data: data,
+        tab: "Expenditure Activity Information",
+      };
+      this.$emit("view-expenditure-item", payload);
+    },
+
+    onEditExpenditureItem(expenditure_item) {
+      let payload = {
+        data: expenditure_item,
+        tab: "Expenditure Items",
+      };
+      this.$emit("edit-expenditure-item", payload);
+    },
+
+    onViewExpenditureItemDetails(expenditure_item) {
+      let has_intermediate_tab = true;
+      let category = this.$store.getters.getCurrentExpenditureCategory;
+      this.$router.push({
+        name: "expenditure_item_details",
+        params: { id: category.id, item_id: expenditure_item.id },
+      });
+      this.$emit("show-expenditure-item-details", {
+        expenditure_item,
+        has_intermediate_tab,
+      });
+    },
   },
   components: {
     ConfirmDialog,

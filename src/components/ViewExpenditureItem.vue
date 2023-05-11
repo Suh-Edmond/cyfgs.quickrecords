@@ -2,58 +2,91 @@
   <div class="q-pa-md">
     <div>
       <div class="flex q-mb-md">
-        <label for="expenditure_item" class="label"><span> <q-icon name="category" size="xs" class="q-pr-sm" />
-          </span>Payment Activity:
+        <label for="expenditure_item" class="label"
+          ><span> <q-icon name="category" size="xs" class="q-pr-sm" /> </span
+          >Payment Activity:
           <span class="value payment_activity">{{
             getUpdatedExpenditureFromState.payment_item.name
-          }}</span></label>
+          }}</span></label
+        >
       </div>
       <div class="flex q-mb-md">
-        <label for="expenditure_item" class="label"><span> <q-icon name="category" size="xs" class="q-pr-sm" />
-          </span>Expenditure Activity:
+        <label for="expenditure_item" class="label"
+          ><span> <q-icon name="category" size="xs" class="q-pr-sm" /> </span
+          >Expenditure Activity:
           <span class="value value_item">{{
             getUpdatedExpenditureFromState.name
-          }}</span></label>
+          }}</span></label
+        >
       </div>
       <div class="flex q-mb-md">
-        <label for="venue" class="label"><span> <q-icon name="location_on" size="xs" class="q-pr-sm" /> </span>Venue:
+        <label for="venue" class="label"
+          ><span> <q-icon name="location_on" size="xs" class="q-pr-sm" /> </span
+          >Venue:
           <span class="value value_venue">{{
             getUpdatedExpenditureFromState.venue
-          }}</span></label>
+          }}</span></label
+        >
       </div>
       <div class="q-mb-md">
-        <label for="date" class="label"><span> <q-icon name="schedule" size="xs" class="q-pr-sm" /> </span>Date:
+        <label for="date" class="label"
+          ><span> <q-icon name="schedule" size="xs" class="q-pr-sm" /> </span
+          >Date:
           <span class="value value_date">{{
             getFormatedCreatedDate
-          }}</span></label>
+          }}</span></label
+        >
       </div>
       <div class="q-mb-md">
-        <label for="amount" class="label"><span>
-            <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span>Estimated Amount:
+        <label for="amount" class="label"
+          ><span>
+            <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
+          >Estimated Amount:
           <span class="value value_amount">
-            {{ Number(getUpdatedExpenditureFromState.amount).toLocaleString() }} XAF</span></label>
+            {{
+              Number(getUpdatedExpenditureFromState.amount).toLocaleString()
+            }}
+            XAF</span
+          ></label
+        >
       </div>
       <div class="q-mb-md">
-        <label for="amount" class="label"><span>
-            <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span>Total Amount Given:
+        <label for="amount" class="label"
+          ><span>
+            <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
+          >Total Amount Given:
           <span class="value value_item">
-            {{ getUpdatedExpenditureFromState.total_amount_given }} XAF</span></label>
+            {{ getUpdatedExpenditureFromState.total_amount_given }} XAF</span
+          ></label
+        >
       </div>
       <div class="q-mb-md">
-        <label for="amount" class="label"><span>
-            <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span>Total Amount Spent:
+        <label for="amount" class="label"
+          ><span>
+            <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
+          >Total Amount Spent:
           <span class="value value_item">
-            {{ getUpdatedExpenditureFromState.total_amount_spent }} XAF</span></label>
+            {{ getUpdatedExpenditureFromState.total_amount_spent }} XAF</span
+          ></label
+        >
       </div>
       <div class="q-mb-md">
-        <label for="amount" class="label"><span>
-            <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span>Total Balance:
+        <label for="amount" class="label"
+          ><span>
+            <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
+          >Total Balance:
           <span class="value value_balance">
-            {{ Number(getUpdatedExpenditureFromState.total_balance).toLocaleString() }} XAF</span></label>
+            {{
+              Number(
+                getUpdatedExpenditureFromState.total_balance
+              ).toLocaleString()
+            }}
+            XAF</span
+          ></label
+        >
       </div>
       <div class="q-mb-md">
-
-            <label
+        <label
           for="status"
           class="label"
           v-show="getUpdatedExpenditureFromState.approve == 'DECLINED'"
@@ -88,14 +121,22 @@
         >
       </div>
       <div class="q-mb-md">
-        <label for="amount" class="label"><span> <q-icon name="person" size="xs" class="q-pr-sm" /> </span>Updated By:
+        <label for="amount" class="label"
+          ><span> <q-icon name="person" size="xs" class="q-pr-sm" /> </span
+          >Updated By:
           <span class="value value_created_by">
-            {{ getUpdatedExpenditureFromState.updated_by }}</span></label>
+            {{ getUpdatedExpenditureFromState.updated_by }}</span
+          ></label
+        >
       </div>
       <div class="q-mb-md">
-        <label for="comment" class="field"><span> <q-icon name="description" size="xs" class="q-pr-sm" />
-          </span>Comment:</label>
-        <p class="value q-pl-lg">{{ getUpdatedExpenditureFromState.comment }}</p>
+        <label for="comment" class="field"
+          ><span> <q-icon name="description" size="xs" class="q-pr-sm" /> </span
+          >Comment:</label
+        >
+        <p class="value q-pl-lg">
+          {{ getUpdatedExpenditureFromState.comment }}
+        </p>
       </div>
     </div>
   </div>
@@ -108,12 +149,11 @@ export default {
   mixins: [expenditureItemMixinVue],
 
   created() {
-    let heading = "Expenditure Activity Information";
+    let heading = "Expenditure Item Information";
     this.$emit("set-heading", heading);
   },
   data() {
-    return {
-    };
+    return {};
   },
   computed: {
     getUpdatedExpenditureFromState() {
@@ -124,10 +164,9 @@ export default {
       return moment(this.getUpdatedExpenditureFromState.date).format(
         "MMMM Do YYYY"
       );
-    }
+    },
   },
-  methods: {
-  },
+  methods: {},
   components: {},
 };
 </script>

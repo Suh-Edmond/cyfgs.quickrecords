@@ -18,7 +18,6 @@
     <div v-if="getExpenditureItems.length > 0 && !getLoadingState">
       <!-- header for filter categories -->
 
-
       <div
         class="row q-ml-xs q-pt-xs"
         :class="$q.screen.lg ? 'q-pa-sm' : ''"
@@ -78,12 +77,10 @@
               no-caps
               icon-right="print"
               @click="downloadExpenditureItems"
-
             ></q-btn>
           </div>
         </div>
       </div>
-
 
       <!-- table for categories -->
       <div>
@@ -102,6 +99,7 @@
               @edit-expenditure-item="editExpenditureItem"
               @view-expenditure-item="viewExpenditureItem"
               @show-expenditure-item-details="showExpenditureItemDetails"
+              @delete-row="deleteRow"
             >
             </CategoryTable>
           </div>
@@ -122,6 +120,7 @@
               @edit-expenditure-item="editExpenditureItem"
               @view-expenditure-item="viewExpenditureItem"
               @show-expenditure-item-details="showExpenditureItemDetails"
+              @delete-row="deleteRow"
             >
             </CategoryTable>
           </div>
@@ -136,12 +135,13 @@ import NotFound from "src/components/NotFound.vue";
 import CategoryTable from "src/components/CategoryTable.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
 import ExpenditureItemDetailMixinVue from "src/mixins/ExpenditureItemDetailMixin.vue";
+import expenditureItemMixinVue from 'src/mixins/expenditureItemMixin.vue';
 
 export default {
-  mixins: [HelperMixinVue, ExpenditureItemDetailMixinVue],
+  mixins: [HelperMixinVue, ExpenditureItemDetailMixinVue, expenditureItemMixinVue],
   mounted() {
-    this.getExpenditureItemsFromState();
     this.fetchPaymentActivities();
+    this.getExpenditureItemsFromState();
   },
   data() {
     return {
@@ -195,16 +195,16 @@ export default {
       ],
       data: [],
       label: "Delete",
-      message: "Are you sure you want to delete this Expenditure Activity?",
+      message: "Are you sure you want to delete this Expenditure Item ?",
       statuses: ["PENDING", "APPROVED", "DECLINED", "ALL"],
       status: "",
       start_filter: false,
       filtered_items: [],
-      payment_item_id:null
+      payment_item_id: null,
     };
   },
   computed: {
-    validateFilter (){
+    validateFilter() {
       return this.payment_item_id == null;
     },
     getExpenditureItems() {
@@ -217,20 +217,20 @@ export default {
       return this.$store.getters.getCurrentExpenditureCategory.name;
     },
 
-    getTableTitle(){
-      let title = ""
-      if(this.payment_item_id != null){
-        title = `Expenditures for ${this.payment_item_id.label}`
+    getTableTitle() {
+      let title = "";
+      if (this.payment_item_id != null) {
+        title = `Expenditures for ${this.payment_item_id.label}`;
       }
       return title;
     },
 
     getNotFoundMsgForPaymentItems() {
       let title = "";
-      if(this.$store.getters.getCurrentExpenditureCategory != null){
+      if (this.$store.getters.getCurrentExpenditureCategory != null) {
         title = `Ooops!! No Expenditure Activity found under this Category [${this.$store.getters.getCurrentExpenditureCategory.name}]. Click the add button to add Expenditure Items.`;
       }
-      return title
+      return title;
     },
 
     getLoadingState() {
@@ -252,14 +252,10 @@ export default {
   methods: {
     editExpenditureItem(data) {
       this.$store.dispatch("setUpdatedExpenditureItem", data.data);
-
-      this.$store.dispatch("setEditState", true);
-
       this.$emit("edit-expenditure-item", data);
     },
 
     viewExpenditureItem(data) {
-      console.log(data);
       this.$store.dispatch("setUpdatedExpenditureItem", data.data);
 
       this.$emit("view-expenditure-item", data);
@@ -308,7 +304,7 @@ export default {
           total_amount_spent: ele.total_amount_spent,
           total_balance: ele.total_balance,
           type: "EXPENDITURE_ITEMS",
-          payment_item:ele.payment_item
+          payment_item: ele.payment_item,
         });
       });
 
@@ -318,7 +314,8 @@ export default {
     downloadExpenditureItems() {
       let expenditure_category_id =
         this.$store.getters.getCurrentExpenditureCategory.id;
-      let payment_item_id = this.payment_item_id != null ? this.payment_item_id.value : "";
+      let payment_item_id =
+        this.payment_item_id != null ? this.payment_item_id.value : "";
       let url = `/api/protected/expenditure-categories/expenditure-items/download?expenditure_category_id=${expenditure_category_id}&status=${this.status}&payment_item_id=${payment_item_id}`;
       let file_name = "Expenditure_Items.pdf";
       this.loading = this.downloadPdf(url, file_name);
@@ -332,7 +329,10 @@ export default {
 
       this.$router.push({
         path: `/dashboard/expenditure-categories/${expenditure_category.id}/items`,
-        query: { payment_item_id: this.payment_item_id.label, status: this.status },
+        query: {
+          payment_item_id: this.payment_item_id.label,
+          status: this.status,
+        },
       });
 
       let payload = {
@@ -400,6 +400,28 @@ export default {
         },
       };
       this.$store.dispatch("getRequest", payload).then(() => {});
+    },
+
+    deleteRow(data) {
+      let payload = {
+        url: `/api/protected/expenditure-categories/${data.expenditure_category.id}/expenditure-items/${data.id}`,
+        msg: `Payment Category deleted successfully`,
+        color: "default",
+        to_on_ok: "none",
+        to_on_fail: "none",
+        show_feedback: true,
+        error_msg: "An Error occurred! Please try again",
+        has_commit: false,
+        commit: "none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.$store.dispatch("deleteRequest", payload).then(() => {
+        this.getExpenditureItemsByCategory(data.expenditure_category.id);
+      });
     },
   },
   components: {

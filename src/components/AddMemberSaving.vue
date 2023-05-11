@@ -11,12 +11,26 @@
           <label for="name" class="form_field"
             >Member Name <span class="text-red">*</span>
           </label>
-          <q-select outlined dense v-model="saving.user_id" :options="members">
+          <q-select
+            outlined
+            dense
+            v-model="saving.user_id"
+            :options="members"
+            use-input
+            input-debounce="0"
+            @filter="filterFn"
+            @input="stopSearch"
+            clearable
+          >
+          <template v-slot:append v-if="start_filtering">
+              <q-spinner color="primary" size="1.2em" :thickness="5" />
+            </template>
             <template v-slot:no-option>
               <q-item>
                 <q-item-section class="text-grey"> No results </q-item-section>
               </q-item>
             </template>
+
           </q-select>
         </div>
         <div>
@@ -32,7 +46,7 @@
         </div>
         <div>
           <label for="credential" class="form_field"
-            >Comment <span class="text-red">*</span></label
+            >Comment </label
           >
           <q-input
             v-model="saving.comment"
@@ -46,11 +60,11 @@
           <div>
             <ButtonVue
               class="form_button"
-              :label="label_save"
+              :label="'Save'"
               :loading="loading"
-              :color="color"
+              :color="'primary'"
               :disabled="validateForm"
-              :no_caps="no_caps"
+              :no_caps="true"
             >
             </ButtonVue>
           </div>
@@ -74,17 +88,12 @@ export default {
 
     this.getOrganisationMembers(this.getOrganisationId, false);
 
-    this.setFormFields(null);
-
-    this.getMembers();
-
+    this.getMembersFromState();
   },
 
   data() {
     return {
-      label_save: "Save",
       loading: false,
-      color: "primary",
       saving: {
         user_id: null,
         amount_deposited: 0,
@@ -93,8 +102,8 @@ export default {
       },
       position: "right",
       dialog: false,
-      no_caps: true,
       members: [],
+      start_filtering:false,
     };
   },
   computed: {
@@ -125,7 +134,7 @@ export default {
   },
 
   methods: {
-    getMembers() {
+    getMembersFromState() {
       this.$store.getters.getMembers.forEach((ele) => {
         this.members.push({
           label: ele.name,
@@ -162,40 +171,22 @@ export default {
       this.setDispatchAction(this.saving.id, payload);
     },
 
-    filterMembers(val, update, abort) {
-      // let data = [];
-      // update(() => {
-      //   let filtered = this.$store.getters.getMembers.filter((ele) =>
-      //     ele.name.toLowerCase().includes(val.toLowerCase())
-      //   );
-      //   filtered.forEach((e) => {
-      //     data.push({
-      //       label: e.name,
-      //       value: e.id,
-      //     });
-      //   });
-      // });
-
-      // return data;
-      if (val === "") {
-        // update(() => {
-        //   this.members = stringOptions
-
-        //   // with Quasar v1.7.4+
-        //   // here you have access to "ref" which
-        //   // is the Vue reference of the QSelect
-        // })
-        // return
-        const needle = val.toLowerCase();
-        this.members = this.members.filter(
-          (v) => v.label.toLowerCase().indexOf(needle) > -1
-        );
+    filterFn(val, update, abort) {
+      if (val.length < 2) {
+        this.start_filtering = false;
+        abort();
+        return;
       }
 
-      // update(() => {
-      //   const needle = val.toLowerCase()
-      //   this.options = stringOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
-      // })
+      update(() => {
+        this.members = [];
+        this.start_filtering = true;
+        this.members = this.getMembersFromState();
+        this.members = this.members.filter((v) =>
+          v.label.toLowerCase().includes(val.toLowerCase())
+        );
+        return this.members;
+      });
     },
 
     setActionUrl(id, user_id) {
@@ -203,7 +194,7 @@ export default {
       if (id === null || id === undefined) {
         url = `/api/protected/user-savings`;
       } else {
-        url = `/api/protected/user-savings/${user_id}/${id}`; //the user_id of and the id of the saving to be updated
+        url = `/api/protected/user-savings/${user_id}/${id}`;
       }
       return url;
     },
@@ -260,6 +251,12 @@ export default {
 
       return this.saving;
     },
+
+    stopSearch(){
+      if(this.saving.user_id != null){
+        this.start_filtering = false
+      }
+    }
   },
   components: {
     ButtonVue,
@@ -268,7 +265,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-
 .form_field {
   font-family: "Roboto";
   font-style: normal;
@@ -278,8 +274,6 @@ export default {
   letter-spacing: 0.01em;
   color: $grey2;
 }
-
-
 
 .instruction_info {
   color: $grey2;

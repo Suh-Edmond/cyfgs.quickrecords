@@ -29,7 +29,7 @@
       </template>
       <template v-slot:body="props">
         <!-- body for members -->
-        <q-tr :props="props" class="text-bold" v-if="show_members">
+        <q-tr :props="props"  v-if="show_members">
           <q-td key="counter" :props="props">
             {{ props.row.counter }}
           </q-td>
@@ -69,11 +69,7 @@
           >
             {{ props.row.approve }}
           </q-td>
-          <q-td
-            key="approve"
-            :props="props"
-            v-if="props.row.approve == ''"
-          >
+          <q-td key="approve" :props="props" v-if="props.row.approve == ''">
             {{ props.row.approve }}
           </q-td>
           <q-td
@@ -198,6 +194,47 @@
           </q-td>
         </q-tr>
         <!-- end of body for members -->
+
+        <!-- body for savings? -->
+        <q-tr :props="props"  v-if="show_savings">
+          <q-td key="counter" :props="props">
+            {{ props.row.counter }}
+          </q-td>
+          <q-td key="name" :props="props">
+            {{ props.row.name }}
+          </q-td>
+          <q-td key="user_name" :props="props">
+            {{ props.row.user_name }}
+          </q-td>
+          <q-td key="email" :props="props">
+            {{ props.row.email }}
+          </q-td>
+          <q-td key="telephone" :props="props">
+            {{ props.row.telephone }}
+          </q-td>
+          <q-td key="amount_deposited" :props="props">
+            {{ Number(props.row.amount_deposited).toLocaleString() }}
+          </q-td>
+          <q-td key="date" :props="props">
+            {{ getDate(props.row.date) }}
+          </q-td>
+          <q-td key="state" :props="props">
+            {{ props.row.approve }}
+          </q-td>
+          <q-td key="action" :props="props">
+            <!-- button to handle view all member saving -->
+            <q-btn
+              flat
+              class="view_savings q-py-xs"
+              @click="showMemberSavings(props.row)"
+              :to="{ name: 'user_savings', params: { id: props.row.user_id } }"
+              v-if="show_savings && !checkTreasurerRole()"
+            >
+              View All Savings
+            </q-btn>
+          </q-td>
+        </q-tr>
+        <!-- end of body for savings -->
       </template>
       <template v-slot:top-right>
         <q-input
@@ -770,6 +807,9 @@ export default {
       this.dialog = false;
     },
 
+    showMemberSavings(data) {
+      this.getMemberSavings(data.user_id);
+    },
   },
   components: {
     ConfirmDialogVue,

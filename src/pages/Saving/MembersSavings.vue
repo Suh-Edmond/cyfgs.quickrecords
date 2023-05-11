@@ -29,10 +29,8 @@
               v-model="year"
               outlined
               dense
-              :options="years"
+              :options="getSessionsFromState"
               label="Select year"
-              input-debounce="0"
-              @filter="filterYears"
             >
               <template v-slot:no-option>
                 <q-item>
@@ -173,9 +171,10 @@ import TableVue from "src/components/Table.vue";
 import ButtonVue from "src/components/Button.vue";
 import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
+import CurrentYearMixinVue from 'src/mixins/CurrentYearMixin.vue';
 
 export default {
-  mixins: [UserSavingMixinVue, HelperMixinVue],
+  mixins: [UserSavingMixinVue, HelperMixinVue, CurrentYearMixinVue],
   mounted() {
     let organisation_id = this.$store.getters.getOrganisation.id
     this.getOrganisationMemberSavings(organisation_id);
@@ -185,7 +184,6 @@ export default {
       not_found_msg:
         "Ooops!! No Savings has been recorded. Click the add button to add saving.",
       year: null,
-      years: ["2020", "2021", "2022", "2023", "2024"],
       month: null,
       months: [
         "January",
@@ -350,12 +348,7 @@ export default {
     },
 
     filterYears(val, update, abort) {
-      update(() => {
-        const needle = val.toLowerCase();
-        this.years = this.years.filter(
-          (v) => v.toLowerCase().indexOf(needle) > -1
-        );
-      });
+
     },
 
     filterMonths(val, update, abort) {

@@ -55,7 +55,22 @@
             </template>
           </q-select>
         </div>
-        <div class="col-md-6 col-lg-6 col-xs-12 col-sm-12 flex q-pl-md">
+        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-pl-md">
+          <q-select
+            v-model="session"
+            outlined
+            dense
+            :options="getSessionsFromState"
+            label="Select year"
+          >
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey"> No results </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
+        </div>
+        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 flex q-pl-md">
           <div>
             <q-btn
               label="Filter"
@@ -135,10 +150,16 @@ import NotFound from "src/components/NotFound.vue";
 import CategoryTable from "src/components/CategoryTable.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
 import ExpenditureItemDetailMixinVue from "src/mixins/ExpenditureItemDetailMixin.vue";
-import expenditureItemMixinVue from 'src/mixins/expenditureItemMixin.vue';
+import expenditureItemMixinVue from "src/mixins/expenditureItemMixin.vue";
+import CurrentYearMixin from "src/mixins/CurrentYearMixin.vue";
 
 export default {
-  mixins: [HelperMixinVue, ExpenditureItemDetailMixinVue, expenditureItemMixinVue],
+  mixins: [
+    HelperMixinVue,
+    ExpenditureItemDetailMixinVue,
+    expenditureItemMixinVue,
+    CurrentYearMixin,
+  ],
   mounted() {
     this.fetchPaymentActivities();
     this.getExpenditureItemsFromState();
@@ -201,6 +222,7 @@ export default {
       start_filter: false,
       filtered_items: [],
       payment_item_id: null,
+      session: "",
     };
   },
   computed: {
@@ -316,7 +338,7 @@ export default {
         this.$store.getters.getCurrentExpenditureCategory.id;
       let payment_item_id =
         this.payment_item_id != null ? this.payment_item_id.value : "";
-      let url = `/api/protected/expenditure-categories/expenditure-items/download?expenditure_category_id=${expenditure_category_id}&status=${this.status}&payment_item_id=${payment_item_id}`;
+      let url = `/api/protected/expenditure-categories/expenditure-items/download?expenditure_category_id=${expenditure_category_id}&status=${this.status}&payment_item_id=${payment_item_id}$session_id=${this.session.value}`;
       let file_name = "Expenditure_Items.pdf";
       this.loading = this.downloadPdf(url, file_name);
     },
@@ -332,11 +354,12 @@ export default {
         query: {
           payment_item_id: this.payment_item_id.label,
           status: this.status,
+          session: this.session.label,
         },
       });
 
       let payload = {
-        url: `/api/protected/expenditure-items/payment-items/${this.payment_item_id.value}?status=${this.status}`,
+        url: `/api/protected/expenditure-items/payment-items/${this.payment_item_id.value}?status=${this.status}&session_id=${this.session.value}`,
         msg: "none",
         color: "default",
         status: "none",

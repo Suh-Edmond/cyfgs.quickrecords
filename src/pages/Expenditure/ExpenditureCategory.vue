@@ -29,7 +29,7 @@
             v-model="year"
             outlined
             dense
-            :options="years"
+            :options="getSessionsFromState"
             label="Select year"
             @input="filterExpenditureCategories"
           />
@@ -37,9 +37,9 @@
         <q-space />
         <div class="button q-pb-xs">
           <q-btn
-            :label="label_download"
+            label="Print"
             :loading="loading"
-            :color="color_print"
+            color="positive"
             :disabled="false"
             no-caps
             icon-right="print"
@@ -56,12 +56,13 @@
             :data="getData"
             :label="label"
             :message="message"
-            @show-expenditure-items="showExpenditureItems"
-            @update-expenditure-category="updateExpenditureCategory"
             :show_payment_category="false"
             :show_payment_item="false"
             :show_expenditure_category="true"
             :show_expenditure_item="false"
+            @show-expenditure-items="showExpenditureItems"
+            @update-expenditure-category="updateExpenditureCategory"
+            @delete-row="onDeleteRow"
           >
           </CategoryTable>
         </div>
@@ -74,12 +75,13 @@
           :data="filteredExpenditureCategories"
           :label="label"
           :message="message"
-          @show-expenditure-items="showExpenditureItems"
-          @update-expenditure-category="updateExpenditureCategory"
           :show_payment_category="false"
           :show_payment_item="false"
           :show_expenditure_category="true"
           :show_expenditure_item="false"
+          @show-expenditure-items="showExpenditureItems"
+          @update-expenditure-category="updateExpenditureCategory"
+          @delete-row="onDeleteRow"
         >
         </CategoryTable>
       </div>
@@ -94,6 +96,7 @@ import ExpenditureCategoryMixinVue from "src/mixins/ExpenditureCategoryMixin.vue
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import expenditureItemMixinVue from "src/mixins/expenditureItemMixin.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
+import CurrentYearMixin from "src/mixins/CurrentYearMixin.vue";
 
 export default {
   mixins: [
@@ -101,9 +104,9 @@ export default {
     organisationMixinVue,
     expenditureItemMixinVue,
     HelperMixinVue,
+    CurrentYearMixin
   ],
   mounted() {
-    let id =
     this.fetchExpenditureCategories();
   },
 
@@ -112,14 +115,7 @@ export default {
       not_found_msg:
         "Ooops!! No Expenditure Categories found. Click the add button to add Expenditure Categories.",
       year: null,
-      years: ["2020", "2021", "2022", "2023", "2024"],
-      search: null,
-      label_fetch: "Filter",
-      color: "primary",
-      no_caps: true,
       loading: false,
-      label_download: "Print",
-      color_print: "positive",
       columns: [
         {
           name: "counter",
@@ -150,7 +146,7 @@ export default {
         }
       ],
       label: "Delete",
-      message: "Are you sure you want to delete this Expenditure Category?",
+      message: "Are you sure you want to delete this Expenditure Category ?",
       start_filter: false,
       filteredExpenditureCategories: [],
     };
@@ -251,6 +247,28 @@ export default {
       let file_name = "Expenditure_Categories.pdf";
       this.loading = this.downloadPdf(url, file_name);
     },
+
+    onDeleteRow(data){
+      let payload = {
+        url: `/api/protected/organisations/${data.organisation_id}/expenditure-categories/${data.id}`,
+        msg:`Payment Item deleted successfully`,
+        color: "default",
+        to_on_ok: "none",
+        to_on_fail: "none",
+        show_feedback: true,
+        error_msg: "An Error occurred! Please try again",
+        has_commit: false,
+        commit: "none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.$store.dispatch("deleteRequest", payload).then(() => {
+        this.fetchExpenditureCategories()
+      });
+    }
   },
   components: {
     NotFound,

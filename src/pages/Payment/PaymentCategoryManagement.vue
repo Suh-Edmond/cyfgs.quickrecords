@@ -27,7 +27,7 @@
             v-model="year"
             outlined
             dense
-            :options="getSessions"
+            :options="getSessionsFromState"
             label="Select year"
             @input="filterPaymentCategories"
           />
@@ -72,12 +72,13 @@
           :data="filteredPaymentCategories"
           :label="label"
           :message="message"
-          @show-payment-items="showPaymentItems"
-          @update-payment-category="updatePaymentCategory"
           :show_payment_category="true"
           :show_payment_item="false"
           :show_expenditure_category="false"
           :show_expenditure_item="false"
+          @show-payment-items="showPaymentItems"
+          @update-payment-category="updatePaymentCategory"
+          @delete-row="deleteRow"
         >
         </CategoryTable>
       </div>
@@ -90,9 +91,10 @@ import NotFound from "src/components/NotFound.vue";
 import CategoryTable from "src/components/CategoryTable.vue";
 import PaymentCategoryMixinVue from "src/mixins/PaymentCategoryMixin.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
+import CurrentYearMixin from "src/mixins/CurrentYearMixin.vue";
 
 export default {
-  mixins: [PaymentCategoryMixinVue, HelperMixinVue],
+  mixins: [PaymentCategoryMixinVue, HelperMixinVue, CurrentYearMixin],
   mounted() {
     let id = this.$store.getters.getOrganisation.id;
     this.fetchCategories(id, true);
@@ -161,26 +163,6 @@ export default {
 
     getLoadingState() {
       return this.$store.getters.getFetchingState
-    },
-
-    getSessions() {
-      let data = [];
-      let current_session = this.$store.getters.getCurrentYear;
-      this.$store.getters.getSessions.forEach((ele) => {
-        if (ele.year == current_session.year && ele.id == current_session.id) {
-          data.push({
-            value: ele.id,
-            label: ele.year + " Current Year",
-          });
-        } else {
-          data.push({
-            value: ele.id,
-            label: ele.year,
-          });
-        }
-      });
-
-      return data;
     },
   },
 
@@ -289,7 +271,7 @@ export default {
 
     deleteRow(data){
       let payload = {
-        url: `/api/protected/payment-categories/${data.payment_category_id}/payment-items/${data.id}`,
+        url: `/api/protected/organisations/${data.organisation_id}/payment-categories/${data.id}`,
         msg:`Payment Item deleted successfully`,
         color: "default",
         to_on_ok: "none",

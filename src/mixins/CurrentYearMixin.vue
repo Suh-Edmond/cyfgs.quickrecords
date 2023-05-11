@@ -8,7 +8,27 @@ export default {
   computed: {
     getCurrentYear(){
       return this.$store.getters.getCurrentYear;
-    }
+    },
+
+    getSessionsFromState() {
+      let data = [];
+      let current_session = this.$store.getters.getCurrentYear;
+      this.$store.getters.getSessions.forEach((ele) => {
+        if (ele.year == current_session.year && ele.id == current_session.id) {
+          data.push({
+            value: ele.id,
+            label: ele.year + " Current",
+          });
+        } else {
+          data.push({
+            value: ele.id,
+            label: ele.year,
+          });
+        }
+      });
+
+      return data;
+    },
   },
 
   methods: {

@@ -7,6 +7,7 @@
           <div class="q-mb-sm text-left">
             <label class="message">{{ msg }}</label
             ><br />
+            <small class="warning_caption">All <span v-if="type == 'PAYMENT_CATEGORY'">Payments</span> <span v-else>Expenditures</span> recorded under this Category will be lost.</small><br/>
             <small class="warning_caption">This action can not be undone</small>
           </div>
 
@@ -235,6 +236,10 @@ export default {
 .warning_caption {
   color: $grey2;
   font-weight: 500;
+  font-size: 13px;
+}
+
+.category_warning {
   font-size: 13px;
 }
 </style>

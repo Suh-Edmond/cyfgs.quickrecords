@@ -13,11 +13,18 @@
               >
               <span v-if="show_expenditure_category"
                 >All expenditures recorded under this category will be
-                lost.</span>
+                lost.</span
+              >
               <span v-if="show_expenditure_item"
-              >All details of this expenditure will be
-              lost.</span>
-            </small><br/>
+                >All details of this expenditure will be lost.</span
+              > </small
+            ><br
+              v-if="
+                show_payment_category ||
+                show_expenditure_category ||
+                show_expenditure_item
+              "
+            />
             <small class="warning_caption">This action can not be undone</small>
           </div>
 
@@ -112,6 +119,26 @@
           >
             Name:
             <span class="payment_item_name">{{ data.name }}</span>
+          </div>
+          <!-- end of Expenditure Item -->
+
+          <!-- Expenditure Item details -->
+          <div v-if="show_expenditure_item_detail">
+            <div class="text-weight-bold text-left text-red">
+              Name: <span class="frequency">{{ data.name }}</span>
+            </div>
+            <div class="text-weight-bold text-left text-red">
+              Amount Given:
+              <span class="amount"
+                >{{ Number(data.amount_given).toLocaleString() }} XAF</span
+              >
+            </div>
+            <div class="text-weight-bold text-left text-red">
+              Amount Spent:
+              <span class="amount"
+                >{{ Number(data.amount_spent).toLocaleString() }} XAF</span
+              >
+            </div>
           </div>
           <!-- end of Expenditure Item -->
         </q-card-section>

@@ -86,7 +86,7 @@
                 v-for="ref in references"
                 :key="ref.value"
                 @click="removeSelectedReference(ref)"
-                >{{ ref.label }}
+                >{{ref.label}}
                 <q-icon name="clear" class="q-pl-sm" size="xs"></q-icon>
                 <q-tooltip>Remove member</q-tooltip>
               </q-btn>
@@ -140,7 +140,7 @@
                 v-for="ref in references"
                 :key="ref.value"
                 @click="removeSelectedReference(ref)"
-                >{{ ref.label }}
+                >{{ref.label}}
                 <q-icon name="clear" class="q-pl-sm" size="xs"></q-icon>
                 <q-tooltip>Remove member</q-tooltip>
               </q-btn>
@@ -372,7 +372,7 @@ export default {
         this.payment_item.amount = data.amount;
         this.payment_item.type = data.payment_item_type;
         this.payment_item.compulsory = data.compulsory == 1 ? true : false;
-        this.references = JSON.parse(JSON.stringify(data.references))
+        this.references = this.setReferences(data.references);
       }
       return this.payment_item;
     },
@@ -444,6 +444,9 @@ export default {
         (reference) => reference.value != ref.value
       );
       this.members.push(ref);
+      if(this.$store.getters.getUpdatedPaymentItem != null){
+        this.removeReference(ref);
+      }
       return this.references;
     },
 
@@ -471,6 +474,43 @@ export default {
       }
       return ref_str;
     },
+
+    removeReference(ref){
+      let payment_item_id = this.$store.getters.getUpdatedPaymentItem.id
+      let payload = {
+        url: `/api/protected/payment-items/update/reference`,
+        data:{
+          id:payment_item_id,
+          reference_id:ref.value
+        },
+        msg: ``,
+        color: "default",
+        to_on_ok: "none",
+        to_on_fail: "none",
+        show_feedback: false,
+        error_msg: "An Error occurred! Please try again",
+        has_commit: false,
+        commit: "none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.$store.dispatch("putRequest", payload).then(() => {
+      });
+    },
+
+    setReferences(data){
+      let refs = [];
+      data.forEach((ele) => {
+        refs.push ({
+          label:ele.name,
+          value:ele.id
+        })
+      })
+      return refs;
+    }
   },
   components: {
     ButtonVue,

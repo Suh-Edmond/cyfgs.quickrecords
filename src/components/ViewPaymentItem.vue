@@ -119,7 +119,7 @@ export default {
   mixins: [expenditureItemMixinVue],
 
   created() {
-    let heading = "Payment Item Details";
+    let heading = "Payment Item Information";
     this.$emit("set-heading", heading);
   },
   data() {

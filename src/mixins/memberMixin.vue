@@ -6,7 +6,32 @@ export default {
     }
   },
   computed: {
-
+    getMembers() {
+      let data = [];
+      this.$store.getters.getMembers.forEach((member) => {
+        data.push({
+          counter: this.$store.getters.getMembers.indexOf(member) + 1,
+          name: member.name,
+          telephone: member.telephone,
+          gender: member.gender,
+          address: member.address,
+          occupation: member.occupation,
+          id: member.id,
+          email: member.email,
+          organisation_id: member.organisation_id,
+          has_register: member.has_register,
+          has_paid: member.has_paid,
+          type: "MEMBERS",
+          approve: member.approve,
+          year: member.year,
+          roles: member.roles,
+          created_at: member.created_at,
+          updated_at: member.updated_at,
+          picture: member.picture,
+        });
+      });
+      return data;
+    }
   },
   methods: {
     getOrganisationMembers(id, show_spinner) {

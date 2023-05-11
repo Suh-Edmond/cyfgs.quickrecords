@@ -106,6 +106,7 @@
               @start-loading="startLoading"
               @update-payment-category="updatePaymentCategory"
               @update-payment-item="updatePaymentItem"
+              @view-payment-item="viewPaymentItem"
               @update-expenditure-category="updateExpenditureCategory"
               @edit-expenditure-item="editExpenditureItem"
               @view-expenditure-item="viewExpenditureItem"
@@ -247,6 +248,10 @@ export default {
       this.updateDrawer(data);
     },
 
+    viewPaymentItem(data) {
+      this.updateDrawer(data);
+    },
+
     viewMemberSaving(data) {
       this.updateDrawer(data);
     },
@@ -352,6 +357,7 @@ export default {
     editSponsorship(data){
       this.updateDrawer(data);
     },
+
 
 
     resetAllForms() {

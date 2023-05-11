@@ -41,6 +41,12 @@
           </div>
           <!-- end of members -->
 
+          <!-- a_member details -->
+          <div class="text-weight-bold text-left text-red" v-if="show_member">
+            Name: <span class="q-pl-md">{{ data.name }}</span>
+          </div>
+          <!-- end of member -->
+
           <!-- income_activity details -->
           <div v-if="show_income_activity">
             <div class="text-weight-bold text-left text-red">
@@ -95,7 +101,7 @@
             :color="'primary'"
             :disabled="false"
             :loading="false"
-            :no_caps="true"
+            no-caps
             :flat="true"
             class="dialog_button"
             @click="cancelDialog"
@@ -107,7 +113,7 @@
             class="dialog_button"
             :disabled="false"
             :loading="false"
-            :no_caps="false"
+            no-caps
             :flat="true"
             v-close-popup
             @click="deleteRow()"
@@ -169,6 +175,10 @@ export default {
       type: Boolean,
       required: false,
     },
+    show_member: {
+      type: Boolean,
+      required: false,
+    },
   },
   data() {
     return {
@@ -177,26 +187,7 @@ export default {
   },
   methods: {
     deleteRow() {
-      let payload = {
-        url: this.setDeleteUrl(),
-        msg: this.setFeedBackMsg(),
-        status: "success",
-        color: "default",
-        to_on_ok: "none",
-        show_feedback: true,
-        to_on_fail: "none",
-        error_msg: "An Error occurred! Please try again",
-        has_commit: false,
-        commit: "none",
-        to_be_store_data: {
-          required: false,
-          has_value: false,
-          data: [],
-        },
-      };
-      this.$store.dispatch("deleteRequest", payload).then(() => {
-        this.setFeedBackActionCall();
-      });
+      return this.$emit("delete-row");
     },
 
     formatDate(date) {
@@ -205,58 +196,6 @@ export default {
 
     cancelDialog() {
       return this.$emit("cancel-dialog");
-    },
-
-    setDeleteUrl() {
-      let url = "";
-      switch (this.type) {
-        case "REGISTRATION_FEE":
-          url = `/api/protected/registration_fees/${this.data.id}`;
-          break;
-        case "MEMBERS":
-          url = `/api/protected/users/${this.data.id}`;
-          break;
-        case "PAYMENT_CATEGORY":
-          url = `/api/protected/organisations/${this.data.organisation_id}/payment-categories/${this.data.id}`;
-          break;
-        case "PAYMENT_ITEMS":
-          url = `/api/protected/payment-categories/${this.data.payment_category_id}/payment-items/${this.data.id}`;
-          break;
-        case "EXPENDITURE_CATEGORY":
-          url = `/api/protected/organisations/${this.data.organisation_id}/expenditure-categories/${this.data.id}`;
-          break;
-        case "EXPENDITURE_ITEMS":
-          url = `/api/protected/expenditure-categories/${this.data.expenditure_category_id}/expenditure-items/${this.data.id}`;
-          break;
-        case "EXPENDITURE_DETAILS":
-          url = `/api/protected/expenditure-item-details/${this.data.id}`;
-          break;
-      }
-      return url;
-    },
-
-    setFeedBackMsg() {
-      let msg = "";
-      switch (this.type) {
-        case "REGISTRATION_FEE":
-          msg = `Registration fee deleted successfully`;
-          break;
-        case "MEMBERS":
-          msg = "Member deleted successfully";
-          break;
-      }
-      return msg;
-    },
-
-    setFeedBackActionCall() {
-      switch (this.type) {
-        case "REGISTRATION_FEE":
-          this.$emit("fetch-registration-fee");
-          break;
-        case "MEMBERS":
-          this.$emit("fetch-members");
-          break;
-      }
     },
   },
 };

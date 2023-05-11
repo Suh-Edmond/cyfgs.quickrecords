@@ -53,12 +53,13 @@
             :data="getData"
             :label="label"
             :message="message"
-            @show-payment-items="showPaymentItems"
-            @update-payment-category="updatePaymentCategory"
             :show_payment_category="true"
             :show_payment_item="false"
             :show_expenditure_category="false"
             :show_expenditure_item="false"
+            @delete-row="deleteRow"
+            @show-payment-items="showPaymentItems"
+            @update-payment-category="updatePaymentCategory"
           >
           </CategoryTable>
         </div>
@@ -196,8 +197,10 @@ export default {
 
       this.$emit("update-payment-category", data);
     },
+
+
     showPaymentItems(data) {
-      this.getPaymentItemsByCategory(data.payment_items.id);
+      this.getPaymentItemsByCategory(data.data.id);
 
       let intermediate_tabs = [];
 
@@ -205,7 +208,7 @@ export default {
 
       this.$store.dispatch("setIntermediateTabs", intermediate_tabs)
 
-      this.$store.dispatch("setCurrentPaymentCategory", data.payment_items);
+      this.$store.dispatch("setCurrentPaymentCategory", data.data);
     },
 
     updatePaymentItems(data) {
@@ -283,6 +286,28 @@ export default {
       };
       this.$store.dispatch("getRequest", payload).then(() => {});
     },
+
+    deleteRow(data){
+      let payload = {
+        url: `/api/protected/payment-categories/${data.payment_category_id}/payment-items/${data.id}`,
+        msg:`Payment Item deleted successfully`,
+        color: "default",
+        to_on_ok: "none",
+        to_on_fail: "none",
+        show_feedback: true,
+        error_msg: "An Error occurred! Please try again",
+        has_commit: false,
+        commit: "none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.$store.dispatch("deleteRequest", payload).then(() => {
+        this.fetchCategories(data.organisation_id, true)
+      });
+    }
   },
   components: {
     NotFound,

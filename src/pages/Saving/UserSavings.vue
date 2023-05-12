@@ -29,9 +29,19 @@
             v-model="year"
             outlined
             dense
-            :options="getSessionsFromState"
-            label="Select Year"
-          />
+            :options="years"
+            label="Select year"
+            use-input
+            input-debounce="0"
+            clearable
+            @filter="filterYears"
+          >
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey"> No results </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
         </div>
         <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-pl-md">
           <q-select
@@ -40,7 +50,14 @@
             dense
             :options="statuses"
             label="Select Status"
-          />
+            clearable
+          >
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey"> No results </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
         </div>
         <div class="col-md-6 col-lg-6 col-xs-12 col-sm-12 flex q-pl-md">
           <div>
@@ -121,7 +138,6 @@ import NotFound from "src/components/NotFound.vue";
 import TableVue from "src/components/Table.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
 import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
-
 export default {
   mixins: [HelperMixinVue, CurrentYearMixinVue],
 
@@ -175,8 +191,9 @@ export default {
       statuses: ["PENDING", "APPROVED", "DECLINED", "ALL"],
       status: "",
       start_filter: false,
-      year: null,
-      is_fetching:false,
+      year: "",
+      is_fetching: false,
+      years: [],
     };
   },
   computed: {
@@ -242,12 +259,13 @@ export default {
       this.filtered_savings = [];
       let member = this.$store.getters.getMemberSavings.data[0].user_name;
       let organisation_id = this.$store.getters.getOrganisation.id;
+      let user_id = this.$store.getters.getMemberSavings.data[0].user_id
       this.$router.push({
-        path: `/dashboard/members-savings/users/${member}`,
-        query: { status: this.status },
+        path: `/dashboard/members-savings/users/`,
+        query: { status: this.status, year:this.year.label },
       });
       let payload = {
-        url: `/api/protected/user-savings?status=${this.status}&year=${this.year.value}&organisation_id=${organisation_id}`,
+        url: `/api/protected/user-savings?status=${this.status}&year=${this.year.value}&organisation_id=${organisation_id}&user_id=${user_id}`,
         msg: "",
         color: "default",
         to_on_ok: "none",
@@ -263,12 +281,11 @@ export default {
         },
       };
       this.$store.dispatch("getRequest", payload).then((res) => {
-        this.is_fetching = false
+        this.is_fetching = false;
         if (res.data) {
           res.data.forEach((saving) => {
             this.filtered_savings.push({
-              counter:
-                res.data.indexOf(saving) + 1,
+              counter: res.data.indexOf(saving) + 1,
               name: saving.user_name,
               email: saving.email,
               telephone: saving.telephone,
@@ -290,13 +307,29 @@ export default {
 
     downloadSavings() {
       let user_id = this.$store.getters.getMemberSavings.data[0].user_id;
-      let current_session = this.year == null ? this.getCurrentYear.id : this.year.value;
+      let current_session =
+        this.year == null ? this.getCurrentYear.id : this.year.value;
 
       let url = `/api/protected/savings/download?user_id=${user_id}&status=${this.status}&session_id=${current_session}`;
 
       let file_name = "User_Savings.pdf";
 
       this.loading = this.downloadPdf(url, file_name);
+    },
+
+    filterYears(val, update, abort) {
+      if (val.length < 1) {
+        abort();
+        return;
+      }
+      if (this.year == "") {
+        this.years = this.getSessionsFromState;
+      }
+      update(() => {
+        this.years = this.getSessionsFromState.filter((v) =>
+          v.label.toLowerCase().includes(val.toLowerCase())
+        );
+      });
     },
   },
   components: {

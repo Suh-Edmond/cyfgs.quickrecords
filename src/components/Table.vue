@@ -547,6 +547,7 @@
         :show_income_activity="show_income_activity"
         @fetch-members="fetchMembers"
         @cancel-dialog="cancelDialog"
+        @delete-row="deleteRow"
       ></ConfirmDialogVue>
     </div>
 
@@ -827,6 +828,10 @@ export default {
       this.dialog = true;
       this.type = "INCOME_ACTIVITIES";
       this.delete_msg = "Are you sure you want to delete this Income Activity ?";
+    },
+
+    deleteRow(){
+      this.$emit("delete-row",this.deleted_row);
     },
 
     checkTreasurerRole() {

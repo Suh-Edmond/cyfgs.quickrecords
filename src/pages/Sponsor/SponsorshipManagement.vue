@@ -9,8 +9,13 @@
         v-if="getLoadingState"
       />
     </div>
+    <!-- not found -->
+    <NotFound
+      :message="not_found_msg"
+      v-if="getData.length == 0 && !getLoadingState"
+    ></NotFound>
 
-    <div>
+    <div v-if="getData.length > 0 && !getLoadingState">
       <!-- header for filter sponsors -->
       <div
         class="row q-ml-xs q-pt-xs"
@@ -24,8 +29,12 @@
             v-model="payment_item_id"
             outlined
             dense
-            :options="getPaymentActivities"
-            label="Select payment activity"
+            :options="payment_items"
+            label="Search..."
+            input-debounce="0"
+            use-input
+            clearable
+            @filter="filterPaymentItems"
           >
             <template v-slot:no-option>
               <q-item>
@@ -58,6 +67,7 @@
               no-caps
               icon-right="filter_list"
               @click="filterSponsorship"
+              :loading="is_fetching"
             >
             </q-btn>
           </div>
@@ -100,12 +110,15 @@ import SponsorshipTable from "src/components/SponsorshipTable.vue";
 import PaymentItemMixin from "src/mixins/PaymentItemMixin.vue";
 import SponsorshipMixin from "src/mixins/SponsorshipMixin.vue";
 import HelperMixin from "src/mixins/HelperMixin.vue";
+import NotFound from "src/components/NotFound.vue";
 
 export default {
   mixins: [PaymentItemMixin, SponsorshipMixin, HelperMixin],
 
   mounted() {
       this.fetchPaymentActivities();
+      this.getPaymentActivitiesFromStatus();
+      this.getAllSponsorships();
   },
 
   data() {
@@ -158,6 +171,10 @@ export default {
       message: "Are you sure you want to delete this Sponsorship ?",
       loading: false,
       payment_item_id: null,
+      payment_items:[],
+      start_filtering:false,
+      is_fetching:false,
+      not_found_msg:"Ooops!! No Sponsorship has been record for any Activity or Item for this Session.Click the add button to add Sponsorhip",
     };
   },
   computed: {
@@ -175,18 +192,6 @@ export default {
         total += parseFloat(ele.amount_deposited);
       });
       return total;
-    },
-
-    getPaymentActivities() {
-      let data = [];
-      this.$store.getters.getPaymentActivities.forEach((ele) => {
-        data.push({
-          label: ele.name,
-          value: ele.id,
-          amount: ele.amount,
-        });
-      });
-      return data;
     },
 
     setTableTitle() {
@@ -237,13 +242,16 @@ export default {
           data: null,
         },
       };
+      this.is_fetching = true
       this.$store.dispatch("getRequest", payload).then(() => {
+        this.is_fetching = false;
       })
 
     },
 
     downloadSponsorship() {
-      let url = `/api/protected/sponsorships/download?payment_item_id=${this.payment_item_id.value}&status=${this.status}`;
+      let value = this.payment_item_id != null ? this.payment_item_id.value : "";
+      let url = `/api/protected/sponsorships/download?payment_item_id=${value}&status=${this.status}`;
       let file_name = "Sponsorships.pdf";
       this.loading = this.downloadPdf(url, file_name);
     },
@@ -255,9 +263,38 @@ export default {
     editSponsorship(data) {
       this.$emit("edit-sponsorship", data);
     },
+
+    filterPaymentItems(val, update, abort) {
+      if (val < 2) {
+        this.start_filtering = false;
+        abort();
+        return;
+      }
+
+      update(() => {
+        this.start_filtering = true;
+        this.payment_items = this.getPaymentActivitiesFromStatus().filter((item) =>
+          item.label.toLowerCase().includes(val.toLowerCase())
+        );
+        return this.payment_items;
+      });
+    },
+
+    getPaymentActivitiesFromStatus() {
+      this.payment_items = [];
+      this.$store.getters.getPaymentActivities.forEach((ele) => {
+        this.payment_items.push({
+          label: ele.name,
+          value: ele.id,
+          amount: ele.amount,
+        });
+      });
+      return this.payment_items;
+    },
   },
   components: {
     SponsorshipTable,
+    NotFound
   },
 };
 </script>

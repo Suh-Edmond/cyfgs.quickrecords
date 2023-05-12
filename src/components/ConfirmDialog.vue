@@ -68,13 +68,13 @@
           <!-- income_activity details -->
           <div v-if="show_income_activity">
             <div class="text-weight-bold text-left text-red">
+              Name: <span class="income_name">{{ data.name }}</span>
+            </div>
+            <div class="text-weight-bold text-left text-red">
               Amount:
               <span class="amount"
                 >{{ Number(data.amount).toLocaleString() }} XAF</span
               >
-            </div>
-            <div class="text-weight-bold text-left text-red">
-              Date: <span class="date">{{ formatDate(data.date) }}</span>
             </div>
           </div>
           <!-- end of income activity -->
@@ -288,5 +288,9 @@ export default {
 
 .category_warning {
   font-size: 13px;
+}
+
+.income_name {
+padding-left: 2rem;
 }
 </style>

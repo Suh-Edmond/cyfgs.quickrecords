@@ -47,7 +47,7 @@
                       v-close-popup
                       @click="onEditSupport(props.row)"
                     >
-                      <q-item-section avatar>
+                      <q-item-section avatar class="q-mr-lg">
                         <span>
                           <q-icon name="edit" size="xs" class="edit" />
                         </span>
@@ -63,7 +63,7 @@
                       v-close-popup
                       @click="onViewSupport(props.row)"
                     >
-                      <q-item-section avatar>
+                      <q-item-section avatar class="q-mr-lg">
                         <span>
                           <q-icon name="visibility" size="xs" class="edit" />
                         </span>
@@ -79,7 +79,7 @@
                       v-close-popup
                       @click="onDeleteSupport(props.row)"
                     >
-                      <q-item-section avatar>
+                      <q-item-section avatar class="q-mr-lg">
                         <span>
                           <q-icon name="delete" size="xs" color="red" />
                         </span>
@@ -158,7 +158,8 @@
       <q-card>
         <q-card-section class="q-pa-lg">
           <div class="q-mb-md">
-            <label class="text-dark message">{{ message }}</label>
+            <label class="text-dark message">{{ message }}</label><br/>
+            <small class="warning_caption">This action can not be undone</small>
           </div>
           <div class="text-weight-bold text-left text-red">Sponsor:  <span class="q-pl-md">{{ deleted_row.supporter }}</span> </div>
           <div class="text-weight-bold text-left text-red"> Amount: <span class="q-pl-md">{{ Number(deleted_row.amount_deposited).toLocaleString() }} XAF</span></div>
@@ -172,6 +173,7 @@
             flat
             class="dialog_button"
             v-close-popup
+            no-caps
           ></q-btn>
           <q-btn
             label="Delete"
@@ -180,6 +182,7 @@
             :disabled="false"
             :loading="loading"
             flat
+            no-caps
             v-close-popup
             @click="deleteRow(deleted_row)"
           ></q-btn>
@@ -344,6 +347,7 @@ export default {
       };
       this.$store.dispatch("deleteRequest", payload).then(() => {
         this.getAllSponsorships();
+        this.$store.dispatch("setSelectedSponsorship", null);
       });
     },
 
@@ -440,6 +444,12 @@ export default {
 }
 .total_given {
   padding-left: 3rem;
+  font-size: 13px;
+}
+
+.warning_caption {
+  color: $grey2;
+  font-weight: 500;
   font-size: 13px;
 }
 </style>

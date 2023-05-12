@@ -230,10 +230,10 @@ export default {
           field: "venue",
         },
         {
-          name: "state",
+          name: "approve",
           align: "left",
           label: "Transaction Status",
-          field: "state",
+          field: "approve",
           sortable: true,
         },
         {

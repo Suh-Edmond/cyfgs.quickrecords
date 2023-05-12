@@ -8,6 +8,35 @@
     <div class="q-mx-md">
       <q-form @submit="onAddIncomeActivity" class="q-gutter-sm">
         <div class="q-mb-md">
+          <label for="name" class="form_field"
+            >Payment Item <span class="text-red">*</span></label
+          >
+          <q-select
+            outlined
+            dense
+            v-model="income_activity.payment_item_id"
+            label="Type to search..."
+            :options="payment_items"
+            input-debounce="0"
+            clearable
+            use-input
+            @filter="filterPaymentItems"
+          >
+            <template v-slot:append v-if="start_filtering">
+              <q-spinner color="primary" size="1.2em" :thickness="5" />
+            </template>
+
+            <!-- no member found message -->
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey">
+                  No item found
+                </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
+        </div>
+        <div class="q-mb-md">
           <label for="credential" class="form_field"
             >Name <span class="text-red">*</span></label
           >
@@ -53,18 +82,6 @@
           </q-input>
         </div>
         <div class="q-mb-md">
-          <label for="name" class="form_field">Payment Activity <span class="text-red">*</span></label>
-          <q-select
-            outlined
-            dense
-            v-model="income_activity.payment_item_id"
-            placeholder="Type name to search..."
-            :options="getPaymentActivities"
-            input-debounce="0"
-          >
-          </q-select>
-        </div>
-        <div class="q-mb-md">
           <label for="credential" class="form_field">Description</label>
           <q-input
             v-model="income_activity.description"
@@ -99,9 +116,10 @@ import organisationMixinVue from "src/mixins/organisationMixin.vue";
 export default {
   mixins: [IncomeActivityMixinVue, organisationMixinVue],
 
-  created() {
+  mounted() {
     let heading = "Income Activity Information";
     this.$emit("set-heading", heading);
+    this.getPaymentActivities();
   },
 
   data() {
@@ -122,6 +140,8 @@ export default {
       },
       position: "right",
       dialog: false,
+      payment_items: [],
+      start_filtering: false,
     };
   },
   computed: {
@@ -141,18 +161,6 @@ export default {
     getIncomeActivity() {
       return this.setFormFields(this.getUpdatedIncomeActivityFromState());
     },
-
-    getPaymentActivities() {
-      let data = [];
-      this.$store.getters.getPaymentActivities.forEach((ele) => {
-        data.push({
-          label: ele.name,
-          value: ele.id,
-          amount: ele.amount,
-        });
-      });
-      return data;
-    },
   },
 
   watch: {
@@ -162,6 +170,34 @@ export default {
   },
 
   methods: {
+    getPaymentActivities() {
+      this.payment_items = [];
+      this.$store.getters.getPaymentActivities.forEach((ele) => {
+        this.payment_items.push({
+          label: ele.name,
+          value: ele.id,
+          amount: ele.amount,
+        });
+      });
+      return this.payment_items;
+    },
+
+    filterPaymentItems(val, update, abort) {
+      if (val < 2 || this.payment_items.payment_item_id != null) {
+        this.start_filtering = false;
+        abort();
+        return;
+      }
+
+      update(() => {
+        this.start_filtering = true;
+        this.payment_items = this.getPaymentActivities().filter((item) =>
+          item.label.toLowerCase().includes(val.toLowerCase())
+        );
+        return this.payment_items;
+      });
+    },
+
     onAddIncomeActivity() {
       let organisation_id = this.getOrganisationId;
       let payload = {
@@ -263,7 +299,14 @@ export default {
         this.income_activity.approve = data.approve;
         this.income_activity.created_at = data.created_at;
         this.income_activity.updated_by = data.updated_by;
-        this.income_activity.payment_item_id = data.payment_item != null ? {label:data.payment_item.name, value:data.payment_item.id, amount:data.payment_item.amount} : null
+        this.income_activity.payment_item_id =
+          data.payment_item != null
+            ? {
+                label: data.payment_item.name,
+                value: data.payment_item.id,
+                amount: data.payment_item.amount,
+              }
+            : null;
       }
 
       return this.income_activity;

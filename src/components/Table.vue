@@ -29,7 +29,7 @@
       </template>
       <template v-slot:body="props">
         <!-- body for members -->
-        <q-tr :props="props"  v-if="show_members">
+        <q-tr :props="props" v-if="show_members">
           <q-td key="counter" :props="props">
             {{ props.row.counter }}
           </q-td>
@@ -196,7 +196,7 @@
         <!-- end of body for members -->
 
         <!-- body for savings? -->
-        <q-tr :props="props"  v-if="show_savings">
+        <q-tr :props="props" v-if="show_savings">
           <q-td key="counter" :props="props">
             {{ props.row.counter }}
           </q-td>
@@ -237,7 +237,7 @@
         <!-- end of body for savings -->
 
         <!-- body for savings? -->
-        <q-tr :props="props"  v-if="show_member_savings">
+        <q-tr :props="props" v-if="show_member_savings">
           <q-td key="counter" :props="props">
             {{ props.row.counter }}
           </q-td>
@@ -247,7 +247,7 @@
           <q-td
             key="approve"
             :props="props"
-            v-if="(props.row.approve == 'PENDING')"
+            v-if="props.row.approve == 'PENDING'"
             class="text-info"
           >
             {{ props.row.approve }}
@@ -255,7 +255,7 @@
           <q-td
             key="approve"
             :props="props"
-            v-if="(props.row.approve == 'APPROVED')"
+            v-if="props.row.approve == 'APPROVED'"
             class="registered"
           >
             {{ props.row.approve }}
@@ -263,7 +263,7 @@
           <q-td
             key="approve"
             :props="props"
-            v-if="(props.row.approve == 'DECLINED')"
+            v-if="props.row.approve == 'DECLINED'"
             class="not_registered"
           >
             {{ props.row.approve }}
@@ -272,8 +272,8 @@
             {{ getDate(props.row.date) }}
           </q-td>
           <q-td key="action" :props="props">
-           <!-- menu to handle edit and view details of a single saving -->
-           <q-btn
+            <!-- menu to handle edit and view details of a single saving -->
+            <q-btn
               flat
               round
               v-if="show_member_savings && !checkTreasurerRole()"
@@ -286,7 +286,7 @@
                 clickable
               >
                 <q-menu>
-                  <q-list bordered separator style="width: 180px;">
+                  <q-list bordered separator style="width: 180px">
                     <!-- edit and view savings -->
                     <q-item
                       clickable
@@ -321,11 +321,116 @@
                 </q-menu>
               </q-icon>
             </q-btn>
-
           </q-td>
         </q-tr>
         <!-- end of body for savings -->
 
+        <!-- body for show_income_activity? -->
+        <q-tr :props="props" v-if="show_income_activity">
+          <q-td key="counter" :props="props">
+            {{ props.row.counter }}
+          </q-td>
+          <q-td key="name" :props="props">
+            {{ props.row.name }}
+          </q-td>
+          <q-td key="amount" :props="props">
+            {{ Number(props.row.amount).toLocaleString() }}
+          </q-td>
+          <q-td key="date" :props="props">
+            {{ getDate(props.row.date) }}
+          </q-td>
+          <q-td key="venue" :props="props">
+            {{ props.row.venue }}
+          </q-td>
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'PENDING'"
+            class="text-info"
+          >
+            {{ props.row.approve }}
+          </q-td>
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'APPROVED'"
+            class="registered"
+          >
+            {{ props.row.approve }}
+          </q-td>
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'DECLINED'"
+            class="not_registered"
+          >
+            {{ props.row.approve }}
+          </q-td>
+          <q-td key="action" :props="props">
+            <!-- menu to handle edit and view details of a single show_income_activity -->
+            <q-btn flat round>
+              <q-icon
+                name="menu"
+                size="xs"
+                color="primary"
+                class="menu_icon"
+                clickable
+              >
+                <q-menu>
+                  <q-list bordered separator style="width: 180px">
+                    <!-- edit and view show_income_activity -->
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onEditIncomeActivity(props.row)"
+                    >
+                      <q-item-section avatar  class="q-mr-lg">
+                        <span>
+                          <q-icon name="edit" size="xs" class="edit" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="edit">Edit</q-item-label>
+                      </q-item-section>
+                    </q-item>
+
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onViewIncomeActivity(props.row)"
+                    >
+                      <q-item-section avatar class="q-mr-lg">
+                        <span>
+                          <q-icon name="visibility" size="xs" class="edit" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="edit">View</q-item-label>
+                      </q-item-section>
+                    </q-item>
+
+                     <!-- deleted specify row -->
+                     <q-item
+                      clickable
+                      v-close-popup
+                      @click="onDeleteIncomeActivity(props.row)"
+                    >
+                      <q-item-section avatar  class="q-mr-lg">
+                        <span>
+                          <q-icon name="delete" size="xs" color="red" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="text-red">Delete</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                  </q-list>
+                </q-menu>
+              </q-icon>
+            </q-btn>
+          </q-td>
+        </q-tr>
+        <!-- end of body for show_income_activity -->
       </template>
       <template v-slot:top-right>
         <q-input
@@ -438,7 +543,8 @@
         :data="deleted_row"
         :type="type"
         :msg="delete_msg"
-        :show_members="computeShowConfirmDialogDetail()"
+        :show_members="show_members"
+        :show_income_activity="show_income_activity"
         @fetch-members="fetchMembers"
         @cancel-dialog="cancelDialog"
       ></ConfirmDialogVue>
@@ -716,14 +822,11 @@ export default {
       this.delete_msg = "Are you sure you want to delete this Member ?";
     },
 
-    computeShowConfirmDialogDetail() {
-      let show_confirm_dialog_detail = false;
-      switch (this.type) {
-        case "MEMBERS":
-          show_confirm_dialog_detail = true;
-          break;
-      }
-      return show_confirm_dialog_detail;
+    onDeleteIncomeActivity(data){
+      this.deleted_row = data;
+      this.dialog = true;
+      this.type = "INCOME_ACTIVITIES";
+      this.delete_msg = "Are you sure you want to delete this Income Activity ?";
     },
 
     checkTreasurerRole() {
@@ -918,6 +1021,26 @@ export default {
       };
       this.$store.dispatch("setCurrentMemberSaving", data);
       this.$emit("view-member-saving", payload);
+    },
+
+    onEditIncomeActivity(data) {
+      let payload = {
+        data: data,
+        tab: "Income Activities",
+      };
+      this.$store.dispatch("setUpdatedIncomeActivity", data);
+
+      this.$emit("edit-income-activity", payload);
+    },
+
+    onViewIncomeActivity(data) {
+      let payload = {
+        data: data,
+        tab: "View Income Activity",
+      };
+      this.$store.dispatch("setCurrentIncomeActivity", data);
+
+      this.$emit("view-income-activity", payload);
     },
   },
   components: {

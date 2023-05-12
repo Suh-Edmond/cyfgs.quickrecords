@@ -79,6 +79,17 @@ export default {
       this.$store.dispatch("getRequest", payload).then(() => {});
     },
 
+    getPaymentActivitiesFromStatus() {
+      let payment_items = [];
+      this.$store.getters.getPaymentActivities.forEach((ele) => {
+        payment_items.push({
+          label: ele.name,
+          value: ele.id,
+          amount: ele.amount,
+        });
+      });
+      return payment_items;
+    },
   }
 }
 </script>

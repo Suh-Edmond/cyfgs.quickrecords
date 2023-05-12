@@ -21,6 +21,7 @@
             @filter="filterFn"
             @input="stopSearch"
             clearable
+            :disable="onMemberExist"
           >
           <template v-slot:append v-if="start_filtering">
               <q-spinner color="primary" size="1.2em" :thickness="5" />
@@ -125,6 +126,9 @@ export default {
     getUpdateMemberSaving() {
       return this.setFormFields(this.$store.getters.getUpdatedMemberSaving);
     },
+    onMemberExist(){
+      return this.$store.getters.getUpdatedMemberSaving != null
+    }
   },
 
   watch: {

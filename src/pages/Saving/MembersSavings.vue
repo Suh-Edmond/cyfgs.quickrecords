@@ -63,11 +63,11 @@
           <div class="col-md-6 col-lg-6 col-xs-12 col-sm-12 flex q-pl-md">
             <div>
               <ButtonVue
-                :label="label_fetch"
+                :label="'Filter'"
                 :loading="loading"
-                :color="color"
+                :color="'primary'"
                 :disabled="validateFilter"
-                :no_caps="no_caps"
+                :no_caps="true"
                 icon_right="filter_list"
               >
               </ButtonVue>
@@ -75,9 +75,9 @@
             <q-space />
             <div class="button q-pb-xs">
               <q-btn
-                :label="label_download"
+                :label="'Print'"
                 :loading="loading"
-                :color="color_print"
+                :color="'positive'"
                 :disabled="false"
                 no-caps
                 icon-right="print"
@@ -119,9 +119,9 @@
       >
         <div>
           <q-btn
-            :label="label_fetch"
+            label="Filter"
             :loading="loading"
-            :color="color"
+            :color="'primary'"
             :disabled="false"
             no-caps
             icon-right="filter_list"
@@ -132,9 +132,9 @@
         <q-space />
         <div class="button q-pb-xs">
           <q-btn
-            :label="label_download"
+            :label="'Print'"
             :loading="loading"
-            :color="color_print"
+            :color="'positive'"
             :disabled="savings.length == 0"
             no-caps
             icon-right="print"
@@ -199,9 +199,6 @@ export default {
         "November",
         "December",
       ],
-      label_fetch: "Filter",
-      color: "primary",
-      no_caps: true,
       loading: false,
       label_download: "Print",
       color_print: "positive",

@@ -1,6 +1,6 @@
 <template>
   <div class="q-px-lg q-pt-md">
-    <div v-if="getEditState">
+    <div>
       <div class="q-mb-md">
         <label for="name" class="field"><span> <q-icon name="person" size="xs" class="q-pr-sm" /> </span>Member Name:
           <span class="field_value item_value">{{

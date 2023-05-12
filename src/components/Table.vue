@@ -29,7 +29,7 @@
       </template>
       <template v-slot:body="props">
         <!-- body for members -->
-        <q-tr :props="props" class="text-bold" v-if="show_members">
+        <q-tr :props="props"  v-if="show_members">
           <q-td key="counter" :props="props">
             {{ props.row.counter }}
           </q-td>
@@ -69,11 +69,7 @@
           >
             {{ props.row.approve }}
           </q-td>
-          <q-td
-            key="approve"
-            :props="props"
-            v-if="props.row.approve == ''"
-          >
+          <q-td key="approve" :props="props" v-if="props.row.approve == ''">
             {{ props.row.approve }}
           </q-td>
           <q-td
@@ -198,6 +194,138 @@
           </q-td>
         </q-tr>
         <!-- end of body for members -->
+
+        <!-- body for savings? -->
+        <q-tr :props="props"  v-if="show_savings">
+          <q-td key="counter" :props="props">
+            {{ props.row.counter }}
+          </q-td>
+          <q-td key="name" :props="props">
+            {{ props.row.name }}
+          </q-td>
+          <q-td key="user_name" :props="props">
+            {{ props.row.user_name }}
+          </q-td>
+          <q-td key="email" :props="props">
+            {{ props.row.email }}
+          </q-td>
+          <q-td key="telephone" :props="props">
+            {{ props.row.telephone }}
+          </q-td>
+          <q-td key="amount_deposited" :props="props">
+            {{ Number(props.row.amount_deposited).toLocaleString() }}
+          </q-td>
+          <q-td key="date" :props="props">
+            {{ getDate(props.row.date) }}
+          </q-td>
+          <q-td key="state" :props="props">
+            {{ props.row.approve }}
+          </q-td>
+          <q-td key="action" :props="props">
+            <!-- button to handle view all member saving -->
+            <q-btn
+              flat
+              class="view_savings q-py-xs"
+              @click="showMemberSavings(props.row)"
+              :to="{ name: 'user_savings', params: { id: props.row.user_id } }"
+              v-if="show_savings && !checkTreasurerRole()"
+            >
+              View All Savings
+            </q-btn>
+          </q-td>
+        </q-tr>
+        <!-- end of body for savings -->
+
+        <!-- body for savings? -->
+        <q-tr :props="props"  v-if="show_member_savings">
+          <q-td key="counter" :props="props">
+            {{ props.row.counter }}
+          </q-td>
+          <q-td key="amount_deposited" :props="props">
+            {{ Number(props.row.amount_deposited).toLocaleString() }}
+          </q-td>
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="(props.row.approve == 'PENDING')"
+            class="text-info"
+          >
+            {{ props.row.approve }}
+          </q-td>
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="(props.row.approve == 'APPROVED')"
+            class="registered"
+          >
+            {{ props.row.approve }}
+          </q-td>
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="(props.row.approve == 'DECLINED')"
+            class="not_registered"
+          >
+            {{ props.row.approve }}
+          </q-td>
+          <q-td key="date" :props="props">
+            {{ getDate(props.row.date) }}
+          </q-td>
+          <q-td key="action" :props="props">
+           <!-- menu to handle edit and view details of a single saving -->
+           <q-btn
+              flat
+              round
+              v-if="show_member_savings && !checkTreasurerRole()"
+            >
+              <q-icon
+                name="menu"
+                size="xs"
+                color="primary"
+                class="menu_icon"
+                clickable
+              >
+                <q-menu>
+                  <q-list bordered separator style="width: 180px;">
+                    <!-- edit and view savings -->
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onEditMemberSaving(props.row)"
+                    >
+                      <q-item-section avatar class="q-mr-lg">
+                        <span>
+                          <q-icon name="edit" size="xs" class="edit" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="edit">Edit</q-item-label>
+                      </q-item-section>
+                    </q-item>
+
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onViewMemberSaving(props.row)"
+                    >
+                      <q-item-section avatar class="q-mr-lg">
+                        <span>
+                          <q-icon name="visibility" size="xs" class="edit" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="edit">View</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                  </q-list>
+                </q-menu>
+              </q-icon>
+            </q-btn>
+
+          </q-td>
+        </q-tr>
+        <!-- end of body for savings -->
+
       </template>
       <template v-slot:top-right>
         <q-input
@@ -770,6 +898,27 @@ export default {
       this.dialog = false;
     },
 
+    showMemberSavings(data) {
+      this.getMemberSavings(data.user_id);
+    },
+
+    onEditMemberSaving(data) {
+      let payload = {
+        data: data,
+        tab: "Member Savings",
+      };
+      this.$store.dispatch("setUpdatedMemberSaving", data);
+      this.$emit("edit-member-saving", payload);
+    },
+
+    onViewMemberSaving(data) {
+      let payload = {
+        data: data,
+        tab: "View Member Saving",
+      };
+      this.$store.dispatch("setCurrentMemberSaving", data);
+      this.$emit("view-member-saving", payload);
+    },
   },
   components: {
     ConfirmDialogVue,

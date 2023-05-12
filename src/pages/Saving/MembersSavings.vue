@@ -13,10 +13,10 @@
     <div v-if="!checkTreasurerRole()">
       <NotFound
         :message="not_found_msg"
-        v-if="getMembersSavings.length == 0 && !getLoadingState"
+        v-if="savings.length == 0 && !getLoadingState"
       ></NotFound>
       <!-- header for filter categories -->
-      <div v-if="getMembersSavings.length > 0 && !getLoadingState">
+      <div v-if="savings.length > 0 && !getLoadingState">
         <div
           class="row q-ml-xs q-pt-xs"
           :class="$q.screen.lg ? 'q-pa-sm' : ''"
@@ -31,7 +31,9 @@
               dense
               :options="years"
               label="Select year"
+              use-input
               input-debounce="0"
+              clearable
               @filter="filterYears"
             >
               <template v-slot:no-option>
@@ -48,9 +50,11 @@
               v-model="month"
               outlined
               dense
-              :options="months"
+              :options="monthsOptions"
               label="Select month"
+              use-input
               input-debounce="0"
+              clearable
               @filter="filterMonths"
             >
               <template v-slot:no-option>
@@ -64,22 +68,23 @@
           </div>
           <div class="col-md-6 col-lg-6 col-xs-12 col-sm-12 flex q-pl-md">
             <div>
-              <ButtonVue
-                :label="label_fetch"
-                :loading="loading"
-                :color="color"
+              <q-btn
+                :label="'Filter'"
+                :loading="is_fetching"
+                :color="'primary'"
                 :disabled="validateFilter"
-                :no_caps="no_caps"
-                icon_right="filter_list"
+                no-caps
+                icon-right="filter_list"
+                @click="filterSavings"
               >
-              </ButtonVue>
+              </q-btn>
             </div>
             <q-space />
             <div class="button q-pb-xs">
               <q-btn
-                :label="label_download"
+                :label="'Print'"
                 :loading="loading"
-                :color="color_print"
+                :color="'positive'"
                 :disabled="false"
                 no-caps
                 icon-right="print"
@@ -90,11 +95,30 @@
         </div>
 
         <!-- table for savings -->
-        <div class="row q-pt-sm">
+        <div class="row q-pt-sm" v-if="!start_filter">
           <div class="col-md-12 col-xs-12 col-sm-12">
             <TableVue
               :columns="columns"
-              :data="getMembersSavings"
+              :data="savings"
+              :label="label"
+              :message="message"
+              :show_savings="true"
+              :show_income_activity="false"
+              :show_members="false"
+              :total_saving="getTotalMembersSavings"
+              :show_contribution="false"
+              @edit-member-saving="editMemberSaving"
+            >
+            </TableVue>
+          </div>
+        </div>
+ <!-- table for filter savings -->
+
+        <div class="row q-pt-sm" v-if="start_filter">
+          <div class="col-md-12 col-xs-12 col-sm-12">
+            <TableVue
+              :columns="columns"
+              :data="filtered_savings"
               :label="label"
               :message="message"
               :show_savings="true"
@@ -121,9 +145,9 @@
       >
         <div>
           <q-btn
-            :label="label_fetch"
-            :loading="loading"
-            :color="color"
+            label="Filter"
+            :loading="is_fetching"
+            :color="'primary'"
             :disabled="false"
             no-caps
             icon-right="filter_list"
@@ -134,9 +158,9 @@
         <q-space />
         <div class="button q-pb-xs">
           <q-btn
-            :label="label_download"
+            :label="'Print'"
             :loading="loading"
-            :color="color_print"
+            :color="'positive'"
             :disabled="savings.length == 0"
             no-caps
             icon-right="print"
@@ -170,24 +194,10 @@
 import { LocalStorage } from "quasar";
 import NotFound from "src/components/NotFound.vue";
 import TableVue from "src/components/Table.vue";
-import ButtonVue from "src/components/Button.vue";
 import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
-
-export default {
-  mixins: [UserSavingMixinVue, HelperMixinVue],
-  mounted() {
-    let organisation_id = this.$store.getters.getOrganisation.id
-    this.getOrganisationMemberSavings(organisation_id);
-  },
-  data() {
-    return {
-      not_found_msg:
-        "Ooops!! No Savings has been recorded. Click the add button to add saving.",
-      year: null,
-      years: ["2020", "2021", "2022", "2023", "2024"],
-      month: null,
-      months: [
+import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
+const  months = [
         "January",
         "February",
         "March",
@@ -200,10 +210,23 @@ export default {
         "October",
         "November",
         "December",
+      ];
+export default {
+  mixins: [UserSavingMixinVue, HelperMixinVue, CurrentYearMixinVue],
+  mounted() {
+    let organisation_id = this.$store.getters.getOrganisation.id;
+    this.getOrganisationMemberSavings(organisation_id);
+    this.getMembersSavings();
+  },
+  data() {
+    return {
+      not_found_msg:
+        "Ooops!! No Savings has been recorded. Click the add button to add saving.",
+      year: "",
+      month: "",
+      monthsOptions: [
       ],
-      label_fetch: "Filter",
-      color: "primary",
-      no_caps: true,
+      years:[],
       loading: false,
       label_download: "Print",
       color_print: "positive",
@@ -242,13 +265,13 @@ export default {
           label: "Amount Saved (XAF)",
           field: "amount_deposited",
         },
-        {
-          name: "state",
-          align: "left",
-          label: "Status",
-          field: "state",
-          sortable: true,
-        },
+        // {
+        //   name: "state",
+        //   align: "left",
+        //   label: "Status",
+        //   field: "state",
+        //   sortable: true,
+        // },
         {
           name: "action",
           label: "Action",
@@ -258,9 +281,11 @@ export default {
       ],
       label: "Delete",
       message: "Are you sure you want to delete this Member Saving?",
-      is_fetching: true,
+      is_fetching: false,
       search_data: null,
       savings: [],
+      start_filter:false,
+      filtered_savings:[]
     };
   },
   computed: {
@@ -276,36 +301,7 @@ export default {
     },
 
     getTotalMembersSavings() {
-      return this.$store.getters.getOrganisationMembersSavings.total_savings
-    },
-
-    getMembersSavings() {
-      let data = [];
-
-      if (this.$store.getters.getOrganisationMembersSavings != null) {
-        this.$store.getters.getOrganisationMembersSavings.data.forEach(
-          (ele) => {
-            data.push({
-              counter:
-                this.$store.getters.getOrganisationMembersSavings.data.indexOf(
-                  ele
-                ) + 1,
-              name: ele.user_name,
-              email: ele.email,
-              telephone: ele.telephone,
-              amount_deposited: ele.amount_deposited,
-              id: ele.id,
-              approve: ele.approve,
-              comment: ele.comment,
-              type: "MEMBERS_SAVINGS",
-              user_id: ele.user_id,
-              created_at: ele.created_at,
-              updated_by: ele.updated_by,
-            });
-          }
-        );
-      }
-      return data;
+      return this.$store.getters.getOrganisationMembersSavings.total_savings;
     },
 
     getFilteredSavings() {
@@ -332,7 +328,7 @@ export default {
     computeTotalSavingsForFiltered() {
       let total = 0;
       this.$store.getters.getSavings.forEach((ele) => {
-        total += ele.amount_deposited
+        total += ele.amount_deposited;
       });
       return total;
     },
@@ -342,6 +338,36 @@ export default {
     },
   },
   methods: {
+    getMembersSavings() {
+      this.savings = [];
+
+      if (this.$store.getters.getOrganisationMembersSavings != null) {
+        this.$store.getters.getOrganisationMembersSavings.data.forEach(
+          (ele) => {
+            this.savings.push({
+              counter:
+                this.$store.getters.getOrganisationMembersSavings.data.indexOf(
+                  ele
+                ) + 1,
+              name: ele.user_name,
+              email: ele.email,
+              telephone: ele.telephone,
+              amount_deposited: ele.amount_deposited,
+              id: ele.id,
+              approve: ele.approve,
+              comment: ele.comment,
+              type: "MEMBERS_SAVINGS",
+              user_id: ele.user_id,
+              created_at: ele.created_at,
+              updated_by: ele.updated_by,
+            });
+          }
+        );
+      }
+      return this.savings;
+    },
+
+
     checkTreasurerRole() {
       const treasurer_role = LocalStorage.getItem("data").roles.find(
         (role) => role.name == "TREASURER"
@@ -350,20 +376,29 @@ export default {
     },
 
     filterYears(val, update, abort) {
+      if (val.length < 1) {
+        abort();
+        return;
+      }
+      if(this.year == ""){
+        this.years = this.getSessionsFromState;
+      }
       update(() => {
-        const needle = val.toLowerCase();
-        this.years = this.years.filter(
-          (v) => v.toLowerCase().indexOf(needle) > -1
-        );
+        this.years = this.getSessionsFromState.filter((v) => v.label.toLowerCase().includes(val.toLowerCase()));
       });
     },
 
     filterMonths(val, update, abort) {
+      if (val.length < 2) {
+        abort();
+        return;
+      }
+      if(this.month == ""){
+        this.monthsOptions = months;
+      }
       update(() => {
-        const needle = val.toLowerCase();
-        this.months = this.months.filter(
-          (v) => v.toLowerCase().indexOf(needle) > -1
-        );
+        const needle = val.toLowerCase()
+        this.monthsOptions = months.filter(v => v.toLowerCase().indexOf(needle) > -1)
       });
     },
 
@@ -389,11 +424,60 @@ export default {
 
       this.$emit("search-member-saving", payload);
     },
+
+    filterSavings() {
+      this.is_fetching = true;
+      this.start_filter = true;
+      this.filtered_savings = [];
+      let organisation_id = this.$store.getters.getOrganisation.id;
+      this.$router.push({
+        path: `/dashboard/members-savings`,
+        query: { month: this.month, year:this.year.label },
+      });
+      let payload = {
+        url: `/api/protected/user-savings?month=${this.month}&year=${this.year.value}&organisation_id=${organisation_id}`,
+        msg: "",
+        color: "default",
+        to_on_ok: "none",
+        to_on_fail: "none",
+        show_feedback: false,
+        error_msg: "An Error occurred! Please try again",
+        has_commit: false,
+        commit: "none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.$store.dispatch("getRequest", payload).then((res) => {
+        this.is_fetching = false;
+        if (res.data) {
+          res.data.forEach((saving) => {
+            this.filtered_savings.push({
+              counter: res.data.indexOf(saving) + 1,
+              name: saving.user_name,
+              email: saving.email,
+              telephone: saving.telephone,
+              amount_deposited: saving.amount_deposited,
+              id: saving.id,
+              approve: saving.approve,
+              comment: saving.comment,
+              type: "MEMBER_SAVINGS",
+              user_id: saving.user_id,
+              created_at: saving.created_at,
+              updated_by: saving.updated_by,
+              date: saving.created_at,
+            });
+          });
+        }
+      });
+      return this.filtered_savings;
+    },
   },
   components: {
     NotFound,
     TableVue,
-    ButtonVue,
   },
 };
 </script>

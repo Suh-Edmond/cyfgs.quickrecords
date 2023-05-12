@@ -26,25 +26,64 @@
       >
         <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
           <q-select
+            v-model="year"
+            outlined
+            dense
+            :options="years"
+            label="Select year"
+            use-input
+            input-debounce="0"
+            clearable
+            @filter="filterYears"
+          >
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey"> No results </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
+        </div>
+        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-pl-md">
+          <q-select
             v-model="status"
             outlined
             dense
             :options="statuses"
             label="Select Status"
-            @input="filterSavings"
-          />
+            clearable
+          >
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey"> No results </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
         </div>
-        <q-space />
-        <div class="button q-pb-xs">
-          <q-btn
-            :label="label_download"
-            :loading="loading"
-            :color="color_print"
-            :disabled="false"
-            no-caps
-            icon-right="print"
-            @click="downloadSavings"
-          ></q-btn>
+        <div class="col-md-6 col-lg-6 col-xs-12 col-sm-12 flex q-pl-md">
+          <div>
+            <q-btn
+              :label="'Filter'"
+              :loading="is_fetching"
+              :color="'primary'"
+              :disabled="validateFilter"
+              no-caps
+              icon-right="filter_list"
+              @click="filterSavings"
+            >
+            </q-btn>
+          </div>
+          <q-space />
+          <div class="button">
+            <q-btn
+              label="Print"
+              :loading="loading"
+              color="positive"
+              :disabled="false"
+              no-caps
+              icon-right="print"
+              @click="downloadSavings"
+            ></q-btn>
+          </div>
         </div>
       </div>
       <!-- table for savings -->
@@ -64,7 +103,6 @@
             :total_saving="getMemberTotalSaving"
             @view-member-saving="ViewMemberSaving"
             @edit-member-saving="editMemberSaving"
-
           >
           </TableVue>
         </div>
@@ -99,21 +137,15 @@
 import NotFound from "src/components/NotFound.vue";
 import TableVue from "src/components/Table.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
-
+import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
 export default {
-  mixins: [HelperMixinVue],
+  mixins: [HelperMixinVue, CurrentYearMixinVue],
 
   data() {
     return {
       not_found_msg: "Ooops!! No Savings has been recorded for this Member",
       filtered_savings: [],
-      search: null,
-      label_fetch: "Filter",
-      color: "primary",
-      no_caps: true,
       loading: false,
-      label_download: "Print",
-      color_print: "positive",
       columns: [
         {
           name: "counter",
@@ -140,13 +172,13 @@ export default {
           label: "Date Collected",
           field: "date",
         },
-        {
-          name: "state",
-          align: "left",
-          label: "Saving Status",
-          field: "state",
-          sortable: true,
-        },
+        // {
+        //   name: "state",
+        //   align: "left",
+        //   label: "Saving Status",
+        //   field: "state",
+        //   sortable: true,
+        // },
         {
           name: "action",
           label: "Action",
@@ -155,13 +187,19 @@ export default {
         },
       ],
       label: "Delete",
-      message: "Are you sure you want to delete this Saving?",
+      message: "Are you sure you want to delete this Saving ?",
       statuses: ["PENDING", "APPROVED", "DECLINED", "ALL"],
-      status: null,
+      status: "",
       start_filter: false,
+      year: "",
+      is_fetching: false,
+      years: [],
     };
   },
   computed: {
+    validateFilter() {
+      return this.year == null;
+    },
     getMemberSavings() {
       let data = [];
 
@@ -216,30 +254,82 @@ export default {
     },
 
     filterSavings() {
+      this.is_fetching = true;
       this.start_filter = true;
-      if (this.status == "ALL") {
-        this.filtered_savings = this.getMemberSavings;
-      } else {
-        this.filtered_savings = this.getMemberSavings.filter(
-          (ele) => ele.approve === this.status
-        );
-      }
+      this.filtered_savings = [];
+      let member = this.$store.getters.getMemberSavings.data[0].user_name;
+      let organisation_id = this.$store.getters.getOrganisation.id;
+      let user_id = this.$store.getters.getMemberSavings.data[0].user_id
       this.$router.push({
-        path: `/dashboard/members-savings/users/${member.name}`,
-        query: { status: this.status },
+        path: `/dashboard/members-savings/users/`,
+        query: { status: this.status, year:this.year.label },
       });
-
+      let payload = {
+        url: `/api/protected/user-savings?status=${this.status}&year=${this.year.value}&organisation_id=${organisation_id}&user_id=${user_id}`,
+        msg: "",
+        color: "default",
+        to_on_ok: "none",
+        to_on_fail: "none",
+        show_feedback: false,
+        error_msg: "An Error occurred! Please try again",
+        has_commit: false,
+        commit: "none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.$store.dispatch("getRequest", payload).then((res) => {
+        this.is_fetching = false;
+        if (res.data) {
+          res.data.forEach((saving) => {
+            this.filtered_savings.push({
+              counter: res.data.indexOf(saving) + 1,
+              name: saving.user_name,
+              email: saving.email,
+              telephone: saving.telephone,
+              amount_deposited: saving.amount_deposited,
+              id: saving.id,
+              approve: saving.approve,
+              comment: saving.comment,
+              type: "MEMBER_SAVINGS",
+              user_id: saving.user_id,
+              created_at: saving.created_at,
+              updated_by: saving.updated_by,
+              date: saving.created_at,
+            });
+          });
+        }
+      });
       return this.filtered_savings;
     },
 
     downloadSavings() {
       let user_id = this.$store.getters.getMemberSavings.data[0].user_id;
+      let current_session =
+        this.year == null ? this.getCurrentYear.id : this.year.value;
 
-      let url = `/api/protected/savings/download?user_id=${user_id}&status=${this.status}`;
+      let url = `/api/protected/savings/download?user_id=${user_id}&status=${this.status}&session_id=${current_session}`;
 
       let file_name = "User_Savings.pdf";
 
       this.loading = this.downloadPdf(url, file_name);
+    },
+
+    filterYears(val, update, abort) {
+      if (val.length < 1) {
+        abort();
+        return;
+      }
+      if (this.year == "") {
+        this.years = this.getSessionsFromState;
+      }
+      update(() => {
+        this.years = this.getSessionsFromState.filter((v) =>
+          v.label.toLowerCase().includes(val.toLowerCase())
+        );
+      });
     },
   },
   components: {

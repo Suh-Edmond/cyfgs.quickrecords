@@ -109,7 +109,7 @@ export default {
   },
   computed: {
     validateForm() {
-      return this.saving.user_id === null || this.saving.amount_deposited == 0
+      return this.saving.user_id == null || this.saving.amount_deposited == 0
         ? true
         : false;
     },
@@ -153,7 +153,7 @@ export default {
         url: this.setActionUrl(this.saving.id, this.saving.user_id.value),
         data: {
           user_id: this.saving.user_id.value,
-          amount_deposited: this.saving.amount_deposited,
+          amount_deposited: JSON.parse(this.saving.amount_deposited),
           comment: this.saving.comment,
           id: this.saving.id,
         },
@@ -171,7 +171,6 @@ export default {
           data: [],
         },
       };
-
       this.setDispatchAction(this.saving.id, payload);
     },
 

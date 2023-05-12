@@ -29,8 +29,12 @@
               v-model="year"
               outlined
               dense
-              :options="getSessionsFromState"
+              :options="years"
               label="Select year"
+              use-input
+              input-debounce="0"
+              clearable
+              @filter="filterYears"
             >
               <template v-slot:no-option>
                 <q-item>
@@ -46,9 +50,11 @@
               v-model="month"
               outlined
               dense
-              :options="months"
+              :options="monthsOptions"
               label="Select month"
+              use-input
               input-debounce="0"
+              clearable
               @filter="filterMonths"
             >
               <template v-slot:no-option>
@@ -120,7 +126,7 @@
         <div>
           <q-btn
             label="Filter"
-            :loading="loading"
+            :loading="is_fetching"
             :color="'primary'"
             :disabled="false"
             no-caps
@@ -171,21 +177,8 @@ import TableVue from "src/components/Table.vue";
 import ButtonVue from "src/components/Button.vue";
 import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
-import CurrentYearMixinVue from 'src/mixins/CurrentYearMixin.vue';
-
-export default {
-  mixins: [UserSavingMixinVue, HelperMixinVue, CurrentYearMixinVue],
-  mounted() {
-    let organisation_id = this.$store.getters.getOrganisation.id
-    this.getOrganisationMemberSavings(organisation_id);
-  },
-  data() {
-    return {
-      not_found_msg:
-        "Ooops!! No Savings has been recorded. Click the add button to add saving.",
-      year: null,
-      month: null,
-      months: [
+import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
+const  months = [
         "January",
         "February",
         "March",
@@ -198,7 +191,22 @@ export default {
         "October",
         "November",
         "December",
+      ];
+export default {
+  mixins: [UserSavingMixinVue, HelperMixinVue, CurrentYearMixinVue],
+  mounted() {
+    let organisation_id = this.$store.getters.getOrganisation.id;
+    this.getOrganisationMemberSavings(organisation_id);
+  },
+  data() {
+    return {
+      not_found_msg:
+        "Ooops!! No Savings has been recorded. Click the add button to add saving.",
+      year: "",
+      month: "",
+      monthsOptions: [
       ],
+      years:[],
       loading: false,
       label_download: "Print",
       color_print: "positive",
@@ -237,13 +245,13 @@ export default {
           label: "Amount Saved (XAF)",
           field: "amount_deposited",
         },
-        {
-          name: "state",
-          align: "left",
-          label: "Status",
-          field: "state",
-          sortable: true,
-        },
+        // {
+        //   name: "state",
+        //   align: "left",
+        //   label: "Status",
+        //   field: "state",
+        //   sortable: true,
+        // },
         {
           name: "action",
           label: "Action",
@@ -271,7 +279,7 @@ export default {
     },
 
     getTotalMembersSavings() {
-      return this.$store.getters.getOrganisationMembersSavings.total_savings
+      return this.$store.getters.getOrganisationMembersSavings.total_savings;
     },
 
     getMembersSavings() {
@@ -327,7 +335,7 @@ export default {
     computeTotalSavingsForFiltered() {
       let total = 0;
       this.$store.getters.getSavings.forEach((ele) => {
-        total += ele.amount_deposited
+        total += ele.amount_deposited;
       });
       return total;
     },
@@ -345,15 +353,29 @@ export default {
     },
 
     filterYears(val, update, abort) {
-
+      if (val.length < 2) {
+        abort();
+        return;
+      }
+      if(this.year == ""){
+        this.years = this.getSessionsFromState;
+      }
+      update(() => {
+        this.years = this.getSessionsFromState.filter((v) => v.label.toLowerCase().includes(val.toLowerCase()));
+      });
     },
 
     filterMonths(val, update, abort) {
+      if (val.length < 2) {
+        abort();
+        return;
+      }
+      if(this.month == ""){
+        this.monthsOptions = months;
+      }
       update(() => {
-        const needle = val.toLowerCase();
-        this.months = this.months.filter(
-          (v) => v.toLowerCase().indexOf(needle) > -1
-        );
+        const needle = val.toLowerCase()
+        this.monthsOptions = months.filter(v => v.toLowerCase().indexOf(needle) > -1)
       });
     },
 

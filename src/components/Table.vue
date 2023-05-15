@@ -538,9 +538,6 @@
           >
             {{ props.row.approve }}
           </q-td>
-          <q-td key="code" :props="props">
-            {{ props.row.code }}
-          </q-td>
           <q-td key="action" :props="props">
             <!-- menu to handle edit and view details of a single member contribution -->
             <q-btn flat round>
@@ -567,6 +564,21 @@
                       </q-item-section>
                       <q-item-section>
                         <q-item-label class="edit">View</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onEditContribution(props.row)"
+                      v-show="show_member_contribution"
+                    >
+                      <q-item-section avatar class="q-mr-lg">
+                        <span>
+                          <q-icon name="edit" size="xs" class="edit" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="edit">Edit</q-item-label>
                       </q-item-section>
                     </q-item>
                     <q-item
@@ -1232,6 +1244,16 @@ export default {
         name: "member_contributions",
         params: { id: data.id },
       });
+    },
+    onEditContribution(data){
+      let payload = {
+        data: data,
+        tab: "Edit Member Contribution",
+      };
+
+      this.$store.dispatch("setSelectedContribution", data);
+      
+      this.$emit("edit-contribution", payload);
     },
     onDeleteContribution(data) {},
   },

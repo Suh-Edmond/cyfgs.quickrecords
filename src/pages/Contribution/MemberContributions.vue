@@ -129,13 +129,6 @@ export default {
           sortable: true,
         },
         {
-          name: "code",
-          align: "left",
-          label: "Transaction Code",
-          field: "code",
-          sortable: true,
-        },
-        {
           name: "action",
           label: "Action",
           field: "action",
@@ -215,7 +208,6 @@ export default {
     },
 
     downloadContributions() {
-      console.log(this.$router.currentRoute.params.item_id);
       let payment_item_id = this.$router.currentRoute.params.item_id;
       let user_id = this.$router.currentRoute.params.id;
 

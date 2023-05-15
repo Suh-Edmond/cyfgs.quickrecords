@@ -257,26 +257,6 @@ export default {
       return data;
     },
 
-    setTableTitle() {
-      let name = "";
-      let amount = 0;
-      let title = "";
-      if (this.$store.getters.getCurrentPaymentItem != null) {
-        name = this.$store.getters.getCurrentPaymentItem.name;
-        amount = this.$store.getters.getCurrentPaymentItem.amount;
-      }
-      if (
-        this.$store.getters.getCurrentPaymentItem != null &&
-        this.$store.getters.getCurrentContributionPaymentItem != null
-      ) {
-        title =
-          `Contributions for ${name}, Amount Payable: ` +
-          Number(amount).toLocaleString() +
-          "  XAF";
-      }
-      return title;
-    },
-
     checkIsExistPaymentItem() {
       return this.getPaymentItems.length > 0;
     },
@@ -337,7 +317,7 @@ export default {
       title =
         search_data != undefined && search_data.payment_item_id != undefined
           ? `Members Contributions for ${
-              search_data.payment_item_id.name
+              search_data.payment_item_id.label
             }, Amount Payable:  ${Number(
               search_data.payment_item_id.amount
             ).toLocaleString()} XAF`

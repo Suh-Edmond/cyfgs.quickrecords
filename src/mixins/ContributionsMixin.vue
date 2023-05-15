@@ -34,7 +34,6 @@ export default {
       this.$router.push({
         path: `/dashboard/contributions`,
         query: {
-          organisation_id: data.organisation_id,
           payment_item_id:
             data.payment_item_id != undefined ? data.payment_item_id.label : "",
           status: data.status,
@@ -102,7 +101,7 @@ export default {
           data: null,
         },
       };
-      this.$store.dispatch("getRequest", payload).then((res) => {});
+      this.$store.dispatch("getRequest", payload).then(() => {});
     },
   },
 };

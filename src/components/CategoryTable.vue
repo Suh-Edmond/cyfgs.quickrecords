@@ -21,8 +21,13 @@
           </q-td>
           <q-td key="item" :props="props">
             <q-btn
-              flat
+            unelevated
+              color="primary"
+              label="Details"
+              no-caps
               class="view_items"
+              icon-right="visibility"
+              rounded
               @click="showPaymentItems(props.row)"
               :to="{ name: 'payment_items', params: { id: props.row.id } }"
             >
@@ -106,9 +111,13 @@
           <q-td key="reference" :props="props">
             <!-- button for view member -->
             <q-btn
-              no-caps
+            unelevated
               color="primary"
+              label="Details"
+              no-caps
               class="view_items"
+              icon-right="visibility"
+              rounded
               @click="showReferences(props.row)"
               v-if="props.row.payment_item_type == 'A_MEMBER'"
             >
@@ -117,9 +126,13 @@
 
             <!-- button for view members -->
             <q-btn
-              no-caps
+            unelevated
               color="primary"
+              label="Details"
+              no-caps
               class="view_items"
+              icon-right="visibility"
+              rounded
               @click="showReferences(props.row)"
               v-if="props.row.payment_item_type == 'GROUPED_MEMBERS'"
             >
@@ -201,8 +214,13 @@
           </q-td>
           <q-td key="expenditure_items" :props="props">
             <q-btn
-              flat
+            unelevated
+              color="primary"
+              label="Details"
+              no-caps
               class="view_items"
+              icon-right="visibility"
+              rounded
               @click="showExpenditureItems(props.row)"
               :to="{ name: 'expenditure_items', params: { id: props.row.id } }"
             >
@@ -900,12 +918,9 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 13px;
-  line-height: 25px;
+  font-size: 12px;
   align-items: center;
-  letter-spacing: 0.01em;
   text-transform: capitalize;
-  color: $primary;
 }
 
 .field_total {

@@ -16,11 +16,21 @@
               outlined
               dense
               v-model="contribution.payment_category_id"
-              placeholder="Type name to search..."
-              :options="getPaymentCategories"
-              input-debounce="0"
+              :options="payment_categories"
               @input="fetchPaymentItems"
+              label="Search..."
+              input-debounce="0"
+              use-input
+              clearable
+              @filter="filterPaymentCategories"
             >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No results
+                  </q-item-section>
+                </q-item>
+              </template>
             </q-select>
           </div>
           <div class="q-mb-md">
@@ -31,21 +41,22 @@
               outlined
               dense
               v-model="contribution.payment_item_id"
-              placeholder="Type name to search..."
-              :options="payment_items"
-              input-debounce="0"
+              :options="filtered_payment_items"
               @input="fetchPaymentItem"
+              label="Search..."
+              input-debounce="0"
+              use-input
+              clearable
+              @filter="filterPaymentItems"
             >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No results
+                  </q-item-section>
+                </q-item>
+              </template>
             </q-select>
-            <small
-              v-if="
-                contribution.payment_category_id != null &&
-                payment_items.length == 0 &&
-                contribution.payment_item_id == null
-              "
-              class="noPaymentItems"
-              >No Payment items found under this category</small
-            >
           </div>
           <div class="q-mb-md">
             <label for="credential" class="form_field"
@@ -78,9 +89,13 @@
                 outlined
                 dense
                 v-model="contribution.user_id"
-                placeholder="Type name to search..."
-                :options="getMembers"
+                :options="members"
                 @input="selectMember"
+                label="Search..."
+                input-debounce="0"
+                use-input
+                clearable
+                @filter="filterMembers"
               >
               </q-select>
             </div>
@@ -135,9 +150,7 @@
               <q-input
                 v-model="contribution.comment"
                 outlined
-                dense
-                type="text"
-                autogrow
+                type="textarea"
                 placeholder="Provide any comment about this contribution"
                 :disable="has_completed_payment"
               />
@@ -147,7 +160,7 @@
                 <q-btn
                   class="form_button"
                   label="Reset"
-                  :color="color"
+                  :color="'primary'"
                   :disabled="!validateForm"
                   no-caps
                   outline
@@ -158,11 +171,11 @@
               <div>
                 <ButtonVue
                   class="form_button"
-                  :label="label_save"
+                  :label="'Save'"
                   :loading="loading"
-                  :color="color"
+                  :color="'primary'"
                   :disabled="validateForm"
-                  :no_caps="no_caps"
+                  :no_caps="true"
                 >
                 </ButtonVue>
               </div>
@@ -178,7 +191,6 @@ import ButtonVue from "src/components/Button.vue";
 import PaymentCategoryMixinVue from "src/mixins/PaymentCategoryMixin.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import memberMixinVue from "src/mixins/memberMixin.vue";
-import PaymentItemMixinVue from "src/mixins/PaymentItemMixin.vue";
 import ContributionsMixinVue from "src/mixins/ContributionsMixin.vue";
 
 export default {
@@ -186,7 +198,6 @@ export default {
     PaymentCategoryMixinVue,
     organisationMixinVue,
     memberMixinVue,
-    PaymentItemMixinVue,
     ContributionsMixinVue,
   ],
 
@@ -197,20 +208,20 @@ export default {
 
     let organisation_id = this.getOrganisationId;
 
-    if (this.$store.getters.getMembers.length == 0) {
-      this.getOrganisationMembers(organisation_id.false);
+    if (this.getMembersFromState().length == 0) {
+      this.getOrganisationMembers(organisation_id, false);
+    } else {
+      this.getMembersFromState();
     }
 
-    if (this.getPaymentCategories.length == 0) {
+    if (this.getPaymentCategoriesFromState().length == 0) {
       this.fetchCategories(organisation_id, false);
     }
   },
 
   data() {
     return {
-      label_save: "Save",
       loading: false,
-      color: "primary",
       contribution: {
         user_id: null,
         payment_item_id: null,
@@ -225,11 +236,13 @@ export default {
       position: "right",
       error_bal: false,
       dialog: false,
-      no_caps: true,
       has_completed_payment: false,
       has_selected_payment_item: false,
-      payment_items: [],
+      filtered_payment_items: [],
+      payment_items_by_category: [],
       selected_payment_item: null,
+      payment_categories: [],
+      members: [],
     };
   },
   computed: {
@@ -257,18 +270,6 @@ export default {
         ? true
         : false;
     },
-
-    getMembers() {
-      let members = [];
-      this.$store.getters.getMembers.forEach((ele) => {
-        members.push({
-          label: ele.name,
-          value: ele.id,
-        });
-      });
-
-      return members;
-    },
   },
   methods: {
     onAddContribution() {
@@ -294,7 +295,7 @@ export default {
           data: [],
         },
       };
-      this.setDispatchAction(payload, this.contribution.payment_item_id.value);
+      this.setDispatchAction(payload, this.contribution.payment_item_id);
     },
 
     fetchPaymentItems() {
@@ -316,9 +317,10 @@ export default {
         },
       };
       this.$store.dispatch("getRequest", payload).then((res) => {
+        this.payment_items_by_category = [];
         if (res.success) {
           res.data.data.forEach((ele) => {
-            this.payment_items.push({
+            this.payment_items_by_category.push({
               label: ele.name,
               value: ele.id,
               amount: ele.amount,
@@ -326,23 +328,29 @@ export default {
           });
         }
       });
-      return this.payment_items;
+      return this.payment_items_by_category;
     },
 
     fetchPaymentItem() {
-      this.selected_payment_item = this.payment_items.find(
-        (item) => item.value == this.contribution.payment_item_id.value
-      );
-      if (this.selected_payment_item != undefined) {
-        this.contribution.amount_payable = this.selected_payment_item.amount;
+      if (this.contribution.payment_item_id != null) {
+        this.selected_payment_item = this.filtered_payment_items.find(
+          (item) => item.value == this.contribution.payment_item_id.value
+        );
+        if (this.selected_payment_item != undefined) {
+          this.contribution.amount_payable = this.selected_payment_item.amount;
+        }
       }
     },
 
     selectMember() {
       this.has_completed_payment = false;
+      let user_id =
+        this.contribution.user_id != null
+          ? this.contribution.user_id.value
+          : "";
       let amount_deposited_payload = {
         status: "none",
-        url: `/api/protected/contributions/users/${this.contribution.user_id.value}/items/${this.contribution.payment_item_id.value}`,
+        url: `/api/protected/contributions/users/${user_id}/items/${this.contribution.payment_item_id.value}`,
         has_path_val: true,
         show_feedback: false,
         show_spinner: false,
@@ -361,11 +369,13 @@ export default {
         .dispatch("getRequest", amount_deposited_payload)
         .then((res) => {
           // //set the balance to be paid by the member has paid anything got the item before
-          this.contribution.total_amount_deposited = res.data;
-          this.contribution.balance =
-            this.contribution.amount_payable - res.data;
-          if (this.contribution.balance == 0) {
-            this.has_completed_payment = true;
+          if (res) {
+            this.contribution.total_amount_deposited = res.data;
+            this.contribution.balance =
+              this.contribution.amount_payable - res.data;
+            if (this.contribution.balance == 0) {
+              this.has_completed_payment = true;
+            }
           }
         });
     },
@@ -397,14 +407,14 @@ export default {
       return this.contribution;
     },
 
-    setDispatchAction(payload, payment_item_id) {
+    setDispatchAction(payload, payment_item) {
       this.loading = true;
       this.$store
         .dispatch("postRequest", payload)
         .then(() => {
           let data = {
-            payment_item_id: payment_item_id,
-            year: "",
+            payment_item_id: payment_item,
+            year: this.$store.getters.getCurrentYear.id,
             month: "",
             date: "",
             status: "",
@@ -417,6 +427,78 @@ export default {
           this.$emit("close-right-drawer");
           this.loading = false;
         });
+    },
+
+    filterPaymentItems(val, update, abort) {
+      if (val < 2) {
+        this.start_filtering = false;
+        abort();
+        return;
+      }
+
+      update(() => {
+        this.start_filtering = true;
+        this.filtered_payment_items = this.payment_items_by_category.filter(
+          (item) => item.label.toLowerCase().includes(val.toLowerCase())
+        );
+        return this.filtered_payment_items;
+      });
+    },
+
+    getPaymentCategoriesFromState() {
+      this.payment_categories = [];
+      this.$store.getters.getPaymentCategories.forEach((ele) => {
+        this.payment_categories.push({
+          label: ele.name,
+          value: ele.id,
+        });
+      });
+
+      return this.payment_categories;
+    },
+
+    filterPaymentCategories(val, update, abort) {
+      if (val < 2) {
+        this.start_filtering = false;
+        abort();
+        return;
+      }
+
+      update(() => {
+        this.start_filtering = true;
+        this.payment_categories = this.getPaymentCategoriesFromState().filter(
+          (item) => item.label.toLowerCase().includes(val.toLowerCase())
+        );
+        return this.payment_categories;
+      });
+    },
+
+    getMembersFromState() {
+      this.members = [];
+      this.$store.getters.getMembers.forEach((ele) => {
+        this.members.push({
+          label: ele.name,
+          value: ele.id,
+        });
+      });
+
+      return this.members;
+    },
+
+    filterMembers(val, update, abort) {
+      if (val < 2) {
+        this.start_filtering = false;
+        abort();
+        return;
+      }
+
+      update(() => {
+        this.start_filtering = true;
+        this.members = this.getMembersFromState().filter((item) =>
+          item.label.toLowerCase().includes(val.toLowerCase())
+        );
+        return this.members;
+      });
     },
   },
   components: {

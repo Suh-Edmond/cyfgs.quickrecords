@@ -296,17 +296,19 @@ export default {
     },
 
     filterByDuration(status) {
-
+      console.log("test");
       let payload = {
         organisation_id: this.getOrganisationId,
         status: status == null ? "": status,
         payment_category_id: this.param.payment_category_id,
         payment_item_id: this.param.payment_item_id,
-        year: this.param.year,
+        year: this.param.year == "" ? this.$store.getters.getCurrentYear.id : this.param.year,
         month: this.param.month,
         date: this.param.date,
         date_range: this.param.date_range,
       };
+      console.log(payload.year);
+      console.log(this.$store.getters.getCurrentYear);
       this.loading = this.filterMembersContributions(payload);
     },
 

@@ -384,7 +384,7 @@
                       v-close-popup
                       @click="onEditIncomeActivity(props.row)"
                     >
-                      <q-item-section avatar  class="q-mr-lg">
+                      <q-item-section avatar class="q-mr-lg">
                         <span>
                           <q-icon name="edit" size="xs" class="edit" />
                         </span>
@@ -409,13 +409,13 @@
                       </q-item-section>
                     </q-item>
 
-                     <!-- deleted specify row -->
-                     <q-item
+                    <!-- deleted specify row -->
+                    <q-item
                       clickable
                       v-close-popup
                       @click="onDeleteIncomeActivity(props.row)"
                     >
-                      <q-item-section avatar  class="q-mr-lg">
+                      <q-item-section avatar class="q-mr-lg">
                         <span>
                           <q-icon name="delete" size="xs" color="red" />
                         </span>
@@ -431,6 +431,166 @@
           </q-td>
         </q-tr>
         <!-- end of body for show_income_activity -->
+
+        <!-- body for contributions -->
+        <q-tr :props="props" v-if="show_contribution">
+          <q-td key="counter" :props="props">
+            {{ props.row.counter }}
+          </q-td>
+          <q-td key="user_name" :props="props">
+            {{ props.row.user_name }}
+          </q-td>
+          <q-td key="total_amount_deposited" :props="props">
+            {{ Number(props.row.total_amount_deposited).toLocaleString() }}
+          </q-td>
+          <q-td key="balance" :props="props">
+            {{ Number(props.row.balance).toLocaleString() }}
+          </q-td>
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'PENDING'"
+            class="text-info"
+          >
+            {{ props.row.approve }}
+          </q-td>
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'APPROVED'"
+            class="registered"
+          >
+            {{ props.row.approve }}
+          </q-td>
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'DECLINED'"
+            class="not_registered"
+          >
+            {{ props.row.approve }}
+          </q-td>
+          <q-td key="action" :props="props">
+            <!-- menu to handle edit and view details of a single show_income_activity -->
+            <q-btn
+              unelevated
+              color="primary"
+              label="Details"
+              no-caps
+              class="view_items"
+              icon-right="visibility"
+              rounded
+              @click="onViewAllMemberContributions(props.row)"
+              :to="{
+                name: 'member_contributions',
+                params: {
+                  item_id: props.row.payment_item_id,
+                  id: props.row.user_id,
+                },
+              }"
+            >
+            </q-btn>
+          </q-td>
+        </q-tr>
+        <!-- end of body for contributions -->
+
+        <!-- body for member contributions -->
+        <q-tr :props="props" v-if="show_member_contribution">
+          <q-td key="counter" :props="props">
+            {{ props.row.counter }}
+          </q-td>
+          <q-td key="user_name" :props="props">
+            {{ props.row.user_name }}
+          </q-td>
+          <q-td key="amount_deposited" :props="props">
+            {{ Number(props.row.amount_deposited).toLocaleString() }}
+          </q-td>
+          <q-td key="balance" :props="props">
+            {{ Number(props.row.balance).toLocaleString() }}
+          </q-td>
+          <q-td key="status" :props="props">
+            {{ props.row.status }}
+          </q-td>
+          <q-td key="date" :props="props">
+            {{ getDate(props.row.date) }}
+          </q-td>
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'PENDING'"
+            class="text-info"
+          >
+            {{ props.row.approve }}
+          </q-td>
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'APPROVED'"
+            class="registered"
+          >
+            {{ props.row.approve }}
+          </q-td>
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'DECLINED'"
+            class="not_registered"
+          >
+            {{ props.row.approve }}
+          </q-td>
+          <q-td key="code" :props="props">
+            {{ props.row.code }}
+          </q-td>
+          <q-td key="action" :props="props">
+            <!-- menu to handle edit and view details of a single member contribution -->
+            <q-btn flat round>
+              <q-icon
+                name="menu"
+                size="xs"
+                color="primary"
+                class="menu_icon"
+                clickable
+              >
+                <q-menu>
+                  <q-list bordered separator style="width: 200px">
+                    <!-- edit and view member contribution -->
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onViewContribution(props.row)"
+                      v-show="show_member_contribution"
+                    >
+                      <q-item-section avatar class="q-mr-lg">
+                        <span>
+                          <q-icon name="info" size="xs" class="edit" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="edit">View</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onDeleteContribution(props.row)"
+                      v-show="show_member_contribution"
+                    >
+                      <q-item-section avatar class="q-mr-lg">
+                        <span>
+                          <q-icon name="delete" size="xs" color="red" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="text-red">Delete</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                  </q-list>
+                </q-menu>
+              </q-icon>
+            </q-btn>
+          </q-td>
+        </q-tr>
+        <!-- end of body for member contributions -->
       </template>
       <template v-slot:top-right>
         <q-input
@@ -823,15 +983,16 @@ export default {
       this.delete_msg = "Are you sure you want to delete this Member ?";
     },
 
-    onDeleteIncomeActivity(data){
+    onDeleteIncomeActivity(data) {
       this.deleted_row = data;
       this.dialog = true;
       this.type = "INCOME_ACTIVITIES";
-      this.delete_msg = "Are you sure you want to delete this Income Activity ?";
+      this.delete_msg =
+        "Are you sure you want to delete this Income Activity ?";
     },
 
-    deleteRow(){
-      this.$emit("delete-row",this.deleted_row);
+    deleteRow() {
+      this.$emit("delete-row", this.deleted_row);
     },
 
     checkTreasurerRole() {
@@ -1047,6 +1208,32 @@ export default {
 
       this.$emit("view-income-activity", payload);
     },
+
+    onViewAllMemberContributions(data) {
+      this.$router.push({
+        name: "member_contributions",
+        params: { item_id: data.payment_item_id, id: data.user_id },
+      });
+    },
+
+    onViewContribution(data) {
+      let payload = {
+        data: data,
+        tab: "View Contribution",
+      };
+
+      this.$store.dispatch("setSelectedContribution", data);
+
+      this.$emit("view-contribution", payload);
+    },
+
+    onAllContribution(data) {
+      this.$router.push({
+        name: "member_contributions",
+        params: { id: data.id },
+      });
+    },
+    onDeleteContribution(data) {},
   },
   components: {
     ConfirmDialogVue,
@@ -1054,6 +1241,14 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.view_items {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  align-items: center;
+  text-transform: capitalize;
+}
 .button {
   text-align: end;
 }

@@ -35,13 +35,13 @@ export default {
         path: `/dashboard/contributions`,
         query: {
           organisation_id: data.organisation_id,
-          payment_item_id: data.payment_item_id != undefined ? data.payment_item_id.label : "",
+          payment_item_id:
+            data.payment_item_id != undefined ? data.payment_item_id.label : "",
           status: data.status,
           year: data.year,
           month: data.month,
           date: data.date,
           range: data.date_range,
-          is_treasurer: data.is_treasurer,
         },
       });
       this.loading = true;
@@ -67,24 +67,18 @@ export default {
         },
       };
 
-      this.$store.dispatch("getRequest", payload).then((res) => {
+      this.$store.dispatch("getRequest", payload).then(() => {
         this.loading = false;
-        if (res.data.length > 0) {
-          this.$store.dispatch("setSearchSavingsParams", {
-            organisation_id: data.organisation_id,
-            year: data.year,
-            payment_category_id: data.payment_category_id,
-            payment_item_id: {
-              name: res.data[0].payment_item_name,
-              amount: res.data[0].payment_item_amount,
-              id: data.payment_item_id.value,
-            },
-            month: data.month,
-            date: data.date,
-            range: data.date_range,
-            status: data.status,
-          });
-        }
+        this.$store.dispatch("setSearchSavingsParams", {
+          organisation_id: data.organisation_id,
+          year: data.year,
+          payment_category_id: data.payment_category_id,
+          payment_item_id: data.payment_item_id,
+          month: data.month,
+          date: data.date,
+          range: data.date_range,
+          status: data.status,
+        });
       });
 
       return this.loading;

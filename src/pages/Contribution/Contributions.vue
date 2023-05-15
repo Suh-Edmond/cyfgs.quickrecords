@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/no-side-effects-in-computed-properties -->
 <template>
   <div class="q-pa-sm">
     <!-- spinner when fetching data -->
@@ -22,8 +21,8 @@
       >
         <div>
           <q-btn
-            :label="label_fetch"
-            :color="color"
+            :label="'Filter'"
+            :color="'primary'"
             :disabled="false"
             no-caps
             icon-right="filter_list"
@@ -34,9 +33,9 @@
         <q-space />
         <div class="button q-pb-xs">
           <q-btn
-            :label="label_download"
+            :label="'Print'"
             :loading="loading"
-            :color="color_print"
+            :color="'positive'"
             :disabled="getTableData == 0"
             no-caps
             icon-right="print"
@@ -79,8 +78,8 @@
       >
         <div>
           <q-btn
-            :label="label_fetch"
-            :color="color"
+            :label="'Filter'"
+            :color="'primary'"
             :disabled="false"
             no-caps
             icon-right="filter_list"
@@ -91,9 +90,9 @@
         <q-space />
         <div class="button q-pb-xs">
           <q-btn
-            :label="label_download"
+            :label="'Print'"
             :loading="loading"
-            :color="color_print"
+            :color="'positive'"
             :disabled="getFilteredContributions.length == 0"
             no-caps
             icon-right="print"
@@ -145,13 +144,8 @@ export default {
 
   data() {
     return {
-      label_print: "Print",
-      color_print: "positive",
       payment_item_id: null,
-      label_fetch: "Filter",
-      label_download: "Print",
       loading: false,
-      color: "primary",
       message: "Are you sure you want to delete this member's contribution ?",
       label: "Delete",
       columns: [
@@ -184,10 +178,10 @@ export default {
           field: "balance",
         },
         {
-          name: "state", ///this has to be changed to approve word not state so it is consistent
+          name: "approve", ///this has to be changed to approve word not state so it is consistent
           align: "left",
           label: "Transaction Status",
-          field: "state",
+          field: "approve",
         },
         {
           name: "action",
@@ -208,7 +202,7 @@ export default {
 
     getTableData() {
       let data = [];
-      if (this.getMembersContributionsByPaymentItem.length != 0) {
+      if (this.getMembersContributionsByPaymentItem.length > 0) {
         data = this.getMembersContributionsByPaymentItem;
       } else {
         data = this.getFilteredContributions;
@@ -381,10 +375,11 @@ export default {
     },
 
     filterContributions() {
+      let session = this.year == null ? this.$store.getters.getCurrentYear.id : this.year.value
       this.filteredContributions = [];
       let payload = {
         status: "none",
-        url: `/api/protected/organisation/contributions/search?payment_item_id=${this.payment_item_id.value}&month=${this.month}&year=${this.year}&status=${this.status}`,
+        url: `/api/protected/organisation/contributions/search?payment_item_id=${this.payment_item_id.value}&month=${this.month}&year=${session}&status=${this.status}`,
         has_path_val: true,
         show_feedback: false,
         show_spinner: true,

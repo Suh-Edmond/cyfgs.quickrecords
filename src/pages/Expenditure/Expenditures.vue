@@ -85,7 +85,7 @@
               no-caps
               :loading="loading_filter"
               icon-right="filter_list"
-              @click="filterItems"
+              @click="filterExpenditureItems"
             >
             </q-btn>
           </div>
@@ -256,7 +256,7 @@ export default {
             date: ele.date,
             comment: ele.comment,
             approve: ele.approve,
-            expenditure_category_id: ele.expenditure_category_id,
+            expenditure_category_id: ele.expenditure_category,
             created_at: ele.created_at,
             updated_at: ele.updated_at,
             updated_by: ele.updated_by,
@@ -382,7 +382,9 @@ export default {
         return this.years;
       });
     },
-    filterItems() {
+
+
+    filterExpenditureItems() {
       let selected_expenditure_cat =
         this.expenditure_category_id != null
           ? this.expenditure_category_id.value
@@ -408,7 +410,7 @@ export default {
         },
       };
       this.loading_filter = true;
-      this.$store.dispatch("getRequest", payload).then(() => {
+      this.$store.dispatch("getRequest", payload).then((res) => {
         this.loading_filter = false;
       });
     },

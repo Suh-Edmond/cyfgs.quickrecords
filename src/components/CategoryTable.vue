@@ -706,9 +706,9 @@
     <!-- confirmation dialog for approve and decline row data -->
     <div v-if="show_approve_dialog">
       <q-dialog v-model="show_approve_dialog">
-        <q-card class="approve_card">
+        <q-card class="approve_card q-px-md">
           <q-card-section>
-            <div class="row">
+            <div class="row q-pt-sm">
               <div class="col-md-12">
                 <label for="msg">
                   <span class="text-weight-bold"
@@ -727,6 +727,7 @@
               flat
               v-close-popup
               no-caps
+              class="q-my-md"
             />
             <q-btn
               :class="chosen_state == 'Approve' ? 'approve' : 'decline'"
@@ -736,6 +737,7 @@
               @click="onChangeRecordState()"
               v-close-popup
               no-caps
+              class="q-my-md"
             />
           </q-card-actions>
         </q-card>
@@ -1055,10 +1057,10 @@ export default {
       return this.approve_msg;
     },
 
-    callFetchDataAfterApproveAction(data, expenditure_category_id) {
+    callFetchDataAfterApproveAction(data) {
       switch (data.type) {
         case "EXPENDITURE_ITEMS":
-          this.getExpendituresByCategory(expenditure_category_id);
+          this.getExpendituresByCategory(data.expenditure_category_id.id);
           break;
         case "EXPENDITURE_DETAILS":
           this.getExpenditureDetailsByItemId(data.expenditure_item_id);
@@ -1086,10 +1088,8 @@ export default {
       };
       this.$store.dispatch("putRequest", payload).then((res) => {
         if (res.status == 200) {
-          let expenditure_category = this.$store.getters.getExpenditureCategory;
           this.callFetchDataAfterApproveAction(
             this.approve_data,
-            expenditure_category.id
           );
         }
       });

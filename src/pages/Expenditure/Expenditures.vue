@@ -32,9 +32,9 @@
         <q-space />
         <div class="button q-pb-xs">
           <q-btn
-            :label="label_download"
+            :label="'Print'"
             :loading="loading"
-            :color="color_print"
+            :color="'positive'"
             :disabled="false"
             no-caps
             icon-right="print"
@@ -86,12 +86,7 @@ export default {
   data() {
     return {
       search: null,
-      label_fetch: "Filter",
-      color: "primary",
-      no_caps: true,
       loading: false,
-      label_download: "Print",
-      color_print: "positive",
       columns: [
         {
           name: "counter",
@@ -131,10 +126,10 @@ export default {
           sortable: true,
         },
         {
-          name: "state",
+          name: "approve",
           align: "left",
           label: "Transaction Status",
-          field: "state",
+          field: "approve",
           sortable: true,
         },
         {

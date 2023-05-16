@@ -1206,7 +1206,7 @@ export default {
 }
 .amount_given {
   font-size: 13px;
-  padding-left: 5rem;
+  padding-left: 7.6rem;
 }
 .total_spent {
   font-size: 13px;
@@ -1215,7 +1215,7 @@ export default {
 
 .amount_spent {
   font-size: 13px;
-  padding-left: 10.5rem;
+  padding-left: 12.5rem;
 }
 
 .balance {
@@ -1224,7 +1224,7 @@ export default {
 }
 
 .balance_treasurer_view {
-  padding-left: 11rem;
+  padding-left: 13.5rem;
   font-size: 13px;
 }
 .message {

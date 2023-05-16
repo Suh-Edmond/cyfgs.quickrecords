@@ -212,7 +212,6 @@
               color="primary"
               no-caps
               class="view_items"
-              rounded
               @click="showExpenditureItems(props.row)"
               :to="{ name: 'expenditure_items', params: { id: props.row.id } }"
             >
@@ -291,6 +290,35 @@
             {{ getFormatedDate(props.row.date) }}
           </q-td>
           <q-td key="action" :props="props">
+             <!-- approved btn for expenditure items -->
+             <q-btn
+              class="decline_btn"
+              dense
+              size="md"
+              padding="5px 7px"
+              label="Decline"
+              no-caps
+              @click="onDeclineRecord(props.row, 'Decline')"
+              v-if="
+                checkTreasurerRole() &&
+                props.row.approve == 'PENDING'
+              "
+            />
+            <!-- decline btn for expenditure items -->
+            <q-btn
+              class="approve_btn"
+              dense
+              size="md"
+              padding="5px 7px"
+              label="Approve"
+              no-caps
+              @click="onApprovedRecord(props.row, 'Approve')"
+              v-if="
+                checkTreasurerRole() &&
+                props.row.approve == 'PENDING'
+              "
+            />
+
             <!-- buttons for edit, view and delete table data row -->
             <q-btn flat round v-if="!checkTreasurerRole()">
               <q-icon
@@ -879,6 +907,19 @@ export default {
         tab: "Expenditure Activity Detail Information",
       };
       this.$emit("view-expenditure-item-detail", payload);
+    },
+    onApprovedRecord(row, state) {
+      this.show_approve_dialog = true;
+      this.approve_data = row;
+      this.chosen_state = state;
+      this.setApproveWarningMsgByType(row);
+    },
+
+    onDeclineRecord(row, state) {
+      this.show_approve_dialog = true;
+      this.approve_data = row;
+      this.chosen_state = state;
+      this.setApproveWarningMsgByType(row);
     },
   },
   components: {

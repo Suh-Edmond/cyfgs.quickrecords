@@ -214,7 +214,7 @@ const  months = [
 export default {
   mixins: [UserSavingMixinVue, HelperMixinVue, CurrentYearMixinVue],
   mounted() {
-    let organisation_id = this.$store.getters.getOrganisation.id;
+    let organisation_id = this.$store.getters.getOrganisation != null ? this.$store.getters.getOrganisation.id : "";
     this.getOrganisationMemberSavings(organisation_id);
     this.getMembersSavings();
   },

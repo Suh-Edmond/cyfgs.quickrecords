@@ -30,8 +30,12 @@
             v-model="payment_item_id"
             outlined
             dense
-            :options="getPaymentActivities"
-            label="Select payment activity"
+            :options="filtered_payment_items"
+            label="Search payment item..."
+              input-debounce="0"
+              use-input
+              clearable
+              @filter="filterPaymentItems"
           >
             <template v-slot:no-option>
               <q-item>
@@ -60,8 +64,12 @@
             v-model="session"
             outlined
             dense
-            :options="getSessionsFromState"
-            label="Select year"
+            :options="years"
+            label="Search year..."
+            use-input
+              input-debounce="0"
+              clearable
+              @filter="filterYears"
           >
             <template v-slot:no-option>
               <q-item>
@@ -163,6 +171,7 @@ export default {
   mounted() {
     this.fetchPaymentActivities();
     this.getExpenditureItemsFromState();
+    this.getPaymentItemsFromStore();
   },
   data() {
     return {
@@ -187,21 +196,21 @@ export default {
         },
         {
           name: "amount",
-          align: "center",
+          align: "left",
           label: "Amount (XAF)",
           field: "amount",
           sortable: true,
         },
         {
           name: "venue",
-          align: "center",
+          align: "left",
           label: "Venue",
           field: "venue",
           sortable: true,
         },
         {
           name: "date",
-          align: "center",
+          align: "left",
           label: "Date",
           field: "date",
           sortable: true,
@@ -223,6 +232,8 @@ export default {
       filtered_items: [],
       payment_item_id: null,
       session: "",
+      filtered_payment_items:[],
+      years:[],
     };
   },
   computed: {
@@ -257,18 +268,6 @@ export default {
 
     getLoadingState() {
       return this.$store.getters.getFetchingState;
-    },
-
-    getPaymentActivities() {
-      let data = [];
-      this.$store.getters.getPaymentActivities.forEach((ele) => {
-        data.push({
-          label: ele.name,
-          value: ele.id,
-          amount: ele.amount,
-        });
-      });
-      return data;
     },
   },
   methods: {
@@ -425,6 +424,18 @@ export default {
       this.$store.dispatch("getRequest", payload).then(() => {});
     },
 
+    getPaymentItemsFromStore() {
+      this.filtered_payment_items = [];
+      this.$store.getters.getPaymentActivities.forEach((ele) => {
+        this.filtered_payment_items.push({
+          label: ele.name,
+          value: ele.id,
+          amount: ele.amount,
+        });
+      });
+      return this.filtered_payment_items;
+    },
+
     deleteRow(data) {
       let payload = {
         url: `/api/protected/expenditure-categories/${data.expenditure_category.id}/expenditure-items/${data.id}`,
@@ -444,6 +455,33 @@ export default {
       };
       this.$store.dispatch("deleteRequest", payload).then(() => {
         this.getExpenditureItemsByCategory(data.expenditure_category.id);
+      });
+    },
+
+    filterPaymentItems(val, update, abort){
+      if (val < 2) {
+        abort();
+        return;
+      }
+
+      update(() => {
+        this.filtered_payment_items = this.getPaymentItemsFromStore().filter(
+          (item) => item.label.toLowerCase().includes(val.toLowerCase())
+        );
+        return this.filtered_payment_items;
+      });
+    },
+
+    filterYears(val, update, abort) {
+      if (val.length < 1) {
+        abort();
+        return;
+      }
+      if(this.year == ""){
+        this.years = this.getSessionsFromState;
+      }
+      update(() => {
+        this.years = this.getSessionsFromState.filter((v) => v.label.toLowerCase().includes(val.toLowerCase()));
       });
     },
   },

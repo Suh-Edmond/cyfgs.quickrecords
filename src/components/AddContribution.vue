@@ -18,7 +18,7 @@
               v-model="contribution.payment_category_id"
               :options="payment_categories"
               @input="fetchPaymentItems"
-              label="Search..."
+              label="Search payment category..."
               input-debounce="0"
               use-input
               clearable
@@ -43,7 +43,7 @@
               v-model="contribution.payment_item_id"
               :options="filtered_payment_items"
               @input="fetchPaymentItem"
-              label="Search..."
+              label="Search payment item..."
               input-debounce="0"
               use-input
               clearable
@@ -91,7 +91,7 @@
                 v-model="contribution.user_id"
                 :options="members"
                 @input="selectMember"
-                label="Search..."
+                label="Search member..."
                 input-debounce="0"
                 use-input
                 clearable

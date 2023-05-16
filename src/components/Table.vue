@@ -69,7 +69,12 @@
           >
             {{ props.row.approve }}
           </q-td>
-          <q-td key="approve" :props="props" v-if="props.row.approve == ''">
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'DECLINED'"
+            class="not_registered"
+          >
             {{ props.row.approve }}
           </q-td>
           <q-td
@@ -79,6 +84,12 @@
             class="registered"
           >
             {{ props.row.approve }}
+          </q-td>
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == ''"
+          >
           </q-td>
 
           <q-td key="action" :props="props">
@@ -479,7 +490,6 @@
               no-caps
               class="view_items"
               icon-right="visibility"
-              rounded
               @click="onViewAllMemberContributions(props.row)"
               :to="{
                 name: 'member_contributions',
@@ -736,7 +746,6 @@
           <div class="row q-gutter-xl justify-center">
             <div>
               <q-btn
-                round
                 color="dark"
                 icon="mail"
                 size="md"
@@ -775,13 +784,23 @@
             <div class="col-md-12">
               <label for="msg">
                 <span class="text-weight-bold"
-                  >Do you want to {{ chosen_state }} {{ approve_msg }}</span
-                >
-                <br />
-                <span class="text-weight-bold" v-if="show_members"
-                  >Name: {{ register_member_name }}</span
+                  >Do you want to {{ chosen_state }} {{ approve_msg }} ?</span
                 >
               </label>
+            </div>
+
+            <div v-if="show_members">
+              <div class="text-weight-bold text-left">
+                Name:
+                <span class="q-pl-md">{{ approve_data.name }}</span>
+              </div>
+
+              <div class="text-weight-bold text-left">
+                Amount:
+                <span class="amount"
+                  >{{ Number(registration_amount).toLocaleString() }} XAF</span
+                >
+              </div>
             </div>
           </div>
         </q-card-section>
@@ -793,6 +812,7 @@
             label="Cancel"
             flat
             v-close-popup
+            no-caps
           />
           <q-btn
             :class="chosen_state == 'Approve' ? 'approve' : 'decline'"
@@ -801,6 +821,7 @@
             flat
             @click="onChangeRecordState()"
             v-close-popup
+            no-caps
           />
         </q-card-actions>
       </q-card>
@@ -923,6 +944,7 @@ export default {
       type: null,
       delete_msg: "",
       show_confirm_dialog_detail: false,
+      registration_amount: null,
     };
   },
 
@@ -965,6 +987,7 @@ export default {
         data: data,
         tab: "Register Member",
       };
+      this.$store.dispatch("setMemberToRegister", data);
       this.$emit("register-member", payload);
     },
 
@@ -1022,6 +1045,7 @@ export default {
     },
 
     onApprovedRecord(row, state) {
+      this.registration_amount = this.$store.getters.getRegAmount.amount;
       this.show_approve_dialog = true;
       this.approve_data = row;
       this.chosen_state = state;
@@ -1061,6 +1085,7 @@ export default {
     },
 
     setApproveUrlBaseOnType(data) {
+      console.log(data);
       let url = "";
       let type = this.chosen_state == "Approve" ? "APPROVED" : "DECLINED";
       switch (data.type) {
@@ -1074,7 +1099,7 @@ export default {
           url = `/api/protected/contributions/${data.id}/approve?type=${type}`;
           break;
         case "MEMBERS":
-          url = `/api/protected/members-registration/approve?user_id=${data.id}&status=${type}&year=${data.year}`;
+          url = `/api/protected/members-registration/approve?user_id=${data.id}&status=${type}`;
           break;
       }
 
@@ -1245,14 +1270,14 @@ export default {
         params: { id: data.id },
       });
     },
-    onEditContribution(data){
+    onEditContribution(data) {
       let payload = {
         data: data,
         tab: "Edit Member Contribution",
       };
 
       this.$store.dispatch("setSelectedContribution", data);
-      
+
       this.$emit("edit-contribution", payload);
     },
     onDeleteContribution(data) {},
@@ -1327,8 +1352,8 @@ export default {
 }
 
 .approve_card {
-  width: 30rem;
-  padding: 0.7rem;
+  width: 25rem;
+  // padding: 0.3rem;
 }
 
 .decline_btn {
@@ -1408,5 +1433,11 @@ export default {
 
 .registered {
   color: $secondary;
+}
+
+.warning_caption {
+  color: $grey2;
+  font-weight: 500;
+  font-size: 15px;
 }
 </style>

@@ -248,7 +248,6 @@ export default {
 
   methods: {
     registerMember(data) {
-      this.$store.dispatch("setMemberToRegister", data.data);
       this.$emit("register-member", data);
     },
 

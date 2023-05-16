@@ -25,7 +25,6 @@
               color="primary"
               no-caps
               class="view_items"
-              rounded
               @click="showPaymentItems(props.row)"
               :to="{ name: 'payment_items', params: { id: props.row.id } }"
             >
@@ -115,7 +114,7 @@
               no-caps
               class="view_items"
               icon-right="visibility"
-              rounded
+
               @click="showReferences(props.row)"
               v-if="props.row.payment_item_type == 'A_MEMBER'"
             >
@@ -128,7 +127,6 @@
               color="primary"
               no-caps
               class="view_items"
-              rounded
               @click="showReferences(props.row)"
               v-if="props.row.payment_item_type == 'GROUPED_MEMBERS'"
             >

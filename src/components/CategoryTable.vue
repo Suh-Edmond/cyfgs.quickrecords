@@ -23,15 +23,14 @@
             <q-btn
             unelevated
               color="primary"
-              label="Details"
               no-caps
               class="view_items"
-              icon-right="visibility"
               rounded
               @click="showPaymentItems(props.row)"
               :to="{ name: 'payment_items', params: { id: props.row.id } }"
             >
               {{ props.row.item }}
+              <span class="q-pl-md"><q-icon  name="visibility" size="xs"></q-icon></span>
             </q-btn>
           </q-td>
           <q-td key="action" :props="props">
@@ -113,7 +112,6 @@
             <q-btn
             unelevated
               color="primary"
-              label="Details"
               no-caps
               class="view_items"
               icon-right="visibility"
@@ -128,15 +126,13 @@
             <q-btn
             unelevated
               color="primary"
-              label="Details"
               no-caps
               class="view_items"
-              icon-right="visibility"
               rounded
               @click="showReferences(props.row)"
               v-if="props.row.payment_item_type == 'GROUPED_MEMBERS'"
             >
-              View Members
+              View Members <span class="q-pl-md"><q-icon  name="visibility" size="xs"></q-icon></span>
             </q-btn>
           </q-td>
           <q-td key="action" :props="props">
@@ -216,15 +212,14 @@
             <q-btn
             unelevated
               color="primary"
-              label="Details"
               no-caps
               class="view_items"
-              icon-right="visibility"
               rounded
               @click="showExpenditureItems(props.row)"
               :to="{ name: 'expenditure_items', params: { id: props.row.id } }"
             >
               {{ props.row.expenditure_items }}
+              <span class="q-pl-md"><q-icon  name="visibility" size="xs"></q-icon></span>
             </q-btn>
           </q-td>
           <q-td key="action" :props="props">

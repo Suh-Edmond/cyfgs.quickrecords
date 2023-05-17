@@ -30,7 +30,7 @@
             outlined
             dense
             :options="payment_items"
-            label="Search..."
+            label="Search payment item..."
             input-debounce="0"
             use-input
             clearable
@@ -49,7 +49,7 @@
             outlined
             dense
             :options="monthsOptions"
-            label="Search..."
+            label="Search month..."
             input-debounce="0"
             @filter="filterMonths"
             use-input

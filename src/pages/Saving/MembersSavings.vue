@@ -112,7 +112,7 @@
             </TableVue>
           </div>
         </div>
- <!-- table for filter savings -->
+        <!-- table for filter savings -->
 
         <div class="row q-pt-sm" v-if="start_filter">
           <div class="col-md-12 col-xs-12 col-sm-12">
@@ -197,26 +197,32 @@ import TableVue from "src/components/Table.vue";
 import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
 import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
-const  months = [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December",
-      ];
+const months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 export default {
   mixins: [UserSavingMixinVue, HelperMixinVue, CurrentYearMixinVue],
   mounted() {
-    let organisation_id = this.$store.getters.getOrganisation.id;
+    let organisation_id =
+      this.$store.getters.getOrganisation != null
+        ? this.$store.getters.getOrganisation.id
+        : "";
     this.getOrganisationMemberSavings(organisation_id);
-    this.getMembersSavings();
+    if(this.checkTreasurerRole()){
+      this.getMembersSavings();
+    }
+
   },
   data() {
     return {
@@ -224,9 +230,8 @@ export default {
         "Ooops!! No Savings has been recorded. Click the add button to add saving.",
       year: "",
       month: "",
-      monthsOptions: [
-      ],
-      years:[],
+      monthsOptions: [],
+      years: [],
       loading: false,
       label_download: "Print",
       color_print: "positive",
@@ -265,13 +270,13 @@ export default {
           label: "Amount Saved (XAF)",
           field: "amount_deposited",
         },
-        // {
-        //   name: "state",
-        //   align: "left",
-        //   label: "Status",
-        //   field: "state",
-        //   sortable: true,
-        // },
+        {
+          name: "approve",
+          align: "left",
+          label: "Transaction Status",
+          field: "approve",
+          sortable: true,
+        },
         {
           name: "action",
           label: "Action",
@@ -284,8 +289,8 @@ export default {
       is_fetching: false,
       search_data: null,
       savings: [],
-      start_filter:false,
-      filtered_savings:[]
+      start_filter: false,
+      filtered_savings: [],
     };
   },
   computed: {
@@ -320,6 +325,7 @@ export default {
           user_id: ele.user_id,
           created_at: ele.created_at,
           updated_by: ele.updated_by,
+          sesion_id:ele.session_id,
         });
       });
       return data;
@@ -367,7 +373,6 @@ export default {
       return this.savings;
     },
 
-
     checkTreasurerRole() {
       const treasurer_role = LocalStorage.getItem("data").roles.find(
         (role) => role.name == "TREASURER"
@@ -380,11 +385,13 @@ export default {
         abort();
         return;
       }
-      if(this.year == ""){
+      if (this.year == "") {
         this.years = this.getSessionsFromState;
       }
       update(() => {
-        this.years = this.getSessionsFromState.filter((v) => v.label.toLowerCase().includes(val.toLowerCase()));
+        this.years = this.getSessionsFromState.filter((v) =>
+          v.label.toLowerCase().includes(val.toLowerCase())
+        );
       });
     },
 
@@ -393,12 +400,14 @@ export default {
         abort();
         return;
       }
-      if(this.month == ""){
+      if (this.month == "") {
         this.monthsOptions = months;
       }
       update(() => {
-        const needle = val.toLowerCase()
-        this.monthsOptions = months.filter(v => v.toLowerCase().indexOf(needle) > -1)
+        const needle = val.toLowerCase();
+        this.monthsOptions = months.filter(
+          (v) => v.toLowerCase().indexOf(needle) > -1
+        );
       });
     },
 
@@ -432,7 +441,7 @@ export default {
       let organisation_id = this.$store.getters.getOrganisation.id;
       this.$router.push({
         path: `/dashboard/members-savings`,
-        query: { month: this.month, year:this.year.label },
+        query: { month: this.month, year: this.year.label },
       });
       let payload = {
         url: `/api/protected/user-savings?month=${this.month}&year=${this.year.value}&organisation_id=${organisation_id}`,

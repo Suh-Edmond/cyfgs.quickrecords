@@ -26,6 +26,7 @@
         <div class="text-h6 title" v-show="show_members">
           Organisation Members
         </div>
+        <div class="text-h6 title" v-show="show_savings">Members Savings</div>
       </template>
       <template v-slot:body="props">
         <!-- body for members -->
@@ -69,7 +70,12 @@
           >
             {{ props.row.approve }}
           </q-td>
-          <q-td key="approve" :props="props" v-if="props.row.approve == ''">
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'DECLINED'"
+            class="not_registered"
+          >
             {{ props.row.approve }}
           </q-td>
           <q-td
@@ -79,6 +85,8 @@
             class="registered"
           >
             {{ props.row.approve }}
+          </q-td>
+          <q-td key="approve" :props="props" v-if="props.row.approve == ''">
           </q-td>
 
           <q-td key="action" :props="props">
@@ -218,19 +226,68 @@
           <q-td key="date" :props="props">
             {{ getDate(props.row.date) }}
           </q-td>
-          <q-td key="state" :props="props">
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'PENDING'"
+            class="text-info"
+          >
+            {{ props.row.approve }}
+          </q-td>
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'APPROVED'"
+            class="registered"
+          >
+            {{ props.row.approve }}
+          </q-td>
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'DECLINED'"
+            class="not_registered"
+          >
             {{ props.row.approve }}
           </q-td>
           <q-td key="action" :props="props">
+            <!-- buttons for approve and decline row data -->
+            <q-btn
+              class="decline_btn_saving"
+              size="md"
+              label="Decline"
+              no-caps
+              unelevated
+              @click="onDeclineRecord(props.row, 'Decline')"
+              v-if="
+                checkPresidentTreasurerRole() && props.row.approve == 'PENDING'
+              "
+            />
+
+            <q-btn
+              class="approve_btn"
+              size="md"
+              label="Approve"
+              no-caps
+              unelevated
+              @click="onApprovedRecord(props.row, 'Approve')"
+              v-if="
+                checkPresidentTreasurerRole() && props.row.approve == 'PENDING'
+              "
+            />
             <!-- button to handle view all member saving -->
             <q-btn
-              flat
+              unelevated
+              no-caps
+              dense
+              color="primary"
               class="view_savings q-py-xs"
+              label="All Savings"
               @click="showMemberSavings(props.row)"
               :to="{ name: 'user_savings', params: { id: props.row.user_id } }"
               v-if="show_savings && !checkTreasurerRole()"
             >
-              View All Savings
+              <q-icon name="visibility" size="xs" class="q-pl-sm"></q-icon>
             </q-btn>
           </q-td>
         </q-tr>
@@ -260,6 +317,7 @@
           >
             {{ props.row.approve }}
           </q-td>
+
           <q-td
             key="approve"
             :props="props"
@@ -367,8 +425,47 @@
             {{ props.row.approve }}
           </q-td>
           <q-td key="action" :props="props">
+            <!-- button to handle view all activity -->
+            <q-btn
+              unelevated
+              no-caps
+              dense
+              color="primary"
+              class="view_income q-px-sm q-mr-md"
+              label="View"
+              @click="onViewIncomeActivity(props.row)"
+              v-if="show_income_activity && checkTreasurerRole()"
+            >
+              <q-icon name="visibility" size="xs" class="q-pl-sm"></q-icon>
+            </q-btn>
+
+            <!-- buttons for approve and decline row data -->
+            <q-btn
+              class="decline_btn_income_activity"
+              size="md"
+              label="Decline"
+              no-caps
+              unelevated
+              @click="onDeclineRecord(props.row, 'Decline')"
+              v-if="
+                checkPresidentTreasurerRole() && props.row.approve == 'PENDING'
+              "
+            />
+
+            <q-btn
+              class="approve_btn_income_activity q-ml-md"
+              size="md"
+              label="Approve"
+              no-caps
+              unelevated
+              @click="onApprovedRecord(props.row, 'Approve')"
+              v-if="
+                checkPresidentTreasurerRole() && props.row.approve == 'PENDING'
+              "
+            />
+
             <!-- menu to handle edit and view details of a single show_income_activity -->
-            <q-btn flat round>
+            <q-btn flat round v-if="!checkTreasurerRole()">
               <q-icon
                 name="menu"
                 size="xs"
@@ -384,7 +481,7 @@
                       v-close-popup
                       @click="onEditIncomeActivity(props.row)"
                     >
-                      <q-item-section avatar  class="q-mr-lg">
+                      <q-item-section avatar class="q-mr-lg">
                         <span>
                           <q-icon name="edit" size="xs" class="edit" />
                         </span>
@@ -409,13 +506,13 @@
                       </q-item-section>
                     </q-item>
 
-                     <!-- deleted specify row -->
-                     <q-item
+                    <!-- deleted specify row -->
+                    <q-item
                       clickable
                       v-close-popup
                       @click="onDeleteIncomeActivity(props.row)"
                     >
-                      <q-item-section avatar  class="q-mr-lg">
+                      <q-item-section avatar class="q-mr-lg">
                         <span>
                           <q-icon name="delete" size="xs" color="red" />
                         </span>
@@ -431,6 +528,213 @@
           </q-td>
         </q-tr>
         <!-- end of body for show_income_activity -->
+
+        <!-- body for contributions -->
+        <q-tr :props="props" v-if="show_contribution">
+          <q-td key="counter" :props="props">
+            {{ props.row.counter }}
+          </q-td>
+          <q-td key="user_name" :props="props">
+            {{ props.row.user_name }}
+          </q-td>
+          <q-td key="total_amount_deposited" :props="props">
+            {{ Number(props.row.total_amount_deposited).toLocaleString() }}
+          </q-td>
+          <q-td key="balance" :props="props">
+            {{ Number(props.row.balance).toLocaleString() }}
+          </q-td>
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'PENDING'"
+            class="text-info"
+          >
+            {{ props.row.approve }}
+          </q-td>
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'APPROVED'"
+            class="registered"
+          >
+            {{ props.row.approve }}
+          </q-td>
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'DECLINED'"
+            class="not_registered"
+          >
+            {{ props.row.approve }}
+          </q-td>
+          <q-td key="action" :props="props">
+            <!-- menu to handle edit and view details of a single contributions -->
+            <q-btn
+              unelevated
+              color="primary"
+              label="Details"
+              no-caps
+              class="view_items q-mr-md"
+              icon-right="visibility"
+              @click="onViewAllMemberContributions(props.row)"
+              :to="{
+                name: 'member_contributions',
+                params: {
+                  item_id: props.row.payment_item_id,
+                  id: props.row.user_id,
+                },
+              }"
+            >
+            </q-btn>
+
+            <!-- buttons for approve and decline row data -->
+            <q-btn
+              class="decline_btn_income_activity"
+              label="Decline"
+              no-caps
+              unelevated
+              @click="onDeclineRecord(props.row, 'Decline')"
+              v-if="
+                checkPresidentTreasurerRole() && props.row.approve == 'PENDING'
+              "
+            />
+
+            <q-btn
+              class="approve_btn_income_activity q-ml-md"
+              label="Approve"
+              no-caps
+              unelevated
+              @click="onApprovedRecord(props.row, 'Approve')"
+              v-if="
+                checkPresidentTreasurerRole() && props.row.approve == 'PENDING'
+              "
+            />
+          </q-td>
+        </q-tr>
+        <!-- end of body for contributions -->
+
+        <!-- body for member contributions -->
+        <q-tr :props="props" v-if="show_member_contribution">
+          <q-td key="counter" :props="props">
+            {{ props.row.counter }}
+          </q-td>
+          <q-td key="user_name" :props="props">
+            {{ props.row.user_name }}
+          </q-td>
+          <q-td key="amount_deposited" :props="props">
+            {{ Number(props.row.amount_deposited).toLocaleString() }}
+          </q-td>
+          <q-td key="balance" :props="props">
+            {{ Number(props.row.balance).toLocaleString() }}
+          </q-td>
+          <q-td key="status" :props="props">
+            {{ props.row.status }}
+          </q-td>
+          <q-td key="date" :props="props">
+            {{ getDate(props.row.date) }}
+          </q-td>
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'PENDING'"
+            class="text-info"
+          >
+            {{ props.row.approve }}
+          </q-td>
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'APPROVED'"
+            class="registered"
+          >
+            {{ props.row.approve }}
+          </q-td>
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'DECLINED'"
+            class="not_registered"
+          >
+            {{ props.row.approve }}
+          </q-td>
+          <q-td key="action" :props="props">
+            <q-btn
+              unelevated
+              no-caps
+              color="primary"
+              class="view_income q-mr-md"
+              label="View"
+              @click="onViewContribution(props.row)"
+              v-if="checkTreasurerRole()"
+            >
+              <q-icon name="visibility" size="xs" class="q-pl-md"></q-icon>
+            </q-btn>
+            <!-- menu to handle edit and view details of a single member contribution -->
+            <q-btn flat round v-if="!checkTreasurerRole()">
+              <q-icon
+                name="menu"
+                size="xs"
+                color="primary"
+                class="menu_icon"
+                clickable
+              >
+                <q-menu>
+                  <q-list bordered separator style="width: 200px">
+                    <!-- edit and view member contribution -->
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onViewContribution(props.row)"
+                      v-if="show_member_contribution"
+                    >
+                      <q-item-section avatar class="q-mr-lg">
+                        <span>
+                          <q-icon name="info" size="xs" class="edit" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="edit">View</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <!-- edit a contribution -->
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onEditContribution(props.row)"
+                      v-if="!show_member_contribution"
+                    >
+                      <q-item-section avatar class="q-mr-lg">
+                        <span>
+                          <q-icon name="edit" size="xs" class="edit" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="edit">Edit</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <!-- end of edit contribution -->
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onDeleteContribution(props.row)"
+                      v-if="show_member_contribution"
+                    >
+                      <q-item-section avatar class="q-mr-lg">
+                        <span>
+                          <q-icon name="delete" size="xs" color="red" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="text-red">Delete</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                  </q-list>
+                </q-menu>
+              </q-icon>
+            </q-btn>
+          </q-td>
+        </q-tr>
+        <!-- end of body for member contributions -->
       </template>
       <template v-slot:top-right>
         <q-input
@@ -461,13 +765,13 @@
         </q-tr>
         <!-- member contribution -->
         <div class="text-bold q-pb-md" v-if="show_member_contribution">
-          <div class="q-pt-sm">
+          <div class="q-mt-md">
             Amount Contributed:
             <span class="total_value">
               {{ Number(total_contribution).toLocaleString() }} XAF
             </span>
           </div>
-          <div>
+          <div class="q-my-md">
             <!-- member balance contribution -->
             <q-tr>
               Total Balance:
@@ -564,7 +868,6 @@
           <div class="row q-gutter-xl justify-center">
             <div>
               <q-btn
-                round
                 color="dark"
                 icon="mail"
                 size="md"
@@ -597,30 +900,58 @@
 
     <!-- confirmation dialog for approve and decline row data -->
     <q-dialog v-model="show_approve_dialog" v-if="show_approve_dialog">
-      <q-card class="approve_card">
+      <q-card class="approve_card q-pa-sm">
         <q-card-section>
           <div class="row">
             <div class="col-md-12">
               <label for="msg">
                 <span class="text-weight-bold"
-                  >Do you want to {{ chosen_state }} {{ approve_msg }}</span
-                >
-                <br />
-                <span class="text-weight-bold" v-if="show_members"
-                  >Name: {{ register_member_name }}</span
+                  >Do you want to {{ chosen_state }} {{ approve_msg }} ?</span
                 >
               </label>
+            </div>
+
+            <div v-if="show_members">
+              <div class="text-weight-bold text-left">
+                Name:
+                <span class="q-pl-md">{{ approve_data.name }}</span>
+              </div>
+
+              <div class="text-weight-bold text-left">
+                Amount:
+                <span class="amount"
+                  >{{ Number(registration_amount).toLocaleString() }} XAF</span
+                >
+              </div>
+            </div>
+
+            <div v-if="show_contribution" class="q-mt-md">
+              <div class="text-weight-bold text-left text-red">
+                Name:
+                <span class="q-pl-md">{{ approve_data.user_name }}</span>
+              </div>
+
+              <div class="text-weight-bold text-left text-red">
+                Amount:
+                <span class="amount"
+                  >{{
+                    Number(approve_data.total_amount_deposited).toLocaleString()
+                  }}
+                  XAF</span
+                >
+              </div>
             </div>
           </div>
         </q-card-section>
 
-        <q-card-actions align="right">
+        <q-card-actions align="right" class="q-my-md q-mx-sm">
           <q-btn
             :class="chosen_state == 'Approve' ? 'approve' : 'decline'"
             size="md"
             label="Cancel"
             flat
             v-close-popup
+            no-caps
           />
           <q-btn
             :class="chosen_state == 'Approve' ? 'approve' : 'decline'"
@@ -629,6 +960,7 @@
             flat
             @click="onChangeRecordState()"
             v-close-popup
+            no-caps
           />
         </q-card-actions>
       </q-card>
@@ -751,6 +1083,7 @@ export default {
       type: null,
       delete_msg: "",
       show_confirm_dialog_detail: false,
+      registration_amount: null,
     };
   },
 
@@ -793,6 +1126,7 @@ export default {
         data: data,
         tab: "Register Member",
       };
+      this.$store.dispatch("setMemberToRegister", data);
       this.$emit("register-member", payload);
     },
 
@@ -823,15 +1157,16 @@ export default {
       this.delete_msg = "Are you sure you want to delete this Member ?";
     },
 
-    onDeleteIncomeActivity(data){
+    onDeleteIncomeActivity(data) {
       this.deleted_row = data;
       this.dialog = true;
       this.type = "INCOME_ACTIVITIES";
-      this.delete_msg = "Are you sure you want to delete this Income Activity ?";
+      this.delete_msg =
+        "Are you sure you want to delete this Income Activity ?";
     },
 
-    deleteRow(){
-      this.$emit("delete-row",this.deleted_row);
+    deleteRow() {
+      this.$emit("delete-row", this.deleted_row);
     },
 
     checkTreasurerRole() {
@@ -849,6 +1184,7 @@ export default {
     },
 
     onApprovedRecord(row, state) {
+      this.registration_amount = this.$store.getters.getRegAmount.amount;
       this.show_approve_dialog = true;
       this.approve_data = row;
       this.chosen_state = state;
@@ -863,10 +1199,14 @@ export default {
     },
 
     onChangeRecordState() {
+      console.log(this.approve_data.type);
       let payload = {
         url: this.setApproveUrlBaseOnType(this.approve_data),
         msg: this.setApproveFeedbackMsg(this.approve_data),
-        data: null,
+        data:
+          this.approve_data.type == "MEMBERS_CONTRIBUTIONS"
+            ? this.setApproveContributionPayload(this.approve_data)
+            : null,
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
@@ -881,7 +1221,7 @@ export default {
         },
       };
       this.$store.dispatch("putRequest", payload).then((res) => {
-        if (res.status == 200) {
+        if (res) {
           this.fetchDataBaseOnTypeAfterApprove(this.approve_data);
         }
       });
@@ -898,10 +1238,10 @@ export default {
           url = `/api/protected/user-savings/${data.id}?type=${type}`;
           break;
         case "MEMBERS_CONTRIBUTIONS":
-          url = `/api/protected/contributions/${data.id}/approve?type=${type}`;
+          url = `/api/protected/contributions/approve`;
           break;
         case "MEMBERS":
-          url = `/api/protected/members-registration/approve?user_id=${data.id}&status=${type}&year=${data.year}`;
+          url = `/api/protected/members-registration/approve?user_id=${data.id}&status=${type}`;
           break;
       }
 
@@ -929,76 +1269,71 @@ export default {
           break;
         case "MEMBERS_CONTRIBUTIONS":
           date = moment(data.date).format("MMMM Do YYYY");
-          this.approve_msg = ` ${data.amount_deposited} F CFA Payment for ${data.name} on the ${date} ?`;
+          this.approve_msg = `Member's Contribution for ${data.payment_item_name} on the ${date}`;
+          break;
         case "MEMBERS":
           this.register_member_name = data.name;
           this.approve_msg = `Member Registration`;
+          break;
       }
       return this.approve_msg;
     },
 
     fetchDataBaseOnTypeAfterApprove(data) {
-      let organisation_id = this.$store.getters.getOrganisation.id;
+      const route_data = Object.assign({}, this.$route.query);
+
+      let organisation_id = route_data.organisation_id;
+      let session_id = route_data.session_id;
+      let status = route_data.status != undefined ? route_data.status : "";
+      let name = route_data.name != undefined ? route_data.name : "";
+      let amount_deposited =
+        this.$route.amount_deposited != undefined
+          ? route_data.amount_deposited
+          : "";
+      let month = route_data.month != undefined ? route_data.month : "";
+      let date = route_data.date ? route_data.date : "";
+      let range = route_data.range ? route_data.range : "";
       let search_savings_url = "";
-      let payload = null;
-      if (data.type != "MEMBERS") {
-        payload = {
-          status:
-            this.$store.getters.getSearchSavingParams.status == undefined
-              ? ""
-              : this.$store.getters.getSearchSavingParams.status,
-          name:
-            this.$store.getters.getSearchSavingParams.name == undefined
-              ? ""
-              : this.$store.getters.getSearchSavingParams.name,
-          amount_deposited:
-            this.$store.getters.getSearchSavingParams.amount_deposited ==
-            undefined
-              ? 0
-              : this.$store.getters.getSearchSavingParams.amount_deposited,
-          date_range:
-            this.$store.getters.getSearchSavingParams.date_range == undefined
-              ? ""
-              : this.$store.getters.getSearchSavingParams.date_range,
-          date:
-            this.$store.getters.getSearchSavingParams.date == undefined
-              ? ""
-              : this.$store.getters.getSearchSavingParams.date,
-          month:
-            this.$store.getters.getSearchSavingParams.month == undefined
-              ? ""
-              : this.$store.getters.getSearchSavingParams.month,
-          year:
-            this.$store.getters.getSearchSavingParams.year == undefined
-              ? ""
-              : this.$store.getters.getSearchSavingParams.year,
-          payment_item_id:
-            this.$store.getters.getSearchSavingParams.payment_item_id ==
-            undefined
-              ? ""
-              : this.$store.getters.getSearchSavingParams.payment_item_id.id,
-          range:
-            this.$store.getters.getSearchSavingParams.range == undefined
-              ? ""
-              : this.$store.getters.getSearchSavingParams.range,
-        };
-      }
 
       switch (data.type) {
         case "INCOME_ACTIVITIES":
-          this.getOrganisationIncomeActivities(organisation_id);
+          this.getOrganisationIncomeActivities(data.organisation_id);
           break;
         case "MEMBERS_SAVINGS":
-          search_savings_url = `/api/protected/user-savings?organisation_id=${organisation_id}&status=${payload.status}&name=${payload.name}&amount_deposited=${payload.amount_deposited}&year=${payload.year}&month=${payload.month}&date=${payload.date}&date_range=${payload.date_range}`;
+          search_savings_url = `/api/protected/user-savings?organisation_id=${organisation_id}&status=${status}&name=${name}&amount_deposited=${amount_deposited}&session_id=${session_id}&month=${month}&date=${date}&date_range=${range}`;
           this.filterSaving(search_savings_url);
           break;
         case "MEMBERS_CONTRIBUTIONS":
-          this.filterMembersContributions(payload);
+          let payload = {
+            payment_item_id: data.payment_item_id,
+            year: data.session_id,
+          };
+          this.filterMembersContributions(
+            payload,
+            session_id,
+            status,
+            month,
+            date,
+            range,
+            amount_deposited
+          );
           break;
         case "MEMBERS":
-          this.getOrganisationMembers(organisation_id, true);
+          this.getOrganisationMembers(data.organisation_id, true);
           break;
       }
+    },
+
+    setApproveContributionPayload(data) {
+      let type = this.chosen_state == "Approve" ? "APPROVED" : "DECLINED";
+      let payload = {
+        payment_item_id: data.payment_item_id,
+        user_id: data.user_id,
+        session_id: data.session_id,
+        type: type,
+      };
+
+      return payload;
     },
 
     cancelDialog() {
@@ -1047,6 +1382,44 @@ export default {
 
       this.$emit("view-income-activity", payload);
     },
+
+    onViewAllMemberContributions(data) {
+      this.$router.push({
+        name: "member_contributions",
+        params: { item_id: data.payment_item_id, id: data.user_id },
+      });
+    },
+
+    onViewContribution(data) {
+      let payload = {
+        data: data,
+        tab: "View Contribution",
+      };
+
+      this.$store.dispatch("setSelectedContribution", data);
+
+      this.$emit("view-contribution", payload);
+    },
+
+    onAllContribution(data) {
+      this.$router.push({
+        name: "member_contributions",
+        params: { id: data.id },
+      });
+    },
+
+    onEditContribution(data) {
+      let payload = {
+        data: data,
+        tab: "Edit Member Contribution",
+      };
+
+      this.$store.dispatch("setSelectedContribution", data);
+
+      this.$emit("edit-contribution", payload);
+    },
+
+    onDeleteContribution(data) {},
   },
   components: {
     ConfirmDialogVue,
@@ -1054,6 +1427,14 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.view_items {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  align-items: center;
+  text-transform: capitalize;
+}
 .button {
   text-align: end;
 }
@@ -1080,7 +1461,18 @@ export default {
   font-weight: 500;
   font-size: 13px;
   line-height: 25px;
-  align-items: left;
+  letter-spacing: 0.01em;
+  text-transform: capitalize;
+  color: $primary;
+  padding: 0.11rem;
+}
+
+.view_income {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 25px;
   letter-spacing: 0.01em;
   text-transform: capitalize;
   color: $primary;
@@ -1109,9 +1501,20 @@ export default {
   margin-right: 2.5rem;
 }
 
+.approve_btn_income_activity {
+  background-color: $secondary;
+  color: white;
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  align-items: center;
+  text-transform: capitalize;
+}
+
 .approve_card {
-  width: 30rem;
-  padding: 0.7rem;
+  width: 25rem;
+  // padding: 0.3rem;
 }
 
 .decline_btn {
@@ -1123,6 +1526,17 @@ export default {
   background-color: $orange;
   color: white;
   margin-right: 3rem;
+}
+
+.decline_btn_income_activity {
+  background-color: $orange;
+  color: white;
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  align-items: center;
+  text-transform: capitalize;
 }
 
 .approve {
@@ -1191,5 +1605,11 @@ export default {
 
 .registered {
   color: $secondary;
+}
+
+.warning_caption {
+  color: $grey2;
+  font-weight: 500;
+  font-size: 15px;
 }
 </style>

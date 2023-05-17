@@ -20,7 +20,7 @@
               name="account_circle"
               size="190px"
               class="icon"
-              v-if="getCurrentMember.picture == null"
+              v-if="getCurrentMember!= null && getCurrentMember.picture == null"
             >
             </q-icon>
             <img
@@ -60,8 +60,8 @@
               >My Roles:
               <q-list>
                 <q-item
-                  v-for="role in fetchUserRoles"
-                  :key="role.id"
+                  v-for="(role, index) in fetchUserRoles"
+                  :key="index"
                   v-ripple
                   class="q-mb-sm"
                 >
@@ -597,9 +597,9 @@ export default {
   mixins: [organisationMixin, memberMixin],
 
   mounted() {
-    this.getMembersDebts(false);
-    this.getMembersContributions(false);
-    this.setFormField();
+    // this.getMembersDebts(false);
+    // this.getMembersContributions(false);
+    // this.setFormField();
   },
 
   data() {
@@ -713,7 +713,8 @@ export default {
       is_fetching: false,
       current_year:"2023",
       due_amount:0.0,
-      amount_paid:0.0
+      amount_paid:0.0,
+      available_roles:[]
     };
   },
   computed: {
@@ -753,7 +754,7 @@ export default {
 
     getAvailableRoles() {
       let roles = [];
-      this.$store.getters.getRoles
+      this.available_roles
         .filter(
           (role) =>
             role.name == "TREASURER" ||
@@ -780,12 +781,23 @@ export default {
     },
 
     fetchUserRoles(){
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+      this.user_roles = [];
       this.$store.dispatch("setRoles", []);
       this.$store.getters.getCurrentMember.roles.forEach((ele) => {
         this.user_roles.push(ele);
       })
       return this.user_roles;
     },
+
+    getFormField(){
+      return this.setFormField(this.$store.getters.getCurrentMember);
+    }
+  },
+  watch:{
+    getFormField(){
+      return this.setFormField(this.$store.getters.getCurrentMember);
+    }
   },
   methods: {
     getFormatedDate(created_at) {
@@ -806,15 +818,15 @@ export default {
     },
 
 
-    setFormField() {
-      if (this.$store.getters.getCurrentMember != null) {
-        this.user.name = this.$store.getters.getCurrentMember.name;
-        this.user.email = this.$store.getters.getCurrentMember.email;
-        this.user.gender = this.$store.getters.getCurrentMember.gender;
-        this.user.telephone = this.$store.getters.getCurrentMember.telephone;
-        this.user.address = this.$store.getters.getCurrentMember.address;
-        this.user.occupation = this.$store.getters.getCurrentMember.occupation;
-        this.user.user_id = this.$store.getters.getCurrentMember.id;
+    setFormField(data) {
+      if (data != null) {
+        this.user.name = data.name;
+        this.user.email = data.email;
+        this.user.gender = data.gender;
+        this.user.telephone = data.telephone;
+        this.user.address = data.address;
+        this.user.occupation = data.occupation;
+        this.user.user_id = data.id;
       }
 
       return this.user;
@@ -950,16 +962,19 @@ export default {
         color: "default",
         status:"none",
         error_msg: "An Error occurred! Please try again",
-        has_commit: true,
+        has_commit: false,
         show_spinner:false,
-        commit: "SET_ROLES",
+        commit: "",
         to_be_store_data: {
           required: false,
           has_value: false,
           data: [],
         },
       };
-      this.$store.dispatch("getRequest", payload).then(() => {
+      this.$store.dispatch("getRequest", payload).then((res) => {
+        res.data.forEach((ele) => {
+          this.available_roles.push(ele);
+        })
       });
     },
 
@@ -1042,6 +1057,7 @@ export default {
         },
       };
       this.$store.dispatch("deleteRequest", payload).then(() => {
+        this.user_roles = [];
         this.getMemberProfile(id);
       });
     },

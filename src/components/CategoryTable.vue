@@ -21,12 +21,17 @@
           </q-td>
           <q-td key="item" :props="props">
             <q-btn
-              flat
+              unelevated
+              color="primary"
+              no-caps
               class="view_items"
               @click="showPaymentItems(props.row)"
               :to="{ name: 'payment_items', params: { id: props.row.id } }"
             >
               {{ props.row.item }}
+              <span class="q-pl-md"
+                ><q-icon name="visibility" size="xs"></q-icon
+              ></span>
             </q-btn>
           </q-td>
           <q-td key="action" :props="props">
@@ -106,9 +111,11 @@
           <q-td key="reference" :props="props">
             <!-- button for view member -->
             <q-btn
-              no-caps
+              unelevated
               color="primary"
+              no-caps
               class="view_items"
+              icon-right="visibility"
               @click="showReferences(props.row)"
               v-if="props.row.payment_item_type == 'A_MEMBER'"
             >
@@ -117,13 +124,17 @@
 
             <!-- button for view members -->
             <q-btn
-              no-caps
+              unelevated
               color="primary"
+              no-caps
               class="view_items"
               @click="showReferences(props.row)"
               v-if="props.row.payment_item_type == 'GROUPED_MEMBERS'"
             >
               View Members
+              <span class="q-pl-md"
+                ><q-icon name="visibility" size="xs"></q-icon
+              ></span>
             </q-btn>
           </q-td>
           <q-td key="action" :props="props">
@@ -201,12 +212,17 @@
           </q-td>
           <q-td key="expenditure_items" :props="props">
             <q-btn
-              flat
+              unelevated
+              color="primary"
+              no-caps
               class="view_items"
               @click="showExpenditureItems(props.row)"
               :to="{ name: 'expenditure_items', params: { id: props.row.id } }"
             >
               {{ props.row.expenditure_items }}
+              <span class="q-pl-md"
+                ><q-icon name="visibility" size="xs"></q-icon
+              ></span>
             </q-btn>
           </q-td>
           <q-td key="action" :props="props">
@@ -279,7 +295,78 @@
           <q-td key="date" :props="props">
             {{ getFormatedDate(props.row.date) }}
           </q-td>
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'PENDING'"
+            class="text-info"
+          >
+            {{ props.row.approve }}
+          </q-td>
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'APPROVED'"
+            class="registered"
+          >
+            {{ props.row.approve }}
+          </q-td>
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'DECLINED'"
+            class="not_registered"
+          >
+            {{ props.row.approve }}
+          </q-td>
           <q-td key="action" :props="props">
+            <q-btn
+              no-caps
+              dense
+              unelevated
+              color="teal"
+              padding="5px 7px"
+              label="Details"
+              v-if="checkTreasurerRole()"
+              class="view"
+              @click="showDetails(props.row)"
+              :to="{ name: 'expenditure_detail', params: { id: props.row.id } }"
+            >
+              <q-icon name="visibility" size="xs" class="q-pl-md"></q-icon>
+            </q-btn>
+            <!-- approved btn for expenditure items -->
+            <q-btn
+              class="decline_btn"
+              dense
+              size="md"
+              padding="5px 7px"
+              label="Decline"
+              unelevated
+              no-caps
+              @click="onDeclineRecord(props.row, 'Decline')"
+              v-if="
+                checkTreasurerRole() &&
+                props.row.approve == 'PENDING' &&
+                props.row.show_state_action
+              "
+            />
+            <!-- decline btn for expenditure items -->
+            <q-btn
+              class="approve_btn"
+              dense
+              size="md"
+              padding="5px 7px"
+              label="Approve"
+              no-caps
+              unelevated
+              @click="onApprovedRecord(props.row, 'Approve')"
+              v-if="
+                checkTreasurerRole() &&
+                props.row.approve == 'PENDING' &&
+                props.row.show_state_action
+              "
+            />
+
             <!-- buttons for edit, view and delete table data row -->
             <q-btn flat round v-if="!checkTreasurerRole()">
               <q-icon
@@ -366,25 +453,13 @@
           <q-td key="name" :props="props">
             {{ props.row.name }}
           </q-td>
-          <q-td
-            key="amount_given"
-            :props="props"
-            v-if="show_expenditure_item_detail"
-          >
+          <q-td key="amount_given" :props="props">
             {{ Number(props.row.amount_given).toLocaleString() }}
           </q-td>
-          <q-td
-            key="amount_spent"
-            :props="props"
-            v-if="show_expenditure_item_detail"
-          >
+          <q-td key="amount_spent" :props="props">
             {{ Number(props.row.amount_spent).toLocaleString() }}
           </q-td>
-          <q-td
-            key="balance"
-            :props="props"
-            v-if="show_expenditure_item_detail"
-          >
+          <q-td key="balance" :props="props">
             {{ Number(props.row.balance).toLocaleString() }}
           </q-td>
           <q-td
@@ -471,6 +546,31 @@
                 </q-menu>
               </q-icon>
             </q-btn>
+
+            <!-- approved btn for expenditure item details -->
+            <q-btn
+              class="decline_btn"
+              dense
+              size="md"
+              padding="5px 7px"
+              label="Decline"
+              unelevated
+              no-caps
+              @click="onDeclineRecord(props.row, 'Decline')"
+              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
+            />
+            <!-- decline btn for expenditure item details -->
+            <q-btn
+              class="approve_btn"
+              dense
+              size="md"
+              padding="5px 7px"
+              label="Approve"
+              no-caps
+              unelevated
+              @click="onApprovedRecord(props.row, 'Approve')"
+              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
+            />
           </q-td>
         </q-tr>
         <!-- end of table body for expenditure item details -->
@@ -519,72 +619,69 @@
       </template>
 
       <template v-slot:bottom>
-        <q-tr v-if="show_expenditure_item_detail">
-          <q-td
-            class="text-bold"
-            :class="checkTreasurerRole() ? 'total' : 'total_label'"
-          >
-            Total:
-          </q-td>
-          <q-td
-            class="text-bold"
-            :class="checkTreasurerRole() ? 'amount_given' : 'total_given'"
-          >
-            {{ Number(total_amount_given).toLocaleString() }} XAF
-          </q-td>
-
-          <q-td
-            class="text-bold"
-            :class="checkTreasurerRole() ? 'amount_spent' : 'total_spent'"
-          >
-            {{ Number(total_amount_spent).toLocaleString() }} XAF
-          </q-td>
-
-          <q-td
-            class="text-bold"
-            :class="checkTreasurerRole() ? 'balance_treasurer_view' : 'balance'"
-          >
-            {{ Number(balance).toLocaleString() }} XAF
-          </q-td>
-        </q-tr>
-        <div class="text-bold q-pt-sm" v-if="show_expenditure_item_detail">
-          <div
-            class="q-pt-md q-pb-xs text-info"
-            :class="
-              checkTreasurerRole()
-                ? 'balance_details_treasurer'
-                : 'balance_details'
-            "
-            v-if="checkTreasurerRole()"
-          >
-            NB: Only APPROVED records are used for calculating balances
-          </div>
-          <div
-            class="q-pt-md q-pb-xs"
-            :class="
-              checkTreasurerRole()
-                ? 'balance_details_treasurer'
-                : 'balance_details'
-            "
-          >
-            Estimated Expenditure Amount:
-            <span class="expenditure_amount"
-              >{{ Number(expenditure_item_amount).toLocaleString() }} XAF</span
+        <div v-if="show_expenditure_item_detail" class="q-mt-md">
+          <q-tr>
+            <q-td
+              class="text-bold"
+              :class="checkTreasurerRole() ? 'total' : 'total_label'"
             >
-          </div>
-          <div
-            class="q-pt-md q-pb-xl"
-            :class="
-              checkTreasurerRole()
-                ? 'balance_details_treasurer'
-                : 'balance_details'
-            "
-          >
-            Net Balance (Estimated Expenditure Amount - Amount Spent + Total
-            balance):
-            <span class="net_balance"
-              >{{ Number(total_balance).toLocaleString() }} XAF</span
+              Total:
+            </q-td>
+            <q-td
+              class="text-bold"
+              :class="checkTreasurerRole() ? 'amount_given' : 'total_given'"
             >
+              {{ Number(total_amount_given).toLocaleString() }} XAF
+            </q-td>
+
+            <q-td
+              class="text-bold"
+              :class="checkTreasurerRole() ? 'amount_spent' : 'total_spent'"
+            >
+              {{ Number(total_amount_spent).toLocaleString() }} XAF
+            </q-td>
+
+            <q-td
+              class="text-bold"
+              :class="
+                checkTreasurerRole() ? 'balance_treasurer_view' : 'balance'
+              "
+            >
+              {{ Number(balance).toLocaleString() }} XAF
+            </q-td>
+          </q-tr>
+          <!-- calculation of balances -->
+          <div>
+            <div
+              class="q-py-md text-bold"
+              :class="
+                checkTreasurerRole()
+                  ? 'balance_details_treasurer'
+                  : 'balance_details'
+              "
+            >
+              Estimated Expenditure Amount:
+              <span class="expenditure_amount"
+                >{{
+                  Number(expenditure_item_amount).toLocaleString()
+                }}
+                XAF</span
+              >
+            </div>
+            <div
+              class="q-pt-sm q-pb-xl text-bold"
+              :class="
+                checkTreasurerRole()
+                  ? 'balance_details_treasurer'
+                  : 'balance_details'
+              "
+            >
+              Net Balance (Estimated Expenditure Amount - Total Amount Spent + Total
+              Balance):
+              <span class="net_balance"
+                >{{ Number(total_balance).toLocaleString() }} XAF</span
+              >
+            </div>
           </div>
         </div>
       </template>
@@ -604,6 +701,47 @@
         @cancel-dialog="cancelDialog"
         @delete-row="deleteRow"
       ></ConfirmDialog>
+    </div>
+
+    <!-- confirmation dialog for approve and decline row data -->
+    <div v-if="show_approve_dialog">
+      <q-dialog v-model="show_approve_dialog">
+        <q-card class="approve_card q-px-md">
+          <q-card-section>
+            <div class="row q-pt-sm">
+              <div class="col-md-12">
+                <label for="msg">
+                  <span class="text-weight-bold"
+                    >Do you want to {{ chosen_state }} {{ approve_msg }}</span
+                  >
+                </label>
+              </div>
+            </div>
+          </q-card-section>
+
+          <q-card-actions align="right">
+            <q-btn
+              :class="chosen_state == 'Approve' ? 'approve' : 'decline'"
+              size="md"
+              label="Cancel"
+              flat
+              v-close-popup
+              no-caps
+              class="q-my-md"
+            />
+            <q-btn
+              :class="chosen_state == 'Approve' ? 'approve' : 'decline'"
+              size="md"
+              :label="chosen_state"
+              flat
+              @click="onChangeRecordState()"
+              v-close-popup
+              no-caps
+              class="q-my-md"
+            />
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
     </div>
   </div>
 </template>
@@ -869,6 +1007,109 @@ export default {
       };
       this.$emit("view-expenditure-item-detail", payload);
     },
+
+    onApprovedRecord(row, state) {
+      this.show_approve_dialog = true;
+      this.approve_data = row;
+      this.chosen_state = state;
+      this.setApproveWarningMsgByType(row);
+    },
+
+    onDeclineRecord(row, state) {
+      this.show_approve_dialog = true;
+      this.approve_data = row;
+      this.chosen_state = state;
+      this.setApproveWarningMsgByType(row);
+    },
+
+    setApproveUrlBaseOnType(data) {
+      let url = "";
+      let type = this.chosen_state == "Approve" ? "APPROVED" : "DECLINED";
+      switch (data.type) {
+        case "EXPENDITURE_ITEMS":
+          url = `/api/protected/expenditure-items/${data.id}/approve?type=${type}`;
+          break;
+        case "EXPENDITURE_DETAILS":
+          url = `/api/protected/expenditure-details/${data.id}/approve?type=${type}`;
+          break;
+      }
+      return url;
+    },
+
+    setApproveFeedbackMsg() {
+      let msg = `Record was ${this.chosen_state} successfully`;
+      return msg;
+    },
+
+    setApproveWarningMsgByType(data) {
+      let date = "";
+      switch (data.type) {
+        case "EXPENDITURE_ITEMS":
+          date = moment(data.date).format("MMMM Do YYYY");
+          this.approve_msg = ` ${data.amount}  F CFA Expenditure for ${data.name} on the ${date} at ${data.venue} ?`;
+          break;
+        case "EXPENDITURE_DETAILS":
+          date = moment(data.created_at).format("MMMM Do YYYY");
+          this.approve_msg = ` ${data.amount_given} F CFA Spent for ${data.name} on the ${date} ?`;
+          break;
+      }
+
+      return this.approve_msg;
+    },
+
+    callFetchDataAfterApproveAction(data) {
+      switch (data.type) {
+        case "EXPENDITURE_ITEMS":
+          this.getExpendituresByCategory(data.expenditure_category_id.id);
+          break;
+        case "EXPENDITURE_DETAILS":
+          this.getExpenditureDetailsByItemId(data.expenditure_item_id);
+          break;
+      }
+    },
+
+    onChangeRecordState() {
+      let payload = {
+        url: this.setApproveUrlBaseOnType(this.approve_data),
+        msg: this.setApproveFeedbackMsg(this.approve_data),
+        data: null,
+        color: "default",
+        to_on_ok: "none",
+        to_on_fail: "none",
+        show_feedback: true,
+        error_msg: "An Error occurred! Please try again",
+        has_commit: false,
+        commit: "none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.$store.dispatch("putRequest", payload).then((res) => {
+        if (res.status == 200) {
+          this.callFetchDataAfterApproveAction(
+            this.approve_data,
+          );
+        }
+      });
+    },
+
+    showDetails(data) {
+      this.$store.dispatch("setExpenditureItemName", data.name);
+      this.getExpenditureDetailsByItemId(data.id);
+
+      const intermediate_tabs = Array.from(
+        this.$store.getters.getIntermediateTabs
+      );
+
+      intermediate_tabs.push({
+        name: "Details",
+        has_intermediate_tab: true,
+      });
+
+      this.$store.dispatch("setIntermediateTabs", intermediate_tabs);
+    },
   },
   components: {
     ConfirmDialog,
@@ -900,12 +1141,9 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 13px;
-  line-height: 25px;
+  font-size: 12px;
   align-items: center;
-  letter-spacing: 0.01em;
   text-transform: capitalize;
-  color: $primary;
 }
 
 .field_total {
@@ -935,8 +1173,8 @@ export default {
   color: white;
 }
 .approve_card {
-  width: 30rem;
-  padding: 0.7rem;
+  width: 25rem;
+  // padding: 0.7rem;
 }
 .decline_btn {
   background-color: $orange;
@@ -960,7 +1198,7 @@ export default {
 }
 .total {
   font-size: 13px;
-  padding-left: 5.5rem;
+  padding-left: 4.5rem;
 }
 .total_given {
   font-size: 13px;
@@ -968,7 +1206,7 @@ export default {
 }
 .amount_given {
   font-size: 13px;
-  padding-left: 13rem;
+  padding-left: 7.6rem;
 }
 .total_spent {
   font-size: 13px;
@@ -977,7 +1215,7 @@ export default {
 
 .amount_spent {
   font-size: 13px;
-  padding-left: 8.9rem;
+  padding-left: 12.5rem;
 }
 
 .balance {
@@ -986,7 +1224,7 @@ export default {
 }
 
 .balance_treasurer_view {
-  padding-left: 7.8rem;
+  padding-left: 13.5rem;
   font-size: 13px;
 }
 .message {
@@ -1012,13 +1250,21 @@ export default {
 
 .balance_details_treasurer {
   font-size: 13px;
-  padding-left: 5rem;
+  padding-left: 4.5rem;
 }
 .net_balance {
   padding-left: 1rem;
 }
 
 .expenditure_amount {
-  padding-left: 17.8rem;
+  padding-left: 19.8rem;
+}
+
+.not_registered {
+  color: $orange;
+}
+
+.registered {
+  color: $secondary;
 }
 </style>

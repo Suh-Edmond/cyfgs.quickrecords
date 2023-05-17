@@ -37,9 +37,9 @@
         <q-space />
         <div class="button q-pb-xs">
           <q-btn
-            :label="label_download"
+            :label="'Print'"
             :loading="loading"
-            :color="color_print"
+            :color="'positive'"
             :disabled="false"
             no-caps
             icon-right="print"
@@ -104,17 +104,14 @@ import HelperMixinVue from "src/mixins/HelperMixin.vue";
 export default {
   mixins: [HelperMixinVue],
 
-  mounted() {},
+  mounted() {
+   },
 
   data() {
     return {
       start_filter: false,
-      label_fetch: "Filter",
       color: "primary",
-      no_caps: true,
       loading: false,
-      label_download: "Print",
-      color_print: "positive",
       columns: [
         {
           name: "counter",
@@ -134,30 +131,30 @@ export default {
         },
         {
           name: "amount_given",
-          align: "center",
+          align: "left",
           label: "Amount Given (XAF)",
           field: "amount_given",
           sortable: true,
         },
         {
           name: "amount_spent",
-          align: "center",
+          align: "left",
           label: "Amount Spent (XAF)",
           field: "amount_spent",
           sortable: true,
         },
         {
           name: "balance",
-          align: "center",
+          align: "left",
           label: "Balance (XAF)",
           field: "balance",
           sortable: true,
         },
         {
-          name: "state",
+          name: "approve",
           align: "left",
           label: "Transaction Status",
-          field: "state",
+          field: "approve",
           sortable: true,
         },
         {
@@ -194,19 +191,11 @@ export default {
     },
 
     getTotalAmountGiven() {
-      let total = 0.0
-      this.$store.getters.getExpenditureItemDetails.data.filter((ele) => ele.approve == "APPROVED").map(ele => ele.amount_given).forEach(ele => {
-        total += ele;
-      });
-      return total;
+      return this.$store.getters.getExpenditureItemDetails.total_amount_given;
     },
 
     getTotalAmountSpent() {
-      let total = 0.0
-      this.$store.getters.getExpenditureItemDetails.data.filter((ele) => ele.approve == "APPROVED").map(ele => ele.amount_spent).forEach(ele => {
-        total += ele;
-      });
-      return total;
+      return this.$store.getters.getExpenditureItemDetails.total_amount_spent;
     },
 
     getBalance (){
@@ -214,7 +203,7 @@ export default {
     },
 
     getTotalBalance() {
-      return (this.getExpenditureItemAmount - this.getTotalAmountSpent) + this.getBalance
+      return this.$store.getters.getExpenditureItemDetails.total_balance
     },
 
     getExpenditureDetails() {
@@ -278,6 +267,8 @@ export default {
       this.show_spinner = false;
       return this.filtered_items;
     },
+
+
 
   },
   components: {

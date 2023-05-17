@@ -3,27 +3,15 @@
     <div class="q-mx-md q-mt-lg">
       <q-form @submit="onRegisterMember" class="q-gutter-md">
         <div>
-          <label for="credential" class="form_field"
-            >Member's Name</label
-          >
-          <q-input
-            v-model="user.user_name"
-            outlined
-            dense
-            disable
-
-          />
+          <label for="credential" class="form_field">Member's Name</label>
+          <q-input v-model="user.user_name" outlined dense disable />
         </div>
         <div>
-          <label for="credential" class="form_field"
-            >Year</label
-          >
-          <q-input v-model="user.year" outlined dense disable/>
+          <label for="credential" class="form_field">Year</label>
+          <q-input v-model="user.year" outlined dense disable />
         </div>
         <div>
-          <label for="credential" class="form_field"
-            >Amount </label
-          >
+          <label for="credential" class="form_field">Amount </label>
           <q-input v-model="user.amount" outlined dense type="number" disable />
         </div>
         <div class="flex q-mt-lg justify-end">
@@ -52,19 +40,34 @@ export default {
   mounted() {
     let heading = "Register Member to the Organisation";
     this.$emit("set-heading", heading);
-    this.setFormField();
   },
   data() {
     return {
       loading: false,
       user: {
         user_name: null,
-        year:  null,
-        amount:  null,
+        year: null,
+        amount: null,
       },
     };
   },
   computed: {
+    getRegisterMember() {
+      return this.setFormField(
+        this.$store.getters.getMemberToRegister.name,
+        this.$store.getters.getCurrentYear.year,
+        this.$store.getters.getRegAmount.amount
+      );
+    },
+  },
+  watch: {
+    getRegisterMember() {
+      return this.setFormField(
+        this.$store.getters.getMemberToRegister.name,
+        this.$store.getters.getCurrentYear.year,
+        this.$store.getters.getRegAmount.amount
+      );
+    },
   },
   methods: {
     onRegisterMember() {
@@ -109,12 +112,12 @@ export default {
       return this.user;
     },
 
-    setFormField(){
-      this.user.year = this.$store.getters.getCurrentYear.year;
-      this.user.amount = this.$store.getters.getRegAmount.amount;
-      this.user.user_name = this.$store.getters.getMemberToRegister.name;
+    setFormField(name, year, amount) {
+      this.user.year = year;
+      this.user.amount = amount;
+      this.user.user_name = name;
       return this.user;
-    }
+    },
   },
   components: {
     ButtonVue,

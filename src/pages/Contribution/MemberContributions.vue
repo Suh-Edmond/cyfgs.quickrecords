@@ -122,22 +122,16 @@ export default {
           field: "date",
         },
         {
-          name: "state",
+          name: "approve",
           align: "left",
           label: "Transaction Status",
-          field: "state",
-          sortable: true,
-        },
-        {
-          name: "code",
-          align: "left",
-          label: "Transaction Code",
-          field: "code",
+          field: "approve",
           sortable: true,
         },
         {
           name: "action",
           label: "Action",
+          align: "left",
           field: "action",
         },
       ],
@@ -188,7 +182,7 @@ export default {
           balance: ele.balance,
           payment_item_amount: ele.payment_item_amount,
           payment_item_id: ele.payment_item_id,
-          payment_item_complusory: ele.payment_item_complusory,
+          payment_item_complusory: ele.payment_item_compulsory,
           payment_item_name: ele.payment_item_name,
           payment_category: ele.payment_category,
           comment: ele.comment,
@@ -215,7 +209,6 @@ export default {
     },
 
     downloadContributions() {
-      console.log(this.$router.currentRoute.params.item_id);
       let payment_item_id = this.$router.currentRoute.params.item_id;
       let user_id = this.$router.currentRoute.params.id;
 

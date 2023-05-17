@@ -79,6 +79,8 @@ export default {
       this.$store.dispatch("getRequest", payload).then(() => {});
     },
 
+
+    
     getPaymentActivitiesFromStatus() {
       let payment_items = [];
       this.$store.getters.getPaymentActivities.forEach((ele) => {

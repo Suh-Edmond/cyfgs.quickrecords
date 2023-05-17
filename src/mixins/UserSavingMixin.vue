@@ -1,6 +1,7 @@
 <script>
-
+import CurrentYearMixin from './CurrentYearMixin.vue';
 export default {
+  mixins:[CurrentYearMixin],
   data() {
     return {
       loading: false,
@@ -8,8 +9,9 @@ export default {
   },
   methods: {
     getOrganisationMemberSavings(id) {
+      let session_id = this.getCurrentYear != null ? this.getCurrentYear.id : ""
       let payload = {
-        url: `/api/protected/organisations/${id}/user-savings`,
+        url: `/api/protected/savings?organisation_id=${id}&session_id=${session_id}`,
         msg: "none",
         color: "default",
         status: "none",
@@ -64,8 +66,9 @@ export default {
           data: [],
         },
       };
-
+      this.loading = true;
       this.$store.dispatch("getRequest", payload).then(() => {
+        this.loading =false
       });
     },
   },

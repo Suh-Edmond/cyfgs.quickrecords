@@ -30,7 +30,7 @@
             outlined
             dense
             :options="payment_items"
-            label="Search..."
+            label="Search payment item..."
             input-debounce="0"
             use-input
             clearable
@@ -146,13 +146,6 @@ export default {
           label: "Amount Deposited(XAF)",
           field: "amount_deposited",
         },
-
-        {
-          name: "code",
-          align: "left",
-          label: "Transaction Code",
-          field: "code",
-        },
         {
           name: "approve",
           align: "left",
@@ -164,7 +157,7 @@ export default {
           name: "action",
           label: "Action",
           field: "action",
-          align: "left",
+          align: "center",
         },
       ],
       label: "Delete",

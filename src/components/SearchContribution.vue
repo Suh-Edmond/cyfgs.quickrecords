@@ -7,30 +7,28 @@
         </label>
       </div>
       <div class="q-mb-lg row">
-        <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 q-mb-md">
-          <q-select
-            v-model="param.payment_category_id"
-            outlined
-            dense
-            label="Select category"
-            :options="getPaymentCategories"
-            @input="getPaymentItems"
-          />
-        </div>
-
         <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 q-mt-sm">
           <q-select
             v-model="param.payment_item_id"
             outlined
             dense
-            label="Select item"
-            :options="payment_items"
-          />
+            :options="filtered_payment_items"
+            label="Search payment item..."
+            input-debounce="0"
+            use-input
+            clearable
+            @filter="filterPaymentItems"
+          >
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey"> No results </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
         </div>
       </div>
 
       <!-- filter by status of contributions -->
-      <hr class="separator" />
       <div class="q-my-md">
         <label for="heading" class="text">Filter by status</label>
       </div>
@@ -65,9 +63,19 @@
             v-model="param.year"
             outlined
             dense
-            label="Select year"
+            label="Search year..."
             :options="years"
-          />
+            input-debounce="0"
+            use-input
+            clearable
+            @filter="filterYears"
+          >
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey"> No results </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
         </div>
       </div>
       <!--  by month -->
@@ -77,9 +85,19 @@
             v-model="param.month"
             outlined
             dense
-            label="Select month"
             :options="months"
-          />
+            label="Search month..."
+            input-debounce="0"
+            use-input
+            clearable
+            @filter="filterMonths"
+          >
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey"> No results </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
         </div>
       </div>
 
@@ -151,7 +169,7 @@
             class="filter_btn"
             label="Filter"
             :loading="loading"
-            :color="color"
+            :color="'primary'"
             :disabled="validateForm"
             no-caps
             @click="filterByDuration(null)"
@@ -165,17 +183,31 @@
 <script>
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
-import PaymentCategoryMixin from "src/mixins/PaymentCategoryMixin.vue";
 import ContributionsMixinVue from "src/mixins/ContributionsMixin.vue";
-import HelperMixinVue from 'src/mixins/HelperMixin.vue';
+import HelperMixinVue from "src/mixins/HelperMixin.vue";
+import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
 
+const monthOptions = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 export default {
   mixins: [
     organisationMixinVue,
     UserSavingMixinVue,
-    PaymentCategoryMixin,
     ContributionsMixinVue,
-    HelperMixinVue
+    HelperMixinVue,
+    CurrentYearMixinVue,
   ],
 
   mounted() {
@@ -183,31 +215,14 @@ export default {
 
     this.$emit("set-heading", heading);
 
-    let id = this.getOrganisationId;
-
-    this.fetchCategories(id,false);
+    this.getPaymentItems();
   },
 
   data() {
     return {
-      label_save: "Save",
       loading: false,
-      color: "primary",
-      years: ["2020", "2021", "2022", "2023", "2024"],
-      months: [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December",
-      ],
+      years: [],
+      months: [],
       statuses: [
         {
           name: "PENDING",
@@ -243,30 +258,22 @@ export default {
         date: "",
         date_range: "",
       },
-      position: "right",
-      error_bal: false,
-      dialog: false,
-      no_caps: true,
-      hasMadePayment: false,
-      loading_user_info: false,
-      loading_save_amount: false,
-      payment_items: [],
+      payment_items_by_category: [],
+      payment_categories: [],
+      filtered_payment_items: [],
     };
   },
   computed: {
     validateForm() {
-      return this.param.payment_category_id == null ||
-        this.param.payment_item_id == null
-        ? true
-        : false;
+      return this.param.payment_item_id == null;
     },
   },
   methods: {
     getPaymentItems() {
-      this.payment_items = [];
+      this.payment_items_by_category = [];
       let payload = {
         status: "none",
-        url: `/api/protected/payment-categories/${this.param.payment_category_id.value}/payment-items`,
+        url: `/api/protected/payment-items`,
         has_path_val: true,
         show_feedback: false,
         show_spinner: false,
@@ -283,31 +290,44 @@ export default {
       };
       this.$store.dispatch("getRequest", payload).then((res) => {
         if (res.success) {
-          res.data.data.forEach((ele) => {
-            this.payment_items.push({
+          res.data.forEach((ele) => {
+            this.payment_items_by_category.push({
               label: ele.name,
               value: ele.id,
+              amount: ele.amount,
             });
           });
         }
       });
 
-      return this.payment_items;
+      return this.payment_items_by_category;
     },
 
     filterByDuration(status) {
-
       let payload = {
         organisation_id: this.getOrganisationId,
-        status: status == null ? "": status,
+        status: status == null ? "" : status,
         payment_category_id: this.param.payment_category_id,
         payment_item_id: this.param.payment_item_id,
-        year: this.param.year,
+        year:
+          this.param.year == ""
+            ? this.$store.getters.getCurrentYear.id
+            : this.param.year.value,
         month: this.param.month,
         date: this.param.date,
         date_range: this.param.date_range,
+        amount: this.param.payment_item_id.amount,
       };
-      this.loading = this.filterMembersContributions(payload);
+      this.loading = this.filterMembersContributions(
+        payload,
+        payload.year,
+        payload.status,
+        payload.month,
+        payload.date,
+        payload.date_range,
+        payload.amount
+      );
+      this.param.payment_item_id = "";
     },
 
     reset() {
@@ -318,6 +338,74 @@ export default {
       this.param.range = "";
       this.param.date = "";
       this.param.date_range = "";
+    },
+
+    getPaymentCategoriesFromState() {
+      this.payment_categories = [];
+      this.$store.getters.getPaymentCategories.forEach((ele) => {
+        this.payment_categories.push({
+          label: ele.name,
+          value: ele.id,
+        });
+      });
+
+      return this.payment_categories;
+    },
+
+    filterPaymentCategories(val, update, abort) {
+      if (val < 2) {
+        abort();
+        return;
+      }
+
+      update(() => {
+        this.payment_categories = this.getPaymentCategoriesFromState().filter(
+          (item) => item.label.toLowerCase().includes(val.toLowerCase())
+        );
+        return this.payment_categories;
+      });
+    },
+
+    filterPaymentItems(val, update, abort) {
+      if (val < 2) {
+        abort();
+        return;
+      }
+
+      update(() => {
+        this.filtered_payment_items = this.payment_items_by_category.filter(
+          (item) => item.label.toLowerCase().includes(val.toLowerCase())
+        );
+        return this.filtered_payment_items;
+      });
+    },
+
+    filterMonths(val, update, abort) {
+      if (val < 2) {
+        abort();
+        return;
+      }
+
+      update(() => {
+        this.months = monthOptions.filter((item) =>
+          item.toLowerCase().includes(val.toLowerCase())
+        );
+        return this.months;
+      });
+    },
+
+    filterYears(val, update, abort) {
+      if (val < 2) {
+        abort();
+        return;
+      }
+
+      update(() => {
+        this.years = this.getSessionsFromState.filter((item) =>
+          item.label.toLowerCase().includes(val.toLowerCase())
+        );
+        return this.years;
+      });
     },
   },
   components: {},

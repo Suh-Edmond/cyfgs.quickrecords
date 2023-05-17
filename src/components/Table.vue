@@ -26,9 +26,7 @@
         <div class="text-h6 title" v-show="show_members">
           Organisation Members
         </div>
-        <div class="text-h6 title" v-show="show_savings">
-          Members Savings
-        </div>
+        <div class="text-h6 title" v-show="show_savings">Members Savings</div>
       </template>
       <template v-slot:body="props">
         <!-- body for members -->
@@ -88,11 +86,7 @@
           >
             {{ props.row.approve }}
           </q-td>
-          <q-td
-            key="approve"
-            :props="props"
-            v-if="props.row.approve == ''"
-          >
+          <q-td key="approve" :props="props" v-if="props.row.approve == ''">
           </q-td>
 
           <q-td key="action" :props="props">
@@ -232,21 +226,33 @@
           <q-td key="date" :props="props">
             {{ getDate(props.row.date) }}
           </q-td>
-          <q-td key="approve" :props="props"  v-if="props.row.approve == 'PENDING'"
-            class="text-info">
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'PENDING'"
+            class="text-info"
+          >
             {{ props.row.approve }}
           </q-td>
-          <q-td key="approve" :props="props"  v-if="props.row.approve == 'APPROVED'"
-            class="registered">
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'APPROVED'"
+            class="registered"
+          >
             {{ props.row.approve }}
           </q-td>
-          <q-td key="approve" :props="props"  v-if="props.row.approve == 'DECLINED'"
-            class="not_registered">
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'DECLINED'"
+            class="not_registered"
+          >
             {{ props.row.approve }}
           </q-td>
           <q-td key="action" :props="props">
-             <!-- buttons for approve and decline row data -->
-             <q-btn
+            <!-- buttons for approve and decline row data -->
+            <q-btn
               class="decline_btn_saving"
               size="md"
               label="Decline"
@@ -309,7 +315,6 @@
             v-if="props.row.approve == 'APPROVED'"
             class="registered"
           >
-
             {{ props.row.approve }}
           </q-td>
 
@@ -420,8 +425,8 @@
             {{ props.row.approve }}
           </q-td>
           <q-td key="action" :props="props">
-             <!-- button to handle view all activity -->
-             <q-btn
+            <!-- button to handle view all activity -->
+            <q-btn
               unelevated
               no-caps
               dense
@@ -434,8 +439,8 @@
               <q-icon name="visibility" size="xs" class="q-pl-sm"></q-icon>
             </q-btn>
 
-             <!-- buttons for approve and decline row data -->
-             <q-btn
+            <!-- buttons for approve and decline row data -->
+            <q-btn
               class="decline_btn_income_activity"
               size="md"
               label="Decline"
@@ -459,9 +464,8 @@
               "
             />
 
-
             <!-- menu to handle edit and view details of a single show_income_activity -->
-            <q-btn flat round  v-if="!checkTreasurerRole()">
+            <q-btn flat round v-if="!checkTreasurerRole()">
               <q-icon
                 name="menu"
                 size="xs"
@@ -583,8 +587,8 @@
             >
             </q-btn>
 
-              <!-- buttons for approve and decline row data -->
-              <q-btn
+            <!-- buttons for approve and decline row data -->
+            <q-btn
               class="decline_btn_income_activity"
               label="Decline"
               no-caps
@@ -761,13 +765,13 @@
         </q-tr>
         <!-- member contribution -->
         <div class="text-bold q-pb-md" v-if="show_member_contribution">
-          <div class="q-pt-sm">
+          <div class="q-mt-md">
             Amount Contributed:
             <span class="total_value">
               {{ Number(total_contribution).toLocaleString() }} XAF
             </span>
           </div>
-          <div>
+          <div class="q-my-md">
             <!-- member balance contribution -->
             <q-tr>
               Total Balance:
@@ -922,7 +926,7 @@
             </div>
 
             <div v-if="show_contribution" class="q-mt-md">
-              <div class="text-weight-bold text-left  text-red">
+              <div class="text-weight-bold text-left text-red">
                 Name:
                 <span class="q-pl-md">{{ approve_data.user_name }}</span>
               </div>
@@ -930,11 +934,13 @@
               <div class="text-weight-bold text-left text-red">
                 Amount:
                 <span class="amount"
-                  >{{ Number(approve_data.total_amount_deposited).toLocaleString() }} XAF</span
+                  >{{
+                    Number(approve_data.total_amount_deposited).toLocaleString()
+                  }}
+                  XAF</span
                 >
               </div>
             </div>
-
           </div>
         </q-card-section>
 
@@ -1193,11 +1199,14 @@ export default {
     },
 
     onChangeRecordState() {
-      console.log( this.approve_data.type);
+      console.log(this.approve_data.type);
       let payload = {
         url: this.setApproveUrlBaseOnType(this.approve_data),
         msg: this.setApproveFeedbackMsg(this.approve_data),
-        data: this.approve_data.type == "MEMBERS_CONTRIBUTIONS" ? this.setApproveContributionPayload(this.approve_data) : null,
+        data:
+          this.approve_data.type == "MEMBERS_CONTRIBUTIONS"
+            ? this.setApproveContributionPayload(this.approve_data)
+            : null,
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
@@ -1274,14 +1283,18 @@ export default {
       const route_data = Object.assign({}, this.$route.query);
 
       let organisation_id = route_data.organisation_id;
-      let session_id = route_data.session_id
+      let session_id = route_data.session_id;
       let status = route_data.status != undefined ? route_data.status : "";
       let name = route_data.name != undefined ? route_data.name : "";
-      let amount_deposited = this.$route.amount_deposited != undefined ? route_data.amount_deposited : "";
+      let amount_deposited =
+        this.$route.amount_deposited != undefined
+          ? route_data.amount_deposited
+          : "";
       let month = route_data.month != undefined ? route_data.month : "";
-      let date = route_data.date ? route_data.date : ""
-      let range = route_data.range ? route_data.range : ""
+      let date = route_data.date ? route_data.date : "";
+      let range = route_data.range ? route_data.range : "";
       let search_savings_url = "";
+
       switch (data.type) {
         case "INCOME_ACTIVITIES":
           this.getOrganisationIncomeActivities(data.organisation_id);
@@ -1292,10 +1305,18 @@ export default {
           break;
         case "MEMBERS_CONTRIBUTIONS":
           let payload = {
-            payment_item_id:data.payment_item_id,
-            year:data.session_id
-          }
-          this.filterMembersContributions(payload);
+            payment_item_id: data.payment_item_id,
+            year: data.session_id,
+          };
+          this.filterMembersContributions(
+            payload,
+            session_id,
+            status,
+            month,
+            date,
+            range,
+            amount_deposited
+          );
           break;
         case "MEMBERS":
           this.getOrganisationMembers(data.organisation_id, true);
@@ -1303,14 +1324,14 @@ export default {
       }
     },
 
-    setApproveContributionPayload(data){
+    setApproveContributionPayload(data) {
       let type = this.chosen_state == "Approve" ? "APPROVED" : "DECLINED";
       let payload = {
-        payment_item_id:data.payment_item_id,
-        user_id:data.user_id,
-        session_id:data.session_id,
-        type: type
-      }
+        payment_item_id: data.payment_item_id,
+        user_id: data.user_id,
+        session_id: data.session_id,
+        type: type,
+      };
 
       return payload;
     },
@@ -1387,7 +1408,6 @@ export default {
       });
     },
 
-
     onEditContribution(data) {
       let payload = {
         data: data,
@@ -1398,7 +1418,6 @@ export default {
 
       this.$emit("edit-contribution", payload);
     },
-
 
     onDeleteContribution(data) {},
   },
@@ -1445,7 +1464,7 @@ export default {
   letter-spacing: 0.01em;
   text-transform: capitalize;
   color: $primary;
-  padding: .11rem;
+  padding: 0.11rem;
 }
 
 .view_income {

@@ -211,13 +211,13 @@ export default {
     },
     computeTotalContributions() {
       let total = 0.0;
-      if(this.$store.getters.getMembersContributionsByPaymentItem != null){
+      if (this.$store.getters.getMembersContributionsByPaymentItem != null) {
         this.$store.getters.getMembersContributionsByPaymentItem.data
-        .filter((ele) => ele.approve == "APPROVED")
-        .map((ele) => ele.total_amount_deposited)
-        .forEach((amount) => {
-          total += amount;
-        });
+          .filter((ele) => ele.approve == "APPROVED")
+          .map((ele) => ele.total_amount_deposited)
+          .forEach((amount) => {
+            total += amount;
+          });
       }
       return total;
     },
@@ -250,7 +250,7 @@ export default {
               user_id: ele.user_id,
               user_name: ele.user_name,
               user_telephone: ele.user_telephone,
-              session_id:ele.session_id
+              session_id: ele.session_id,
             });
           }
         );
@@ -289,7 +289,7 @@ export default {
             user_id: ele.user_id,
             user_name: ele.user_name,
             user_telephone: ele.user_telephone,
-            session_id:ele.session_id
+            session_id: ele.session_id,
           });
         });
       }
@@ -316,12 +316,14 @@ export default {
     getTableTitleForSearchContributions() {
       let title = "";
       const route_data = Object.assign({}, this.$route.query);
-
-      title =`Members Contributions for ${
-            route_data.payment_item_id
+      title =
+        route_data.payment_item_id != undefined
+          ? `Members Contributions for ${
+              route_data.payment_item_id
             }, Amount Payable:  ${Number(
-              909000
-            ).toLocaleString()} XAF`;
+              route_data.payment_item_amount
+            ).toLocaleString()} XAF`
+          : "";
       return title;
     },
   },
@@ -355,7 +357,10 @@ export default {
     },
 
     filterContributions() {
-      let session = this.year == null ? this.$store.getters.getCurrentYear.id : this.year.value
+      let session =
+        this.year == null
+          ? this.$store.getters.getCurrentYear.id
+          : this.year.value;
       this.filteredContributions = [];
       let payload = {
         status: "none",
@@ -402,7 +407,7 @@ export default {
               user_id: ele.user_id,
               user_name: ele.user_name,
               user_telephone: ele.user_telephone,
-              session_id:ele.session_id
+              session_id: ele.session_id,
             });
           });
         })

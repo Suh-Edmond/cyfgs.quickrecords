@@ -7,34 +7,13 @@
         </label>
       </div>
       <div class="q-mb-lg row">
-        <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 q-mb-md">
-          <q-select
-            v-model="param.payment_category_id"
-            outlined
-            dense
-            :options="payment_categories"
-            @input="getPaymentItems"
-            label="Search payment category..."
-            input-debounce="0"
-            use-input
-            clearable
-            @filter="filterPaymentCategories"
-          >
-            <template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey"> No results </q-item-section>
-              </q-item>
-            </template></q-select
-          >
-        </div>
-
         <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 q-mt-sm">
           <q-select
             v-model="param.payment_item_id"
             outlined
             dense
             :options="filtered_payment_items"
-            label="Search item..."
+            label="Search payment item..."
             input-debounce="0"
             use-input
             clearable
@@ -50,7 +29,6 @@
       </div>
 
       <!-- filter by status of contributions -->
-      <hr class="separator" />
       <div class="q-my-md">
         <label for="heading" class="text">Filter by status</label>
       </div>
@@ -205,7 +183,6 @@
 <script>
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
-import PaymentCategoryMixin from "src/mixins/PaymentCategoryMixin.vue";
 import ContributionsMixinVue from "src/mixins/ContributionsMixin.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
 import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
@@ -228,7 +205,6 @@ export default {
   mixins: [
     organisationMixinVue,
     UserSavingMixinVue,
-    PaymentCategoryMixin,
     ContributionsMixinVue,
     HelperMixinVue,
     CurrentYearMixinVue,
@@ -239,9 +215,7 @@ export default {
 
     this.$emit("set-heading", heading);
 
-    let id = this.getOrganisationId;
-
-    this.fetchCategories(id, false);
+    this.getPaymentItems();
   },
 
   data() {
@@ -291,10 +265,7 @@ export default {
   },
   computed: {
     validateForm() {
-      return this.param.payment_category_id == null ||
-        this.param.payment_item_id == null
-        ? true
-        : false;
+      return this.param.payment_item_id == null;
     },
   },
   methods: {
@@ -302,7 +273,7 @@ export default {
       this.payment_items_by_category = [];
       let payload = {
         status: "none",
-        url: `/api/protected/payment-categories/${this.param.payment_category_id.value}/payment-items`,
+        url: `/api/protected/payment-items`,
         has_path_val: true,
         show_feedback: false,
         show_spinner: false,
@@ -319,7 +290,7 @@ export default {
       };
       this.$store.dispatch("getRequest", payload).then((res) => {
         if (res.success) {
-          res.data.data.forEach((ele) => {
+          res.data.forEach((ele) => {
             this.payment_items_by_category.push({
               label: ele.name,
               value: ele.id,
@@ -345,8 +316,18 @@ export default {
         month: this.param.month,
         date: this.param.date,
         date_range: this.param.date_range,
+        amount: this.param.payment_item_id.amount,
       };
-      this.loading = this.filterMembersContributions(payload);
+      this.loading = this.filterMembersContributions(
+        payload,
+        payload.year,
+        payload.status,
+        payload.month,
+        payload.date,
+        payload.date_range,
+        payload.amount
+      );
+      this.param.payment_item_id = "";
     },
 
     reset() {

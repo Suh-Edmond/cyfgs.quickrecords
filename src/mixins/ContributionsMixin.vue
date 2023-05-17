@@ -30,22 +30,24 @@ export default {
       this.$store.dispatch("getRequest", payload).then(() => {});
     },
 
-    filterMembersContributions(data) {
-      let status = data.status != undefined ? data.status : "";
-      let year = data.year != undefined ? data.year : "";
-      let month = data.month != undefined ? data.month : "";
-      let date = data.date != undefined ? data.date : "";
-      let range = data.date_range != undefined ? data.date_range : "";
+    filterMembersContributions(data, session_id, state, con_month, con_date, date_range, amount) {
+      let status = data.status != undefined ? data.status : state;
+      let year = data.year != undefined ? data.year : session_id;
+      let month = data.month != undefined ? data.month : con_month;
+      let date = data.date != undefined ? data.date : con_date;
+      let range = data.date_range != undefined ? data.date_range : date_range;
+
       this.$router.push({
         path: `/dashboard/contributions`,
         query: {
           payment_item_id:
-            data.payment_item_id != undefined ? data.payment_item_id.label : "",
+            data.payment_item_id != undefined ? data.payment_item_id.label : data.payment_item_id,
           status: status,
           year: year,
           month: month,
           date: date,
           range: range,
+          payment_item_amount:data.payment_item_id != undefined ? data.payment_item_id.amount : amount
         },
       });
       this.loading = true;
@@ -73,16 +75,6 @@ export default {
 
       this.$store.dispatch("getRequest", payload).then(() => {
         this.loading = false;
-        this.$store.dispatch("setSearchSavingsParams", {
-          organisation_id: data.organisation_id,
-          year: data.year,
-          payment_category_id: data.payment_category_id,
-          payment_item_id: data.payment_item_id,
-          month: data.month,
-          date: data.date,
-          range: data.date_range,
-          status: data.status,
-        });
       });
 
       return this.loading;

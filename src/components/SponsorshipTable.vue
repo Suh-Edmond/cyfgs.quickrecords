@@ -22,15 +22,34 @@
           <q-td key="amount_deposited" :props="props">
             {{ Number(props.row.amount_deposited).toLocaleString() }}
           </q-td>
-          <q-td key="code" :props="props">
-            {{ props.row.code }}
+          <q-td key="approve" :props="props"  v-if="props.row.approve == 'PENDING'"
+            class="text-info">
+            {{ props.row.approve }}
           </q-td>
-          <q-td key="approve" :props="props">
+          <q-td key="approve" :props="props"  v-if="props.row.approve == 'APPROVED'"
+            class="registered">
+            {{ props.row.approve }}
+          </q-td>
+          <q-td key="approve" :props="props"   v-if="props.row.approve == 'DECLINED'"
+            class="not_registered">
             {{ props.row.approve }}
           </q-td>
 
           <q-td key="action" :props="props">
-            <!-- button to handle edit, view and delete of row data -->
+            <q-btn
+              unelevated
+              no-caps
+              size="md"
+              color="primary"
+              class="view_income q-mr-md"
+              label="View"
+              @click="onViewSupport(props.row)"
+              v-if="checkTreasurerRole()"
+            >
+              <q-icon name="visibility" size="xs" class="q-pl-md"></q-icon>
+            </q-btn>
+
+            <!-- button to handle edit, view and delete of row data  q-px-sm -->
             <q-btn flat round v-if="!checkTreasurerRole()">
               <q-icon
                 name="menu"
@@ -99,15 +118,17 @@
               size="md"
               label="Decline"
               no-caps
+              unelevated
               @click="onDeclineRecord(props.row, 'Decline')"
               v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
             />
 
             <q-btn
-              class="approve_btn"
+              class="approve_btn q-ml-md"
               size="md"
               label="Approve"
               no-caps
+              unelevated
               @click="onApprovedRecord(props.row, 'Approve')"
               v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
             />
@@ -206,19 +227,21 @@
           </div>
         </q-card-section>
 
-        <q-card-actions align="right">
+        <q-card-actions align="right" class="q-ma-md">
           <q-btn
             :class="chosen_state == 'Approve' ? 'approve' : 'decline'"
             size="md"
             label="Cancel"
             flat
             v-close-popup
+            no-caps
           />
           <q-btn
             :class="chosen_state == 'Approve' ? 'approve' : 'decline'"
             size="md"
             :label="chosen_state"
             flat
+            no-caps
             @click="onChangeRecordState()"
             v-close-popup
           />
@@ -410,14 +433,14 @@ export default {
 }
 
 .approve_card {
-  width: 30rem;
-  padding: 0.7rem;
+  width: 24rem;
+  // padding: 0.7rem;
 }
 
 .decline_btn {
   background-color: $orange;
   color: white;
-  margin-right: 3rem;
+  // margin-right: 3rem;
 }
 
 .message {
@@ -451,5 +474,24 @@ export default {
   color: $grey2;
   font-weight: 500;
   font-size: 13px;
+}
+
+.view_income {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 25px;
+  letter-spacing: 0.01em;
+  text-transform: capitalize;
+  color: $primary;
+}
+
+.not_registered {
+  color: $orange;
+}
+
+.registered {
+  color: $secondary;
 }
 </style>

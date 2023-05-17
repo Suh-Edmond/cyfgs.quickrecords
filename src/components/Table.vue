@@ -279,7 +279,7 @@
               label="All Savings"
               @click="showMemberSavings(props.row)"
               :to="{ name: 'user_savings', params: { id: props.row.user_id } }"
-              v-if="show_savings && checkTreasurerRole()"
+              v-if="show_savings && !checkTreasurerRole()"
             >
               <q-icon name="visibility" size="xs" class="q-pl-sm"></q-icon>
             </q-btn>
@@ -420,8 +420,48 @@
             {{ props.row.approve }}
           </q-td>
           <q-td key="action" :props="props">
+             <!-- button to handle view all activity -->
+             <q-btn
+              unelevated
+              no-caps
+              dense
+              color="primary"
+              class="view_income q-px-sm q-mr-md"
+              label="View"
+              @click="onViewIncomeActivity(props.row)"
+              v-if="show_income_activity && checkTreasurerRole()"
+            >
+              <q-icon name="visibility" size="xs" class="q-pl-sm"></q-icon>
+            </q-btn>
+
+             <!-- buttons for approve and decline row data -->
+             <q-btn
+              class="decline_btn_income_activity"
+              size="md"
+              label="Decline"
+              no-caps
+              unelevated
+              @click="onDeclineRecord(props.row, 'Decline')"
+              v-if="
+                checkPresidentTreasurerRole() && props.row.approve == 'PENDING'
+              "
+            />
+
+            <q-btn
+              class="approve_btn_income_activity q-ml-md"
+              size="md"
+              label="Approve"
+              no-caps
+              unelevated
+              @click="onApprovedRecord(props.row, 'Approve')"
+              v-if="
+                checkPresidentTreasurerRole() && props.row.approve == 'PENDING'
+              "
+            />
+
+
             <!-- menu to handle edit and view details of a single show_income_activity -->
-            <q-btn flat round>
+            <q-btn flat round  v-if="!checkTreasurerRole()">
               <q-icon
                 name="menu"
                 size="xs"
@@ -1188,12 +1228,10 @@ export default {
       let date = route_data.date ? route_data.date : ""
       let range = route_data.range ? route_data.range : ""
       let search_savings_url = "";
-      // let payload = null;
-
 
       switch (data.type) {
         case "INCOME_ACTIVITIES":
-          this.getOrganisationIncomeActivities(organisation_id);
+          this.getOrganisationIncomeActivities(data.organisation_id);
           break;
         case "MEMBERS_SAVINGS":
           search_savings_url = `/api/protected/user-savings?organisation_id=${organisation_id}&status=${status}&name=${name}&amount_deposited=${amount_deposited}&session_id=${session_id}&month=${month}&date=${date}&date_range=${range}`;
@@ -1203,7 +1241,7 @@ export default {
           this.filterMembersContributions(data);
           break;
         case "MEMBERS":
-          this.getOrganisationMembers(organisation_id, true);
+          this.getOrganisationMembers(data.organisation_id, true);
           break;
       }
     },
@@ -1341,6 +1379,17 @@ export default {
   padding: .11rem;
 }
 
+.view_income {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 25px;
+  letter-spacing: 0.01em;
+  text-transform: capitalize;
+  color: $primary;
+}
+
 .heading {
   font-family: "Roboto";
   font-style: normal;
@@ -1364,6 +1413,11 @@ export default {
   margin-right: 2.5rem;
 }
 
+.approve_btn_income_activity {
+  background-color: $secondary;
+  color: white;
+}
+
 .approve_card {
   width: 25rem;
   // padding: 0.3rem;
@@ -1378,6 +1432,11 @@ export default {
   background-color: $orange;
   color: white;
   margin-right: 3rem;
+}
+
+.decline_btn_income_activity {
+  background-color: $orange;
+  color: white;
 }
 
 .approve {

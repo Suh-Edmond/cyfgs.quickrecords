@@ -26,6 +26,9 @@
         <div class="text-h6 title" v-show="show_members">
           Organisation Members
         </div>
+        <div class="text-h6 title" v-show="show_savings">
+          Members Savings
+        </div>
       </template>
       <template v-slot:body="props">
         <!-- body for members -->
@@ -229,19 +232,56 @@
           <q-td key="date" :props="props">
             {{ getDate(props.row.date) }}
           </q-td>
-          <q-td key="state" :props="props">
+          <q-td key="approve" :props="props"  v-if="props.row.approve == 'PENDING'"
+            class="text-info">
+            {{ props.row.approve }}
+          </q-td>
+          <q-td key="approve" :props="props"  v-if="props.row.approve == 'APPROVED'"
+            class="registered">
+            {{ props.row.approve }}
+          </q-td>
+          <q-td key="approve" :props="props"  v-if="props.row.approve == 'DECLINED'"
+            class="not_registered">
             {{ props.row.approve }}
           </q-td>
           <q-td key="action" :props="props">
+             <!-- buttons for approve and decline row data -->
+             <q-btn
+              class="decline_btn_saving"
+              size="md"
+              label="Decline"
+              no-caps
+              unelevated
+              @click="onDeclineRecord(props.row, 'Decline')"
+              v-if="
+                checkPresidentTreasurerRole() && props.row.approve == 'PENDING'
+              "
+            />
+
+            <q-btn
+              class="approve_btn"
+              size="md"
+              label="Approve"
+              no-caps
+              unelevated
+              @click="onApprovedRecord(props.row, 'Approve')"
+              v-if="
+                checkPresidentTreasurerRole() && props.row.approve == 'PENDING'
+              "
+            />
             <!-- button to handle view all member saving -->
             <q-btn
-              flat
+              unelevated
+              no-caps
+              dense
+              color="primary"
               class="view_savings q-py-xs"
+              label="All Savings"
               @click="showMemberSavings(props.row)"
               :to="{ name: 'user_savings', params: { id: props.row.user_id } }"
-              v-if="show_savings && !checkTreasurerRole()"
+              v-if="show_savings && checkTreasurerRole()"
             >
-              View All Savings
+              <q-icon name="visibility" size="xs" class="q-pl-sm"></q-icon>
             </q-btn>
           </q-td>
         </q-tr>
@@ -269,8 +309,10 @@
             v-if="props.row.approve == 'APPROVED'"
             class="registered"
           >
+
             {{ props.row.approve }}
           </q-td>
+
           <q-td
             key="approve"
             :props="props"
@@ -805,7 +847,7 @@
           </div>
         </q-card-section>
 
-        <q-card-actions align="right">
+        <q-card-actions align="right" class="q-my-md q-mx-sm">
           <q-btn
             :class="chosen_state == 'Approve' ? 'approve' : 'decline'"
             size="md"
@@ -1078,14 +1120,13 @@ export default {
         },
       };
       this.$store.dispatch("putRequest", payload).then((res) => {
-        if (res.status == 200) {
+        if (res) {
           this.fetchDataBaseOnTypeAfterApprove(this.approve_data);
         }
       });
     },
 
     setApproveUrlBaseOnType(data) {
-      console.log(data);
       let url = "";
       let type = this.chosen_state == "Approve" ? "APPROVED" : "DECLINED";
       switch (data.type) {
@@ -1136,62 +1177,30 @@ export default {
     },
 
     fetchDataBaseOnTypeAfterApprove(data) {
-      let organisation_id = this.$store.getters.getOrganisation.id;
+      const route_data = Object.assign({}, this.$route.query);
+
+      let organisation_id = route_data.organisation_id;
+      let session_id = route_data.session_id
+      let status = route_data.status != undefined ? route_data.status : "";
+      let name = route_data.name != undefined ? route_data.name : "";
+      let amount_deposited = this.$route.amount_deposited != undefined ? route_data.amount_deposited : "";
+      let month = route_data.month != undefined ? route_data.month : "";
+      let date = route_data.date ? route_data.date : ""
+      let range = route_data.range ? route_data.range : ""
       let search_savings_url = "";
-      let payload = null;
-      if (data.type != "MEMBERS") {
-        payload = {
-          status:
-            this.$store.getters.getSearchSavingParams.status == undefined
-              ? ""
-              : this.$store.getters.getSearchSavingParams.status,
-          name:
-            this.$store.getters.getSearchSavingParams.name == undefined
-              ? ""
-              : this.$store.getters.getSearchSavingParams.name,
-          amount_deposited:
-            this.$store.getters.getSearchSavingParams.amount_deposited ==
-            undefined
-              ? 0
-              : this.$store.getters.getSearchSavingParams.amount_deposited,
-          date_range:
-            this.$store.getters.getSearchSavingParams.date_range == undefined
-              ? ""
-              : this.$store.getters.getSearchSavingParams.date_range,
-          date:
-            this.$store.getters.getSearchSavingParams.date == undefined
-              ? ""
-              : this.$store.getters.getSearchSavingParams.date,
-          month:
-            this.$store.getters.getSearchSavingParams.month == undefined
-              ? ""
-              : this.$store.getters.getSearchSavingParams.month,
-          year:
-            this.$store.getters.getSearchSavingParams.year == undefined
-              ? ""
-              : this.$store.getters.getSearchSavingParams.year,
-          payment_item_id:
-            this.$store.getters.getSearchSavingParams.payment_item_id ==
-            undefined
-              ? ""
-              : this.$store.getters.getSearchSavingParams.payment_item_id.id,
-          range:
-            this.$store.getters.getSearchSavingParams.range == undefined
-              ? ""
-              : this.$store.getters.getSearchSavingParams.range,
-        };
-      }
+      // let payload = null;
+
 
       switch (data.type) {
         case "INCOME_ACTIVITIES":
           this.getOrganisationIncomeActivities(organisation_id);
           break;
         case "MEMBERS_SAVINGS":
-          search_savings_url = `/api/protected/user-savings?organisation_id=${organisation_id}&status=${payload.status}&name=${payload.name}&amount_deposited=${payload.amount_deposited}&year=${payload.year}&month=${payload.month}&date=${payload.date}&date_range=${payload.date_range}`;
+          search_savings_url = `/api/protected/user-savings?organisation_id=${organisation_id}&status=${status}&name=${name}&amount_deposited=${amount_deposited}&session_id=${session_id}&month=${month}&date=${date}&date_range=${range}`;
           this.filterSaving(search_savings_url);
           break;
         case "MEMBERS_CONTRIBUTIONS":
-          this.filterMembersContributions(payload);
+          this.filterMembersContributions(data);
           break;
         case "MEMBERS":
           this.getOrganisationMembers(organisation_id, true);
@@ -1270,6 +1279,8 @@ export default {
         params: { id: data.id },
       });
     },
+
+
     onEditContribution(data) {
       let payload = {
         data: data,
@@ -1280,6 +1291,8 @@ export default {
 
       this.$emit("edit-contribution", payload);
     },
+
+
     onDeleteContribution(data) {},
   },
   components: {
@@ -1322,10 +1335,10 @@ export default {
   font-weight: 500;
   font-size: 13px;
   line-height: 25px;
-  align-items: left;
   letter-spacing: 0.01em;
   text-transform: capitalize;
   color: $primary;
+  padding: .11rem;
 }
 
 .heading {

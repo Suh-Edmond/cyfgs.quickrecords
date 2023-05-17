@@ -131,6 +131,7 @@ export default {
         {
           name: "action",
           label: "Action",
+          align: "left",
           field: "action",
         },
       ],
@@ -181,7 +182,7 @@ export default {
           balance: ele.balance,
           payment_item_amount: ele.payment_item_amount,
           payment_item_id: ele.payment_item_id,
-          payment_item_complusory: ele.payment_item_complusory,
+          payment_item_complusory: ele.payment_item_compulsory,
           payment_item_name: ele.payment_item_name,
           payment_category: ele.payment_category,
           comment: ele.comment,

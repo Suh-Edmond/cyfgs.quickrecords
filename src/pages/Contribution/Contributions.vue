@@ -238,7 +238,7 @@ export default {
               balance: ele.balance,
               payment_item_amount: ele.payment_item_amount,
               payment_item_id: ele.payment_item_id,
-              payment_item_complusory: ele.payment_item_complusory,
+              payment_item_complusory: ele.payment_item_compulsory,
               payment_item_name: ele.payment_item_name,
               comment: ele.comment,
               code: ele.code,
@@ -250,6 +250,7 @@ export default {
               user_id: ele.user_id,
               user_name: ele.user_name,
               user_telephone: ele.user_telephone,
+              session_id:ele.session_id
             });
           }
         );
@@ -281,13 +282,14 @@ export default {
             comment: ele.comment,
             code: ele.code,
             type: "MEMBERS_CONTRIBUTIONS",
-            complusory: ele.complusory,
+            compulsory: ele.compulsory,
             created_at: ele.created_at,
             updated_by: ele.updated_by,
             status: ele.status,
             user_id: ele.user_id,
             user_name: ele.user_name,
             user_telephone: ele.user_telephone,
+            session_id:ele.session_id
           });
         });
       }
@@ -313,15 +315,13 @@ export default {
 
     getTableTitleForSearchContributions() {
       let title = "";
-      let search_data = this.$store.getters.getSearchSavingParams;
-      title =
-        search_data != undefined && search_data.payment_item_id != undefined
-          ? `Members Contributions for ${
-              search_data.payment_item_id.label
+      const route_data = Object.assign({}, this.$route.query);
+
+      title =`Members Contributions for ${
+            route_data.payment_item_id
             }, Amount Payable:  ${Number(
-              search_data.payment_item_id.amount
-            ).toLocaleString()} XAF`
-          : "";
+              909000
+            ).toLocaleString()} XAF`;
       return title;
     },
   },
@@ -395,13 +395,14 @@ export default {
               comment: ele.comment,
               code: ele.code,
               type: "MEMBERS_CONTRIBUTIONS",
-              complusory: ele.complusory,
+              compulsory: ele.compulsory,
               created_at: ele.created_at,
               updated_by: ele.updated_by,
               status: ele.status,
               user_id: ele.user_id,
               user_name: ele.user_name,
               user_telephone: ele.user_telephone,
+              session_id:ele.session_id
             });
           });
         })

@@ -14,7 +14,7 @@
             dense
             :options="payment_categories"
             @input="getPaymentItems"
-            label="Search category..."
+            label="Search payment category..."
             input-debounce="0"
             use-input
             clearable

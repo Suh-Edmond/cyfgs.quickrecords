@@ -31,16 +31,21 @@ export default {
     },
 
     filterMembersContributions(data) {
+      let status = data.status != undefined ? data.status : "";
+      let year = data.year != undefined ? data.year : "";
+      let month = data.month != undefined ? data.month : "";
+      let date = data.date != undefined ? data.date : "";
+      let range = data.date_range != undefined ? data.date_range : "";
       this.$router.push({
         path: `/dashboard/contributions`,
         query: {
           payment_item_id:
             data.payment_item_id != undefined ? data.payment_item_id.label : "",
-          status: data.status,
-          year: data.year,
-          month: data.month,
-          date: data.date,
-          range: data.date_range,
+          status: status,
+          year: year,
+          month: month,
+          date: date,
+          range: range,
         },
       });
       this.loading = true;
@@ -48,7 +53,7 @@ export default {
         data.payment_item_id.value != undefined
           ? data.payment_item_id.value
           : data.payment_item_id;
-      let url = `/api/protected/organisations/contributions/search?payment_item_id=${id}&year=${data.year}&month=${data.month}&date=${data.date}&range=${data.date_range}&status=${data.status}`;
+      let url = `/api/protected/organisations/contributions/search?payment_item_id=${id}&year=${year}&month=${month}&date=${date}&range=${range}&status=${status}`;
       let payload = {
         url: url,
         msg: "none",

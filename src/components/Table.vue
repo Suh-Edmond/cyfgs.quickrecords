@@ -564,13 +564,13 @@
             {{ props.row.approve }}
           </q-td>
           <q-td key="action" :props="props">
-            <!-- menu to handle edit and view details of a single show_income_activity -->
+            <!-- menu to handle edit and view details of a single contributions -->
             <q-btn
               unelevated
               color="primary"
               label="Details"
               no-caps
-              class="view_items"
+              class="view_items q-mr-md"
               icon-right="visibility"
               @click="onViewAllMemberContributions(props.row)"
               :to="{
@@ -582,6 +582,29 @@
               }"
             >
             </q-btn>
+
+              <!-- buttons for approve and decline row data -->
+              <q-btn
+              class="decline_btn_income_activity"
+              label="Decline"
+              no-caps
+              unelevated
+              @click="onDeclineRecord(props.row, 'Decline')"
+              v-if="
+                checkPresidentTreasurerRole() && props.row.approve == 'PENDING'
+              "
+            />
+
+            <q-btn
+              class="approve_btn_income_activity q-ml-md"
+              label="Approve"
+              no-caps
+              unelevated
+              @click="onApprovedRecord(props.row, 'Approve')"
+              v-if="
+                checkPresidentTreasurerRole() && props.row.approve == 'PENDING'
+              "
+            />
           </q-td>
         </q-tr>
         <!-- end of body for contributions -->
@@ -631,8 +654,19 @@
             {{ props.row.approve }}
           </q-td>
           <q-td key="action" :props="props">
+            <q-btn
+              unelevated
+              no-caps
+              color="primary"
+              class="view_income q-mr-md"
+              label="View"
+              @click="onViewContribution(props.row)"
+              v-if="checkTreasurerRole()"
+            >
+              <q-icon name="visibility" size="xs" class="q-pl-md"></q-icon>
+            </q-btn>
             <!-- menu to handle edit and view details of a single member contribution -->
-            <q-btn flat round>
+            <q-btn flat round v-if="!checkTreasurerRole()">
               <q-icon
                 name="menu"
                 size="xs"
@@ -647,7 +681,7 @@
                       clickable
                       v-close-popup
                       @click="onViewContribution(props.row)"
-                      v-show="show_member_contribution"
+                      v-if="show_member_contribution"
                     >
                       <q-item-section avatar class="q-mr-lg">
                         <span>
@@ -658,11 +692,12 @@
                         <q-item-label class="edit">View</q-item-label>
                       </q-item-section>
                     </q-item>
+                    <!-- edit a contribution -->
                     <q-item
                       clickable
                       v-close-popup
                       @click="onEditContribution(props.row)"
-                      v-show="show_member_contribution"
+                      v-if="!show_member_contribution"
                     >
                       <q-item-section avatar class="q-mr-lg">
                         <span>
@@ -673,11 +708,12 @@
                         <q-item-label class="edit">Edit</q-item-label>
                       </q-item-section>
                     </q-item>
+                    <!-- end of edit contribution -->
                     <q-item
                       clickable
                       v-close-popup
                       @click="onDeleteContribution(props.row)"
-                      v-show="show_member_contribution"
+                      v-if="show_member_contribution"
                     >
                       <q-item-section avatar class="q-mr-lg">
                         <span>
@@ -860,7 +896,7 @@
 
     <!-- confirmation dialog for approve and decline row data -->
     <q-dialog v-model="show_approve_dialog" v-if="show_approve_dialog">
-      <q-card class="approve_card">
+      <q-card class="approve_card q-pa-sm">
         <q-card-section>
           <div class="row">
             <div class="col-md-12">
@@ -884,6 +920,21 @@
                 >
               </div>
             </div>
+
+            <div v-if="show_contribution" class="q-mt-md">
+              <div class="text-weight-bold text-left  text-red">
+                Name:
+                <span class="q-pl-md">{{ approve_data.user_name }}</span>
+              </div>
+
+              <div class="text-weight-bold text-left text-red">
+                Amount:
+                <span class="amount"
+                  >{{ Number(approve_data.total_amount_deposited).toLocaleString() }} XAF</span
+                >
+              </div>
+            </div>
+
           </div>
         </q-card-section>
 
@@ -1142,10 +1193,11 @@ export default {
     },
 
     onChangeRecordState() {
+      console.log( this.approve_data.type);
       let payload = {
         url: this.setApproveUrlBaseOnType(this.approve_data),
         msg: this.setApproveFeedbackMsg(this.approve_data),
-        data: null,
+        data: this.approve_data.type == "MEMBERS_CONTRIBUTIONS" ? this.setApproveContributionPayload(this.approve_data) : null,
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
@@ -1177,7 +1229,7 @@ export default {
           url = `/api/protected/user-savings/${data.id}?type=${type}`;
           break;
         case "MEMBERS_CONTRIBUTIONS":
-          url = `/api/protected/contributions/${data.id}/approve?type=${type}`;
+          url = `/api/protected/contributions/approve`;
           break;
         case "MEMBERS":
           url = `/api/protected/members-registration/approve?user_id=${data.id}&status=${type}`;
@@ -1208,10 +1260,12 @@ export default {
           break;
         case "MEMBERS_CONTRIBUTIONS":
           date = moment(data.date).format("MMMM Do YYYY");
-          this.approve_msg = ` ${data.amount_deposited} F CFA Payment for ${data.name} on the ${date} ?`;
+          this.approve_msg = `Member's Contribution for ${data.payment_item_name} on the ${date}`;
+          break;
         case "MEMBERS":
           this.register_member_name = data.name;
           this.approve_msg = `Member Registration`;
+          break;
       }
       return this.approve_msg;
     },
@@ -1228,7 +1282,6 @@ export default {
       let date = route_data.date ? route_data.date : ""
       let range = route_data.range ? route_data.range : ""
       let search_savings_url = "";
-
       switch (data.type) {
         case "INCOME_ACTIVITIES":
           this.getOrganisationIncomeActivities(data.organisation_id);
@@ -1238,12 +1291,28 @@ export default {
           this.filterSaving(search_savings_url);
           break;
         case "MEMBERS_CONTRIBUTIONS":
-          this.filterMembersContributions(data);
+          let payload = {
+            payment_item_id:data.payment_item_id,
+            year:data.session_id
+          }
+          this.filterMembersContributions(payload);
           break;
         case "MEMBERS":
           this.getOrganisationMembers(data.organisation_id, true);
           break;
       }
+    },
+
+    setApproveContributionPayload(data){
+      let type = this.chosen_state == "Approve" ? "APPROVED" : "DECLINED";
+      let payload = {
+        payment_item_id:data.payment_item_id,
+        user_id:data.user_id,
+        session_id:data.session_id,
+        type: type
+      }
+
+      return payload;
     },
 
     cancelDialog() {
@@ -1416,6 +1485,12 @@ export default {
 .approve_btn_income_activity {
   background-color: $secondary;
   color: white;
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  align-items: center;
+  text-transform: capitalize;
 }
 
 .approve_card {
@@ -1437,6 +1512,12 @@ export default {
 .decline_btn_income_activity {
   background-color: $orange;
   color: white;
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  align-items: center;
+  text-transform: capitalize;
 }
 
 .approve {

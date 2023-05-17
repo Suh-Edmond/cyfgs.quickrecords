@@ -327,7 +327,7 @@ export default {
         },
       });
       let url = `/api/protected/user-savings?organisation_id=${organisation.id}&amount_deposited=${this.param.amount_deposited}&session_id=${session_id}`;
-      this.filterSaving(url);
+      this.loading_save_amount = this.filterSaving(url);
       this.param.amount_deposited = 0;
     },
 

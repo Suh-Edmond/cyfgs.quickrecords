@@ -9,7 +9,7 @@ export default {
   },
   methods: {
     getOrganisationMemberSavings(id) {
-      let session_id = this.getCurrentYear.id
+      let session_id = this.getCurrentYear != null ? this.getCurrentYear.id : ""
       let payload = {
         url: `/api/protected/savings?organisation_id=${id}&session_id=${session_id}`,
         msg: "none",
@@ -66,8 +66,9 @@ export default {
           data: [],
         },
       };
-
+      this.loading = true;
       this.$store.dispatch("getRequest", payload).then(() => {
+        this.loading =false
       });
     },
   },

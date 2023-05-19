@@ -14,6 +14,28 @@
           <label for="credential" class="form_field">Amount </label>
           <q-input v-model="user.amount" outlined dense type="number" disable />
         </div>
+        <div v-if="isMonthlyRegFrequency">
+          <label for="month" class="form_field">Select Month <span class="text-red">*</span></label>
+          <q-select
+              v-model="user.month_name"
+              outlined
+              dense
+              :options="monthsOptions"
+              label="Search month..."
+              use-input
+              input-debounce="0"
+              clearable
+              @filter="filterMonths"
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No results
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+        </div>
         <div class="flex q-mt-lg justify-end">
           <div>
             <ButtonVue
@@ -21,7 +43,7 @@
               :loading="loading"
               color="primary"
               :no_caps="true"
-              :disabled="false"
+              :disabled="validateForm"
             >
             </ButtonVue>
           </div>
@@ -34,12 +56,27 @@
 import ButtonVue from "src/components/Button.vue";
 import memberMixinVue from "src/mixins/memberMixin.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
-
+import RegistrationAmountMixinVue from 'src/mixins/RegistrationAmountMixin.vue';
+const months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 export default {
-  mixins: [memberMixinVue, organisationMixinVue],
+  mixins: [memberMixinVue, organisationMixinVue, RegistrationAmountMixinVue],
   mounted() {
     let heading = "Register Member to the Organisation";
     this.$emit("set-heading", heading);
+    this.getRegistrationAmount();
   },
   data() {
     return {
@@ -48,10 +85,15 @@ export default {
         user_name: null,
         year: null,
         amount: null,
+        month_name:"",
       },
+      monthsOptions:[],
     };
   },
   computed: {
+    isMonthlyRegFrequency(){
+      return this.$store.getters.getRegAmount.frequency == 'MONTHLY';
+    },
     getRegisterMember() {
       return this.setFormField(
         this.$store.getters.getMemberToRegister.name,
@@ -59,6 +101,10 @@ export default {
         this.$store.getters.getRegAmount.amount
       );
     },
+
+    validateForm(){
+      return this.isMonthlyRegFrequency && this.user.month_name == "" ? true : false;
+    }
   },
   watch: {
     getRegisterMember() {
@@ -76,6 +122,7 @@ export default {
         url: `/api/protected/members-registration`,
         data: {
           user_id: this.$store.getters.getMemberToRegister.id,
+          month_name: this.user.month_name
         },
         msg: "Member registered Successfully",
         color: "default",
@@ -117,6 +164,23 @@ export default {
       this.user.amount = amount;
       this.user.user_name = name;
       return this.user;
+    },
+
+
+    filterMonths(val, update, abort) {
+      if (val.length < 2) {
+        abort();
+        return;
+      }
+      if (this.month == "") {
+        this.monthsOptions = months;
+      }
+      update(() => {
+        const needle = val.toLowerCase();
+        this.monthsOptions = months.filter(
+          (v) => v.toLowerCase().indexOf(needle) > -1
+        );
+      });
     },
   },
   components: {

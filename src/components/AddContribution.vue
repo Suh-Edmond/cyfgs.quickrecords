@@ -99,6 +99,51 @@
               >
               </q-select>
             </div>
+            <div class="q-mb-md" v-if="valideteMonthlyPaymentItemFrequency">
+              <label for="credential" class="form_field"
+                >Select Month <span class="text-red">*</span></label
+              >
+              <q-select
+                v-model="contribution.month_name"
+                outlined
+                dense
+                :options="monthsOptions"
+                label="Search month..."
+                use-input
+                input-debounce="0"
+                clearable
+                @filter="filterMonths"
+              >
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      No results
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
+            </div>
+            <div class="q-mb-md" v-if="valideteQuarterlyPaymentItemFrequency">
+              <label for="credential" class="form_field"
+                >Select Quarter <span class="text-red">*</span></label
+              >
+              <q-select
+                v-model="contribution.quarterly_name"
+                outlined
+                dense
+                :options="quartersOptions"
+                input-debounce="0"
+                clearable
+              >
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      No results
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
+            </div>
             <div class="q-mb-md">
               <label for="credential" class="form_field"
                 >Total Amount Deposited (XAF)</label
@@ -127,7 +172,7 @@
                 >Deposite Amount (XAF)<span class="text-red">*</span></label
               >
               <q-input
-                v-model.lazy="contribution.amount_deposited"
+                v-model.number="contribution.amount_deposited"
                 outlined
                 dense
                 type="number"
@@ -193,6 +238,26 @@ import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import memberMixinVue from "src/mixins/memberMixin.vue";
 import ContributionsMixinVue from "src/mixins/ContributionsMixin.vue";
 
+const months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+const quarters = [
+  "January - March",
+  "April - June",
+  "July - September",
+  "October - December",
+];
 export default {
   mixins: [
     PaymentCategoryMixinVue,
@@ -232,6 +297,8 @@ export default {
         total_amount_deposited: 0,
         payment_category_id: null,
         id: null,
+        month_name: "",
+        quarterly_name: "",
       },
       position: "right",
       error_bal: false,
@@ -243,6 +310,8 @@ export default {
       selected_payment_item: null,
       payment_categories: [],
       members: [],
+      monthsOptions: [],
+      quartersOptions: quarters,
     };
   },
   computed: {
@@ -259,7 +328,11 @@ export default {
       return this.contribution.user_id === null ||
         this.contribution.amount_deposited == 0 ||
         this.contribution.payment_item_id == null ||
-        this.checkPaymentItemBal
+        this.checkPaymentItemBal ||
+        (this.validetePaymentItemFrequency &&
+          this.contribution.month_name == "") ||
+        (this.valideteQuarterlyPaymentItemFrequency &&
+          this.contribution.quarterly_name == "")
         ? true
         : false;
     },
@@ -267,6 +340,20 @@ export default {
     validatePaymentItem() {
       return this.contribution.payment_category_id == null ||
         this.contribution.payment_item_id == null
+        ? true
+        : false;
+    },
+
+    valideteMonthlyPaymentItemFrequency() {
+      return this.contribution.payment_item_id != null &&
+        this.contribution.payment_item_id.frequency == "MONTHLY"
+        ? true
+        : false;
+    },
+
+    valideteQuarterlyPaymentItemFrequency() {
+      return this.contribution.payment_item_id != null &&
+        this.contribution.payment_item_id.frequency == "QUARTERLY"
         ? true
         : false;
     },
@@ -280,6 +367,9 @@ export default {
           amount_deposited: parseFloat(this.contribution.amount_deposited),
           payment_item_id: this.contribution.payment_item_id.value,
           comment: this.contribution.comment,
+          month_name: this.contribution.month_name,
+          quarterly_name: this.contribution.quarterly_name
+            .replace("-", "").trim(),
         },
         msg: "Member Contribution saved Successfully",
         color: "default",
@@ -324,6 +414,7 @@ export default {
               label: ele.name,
               value: ele.id,
               amount: ele.amount,
+              frequency: ele.frequency,
             });
           });
         }
@@ -403,6 +494,8 @@ export default {
       this.contribution.payment_category_id = null;
       this.contribution.id = null;
       this.contribution.total_amount_deposited = 0.0;
+      this.contribution.month_name = "";
+      this.contribution.quarterly_name = "";
 
       return this.contribution;
     },
@@ -498,6 +591,22 @@ export default {
           item.label.toLowerCase().includes(val.toLowerCase())
         );
         return this.members;
+      });
+    },
+
+    filterMonths(val, update, abort) {
+      if (val.length < 2) {
+        abort();
+        return;
+      }
+      if (this.month == "") {
+        this.monthsOptions = months;
+      }
+      update(() => {
+        const needle = val.toLowerCase();
+        this.monthsOptions = months.filter(
+          (v) => v.toLowerCase().indexOf(needle) > -1
+        );
       });
     },
   },

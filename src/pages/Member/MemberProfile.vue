@@ -1175,9 +1175,10 @@ export default {
     getMembersDebts(show_spinner) {
       this.due_amount = 0.0;
       let id = this.$route.params.id;
+      let current_year = this.getCurrentYear.id;
       let payload = {
         data: "none",
-        url: `/api/protected/contributions/members/debts?user_id=${id}&session_id=${this.current_year}`,
+        url: `/api/protected/contributions/members/debts?user_id=${id}&session_id=${current_year}`,
         msg: "none",
         color: "default",
         to_on_ok: "none",
@@ -1221,9 +1222,10 @@ export default {
     getMembersContributions(show_spinner) {
       this.amount_paid = 0.0;
       let id = this.$route.params.id;
+      let current_year = this.getCurrentYear.id;
       let payload = {
         data: "none",
-        url: `/api/protected/contributions/members/paid?user_id=${id}&session_id=${this.current_year}`,
+        url: `/api/protected/contributions/members/paid?user_id=${id}&session_id=${current_year}`,
         msg: "none",
         color: "default",
         to_on_ok: "none",
@@ -1247,6 +1249,7 @@ export default {
             this.data1.push({
               counter: res.data.indexOf(ele) + 1,
               payment_item_id: ele.payment_item_id,
+              payment_item_amount:ele.payment_item_amount,
               name: ele.name,
               amount: ele.amount,
               balance: ele.balance,

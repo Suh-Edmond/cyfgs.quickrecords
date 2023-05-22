@@ -285,7 +285,10 @@
                       }}
                     </q-td>
                     <q-td key="quarterly_name" :props="props">
-                      {{ props.row.quarterly_name }}
+                      {{  props.row.frequency == 'QUARTERLY'? props.row.quarterly_name:'N/A' }}
+                    </q-td>
+                    <q-td key="year" :props="props">
+                      {{  props.row.frequency == 'YEARLY'? props.row.session.year:'N/A' }}
                     </q-td>
                     <q-td key="has_pay" :props="props">
                       <q-checkbox
@@ -703,6 +706,13 @@ export default {
           align: "left",
           label: "Quarter",
           field: "quarterly_name",
+          sortable: true,
+        },
+        {
+          name: "year",
+          align: "left",
+          label: "Year",
+          field: "year",
           sortable: true,
         },
         { name: "has_pay", label: "Action", field: "has_pay", align: "left" },

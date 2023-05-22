@@ -246,7 +246,7 @@ export default {
         "MEMBERS_WITHOUT_ROLES",
         "GROUPED_MEMBERS",
       ],
-      frequencies: ["YEARLY", "MONTHLY", "ONE_TIME"],
+      frequencies: ["YEARLY", "MONTHLY", "ONE_TIME", "QUARTERLY"],
       members: [],
       references: [],
       start_filtering: false,

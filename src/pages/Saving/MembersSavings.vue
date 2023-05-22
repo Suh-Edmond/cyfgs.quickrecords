@@ -30,7 +30,7 @@
               outlined
               dense
               :options="years"
-              label="Select year"
+              label="Search year..."
               use-input
               input-debounce="0"
               clearable
@@ -51,7 +51,7 @@
               outlined
               dense
               :options="monthsOptions"
-              label="Select month"
+              label="Search month..."
               use-input
               input-debounce="0"
               clearable
@@ -219,9 +219,10 @@ export default {
         ? this.$store.getters.getOrganisation.id
         : "";
     this.getOrganisationMemberSavings(organisation_id);
-    if(this.checkTreasurerRole()){
-      this.getMembersSavings();
-    }
+    // if(this.checkTreasurerRole()){
+    //   this.getMembersSavings();
+    // }
+    this.getMembersSavings();
 
   },
   data() {
@@ -233,8 +234,6 @@ export default {
       monthsOptions: [],
       years: [],
       loading: false,
-      label_download: "Print",
-      color_print: "positive",
       columns: [
         {
           name: "counter",

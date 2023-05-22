@@ -20,7 +20,9 @@
               name="account_circle"
               size="190px"
               class="icon"
-              v-if="getCurrentMember!= null && getCurrentMember.picture == null"
+              v-if="
+                getCurrentMember != null && getCurrentMember.picture == null
+              "
             >
             </q-icon>
             <img
@@ -269,11 +271,24 @@
                     <q-td key="name" :props="props">
                       {{ props.row.name }}
                     </q-td>
-                    <q-td key="is_compulsory" :props="props">
-                      {{ props.row.is_compulsory == 1? 'YES':'NO' }}
+                    <q-td key="balance" :props="props">
+                      {{ Number(props.row.balance).toLocaleString() }}
                     </q-td>
-                    <q-td key="amount" :props="props">
-                      {{ Number(props.row.amount).toLocaleString() }}
+                    <q-td key="frequency" :props="props">
+                      {{ props.row.frequency }}
+                    </q-td>
+                    <q-td key="month_name" :props="props">
+                      {{
+                        props.row.month_name == null
+                          ? "N/A"
+                          : props.row.month_name
+                      }}
+                    </q-td>
+                    <q-td key="quarterly_name" :props="props">
+                      {{  props.row.frequency == 'QUARTERLY'? props.row.quarterly_name:'N/A' }}
+                    </q-td>
+                    <q-td key="year" :props="props">
+                      {{  props.row.frequency == 'YEARLY'? props.row.session.year:'N/A' }}
                     </q-td>
                     <q-td key="has_pay" :props="props">
                       <q-checkbox
@@ -305,14 +320,13 @@
           </div>
           <div class="q-pl-lg">
             <q-btn
-
               label="Make Payment"
               color="primary"
               :disabled="validatePayment"
               no-caps
               @click="showPaymentDialog"
             >
-            <q-icon size="xs" name="arrow_forward" class="q-pl-md"></q-icon>
+              <q-icon size="xs" name="arrow_forward" class="q-pl-md"></q-icon>
             </q-btn>
           </div>
         </div>
@@ -330,7 +344,9 @@
                 }"
               >
                 <template v-slot:top-left>
-                  <div class="text-h6 contribution_item_header">Paid Items: {{ Number(amount_paid).toLocaleString() }} XAF</div>
+                  <div class="text-h6 contribution_item_header">
+                    Paid Items: {{ Number(amount_paid).toLocaleString() }} XAF
+                  </div>
                 </template>
                 <template v-slot:body="props">
                   <q-tr :props="props">
@@ -346,19 +362,44 @@
                     <q-td key="balance" :props="props">
                       {{ Number(props.row.balance).toLocaleString() }}
                     </q-td>
-                    <q-td key="payment_status" :props="props" v-if="props.row.payment_status == 'COMPLETE'" class="status_approve_completed">
+                    <q-td
+                      key="payment_status"
+                      :props="props"
+                      v-if="props.row.payment_status == 'COMPLETE'"
+                      class="status_approve_completed"
+                    >
                       {{ props.row.payment_status }}
                     </q-td>
-                    <q-td key="payment_status" :props="props" v-if="props.row.payment_status == 'INCOMPLETE'" class="status_decline_not_completed">
+                    <q-td
+                      key="payment_status"
+                      :props="props"
+                      v-if="props.row.payment_status == 'INCOMPLETE'"
+                      class="status_decline_not_completed"
+                    >
                       {{ props.row.payment_status }}
                     </q-td>
-                    <q-td key="approve" :props="props" class="status_approve_completed" v-if="props.row.approve =='APPROVED'">
+                    <q-td
+                      key="approve"
+                      :props="props"
+                      class="status_approve_completed"
+                      v-if="props.row.approve == 'APPROVED'"
+                    >
                       {{ props.row.approve }}
                     </q-td>
-                    <q-td key="approve" :props="props" class="status_pending" v-if="props.row.approve == 'PENDING'">
+                    <q-td
+                      key="approve"
+                      :props="props"
+                      class="status_pending"
+                      v-if="props.row.approve == 'PENDING'"
+                    >
                       {{ props.row.approve }}
                     </q-td>
-                    <q-td key="approve" :props="props" class="status_decline_not_completed" v-if="props.row.approve == 'DECLINED'">
+                    <q-td
+                      key="approve"
+                      :props="props"
+                      class="status_decline_not_completed"
+                      v-if="props.row.approve == 'DECLINED'"
+                    >
                       {{ props.row.approve }}
                     </q-td>
                     <q-td key="created_at" :props="props">
@@ -551,35 +592,36 @@
               </thead>
               <tbody>
                 <tr v-for="(item, index) in selected_items" :key="item.id">
-                  <td class="text-left">{{index + 1}}</td>
-                  <td class="text-left">{{item.name}}</td>
-                  <td class="text-left">{{item.amount}}</td>
+                  <td class="text-left">{{ index + 1 }}</td>
+                  <td class="text-left">{{ item.name }}</td>
+                  <td class="text-left">{{ item.balance }}</td>
                 </tr>
                 <tr>
                   <td class="text-left text-weight-bold">Total</td>
                   <td class="text-left"></td>
-                  <td class="text-left text-weight-bold">{{ total_amount_payable }} XAF</td>
+                  <td class="text-left text-weight-bold">
+                    {{ total_amount_payable }} XAF
+                  </td>
                 </tr>
-
               </tbody>
             </q-markup-table>
           </div>
         </q-card-section>
 
         <q-card-section class="q-mb-md">
-            <div class="flex justify-end">
-              <q-btn
-                icon-right="check"
-                  class="form_button"
-                  label="Confirm"
-                  :loading="loading_payment"
-                  color="primary"
-                  :disabled="false"
-                  no-caps
-                  @click="onConfirmPayment"
-                >
-                </q-btn>
-            </div>
+          <div class="flex justify-end">
+            <q-btn
+              icon-right="check"
+              class="form_button"
+              label="Confirm"
+              :loading="loading_payment"
+              color="primary"
+              :disabled="false"
+              no-caps
+              @click="onConfirmPayment"
+            >
+            </q-btn>
+          </div>
         </q-card-section>
       </q-card>
     </q-dialog>
@@ -592,13 +634,14 @@ import ButtonVue from "src/components/Button.vue";
 import moment from "moment";
 import organisationMixin from "src/mixins/organisationMixin.vue";
 import memberMixin from "src/mixins/memberMixin.vue";
+import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
 
 export default {
-  mixins: [organisationMixin, memberMixin],
+  mixins: [organisationMixin, memberMixin, CurrentYearMixinVue],
 
   mounted() {
-    // this.getMembersDebts(false);
-    // this.getMembersContributions(false);
+    this.getMembersDebts(false);
+    this.getMembersContributions(false);
     // this.setFormField();
   },
 
@@ -619,7 +662,7 @@ export default {
       show_payment_dialog: false,
       no_caps: true,
       selected_items: [],
-      loading_payment:false,
+      loading_payment: false,
       columns: [
         {
           name: "counter",
@@ -638,17 +681,38 @@ export default {
           sortable: true,
         },
         {
-          name: "is_compulsory",
+          name: "balance",
           align: "left",
-          label: "Complusory",
-          field: "is_compulsory",
+          label: "Amount Payable (XAF)",
+          field: "balance",
           sortable: true,
         },
         {
-          name: "amount",
+          name: "frequency",
           align: "left",
-          label: "Amount Payable (XAF)",
-          field: "amount",
+          label: "Frequency",
+          field: "frequency",
+          sortable: true,
+        },
+        {
+          name: "month_name",
+          align: "left",
+          label: "Month",
+          field: "month_name",
+          sortable: true,
+        },
+        {
+          name: "quarterly_name",
+          align: "left",
+          label: "Quarter",
+          field: "quarterly_name",
+          sortable: true,
+        },
+        {
+          name: "year",
+          align: "left",
+          label: "Year",
+          field: "year",
           sortable: true,
         },
         { name: "has_pay", label: "Action", field: "has_pay", align: "left" },
@@ -711,10 +775,10 @@ export default {
       user_roles: [],
       show_remove_role_dialog: false,
       is_fetching: false,
-      current_year:"2023",
-      due_amount:0.0,
-      amount_paid:0.0,
-      available_roles:[]
+      current_year: this.getCurrentYear != null ? this.getCurrentYear.id : "",
+      due_amount: 0.0,
+      amount_paid: 0.0,
+      available_roles: [],
     };
   },
   computed: {
@@ -780,30 +844,28 @@ export default {
       return has_president_role != undefined;
     },
 
-    fetchUserRoles(){
+    fetchUserRoles() {
       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       this.user_roles = [];
       this.$store.dispatch("setRoles", []);
       this.$store.getters.getCurrentMember.roles.forEach((ele) => {
         this.user_roles.push(ele);
-      })
+      });
       return this.user_roles;
     },
 
-    getFormField(){
+    getFormField() {
       return this.setFormField(this.$store.getters.getCurrentMember);
-    }
+    },
   },
-  watch:{
-    getFormField(){
+  watch: {
+    getFormField() {
       return this.setFormField(this.$store.getters.getCurrentMember);
-    }
+    },
   },
   methods: {
     getFormatedDate(created_at) {
-      return moment(created_at).format(
-        "MMMM Do YYYY"
-      );
+      return moment(created_at).format("MMMM Do YYYY");
     },
     showPaymentDialog() {
       this.show_payment_dialog = true;
@@ -816,7 +878,6 @@ export default {
       this.role_deleted = role;
       this.show_remove_role_dialog = true;
     },
-
 
     setFormField(data) {
       if (data != null) {
@@ -831,7 +892,6 @@ export default {
 
       return this.user;
     },
-
 
     onUpdateMember() {
       this.is_fetching = true;
@@ -864,22 +924,18 @@ export default {
         });
     },
 
-
     showEditProfile() {
       this.setFormField();
       return (this.edit_profile = true);
     },
 
-
     showEditPassword() {
       return (this.edit_password = true);
     },
 
-
     openFileUpload() {
       document.getElementById("logo").click();
     },
-
 
     onFileChanged(e) {
       const formData = new FormData();
@@ -932,38 +988,35 @@ export default {
       });
     },
 
-
-
     computeTotal(data, evt) {
       if (evt) {
-        this.total_amount_payable += data.amount;
+        this.total_amount_payable += data.balance;
         this.total_amount_payable = parseFloat(this.total_amount_payable);
         this.selected_items.push(data);
       } else {
-        this.total_amount_payable -= data.amount;
+        this.total_amount_payable -= data.balance;
         this.total_amount_payable = parseFloat(this.total_amount_payable);
-        this.selected_items = this.selected_items.filter((ele) => ele.id != data.id);
+        this.selected_items = this.selected_items.filter(
+          (ele) => ele.id != data.id
+        );
       }
       return this.total_amount_payable;
     },
-
-
 
     showAddRole() {
       this.getAllRoles();
       this.show_role_dialog = true;
     },
 
-
     getAllRoles() {
       let payload = {
         url: `/api/protected/roles`,
         msg: "none",
         color: "default",
-        status:"none",
+        status: "none",
         error_msg: "An Error occurred! Please try again",
         has_commit: false,
-        show_spinner:false,
+        show_spinner: false,
         commit: "",
         to_be_store_data: {
           required: false,
@@ -974,7 +1027,7 @@ export default {
       this.$store.dispatch("getRequest", payload).then((res) => {
         res.data.forEach((ele) => {
           this.available_roles.push(ele);
-        })
+        });
       });
     },
 
@@ -1003,7 +1056,7 @@ export default {
       this.$store.dispatch("postRequest", payload).then(() => {
         this.loading = false;
         this.role = null;
-        this.getMemberProfile(user_id)
+        this.getMemberProfile(user_id);
         this.show_role_dialog = false;
       });
     },
@@ -1065,7 +1118,7 @@ export default {
     onConfirmPayment() {
       this.loading_payment = true;
       let payload = {
-        data:this.buildPayloadData(),
+        data: this.buildPayloadData(),
         url: `/api/protected/contributions/bulk-payments`,
         msg: "Payment made successfully",
         color: "default",
@@ -1081,50 +1134,68 @@ export default {
           has_value: false,
           data: [],
         },
-      }
+      };
       this.$store.dispatch("postRequest", payload).then(() => {
         this.loading_payment = false;
         this.show_payment_dialog = false;
-        this.data =[];
+        this.data = [];
         this.data1 = [];
         this.selected_items = [];
         this.total_amount_payable = 0;
         this.getMembersDebts(true);
         this.getMembersContributions(true);
-        // this.getMemberProfile(this.$store.getters.getCurrentMember.id);
-
+        this.getMemberProfile(this.$store.getters.getCurrentMember.id);
       });
     },
-    buildPayloadData(){
-      let data = []
+
+    buildPayloadData() {
+      let data = [];
       this.selected_items.forEach((ele) => {
-        data.push({
-          user_id:this.$store.getters.getCurrentMember.id,
-          payment_item_id:ele.id,
-          amount_deposited:parseInt(ele.amount),
-          is_compulsory:ele.is_compulsory,
-          code:ele.code,
-          year:this.current_year,
-          comment:"BULK PAYMENT",
-        })
-      })
+        if (ele.code != "REGISTRATION") {
+          data.push({
+            user_id: this.$store.getters.getCurrentMember.id,
+            payment_item_id: ele.id,
+            amount_deposited: parseInt(ele.balance),
+            is_compulsory: ele.is_compulsory,
+            code: ele.code,
+            year: this.getCurrentYear.id,
+            comment: "BULK PAYMENT",
+            quarterly_name: ele.quarterly_name,
+            month_name: ele.month_name,
+            registration_id:ele.id
+          });
+        } else {
+          data.push({
+            user_id: this.$store.getters.getCurrentMember.id,
+            payment_item_id: ele.id,
+            amount_deposited: parseInt(ele.balance),
+            is_compulsory: ele.is_compulsory,
+            code: ele.code,
+            year: ele.session.id,
+            comment: "BULK PAYMENT",
+            quarterly_name: ele.quarterly_name,
+            month_name: ele.month_name,
+            registration_id:ele.id
+          });
+        }
+      });
       return data;
     },
 
-    getMembersDebts(show_spinner){
+    getMembersDebts(show_spinner) {
       this.due_amount = 0.0;
       let id = this.$route.params.id;
-      let current_year = "2023"
+      let current_year = this.getCurrentYear.id;
       let payload = {
-        data:"none",
-        url: `/api/protected/contributions/members/debts?user_id=${id}&year=${current_year}`,
+        data: "none",
+        url: `/api/protected/contributions/members/debts?user_id=${id}&session_id=${current_year}`,
         msg: "none",
         color: "default",
         to_on_ok: "none",
         status: "success",
         to_on_fail: "none",
         show_feedback: false,
-        show_spinner:show_spinner,
+        show_spinner: show_spinner,
         error_msg: "An Error occurred! Please try again",
         has_commit: false,
         commit: "none",
@@ -1133,42 +1204,45 @@ export default {
           has_value: false,
           data: [],
         },
-      }
+      };
       this.$store.dispatch("getRequest", payload).then((res) => {
-        console.log(res);
-        if(res != undefined && res.data.length > 0) {
+        if (res != undefined && res.data.length > 0) {
           res.data.forEach((ele) => {
-            this.due_amount +=ele.amount;
+            this.due_amount += ele.balance;
             this.data.push({
               counter: res.data.indexOf(ele) + 1,
               name: ele.name,
-              is_compulsory:ele.is_compulsory,
-              amount:ele.amount,
-              type:ele.type,
-              has_pay:ele.has_pay,
-              id:ele.id,
-              code:ele.code,
-              frequency:ele.frequency
-            })
-          })
+              is_compulsory: ele.is_compulsory,
+              balance: ele.balance,
+              type: ele.type,
+              has_pay: ele.has_pay,
+              id: ele.id,
+              code: ele.code,
+              frequency: ele.frequency,
+              item_amount: ele.item_amount,
+              month_name: ele.month_name,
+              quarterly_name: ele.quarterly_name,
+              session: ele.session,
+            });
+          });
         }
       });
     },
 
-    getMembersContributions(show_spinner){
+    getMembersContributions(show_spinner) {
       this.amount_paid = 0.0;
       let id = this.$route.params.id;
-      let current_year = "2023"
+      let current_year = this.getCurrentYear.id;
       let payload = {
-        data:"none",
-        url: `/api/protected/contributions/members/paid?user_id=${id}&year=${current_year}`,
+        data: "none",
+        url: `/api/protected/contributions/members/paid?user_id=${id}&session_id=${current_year}`,
         msg: "none",
         color: "default",
         to_on_ok: "none",
         status: "success",
         to_on_fail: "none",
         show_feedback: false,
-        show_spinner:show_spinner,
+        show_spinner: show_spinner,
         error_msg: "An Error occurred! Please try again",
         has_commit: false,
         commit: "none",
@@ -1177,26 +1251,27 @@ export default {
           has_value: false,
           data: [],
         },
-      }
+      };
       this.$store.dispatch("getRequest", payload).then((res) => {
-        if(res != undefined) {
+        if (res != undefined) {
           res.data.forEach((ele) => {
             this.amount_paid += ele.amount;
             this.data1.push({
               counter: res.data.indexOf(ele) + 1,
-              payment_item_id:ele.payment_item_id,
+              payment_item_id: ele.payment_item_id,
+              payment_item_amount:ele.payment_item_amount,
               name: ele.name,
-              amount:ele.amount,
-              balance:ele.balance,
-              payment_status:ele.payment_status,
-              approve:ele.approve,
-              created_at:this.getFormatedDate(ele.created_at),
-              id:ele.id
-            })
-          })
+              amount: ele.amount,
+              balance: ele.balance,
+              payment_status: ele.payment_status,
+              approve: ele.approve,
+              created_at: this.getFormatedDate(ele.created_at),
+              id: ele.id,
+            });
+          });
         }
       });
-    }
+    },
   },
   components: {
     ButtonVue,

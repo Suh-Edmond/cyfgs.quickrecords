@@ -13,10 +13,10 @@
     <div v-if="!checkTreasurerRole()">
       <NotFound
         :message="not_found_msg"
-        v-if="savings.length == 0 && !getLoadingState"
+        v-if="getMembersSavings.length == 0 && !getLoadingState"
       ></NotFound>
-      <!-- header for filter categories -->
-      <div v-if="savings.length > 0 && !getLoadingState">
+      <!-- header for non-filter savings -->
+      <div v-if="getMembersSavings.length > 0 && !getLoadingState && !start_filter">
         <div
           class="row q-ml-xs q-pt-xs"
           :class="$q.screen.lg ? 'q-pa-sm' : ''"
@@ -95,11 +95,11 @@
         </div>
 
         <!-- table for savings -->
-        <div class="row q-pt-sm" v-if="!start_filter">
+        <div class="row q-pt-sm">
           <div class="col-md-12 col-xs-12 col-sm-12">
             <TableVue
               :columns="columns"
-              :data="savings"
+              :data="getMembersSavings"
               :label="label"
               :message="message"
               :show_savings="true"
@@ -112,9 +112,89 @@
             </TableVue>
           </div>
         </div>
-        <!-- table for filter savings -->
+      </div>
 
-        <div class="row q-pt-sm" v-if="start_filter">
+      <!-- table for filter savings -->
+      <div v-if="filtered_savings.length > 0 && !getLoadingState && start_filter">
+        <div
+          class="row q-ml-xs q-pt-xs"
+          :class="$q.screen.lg ? 'q-pa-sm' : ''"
+          :style="
+            $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+          "
+        >
+          <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
+            <q-select
+              v-model="year"
+              outlined
+              dense
+              :options="years"
+              label="Search year..."
+              use-input
+              input-debounce="0"
+              clearable
+              @filter="filterYears"
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No results
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+          <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-pl-md">
+            <q-select
+              v-model="month"
+              outlined
+              dense
+              :options="monthsOptions"
+              label="Search month..."
+              use-input
+              input-debounce="0"
+              clearable
+              @filter="filterMonths"
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No results
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+          <div class="col-md-6 col-lg-6 col-xs-12 col-sm-12 flex q-pl-md">
+            <div>
+              <q-btn
+                :label="'Filter'"
+                :loading="is_fetching"
+                :color="'primary'"
+                :disabled="validateFilter"
+                no-caps
+                icon-right="filter_list"
+                @click="filterSavings"
+              >
+              </q-btn>
+            </div>
+            <q-space />
+            <div class="button q-pb-xs">
+              <q-btn
+                :label="'Print'"
+                :loading="loading"
+                :color="'positive'"
+                :disabled="false"
+                no-caps
+                icon-right="print"
+                @click="downloadMembersSavings"
+              ></q-btn>
+            </div>
+          </div>
+        </div>
+
+        <!-- table for savings -->
+        <div class="row q-pt-sm">
           <div class="col-md-12 col-xs-12 col-sm-12">
             <TableVue
               :columns="columns"
@@ -219,10 +299,6 @@ export default {
         ? this.$store.getters.getOrganisation.id
         : "";
     this.getOrganisationMemberSavings(organisation_id);
-    // if(this.checkTreasurerRole()){
-    //   this.getMembersSavings();
-    // }
-    this.getMembersSavings();
 
   },
   data() {
@@ -341,15 +417,13 @@ export default {
     getLoadingState() {
       return this.$store.getters.getFetchingState;
     },
-  },
-  methods: {
-    getMembersSavings() {
-      this.savings = [];
 
+    getMembersSavings() {
+      let data = [];
       if (this.$store.getters.getOrganisationMembersSavings != null) {
         this.$store.getters.getOrganisationMembersSavings.data.forEach(
           (ele) => {
-            this.savings.push({
+            data.push({
               counter:
                 this.$store.getters.getOrganisationMembersSavings.data.indexOf(
                   ele
@@ -369,8 +443,16 @@ export default {
           }
         );
       }
-      return this.savings;
+      console.log(data);
+      return data;
     },
+  },
+  watch:{
+    getSavings(){
+      return this.getMembersSavings;
+    }
+  },
+  methods: {
 
     checkTreasurerRole() {
       const treasurer_role = LocalStorage.getItem("data").roles.find(

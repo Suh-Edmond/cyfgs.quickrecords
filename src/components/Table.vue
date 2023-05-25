@@ -1295,11 +1295,12 @@ export default {
       let search_savings_url = "";
 
       switch (data.type) {
+
         case "INCOME_ACTIVITIES":
-          this.getOrganisationIncomeActivities(data.organisation_id);
+          this.getOrganisationIncomeActivities(this.$store.getters.getOrganisation.id);
           break;
         case "MEMBERS_SAVINGS":
-          search_savings_url = `/api/protected/user-savings?organisation_id=${organisation_id}&status=${status}&name=${name}&amount_deposited=${amount_deposited}&session_id=${session_id}&month=${month}&date=${date}&date_range=${range}`;
+          search_savings_url = `/api/protected/user-savings?organisation_id=${this.$store.getters.getOrganisation.id}&status=${status}&name=${name}&amount_deposited=${amount_deposited}&session_id=${session_id}&month=${month}&date=${date}&date_range=${range}`;
           this.filterSaving(search_savings_url);
           break;
         case "MEMBERS_CONTRIBUTIONS":

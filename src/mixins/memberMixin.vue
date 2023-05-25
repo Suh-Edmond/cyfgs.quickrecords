@@ -51,10 +51,8 @@ export default {
           data: [],
         },
       };
-      this.$emit("start-loading", true);
       this.$store.dispatch("getRequest", payload).then(() => {
       }).finally(() => {
-        this.$emit("start-loading", false);
       })
     },
 

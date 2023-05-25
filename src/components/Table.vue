@@ -1199,7 +1199,6 @@ export default {
     },
 
     onChangeRecordState() {
-      console.log(this.approve_data.type);
       let payload = {
         url: this.setApproveUrlBaseOnType(this.approve_data),
         msg: this.setApproveFeedbackMsg(this.approve_data),
@@ -1319,7 +1318,7 @@ export default {
           );
           break;
         case "MEMBERS":
-          this.getOrganisationMembers(data.organisation_id, true);
+          this.getOrganisationMembers(this.$store.getters.getOrganisation.id, true);
           break;
       }
     },

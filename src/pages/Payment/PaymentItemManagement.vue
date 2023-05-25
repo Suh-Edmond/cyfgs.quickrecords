@@ -123,73 +123,73 @@
 
     <!-- dialog to show all members responsible for a payment item -->
     <div v-if="show_reference_dialog">
-      <q-dialog v-model="show_reference_dialog">
-        <q-card>
-          <q-card-section>
-            <q-toolbar class="bg-primary text-white shadow-2">
-              <q-toolbar-title class="toolbar_title">Members</q-toolbar-title>
-            </q-toolbar>
-          </q-card-section>
-          <q-card-section>
-            <div class="q-mb-md q-px-md">
-              <q-input
-                v-model="searched_reference"
-                outlined
-                type="search"
-                dense
-                label="Search..."
-                @input="searchReference(references)"
-              >
-                <template v-slot:append>
-                  <q-icon name="search" />
-                </template>
-              </q-input>
-            </div>
-            <div class="q-mt-md">
-              <q-list style="width: 400px">
-                <q-item
-                  v-for="reference in references"
-                  :key="reference.id"
-                  class="q-my-sm"
-                  clickable
-                  v-ripple
+        <q-dialog v-model="show_reference_dialog">
+          <q-card>
+            <q-card-section>
+              <q-toolbar class="bg-primary text-white shadow-2">
+                <q-toolbar-title class="toolbar_title">Members</q-toolbar-title>
+              </q-toolbar>
+            </q-card-section>
+            <q-card-section>
+              <div class="q-mb-md q-px-md">
+                <q-input
+                  v-model="searched_reference"
+                  outlined
+                  type="search"
+                  dense
+                  label="Search..."
+                  @input="searchReference(references)"
                 >
-                  <q-item-section avatar>
-                    <q-avatar color="primary" text-color="white">
-                      {{ getFirstLetter(reference.name) }}
-                    </q-avatar>
-                  </q-item-section>
+                  <template v-slot:append>
+                    <q-icon name="search" />
+                  </template>
+                </q-input>
+              </div>
+              <div class="q-mt-md">
+                <q-list style="width: 400px">
+                  <q-item
+                    v-for="reference in references"
+                    :key="reference.id"
+                    class="q-my-sm"
+                    clickable
+                    v-ripple
+                  >
+                    <q-item-section avatar>
+                      <q-avatar color="primary" text-color="white">
+                        {{ getFirstLetter(reference.name) }}
+                      </q-avatar>
+                    </q-item-section>
 
-                  <q-item-section>
-                    <q-item-label>{{ reference.name }}</q-item-label>
-                    <q-item-label caption lines="1">{{
-                      reference.telephone
-                    }}</q-item-label>
-                  </q-item-section>
+                    <q-item-section>
+                      <q-item-label>{{ reference.name }}</q-item-label>
+                      <q-item-label caption lines="1">{{
+                        reference.telephone
+                      }}</q-item-label>
+                    </q-item-section>
 
-                  <q-item-section side>
-                    <q-icon
-                      name="delete"
-                      color="red"
-                      size="xs"
-                      @click="removeReference(reference)"
-                    />
-                  </q-item-section>
-                </q-item>
-              </q-list>
-            </div>
-          </q-card-section>
-          <q-card-actions align="right" class="q-pa-lg">
-            <q-btn
-              label="OK"
-              v-close-popup
-              color="primary"
-              size="md"
-              @click="fetchPaymentItems()"
-            />
-          </q-card-actions>
-        </q-card>
-      </q-dialog>
+                    <q-item-section side>
+                      <q-icon
+                        name="delete"
+                        color="red"
+                        size="xs"
+                        @click="removeReference(reference)"
+                      />
+                    </q-item-section>
+                  </q-item>
+                </q-list>
+              </div>
+            </q-card-section>
+            <q-card-actions align="right" class="q-pa-lg">
+              <q-btn
+                label="OK"
+                v-close-popup
+                color="primary"
+                size="md"
+                @click="fetchPaymentItems()"
+              />
+            </q-card-actions>
+          </q-card>
+        </q-dialog>
     </div>
 
     <!-- confirm delete dialog -->

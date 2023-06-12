@@ -311,7 +311,6 @@ export default {
     },
 
     editContribution(data) {
-      console.log(data);
       this.updateDrawer(data);
     },
 

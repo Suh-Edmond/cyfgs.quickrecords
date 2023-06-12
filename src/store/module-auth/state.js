@@ -6,6 +6,7 @@ export default function () {
     members:[],
     is_fetching: false,
     sessions:[],
+    report_data:[],
 
 
 

@@ -178,3 +178,7 @@ export function getRegAmount(state) {
 export function getSessions(state) {
   return state.sessions;
 }
+
+export function getReportData(state) {
+  return state.report_data
+}

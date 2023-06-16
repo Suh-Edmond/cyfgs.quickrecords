@@ -129,7 +129,6 @@
                       clickable
                       v-close-popup
                       @click="onViewMember(props.row)"
-                      v-if="checkPresidentRole()"
                     >
                       <q-item-section avatar>
                         <span>
@@ -1199,7 +1198,6 @@ export default {
     },
 
     onChangeRecordState() {
-      console.log(this.approve_data.type);
       let payload = {
         url: this.setApproveUrlBaseOnType(this.approve_data),
         msg: this.setApproveFeedbackMsg(this.approve_data),
@@ -1296,11 +1294,12 @@ export default {
       let search_savings_url = "";
 
       switch (data.type) {
+
         case "INCOME_ACTIVITIES":
-          this.getOrganisationIncomeActivities(data.organisation_id);
+          this.getOrganisationIncomeActivities(this.$store.getters.getOrganisation.id);
           break;
         case "MEMBERS_SAVINGS":
-          search_savings_url = `/api/protected/user-savings?organisation_id=${organisation_id}&status=${status}&name=${name}&amount_deposited=${amount_deposited}&session_id=${session_id}&month=${month}&date=${date}&date_range=${range}`;
+          search_savings_url = `/api/protected/user-savings?organisation_id=${this.$store.getters.getOrganisation.id}&status=${status}&name=${name}&amount_deposited=${amount_deposited}&session_id=${session_id}&month=${month}&date=${date}&date_range=${range}`;
           this.filterSaving(search_savings_url);
           break;
         case "MEMBERS_CONTRIBUTIONS":
@@ -1319,7 +1318,7 @@ export default {
           );
           break;
         case "MEMBERS":
-          this.getOrganisationMembers(data.organisation_id, true);
+          this.getOrganisationMembers(this.$store.getters.getOrganisation.id, true);
           break;
       }
     },

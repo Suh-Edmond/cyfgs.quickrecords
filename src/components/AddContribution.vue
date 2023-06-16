@@ -253,10 +253,10 @@ const months = [
   "December",
 ];
 const quarters = [
-  "January - March",
-  "April - June",
-  "July - September",
-  "October - December",
+  "January-March",
+  "April-June",
+  "July-September",
+  "October-December",
 ];
 export default {
   mixins: [

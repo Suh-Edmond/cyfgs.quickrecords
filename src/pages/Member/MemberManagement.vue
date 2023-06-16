@@ -97,6 +97,7 @@
             :total_members="computeTotalMembership"
             @fetch-members="onFetchMembers"
             @register-member="registerMember"
+            @delete-row="deleteRow"
           >
           </TableVue>
         </div>
@@ -295,6 +296,28 @@ export default {
     onFetchMembers(){
       let id = this.$store.getters.getOrganisation.id;
       this.getOrganisationMembers(id, true);
+    },
+
+    deleteRow(data){
+      let payload = {
+        url: `/api/protected/users/${data.id}`,
+        msg: `Member deleted successfully`,
+        color: "default",
+        to_on_ok: "none",
+        to_on_fail: "none",
+        show_feedback: true,
+        error_msg: "An Error occurred! Please try again",
+        has_commit: false,
+        commit: "none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.$store.dispatch("deleteRequest", payload).then(() => {
+        this.getOrganisationMembers(this.getOrganisationId);
+      });
     }
   },
 

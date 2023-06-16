@@ -353,7 +353,10 @@
                     <q-td key="counter" :props="props">
                       {{ props.row.counter }}
                     </q-td>
-                    <q-td key="name" :props="props">
+                    <q-td key="name" :props="props"  v-if="props.row.name == member_registration">
+                      {{ props.row.name }}({{ props.row.year }})
+                    </q-td>
+                    <q-td key="name" :props="props"  v-else>
                       {{ props.row.name }}
                     </q-td>
                     <q-td key="amount" :props="props">
@@ -663,6 +666,7 @@ export default {
       no_caps: true,
       selected_items: [],
       loading_payment: false,
+      member_registration:"Member's Registration",
       columns: [
         {
           name: "counter",
@@ -1267,6 +1271,7 @@ export default {
               approve: ele.approve,
               created_at: this.getFormatedDate(ele.created_at),
               id: ele.id,
+              year:ele.year,
             });
           });
         }

@@ -174,3 +174,6 @@ export function SET_SESSIONS(state, data) {
   state.sessions = data;
 }
 
+export function SET_REPORT_DATA(state, data){
+  state.report_data = data
+}

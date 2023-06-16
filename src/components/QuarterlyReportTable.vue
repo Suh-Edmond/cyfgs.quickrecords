@@ -1,6 +1,5 @@
 <template>
   <div class="q-pa-sm report">
-    <!-- <hr /> -->
     <!---------START OF REPORT HEADER------------>
     <div class="header">
       <ReportHead></ReportHead>

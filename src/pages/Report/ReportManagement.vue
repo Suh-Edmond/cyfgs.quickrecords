@@ -67,7 +67,7 @@
             label="Print"
             :loading="loading"
             color="positive"
-            :disabled="income_per_activity.length < 0"
+            :disabled="false"
             no-caps
             icon-right="print"
             @click="downloadReport()"
@@ -77,22 +77,8 @@
       <!-- table for report by activity -->
       <div class="row q-pt-sm" v-if="show_activity_report">
         <div class="col-md-12 col-xs-12 col-sm-12">
-          <ReportsTable
-            :income_title="title"
-            :income_columns="columns"
-            :income_data="income_per_activity"
-            :expenditure_columns="expenditure_columns"
-            :expenditure_data="expenditures_per_activity"
-            :expenditure_title="expenditure_title"
-            :total_amount_given="total_amount_given"
-            :total_amount_spent="total_amount_spent"
-            :net_balance="net_balance"
-            :total_balance="total_balance"
-            :total_income="total_income"
-            :heading="heading"
-            :total_estimated_amount="total_estimated_amount"
-          >
-          </ReportsTable>
+          <ActivityReportTable :heading="heading" :activity_report_data="activity_report_data">
+          </ActivityReportTable>
         </div>
       </div>
 
@@ -107,7 +93,7 @@
 </template>
 
 <script>
-import ReportsTable from "src/components/ReportsTable.vue";
+import ActivityReportTable from "src/components/ActivityReportTable.vue";
 import HelperMixin from "src/mixins/HelperMixin.vue";
 import QuarterlyReportTable from "src/components/QuarterlyReportTable.vue";
 import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
@@ -121,66 +107,6 @@ export default {
       show_quarterly_report: false,
       show_activity_report: false,
       loading: false,
-      columns: [
-        {
-          name: "counter",
-          required: true,
-          label: "S/N",
-          align: "left",
-          field: "counter",
-        },
-        {
-          name: "name",
-          required: true,
-          label: "Description",
-          align: "left",
-          field: "name",
-        },
-        {
-          name: "amount",
-          align: "left",
-          label: "Amount (XAF)",
-          field: "amount",
-        }
-      ],
-      data: [],
-      title: "Income Statement",
-      expenditure_columns: [
-        {
-          name: "counter",
-          required: true,
-          label: "S/N",
-          align: "left",
-          field: "counter",
-        },
-        {
-          name: "name",
-          required: true,
-          label: "Description",
-          align: "left",
-          field: "name",
-        },
-        {
-          name: "amount_given",
-          align: "left",
-          label: "Amount Given (XAF)",
-          field: "amount_given",
-        },
-        {
-          name: "amount_spent",
-          align: "left",
-          label: "Amount Spent (XAF)",
-          field: "amount_spent",
-        },
-        {
-          name: "balance",
-          align: "left",
-          label: "Balance (XAF)",
-          field: "balance",
-        },
-      ],
-      expenditure_data: [],
-      expenditure_title: "Expenditures/Disbursements",
       group: null,
       options: [
         { label: "By Activity/Event", value: 1 },
@@ -189,16 +115,8 @@ export default {
       ],
       label: "Generate Report",
       year: null,
-      income_per_activity: [],
-      expenditures_per_activity: [],
-      total_income: 0.0,
-      total_amount_given: 0.0,
-      total_amount_spent: 0.0,
-      total_balance: 0.0,
-      net_balance: 0.0,
       heading: null,
       is_fetching: false,
-      total_estimated_amount: 0.0,
       option: null,
       selected_option_label: null,
       report_options: [],
@@ -209,6 +127,7 @@ export default {
         { label: "October - December", value: "4" },
       ],
       incomes:[],
+      activity_report_data:[],
     };
   },
   computed: {
@@ -282,13 +201,7 @@ export default {
 
     generateActivityReport() {
       this.is_fetching = true;
-      (this.income_per_activity = []),
-        (this.expenditures_per_activity = []),
-        (this.total_income = 0.0);
-      this.total_amount_given = 0.0;
-      this.total_amount_spent = 0.0;
-      this.total_balance = 0.0;
-      this.net_balance = 0.0;
+       this.heading = `Financial Report for  ${this.group.label} ${this.getCurrentYear.year}`;
       let payload = {
         status: "none",
         url: `/api/protected/activity/${this.group.value}/generate-report`,
@@ -309,18 +222,7 @@ export default {
       this.$store
         .dispatch("getRequest", payload)
         .then((res) => {
-          if (res.data.length > 0) {
-            this.heading = `Financial Report for ${this.group.label}`;
-            this.getActivityReportIncomeData(res.data[0]);
-            this.computeTotalIncome(res.data[0]);
-            this.getActivityReportExpenditureData(res.data[1]);
-            this.computeTotalAmountGiven(res.data[1]);
-            this.computeTotalAmountSpent(res.data[1]);
-            this.computeTotalBalance(res.data[1]);
-            this.computeNetBalance();
-            this.validateDownloadBtn(res.data);
-            this.total_estimated_amount = res.data[2];
-          }
+          this.activity_report_data = res.data
           this.show_activity_report = true;
         })
         .finally(() => {
@@ -375,13 +277,6 @@ export default {
       return this.data = data;
     },
 
-    computeTotalIncome(data) {
-      data.forEach((ele) => {
-        this.total_income += parseFloat(ele.amount);
-      });
-      return this.total_income;
-    },
-
     getActivityReportExpenditureData(data) {
       data.forEach((ele) => {
         this.expenditures_per_activity.push({
@@ -395,32 +290,6 @@ export default {
       return this.expenditures_per_activity;
     },
 
-    computeTotalAmountGiven(data) {
-      data.forEach((ele) => {
-        this.total_amount_given += ele.amount_given;
-      });
-      return this.total_amount_given;
-    },
-
-    computeTotalAmountSpent(data) {
-      data.forEach((ele) => {
-        this.total_amount_spent += ele.amount_spent;
-      });
-      return this.total_amount_spent;
-    },
-
-    computeTotalBalance(data) {
-      data.forEach((ele) => {
-        this.total_balance += ele.balance;
-      });
-      return this.total_balance;
-    },
-
-    computeNetBalance() {
-      return (this.net_balance =
-        this.total_income - this.total_amount_spent + this.total_balance);
-    },
-
     validateDownloadBtn(data) {
       return data.length < 0 ? true : false;
     },
@@ -431,11 +300,11 @@ export default {
       this.loading = true;
       let url = "";
       let file_name = ""
-      if (this.group == 1) {
+       if (this.option.value == 1) {
         url = `/api/protected/activity/${id}/report/download?payment_actvity=${label}`;
         file_name = "Activity_Report.pdf";
       }
-      if(this.group.value == 2){
+      if(this.option.value == 2){
         url = `/api/protected/report/quarter/download?quarter=${this.group.value}`;
         file_name = "Quarterly_Report.pdf";
       }
@@ -503,7 +372,7 @@ export default {
     },
   },
   components: {
-    ReportsTable,
+    ActivityReportTable,
     QuarterlyReportTable,
   },
 };

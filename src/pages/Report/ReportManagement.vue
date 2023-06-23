@@ -88,6 +88,13 @@
           <QuarterlyReportTable :heading="heading"> </QuarterlyReportTable>
         </div>
       </div>
+
+      <!---------yearly reports table-->
+      <div class="row q-pt-sm" v-if="show_yearly_report">
+        <div class="col-md-12 col-xs-12 col-sm-12">
+          <YearlyReportTable :heading="heading"> </YearlyReportTable>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -97,6 +104,7 @@ import ActivityReportTable from "src/components/ActivityReportTable.vue";
 import HelperMixin from "src/mixins/HelperMixin.vue";
 import QuarterlyReportTable from "src/components/QuarterlyReportTable.vue";
 import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
+import YearlyReportTable from "src/components/YearlyReportTable.vue";
 
 export default {
   mixins: [HelperMixin, CurrentYearMixinVue],
@@ -106,6 +114,7 @@ export default {
     return {
       show_quarterly_report: false,
       show_activity_report: false,
+      show_yearly_report:false,
       loading: false,
       group: null,
       options: [
@@ -191,11 +200,20 @@ export default {
     generateReport() {
       switch(this.option.value){
         case 1:
+          this.show_quarterly_report = false
+          this.show_yearly_report = false;
           this.generateActivityReport();
         break;
         case 2:
+          this.show_activity_report = false;
+          this.show_yearly_report = false;
           this.generateQuarterlyReport();
         break
+        case 3:
+          this.show_activity_report = false;
+          this.show_quarterly_report = false;
+          this.generatYearlyReport();
+        break;
       }
     },
 
@@ -261,6 +279,36 @@ export default {
         return this.data;
     },
 
+    generatYearlyReport() {
+      this.is_fetching = true;
+      this.heading = `Financial Report for the Year  ${this.getCurrentYear.year}`;
+      let payload = {
+        status: "none",
+        url: `/api/protected/report/yearly/generate?year_id=${this.group.value}&year_label=${this.group.label}`,
+        has_path_val: true,
+        show_feedback: false,
+        show_spinner: true,
+        msg: "none",
+        color: "default",
+        error_msg: "default",
+        commit: "SET_REPORT_DATA",
+        has_commit: true,
+        to_be_store_data: {
+          required: true,
+          has_value: false,
+          data: null,
+        },
+      };
+      this.$store
+        .dispatch("getRequest", payload)
+        .then(() => {
+          this.show_yearly_report = true;
+        })
+        .finally(() => {
+          this.is_fetching = false;
+        });
+     },
+
     getActivityReportIncomeData(data) {
       data.forEach((ele) => {
         this.income_per_activity.push({
@@ -304,9 +352,12 @@ export default {
         url = `/api/protected/activity/${id}/report/download?payment_actvity=${label}`;
         file_name = "Activity_Report.pdf";
       }
-      if(this.option.value == 2){
+      else if(this.option.value == 2){
         url = `/api/protected/report/quarter/download?quarter=${this.group.value}`;
         file_name = "Quarterly_Report.pdf";
+      }else {
+        url = `/api/protected/report/yearly/download?year_id=${this.group.value}&year_label=${this.group.label}`
+        file_name = "Yearly_Report.pdf";
       }
       this.loading = this.downloadPdf(url, file_name);
       return this.loading;
@@ -374,6 +425,7 @@ export default {
   components: {
     ActivityReportTable,
     QuarterlyReportTable,
+    YearlyReportTable
   },
 };
 </script>

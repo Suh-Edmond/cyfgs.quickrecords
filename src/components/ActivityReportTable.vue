@@ -172,7 +172,7 @@
           </div>
 
           <div class="row">
-            <div class="col-1 col-md-1 column_details text-bold">S.1</div>
+            <div class="col-1 col-md-1 column_details text-bold">S.2</div>
             <div
               class="col-md-6 column_details text-bold text-uppercase text-center"
             >
@@ -184,7 +184,7 @@
           </div>
 
           <div class="row">
-            <div class="col-1 col-md-1 column_details text-bold">S.1</div>
+            <div class="col-1 col-md-1 column_details text-bold">S.3</div>
             <div
               class="col-md-6 column_details text-bold text-uppercase text-center"
             >
@@ -205,7 +205,7 @@
       <div class="col-md-1 col-sm-1 col-xs-1"></div>
       <div class="col-md-10 col-xs-12 col-sm-12">
         <div class="q-my-lg text-center">
-          <label for="income" class="summary">Presented By:</label>
+          <label for="income" class="summary text-uppercase">Presented By:</label>
         </div>
         <div class="flex justify-between">
           <div class="col-md-6 text-bold text-center text-uppercase admin_details">

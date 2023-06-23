@@ -67,11 +67,12 @@
                 {{ income.name }}
               </div>
               <div class="col-md-2 column_details"></div>
-              <div class="col-md-2 column_details" v-if="income.items.length == 0">
+              <div class="col-md-2 column_details">
+              </div>
+              <div class="col-md-2 column_details_end" v-if="income.items.length == 0">
                 {{ Number(income.total).toLocaleString() }}
               </div>
-              <div class="col-md-2 column_details" v-if="income.items.length > 0"></div>
-              <div class="col-md-2 column_details_end"></div>
+              <div class="col-md-2 column_details_end" v-if="income.items.length > 0"></div>
             </div>
 
             <!-----------------------------------------START OF ACTIVITIES UNDER A CATEGORY--------------------------------->
@@ -164,8 +165,21 @@
               <!--------------------------------------------END OF ACTIVITY SUB-TOTAL--------------------------------------------------->
             </div>
             <!----------------------------------------------END OF ACTIVITIES UNDER A CATEGORY------------------------------------------>
+            <div class="row" v-if="income.items.length > 0">
+              <div class="col-md-1 column_details text-bold">
+                {{ income.code }}
+              </div>
+              <div class="col-md-5 column_details text-bold text-center">
+                Total
+              </div>
+              <div class="col-md-2 column_details"></div>
+              <div class="col-md-2 column_details">
+                {{ Number(income.total).toLocaleString() }}
+              </div>
+              <div class="col-md-2 column_details_end"> {{ Number(income.total).toLocaleString() }}</div>
+            </div>
           </div>
-          <!------------------------------------------------END OF CATEGORIES OF ICOME-------------------------------------------------->
+          <!------------------------------------------------END OF CATEGORIES OF INCOME-------------------------------------------------->
 
           <!-------------------------------------------------------START OF INCOME TALLY----------------------------------------------------->
           <div class="row">
@@ -283,6 +297,19 @@
               <!--------------------------------------------END OF ACTIVITY SUB-TOTAL--------------------------------------------------->
             </div>
             <!----------------------------------------------END OF ACTIVITIES UNDER A CATEGORY------------------------------------------>
+            <div class="row" v-if="expenditures.items.length > 0">
+              <div class="col-md-1 column_details text-bold">
+                {{ expenditures.code }}
+              </div>
+              <div class="col-md-5 column_details text-bold text-center">
+                Total
+              </div>
+              <div class="col-md-2 column_details"></div>
+              <div class="col-md-2 column_details">
+                {{ Number(expenditures.total).toLocaleString() }}
+              </div>
+              <div class="col-md-2 column_details_end"> {{ Number(expenditures.total).toLocaleString() }}</div>
+            </div>
           </div>
           <!------------------------------------------------END OF CATEGORIES OF EXPENDITURES-------------------------------------------------->
 
@@ -365,7 +392,7 @@
       <div class="col-md-1 col-sm-1 col-xs-1"></div>
       <div class="col-md-10 col-xs-12 col-sm-12">
         <div class="q-my-lg text-center">
-          <label for="income" class="summary">Presented By:</label>
+          <label for="income" class="summary text-uppercase">Presented By:</label>
         </div>
         <div class="flex justify-between">
           <div class="col-md-6 text-bold text-center text-uppercase admin_details">
@@ -445,15 +472,15 @@ export default {
     },
 
     getTotalIncome() {
-      return this.$store.getters.getReportData[2] + this.getBalanceBF;
+      return this.$store.getters.getReportData[2].total_income + this.getBalanceBF;
     },
 
     getTotalExpenditure() {
-      return this.$store.getters.getReportData[3];
+      return this.$store.getters.getReportData[3].total_expenditure;
     },
 
     getBalanceBF() {
-      return this.$store.getters.getReportData[4];
+      return this.$store.getters.getReportData[4].balance_brought_forward;
     },
 
     getTotalBalance(){
@@ -461,15 +488,15 @@ export default {
     },
 
     getPresident(){
-      return this.$store.getters.getReportData[5];
+      return this.$store.getters.getReportData[5].president;
     },
 
     getTreasurer(){
-      return this.$store.getters.getReportData[6];
+      return this.$store.getters.getReportData[6].treasurer;
     },
 
     getFinancialSecretary(){
-      return this.$store.getters.getReportData[7];
+      return this.$store.getters.getReportData[7].fin_sec;
     }
   },
   methods: {},

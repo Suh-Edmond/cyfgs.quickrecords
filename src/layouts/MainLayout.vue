@@ -76,6 +76,25 @@
             <q-item
               clickable
               v-ripple
+              :active-class="item.name == 'Settings' ? 'item' : 'item_text'"
+              :active="item.name == 'Settings'"
+              @click="setItem({ name: 'Settings', selected: true }, false)"
+              v-if="checkRole(['PRESIDENT', null])"
+              :disable="getOrganisation == null"
+              :to="{name: 'settings'}"
+            >
+              <q-item-section
+                avatar
+                :class="item.name == 'Settings' ? 'item_icon' : 'item_text'"
+              >
+                <q-icon name="settings" size="xs" />
+              </q-item-section>
+              <q-item-section class="item_name"> Settings Zone </q-item-section>
+            </q-item>
+
+            <q-item
+              clickable
+              v-ripple
               :active-class="
                 item.name == 'Member Management' ? 'item' : 'item_text'
               "
@@ -100,25 +119,6 @@
               <q-item-section class="item_name">
                 Member Management
               </q-item-section>
-            </q-item>
-
-            <q-item
-              clickable
-              v-ripple
-              :active-class="item.name == 'Settings' ? 'item' : 'item_text'"
-              :active="item.name == 'Settings'"
-              @click="setItem({ name: 'Settings', selected: true }, false)"
-              v-if="checkRole(['PRESIDENT', null])"
-              :disable="getOrganisation == null"
-              :to="{name: 'settings'}"
-            >
-              <q-item-section
-                avatar
-                :class="item.name == 'Settings' ? 'item_icon' : 'item_text'"
-              >
-                <q-icon name="settings" size="xs" />
-              </q-item-section>
-              <q-item-section class="item_name"> Settings Zone </q-item-section>
             </q-item>
             <q-item
               clickable
@@ -558,8 +558,7 @@ import ViewPaymentItem from "src/components/ViewPaymentItem.vue";
 export default {
   mixins: [organisationMixinVue],
   mounted() {
-    this.getOrganisationInfo();
-  },
+   },
   data() {
     return {
       left: false,
@@ -584,6 +583,7 @@ export default {
   },
   watch: {},
   methods: {
+
     setItem(item, requires_add) {
       this.item.name = item.name;
 

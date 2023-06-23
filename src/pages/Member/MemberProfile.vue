@@ -285,10 +285,18 @@
                       }}
                     </q-td>
                     <q-td key="quarterly_name" :props="props">
-                      {{  props.row.frequency == 'QUARTERLY'? props.row.quarterly_name:'N/A' }}
+                      {{
+                        props.row.frequency == "QUARTERLY"
+                          ? props.row.quarterly_name
+                          : "N/A"
+                      }}
                     </q-td>
                     <q-td key="year" :props="props">
-                      {{  props.row.frequency == 'YEARLY'? props.row.session.year:'N/A' }}
+                      {{
+                        props.row.frequency == "YEARLY"
+                          ? props.row.session.year
+                          : "N/A"
+                      }}
                     </q-td>
                     <q-td key="has_pay" :props="props">
                       <q-checkbox
@@ -353,10 +361,14 @@
                     <q-td key="counter" :props="props">
                       {{ props.row.counter }}
                     </q-td>
-                    <q-td key="name" :props="props"  v-if="props.row.name == member_registration">
+                    <q-td
+                      key="name"
+                      :props="props"
+                      v-if="props.row.name == member_registration"
+                    >
                       {{ props.row.name }}({{ props.row.year }})
                     </q-td>
-                    <q-td key="name" :props="props"  v-else>
+                    <q-td key="name" :props="props" v-else>
                       {{ props.row.name }}
                     </q-td>
                     <q-td key="amount" :props="props">
@@ -646,6 +658,7 @@ export default {
     this.getMembersDebts(false);
     this.getMembersContributions(false);
     // this.setFormField();
+    this.getUserRoles(this.$route.params.id);
   },
 
   data() {
@@ -666,7 +679,7 @@ export default {
       no_caps: true,
       selected_items: [],
       loading_payment: false,
-      member_registration:"Member's Registration",
+      member_registration: "Member's Registration",
       columns: [
         {
           name: "counter",
@@ -823,20 +836,19 @@ export default {
     getAvailableRoles() {
       let roles = [];
       this.available_roles
-        .filter(
-          (role) =>
-            role.name == "TREASURER" ||
-            role.name == "FINANCIAL_SECRETARY" ||
-            role.name == "AUDITOR"
-        )
-        .forEach((role) => {
-          roles.push({
-            label: role.name,
-            value: role.name,
+          .filter(
+            (role) =>
+              role.name == "TREASURER" ||
+              role.name == "FINANCIAL_SECRETARY" ||
+              role.name == "AUDITOR"
+          )
+          .forEach((role) => {
+            roles.push({
+              label: role.name,
+              value: role.name,
+            });
           });
-        });
       let member_roles = this.user_roles.map((ele) => ele.name);
-
       roles = roles.filter((ele) => !member_roles.includes(ele.value));
       return roles;
     },
@@ -851,8 +863,7 @@ export default {
     fetchUserRoles() {
       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       this.user_roles = [];
-      this.$store.dispatch("setRoles", []);
-      this.$store.getters.getCurrentMember.roles.forEach((ele) => {
+      this.$store.getters.getRoles.forEach((ele) => {
         this.user_roles.push(ele);
       });
       return this.user_roles;
@@ -1013,6 +1024,7 @@ export default {
     },
 
     getAllRoles() {
+      this.available_roles =[];
       let payload = {
         url: `/api/protected/roles`,
         msg: "none",
@@ -1062,12 +1074,12 @@ export default {
         this.role = null;
         this.getMemberProfile(user_id);
         this.show_role_dialog = false;
+        this.getUserRoles(user_id);
       });
     },
 
-    getUserRoles() {
+    getUserRoles(id) {
       this.user_roles = [];
-      let id = this.$route.params.id;
       let payload = {
         url: `/api/protected/roles/users/${id}`,
         msg: "none",
@@ -1076,10 +1088,10 @@ export default {
         status: "none",
         to_on_fail: "none",
         error_msg: "An Error occurred! Please try again",
-        has_commit: false,
+        has_commit: true,
         show_feedback: false,
         show_spinner: false,
-        commit: "none",
+        commit: "SET_ROLES",
         to_be_store_data: {
           required: false,
           has_value: false,
@@ -1088,8 +1100,7 @@ export default {
       };
       this.$store
         .dispatch("getRequest", payload)
-        .then((res) => {
-          this.user_roles = res.data;
+        .then(() => {
         })
         .finally(() => {});
     },
@@ -1116,6 +1127,7 @@ export default {
       this.$store.dispatch("deleteRequest", payload).then(() => {
         this.user_roles = [];
         this.getMemberProfile(id);
+        this.getUserRoles(id);
       });
     },
 
@@ -1166,7 +1178,7 @@ export default {
             comment: "BULK PAYMENT",
             quarterly_name: ele.quarterly_name,
             month_name: ele.month_name,
-            registration_id:ele.id
+            registration_id: ele.id,
           });
         } else {
           data.push({
@@ -1179,7 +1191,7 @@ export default {
             comment: "BULK PAYMENT",
             quarterly_name: ele.quarterly_name,
             month_name: ele.month_name,
-            registration_id:ele.id
+            registration_id: ele.id,
           });
         }
       });
@@ -1263,7 +1275,7 @@ export default {
             this.data1.push({
               counter: res.data.indexOf(ele) + 1,
               payment_item_id: ele.payment_item_id,
-              payment_item_amount:ele.payment_item_amount,
+              payment_item_amount: ele.payment_item_amount,
               name: ele.name,
               amount: ele.amount,
               balance: ele.balance,
@@ -1271,7 +1283,7 @@ export default {
               approve: ele.approve,
               created_at: this.getFormatedDate(ele.created_at),
               id: ele.id,
-              year:ele.year,
+              year: ele.year,
             });
           });
         }

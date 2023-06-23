@@ -402,6 +402,7 @@ export default {
     ) {
       this.getUser();
     }
+    this.getOrganisationInfo();
   },
 
   data() {
@@ -524,18 +525,25 @@ export default {
           LocalStorage.set("data", res.data.data);
           LocalStorage.set("has_logged_in", true);
           this.edit_profile = false;
+          this.getOrganisationInfo();
         })
         .finally(() => {
           this.loading = false;
           location.reload();
         });
     },
+
+
     showEditProfile() {
       return (this.edit_profile = true);
     },
+
+
     showEditPassword() {
       return (this.edit_password = true);
     },
+
+
     onUpdatePassword() {
       this.loading = true;
       let payload = {
@@ -570,6 +578,7 @@ export default {
         });
     },
 
+
     resetForm() {
       this.security.password = null;
       this.security.old_password = null;
@@ -578,9 +587,12 @@ export default {
       return this.security;
     },
 
+
     openFileUpload() {
       document.getElementById("logo").click();
     },
+
+
     onFileChanged(e) {
       const formData = new FormData();
       formData.append("file", e.target.files[0]);
@@ -630,7 +642,7 @@ export default {
               location.reload();
             });
           });
-      });
+      })
     },
   },
   components: {

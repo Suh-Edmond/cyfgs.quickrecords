@@ -71,6 +71,7 @@
 <script>
 import { SessionStorage } from "quasar";
 import organisationMixin from "src/mixins/organisationMixin.vue";
+import CurrentYearMixin from "src/mixins/CurrentYearMixin.vue";
 
 export default {
   name: "PageIndex",
@@ -128,6 +129,7 @@ export default {
           if(res.data != undefined){
             SessionStorage.set("to_tab", 'Dashboard');
             this.getOrganisationInfo();
+            this.fetchCurrentYear();
           }
         }).catch((error) => {
 

@@ -860,10 +860,9 @@ export default {
   mixins: [organisationMixin, memberMixin, CurrentYearMixinVue],
 
   mounted() {
+    this.getUserRoles(this.$route.params.id);
     this.getMembersDebts(false);
     this.getMembersContributions(false);
-    // this.setFormField();
-    this.getUserRoles(this.$route.params.id);
   },
 
   data() {
@@ -1589,7 +1588,7 @@ export default {
 .camara {
   position: relative;
   left: 10%;
-  top: -25px;
+  top: -45px;
   cursor: pointer;
   color: $grey8;
 }

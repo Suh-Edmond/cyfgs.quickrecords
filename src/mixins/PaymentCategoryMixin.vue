@@ -1,5 +1,5 @@
 <script>
-
+import CurrentYearMixin from './CurrentYearMixin.vue';
 export default {
   data() {
     return {
@@ -25,8 +25,9 @@ export default {
 
   methods: {
     fetchCategories(organisation_id, show_spinner) {
+      let year = this.getCurrentYear != null ? this.getCurrentYear.year: null;
       let payload = {
-        url: `/api/protected/organisations/${organisation_id}/payment-categories`,
+        url: `/api/protected/organisation/payment-categories?organisation_id=${organisation_id}&year=${year}`,
         msg: "none",
         color: "default",
         status: "none",

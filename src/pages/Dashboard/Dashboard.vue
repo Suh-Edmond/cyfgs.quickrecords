@@ -122,10 +122,10 @@ import organisationMixin from 'src/mixins/organisationMixin.vue';
 export default {
   mixins:[CurrentYearMixinVue, RegistrationAmountMixin, organisationMixin],
   mounted(){
+    this.getOrganisationInfo()
     this.fetchCurrentYear();
     this.getRegistrationAmount();
     this.getSessions();
-    this.getOrganisationInfo()
   },
   data() {
     return {

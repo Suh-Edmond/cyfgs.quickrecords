@@ -10,11 +10,8 @@
       />
     </div>
 
-    <NotFound :message="not_found_msg" v-if="getData.length == 0 && !getLoadingState"></NotFound>
-
-
     <!-- header for filter categories -->
-    <div v-if="getData.length > 0 && !getLoadingState">
+    <div>
       <div
         class="row q-ml-xs q-pt-xs"
         :class="$q.screen.lg ? 'q-pa-sm' : ''"
@@ -29,16 +26,27 @@
             dense
             :options="getSessionsFromState"
             label="Select year"
-            @input="filterPaymentCategories"
           />
         </div>
+        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-ml-md">
+            <q-btn
+              label="Filter"
+              :loading="is_fetching"
+              color="primary"
+              :disabled="validateFilter"
+              @click="filterPaymentCategories"
+              no-caps
+              icon-right="filter_list"
+            >
+            </q-btn>
+          </div>
         <q-space />
         <div class="button q-pb-xs">
           <q-btn
             label="Print"
             :loading="loading"
             color="positive"
-            :disabled="false"
+            :disabled="validateDownload"
             no-caps
             icon-right="print"
             @click="downloadPaymentCategory"
@@ -47,7 +55,7 @@
       </div>
       <!-- table for categories -->
       <div class="row q-pt-sm">
-        <div class="col-md-12 col-xs-12 col-sm-12" v-show="!start_filter">
+        <div class="col-md-12 col-xs-12 col-sm-12">
           <CategoryTable
             :columns="columns"
             :data="getData"
@@ -64,30 +72,11 @@
           </CategoryTable>
         </div>
       </div>
-
-      <!-- table for filtered categories -->
-      <div class="col-md-12 col-xs-12 col-sm-12" v-show="start_filter">
-        <CategoryTable
-          :columns="columns"
-          :data="filteredPaymentCategories"
-          :label="label"
-          :message="message"
-          :show_payment_category="true"
-          :show_payment_item="false"
-          :show_expenditure_category="false"
-          :show_expenditure_item="false"
-          @show-payment-items="showPaymentItems"
-          @update-payment-category="updatePaymentCategory"
-          @delete-row="deleteRow"
-        >
-        </CategoryTable>
-      </div>
     </div>
   </q-page>
 </template>
 
 <script>
-import NotFound from "src/components/NotFound.vue";
 import CategoryTable from "src/components/CategoryTable.vue";
 import PaymentCategoryMixinVue from "src/mixins/PaymentCategoryMixin.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
@@ -104,9 +93,8 @@ export default {
       not_found_msg:
         "Ooops!! No Payment Categories found. Click the add button to add Payment Categories.",
       year: null,
-      is_fetching: true,
+      is_fetching: false,
       loading: false,
-      start_filter: false,
       columns: [
         {
           name: "counter",
@@ -139,13 +127,14 @@ export default {
       label: "Delete",
       message: "Are you sure you want to delete this Payment Category?",
       filteredPaymentCategories: [],
+      is_filtering:false,
     };
   },
   computed: {
     getData() {
       let data = [];
-
-      this.$store.getters.getPaymentCategories.forEach((element) => {
+      if(this.filteredPaymentCategories.length == 0 && !this.is_filtering){
+        this.$store.getters.getPaymentCategories.forEach((element) => {
         data.push({
           counter:
             this.$store.getters.getPaymentCategories.indexOf(element) + 1,
@@ -157,13 +146,23 @@ export default {
           organisation_id: element.organisation_id,
         });
       });
-
+      }else {
+        data = this.filteredPaymentCategories
+      }
       return data;
     },
 
     getLoadingState() {
       return this.$store.getters.getFetchingState
     },
+
+    validateFilter(){
+      return this.year == null
+    },
+
+    validateDownload(){
+      return this.getData.length == 0;
+    }
   },
 
   watch: {
@@ -207,6 +206,7 @@ export default {
       let year = this.year.label.substring(0, 4);
 
       let organisationId = this.$store.getters.getOrganisation.id;
+      this.is_fetching = true;
       let payload = {
         url: `/api/protected/filter-payment-categories?organisation_id=${organisationId}&year=${year}`,
         msg: "none",
@@ -223,8 +223,9 @@ export default {
           data: [],
         },
       };
+      this.is_filtering = true;
       this.$store.dispatch("getRequest", payload).then((res) => {
-        this.start_filter = true;
+        this.is_fetching = false;
         res.data.forEach((element) => {
           this.filteredPaymentCategories.push({
             counter: res.data.indexOf(element) + 1,
@@ -240,7 +241,7 @@ export default {
     },
 
     downloadPaymentCategory() {
-      let year = this.year.label.substring(0, 4);
+      let year = this.year != null ? this.year.label.substring(0, 4): null;
 
       let organisationId = this.$store.getters.getOrganisation.id;
       let url = `/api/protected/download-payment-categories?organisation_id=${organisationId}&year=${year}`;
@@ -289,10 +290,9 @@ export default {
       this.$store.dispatch("deleteRequest", payload).then(() => {
         this.fetchCategories(data.organisation_id, true)
       });
-    }
+    },
   },
   components: {
-    NotFound,
     CategoryTable,
   },
 };

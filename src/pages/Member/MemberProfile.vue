@@ -1,5 +1,5 @@
 <template>
-  <div class="q-px-md">
+  <div>
     <div class="row">
       <div class="col-md-12 col-xs-12 col-sm-12 col-lg-12">
         <!-- spinners -->
@@ -33,6 +33,7 @@
         </q-tabs>
         <q-separator />
         <q-tab-panels v-model="tab" animated>
+          <!-------------------------------------------MEMBER PROFILE TAB PENEL----------------------------------------->
           <q-tab-panel name="profile">
             <div class="q-pt-md" v-if="!getLoadingState">
               <q-card class="my-card" flat>
@@ -209,7 +210,7 @@
                   <div class="col-md-2 col-sm-12 col-xs-12"></div>
                   <div class="col-md-6 col-sm-12 col-xs-12">
                     <q-card-section>
-                      <!-- personal infomation -->
+                      <!----------------------------------------MEMBER  PROFILE DETAILS------------------------------------->
                       <div class="q-pa-sm" v-if="!edit_profile">
                         <div class="row">
                           <div class="q-pb-md">
@@ -358,41 +359,10 @@
                             }}</span></label
                           >
                         </div>
-                        <div>
-                          <div
-                            class="not_register q-pa-sm"
-                            v-if="
-                              getCurrentMember.has_register ==
-                                'NOT_REGISTERED' && !getCurrentMember.has_paid
-                            "
-                          >
-                            <label for="not_register"
-                              >Member has not Completed Registration for the Year: {{ getCurrentYear.year }}</label
-                            >
-                          </div>
-                          <div
-                            class="q-mt-md has_register q-pa-sm"
-                            v-if="getCurrentMember.has_register == 'REGISTERED'"
-                          >
-                            <label for="register"
-                              >Member has Completed Registration for the Year: {{ getCurrentYear }}</label
-                            >
-                          </div>
-                          <div
-                            class="q-mt-md pending_reg q-pa-sm"
-                            v-if="
-                              getCurrentMember.has_paid &&
-                              getCurrentMember.approve == 'PENDING'
-                            "
-                          >
-                            <label for="pending"
-                              >Member's Registration is awaiting Approval</label
-                            >
-                          </div>
-                        </div>
                       </div>
+                      <!----------------------------------------------END OF MEMBER PROFILE------------------------------------------>
 
-                      <!-- edit personal information -->
+                      <!-----------------------------------------EDIT MEMBER PROFILE FORM------------------------------------------>
                       <div class="q-pa-sm q-mb-lg" v-if="edit_profile">
                         <q-form @submit="onUpdateMember" class="q-gutter-md">
                           <div class="update_profile q-pb-md">
@@ -478,17 +448,263 @@
                           </div>
                         </q-form>
                       </div>
+                      <!------------------------------------------END OF EDIT MEMBER PROFILE FORM---------------------------------->
+
+                       <!---------------------------------------------START OF ALERT OF MEMBER'S REGISTRATION STATUS------------------>
+                       <div>
+                        <div
+                          class="not_register q-pa-sm"
+                          v-if="
+                            getCurrentMember.has_register == 'NOT_REGISTERED' &&
+                            !getCurrentMember.has_paid
+                          "
+                        >
+                          <label for="not_register"
+                            >Member has not Completed Registration for the Year:
+                            {{ getCurrentYear.year }}</label
+                          >
+                        </div>
+                        <div
+                          class="q-mt-md has_register q-pa-sm"
+                          v-if="getCurrentMember.has_register == 'REGISTERED'"
+                        >
+                          <label for="register"
+                            >Member has Completed Registration for the Year:
+                            {{ getCurrentYear }}</label
+                          >
+                        </div>
+                        <div
+                          class="q-mt-md pending_reg q-pa-sm"
+                          v-if="
+                            getCurrentMember.has_paid &&
+                            getCurrentMember.approve == 'PENDING'
+                          "
+                        >
+                          <label for="pending"
+                            >Registration Payment is awaiting Approval</label
+                          >
+                        </div>
+                      </div>
+                      <!---------------------------------------END OF ALERT FOR MEMBER'S REGISTRATION STATUS---------------------->
                     </q-card-section>
                   </div>
                 </div>
               </q-card>
             </div>
           </q-tab-panel>
+          <!-------------------------------------------END OF MEMBER PROFILE TAB PANEL---------------------------------->
 
+          <!-------------------------------------------MEMBER CONTRIBUTIONS TAB PANEL----------------------------------->
           <q-tab-panel name="contributions">
-            <div class="text-h6">Member's Contributions</div>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+            <!-----------------------------------------PAYMENT ITEMS--------------------------------------------------->
+            <div class="row q-mx-xs">
+              <div class="col-12 col-md-12 col-sm-12 col-xs-12">
+                <q-table
+                  :data="data"
+                  :columns="columns"
+                  row-key="index"
+                  :table-header-style="{
+                    backgroundColor: '#5384ae',
+                    color: '#FFFFFF',
+                  }"
+                  flat
+                >
+                  <template v-slot:top-left>
+                    <div class="text-h6 contribution_item_header">
+                      Payment Items:
+                      {{ Number(due_amount).toLocaleString() }} XAF
+                    </div>
+                  </template>
+                  <template v-slot:body="props">
+                    <q-tr :props="props">
+                      <q-td key="counter" :props="props">
+                        {{ props.row.counter }}
+                      </q-td>
+                      <q-td key="name" :props="props">
+                        {{ props.row.name }}
+                      </q-td>
+                      <q-td key="balance" :props="props">
+                        {{ Number(props.row.balance).toLocaleString() }}
+                      </q-td>
+                      <q-td key="frequency" :props="props">
+                        {{ props.row.frequency }}
+                      </q-td>
+                      <q-td key="month_name" :props="props">
+                        {{
+                          props.row.month_name == null
+                            ? "N/A"
+                            : props.row.month_name
+                        }}
+                      </q-td>
+                      <q-td key="quarterly_name" :props="props">
+                        {{
+                          props.row.frequency == "QUARTERLY"
+                            ? props.row.quarterly_name
+                            : "N/A"
+                        }}
+                      </q-td>
+                      <q-td key="year" :props="props">
+                        {{
+                          props.row.frequency == "YEARLY"
+                            ? props.row.session.year
+                            : "N/A"
+                        }}
+                      </q-td>
+                      <q-td key="has_pay" :props="props">
+                        <q-checkbox
+                          v-model="props.row.has_pay"
+                          dense
+                          size="sm"
+                          @input="computeTotal(props.row, $event)"
+                        />
+                      </q-td>
+                    </q-tr>
+                  </template>
+                </q-table>
+              </div>
+            </div>
+            <!-----------------------------------------END OF PAYMENT ITEMS------------------------------------------->
+
+            <!----------------------------------------TOTAL AMOUNT PAYABLE------------------------------------------->
+            <div class="flex q-my-lg justify-center">
+              <div>
+                <label for="total" class="amount_payable_title"
+                  >Total Amount Payable</label
+                >
+              </div>
+              <div class="q-pl-lg">
+                <q-input
+                  disable
+                  outlined
+                  dense
+                  type="number"
+                  v-model="total_amount_payable"
+                ></q-input>
+              </div>
+              <div class="q-pl-lg">
+                <q-btn
+                  label="Make Payment"
+                  color="primary"
+                  :disabled="validatePayment"
+                  no-caps
+                  @click="showPaymentDialog"
+                >
+                  <q-icon
+                    size="xs"
+                    name="arrow_forward"
+                    class="q-pl-md"
+                  ></q-icon>
+                </q-btn>
+              </div>
+            </div>
+            <!----------------------------------------END OF TOTAL AMOUNT PAYABLE------------------------------------>
+
+            <!-----------------------------------------PAID ITEM LIST------------------------------------------------>
+            <div class="row q-mt-lg q-mx-md">
+              <div class="col-12">
+                <q-table
+                  :data="data1"
+                  :columns="columns1"
+                  row-key="index"
+                  :table-header-style="{
+                    backgroundColor: '#5384ae',
+                    color: '#FFFFFF',
+                  }"
+                  flat
+                >
+                  <template v-slot:top-left>
+                    <div class="text-h6 contribution_item_header">
+                      Paid Items: {{ Number(amount_paid).toLocaleString() }} XAF
+                    </div>
+                  </template>
+                  <template v-slot:body="props">
+                    <q-tr :props="props">
+                      <q-td key="counter" :props="props">
+                        {{ props.row.counter }}
+                      </q-td>
+                      <q-td
+                        key="name"
+                        :props="props"
+                      >
+                        {{ props.row.name }}
+                      </q-td>
+                      <q-td key="frequency" :props="props">
+                        {{ props.row.frequency }}
+                      </q-td>
+                      <q-td key="month_name" :props="props">
+                        {{
+                          props.row.month_name == null
+                            ? "N/A"
+                            : props.row.month_name
+                        }}
+                      </q-td>
+                      <q-td key="quarterly_name" :props="props">
+                        {{
+                          props.row.quarterly_name == null || " "
+                            ? "N/A"
+                            : props.row.quarterly_name
+                        }}
+                      </q-td>
+                      <q-td key="year" :props="props">
+                        {{ props.row.year == null ? "N/A" : props.row.year }}
+                      </q-td>
+                      <q-td key="amount" :props="props">
+                        {{ Number(props.row.amount).toLocaleString() }}
+                      </q-td>
+                      <q-td key="balance" :props="props">
+                        {{ Number(props.row.balance).toLocaleString() }}
+                      </q-td>
+                      <q-td
+                        key="payment_status"
+                        :props="props"
+                        v-if="props.row.payment_status == 'COMPLETE'"
+                        class="status_approve_completed"
+                      >
+                        {{ props.row.payment_status }}
+                      </q-td>
+                      <q-td
+                        key="payment_status"
+                        :props="props"
+                        v-if="props.row.payment_status == 'INCOMPLETE'"
+                        class="status_decline_not_completed"
+                      >
+                        {{ props.row.payment_status }}
+                      </q-td>
+                      <q-td
+                        key="approve"
+                        :props="props"
+                        class="status_approve_completed"
+                        v-if="props.row.approve == 'APPROVED'"
+                      >
+                        {{ props.row.approve }}
+                      </q-td>
+                      <q-td
+                        key="approve"
+                        :props="props"
+                        class="status_pending"
+                        v-if="props.row.approve == 'PENDING'"
+                      >
+                        {{ props.row.approve }}
+                      </q-td>
+                      <q-td
+                        key="approve"
+                        :props="props"
+                        class="status_decline_not_completed"
+                        v-if="props.row.approve == 'DECLINED'"
+                      >
+                        {{ props.row.approve }}
+                      </q-td>
+                      <q-td key="created_at" :props="props">
+                        {{ props.row.created_at }}
+                      </q-td>
+                    </q-tr>
+                  </template>
+                </q-table>
+              </div>
+            </div>
+            <!-----------------------------------------END OF PAID ITEMS--------------------------------------------->
           </q-tab-panel>
+          <!-------------------------------------------END OF MEMBER CONTRIBUTIONS TAB PANEL--------------------------->
         </q-tab-panels>
       </div>
     </div>
@@ -574,6 +790,61 @@
       </q-card>
     </q-dialog>
     <!-------------------------------------------END OF REMOVE ROLE DIALOG-------------------->
+
+    <!-------------------------------------------DIALOG TO APPROVE PAYMENT------------------->
+    <q-dialog v-model="show_payment_dialog">
+      <q-card style="min-width: 600px" class="q-pa-xs">
+        <q-card-section class="row items-center q-pb-sm">
+          <div class="text-h6 confirm_payment_title">Confirm Payment(s)</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+        <q-card-section>
+          <div>
+            <q-markup-table flat>
+              <thead>
+                <tr class="text-weight-bold">
+                  <th class="text-left text-weight-bold">S/N</th>
+                  <th class="text-left text-weight-bold">Payment Item</th>
+                  <th class="text-left text-weight-bold">Amount (XAF)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(item, index) in selected_items" :key="item.id">
+                  <td class="text-left">{{ index + 1 }}</td>
+                  <td class="text-left">{{ item.name }}</td>
+                  <td class="text-left">{{ item.balance }}</td>
+                </tr>
+                <tr>
+                  <td class="text-left text-weight-bold">Total</td>
+                  <td class="text-left"></td>
+                  <td class="text-left text-weight-bold">
+                    {{ total_amount_payable }} XAF
+                  </td>
+                </tr>
+              </tbody>
+            </q-markup-table>
+          </div>
+        </q-card-section>
+
+        <q-card-section class="q-mb-md">
+          <div class="flex justify-end">
+            <q-btn
+              icon-right="check"
+              class="form_button"
+              label="Confirm"
+              :loading="loading_payment"
+              color="primary"
+              :disabled="false"
+              no-caps
+              @click="onConfirmPayment"
+            >
+            </q-btn>
+          </div>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
+    <!-------------------------------------------END OF DIALOG TO APPROVE PAYMENT------------>
   </div>
 </template>
 
@@ -685,6 +956,34 @@ export default {
           align: "left",
           field: (row) => row.name,
           format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "frequency",
+          align: "left",
+          label: "Frequency",
+          field: "frequency",
+          sortable: true,
+        },
+        {
+          name: "month_name",
+          align: "left",
+          label: "Month",
+          field: "month_name",
+          sortable: true,
+        },
+        {
+          name: "quarterly_name",
+          align: "left",
+          label: "Quarter Name",
+          field: "quarterly_name",
+          sortable: true,
+        },
+        {
+          name: "year",
+          align: "left",
+          label: "Year",
+          field: "year",
           sortable: true,
         },
         {
@@ -1213,6 +1512,9 @@ export default {
               created_at: this.getFormatedDate(ele.created_at),
               id: ele.id,
               year: ele.year,
+              frequency: ele.frequency,
+              month_name: ele.month_name,
+              quarterly_name: ele.quarterly_name,
             });
           });
         }
@@ -1321,7 +1623,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 700;
-  font-size: 18px;
+  font-size: 16px;
   line-height: 11px;
   letter-spacing: 0.01em;
   color: $primary;
@@ -1423,5 +1725,49 @@ export default {
   text-align: center;
   letter-spacing: 0.005em;
   background-color: $info;
+}
+
+.contribution_item_header {
+  color: $dark;
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0.005em;
+}
+
+.status_decline_not_completed {
+  color: $orange;
+}
+
+.status_approve_completed {
+  color: $secondary;
+}
+
+.status_pending {
+  color: $info;
+}
+
+.amount_payable_title {
+  color: $grey8;
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 24px;
+  letter-spacing: 0.005em;
+}
+
+.confirm_payment_title {
+  color: $primary;
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 24px;
+  align-items: center;
+  text-align: center;
+  letter-spacing: 0.005em;
 }
 </style>

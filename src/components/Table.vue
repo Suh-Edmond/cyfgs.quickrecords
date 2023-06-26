@@ -98,7 +98,7 @@
               no-caps
               @click="onDeclineRecord(props.row, 'Decline')"
               v-if="
-                checkPresidentTreasurerRole() && props.row.approve == 'PENDING'
+                checkTreasurerRole() && props.row.approve == 'PENDING'
               "
             />
 
@@ -109,7 +109,7 @@
               no-caps
               @click="onApprovedRecord(props.row, 'Approve')"
               v-if="
-                checkPresidentTreasurerRole() && props.row.approve == 'PENDING'
+                checkTreasurerRole() && props.row.approve == 'PENDING'
               "
             />
 

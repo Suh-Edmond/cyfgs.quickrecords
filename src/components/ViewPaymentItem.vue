@@ -59,7 +59,7 @@
           </span></label
         >
       </div>
-      <div class="q-mb-md">
+      <div class="q-mb-md" v-if="getUpdatedExpenditureFromState.payment_item_type !== 'ALL_MEMBERS'">
         <label for="amount" class="label"
           ><span>
             <q-icon name="people" size="xs" class="q-pr-sm" /> </span

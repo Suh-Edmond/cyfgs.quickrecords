@@ -422,6 +422,10 @@ export default {
             type: "PAYMENT_ITEMS",
             payment_item_type: ele.type,
             frequency: ele.frequency,
+            references: ele.references,
+            created_at: ele.created_at,
+            updated_at: ele.updated_at,
+            updated_by: ele.updated_by,
           });
         });
       });

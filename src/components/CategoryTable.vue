@@ -130,7 +130,7 @@
               no-caps
               class="view_items"
               @click="showReferences(props.row)"
-              v-if="props.row.payment_item_type == 'GROUPED_MEMBERS'"
+              v-if="props.row.payment_item_type == 'GROUPED_MEMBERS' || props.row.payment_item_type == 'MEMBERS_WITH_ROLES' || props.row.payment_item_type == 'MEMBERS_WITHOUT_ROLES'"
             >
               View Members
               <span class="q-pl-md"

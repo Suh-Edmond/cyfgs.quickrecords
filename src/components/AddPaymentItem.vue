@@ -451,7 +451,7 @@ export default {
     },
 
     filterFn(val, update, abort) {
-      if (val.length < 2) {
+      if (val.length < 1) {
         this.start_filtering = false;
         abort();
         return;

@@ -5,7 +5,7 @@
       <q-spinner-ios
         color="primary"
         size="2em"
-        class="q-mb-lg"
+        class="q-mb-md"
         v-if="getLoadingState"
       />
     </div>

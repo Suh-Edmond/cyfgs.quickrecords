@@ -118,12 +118,14 @@
 <script>
 import CurrentYearMixinVue from 'src/mixins/CurrentYearMixin.vue';
 import RegistrationAmountMixin from 'src/mixins/RegistrationAmountMixin.vue';
+import organisationMixin from 'src/mixins/organisationMixin.vue';
 export default {
-  mixins:[CurrentYearMixinVue, RegistrationAmountMixin],
+  mixins:[CurrentYearMixinVue, RegistrationAmountMixin, organisationMixin],
   mounted(){
     this.fetchCurrentYear();
     this.getRegistrationAmount();
     this.getSessions();
+    this.getOrganisationInfo()
   },
   data() {
     return {

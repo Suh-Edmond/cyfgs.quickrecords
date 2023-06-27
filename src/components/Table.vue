@@ -594,7 +594,7 @@
               unelevated
               @click="onDeclineRecord(props.row, 'Decline')"
               v-if="
-                checkPresidentTreasurerRole() && props.row.approve == 'PENDING'
+                checkTreasurerRole() && props.row.approve == 'PENDING'
               "
             />
 
@@ -605,7 +605,7 @@
               unelevated
               @click="onApprovedRecord(props.row, 'Approve')"
               v-if="
-                checkPresidentTreasurerRole() && props.row.approve == 'PENDING'
+                checkTreasurerRole() && props.row.approve == 'PENDING'
               "
             />
           </q-td>

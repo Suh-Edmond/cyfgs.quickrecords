@@ -1,6 +1,10 @@
 <script>
-import CurrentYearMixin from './CurrentYearMixin.vue';
+import CurrentYearMixinVue from './CurrentYearMixin.vue';
 export default {
+  mixins:[CurrentYearMixinVue],
+  mounted(){
+    this.fetchCurrentYear();
+  },
   data() {
     return {
     };
@@ -25,7 +29,7 @@ export default {
 
   methods: {
     fetchCategories(organisation_id, show_spinner) {
-      let year = this.getCurrentYear != null ? this.getCurrentYear.year: null;
+      let year = this.$store.getters.getCurrentYear != null ? this.$store.getters.getCurrentYear.year: null;
       let payload = {
         url: `/api/protected/organisation/payment-categories?organisation_id=${organisation_id}&year=${year}`,
         msg: "none",

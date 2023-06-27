@@ -109,9 +109,11 @@
   </div>
 </template>
 <script>
+import { date } from "quasar";
 import ButtonVue from "src/components/Button.vue";
 import IncomeActivityMixinVue from "src/mixins/IncomeActivityMixin.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
+import moment from 'moment';
 
 export default {
   mixins: [IncomeActivityMixinVue, organisationMixinVue],
@@ -127,7 +129,7 @@ export default {
       loading: false,
       income_activity: {
         venue: null,
-        date: null,
+        date: moment(new Date()).format('YYYY/MM/DD'),
         name: null,
         description: null,
         amount: 0,
@@ -152,6 +154,11 @@ export default {
         this.income_activity.venue == null
         ? true
         : false;
+    },
+
+    validateDisablePaymentItem()
+    {
+      return this,this.income_activity.payment_item_id != null;
     },
 
     getEditState() {

@@ -9,13 +9,7 @@
         v-if="getLoadingState"
       />
     </div>
-
-    <NotFound
-      :message="not_found_msg"
-      v-if="getIncomeActivities.length == 0 && !getLoadingState"
-    ></NotFound>
-
-    <div v-if="getIncomeActivities.length > 0 && !getLoadingState">
+    <div>
       <!-- header for filter categories -->
       <div
         class="row q-ml-xs q-pt-xs"
@@ -96,7 +90,7 @@
               label="Print"
               :loading="loading"
               color="positive"
-              :disabled="false"
+              :disabled="validateDownload"
               no-caps
               icon-right="print"
               @click="downloadIncomeActivity"
@@ -105,7 +99,7 @@
         </div>
       </div>
       <!-- table for activities -->
-      <div class="row q-pt-sm" v-if="!start_filter">
+      <div class="row q-pt-sm">
         <div class="col-md-12 col-xs-12 col-sm-12">
           <TableVue
             :columns="columns"
@@ -124,51 +118,28 @@
           </TableVue>
         </div>
       </div>
-
-      <!-- table for filtered activities -->
-      <div class="row q-pt-sm" v-if="start_filter">
-        <div class="col-md-12 col-xs-12 col-sm-12">
-          <TableVue
-            :columns="columns"
-            :data="filteredActivities"
-            :label="label"
-            :message="message"
-            :show_savings="false"
-            :show_income_activity="true"
-            :show_contribution="false"
-            :show_members="false"
-            :total_income="total_income_amount"
-            :title="getTableTitle"
-            @edit-income-activity="editIncomeActivity"
-            @view-income-activity="viewIncomeActivity"
-            @delete-row="deleteRow"
-          >
-          </TableVue>
-        </div>
-      </div>
     </div>
   </q-page>
 </template>
 
 <script>
-import NotFound from "src/components/NotFound.vue";
 import TableVue from "src/components/Table.vue";
 import IncomeActivityMixinVue from "src/mixins/IncomeActivityMixin.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
-const  months = [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December",
-      ];
+const months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 export default {
   mixins: [IncomeActivityMixinVue, HelperMixinVue],
 
@@ -177,19 +148,17 @@ export default {
     this.getOrganisationIncomeActivities(organisation.id);
 
     if (this.$store.getters.getPaymentActivities.length == 0) {
-      this.fetchPaymentActivities();//fetch from endpoint
+      this.fetchPaymentActivities(); //fetch from endpoint
     }
     this.getPaymentActivitiesFromStatus();
+
   },
 
   data() {
     return {
-      not_found_msg:
-        "Ooops!! No Income Activity has been recorded. Click the add button to add income activity.",
       payment_item_id: null,
       month: "",
-      monthsOptions: [
-      ],
+      monthsOptions: [],
       statuses: ["PENDING", "APPROVED", "DECLINED", "ALL"],
       status: "",
       loading_filter: false,
@@ -248,21 +217,27 @@ export default {
       start_filter: false,
       loading: false,
       total_income_amount: 0,
-      payment_items:[],
+      payment_items: [],
     };
   },
   computed: {
     validateFilter() {
-      return this.year !== null || this.month !== null || this.status !== null
-        ? false
-        : true;
+      return this.payment_item_id == null;
     },
 
     getTotalIncome() {
       let total = 0;
-      this.$store.getters.getIncomeActivities.forEach((ele) => {
-        total += ele.amount;
-      });
+      if (this.filteredActivities.length == 0 && !this.start_filter) {
+        if (this.$store.getters.getIncomeActivities != null) {
+          this.$store.getters.getIncomeActivities.forEach((ele) => {
+            total += ele.amount;
+          });
+        }
+      } else {
+        this.filteredActivities.forEach((ele) => {
+          total += ele.amount;
+        });
+      }
       return total;
     },
 
@@ -280,24 +255,28 @@ export default {
 
     getIncomeActivities() {
       let data = [];
-      if (this.$store.getters.getIncomeActivities != null) {
-        this.$store.getters.getIncomeActivities.forEach((ele) => {
-          data.push({
-            counter: this.$store.getters.getIncomeActivities.indexOf(ele) + 1,
-            name: ele.name,
-            amount: ele.amount,
-            id: ele.id,
-            approve: ele.approve,
-            description: ele.description,
-            type: "INCOME_ACTIVITIES",
-            date: ele.date,
-            venue: ele.venue,
-            payment_item: ele.payment_item,
-            organisation_id: ele.organisation_id,
-            created_at: ele.created_at,
-            updated_by: ele.updated_by,
+      if (this.filteredActivities.length == 0 && !this.start_filter) {
+        if (this.$store.getters.getIncomeActivities != null) {
+          this.$store.getters.getIncomeActivities.forEach((ele) => {
+            data.push({
+              counter: this.$store.getters.getIncomeActivities.indexOf(ele) + 1,
+              name: ele.name,
+              amount: ele.amount,
+              id: ele.id,
+              approve: ele.approve,
+              description: ele.description,
+              type: "INCOME_ACTIVITIES",
+              date: ele.date,
+              venue: ele.venue,
+              payment_item: ele.payment_item,
+              organisation_id: ele.organisation_id,
+              created_at: ele.created_at,
+              updated_by: ele.updated_by,
+            });
           });
-        });
+        }
+      } else {
+        data = this.filteredActivities;
       }
       return data;
     },
@@ -305,6 +284,11 @@ export default {
     getLoadingState() {
       return this.$store.getters.getFetchingState;
     },
+
+    validateDownload()
+    {
+      return this.getIncomeActivities.length == 0
+    }
   },
   methods: {
     getPaymentActivitiesFromStatus() {
@@ -319,9 +303,8 @@ export default {
       return this.payment_items;
     },
 
-
     filterPaymentItems(val, update, abort) {
-      if (val < 2) {
+      if (val < 1) {
         this.start_filtering = false;
         abort();
         return;
@@ -329,25 +312,26 @@ export default {
 
       update(() => {
         this.start_filtering = true;
-        this.payment_items = this.getPaymentActivitiesFromStatus().filter((item) =>
-          item.label.toLowerCase().includes(val.toLowerCase())
+        this.payment_items = this.getPaymentActivitiesFromStatus().filter(
+          (item) => item.label.toLowerCase().includes(val.toLowerCase())
         );
         return this.payment_items;
       });
     },
 
-
     filterMonths(val, update, abort) {
-      if (val.length < 2) {
+      if (val.length < 1) {
         abort();
         return;
       }
-      if(this.month == ""){
+      if (this.month == "") {
         this.monthsOptions = months;
       }
       update(() => {
-        const needle = val.toLowerCase()
-        this.monthsOptions = months.filter(v => v.toLowerCase().indexOf(needle) > -1)
+        const needle = val.toLowerCase();
+        this.monthsOptions = months.filter(
+          (v) => v.toLowerCase().indexOf(needle) > -1
+        );
       });
     },
 
@@ -482,7 +466,6 @@ export default {
     },
   },
   components: {
-    NotFound,
     TableVue,
   },
 };

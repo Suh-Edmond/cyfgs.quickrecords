@@ -105,24 +105,12 @@
         <q-card>
           <q-card-section>
             <q-toolbar class="bg-primary text-white shadow-2">
-              <q-toolbar-title class="toolbar_title">Members</q-toolbar-title>
+              <q-toolbar-title class="toolbar_title flex text-white">
+                 Members
+              </q-toolbar-title>
             </q-toolbar>
           </q-card-section>
           <q-card-section>
-            <div class="q-mb-md q-px-md">
-              <q-input
-                v-model="searched_reference"
-                outlined
-                type="search"
-                dense
-                label="Search..."
-                @input="searchReference(references)"
-              >
-                <template v-slot:append>
-                  <q-icon name="search" />
-                </template>
-              </q-input>
-            </div>
             <div class="q-mt-md">
               <q-list style="width: 400px">
                 <q-item
@@ -291,7 +279,6 @@ export default {
       loading_filter: false,
       show_reference_dialog: false,
       references: [],
-      searched_reference: null,
       deleted_row: null,
       delete_msg: "",
       show_delete_dialog: false,
@@ -320,9 +307,9 @@ export default {
         : false;
     },
 
-    validateDownload(){
-      return this.getPaymentItems == 0
-    }
+    validateDownload() {
+      return this.getPaymentItems == 0;
+    },
   },
 
   methods: {
@@ -485,17 +472,6 @@ export default {
     getFirstLetter(data) {
       return data.substring(0, 1);
     },
-    searchReference(data) {
-      const ref = data;
-      if (this.searched_reference.length >= 2) {
-        this.references = this.references.filter((ref) =>
-          ref.name.toLowerCase().includes(this.searched_reference.toLowerCase())
-        );
-      } else {
-        this.references = ref;
-      }
-      return this.references;
-    },
 
     removeReference(reference) {
       this.show_delete_dialog = true;
@@ -580,7 +556,8 @@ export default {
   font-style: normal;
   font-weight: 400;
   font-size: large;
-  align-items: center;
   letter-spacing: 0.01em;
 }
+
+
 </style>

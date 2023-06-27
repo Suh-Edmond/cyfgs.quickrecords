@@ -35,7 +35,7 @@
             label="Print"
             :loading="loading"
             color="positive"
-            :disabled="false"
+            :disabled="validateDownload"
             no-caps
             icon-right="print"
             @click="downloadExpenditureCategory"
@@ -153,6 +153,10 @@ export default {
     getLoadingState() {
       return this.$store.getters.getFetchingState;
     },
+
+    validateDownload(){
+      return this.getData.length == 0
+    }
   },
   methods: {
     showExpenditureItems(data) {

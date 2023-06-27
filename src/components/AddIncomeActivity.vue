@@ -109,7 +109,6 @@
   </div>
 </template>
 <script>
-import { date } from "quasar";
 import ButtonVue from "src/components/Button.vue";
 import IncomeActivityMixinVue from "src/mixins/IncomeActivityMixin.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
@@ -190,7 +189,7 @@ export default {
     },
 
     filterPaymentItems(val, update, abort) {
-      if (val < 2 || this.payment_items.payment_item_id != null) {
+      if (val < 1 || this.payment_items.payment_item_id != null) {
         this.start_filtering = false;
         abort();
         return;

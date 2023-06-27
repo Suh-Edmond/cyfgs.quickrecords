@@ -10,13 +10,8 @@
       />
     </div>
 
-    <NotFound
-      :message="not_found_msg"
-      v-if="getMemberSavings.length == 0 && !getLoadingState"
-    ></NotFound>
-
-    <div v-if="getMemberSavings.length > 0 && !getLoadingState">
-      <!-- header for filter categories -->
+    <div>
+      <!----------------------------------------------------------------START OF USER SAVINGS-------------------------------------------------->
       <div
         class="row q-ml-xs q-pt-xs"
         :class="$q.screen.lg ? 'q-pa-sm' : ''"
@@ -86,8 +81,8 @@
           </div>
         </div>
       </div>
-      <!-- table for savings -->
-      <div class="row q-pt-sm" v-if="!start_filter">
+      <!-------------------------------------------------------TABLE FOR USER SAVINGS---------------------------------------->
+      <div class="row q-pt-sm">
         <div class="col-md-12 col-xs-12 col-sm-12">
           <TableVue
             :columns="columns"
@@ -107,34 +102,12 @@
           </TableVue>
         </div>
       </div>
-
-      <!-- table for filter savings -->
-      <div class="row q-pt-sm" v-if="start_filter">
-        <div class="col-md-12 col-xs-12 col-sm-12">
-          <TableVue
-            :columns="columns"
-            :data="filtered_savings"
-            :label="label"
-            :message="message"
-            :title="getCurrentMemberName"
-            :show_savings="false"
-            :show_member_savings="true"
-            :show_income_activity="false"
-            :show_members="false"
-            :total_saving="getMemberTotalSaving"
-            :show_contribution="false"
-            @view-member-saving="ViewMemberSaving"
-            @edit-member-saving="editMemberSaving"
-          >
-          </TableVue>
-        </div>
-      </div>
+      <!-------------------------------------------------------END TABLE FOR USER SAVINGS---------------------------------------->
     </div>
   </q-page>
 </template>
 
 <script>
-import NotFound from "src/components/NotFound.vue";
 import TableVue from "src/components/Table.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
 import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
@@ -143,7 +116,6 @@ export default {
 
   data() {
     return {
-      not_found_msg: "Ooops!! No Savings has been recorded for this Member",
       filtered_savings: [],
       loading: false,
       columns: [
@@ -191,7 +163,7 @@ export default {
       statuses: ["PENDING", "APPROVED", "DECLINED", "ALL"],
       status: "",
       start_filter: false,
-      year: "",
+      year: null,
       is_fetching: false,
       years: [],
     };
@@ -202,25 +174,29 @@ export default {
     },
     getMemberSavings() {
       let data = [];
-
-      if (this.$store.getters.getMemberSavings != null) {
-        this.$store.getters.getMemberSavings.data.forEach((ele) => {
-          data.push({
-            counter: this.$store.getters.getMemberSavings.data.indexOf(ele) + 1,
-            name: ele.user_name,
-            email: ele.email,
-            telephone: ele.telephone,
-            amount_deposited: ele.amount_deposited,
-            id: ele.id,
-            approve: ele.approve,
-            comment: ele.comment,
-            type: "MEMBER_SAVINGS",
-            user_id: ele.user_id,
-            created_at: ele.created_at,
-            updated_by: ele.updated_by,
-            date: ele.created_at,
+      if (this.filtered_savings == 0 && !this.start_filter) {
+        if (this.$store.getters.getMemberSavings != null) {
+          this.$store.getters.getMemberSavings.data.forEach((ele) => {
+            data.push({
+              counter:
+                this.$store.getters.getMemberSavings.data.indexOf(ele) + 1,
+              name: ele.user_name,
+              email: ele.email,
+              telephone: ele.telephone,
+              amount_deposited: ele.amount_deposited,
+              id: ele.id,
+              approve: ele.approve,
+              comment: ele.comment,
+              type: "MEMBER_SAVINGS",
+              user_id: ele.user_id,
+              created_at: ele.created_at,
+              updated_by: ele.updated_by,
+              date: ele.created_at,
+            });
           });
-        });
+        }
+      } else {
+        data = this.filtered_savings;
       }
       return data;
     },
@@ -229,6 +205,8 @@ export default {
       let name = "";
       if (this.$store.getters.getMemberSavings != null) {
         name = this.$store.getters.getMemberSavings.data[0].user_name;
+      }else {
+        name = this.filtered_savings[0].user_name
       }
 
       return name;
@@ -239,7 +217,7 @@ export default {
     },
 
     getMemberTotalSaving() {
-      return this.$store.getters.getMemberSavings.total_savings;
+      return this.$store.getters.getMemberSavings != null ? this.$store.getters.getMemberSavings.total_savings : 0;
     },
   },
   methods: {
@@ -257,15 +235,14 @@ export default {
       this.is_fetching = true;
       this.start_filter = true;
       this.filtered_savings = [];
-      let member = this.$store.getters.getMemberSavings.data[0].user_name;
       let organisation_id = this.$store.getters.getOrganisation.id;
-      let user_id = this.$store.getters.getMemberSavings.data[0].user_id
+      let user_id = this.$store.getters.getMemberSavings.data[0].user_id;
       this.$router.push({
         path: `/dashboard/members-savings/users/`,
-        query: { status: this.status, year:this.year.label },
+        query: { status: this.status, year: this.year.label },
       });
       let payload = {
-        url: `/api/protected/user-savings?status=${this.status}&year=${this.year.value}&organisation_id=${organisation_id}&user_id=${user_id}`,
+        url: `/api/protected/user-savings?status=${this.status}&session_id=${this.year.value}&organisation_id=${organisation_id}&user_id=${user_id}`,
         msg: "",
         color: "default",
         to_on_ok: "none",
@@ -298,6 +275,8 @@ export default {
               created_at: saving.created_at,
               updated_by: saving.updated_by,
               date: saving.created_at,
+              user_id:saving.user_id,
+              user_name:saving.user_name
             });
           });
         }
@@ -333,7 +312,6 @@ export default {
     },
   },
   components: {
-    NotFound,
     TableVue,
   },
 };

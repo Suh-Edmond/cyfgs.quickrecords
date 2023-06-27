@@ -52,6 +52,7 @@
             dense
             :options="frequencies"
             label="Select frequency"
+            :disable="validateDisableFrequency"
           />
         </div>
         <div>
@@ -65,6 +66,7 @@
             :options="payment_item_types"
             label="Select type"
             @input="handlePaymentItemType()"
+            :disable="validateDisableType"
           />
         </div>
 
@@ -265,6 +267,16 @@ export default {
     getUpdatedPaymentItem() {
       return this.setFormFields(this.$store.getters.getUpdatedPaymentItem);
     },
+
+    validateDisableFrequency(){
+      return this.payment_item.frequency != null;
+    },
+
+    validateDisableType(){
+      return this.payment_item.type != null
+    },
+
+
   },
 
   watch: {
@@ -451,7 +463,7 @@ export default {
     },
 
     filterFn(val, update, abort) {
-      if (val.length < 2) {
+      if (val.length < 1) {
         this.start_filtering = false;
         abort();
         return;

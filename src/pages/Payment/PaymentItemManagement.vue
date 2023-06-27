@@ -5,18 +5,13 @@
       <q-spinner-ios
         color="primary"
         size="2em"
-        class="q-mb-lg"
+        class="q-mb-md"
         v-if="getLoadingState"
       />
     </div>
 
-    <NotFound
-      :message="getNotFoundMsgForPaymentItems"
-      v-if="getPaymentItems.length == 0 && !getLoadingState"
-    ></NotFound>
-
-    <div v-if="getPaymentItems.length > 0 && !getLoadingState">
-      <!-- header for filter categories -->
+    <div>
+      <!-------------------------------------------------HEADER FOR PAYMENT ITEMS-------------------------------->
       <div
         class="row q-ml-xs q-pt-xs"
         :class="$q.screen.lg ? 'q-pa-sm' : ''"
@@ -70,16 +65,18 @@
             label="Print"
             :loading="loading"
             color="positive"
-            :disabled="false"
+            :disabled="validateDownload"
             no-caps
             icon-right="print"
             @click="downloadItems"
           ></q-btn>
         </div>
       </div>
-      <!-- table for categories -->
+      <!------------------------------------------------END OF HEADER------------------------------------------->
+
+      <!-----------------------------------------------TABLE FOR PAYMENT ITEMS-->
       <div class="row q-pt-sm">
-        <div class="col-md-12 col-xs-12 col-sm-12" v-show="!start_filter">
+        <div class="col-md-12 col-xs-12 col-sm-12">
           <CategoryTable
             :columns="columns"
             :data="getPaymentItems"
@@ -98,101 +95,71 @@
           >
           </CategoryTable>
         </div>
-
-        <div class="col-md-12 col-xs-12 col-sm-12" v-show="start_filter">
-          <CategoryTable
-            :columns="columns"
-            :data="filteredPaymentItems"
-            :label="label"
-            :message="message"
-            :title="getPaymentCategoryName"
-            :show_payment_category="false"
-            :show_payment_item="true"
-            :show_expenditure_category="false"
-            :show_expenditure_item="false"
-            @update-payment-category="updatePaymentCategory"
-            @update-payment-item="updatePaymentItems"
-            @show-references="showReferences"
-            @delete-row="deleteRow"
-            @view-payment-item="viewPaymentItem"
-          >
-          </CategoryTable>
-        </div>
       </div>
+      <!------------------------------------------------END OF TABLE PAYMENT ITEMS-------------------------------->
     </div>
 
-    <!-- dialog to show all members responsible for a payment item -->
+    <!-------------------------------------------------DAILOG FOR MEMBERS UNDER A PAYMENT ITEM------------------->
     <div v-if="show_reference_dialog">
-        <q-dialog v-model="show_reference_dialog">
-          <q-card>
-            <q-card-section>
-              <q-toolbar class="bg-primary text-white shadow-2">
-                <q-toolbar-title class="toolbar_title">Members</q-toolbar-title>
-              </q-toolbar>
-            </q-card-section>
-            <q-card-section>
-              <div class="q-mb-md q-px-md">
-                <q-input
-                  v-model="searched_reference"
-                  outlined
-                  type="search"
-                  dense
-                  label="Search..."
-                  @input="searchReference(references)"
+      <q-dialog v-model="show_reference_dialog">
+        <q-card>
+          <q-card-section>
+            <q-toolbar class="bg-primary text-white shadow-2">
+              <q-toolbar-title class="toolbar_title flex text-white">
+                 Members
+              </q-toolbar-title>
+            </q-toolbar>
+          </q-card-section>
+          <q-card-section>
+            <div class="q-mt-md">
+              <q-list style="width: 400px">
+                <q-item
+                  v-for="reference in references"
+                  :key="reference.id"
+                  class="q-my-sm"
+                  clickable
+                  v-ripple
                 >
-                  <template v-slot:append>
-                    <q-icon name="search" />
-                  </template>
-                </q-input>
-              </div>
-              <div class="q-mt-md">
-                <q-list style="width: 400px">
-                  <q-item
-                    v-for="reference in references"
-                    :key="reference.id"
-                    class="q-my-sm"
-                    clickable
-                    v-ripple
-                  >
-                    <q-item-section avatar>
-                      <q-avatar color="primary" text-color="white">
-                        {{ getFirstLetter(reference.name) }}
-                      </q-avatar>
-                    </q-item-section>
+                  <q-item-section avatar>
+                    <q-avatar color="primary" text-color="white">
+                      {{ getFirstLetter(reference.name) }}
+                    </q-avatar>
+                  </q-item-section>
 
-                    <q-item-section>
-                      <q-item-label>{{ reference.name }}</q-item-label>
-                      <q-item-label caption lines="1">{{
-                        reference.telephone
-                      }}</q-item-label>
-                    </q-item-section>
+                  <q-item-section>
+                    <q-item-label>{{ reference.name }}</q-item-label>
+                    <q-item-label caption lines="1">{{
+                      reference.telephone
+                    }}</q-item-label>
+                  </q-item-section>
 
-                    <q-item-section side>
-                      <q-icon
-                        name="delete"
-                        color="red"
-                        size="xs"
-                        @click="removeReference(reference)"
-                      />
-                    </q-item-section>
-                  </q-item>
-                </q-list>
-              </div>
-            </q-card-section>
-            <q-card-actions align="right" class="q-pa-lg">
-              <q-btn
-                label="OK"
-                v-close-popup
-                color="primary"
-                size="md"
-                @click="fetchPaymentItems()"
-              />
-            </q-card-actions>
-          </q-card>
-        </q-dialog>
+                  <q-item-section side>
+                    <q-icon
+                      name="delete"
+                      color="red"
+                      size="xs"
+                      @click="removeReference(reference)"
+                    />
+                  </q-item-section>
+                </q-item>
+              </q-list>
+            </div>
+          </q-card-section>
+          <q-card-actions align="right" class="q-pa-lg">
+            <q-btn
+              label="OK"
+              v-close-popup
+              color="primary"
+              size="md"
+              @click="fetchPaymentItems()"
+            />
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
     </div>
+    <!--------------------------------------------------END OF DIALOG------------------------------------------>
 
-    <!-- confirm delete dialog -->
+    <!--------------------------------------------------DELETE ITEM DIALOG------------------------------------>
     <div v-if="show_delete_dialog">
       <ConfirmDialog
         :data="deleted_row"
@@ -207,7 +174,6 @@
 </template>
 
 <script>
-import NotFound from "src/components/NotFound.vue";
 import CategoryTable from "src/components/CategoryTable.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
 import ConfirmDialog from "src/components/ConfirmDialog.vue";
@@ -220,8 +186,7 @@ export default {
   },
   data() {
     return {
-      not_found_msg: "",
-      start_filter: false,
+      is_filtering: false,
       loading: false,
       columns: [
         {
@@ -308,12 +273,12 @@ export default {
         "MEMBERS_WITH_ROLES",
         "MEMBERS_WITHOUT_ROLES",
         "GROUPED_MEMBERS",
+        "ALL",
       ],
-      frequencies: ["YEARLY", "MONTHLY", "ONE_TIME"],
+      frequencies: ["YEARLY", "MONTHLY", "ONE_TIME", "ALL"],
       loading_filter: false,
       show_reference_dialog: false,
       references: [],
-      searched_reference: null,
       deleted_row: null,
       delete_msg: "",
       show_delete_dialog: false,
@@ -330,14 +295,6 @@ export default {
       return this.$store.getters.getCurrentPaymentCategory.name;
     },
 
-    getNotFoundMsgForPaymentItems() {
-      let msg = "";
-      if (this.$store.getters.getCurrentPaymentCategory != undefined) {
-        msg = `Ooops!! No Payment Items found for Category [${this.$store.getters.getCurrentPaymentCategory.name}]. Click the add button to add Payment Items.`;
-      }
-      return msg;
-    },
-
     getLoadingState() {
       return this.$store.getters.getFetchingState;
     },
@@ -348,6 +305,10 @@ export default {
         this.type == null
         ? true
         : false;
+    },
+
+    validateDownload() {
+      return this.getPaymentItems == 0;
     },
   },
 
@@ -367,33 +328,38 @@ export default {
     },
     getPaymentItemsFromState() {
       let items = [];
-      if (this.$store.getters.getPaymentItems) {
-        this.$store.getters.getPaymentItems.data.forEach((ele) => {
-          items.push({
-            counter: this.$store.getters.getPaymentItems.data.indexOf(ele) + 1,
-            name: ele.name,
-            amount: ele.amount,
-            id: ele.id,
-            compulsory: ele.compulsory,
-            payment_category_id: ele.payment_category_id,
-            description: ele.description,
-            payment_category_name: ele.payment_category_name,
-            type: "PAYMENT_ITEMS",
-            payment_item_type: ele.type,
-            frequency: ele.frequency,
-            references: ele.references,
-            created_at: ele.created_at,
-            updated_at: ele.updated_at,
-            updated_by: ele.updated_by,
+      if (this.filteredPaymentItems.length == 0 && !this.is_filtering) {
+        if (this.$store.getters.getPaymentItems) {
+          this.$store.getters.getPaymentItems.data.forEach((ele) => {
+            items.push({
+              counter:
+                this.$store.getters.getPaymentItems.data.indexOf(ele) + 1,
+              name: ele.name,
+              amount: ele.amount,
+              id: ele.id,
+              compulsory: ele.compulsory,
+              payment_category_id: ele.payment_category_id,
+              description: ele.description,
+              payment_category_name: ele.payment_category_name,
+              type: "PAYMENT_ITEMS",
+              payment_item_type: ele.type,
+              frequency: ele.frequency,
+              references: ele.references,
+              created_at: ele.created_at,
+              updated_at: ele.updated_at,
+              updated_by: ele.updated_by,
+            });
           });
-        });
+        }
+      } else {
+        items = this.filteredPaymentItems;
       }
       return items;
     },
 
     downloadItems() {
       let id = this.$store.getters.getCurrentPaymentCategory.id;
-      let url = `/api/protected/download-payment-items?payment_category_id=${id}`;
+      let url = `/api/protected/download-payment-items?payment_category_id=${id}&is_compulsory=${this.is_compulsory.value}&frequency=${this.frequency}&type=${this.type}`;
       let file_name = "Payment_Items.pdf";
       this.loading = this.downloadPdf(url, file_name);
     },
@@ -410,6 +376,7 @@ export default {
       });
 
       this.filteredPaymentItems = [];
+      this.loading_filter = true;
       let payload = {
         url: `/api/protected/filter-payment-items?payment_category_id=${id}&is_compulsory=${this.is_compulsory.value}&type=${this.type}&frequency=${this.frequency}`,
         msg: "none",
@@ -427,7 +394,8 @@ export default {
         },
       };
       this.$store.dispatch("getRequest", payload).then((res) => {
-        this.start_filter = true;
+        this.is_filtering = true;
+        this.loading_filter = false;
         res.data.data.forEach((ele) => {
           this.filteredPaymentItems.push({
             counter: res.data.data.indexOf(ele) + 1,
@@ -441,6 +409,10 @@ export default {
             type: "PAYMENT_ITEMS",
             payment_item_type: ele.type,
             frequency: ele.frequency,
+            references: ele.references,
+            created_at: ele.created_at,
+            updated_at: ele.updated_at,
+            updated_by: ele.updated_by,
           });
         });
       });
@@ -499,17 +471,6 @@ export default {
 
     getFirstLetter(data) {
       return data.substring(0, 1);
-    },
-    searchReference(data) {
-      const ref = data;
-      if (this.searched_reference.length >= 2) {
-        this.references = this.references.filter((ref) =>
-          ref.name.toLowerCase().includes(this.searched_reference.toLowerCase())
-        );
-      } else {
-        this.references = ref;
-      }
-      return this.references;
     },
 
     removeReference(reference) {
@@ -583,7 +544,6 @@ export default {
     },
   },
   components: {
-    NotFound,
     CategoryTable,
     ConfirmDialog,
   },
@@ -596,7 +556,8 @@ export default {
   font-style: normal;
   font-weight: 400;
   font-size: large;
-  align-items: center;
   letter-spacing: 0.01em;
 }
+
+
 </style>

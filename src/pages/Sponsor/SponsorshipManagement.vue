@@ -9,13 +9,8 @@
         v-if="getLoadingState"
       />
     </div>
-    <!-- not found -->
-    <NotFound
-      :message="not_found_msg"
-      v-if="getData.length == 0 && !getLoadingState"
-    ></NotFound>
 
-    <div v-if="getData.length > 0 && !getLoadingState">
+    <div>
       <!-- header for filter sponsors -->
       <div
         class="row q-ml-xs q-pt-xs"
@@ -81,7 +76,6 @@
               no-caps
               icon-right="print"
               @click="downloadSponsorship"
-
             ></q-btn>
           </div>
         </div>
@@ -110,15 +104,14 @@ import SponsorshipTable from "src/components/SponsorshipTable.vue";
 import PaymentItemMixin from "src/mixins/PaymentItemMixin.vue";
 import SponsorshipMixin from "src/mixins/SponsorshipMixin.vue";
 import HelperMixin from "src/mixins/HelperMixin.vue";
-import NotFound from "src/components/NotFound.vue";
 
 export default {
   mixins: [PaymentItemMixin, SponsorshipMixin, HelperMixin],
 
   mounted() {
-      this.fetchPaymentActivities();
-      this.getPaymentActivitiesFromStatus();
-      this.getAllSponsorships();
+    this.fetchPaymentActivities();
+    this.getPaymentActivitiesFromStatus();
+    this.getAllSponsorships();
   },
 
   data() {
@@ -164,10 +157,11 @@ export default {
       message: "Are you sure you want to delete this Sponsorship ?",
       loading: false,
       payment_item_id: null,
-      payment_items:[],
-      start_filtering:false,
-      is_fetching:false,
-      not_found_msg:"Ooops!! No Sponsorship has been record for any Activity or Item for this Session.Click the add button to add Sponsorhip",
+      payment_items: [],
+      start_filtering: false,
+      is_fetching: false,
+      not_found_msg:
+        "Ooops!! No Sponsorship has been record for any Activity or Item for this Session.Click the add button to add Sponsorhip",
     };
   },
   computed: {
@@ -175,7 +169,7 @@ export default {
       return this.payment_item_id != null ? false : true;
     },
 
-    validateDownload(){
+    validateDownload() {
       return this.getData.length == 0;
     },
 
@@ -199,20 +193,20 @@ export default {
     getData() {
       let data = [];
       this.$store.getters.getSponsorships.forEach((ele) => {
-          data.push({
-            counter: this.$store.getters.getSponsorships.indexOf(ele) + 1,
-            supporter: ele.supporter,
-            amount_deposited: ele.amount_deposited,
-            code: ele.code,
-            approve: ele.approve,
-            id: ele.id,
-            payment_item: ele.payment_item,
-            created_at: ele.created_at,
-            updated_at: ele.updated_at,
-            updated_by: ele.updated_by,
-            comment:ele.comment
-          });
+        data.push({
+          counter: this.$store.getters.getSponsorships.indexOf(ele) + 1,
+          supporter: ele.supporter,
+          amount_deposited: ele.amount_deposited,
+          code: ele.code,
+          approve: ele.approve,
+          id: ele.id,
+          payment_item: ele.payment_item,
+          created_at: ele.created_at,
+          updated_at: ele.updated_at,
+          updated_by: ele.updated_by,
+          comment: ele.comment,
         });
+      });
       return data;
     },
   },
@@ -235,15 +229,15 @@ export default {
           data: null,
         },
       };
-      this.is_fetching = true
+      this.is_fetching = true;
       this.$store.dispatch("getRequest", payload).then(() => {
         this.is_fetching = false;
-      })
-
+      });
     },
 
     downloadSponsorship() {
-      let value = this.payment_item_id != null ? this.payment_item_id.value : "";
+      let value =
+        this.payment_item_id != null ? this.payment_item_id.value : "";
       let url = `/api/protected/sponsorships/download?payment_item_id=${value}&status=${this.status}`;
       let file_name = "Sponsorships.pdf";
       this.loading = this.downloadPdf(url, file_name);
@@ -266,8 +260,8 @@ export default {
 
       update(() => {
         this.start_filtering = true;
-        this.payment_items = this.getPaymentActivitiesFromStatus().filter((item) =>
-          item.label.toLowerCase().includes(val.toLowerCase())
+        this.payment_items = this.getPaymentActivitiesFromStatus().filter(
+          (item) => item.label.toLowerCase().includes(val.toLowerCase())
         );
         return this.payment_items;
       });
@@ -287,7 +281,6 @@ export default {
   },
   components: {
     SponsorshipTable,
-    NotFound
   },
 };
 </script>

@@ -10,12 +10,7 @@
       />
     </div>
 
-    <NotFound
-      :message="not_found_msg"
-      v-if="getData.length == 0 && !getLoadingState"
-    ></NotFound>
-
-    <div v-if="getData.length > 0 && !getLoadingState">
+    <div>
       <!-- header for filter categories -->
       <div
         class="row q-ml-xs q-pt-xs"
@@ -49,7 +44,7 @@
       </div>
 
       <!-- table for categories -->
-      <div class="row q-pt-sm" v-show="!start_filter">
+      <div class="row q-pt-sm">
         <div class="col-md-12 col-xs-12 col-sm-12">
           <CategoryTable
             :columns="columns"
@@ -67,30 +62,11 @@
           </CategoryTable>
         </div>
       </div>
-
-      <!-- table for filtered categories -->
-      <div class="col-md-12 col-xs-12 col-sm-12" v-show="start_filter">
-        <CategoryTable
-          :columns="columns"
-          :data="filteredExpenditureCategories"
-          :label="label"
-          :message="message"
-          :show_payment_category="false"
-          :show_payment_item="false"
-          :show_expenditure_category="true"
-          :show_expenditure_item="false"
-          @show-expenditure-items="showExpenditureItems"
-          @update-expenditure-category="updateExpenditureCategory"
-          @delete-row="onDeleteRow"
-        >
-        </CategoryTable>
-      </div>
     </div>
   </q-page>
 </template>
 
 <script>
-import NotFound from "src/components/NotFound.vue";
 import CategoryTable from "src/components/CategoryTable.vue";
 import ExpenditureCategoryMixinVue from "src/mixins/ExpenditureCategoryMixin.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
@@ -104,7 +80,7 @@ export default {
     organisationMixinVue,
     expenditureItemMixinVue,
     HelperMixinVue,
-    CurrentYearMixin
+    CurrentYearMixin,
   ],
   mounted() {
     this.fetchExpenditureCategories();
@@ -112,8 +88,6 @@ export default {
 
   data() {
     return {
-      not_found_msg:
-        "Ooops!! No Expenditure Categories found. Click the add button to add Expenditure Categories.",
       year: null,
       loading: false,
       columns: [
@@ -143,7 +117,7 @@ export default {
           name: "action",
           label: "Action",
           field: "action",
-        }
+        },
       ],
       label: "Delete",
       message: "Are you sure you want to delete this Expenditure Category ?",
@@ -154,20 +128,25 @@ export default {
   computed: {
     getData() {
       let data = [];
-
-      this.$store.getters.getExpenditureCategories.forEach((element) => {
-        data.push({
-          counter:
-            this.$store.getters.getExpenditureCategories.indexOf(element) + 1,
-          name: element.name,
-          expenditure_items: "View Expenditure Items",
-          id: element.id,
-          description: element.description,
-          type: "EXPENDITURE_CATEGORY",
-          organisation_id: element.organisation_id,
+      if (
+        this.filteredExpenditureCategories.length == 0 &&
+        !this.start_filter
+      ) {
+        this.$store.getters.getExpenditureCategories.forEach((element) => {
+          data.push({
+            counter:
+              this.$store.getters.getExpenditureCategories.indexOf(element) + 1,
+            name: element.name,
+            expenditure_items: "View Expenditure Items",
+            id: element.id,
+            description: element.description,
+            type: "EXPENDITURE_CATEGORY",
+            organisation_id: element.organisation_id,
+          });
         });
-      });
-
+      }else {
+        data = this.filteredExpenditureCategories;
+      }
       return data;
     },
 
@@ -186,9 +165,12 @@ export default {
 
       let intermediate_tabs = [];
 
-      intermediate_tabs.push({name: "Expenditure Items", has_intermediate_tab: true})
+      intermediate_tabs.push({
+        name: "Expenditure Items",
+        has_intermediate_tab: true,
+      });
 
-      this.$store.dispatch("setIntermediateTabs", intermediate_tabs)
+      this.$store.dispatch("setIntermediateTabs", intermediate_tabs);
 
       this.$emit("show-expenditure-items", data);
     },
@@ -204,7 +186,7 @@ export default {
       let organisation_id = this.getOrganisationId;
       this.$router.push({
         path: "/dashboard/expenditure-categories",
-        query: { year: this.year},
+        query: { year: this.year },
       });
 
       let payload = {
@@ -215,7 +197,7 @@ export default {
         error_msg: "An Error occurred! Could not fetch payment categories",
         has_commit: false,
         show_feedback: false,
-        show_spinner:true,
+        show_spinner: true,
         commit: "none",
         to_be_store_data: {
           required: false,
@@ -248,10 +230,10 @@ export default {
       this.loading = this.downloadPdf(url, file_name);
     },
 
-    onDeleteRow(data){
+    onDeleteRow(data) {
       let payload = {
         url: `/api/protected/organisations/${data.organisation_id}/expenditure-categories/${data.id}`,
-        msg:`Payment Item deleted successfully`,
+        msg: `Payment Item deleted successfully`,
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
@@ -266,12 +248,11 @@ export default {
         },
       };
       this.$store.dispatch("deleteRequest", payload).then(() => {
-        this.fetchExpenditureCategories()
+        this.fetchExpenditureCategories();
       });
-    }
+    },
   },
   components: {
-    NotFound,
     CategoryTable,
   },
 };

@@ -279,9 +279,7 @@ export default {
       this.getMembersFromState();
     }
 
-    if (this.getPaymentCategoriesFromState().length == 0) {
-      this.fetchCategories(organisation_id, false);
-    }
+    this.fetchCategories(organisation_id, false);
   },
 
   data() {
@@ -523,7 +521,7 @@ export default {
     },
 
     filterPaymentItems(val, update, abort) {
-      if (val < 2) {
+      if (val < 1) {
         this.start_filtering = false;
         abort();
         return;
@@ -551,7 +549,7 @@ export default {
     },
 
     filterPaymentCategories(val, update, abort) {
-      if (val < 2) {
+      if (val < 1) {
         this.start_filtering = false;
         abort();
         return;
@@ -579,7 +577,7 @@ export default {
     },
 
     filterMembers(val, update, abort) {
-      if (val < 2) {
+      if (val < 1) {
         this.start_filtering = false;
         abort();
         return;
@@ -595,7 +593,7 @@ export default {
     },
 
     filterMonths(val, update, abort) {
-      if (val.length < 2) {
+      if (val.length < 1) {
         abort();
         return;
       }

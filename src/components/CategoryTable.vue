@@ -68,6 +68,7 @@
                       clickable
                       v-close-popup
                       @click="onDelete(props.row, 'PAYMENT_CATEGORY')"
+                      v-if="checkPresidentRole()"
                     >
                       <q-item-section avatar>
                         <span>
@@ -129,7 +130,7 @@
               no-caps
               class="view_items"
               @click="showReferences(props.row)"
-              v-if="props.row.payment_item_type == 'GROUPED_MEMBERS'"
+              v-if="props.row.payment_item_type == 'GROUPED_MEMBERS' || props.row.payment_item_type == 'MEMBERS_WITH_ROLES' || props.row.payment_item_type == 'MEMBERS_WITHOUT_ROLES'"
             >
               View Members
               <span class="q-pl-md"
@@ -860,6 +861,13 @@ export default {
         (role) => role.name == "TREASURER"
       );
       return treasurer_role != undefined;
+    },
+
+    checkPresidentRole() {
+      const president_role = LocalStorage.getItem("data").roles.find(
+        (role) => role.name == "PRESIDENT"
+      );
+      return president_role != undefined;
     },
 
     showPaymentItems(data) {

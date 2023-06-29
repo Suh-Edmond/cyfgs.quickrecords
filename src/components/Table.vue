@@ -216,13 +216,13 @@
           <q-td key="telephone" :props="props">
             {{ props.row.telephone }}
           </q-td>
-          <q-td key="amount_deposited" :props="props">
-            {{ Number(props.row.amount_deposited).toLocaleString() }}
+          <q-td key="total_amount" :props="props">
+            {{ Number(props.row.total_amount).toLocaleString() }}
           </q-td>
           <q-td key="date" :props="props">
             {{ getDate(props.row.date) }}
           </q-td>
-          <q-td
+          <!-- <q-td
             key="approve"
             :props="props"
             v-if="props.row.approve == 'PENDING'"
@@ -237,7 +237,7 @@
             class="registered"
           >
             {{ props.row.approve }}
-          </q-td>
+          </q-td> -->
           <q-td
             key="approve"
             :props="props"
@@ -755,7 +755,7 @@
       <template v-slot:bottom>
         <!-- members contributions -->
         <q-tr v-if="total_contribution > 0">
-          <q-th class="text-bold total_label" v-if="show_contribution">
+          <q-th class="text-bold total_label q-mt-md summary" v-if="show_contribution">
             Total Members Contribution:
           </q-th>
           <q-th v-if="show_contribution" class="total_value">
@@ -764,13 +764,13 @@
         </q-tr>
         <!-- member contribution -->
         <div class="text-bold q-pb-md" v-if="show_member_contribution">
-          <div class="q-mt-md">
+          <div class="q-mt-md summary">
             Amount Contributed:
             <span class="total_value">
               {{ Number(total_contribution).toLocaleString() }} XAF
             </span>
           </div>
-          <div class="q-my-md">
+          <div class="q-my-md summary">
             <!-- member balance contribution -->
             <q-tr>
               Total Balance:
@@ -784,7 +784,7 @@
         <!-- income  -->
         <q-tr>
           <q-th
-            class="text-bold total_label"
+            class="text-bold total_label q-mt-md summary"
             v-if="show_income_activity && total_income > 0"
           >
             Total Income:
@@ -800,7 +800,7 @@
         <!-- members -->
         <q-tr>
           <q-th
-            class="text-bold total_label"
+            class="text-bold total_label q-mt-md summary"
             v-if="show_members && total_members > 0"
           >
             Total Members:
@@ -813,7 +813,7 @@
         <!-- member savings-->
         <q-tr>
           <q-th
-            class="text-bold total_label"
+            class="text-bold total_label q-mt-md summary"
             v-if="show_member_savings && total_saving > 0"
           >
             Total Amount Saved:
@@ -829,7 +829,7 @@
         <!-- members savings-->
         <q-tr>
           <q-th
-            class="text-bold total_label"
+            class="text-bold total_label q-mt-md summary"
             v-if="show_savings && total_saving > 0"
           >
             Total Members Savings:
@@ -1619,6 +1619,10 @@ export default {
 .warning_caption {
   color: $grey2;
   font-weight: 500;
+  font-size: 15px;
+}
+
+.summary{
   font-size: 15px;
 }
 </style>

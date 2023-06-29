@@ -236,18 +236,18 @@ export default {
           field: "telephone",
         },
         {
-          name: "amount_deposited",
+          name: "total_amount",
           align: "left",
-          label: "Amount Saved (XAF)",
-          field: "amount_deposited",
+          label: "Total Amount Saved (XAF)",
+          field: "total_amount",
         },
-        {
-          name: "approve",
-          align: "left",
-          label: "Transaction Status",
-          field: "approve",
-          sortable: true,
-        },
+        // {
+        //   name: "approve",
+        //   align: "left",
+        //   label: "Transaction Status",
+        //   field: "approve",
+        //   sortable: true,
+        // },
         {
           name: "action",
           label: "Action",
@@ -288,7 +288,7 @@ export default {
           name: ele.user_name,
           email: ele.email,
           telephone: ele.telephone,
-          amount_deposited: ele.amount_deposited,
+          total_amount: ele.total_amount,
           id: ele.id,
           approve: ele.approve,
           comment: ele.comment,
@@ -297,6 +297,7 @@ export default {
           created_at: ele.created_at,
           updated_by: ele.updated_by,
           sesion_id: ele.session_id,
+          amount_deposited: ele.amount_deposited
         });
       });
       return data;
@@ -305,7 +306,7 @@ export default {
     computeTotalSavingsForFiltered() {
       let total = 0;
       this.$store.getters.getSavings.forEach((ele) => {
-        total += ele.amount_deposited;
+        total += ele.total_amount;
       });
       return total;
     },
@@ -328,7 +329,7 @@ export default {
                 user_name: ele.user_name,
                 email: ele.email,
                 telephone: ele.telephone,
-                amount_deposited: ele.amount_deposited,
+                total_amount: ele.total_amount,
                 id: ele.id,
                 approve: ele.approve,
                 comment: ele.comment,
@@ -336,6 +337,7 @@ export default {
                 user_id: ele.user_id,
                 created_at: ele.created_at,
                 updated_by: ele.updated_by,
+                amount_deposited:ele.amount_deposited
               });
             }
           );
@@ -456,6 +458,7 @@ export default {
               created_at: saving.created_at,
               updated_by: saving.updated_by,
               date: saving.created_at,
+              total_amount:ele.total_amount
             });
           });
         }

@@ -297,6 +297,9 @@
           <q-td key="amount_deposited" :props="props">
             {{ Number(props.row.amount_deposited).toLocaleString() }}
           </q-td>
+          <q-td key="amount_used" :props="props">
+            {{ Number(props.row.amount_used).toLocaleString() }}
+          </q-td>
           <q-td
             key="approve"
             :props="props"
@@ -1344,7 +1347,7 @@ export default {
       );
 
       intermediate_tabs.push({
-        name: data.user_name + "Savings",
+        name: data.user_name + "  Savings",
         has_intermediate_tab: true,
       });
 

@@ -133,6 +133,12 @@ export default {
           field: "amount_deposited",
         },
         {
+          name: "amount_used",
+          align: "left",
+          label: "Amount Used (XAF)",
+          field: "amount_used",
+        },
+        {
           name: "approve",
           align: "left",
           label: "Transaction Status",
@@ -144,13 +150,6 @@ export default {
           label: "Date Collected",
           field: "date",
         },
-        // {
-        //   name: "state",
-        //   align: "left",
-        //   label: "Saving Status",
-        //   field: "state",
-        //   sortable: true,
-        // },
         {
           name: "action",
           label: "Action",
@@ -174,7 +173,7 @@ export default {
     },
     getMemberSavings() {
       let data = [];
-      if (this.filtered_savings == 0 && !this.start_filter) {
+      if (this.filtered_savings.length == 0 && !this.start_filter) {
         if (this.$store.getters.getMemberSavings != null) {
           this.$store.getters.getMemberSavings.data.forEach((ele) => {
             data.push({
@@ -184,6 +183,7 @@ export default {
               email: ele.email,
               telephone: ele.telephone,
               amount_deposited: ele.amount_deposited,
+              amount_used: ele.amount_used,
               id: ele.id,
               approve: ele.approve,
               comment: ele.comment,
@@ -206,8 +206,20 @@ export default {
     },
 
     getMemberTotalSaving() {
-      return this.$store.getters.getMemberSavings != null ? this.$store.getters.getMemberSavings.total_savings : 0;
-    },
+      let total = 0;
+      if(this.filtered_savings.length == 0 && !this.start_filter){
+        if(this.$store.getters.getMemberSavings != null){
+          this.$store.getters.getMemberSavings.data.forEach((ele) => {{
+            total += (ele.amount_deposited - ele.amount_used);
+          }})
+        }
+      }else {
+        this.filtered_savings.forEach(ele => {
+          total += (ele.amount_deposited - ele.amount_used);
+        })
+      }
+      return total;
+     },
   },
   methods: {
     ViewMemberSaving(data) {
@@ -256,6 +268,7 @@ export default {
               email: saving.email,
               telephone: saving.telephone,
               amount_deposited: saving.amount_deposited,
+              amount_used: ele.amount_used,
               id: saving.id,
               approve: saving.approve,
               comment: saving.comment,

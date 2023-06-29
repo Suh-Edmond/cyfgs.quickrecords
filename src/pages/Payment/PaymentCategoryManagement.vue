@@ -39,7 +39,7 @@
               icon-right="filter_list"
             >
             </q-btn>
-          </div>
+        </div>
         <q-space />
         <div class="button q-pb-xs">
           <q-btn

@@ -3,49 +3,109 @@
     <q-card class="my-card" flat>
       <div class="row">
         <div class="col col-md-4 col-sm-12 col-xs-12">
-          <q-card-section class="text-center">
-            <q-avatar size="190px">
-              <q-icon
-                name="account_circle"
-                size="190px"
-                class="icon"
-                v-if="getUserInfo.picture == null"
-              >
-              </q-icon>
-              <img
-                :src="getUserInfo.picture"
-                alt="User picture"
-                v-if="getUserInfo.picture != null"
-              />
-            </q-avatar>
-            <div>
-              <input
-                type="file"
-                accept="image/x-png,image/jpg,image/jpeg"
-                style="display: none"
-                id="logo"
-                @change="onFileChanged"
-              />
-              <q-icon
-                name="add_a_photo"
-                class="camara"
-                size="sm"
-                @click="openFileUpload"
-              >
-              <q-tooltip>Upload Picture</q-tooltip>
-              </q-icon>
+          <q-card-section>
+            <div class="text-center">
+              <q-avatar size="190px">
+                <q-icon
+                  name="account_circle"
+                  size="190px"
+                  class="icon"
+                  v-if="getUserInfo.picture == null"
+                >
+                </q-icon>
+                <img
+                  :src="getUserInfo.picture"
+                  alt="User picture"
+                  v-if="getUserInfo.picture != null"
+                />
+              </q-avatar>
+              <div>
+                <input
+                  type="file"
+                  accept="image/x-png,image/jpg,image/jpeg"
+                  style="display: none"
+                  id="logo"
+                  @change="onFileChanged"
+                />
+                <q-icon
+                  name="add_a_photo"
+                  class="camara"
+                  size="sm"
+                  @click="openFileUpload"
+                >
+                  <q-tooltip>Upload Picture</q-tooltip>
+                </q-icon>
+              </div>
             </div>
-            <p class="text_h6 q-pt-md">My Roles:</p>
-            <div>
-              <q-chip
-                size="md"
-                color="primary"
-                text-color="white"
-                v-for="(item, index) in getUserInfo.roles"
-                :key="index"
-              >
-                {{ item.name }}
-              </q-chip>
+            <!-- member roles -->
+            <div class="flex q-mt-md q-px-md">
+              <div>
+                <label for="role" class="role_heading"
+                  ><span
+                    ><q-icon
+                      name="military_tech"
+                      class="role_icon"
+                    ></q-icon></span
+                  >My Roles:
+                </label>
+              </div>
+              <q-space />
+              <div></div>
+            </div>
+            <div class="q-mt-md">
+              <q-list>
+                <q-item
+                  v-for="(role, index) in getUserInfo.roles"
+                  :key="index"
+                  class="q-mb-md"
+                >
+                  <q-item-section avatar v-if="role.name == 'MEMBER'">
+                    <q-avatar color="primary" text-color="white" size="35px">
+                      M</q-avatar
+                    >
+                  </q-item-section>
+                  <q-item-section avatar v-if="role.name == 'PRESIDENT'">
+                    <q-avatar color="primary" text-color="white" size="35px">
+                      PP
+                    </q-avatar>
+                  </q-item-section>
+                  <q-item-section
+                    avatar
+                    v-if="role.name == 'FINANCIAL_SECRETARY'"
+                  >
+                    <q-avatar color="primary" text-color="white" size="35px">
+                      FS
+                    </q-avatar>
+                  </q-item-section>
+                  <q-item-section avatar v-if="role.name == 'TREASURER'">
+                    <q-avatar color="primary" text-color="white" size="35px">
+                      TR
+                    </q-avatar>
+                  </q-item-section>
+                  <q-item-section avatar v-if="role.name == 'AUDITOR'">
+                    <q-avatar color="primary" text-color="white" size="35px">
+                      AU
+                    </q-avatar>
+                  </q-item-section>
+                  <q-item-section>
+                    <q-item-label class="role_name">{{
+                      role.name
+                    }}</q-item-label>
+                    <q-item-label caption class="text-sm role_update_date"
+                      >Updated by:
+                      <span> {{ role.updated_by }}</span></q-item-label
+                    >
+                  </q-item-section>
+
+                  <q-item-section side top>
+                    <q-item-label caption class="role_update_date">
+                      <span
+                        >{{ formDateTime(role.created_at) }}
+                      </span></q-item-label
+                    >
+                  </q-item-section>
+                </q-item>
+              </q-list>
             </div>
           </q-card-section>
         </div>
@@ -98,15 +158,17 @@
                       class="q-pr-xs gender_icon"
                     ></q-icon
                   ></span>
-                  <span
-                  class="q-pr-xs"></span>
+                  <span class="q-pr-xs"></span>
                   Gender:
                   <span class="value value_code gender">{{
                     getUserInfo.gender
                   }}</span>
-                  <span class="value value_code q-pl-lg" v-if="getUserInfo.gender == null">Not Set</span>
-                  </label
-                >
+                  <span
+                    class="value value_code q-pl-lg"
+                    v-if="getUserInfo.gender == null"
+                    >Not Set</span
+                  >
+                </label>
               </div>
               <div class="flex q-pb-lg">
                 <label for="name" class="label"
@@ -207,16 +269,16 @@
                   <q-input v-model="user.name" outlined dense type="text" />
                 </div>
                 <div>
-                <label for="credential" class="form_field"
-                  >Gender <span class="text-red">*</span></label
-                >
-                <q-select
-                  v-model="user.gender"
-                  outlined
-                  dense
-                  :options="gender_options"
-                />
-              </div>
+                  <label for="credential" class="form_field"
+                    >Gender <span class="text-red">*</span></label
+                  >
+                  <q-select
+                    v-model="user.gender"
+                    outlined
+                    dense
+                    :options="gender_options"
+                  />
+                </div>
                 <div>
                   <label for="credential" class="form_field">Email</label>
                   <q-input v-model="user.email" outlined dense type="email" />
@@ -240,14 +302,14 @@
                 </div>
                 <div class="row justify-end">
                   <q-btn
-                  class="q-mr-lg"
-                  label="Cancel"
-                  color="primary"
-                  no-caps
-                  outline
-                  @click="edit_profile = false"
-                >
-                </q-btn>
+                    class="q-mr-lg"
+                    label="Cancel"
+                    color="primary"
+                    no-caps
+                    outline
+                    @click="edit_profile = false"
+                  >
+                  </q-btn>
                   <ButtonVue
                     label="Save"
                     :loading="loading"
@@ -359,14 +421,14 @@
                 </div>
                 <div class="row justify-end">
                   <q-btn
-                  class="q-mr-lg"
-                  label="Cancel"
-                  color="primary"
-                  no-caps
-                  outline
-                  @click="edit_password = false"
-                >
-                </q-btn>
+                    class="q-mr-lg"
+                    label="Cancel"
+                    color="primary"
+                    no-caps
+                    outline
+                    @click="edit_password = false"
+                  >
+                  </q-btn>
                   <ButtonVue
                     label="Save"
                     :loading="loading"
@@ -470,6 +532,9 @@ export default {
     },
   },
   methods: {
+    formDateTime(date) {
+      return moment(date).format("MMMM Do YYYY");
+    },
     getUser() {
       let data = LocalStorage.getItem("data");
       let payload = {
@@ -533,16 +598,13 @@ export default {
         });
     },
 
-
     showEditProfile() {
       return (this.edit_profile = true);
     },
 
-
     showEditPassword() {
       return (this.edit_password = true);
     },
-
 
     onUpdatePassword() {
       this.loading = true;
@@ -578,7 +640,6 @@ export default {
         });
     },
 
-
     resetForm() {
       this.security.password = null;
       this.security.old_password = null;
@@ -587,11 +648,9 @@ export default {
       return this.security;
     },
 
-
     openFileUpload() {
       document.getElementById("logo").click();
     },
-
 
     onFileChanged(e) {
       const formData = new FormData();
@@ -642,7 +701,7 @@ export default {
               location.reload();
             });
           });
-      })
+      });
     },
   },
   components: {
@@ -694,12 +753,13 @@ export default {
   padding-left: 3.5rem;
 }
 .camara {
-  position: absolute;
-  top: 50%;
-  left: 60%;
+  position: relative;
+  left: 10%;
+  top: -45px;
   cursor: pointer;
   color: $grey8;
 }
+
 .phone {
   padding-left: 2rem;
 }
@@ -766,5 +826,29 @@ export default {
   line-height: 27px;
   letter-spacing: 0.005em;
   color: $dark;
+}
+
+.role_heading {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 11px;
+  letter-spacing: 0.01em;
+  color: $primary;
+}
+
+.role_name {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12.5px;
+  line-height: 11px;
+  letter-spacing: 0.01em;
+  color: $grey8;
+}
+
+.role_update_date {
+  font-weight: 500;
 }
 </style>

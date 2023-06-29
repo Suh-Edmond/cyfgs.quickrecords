@@ -181,6 +181,7 @@
                       clickable
                       v-close-popup
                       @click="onDeleteMember(props.row)"
+                      v-if="checkPresidentRole()"
                     >
                       <q-item-section avatar>
                         <span>

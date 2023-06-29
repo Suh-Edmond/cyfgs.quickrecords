@@ -26,8 +26,19 @@
             dense
             :options="getSessionsFromState"
             label="Select year"
-            @input="filterExpenditureCategories"
           />
+        </div>
+        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-ml-md">
+            <q-btn
+              label="Filter"
+              :loading="is_fetching"
+              color="primary"
+              :disabled="validateFilter"
+              @click="filterExpenditureCategories"
+              no-caps
+              icon-right="filter_list"
+            >
+            </q-btn>
         </div>
         <q-space />
         <div class="button q-pb-xs">
@@ -123,9 +134,13 @@ export default {
       message: "Are you sure you want to delete this Expenditure Category ?",
       start_filter: false,
       filteredExpenditureCategories: [],
+      is_fetching:false,
     };
   },
   computed: {
+    validateFilter (){
+      return this.year == null
+    },
     getData() {
       let data = [];
       if (
@@ -186,6 +201,7 @@ export default {
     },
 
     filterExpenditureCategories() {
+      this.is_fetching = true;
       this.filteredExpenditureCategories = [];
       let organisation_id = this.getOrganisationId;
       this.$router.push({
@@ -211,6 +227,7 @@ export default {
       };
       this.$store.dispatch("getRequest", payload).then((res) => {
         this.start_filter = true;
+        this.is_fetching = false;
         if (res != undefined) {
           res.data.forEach((element) => {
             this.filteredExpenditureCategories.push({

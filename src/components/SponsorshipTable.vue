@@ -164,7 +164,7 @@
 
       <template v-slot:bottom>
         <q-tr>
-          <q-th class="text-bold total">
+          <q-th class="text-bold total q-my-md">
             Total:
           </q-th>
           <q-th class="text-bold total_given">
@@ -462,8 +462,7 @@ export default {
 }
 
 .total {
-  // padding-left: 1rem;
-  font-size: 13px;
+   font-size: 15px;
 }
 .total_given {
   padding-left: 3rem;

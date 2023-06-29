@@ -897,7 +897,7 @@
             <div class="col-md-12">
               <label for="msg">
                 <span class="text-weight-bold"
-                  >Do you want to {{ chosen_state }} {{ approve_msg }}?</span
+                  >Do you want to {{ chosen_state }} {{ approve_msg }} ?</span
                 >
               </label>
             </div>
@@ -912,6 +912,19 @@
                 Amount:
                 <span class="amount"
                   >{{ Number(registration_amount).toLocaleString() }} XAF</span
+                >
+              </div>
+            </div>
+            <div v-if="show_income_activity" class="text-red">
+              <div class="text-weight-bold text-left">
+                Contributor:
+                <span class="q-pl-lg">{{ contributor }}</span>
+              </div>
+
+              <div class="text-weight-bold text-left">
+                Amount:
+                <span class="q-pl-xl"
+                  >{{ Number(income_amount).toLocaleString() }} XAF</span
                 >
               </div>
             </div>
@@ -1077,6 +1090,8 @@ export default {
       delete_msg: "",
       show_confirm_dialog_detail: false,
       registration_amount: null,
+      income_amount: 0,
+      contributor: null,
     };
   },
 
@@ -1253,12 +1268,13 @@ export default {
       let date = "";
       switch (data.type) {
         case "INCOME_ACTIVITIES":
-          date = moment(data.date).format("MMMM Do YYYY");
-          this.approve_msg = ` ${data.amount}  F CFA  for ${data.name} on the ${date} at ${data.venue} ?`;
+          this.income_amount = data.amount;
+          this.contributor = data.name;
+          this.approve_msg = ` Contribution for ${data.payment_item.name}`;
           break;
         case "MEMBERS_SAVINGS":
           date = moment(data.created_at).format("MMMM Do YYYY");
-          this.approve_msg = ` ${data.amount_deposited} F CFA Member Saving for ${data.name} on the ${date} ?`;
+          this.approve_msg = ` ${data.amount_deposited} XAF Member Saving for ${data.name} on the ${date} ?`;
           break;
         case "MEMBERS_CONTRIBUTIONS":
           date = moment(data.date).format("MMMM Do YYYY");

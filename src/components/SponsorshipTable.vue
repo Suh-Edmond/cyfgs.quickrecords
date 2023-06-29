@@ -225,6 +225,19 @@
               </label>
             </div>
           </div>
+          <div  class="text-red">
+              <div class="text-weight-bold text-left">
+                Sponsor:
+                <span class="q-pl-md">{{ supporter }}</span>
+              </div>
+
+              <div class="text-weight-bold text-left">
+                Amount:
+                <span class="q-pl-lg"
+                  >{{ Number(supporter_amount).toLocaleString() }} XAF</span
+                >
+              </div>
+            </div>
         </q-card-section>
 
         <q-card-actions align="right" class="q-ma-md">
@@ -301,6 +314,8 @@ export default {
       chosen_state: null,
       approve_msg: null,
       approve_data: null,
+      supporter:null,
+      supporter_amount:0
     };
   },
   computed: {},
@@ -333,14 +348,18 @@ export default {
       this.show_approve_dialog = true;
       this.approve_data = row;
       this.chosen_state = state;
-      this.approve_msg = ` ${Number(row.amount_deposited).toLocaleString() } XAF Sponsorship by ${row.supporter} for ${row.payment_item.name}?`;
+      this.supporter_amount = row.amount_deposited;
+      this.supporter = row.supporter;
+      this.approve_msg = `Sponsorship for ${row.payment_item.name} ?`;
     },
 
     onApprovedRecord(row, state) {
       this.show_approve_dialog = true;
       this.approve_data = row;
       this.chosen_state = state;
-      this.approve_msg = ` ${Number(row.amount_deposited).toLocaleString() } XAF Sponsorship by ${row.supporter} for ${row.payment_item.name}?`;
+      this.supporter_amount = row.amount_deposited;
+      this.supporter = row.supporter;
+      this.approve_msg = `Sponsorship for ${row.payment_item.name} ?`;
     },
 
     checkTreasurerRole() {
@@ -484,6 +503,7 @@ export default {
   letter-spacing: 0.01em;
   text-transform: capitalize;
   color: $primary;
+
 }
 
 .not_registered {

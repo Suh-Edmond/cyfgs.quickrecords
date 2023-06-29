@@ -130,7 +130,11 @@
               no-caps
               class="view_items"
               @click="showReferences(props.row)"
-              v-if="props.row.payment_item_type == 'GROUPED_MEMBERS' || props.row.payment_item_type == 'MEMBERS_WITH_ROLES' || props.row.payment_item_type == 'MEMBERS_WITHOUT_ROLES'"
+              v-if="
+                props.row.payment_item_type == 'GROUPED_MEMBERS' ||
+                props.row.payment_item_type == 'MEMBERS_WITH_ROLES' ||
+                props.row.payment_item_type == 'MEMBERS_WITHOUT_ROLES'
+              "
             >
               View Members
               <span class="q-pl-md"
@@ -620,74 +624,46 @@
       </template>
 
       <template v-slot:bottom>
-        <div v-if="show_expenditure_item_detail" class="q-mt-md">
-          <q-tr>
-            <q-td
-              class="text-bold"
-              :class="checkTreasurerRole() ? 'total' : 'total_label'"
-            >
-              Total:
-            </q-td>
-            <q-td
-              class="text-bold"
-              :class="checkTreasurerRole() ? 'amount_given' : 'total_given'"
-            >
-              {{ Number(total_amount_given).toLocaleString() }} XAF
-            </q-td>
-
-            <q-td
-              class="text-bold"
-              :class="checkTreasurerRole() ? 'amount_spent' : 'total_spent'"
-            >
-              {{ Number(total_amount_spent).toLocaleString() }} XAF
-            </q-td>
-
-            <q-td
-              class="text-bold"
-              :class="
-                checkTreasurerRole() ? 'balance_treasurer_view' : 'balance'
-              "
-            >
-              {{ Number(balance).toLocaleString() }} XAF
-            </q-td>
-          </q-tr>
-          <!-- calculation of balances -->
-          <div>
-            <div
-              class="q-py-md text-bold"
-              :class="
-                checkTreasurerRole()
-                  ? 'balance_details_treasurer'
-                  : 'balance_details'
-              "
-            >
-              Estimated Expenditure Amount:
+        <div v-if="show_expenditure_item_detail && !checkTreasurerRole()">
+          <div class="q-py-xs text-bold summary q-mt-sm">
+              <span>A:</span> &nbsp; Estimated Expenditure:
               <span class="expenditure_amount"
                 >{{
                   Number(expenditure_item_amount).toLocaleString()
                 }}
                 XAF</span
               >
-            </div>
-            <div
-              class="q-pt-sm q-pb-xl text-bold"
-              :class="
-                checkTreasurerRole()
-                  ? 'balance_details_treasurer'
-                  : 'balance_details'
-              "
-            >
-              Net Balance (Estimated Expenditure Amount - Total Amount Spent + Total
-              Balance):
-              <span class="net_balance"
-                >{{ Number(total_balance).toLocaleString() }} XAF</span
+          </div>
+          <div class="q-py-xs text-bold summary">
+              <span>B:</span> &nbsp;Total Amount Given:
+              <span class="expenditure_amount q-ml-lg"
+                >{{
+                  Number(total_amount_given).toLocaleString()
+                }}
+                XAF</span
               >
-            </div>
+          </div>
+          <div class="q-py-xs text-bold summary">
+              <span>C:</span> &nbsp;Total Amount Spent:
+              <span class="expenditure_amount q-ml-lg"
+                >{{
+                  Number(total_amount_spent).toLocaleString()
+                }}
+                XAF</span
+              >
+          </div>
+          <div class="q-py-xs text-bold summary q-mb-lg">
+              <span>D:</span> &nbsp;Net Balance:
+              <span class="expenditure_amount net_balance"
+                >{{
+                  Number(total_balance).toLocaleString()
+                }}
+                XAF</span
+              >
           </div>
         </div>
       </template>
     </q-table>
-
     <!-- confirmation delete category dialog -->
     <div v-if="dialog">
       <ConfirmDialog
@@ -1096,9 +1072,7 @@ export default {
       };
       this.$store.dispatch("putRequest", payload).then((res) => {
         if (res.status == 200) {
-          this.callFetchDataAfterApproveAction(
-            this.approve_data,
-          );
+          this.callFetchDataAfterApproveAction(this.approve_data);
         }
       });
     },
@@ -1206,35 +1180,39 @@ export default {
 }
 .total {
   font-size: 13px;
-  padding-left: 4.5rem;
+  padding-left: 6rem;
 }
 .total_given {
   font-size: 13px;
-  padding-left: 13.2rem;
+  padding-left: 12rem;
 }
 .amount_given {
   font-size: 13px;
-  padding-left: 7.6rem;
+  padding-left: 7rem;
+  padding-right: 250px;
 }
 .total_spent {
+  font-size: 13px;
+  padding-left: 15rem;
+}
+
+.summary{
+  font-size: 15px;
+}
+.amount_spent {
   font-size: 13px;
   padding-left: 13.5rem;
 }
 
-.amount_spent {
-  font-size: 13px;
-  padding-left: 12.5rem;
-}
+
 
 .balance {
   padding-left: 13.4rem;
   font-size: 13px;
 }
 
-.balance_treasurer_view {
-  padding-left: 13.5rem;
-  font-size: 13px;
-}
+ 
+
 .message {
   font-family: "Roboto";
   font-style: normal;
@@ -1251,21 +1229,13 @@ export default {
   padding-left: 4.3rem;
 }
 
-.balance_details {
-  font-size: 13px;
-  padding-left: 5.5rem;
-}
 
-.balance_details_treasurer {
-  font-size: 13px;
-  padding-left: 4.5rem;
-}
 .net_balance {
-  padding-left: 1rem;
+  margin-left: 4.6rem;
 }
 
 .expenditure_amount {
-  padding-left: 19.8rem;
+  padding-left: 1rem;
 }
 
 .not_registered {

@@ -865,11 +865,11 @@
 
         <q-card-section class="q-pt-none" v-if="show_invite">
           <div class="row q-gutter-xl justify-center">
-            <div>
+            <div v-if="member_to_be_invited.email != null">
               <q-btn
-                color="dark"
-                icon="mail"
-                size="md"
+                flat
+                icon="email"
+                size="lg"
                 :href="
                   'mailto:' +
                   member_to_be_invited.email +
@@ -883,7 +883,7 @@
               >
             </div>
             <div>
-              <q-btn round color="secondary" size="sm" @click="whatsappInvite()"
+              <q-btn flat color="secondary" size="sm" @click="whatsappInvite()"
                 ><img src="../../src/assets/whatsapp.png" class="whatsapp_icon"
               /></q-btn>
               <q-tooltip>Invite via Whatsapp</q-tooltip>

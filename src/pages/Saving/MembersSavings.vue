@@ -215,11 +215,11 @@ export default {
           field: "counter",
         },
         {
-          name: "name",
+          name: "user_name",
           required: true,
           label: "Name",
           align: "left",
-          field: (row) => row.name,
+          field: (row) => row.user_name,
           format: (val) => `${val}`,
           sortable: true,
         },

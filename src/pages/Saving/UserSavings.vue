@@ -89,7 +89,7 @@
             :data="getMemberSavings"
             :label="label"
             :message="message"
-            :title="getCurrentMemberName"
+            :title="''"
             :show_savings="false"
             :show_member_savings="true"
             :show_income_activity="false"
@@ -199,17 +199,6 @@ export default {
         data = this.filtered_savings;
       }
       return data;
-    },
-
-    getCurrentMemberName() {
-      let name = "";
-      if (this.$store.getters.getMemberSavings != null) {
-        name = this.$store.getters.getMemberSavings.data[0].user_name;
-      }else {
-        name = this.filtered_savings[0].user_name
-      }
-
-      return name;
     },
 
     getLoadingState() {

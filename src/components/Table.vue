@@ -86,6 +86,10 @@
           <q-td key="approve" :props="props" v-if="props.row.approve == ''">
           </q-td>
 
+          <q-td key="year" :props="props">
+            {{ props.row.year != null ? props.row.year : getCurrentYear.year }}
+          </q-td>
+
           <q-td key="action" :props="props">
             <!-- buttons for approve and decline row data -->
             <q-btn
@@ -94,9 +98,7 @@
               label="Decline"
               no-caps
               @click="onDeclineRecord(props.row, 'Decline')"
-              v-if="
-                checkTreasurerRole() && props.row.approve == 'PENDING'
-              "
+              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
             />
 
             <q-btn
@@ -105,9 +107,7 @@
               label="Approve"
               no-caps
               @click="onApprovedRecord(props.row, 'Approve')"
-              v-if="
-                checkTreasurerRole() && props.row.approve == 'PENDING'
-              "
+              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
             />
 
             <!-- button to handle edit, view and delete, invite and register  a member -->
@@ -256,9 +256,7 @@
               no-caps
               unelevated
               @click="onDeclineRecord(props.row, 'Decline')"
-              v-if="
-                checkTreasurerRole() && props.row.approve == 'PENDING'
-              "
+              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
             />
 
             <q-btn
@@ -268,9 +266,7 @@
               no-caps
               unelevated
               @click="onApprovedRecord(props.row, 'Approve')"
-              v-if="
-                checkTreasurerRole() && props.row.approve == 'PENDING'
-              "
+              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
             />
             <!-- button to handle view all member saving -->
             <q-btn
@@ -447,9 +443,7 @@
               no-caps
               unelevated
               @click="onDeclineRecord(props.row, 'Decline')"
-              v-if="
-                checkTreasurerRole() && props.row.approve == 'PENDING'
-              "
+              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
             />
 
             <q-btn
@@ -459,9 +453,7 @@
               no-caps
               unelevated
               @click="onApprovedRecord(props.row, 'Approve')"
-              v-if="
-                checkTreasurerRole() && props.row.approve == 'PENDING'
-              "
+              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
             />
 
             <!-- menu to handle edit and view details of a single show_income_activity -->
@@ -594,9 +586,7 @@
               no-caps
               unelevated
               @click="onDeclineRecord(props.row, 'Decline')"
-              v-if="
-                checkTreasurerRole() && props.row.approve == 'PENDING'
-              "
+              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
             />
 
             <q-btn
@@ -605,9 +595,7 @@
               no-caps
               unelevated
               @click="onApprovedRecord(props.row, 'Approve')"
-              v-if="
-                checkTreasurerRole() && props.row.approve == 'PENDING'
-              "
+              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
             />
           </q-td>
         </q-tr>
@@ -756,7 +744,10 @@
       <template v-slot:bottom>
         <!-- members contributions -->
         <q-tr v-if="total_contribution > 0">
-          <q-th class="text-bold total_label q-mt-md summary" v-if="show_contribution">
+          <q-th
+            class="text-bold total_label q-mt-md summary"
+            v-if="show_contribution"
+          >
             Total Members Contribution:
           </q-th>
           <q-th v-if="show_contribution" class="total_value">
@@ -906,15 +897,15 @@
             <div class="col-md-12">
               <label for="msg">
                 <span class="text-weight-bold"
-                  >Do you want to {{ chosen_state }} {{ approve_msg }} ?</span
+                  >Do you want to {{ chosen_state }} {{ approve_msg }}?</span
                 >
               </label>
             </div>
 
-            <div v-if="show_members">
+            <div v-if="show_members" class="text-red">
               <div class="text-weight-bold text-left">
                 Name:
-                <span class="q-pl-md">{{ approve_data.name }}</span>
+                <span class="q-pl-lg">{{ approve_data.name }}</span>
               </div>
 
               <div class="text-weight-bold text-left">
@@ -975,6 +966,7 @@ import moment from "moment";
 import ContributionsMixinVue from "src/mixins/ContributionsMixin.vue";
 import memberMixin from "src/mixins/memberMixin.vue";
 import ConfirmDialogVue from "./ConfirmDialog.vue";
+import CurrentYearMixin from "src/mixins/CurrentYearMixin.vue";
 
 export default {
   mixins: [
@@ -983,6 +975,7 @@ export default {
     UserSavingMixinVue,
     ContributionsMixinVue,
     memberMixin,
+    CurrentYearMixin,
   ],
 
   props: {
@@ -1192,6 +1185,7 @@ export default {
     },
 
     onDeclineRecord(row, state) {
+      this.registration_amount = this.$store.getters.getRegAmount.amount;
       this.show_approve_dialog = true;
       this.approve_data = row;
       this.chosen_state = state;
@@ -1240,7 +1234,7 @@ export default {
           url = `/api/protected/contributions/approve`;
           break;
         case "MEMBERS":
-          url = `/api/protected/members-registration/approve?user_id=${data.id}&status=${type}`;
+          url = `/api/protected/members-registration/approve?user_id=${data.id}&status=${type}&session_id=${data.session_id}`;
           break;
       }
 
@@ -1272,7 +1266,7 @@ export default {
           break;
         case "MEMBERS":
           this.register_member_name = data.name;
-          this.approve_msg = `Member Registration`;
+          this.approve_msg = `Member Registration for ${data.year} `;
           break;
       }
       return this.approve_msg;
@@ -1295,9 +1289,10 @@ export default {
       let search_savings_url = "";
 
       switch (data.type) {
-
         case "INCOME_ACTIVITIES":
-          this.getOrganisationIncomeActivities(this.$store.getters.getOrganisation.id);
+          this.getOrganisationIncomeActivities(
+            this.$store.getters.getOrganisation.id
+          );
           break;
         case "MEMBERS_SAVINGS":
           search_savings_url = `/api/protected/user-savings?organisation_id=${this.$store.getters.getOrganisation.id}&status=${status}&name=${name}&amount_deposited=${amount_deposited}&session_id=${session_id}&month=${month}&date=${date}&date_range=${range}`;
@@ -1319,7 +1314,10 @@ export default {
           );
           break;
         case "MEMBERS":
-          this.getOrganisationMembers(this.$store.getters.getOrganisation.id, true);
+          this.getOrganisationMembers(
+            this.$store.getters.getOrganisation.id,
+            true
+          );
           break;
       }
     },
@@ -1524,7 +1522,6 @@ export default {
 
 .approve_card {
   width: 25rem;
-  // padding: 0.3rem;
 }
 
 .decline_btn {
@@ -1581,7 +1578,7 @@ export default {
 }
 
 .amount {
-  margin-left: 1.2rem;
+  margin-left: 0.8rem;
 }
 
 .payment_item_name {
@@ -1623,7 +1620,7 @@ export default {
   font-size: 15px;
 }
 
-.summary{
+.summary {
   font-size: 15px;
 }
 </style>

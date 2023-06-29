@@ -241,13 +241,13 @@ export default {
           label: "Total Amount Saved (XAF)",
           field: "total_amount",
         },
-        {
-          name: "approve",
-          align: "left",
-          label: "Transaction Status",
-          field: "approve",
-          sortable: true,
-        },
+        // {
+        //   name: "approve",
+        //   align: "left",
+        //   label: "Transaction Status",
+        //   field: "approve",
+        //   sortable: true,
+        // },
         {
           name: "action",
           label: "Action",

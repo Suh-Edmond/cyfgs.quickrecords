@@ -216,8 +216,8 @@
           <q-td key="telephone" :props="props">
             {{ props.row.telephone }}
           </q-td>
-          <q-td key="amount_deposited" :props="props">
-            {{ Number(props.row.amount_deposited).toLocaleString() }}
+          <q-td key="total_amount" :props="props">
+            {{ Number(props.row.total_amount).toLocaleString() }}
           </q-td>
           <q-td key="date" :props="props">
             {{ getDate(props.row.date) }}

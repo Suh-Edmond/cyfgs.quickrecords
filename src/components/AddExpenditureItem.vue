@@ -15,10 +15,13 @@
             outlined
             dense
             v-model="expenditure_item.payment_item_id"
-            placeholder="Type name to search..."
-            :options="getPaymentActivities"
+            label="Type to search..."
+            :options="payment_items"
             input-debounce="0"
             class="text_color"
+            clearable
+            use-input
+            @filter="filterPaymentItems"
           >
           </q-select>
         </div>
@@ -118,6 +121,7 @@
 <script>
 import ButtonVue from "src/components/Button.vue";
 import expenditureItemMixinVue from "src/mixins/expenditureItemMixin.vue";
+import moment from "moment";
 
 export default {
   mixins: [expenditureItemMixinVue],
@@ -127,6 +131,8 @@ export default {
     this.$emit("set-heading", heading);
 
     this.setFormFields(this.$store.getters.getUpdatedExpenditureItem);
+
+    this.getPaymentActivities()
   },
   data() {
     return {
@@ -134,7 +140,7 @@ export default {
       expenditure_item: {
         expenditure_category_id: null,
         venue: null,
-        date: null,
+        date: moment(new Date()).format('YYYY/MM/DD'),
         name: null,
         comment: null,
         amount: 0.0,
@@ -142,6 +148,8 @@ export default {
         payment_item_id: null,
         id: null,
       },
+      start_filtering:false,
+      payment_items:[]
     };
   },
   computed: {
@@ -159,18 +167,6 @@ export default {
     },
     getUpdatedExpenditureFromState() {
       return this.$store.getters.getUpdatedExpenditureItem;
-    },
-
-    getPaymentActivities() {
-      let data = [];
-      this.$store.getters.getPaymentActivities.forEach((ele) => {
-        data.push({
-          label: ele.name,
-          value: ele.id,
-          amount: ele.amount,
-        });
-      });
-      return data;
     },
 
     getUpdatedExpenditureItem() {
@@ -280,6 +276,34 @@ export default {
             this.$store.dispatch("setUpdatedExpenditureItem", null);
           });
       }
+    },
+
+    getPaymentActivities() {
+      this.payment_items = [];
+      this.$store.getters.getPaymentActivities.forEach((ele) => {
+        this.payment_items.push({
+          label: ele.name,
+          value: ele.id,
+          amount: ele.amount,
+        });
+      });
+      return this.payment_items;
+    },
+
+    filterPaymentItems(val, update, abort) {
+      if (val < 1 || this.expenditure_item.payment_item_id != null) {
+        this.start_filtering = false;
+        abort();
+        return;
+      }
+
+      update(() => {
+        this.start_filtering = true;
+        this.payment_items = this.getPaymentActivities().filter((item) =>
+          item.label.toLowerCase().includes(val.toLowerCase())
+        );
+        return this.payment_items;
+      });
     },
   },
   components: {

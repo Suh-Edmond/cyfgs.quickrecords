@@ -10,9 +10,6 @@
       :rows-per-page-options="[0]"
     >
       <template v-slot:top-left>
-        <div class="text-h6 title" v-show="show_member_savings">
-          All Savings for: {{ title }}
-        </div>
         <div
           class="text-h6 title"
           v-show="
@@ -299,6 +296,9 @@
           </q-td>
           <q-td key="amount_deposited" :props="props">
             {{ Number(props.row.amount_deposited).toLocaleString() }}
+          </q-td>
+          <q-td key="amount_used" :props="props">
+            {{ Number(props.row.amount_used).toLocaleString() }}
           </q-td>
           <q-td
             key="approve"
@@ -1342,6 +1342,16 @@ export default {
 
     showMemberSavings(data) {
       this.getMemberSavings(data.user_id);
+      const intermediate_tabs = Array.from(
+        this.$store.getters.getIntermediateTabs
+      );
+
+      intermediate_tabs.push({
+        name: data.user_name + "  Savings",
+        has_intermediate_tab: true,
+      });
+
+      this.$store.dispatch("setIntermediateTabs", intermediate_tabs);
     },
 
     onEditMemberSaving(data) {

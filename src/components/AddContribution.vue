@@ -1,233 +1,560 @@
 <template>
-  <div class="q-pa-md">
-    <div class="q-ml-sm q-mb-lg">
-      <label class="text-muted"
-        >All fields with <span class="text-red">*</span> are required</label
+  <div>
+    <div>
+      <q-tabs
+        v-model="tab"
+        dense
+        class="text-primary"
+        active-color="primary"
+        indicator-color="primary"
+        align="justify"
+        narrow-indicator
+        shadow-2
       >
-    </div>
-    <div class="q-px-sm">
-      <q-form @submit="onAddContribution" class="q-gutter-md">
-        <div>
-          <div class="q-mb-md">
-            <label for="name" class="form_field"
-              >Payment Category <span class="text-red">*</span>
-            </label>
-            <q-select
-              outlined
-              dense
-              v-model="contribution.payment_category_id"
-              :options="payment_categories"
-              @input="fetchPaymentItems"
-              label="Search payment category..."
-              input-debounce="0"
-              use-input
-              clearable
-              @filter="filterPaymentCategories"
-            >
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No results
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
+        <q-tab
+          name="Enter Contribution"
+          label="Enter Contribution"
+          no-caps
+          icon="payments"
+        />
+        <q-tab name="Use Saving" label="Use Saving" no-caps icon="savings" />
+      </q-tabs>
+
+      <q-separator />
+      <q-tab-panels v-model="tab" animated>
+        <q-tab-panel name="Enter Contribution">
+          <div>
+            <div class="q-ml-sm q-mb-lg">
+              <label class="text-muted"
+                >All fields with <span class="text-red">*</span> are
+                required</label
+              >
+            </div>
+            <div class="q-px-sm">
+              <q-form @submit="onAddContribution" class="q-gutter-md">
+                <div>
+                  <div class="q-mb-md">
+                    <label for="name" class="form_field"
+                      >Payment Category <span class="text-red">*</span>
+                    </label>
+                    <q-select
+                      outlined
+                      dense
+                      v-model="contribution.payment_category_id"
+                      :options="payment_categories"
+                      @input="fetchPaymentItems"
+                      label="Search payment category..."
+                      input-debounce="0"
+                      use-input
+                      clearable
+                      @filter="filterPaymentCategories"
+                    >
+                      <template v-slot:no-option>
+                        <q-item>
+                          <q-item-section class="text-grey">
+                            No results
+                          </q-item-section>
+                        </q-item>
+                      </template>
+                    </q-select>
+                  </div>
+                  <div class="q-mb-md">
+                    <label for="name" class="form_field"
+                      >Payment Item <span class="text-red">*</span>
+                    </label>
+                    <q-select
+                      outlined
+                      dense
+                      v-model="contribution.payment_item_id"
+                      :options="filtered_payment_items"
+                      @input="fetchPaymentItem"
+                      label="Search payment item..."
+                      input-debounce="0"
+                      use-input
+                      clearable
+                      @filter="filterPaymentItems"
+                    >
+                      <template v-slot:no-option>
+                        <q-item>
+                          <q-item-section class="text-grey">
+                            No results
+                          </q-item-section>
+                        </q-item>
+                      </template>
+                    </q-select>
+                  </div>
+                  <div class="q-mb-md">
+                    <label for="credential" class="form_field"
+                      >Amount Payable(XAF)</label
+                    >
+                    <q-input
+                      v-model="contribution.amount_payable"
+                      outlined
+                      dense
+                      type="number"
+                      disable
+                    />
+                  </div>
+                  <div
+                    class="row justify-end"
+                    v-show="!has_selected_payment_item"
+                  >
+                    <q-btn
+                      @click="
+                        has_selected_payment_item = !has_selected_payment_item
+                      "
+                      color="primary"
+                      label="Next"
+                      no-caps
+                      :disable="validatePaymentItem"
+                      ><q-icon
+                        name="arrow_forward"
+                        size="xs"
+                        class="q-pl-sm"
+                      ></q-icon
+                    ></q-btn>
+                  </div>
+                  <div v-show="has_selected_payment_item">
+                    <div class="q-mb-md">
+                      <label for="name" class="form_field"
+                        >Member Name <span class="text-red">*</span>
+                      </label>
+                      <q-select
+                        outlined
+                        dense
+                        v-model="contribution.user_id"
+                        :options="members"
+                        @input="selectMember"
+                        label="Search member..."
+                        input-debounce="0"
+                        use-input
+                        clearable
+                        @filter="filterMembers"
+                      >
+                      </q-select>
+                    </div>
+                    <div
+                      class="q-mb-md"
+                      v-if="valideteMonthlyPaymentItemFrequency"
+                    >
+                      <label for="credential" class="form_field"
+                        >Select Month <span class="text-red">*</span></label
+                      >
+                      <q-select
+                        v-model="contribution.month_name"
+                        outlined
+                        dense
+                        :options="monthsOptions"
+                        label="Search month..."
+                        use-input
+                        input-debounce="0"
+                        clearable
+                        @filter="filterMonths"
+                      >
+                        <template v-slot:no-option>
+                          <q-item>
+                            <q-item-section class="text-grey">
+                              No results
+                            </q-item-section>
+                          </q-item>
+                        </template>
+                      </q-select>
+                    </div>
+                    <div
+                      class="q-mb-md"
+                      v-if="valideteQuarterlyPaymentItemFrequency"
+                    >
+                      <label for="credential" class="form_field"
+                        >Select Quarter <span class="text-red">*</span></label
+                      >
+                      <q-select
+                        v-model="contribution.quarterly_name"
+                        outlined
+                        dense
+                        :options="quartersOptions"
+                        input-debounce="0"
+                        clearable
+                      >
+                        <template v-slot:no-option>
+                          <q-item>
+                            <q-item-section class="text-grey">
+                              No results
+                            </q-item-section>
+                          </q-item>
+                        </template>
+                      </q-select>
+                    </div>
+                    <div class="q-mb-md">
+                      <label for="credential" class="form_field"
+                        >Total Amount Deposited (XAF)</label
+                      >
+                      <q-input
+                        v-model.number="contribution.total_amount_deposited"
+                        outlined
+                        dense
+                        type="number"
+                        disable
+                      >
+                      </q-input>
+                    </div>
+                    <div class="q-mb-md">
+                      <label for="credential" class="form_field"
+                        >Balance (XAF)</label
+                      >
+                      <q-input
+                        v-model="contribution.balance"
+                        outlined
+                        dense
+                        type="number"
+                        disable
+                      />
+                    </div>
+                    <div class="q-mb-md">
+                      <label for="credential" class="form_field"
+                        >Deposite Amount (XAF)<span class="text-red"
+                          >*</span
+                        ></label
+                      >
+                      <q-input
+                        v-model.number="contribution.amount_deposited"
+                        outlined
+                        dense
+                        type="number"
+                        @keyup="setPaymentItemBalance"
+                        :disable="has_completed_payment"
+                      >
+                      </q-input>
+                      <small v-if="checkPaymentItemBal" class="text-red">
+                        <b
+                          >Amount deposited can not be more than Amount
+                          Payable</b
+                        >
+                      </small>
+                      <small v-if="has_completed_payment" class="text-info">
+                        <b
+                          >Member has already completed payment for
+                          {{ selected_payment_item.label }}</b
+                        >
+                      </small>
+                    </div>
+                    <div class="q-mb-md">
+                      <label for="credential" class="form_field"
+                        >Comment
+                      </label>
+                      <q-input
+                        v-model="contribution.comment"
+                        outlined
+                        type="textarea"
+                        placeholder="Provide any comment about this contribution"
+                        :disable="has_completed_payment"
+                      />
+                    </div>
+                    <div class="flex q-mt-lg justify-end">
+                      <div class="q-mr-lg">
+                        <q-btn
+                          class="form_button"
+                          label="Reset"
+                          :color="'primary'"
+                          :disabled="!validateForm"
+                          no-caps
+                          outline
+                          @click="resetForm"
+                        >
+                        </q-btn>
+                      </div>
+                      <div>
+                        <ButtonVue
+                          class="form_button"
+                          :label="'Save'"
+                          :loading="loading"
+                          :color="'primary'"
+                          :disabled="validateForm"
+                          :no_caps="true"
+                        >
+                        </ButtonVue>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </q-form>
+            </div>
           </div>
-          <div class="q-mb-md">
-            <label for="name" class="form_field"
-              >Payment Item <span class="text-red">*</span>
-            </label>
-            <q-select
-              outlined
-              dense
-              v-model="contribution.payment_item_id"
-              :options="filtered_payment_items"
-              @input="fetchPaymentItem"
-              label="Search payment item..."
-              input-debounce="0"
-              use-input
-              clearable
-              @filter="filterPaymentItems"
-            >
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No results
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
+        </q-tab-panel>
+        <q-tab-panel name="Use Saving">
+          <div>
+            <div class="q-ml-sm q-mb-lg">
+              <label class="text-muted"
+                >All fields with <span class="text-red">*</span> are
+                required</label
+              >
+            </div>
+            <div class="q-px-sm">
+              <q-form @submit="onAddContribution" class="q-gutter-md">
+                <div>
+                  <div class="q-mb-md">
+                    <label for="name" class="form_field"
+                      >Payment Category <span class="text-red">*</span>
+                    </label>
+                    <q-select
+                      outlined
+                      dense
+                      v-model="contribution.payment_category_id"
+                      :options="payment_categories"
+                      @input="fetchPaymentItems"
+                      label="Search payment category..."
+                      input-debounce="0"
+                      use-input
+                      clearable
+                      @filter="filterPaymentCategories"
+                    >
+                      <template v-slot:no-option>
+                        <q-item>
+                          <q-item-section class="text-grey">
+                            No results
+                          </q-item-section>
+                        </q-item>
+                      </template>
+                    </q-select>
+                  </div>
+                  <div class="q-mb-md">
+                    <label for="name" class="form_field"
+                      >Payment Item <span class="text-red">*</span>
+                    </label>
+                    <q-select
+                      outlined
+                      dense
+                      v-model="contribution.payment_item_id"
+                      :options="filtered_payment_items"
+                      @input="fetchPaymentItem"
+                      label="Search payment item..."
+                      input-debounce="0"
+                      use-input
+                      clearable
+                      @filter="filterPaymentItems"
+                    >
+                      <template v-slot:no-option>
+                        <q-item>
+                          <q-item-section class="text-grey">
+                            No results
+                          </q-item-section>
+                        </q-item>
+                      </template>
+                    </q-select>
+                  </div>
+                  <div class="q-mb-md">
+                    <label for="credential" class="form_field"
+                      >Amount Payable(XAF)</label
+                    >
+                    <q-input
+                      v-model="contribution.amount_payable"
+                      outlined
+                      dense
+                      type="number"
+                      disable
+                    />
+                  </div>
+                  <div
+                    class="row justify-end"
+                    v-show="!has_selected_payment_item"
+                  >
+                    <q-btn
+                      @click="
+                        has_selected_payment_item = !has_selected_payment_item
+                      "
+                      color="primary"
+                      label="Next"
+                      no-caps
+                      :disable="validatePaymentItem"
+                      ><q-icon
+                        name="arrow_forward"
+                        size="xs"
+                        class="q-pl-sm"
+                      ></q-icon
+                    ></q-btn>
+                  </div>
+                  <div v-show="has_selected_payment_item">
+                    <div class="q-mb-md">
+                      <label for="name" class="form_field"
+                        >Member Name <span class="text-red">*</span>
+                      </label>
+                      <q-select
+                        outlined
+                        dense
+                        v-model="contribution.user_id"
+                        :options="members"
+                        @input="selectMember"
+                        label="Search member..."
+                        input-debounce="0"
+                        use-input
+                        clearable
+                        @filter="filterMembers"
+                      >
+                      </q-select>
+                    </div>
+                    <div
+                      class="q-mb-md"
+                      v-if="valideteMonthlyPaymentItemFrequency"
+                    >
+                      <label for="credential" class="form_field"
+                        >Select Month <span class="text-red">*</span></label
+                      >
+                      <q-select
+                        v-model="contribution.month_name"
+                        outlined
+                        dense
+                        :options="monthsOptions"
+                        label="Search month..."
+                        use-input
+                        input-debounce="0"
+                        clearable
+                        @filter="filterMonths"
+                      >
+                        <template v-slot:no-option>
+                          <q-item>
+                            <q-item-section class="text-grey">
+                              No results
+                            </q-item-section>
+                          </q-item>
+                        </template>
+                      </q-select>
+                    </div>
+                    <div
+                      class="q-mb-md"
+                      v-if="valideteQuarterlyPaymentItemFrequency"
+                    >
+                      <label for="credential" class="form_field"
+                        >Select Quarter <span class="text-red">*</span></label
+                      >
+                      <q-select
+                        v-model="contribution.quarterly_name"
+                        outlined
+                        dense
+                        :options="quartersOptions"
+                        input-debounce="0"
+                        clearable
+                      >
+                        <template v-slot:no-option>
+                          <q-item>
+                            <q-item-section class="text-grey">
+                              No results
+                            </q-item-section>
+                          </q-item>
+                        </template>
+                      </q-select>
+                    </div>
+                    <div class="q-mb-md">
+                      <label for="credential" class="form_field"
+                        >Total Saving (XAF)</label
+                      >
+                      <q-input
+                        v-model.number="contribution.total_saving"
+                        outlined
+                        dense
+                        type="number"
+                        disable
+                      >
+                      </q-input>
+                    </div>
+                    <div class="q-mb-md">
+                      <label for="credential" class="form_field"
+                        >Total Amount Deposited (XAF)</label
+                      >
+                      <q-input
+                        v-model.number="contribution.total_amount_deposited"
+                        outlined
+                        dense
+                        type="number"
+                        disable
+                      >
+                      </q-input>
+                    </div>
+                    <div class="q-mb-md">
+                      <label for="credential" class="form_field"
+                        >Balance (XAF)</label
+                      >
+                      <q-input
+                        v-model="contribution.balance"
+                        outlined
+                        dense
+                        type="number"
+                        disable
+                      />
+                    </div>
+                    <div class="q-mb-md">
+                      <label for="credential" class="form_field"
+                        >Deposite Amount (XAF)<span class="text-red"
+                          >*</span
+                        ></label
+                      >
+                      <q-input
+                        v-model.number="contribution.amount_deposited"
+                        outlined
+                        dense
+                        type="number"
+                        @keyup="setPaymentItemBalance"
+                        :disable="has_completed_payment"
+                      >
+                      </q-input>
+                      <small v-if="checkPaymentItemBal" class="text-red">
+                        <b
+                          >Amount Deposited can not be more than Amount
+                          Payable</b
+                        >
+                      </small>
+                      <small v-if="checkAmountDepositedBasedOnSaving" class="text-red">
+                       Insufficient Saved Amount! Please Enter the contribution or add more saving
+                      </small>
+                      <small v-if="has_completed_payment" class="text-info">
+                        <b
+                          >Member has already completed payment for
+                          {{ selected_payment_item.label }}</b
+                        >
+                      </small>
+                    </div>
+                    <div class="q-mb-md">
+                      <label for="credential" class="form_field"
+                        >Comment
+                      </label>
+                      <q-input
+                        v-model="contribution.comment"
+                        outlined
+                        type="textarea"
+                        placeholder="Provide any comment about this contribution"
+                        :disable="has_completed_payment"
+                      />
+                    </div>
+                    <div class="flex q-mt-lg justify-end">
+                      <div class="q-mr-lg">
+                        <q-btn
+                          class="form_button"
+                          label="Reset"
+                          :color="'primary'"
+                          :disabled="!validateForm"
+                          no-caps
+                          outline
+                          @click="resetForm"
+                        >
+                        </q-btn>
+                      </div>
+                      <div>
+                        <ButtonVue
+                          class="form_button"
+                          :label="'Save'"
+                          :loading="loading"
+                          :color="'primary'"
+                          :disabled="validateForm"
+                          :no_caps="true"
+                        >
+                        </ButtonVue>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </q-form>
+            </div>
           </div>
-          <div class="q-mb-md">
-            <label for="credential" class="form_field"
-              >Amount Payable(XAF)</label
-            >
-            <q-input
-              v-model="contribution.amount_payable"
-              outlined
-              dense
-              type="number"
-              disable
-            />
-          </div>
-          <div class="row justify-end" v-show="!has_selected_payment_item">
-            <q-btn
-              @click="has_selected_payment_item = !has_selected_payment_item"
-              color="primary"
-              label="Next"
-              no-caps
-              :disable="validatePaymentItem"
-              ><q-icon name="arrow_forward" size="xs" class="q-pl-sm"></q-icon
-            ></q-btn>
-          </div>
-          <div v-show="has_selected_payment_item">
-            <div class="q-mb-md">
-              <label for="name" class="form_field"
-                >Member Name <span class="text-red">*</span>
-              </label>
-              <q-select
-                outlined
-                dense
-                v-model="contribution.user_id"
-                :options="members"
-                @input="selectMember"
-                label="Search member..."
-                input-debounce="0"
-                use-input
-                clearable
-                @filter="filterMembers"
-              >
-              </q-select>
-            </div>
-            <div class="q-mb-md" v-if="valideteMonthlyPaymentItemFrequency">
-              <label for="credential" class="form_field"
-                >Select Month <span class="text-red">*</span></label
-              >
-              <q-select
-                v-model="contribution.month_name"
-                outlined
-                dense
-                :options="monthsOptions"
-                label="Search month..."
-                use-input
-                input-debounce="0"
-                clearable
-                @filter="filterMonths"
-              >
-                <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No results
-                    </q-item-section>
-                  </q-item>
-                </template>
-              </q-select>
-            </div>
-            <div class="q-mb-md" v-if="valideteQuarterlyPaymentItemFrequency">
-              <label for="credential" class="form_field"
-                >Select Quarter <span class="text-red">*</span></label
-              >
-              <q-select
-                v-model="contribution.quarterly_name"
-                outlined
-                dense
-                :options="quartersOptions"
-                input-debounce="0"
-                clearable
-              >
-                <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No results
-                    </q-item-section>
-                  </q-item>
-                </template>
-              </q-select>
-            </div>
-            <div class="q-mb-md">
-              <label for="credential" class="form_field"
-                >Total Amount Deposited (XAF)</label
-              >
-              <q-input
-                v-model.number="contribution.total_amount_deposited"
-                outlined
-                dense
-                type="number"
-                disable
-              >
-              </q-input>
-            </div>
-            <div class="q-mb-md">
-              <label for="credential" class="form_field">Balance (XAF)</label>
-              <q-input
-                v-model="contribution.balance"
-                outlined
-                dense
-                type="number"
-                disable
-              />
-            </div>
-            <div class="q-mb-md">
-              <label for="credential" class="form_field"
-                >Deposite Amount (XAF)<span class="text-red">*</span></label
-              >
-              <q-input
-                v-model.number="contribution.amount_deposited"
-                outlined
-                dense
-                type="number"
-                @keyup="setPaymentItemBalance"
-                :disable="has_completed_payment"
-              >
-              </q-input>
-              <small v-if="checkPaymentItemBal" class="text-red">
-                <b>Amount deposited can not be more than Amount Payable</b>
-              </small>
-              <small v-if="has_completed_payment" class="text-info">
-                <b
-                  >Member has already completed payment for
-                  {{ selected_payment_item.label }}</b
-                >
-              </small>
-            </div>
-            <div class="q-mb-md">
-              <label for="credential" class="form_field">Comment </label>
-              <q-input
-                v-model="contribution.comment"
-                outlined
-                type="textarea"
-                placeholder="Provide any comment about this contribution"
-                :disable="has_completed_payment"
-              />
-            </div>
-            <div class="flex q-mt-lg justify-end">
-              <div class="q-mr-lg">
-                <q-btn
-                  class="form_button"
-                  label="Reset"
-                  :color="'primary'"
-                  :disabled="!validateForm"
-                  no-caps
-                  outline
-                  @click="resetForm"
-                >
-                </q-btn>
-              </div>
-              <div>
-                <ButtonVue
-                  class="form_button"
-                  :label="'Save'"
-                  :loading="loading"
-                  :color="'primary'"
-                  :disabled="validateForm"
-                  :no_caps="true"
-                >
-                </ButtonVue>
-              </div>
-            </div>
-          </div>
-        </div>
-      </q-form>
+        </q-tab-panel>
+      </q-tab-panels>
     </div>
   </div>
 </template>
@@ -253,10 +580,10 @@ const months = [
   "December",
 ];
 const quarters = [
-  "January-March",
-  "April-June",
-  "July-September",
-  "October-December",
+  "January - March",
+  "April - June",
+  "July - September",
+  "October - December",
 ];
 export default {
   mixins: [
@@ -297,6 +624,7 @@ export default {
         id: null,
         month_name: "",
         quarterly_name: "",
+        total_saving: 0,
       },
       position: "right",
       error_bal: false,
@@ -310,6 +638,7 @@ export default {
       members: [],
       monthsOptions: [],
       quartersOptions: quarters,
+      tab: "Enter Contribution",
     };
   },
   computed: {
@@ -318,6 +647,14 @@ export default {
         parseFloat(this.contribution.amount_deposited) +
           parseFloat(this.contribution.total_amount_deposited) >
           parseFloat(this.contribution.amount_payable)
+        ? true
+        : false;
+    },
+
+    checkAmountDepositedBasedOnSaving() {
+      return this.contribution.amount_deposited != 0 &&
+        parseFloat(this.contribution.amount_deposited) >
+          parseFloat(this.contribution.total_saving)
         ? true
         : false;
     },
@@ -366,8 +703,8 @@ export default {
           payment_item_id: this.contribution.payment_item_id.value,
           comment: this.contribution.comment,
           month_name: this.contribution.month_name,
-          quarterly_name: this.contribution.quarterly_name
-            .replace("-", "").trim(),
+          quarterly_name: this.contribution.quarterly_name,
+          contributed_via_saving: this.tab == "Use Saving" ? true : false
         },
         msg: "Member Contribution saved Successfully",
         color: "default",
@@ -437,36 +774,59 @@ export default {
         this.contribution.user_id != null
           ? this.contribution.user_id.value
           : "";
-      let amount_deposited_payload = {
-        status: "none",
-        url: `/api/protected/contributions/users/${user_id}/items/${this.contribution.payment_item_id.value}`,
-        has_path_val: true,
-        show_feedback: false,
-        show_spinner: false,
-        msg: "none",
-        color: "default",
-        error_msg: "default",
-        commit: "none",
-        has_commit: false,
-        to_be_store_data: {
-          required: true,
-          has_value: false,
-          data: null,
-        },
-      };
-      this.$store
-        .dispatch("getRequest", amount_deposited_payload)
-        .then((res) => {
-          // //set the balance to be paid by the member has paid anything got the item before
-          if (res) {
-            this.contribution.total_amount_deposited = res.data;
-            this.contribution.balance =
-              this.contribution.amount_payable - res.data;
-            if (this.contribution.balance == 0) {
-              this.has_completed_payment = true;
+      if (this.tab == "Enter Contribution") {
+        let amount_deposited_payload = {
+          status: "none",
+          url: `/api/protected/contributions/users/${user_id}/items/${this.contribution.payment_item_id.value}`,
+          has_path_val: true,
+          show_feedback: false,
+          show_spinner: false,
+          msg: "none",
+          color: "default",
+          error_msg: "default",
+          commit: "none",
+          has_commit: false,
+          to_be_store_data: {
+            required: true,
+            has_value: false,
+            data: null,
+          },
+        };
+        this.$store
+          .dispatch("getRequest", amount_deposited_payload)
+          .then((res) => {
+            // //set the balance to be paid by the member has paid anything got the item before
+            if (res) {
+              this.contribution.total_amount_deposited = res.data;
+              this.contribution.balance =
+                this.contribution.amount_payable - res.data;
+              if (this.contribution.balance == 0) {
+                this.has_completed_payment = true;
+              }
             }
-          }
+          });
+      } else {
+        let payload = {
+          status: "none",
+          url: `/api/protected/user-savings/${user_id}`,
+          has_path_val: true,
+          show_feedback: false,
+          show_spinner: false,
+          msg: "none",
+          color: "default",
+          error_msg: "default",
+          commit: "none",
+          has_commit: false,
+          to_be_store_data: {
+            required: true,
+            has_value: false,
+            data: null,
+          },
+        };
+        this.$store.dispatch("getRequest", payload).then((res) => {
+          this.contribution.total_saving = res.data.total_savings;
         });
+      }
     },
 
     setPaymentItemBalance() {
@@ -494,6 +854,7 @@ export default {
       this.contribution.total_amount_deposited = 0.0;
       this.contribution.month_name = "";
       this.contribution.quarterly_name = "";
+      this.contribution.total_saving = 0
 
       return this.contribution;
     },

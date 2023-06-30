@@ -10,7 +10,7 @@
       />
     </div>
 
-    <div v-if="!getLoadingState">
+    <div>
       <!-- contributions available -->
       <div
         class="row justify-end"
@@ -211,12 +211,17 @@ export default {
     downloadContributions() {
       let payment_item_id = this.$router.currentRoute.params.item_id;
       let user_id = this.$router.currentRoute.params.id;
+      let payment_item_name = "";
+      let user_name = "";
+      if (this.$store.getters.getMemberContributions.length != 0) {
+        user_name = this.$store.getters.getMemberContributions[0].user_name;
+        payment_item_name =
+          this.$store.getters.getMemberContributions[0].payment_item_name;
+      }
 
-      let url = `/api/protected/download-user-contributions?payment_item_id=${payment_item_id}&user_id=${user_id}`;
+      let url = `/api/protected/users/contributions/download?payment_item_id=${payment_item_id}&user_id=${user_id}&user_name=${user_name}&payment_item_name=${payment_item_name}`;
 
-      let file_name =
-        "Member's Contribution for "
-        ".pdf";
+      let file_name = "Contributions Details.pdf";
       this.loading = this.downloadPdf(url, file_name);
     },
   },

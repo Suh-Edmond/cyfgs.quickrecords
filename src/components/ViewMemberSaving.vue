@@ -2,64 +2,104 @@
   <div class="q-px-lg q-pt-md">
     <div>
       <div class="q-mb-md">
-        <label for="name" class="field"><span> <q-icon name="person" size="xs" class="q-pr-sm" /> </span>Member Name:
+        <label for="name" class="field"
+          ><span> <q-icon name="person" size="xs" class="q-pr-sm" /> </span
+          >Member Name:
           <span class="field_value item_value">{{
-            getCurrentMemberSaving.name
-          }}</span></label>
+            getCurrentMemberSaving.user_name
+          }}</span></label
+        >
       </div>
       <div class="q-mb-md">
-        <label for="email" class="field"><span> <q-icon name="email" size="xs" class="q-pr-sm" /> </span>Email:
+        <label for="email" class="field"
+          ><span> <q-icon name="email" size="xs" class="q-pr-sm" /> </span
+          >Email:
           <span class="field_value item_venue">{{
             getCurrentMemberSaving.email
-          }}</span></label>
+          }}</span></label
+        >
       </div>
       <div class="q-mb-md">
-        <label for="telephone" class="field"><span> <q-icon name="phone" size="xs" class="q-pr-sm" /> </span>Telephone:
+        <label for="telephone" class="field"
+          ><span> <q-icon name="phone" size="xs" class="q-pr-sm" /> </span
+          >Telephone:
           <span class="field_value item_tel">{{
             getCurrentMemberSaving.telephone
-          }}</span></label>
+          }}</span></label
+        >
       </div>
       <div class="q-mb-md">
-        <label for="amount" class="field"><span>
-            <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span>Amount Deposited:
+        <label for="amount" class="field"
+          ><span>
+            <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
+          >Amount Deposited:
           <span class="field_value item_amount">
             {{
               Number(getCurrentMemberSaving.amount_deposited).toLocaleString()
             }}
-            XAF</span></label>
+            XAF</span
+          ></label
+        >
       </div>
       <div class="q-mb-md">
-        <label for="status" class="field" v-show="getCurrentMemberSaving.approve == 'DECLINED'"><span>
-            <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span>Transaction Status:
+        <label
+          for="status"
+          class="field"
+          v-show="getCurrentMemberSaving.approve == 'DECLINED'"
+          ><span>
+            <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span
+          >Transaction Status:
           <span class="field_value item_statue unapproved_color">
-            {{ getCurrentMemberSaving.approve }}</span></label>
-        <label for="status" class="field" v-show="getCurrentMemberSaving.approve == 'APPROVED'"><span>
-            <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span>Transaction Status:
+            {{ getCurrentMemberSaving.approve }}</span
+          ></label
+        >
+        <label
+          for="status"
+          class="field"
+          v-show="getCurrentMemberSaving.approve == 'APPROVED'"
+          ><span>
+            <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span
+          >Transaction Status:
           <span class="field_value item_statue approved_color">
-            {{ getCurrentMemberSaving.approve }}</span></label>
-        <label for="status" class="field" v-show="getCurrentMemberSaving.approve == 'PENDING'"><span>
-            <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span>Transaction Status:
+            {{ getCurrentMemberSaving.approve }}</span
+          ></label
+        >
+        <label
+          for="status"
+          class="field"
+          v-show="getCurrentMemberSaving.approve == 'PENDING'"
+          ><span>
+            <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span
+          >Transaction Status:
           <span class="field_value item_statue pending_color">
-            {{ getCurrentMemberSaving.approve }}</span></label>
+            {{ getCurrentMemberSaving.approve }}</span
+          ></label
+        >
       </div>
       <div class="q-mb-md">
-        <label for="amount" class="field"><span>
-            <q-icon name="schedule" size="xs" class="q-pr-sm" /> </span>Created Date:
+        <label for="amount" class="field"
+          ><span> <q-icon name="schedule" size="xs" class="q-pr-sm" /> </span
+          >Created Date:
           <span class="field_value detail_date">
             {{ getFormatSavingCreatedDate }}
-          </span></label>
+          </span></label
+        >
       </div>
 
       <div class="q-mb-md">
-        <label for="amount" class="field"><span> <q-icon name="person" size="xs" class="q-pr-sm" /> </span
+        <label for="amount" class="field"
+          ><span> <q-icon name="person" size="xs" class="q-pr-sm" /> </span
           >Created By:
           <span class="field_value detail_created_by">
             {{ getCurrentMemberSaving.updated_by }}
-          </span></label>
+          </span></label
+        >
       </div>
       <div class="q-mb-md">
-        <label for="comment" class="field"><span> <q-icon name="description" size="xs" class="q-pr-sm" /> </span
-          >Comment:</label>
+        <label for="comment" class="field"
+          ><span> <q-icon name="description" size="xs" class="q-pr-sm" /> </span
+          >Comment:</label
+        >
         <p class="value_comment">{{ getCurrentMemberSaving.comment }}.</p>
       </div>
     </div>
@@ -137,7 +177,7 @@ export default {
 }
 
 .item_statue {
-  padding: .7rem;
+  padding: 0.7rem;
 }
 
 .unapproved_color {

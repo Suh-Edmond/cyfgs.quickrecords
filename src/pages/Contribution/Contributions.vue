@@ -209,6 +209,7 @@ export default {
       }
       return data;
     },
+
     computeTotalContributions() {
       let total = 0.0;
       if (this.$store.getters.getMembersContributionsByPaymentItem != null) {
@@ -221,6 +222,7 @@ export default {
       }
       return total;
     },
+
     getMembersContributionsByPaymentItem() {
       let data = [];
       if (this.$store.getters.getMembersContributionsByPaymentItem != null) {
@@ -426,16 +428,16 @@ export default {
     },
 
     downloadContributions() {
-      let payment_item_id =
-        this.$store.getters.getSearchSavingParams.payment_item_id.id;
+      let payment_item_id = this.$store.getters.getSearchSavingParams.item.value;
+      let payment_item_name = this.$store.getters.getSearchSavingParams.item.label;
       let month = this.$store.getters.getSearchSavingParams.month;
       let year = this.$store.getters.getSearchSavingParams.year;
       let status = this.$store.getters.getSearchSavingParams.status;
-      let url = `/api/protected/download-contributions?payment_item_id=${payment_item_id}&month=${month}&year=${year}&status=${status}`;
+      let url = `/api/protected/download-contributions?payment_item_id=${payment_item_id}&month=${month}&year=${year}&status=${status}&payment_item_name=${payment_item_name}`;
 
       let file_name =
         "Member's Contribution for " +
-        this.$store.getters.getSearchSavingParams.payment_item_id.name +
+        this.$store.getters.getSearchSavingParams.item.label +
         ".pdf";
       this.loading = this.downloadPdf(url, file_name);
     },

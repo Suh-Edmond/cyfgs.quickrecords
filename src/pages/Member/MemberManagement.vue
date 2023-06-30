@@ -175,6 +175,13 @@ export default {
           sortable: true,
         },
         {
+          name: "year",
+          align: "left",
+          label: "Year",
+          field: "year",
+          sortable: true,
+        },
+        {
           name: "action",
           label: "Action",
           field: "action",
@@ -213,6 +220,7 @@ export default {
           created_at: member.created_at,
           updated_at: member.updated_at,
           picture: member.picture,
+          session_id: member.session_id,
         });
       });
       return data;
@@ -293,12 +301,12 @@ export default {
       this.loading = this.downloadPdf(url, file_name);
     },
 
-    onFetchMembers(){
+    onFetchMembers() {
       let id = this.$store.getters.getOrganisation.id;
       this.getOrganisationMembers(id, true);
     },
 
-    deleteRow(data){
+    deleteRow(data) {
       let payload = {
         url: `/api/protected/users/${data.id}`,
         msg: `Member deleted successfully`,
@@ -318,7 +326,7 @@ export default {
       this.$store.dispatch("deleteRequest", payload).then(() => {
         this.getOrganisationMembers(this.getOrganisationId);
       });
-    }
+    },
   },
 
   components: {

@@ -86,6 +86,10 @@
           <q-td key="approve" :props="props" v-if="props.row.approve == ''">
           </q-td>
 
+          <q-td key="year" :props="props">
+            {{ props.row.year != null ? props.row.year : getCurrentYear.year }}
+          </q-td>
+
           <q-td key="action" :props="props">
             <!-- buttons for approve and decline row data -->
             <q-btn
@@ -94,9 +98,7 @@
               label="Decline"
               no-caps
               @click="onDeclineRecord(props.row, 'Decline')"
-              v-if="
-                checkTreasurerRole() && props.row.approve == 'PENDING'
-              "
+              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
             />
 
             <q-btn
@@ -105,9 +107,7 @@
               label="Approve"
               no-caps
               @click="onApprovedRecord(props.row, 'Approve')"
-              v-if="
-                checkTreasurerRole() && props.row.approve == 'PENDING'
-              "
+              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
             />
 
             <!-- button to handle edit, view and delete, invite and register  a member -->
@@ -181,6 +181,7 @@
                       clickable
                       v-close-popup
                       @click="onDeleteMember(props.row)"
+                      v-if="checkPresidentRole()"
                     >
                       <q-item-section avatar>
                         <span>
@@ -199,13 +200,10 @@
         </q-tr>
         <!-- end of body for members -->
 
-        <!-- body for savings? -->
-        <q-tr :props="props" v-if="show_savings">
+        <!-- body for members savings? -->
+        <q-tr :props="props" v-if="show_savings && !checkTreasurerRole()">
           <q-td key="counter" :props="props">
             {{ props.row.counter }}
-          </q-td>
-          <q-td key="name" :props="props">
-            {{ props.row.name }}
           </q-td>
           <q-td key="user_name" :props="props">
             {{ props.row.user_name }}
@@ -222,22 +220,6 @@
           <q-td key="date" :props="props">
             {{ getDate(props.row.date) }}
           </q-td>
-          <!-- <q-td
-            key="approve"
-            :props="props"
-            v-if="props.row.approve == 'PENDING'"
-            class="text-info"
-          >
-            {{ props.row.approve }}
-          </q-td>
-          <q-td
-            key="approve"
-            :props="props"
-            v-if="props.row.approve == 'APPROVED'"
-            class="registered"
-          >
-            {{ props.row.approve }}
-          </q-td> -->
           <q-td
             key="approve"
             :props="props"
@@ -255,9 +237,7 @@
               no-caps
               unelevated
               @click="onDeclineRecord(props.row, 'Decline')"
-              v-if="
-                checkTreasurerRole() && props.row.approve == 'PENDING'
-              "
+              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
             />
 
             <q-btn
@@ -267,9 +247,7 @@
               no-caps
               unelevated
               @click="onApprovedRecord(props.row, 'Approve')"
-              v-if="
-                checkTreasurerRole() && props.row.approve == 'PENDING'
-              "
+              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
             />
             <!-- button to handle view all member saving -->
             <q-btn
@@ -287,9 +265,90 @@
             </q-btn>
           </q-td>
         </q-tr>
-        <!-- end of body for savings -->
+        <!----------------------------------------------------END OF ALL SAVINGS---------------------------------------------->
 
-        <!-- body for savings? -->
+        <!----------------------------------------------------END OF MEMBER SAVINGS--------------------------------------------->
+        <q-tr :props="props" v-if="show_savings && checkTreasurerRole()">
+          <q-td key="counter" :props="props">
+            {{ props.row.counter }}
+          </q-td>
+          <q-td key="user_name" :props="props">
+            {{ props.row.user_name }}
+          </q-td>
+          <q-td key="email" :props="props">
+            {{ props.row.email }}
+          </q-td>
+          <q-td key="telephone" :props="props">
+            {{ props.row.telephone }}
+          </q-td>
+          <q-td key="amount_deposited" :props="props">
+            {{ Number(props.row.amount_deposited).toLocaleString() }}
+          </q-td>
+          <q-td key="amount_used" :props="props">
+            {{ Number(props.row.amount_used).toLocaleString() }}
+          </q-td>
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'DECLINED'"
+            class="not_registered"
+          >
+            {{ props.row.approve }}
+          </q-td>
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'PENDING'"
+            class="text-info"
+          >
+            {{ props.row.approve }}
+          </q-td>
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'APPROVED'"
+            class="registered"
+          >
+            {{ props.row.approve }}
+          </q-td>
+          <q-td key="action" :props="props">
+            <!-- buttons for approve and decline row data -->
+            <q-btn
+              class="decline_btn_saving"
+              size="md"
+              label="Decline"
+              no-caps
+              unelevated
+              @click="onDeclineRecord(props.row, 'Decline')"
+              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
+            />
+
+            <q-btn
+              class="approve_btn"
+              size="md"
+              label="Approve"
+              no-caps
+              unelevated
+              @click="onApprovedRecord(props.row, 'Approve')"
+              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
+            />
+            <!-- button to handle view all member saving -->
+            <q-btn
+              unelevated
+              no-caps
+              dense
+              color="primary"
+              class="view_income q-px-sm q-mr-md"
+              label="View"
+              @click="onViewMemberSaving(props.row)"
+            >
+              <q-icon name="visibility" size="xs" class="q-pl-md"></q-icon>
+            </q-btn>
+          </q-td>
+        </q-tr>
+        <!-----------------------------------------------------------------------END OF ALL SAVINGS-------------------------------------------------------------------->
+
+        <!---------------------------------------------------------------------------MEMBER SAVINGS--------------------------------------------------->
         <q-tr :props="props" v-if="show_member_savings">
           <q-td key="counter" :props="props">
             {{ props.row.counter }}
@@ -380,9 +439,9 @@
             </q-btn>
           </q-td>
         </q-tr>
-        <!-- end of body for savings -->
+        <!-------------------------------------------------------------------------END OF MEMBER SAVINGS----------------------------------------------------------->
 
-        <!-- body for show_income_activity? -->
+        <!----------------------------------------------------------------------INCOME ACTIVITIES----------------------------------------------------------->
         <q-tr :props="props" v-if="show_income_activity">
           <q-td key="counter" :props="props">
             {{ props.row.counter }}
@@ -446,9 +505,7 @@
               no-caps
               unelevated
               @click="onDeclineRecord(props.row, 'Decline')"
-              v-if="
-                checkTreasurerRole() && props.row.approve == 'PENDING'
-              "
+              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
             />
 
             <q-btn
@@ -458,9 +515,7 @@
               no-caps
               unelevated
               @click="onApprovedRecord(props.row, 'Approve')"
-              v-if="
-                checkTreasurerRole() && props.row.approve == 'PENDING'
-              "
+              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
             />
 
             <!-- menu to handle edit and view details of a single show_income_activity -->
@@ -526,9 +581,9 @@
             </q-btn>
           </q-td>
         </q-tr>
-        <!-- end of body for show_income_activity -->
+        <!--------------------------------------------------------------------END OF INCOME ACTIVITIES---------------------------------------------------------->
 
-        <!-- body for contributions -->
+        <!--------------------------------------------------------------------CONTRIBUTION-------------------------------------->
         <q-tr :props="props" v-if="show_contribution">
           <q-td key="counter" :props="props">
             {{ props.row.counter }}
@@ -593,9 +648,7 @@
               no-caps
               unelevated
               @click="onDeclineRecord(props.row, 'Decline')"
-              v-if="
-                checkTreasurerRole() && props.row.approve == 'PENDING'
-              "
+              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
             />
 
             <q-btn
@@ -604,15 +657,13 @@
               no-caps
               unelevated
               @click="onApprovedRecord(props.row, 'Approve')"
-              v-if="
-                checkTreasurerRole() && props.row.approve == 'PENDING'
-              "
+              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
             />
           </q-td>
         </q-tr>
-        <!-- end of body for contributions -->
+        <!-------------------------------------------------------------------END OF ALL CONTRIBUTIONS---------------------------->
 
-        <!-- body for member contributions -->
+        <!------------------------------------------------------------MEMBER CONTRIBUTIONS------------------------------------------>
         <q-tr :props="props" v-if="show_member_contribution">
           <q-td key="counter" :props="props">
             {{ props.row.counter }}
@@ -626,7 +677,10 @@
           <q-td key="balance" :props="props">
             {{ Number(props.row.balance).toLocaleString() }}
           </q-td>
-          <q-td key="status" :props="props">
+          <q-td key="status" :props="props" class="registered"  v-if="props.row.status == 'COMPLETE'">
+            {{ props.row.status }}
+          </q-td>
+          <q-td key="status" :props="props" class="not_registered"  v-if="props.row.status == 'INCOMPLETE'">
             {{ props.row.status }}
           </q-td>
           <q-td key="date" :props="props">
@@ -733,7 +787,7 @@
             </q-btn>
           </q-td>
         </q-tr>
-        <!-- end of body for member contributions -->
+        <!---------------------------------------------------------END OF CONTRIBUTIONS--------------------------------------------------->
       </template>
       <template v-slot:top-right>
         <q-input
@@ -755,7 +809,10 @@
       <template v-slot:bottom>
         <!-- members contributions -->
         <q-tr v-if="total_contribution > 0">
-          <q-th class="text-bold total_label q-mt-md summary" v-if="show_contribution">
+          <q-th
+            class="text-bold total_label q-mt-md summary"
+            v-if="show_contribution"
+          >
             Total Members Contribution:
           </q-th>
           <q-th v-if="show_contribution" class="total_value">
@@ -865,11 +922,11 @@
 
         <q-card-section class="q-pt-none" v-if="show_invite">
           <div class="row q-gutter-xl justify-center">
-            <div>
+            <div v-if="member_to_be_invited.email != null">
               <q-btn
-                color="dark"
-                icon="mail"
-                size="md"
+                flat
+                icon="email"
+                size="lg"
                 :href="
                   'mailto:' +
                   member_to_be_invited.email +
@@ -883,7 +940,7 @@
               >
             </div>
             <div>
-              <q-btn round color="secondary" size="sm" @click="whatsappInvite()"
+              <q-btn flat color="secondary" size="sm" @click="whatsappInvite()"
                 ><img src="../../src/assets/whatsapp.png" class="whatsapp_icon"
               /></q-btn>
               <q-tooltip>Invite via Whatsapp</q-tooltip>
@@ -910,16 +967,29 @@
               </label>
             </div>
 
-            <div v-if="show_members">
+            <div v-if="show_members" class="text-red">
               <div class="text-weight-bold text-left">
                 Name:
-                <span class="q-pl-md">{{ approve_data.name }}</span>
+                <span class="q-pl-lg">{{ approve_data.name }}</span>
               </div>
 
               <div class="text-weight-bold text-left">
                 Amount:
                 <span class="amount"
                   >{{ Number(registration_amount).toLocaleString() }} XAF</span
+                >
+              </div>
+            </div>
+            <div v-if="show_income_activity" class="text-red">
+              <div class="text-weight-bold text-left">
+                Contributor:
+                <span class="q-pl-lg">{{ contributor }}</span>
+              </div>
+
+              <div class="text-weight-bold text-left">
+                Amount:
+                <span class="q-pl-xl"
+                  >{{ Number(income_amount).toLocaleString() }} XAF</span
                 >
               </div>
             </div>
@@ -937,6 +1007,18 @@
                     Number(approve_data.total_amount_deposited).toLocaleString()
                   }}
                   XAF</span
+                >
+              </div>
+            </div>
+            <div v-if="show_savings" class="q-mt-md text-red">
+              <div class="text-weight-bold text-left">
+                Member:
+                <span class="q-pl-sm">{{ contributor }}</span>
+              </div>
+              <div class="text-weight-bold text-left">
+                Amount:
+                <span class="amount"
+                  >{{ Number(income_amount).toLocaleString() }} XAF</span
                 >
               </div>
             </div>
@@ -974,6 +1056,7 @@ import moment from "moment";
 import ContributionsMixinVue from "src/mixins/ContributionsMixin.vue";
 import memberMixin from "src/mixins/memberMixin.vue";
 import ConfirmDialogVue from "./ConfirmDialog.vue";
+import CurrentYearMixin from "src/mixins/CurrentYearMixin.vue";
 
 export default {
   mixins: [
@@ -982,6 +1065,7 @@ export default {
     UserSavingMixinVue,
     ContributionsMixinVue,
     memberMixin,
+    CurrentYearMixin,
   ],
 
   props: {
@@ -1083,6 +1167,8 @@ export default {
       delete_msg: "",
       show_confirm_dialog_detail: false,
       registration_amount: null,
+      income_amount: 0,
+      contributor: null,
     };
   },
 
@@ -1191,6 +1277,7 @@ export default {
     },
 
     onDeclineRecord(row, state) {
+      this.registration_amount = this.$store.getters.getRegAmount.amount;
       this.show_approve_dialog = true;
       this.approve_data = row;
       this.chosen_state = state;
@@ -1239,7 +1326,7 @@ export default {
           url = `/api/protected/contributions/approve`;
           break;
         case "MEMBERS":
-          url = `/api/protected/members-registration/approve?user_id=${data.id}&status=${type}`;
+          url = `/api/protected/members-registration/approve?user_id=${data.id}&status=${type}&session_id=${data.session_id}`;
           break;
       }
 
@@ -1258,12 +1345,15 @@ export default {
       let date = "";
       switch (data.type) {
         case "INCOME_ACTIVITIES":
-          date = moment(data.date).format("MMMM Do YYYY");
-          this.approve_msg = ` ${data.amount}  F CFA  for ${data.name} on the ${date} at ${data.venue} ?`;
+          this.income_amount = data.amount;
+          this.contributor = data.name;
+          this.approve_msg = ` Contribution for ${data.payment_item.name}`;
           break;
         case "MEMBERS_SAVINGS":
           date = moment(data.created_at).format("MMMM Do YYYY");
-          this.approve_msg = ` ${data.amount_deposited} F CFA Member Saving for ${data.name} on the ${date} ?`;
+          this.income_amount = data.amount_deposited;
+          this.contributor = data.user_name;
+          this.approve_msg = `Member Saving on the ${date}`;
           break;
         case "MEMBERS_CONTRIBUTIONS":
           date = moment(data.date).format("MMMM Do YYYY");
@@ -1271,7 +1361,7 @@ export default {
           break;
         case "MEMBERS":
           this.register_member_name = data.name;
-          this.approve_msg = `Member Registration`;
+          this.approve_msg = `Member Registration for ${data.year} `;
           break;
       }
       return this.approve_msg;
@@ -1294,9 +1384,10 @@ export default {
       let search_savings_url = "";
 
       switch (data.type) {
-
         case "INCOME_ACTIVITIES":
-          this.getOrganisationIncomeActivities(this.$store.getters.getOrganisation.id);
+          this.getOrganisationIncomeActivities(
+            this.$store.getters.getOrganisation.id
+          );
           break;
         case "MEMBERS_SAVINGS":
           search_savings_url = `/api/protected/user-savings?organisation_id=${this.$store.getters.getOrganisation.id}&status=${status}&name=${name}&amount_deposited=${amount_deposited}&session_id=${session_id}&month=${month}&date=${date}&date_range=${range}`;
@@ -1318,7 +1409,10 @@ export default {
           );
           break;
         case "MEMBERS":
-          this.getOrganisationMembers(this.$store.getters.getOrganisation.id, true);
+          this.getOrganisationMembers(
+            this.$store.getters.getOrganisation.id,
+            true
+          );
           break;
       }
     },
@@ -1368,7 +1462,7 @@ export default {
         data: data,
         tab: "View Member Saving",
       };
-      this.$store.dispatch("setCurrentMemberSaving", data);
+       this.$store.dispatch("setCurrentMemberSaving", data);
       this.$emit("view-member-saving", payload);
     },
 
@@ -1468,21 +1562,16 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 13px;
-  line-height: 25px;
-  letter-spacing: 0.01em;
+  font-size: 12px;
+  align-items: center;
   text-transform: capitalize;
-  color: $primary;
-  padding: 0.11rem;
-}
+  }
 
 .view_income {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
   font-size: 13px;
-  line-height: 25px;
-  letter-spacing: 0.01em;
   text-transform: capitalize;
   color: $primary;
 }
@@ -1523,7 +1612,6 @@ export default {
 
 .approve_card {
   width: 25rem;
-  // padding: 0.3rem;
 }
 
 .decline_btn {
@@ -1580,7 +1668,7 @@ export default {
 }
 
 .amount {
-  margin-left: 1.2rem;
+  margin-left: 0.8rem;
 }
 
 .payment_item_name {
@@ -1622,7 +1710,7 @@ export default {
   font-size: 15px;
 }
 
-.summary{
+.summary {
   font-size: 15px;
 }
 </style>

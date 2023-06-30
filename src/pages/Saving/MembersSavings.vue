@@ -140,7 +140,7 @@
             :label="'Print'"
             :loading="loading"
             :color="'positive'"
-            :disabled="savings.length == 0"
+            :disabled="getFilteredSavings.length == 0"
             no-caps
             icon-right="print"
             @click="downloadMembersSavings"
@@ -152,7 +152,7 @@
       <div class="row q-pt-sm">
         <div class="col-md-12 col-xs-12 col-sm-12">
           <TableVue
-            :columns="columns"
+            :columns="columns_tresurer"
             :data="getFilteredSavings"
             :label="label"
             :message="message"
@@ -161,6 +161,7 @@
             :show_members="false"
             :total_saving="computeTotalSavingsForFiltered"
             :show_contribution="false"
+            @view-member-saving="ViewMemberSaving"
           >
           </TableVue>
         </div>
@@ -241,13 +242,60 @@ export default {
           label: "Total Amount Saved (XAF)",
           field: "total_amount",
         },
-        // {
-        //   name: "approve",
-        //   align: "left",
-        //   label: "Transaction Status",
-        //   field: "approve",
-        //   sortable: true,
-        // },
+        {
+          name: "action",
+          label: "Action",
+          align: "left",
+          field: "action",
+        },
+      ],
+      columns_tresurer: [
+        {
+          name: "counter",
+          required: true,
+          label: "S/N",
+          align: "left",
+          field: "counter",
+        },
+        {
+          name: "user_name",
+          required: true,
+          label: "Name",
+          align: "left",
+          field: (row) => row.user_name,
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "email",
+          align: "left",
+          label: "Email",
+          field: "email",
+        },
+        {
+          name: "telephone",
+          align: "left",
+          label: "Telephone Number",
+          field: "telephone",
+        },
+        {
+          name: "amount_deposited",
+          align: "left",
+          label: "Amount Deposited (XAF)",
+          field: "amount_deposited",
+        },
+        {
+          name: "amount_used",
+          align: "left",
+          label: "Amount Used (XAF)",
+          field: "amount_used",
+        },
+        {
+          name: "approve",
+          align: "left",
+          label: "Payment Status",
+          field: "approve",
+        },
         {
           name: "action",
           label: "Action",
@@ -277,7 +325,9 @@ export default {
     },
 
     getTotalMembersSavings() {
-      return this.$store.getters.getOrganisationMembersSavings != null ? this.$store.getters.getOrganisationMembersSavings.total_savings: 0;
+      return this.$store.getters.getOrganisationMembersSavings != null
+        ? this.$store.getters.getOrganisationMembersSavings.total_savings
+        : 0;
     },
 
     getFilteredSavings() {
@@ -285,7 +335,7 @@ export default {
       this.$store.getters.getSavings.forEach((ele) => {
         data.push({
           counter: this.$store.getters.getSavings.indexOf(ele) + 1,
-          name: ele.user_name,
+          user_name: ele.user_name,
           email: ele.email,
           telephone: ele.telephone,
           total_amount: ele.total_amount,
@@ -297,7 +347,8 @@ export default {
           created_at: ele.created_at,
           updated_by: ele.updated_by,
           sesion_id: ele.session_id,
-          amount_deposited: ele.amount_deposited
+          amount_deposited: ele.amount_deposited,
+          amount_used: ele.amount_used,
         });
       });
       return data;
@@ -337,7 +388,8 @@ export default {
                 user_id: ele.user_id,
                 created_at: ele.created_at,
                 updated_by: ele.updated_by,
-                amount_deposited:ele.amount_deposited
+                amount_deposited: ele.amount_deposited,
+                amount_used: ele.amount_used,
               });
             }
           );
@@ -458,11 +510,15 @@ export default {
               created_at: saving.created_at,
               updated_by: saving.updated_by,
               date: saving.created_at,
-              total_amount:ele.total_amount
+              total_amount: ele.total_amount,
             });
           });
         }
       });
+    },
+
+    ViewMemberSaving(data) {
+      this.$emit("view-member-saving", data);
     },
   },
   components: {

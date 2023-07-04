@@ -2,7 +2,7 @@
   <q-page>
     <div class="row">
       <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12 q-px-xs">
-        <q-card class="card" bordered>
+        <q-card class="card" bordered @click="showStatistics('MEMBERSHIP')">
           <q-card-section>
             <div class="text-h6 text-capitalize text-center">Members</div>
           </q-card-section>
@@ -10,7 +10,7 @@
           <q-card-actions align="around" class="q-pb-sm">
             <div>
               <q-avatar
-                color="teal-2"
+                color="positive"
                 icon="groups"
                 size="xl"
                 text-color="white"
@@ -24,7 +24,7 @@
         </q-card>
       </div>
       <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12 q-px-xs">
-        <q-card class="card" bordered>
+        <q-card class="card" bordered @click="showStatistics('SAVINGS')">
           <q-card-section>
             <div class="text-h6 text-capitalize text-center">Savings</div>
           </q-card-section>
@@ -50,7 +50,7 @@
         </q-card>
       </div>
       <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12 q-px-xs">
-        <q-card class="card" bordered>
+        <q-card class="card" bordered @click="showStatistics('CONTRIBUTIONS')">
           <q-card-section>
             <div class="text-h6 text-capitalize text-center">Contributions</div>
           </q-card-section>
@@ -71,7 +71,7 @@
         </q-card>
       </div>
       <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12 q-px-xs">
-        <q-card class="card" bordered>
+        <q-card class="card" bordered @click="showStatistics('EXPENDITURES')">
           <q-card-section>
             <div class="text-h6 text-capitalize text-center">Expenditures</div>
           </q-card-section>
@@ -79,7 +79,7 @@
           <q-card-actions align="around" class="q-pb-sm">
             <div>
               <q-avatar
-                color="cyan-2"
+                color="teal-2"
                 icon="data_exploration"
                 size="xl"
                 text-color="white"
@@ -92,14 +92,44 @@
         </q-card>
       </div>
     </div>
-    <div class="row q-mx-sm q-mt-sm">
-      <div class="col-4 col-md-4 col-sm-4 col-xs-4 col-lg-4">
-        <PieChartsVue></PieChartsVue>
+
+    <!-- <div> -->
+      <!-----------------------------------------------MEMBERSHIP STATISTICS--------------------------------------->
+      <transition
+          appear
+          enter-active-class="animated fadeIn"
+          leave-active-class="animated fadeOut"
+        >
+      <div class="row q-mx-sm q-mt-sm" v-show="statistics_type == 'MEMBERSHIP' && show_statistics">
+        <div class="col-4 col-md-4 col-sm-12 col-xs-12 col-lg-4">
+          <PieChartsVue></PieChartsVue>
+        </div>
+        <div class="col-8 col-md-8 col-sm-12 col-xs-12 col-lg-8">
+          <BarChartVue></BarChartVue>
+        </div>
       </div>
-      <div class="col-8 col-md-8 col-sm-8 col-xs-8 col-lg-8">
-        <BarChartVue></BarChartVue>
+      </transition>
+      <!--------------------------------------------END OF MEMBERSHIP STATISTICS----------------------------------->
+
+      <!-----------------------------------------------SAVINGS STATISTICS--------------------------------------->
+      <div class="row q-mx-sm q-mt-sm" v-show="statistics_type == 'SAVINGS' && show_statistics">
+        <div class="col-4 col-md-4 col-sm-12 col-xs-12 col-lg-4">
+          <PieChartsVue></PieChartsVue>
+        </div>
+        <div class="col-8 col-md-8 col-sm-12 col-xs-12 col-lg-8">
+          <LineChartVue></LineChartVue>
+        </div>
       </div>
-    </div>
+      <!--------------------------------------------END OF SAVINGS STATISTICS----------------------------------->
+
+      <q-inner-loading
+        :showing="visible"
+        label="Please wait..."
+        label-class="text-primary"
+        label-style="font-size: 1.1em"
+        color="primary"
+      />
+    <!-- </div> -->
   </q-page>
 </template>
 <script>
@@ -110,6 +140,7 @@ import memberMixinVue from "src/mixins/memberMixin.vue";
 import UserSavingMixin from "src/mixins/UserSavingMixin.vue";
 import PieChartsVue from "src/components/charts/PieCharts.vue";
 import BarChartVue from "src/components/charts/BarChart.vue";
+import LineChartVue from "src/components/charts/LineChart.vue";
 
 export default {
   mixins: [
@@ -134,7 +165,11 @@ export default {
     }
   },
   data() {
-    return {};
+    return {
+      statistics_type: "MEMBERSHIP",
+      visible:false,
+      show_statistics:false
+    };
   },
   computed: {
     getTotalMembers() {
@@ -146,10 +181,21 @@ export default {
         : 0;
     },
   },
-  methods: {},
+  methods: {
+    showStatistics(type) {
+      this.visible = true
+      this.show_statistics = false
+      setTimeout(() => {
+        this.visible = false
+        this.show_statistics = true
+      }, 3000)
+      return (this.statistics_type = type);
+    },
+  },
   components: {
     PieChartsVue,
     BarChartVue,
+    LineChartVue,
   },
 };
 </script>
@@ -219,5 +265,9 @@ export default {
   text-align: center;
   color: $grey8;
   text-decoration: underline;
+}
+
+.loading_label{
+  color: $primary;
 }
 </style>

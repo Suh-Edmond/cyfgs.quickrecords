@@ -30,6 +30,7 @@ import {
   CategoryScale,
   LinearScale,
 } from "chart.js";
+import organisationMixinVue from 'src/mixins/organisationMixin.vue';
 
 ChartJS.register(
   Title,
@@ -42,8 +43,9 @@ ChartJS.register(
 
 export default {
   name: "BarChart",
-  components: {
-    Bar,
+  mixins:[organisationMixinVue],
+  beforeMount(){
+    this.getUserByRegistrationStatus();
   },
   props: {
     chartId: {
@@ -94,9 +96,9 @@ export default {
         ],
         datasets: [
           {
-            label: "Registration Statistics",
-            backgroundColor: "#5384ae",
-            data: [40, 20, 12, 39, 10, 40, 39, 100, 40, 20, 12, 11],
+            label: "Registered Members",
+            backgroundColor: "#27ae60",
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
           },
         ],
       },
@@ -105,6 +107,34 @@ export default {
         maintainAspectRatio: false,
       },
     };
+  },
+
+  methods:{
+    getUserByRegistrationStatus(){
+      let organisation_id = this.getOrganisationId;
+      let payload = {
+        status: "none",
+        url: `/api/protected/organisations/registered_users?organisation_id=${organisation_id}`,
+        has_path_val: true,
+        show_feedback: false,
+        msg: "none",
+        color: "default",
+        error_msg: "default",
+        commit: "",
+        has_commit: false,
+        to_be_store_data: {
+          required: true,
+          has_value: false,
+          data: null,
+        },
+      };
+      this.$store.dispatch("getRequest", payload).then((res) => {
+        this.chartData.datasets[0].data = res.data;
+      });
+    }
+  },
+  components: {
+    Bar,
   },
 };
 </script>

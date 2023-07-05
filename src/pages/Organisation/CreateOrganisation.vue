@@ -110,7 +110,7 @@
                 <div class="row flex justify-end q-mb-md q-gutter-md">
                   <div>
                     <ButtonVue :label="label" :loading="loading" :disabled="validateForm" :color="color" :no_caps="true"
-                      class="q-pa-xs">
+                      class="submit_btn" >
                     </ButtonVue>
                   </div>
                 </div>
@@ -325,7 +325,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 13px;
+  font-size: 12px;
   align-items: center;
   letter-spacing: 0.01em;
   color: $grey2;
@@ -349,5 +349,9 @@ export default {
   cursor: pointer;
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
+}
+
+.submit_btn {
+  width: 10rem;
 }
 </style>

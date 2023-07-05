@@ -5,7 +5,7 @@ const API_URL = process.env.API_BASE_URL;
 
 const FILE_API_URL = process.env.FILE_API_URL;
 
-export function handleRequestResponse({getters}, payload) {
+export function handleRequestResponse({getters, dispatch}, payload) {
   if (payload.status == "success" && payload.show_feedback) {
     if (payload.msg == "default") {
       Notify.create({
@@ -32,21 +32,9 @@ export function handleRequestResponse({getters}, payload) {
       });
     }
     if (payload.to_on_ok !== "none" && payload.status == "success") {
-       if (payload.to_on_ok == "create_organisation") {
-        if (getters.getOrganisation == null) {
-          this.$router.push({
-            name: payload.to_on_ok,
-          });
-        } else {
-          this.$router.push({
-            name: "dashboard",
-          });
-        }
-      } else {
-        this.$router.push({
-          name: payload.to_on_ok,
-        });
-      }
+      this.$router.push({
+        name: payload.to_on_ok,
+      });
     }
   }
   if (payload.status == "fail" && payload.show_feedback) {

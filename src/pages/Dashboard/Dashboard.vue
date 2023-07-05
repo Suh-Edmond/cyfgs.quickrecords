@@ -89,7 +89,7 @@
           <PieChartsVue></PieChartsVue>
         </div>
         <div class="col-8 col-md-8 col-sm-12 col-xs-12 col-lg-8">
-          <LineChartVue></LineChartVue>
+          <BarChartCom :chartData="chartData"></BarChartCom>
         </div>
       </div>
       <!--------------------------------------------END OF SAVINGS STATISTICS----------------------------------->
@@ -104,7 +104,7 @@ import memberMixinVue from "src/mixins/memberMixin.vue";
 import UserSavingMixin from "src/mixins/UserSavingMixin.vue";
 import PieChartsVue from "src/components/charts/PieCharts.vue";
 import BarChartVue from "src/components/charts/BarChart.vue";
-import LineChartVue from "src/components/charts/LineChart.vue";
+import BarChartCom from "src/components/charts/BarChartCom.vue";
 
 export default {
   mixins: [
@@ -131,7 +131,30 @@ export default {
     return {
       statistics_type: "MEMBERSHIP",
       visible: false,
-      show_statistics: false
+      show_statistics: false,
+      chartData: {
+        labels: [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December",
+        ],
+        datasets: [
+          {
+            label: "Registered Members",
+            backgroundColor: "#27ae60",
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          },
+        ],
+      },
     };
   },
   computed: {
@@ -158,7 +181,8 @@ export default {
   components: {
     PieChartsVue,
     BarChartVue,
-    LineChartVue,
+    // LineChartVue,
+    BarChartCom
   },
 };
 </script>

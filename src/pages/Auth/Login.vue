@@ -81,7 +81,7 @@ export default {
         },
         msg: "Login Successful",
         color: "default",
-        to_on_ok: "",
+        to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
         error_msg: "Invalid Credentials! Please try again",
@@ -102,6 +102,7 @@ export default {
             msg: "none",
             color: "default",
             error_msg: "default",
+            to_on_ok: "none",
             commit: "SET_ORGANISATION",
             has_commit: true,
             to_be_store_data: {

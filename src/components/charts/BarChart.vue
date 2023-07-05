@@ -2,7 +2,7 @@
   <div class="q-pa-sm">
     <q-card flat>
       <q-card-section>
-        <Bar :chart-options="chartOptions" :chart-data="chartData" :chart-id="chartId" :dataset-id-key="datasetIdKey"
+        <Bar :chart-options="chartOptions" :chart-data="getChartData" :chart-id="chartId" :dataset-id-key="datasetIdKey"
           :plugins="plugins" :css-classes="cssClasses" :styles="styles" :width="width" :height="height" />
       </q-card-section>
     </q-card>
@@ -66,7 +66,7 @@ export default {
       default: () => [],
     },
   },
-  mounted(){
+  mounted() {
     let organisation_id = this.$store.getters.getOrganisation != null ? this.$store.getters.getOrganisation.id : null;
     this.getUserByRegistration(organisation_id);
   },
@@ -101,8 +101,8 @@ export default {
       },
     };
   },
-  computed:{
-    getChartData(){
+  computed: {
+    getChartData() {
       let data = {
         labels: [
           "January",

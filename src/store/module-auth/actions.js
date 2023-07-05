@@ -58,14 +58,6 @@ export function handleRequestResponse({getters, dispatch}, payload) {
         name: payload.to_on_fail,
       });
     }
-
-    // if(payload.forbidden_err != undefined){
-    //   Notify.create({
-    //     message: payload.forbidden_err.message,
-    //     type: "info",
-    //     position: Platform.is.mobile ? "bottom" : "top-right",
-    //   });
-    // }
   }
 }
 

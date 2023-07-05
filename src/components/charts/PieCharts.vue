@@ -2,17 +2,8 @@
   <div class="q-pa-md">
     <q-card flat>
       <q-card-section>
-        <Doughnut
-          :chart-options="chartOptions"
-          :chart-data="chartData"
-          :chart-id="chartId"
-          :dataset-id-key="datasetIdKey"
-          :plugins="plugins"
-          :css-classes="cssClasses"
-          :styles="styles"
-          :width="width"
-          :height="height"
-        ></Doughnut>
+        <Doughnut :chart-options="chartOptions" :chart-data="getChartData" :chart-id="chartId" :dataset-id-key="datasetIdKey"
+          :plugins="plugins" :css-classes="cssClasses" :styles="styles" :width="width" :height="height"></Doughnut>
       </q-card-section>
     </q-card>
   </div>
@@ -29,12 +20,13 @@ import {
   CategoryScale,
 } from "chart.js";
 import organisationMixinVue from 'src/mixins/organisationMixin.vue';
+import memberMixinVue from 'src/mixins/memberMixin.vue';
 
 ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale);
 
 export default {
   name: "App",
-  mixins:[organisationMixinVue],
+  mixins: [organisationMixinVue, memberMixinVue],
 
   props: {
     chartId: {
@@ -59,26 +51,25 @@ export default {
     },
     styles: {
       type: Object,
-      default: () => {},
+      default: () => { },
     },
     plugins: {
       type: Array,
       default: () => [],
     },
   },
-
-  beforeMount(){
-    this.getUserByRegistration();
+  mounted(){
+    let organisation_id = this.$store.getters.getOrganisation != null ? this.$store.getters.getOrganisation.id : null;
+    this.getUserByRegistrationStatus(organisation_id);
   },
-
   data() {
     return {
       chartData: {
-        labels: ["Registered","Pending", "Not-Registered"],
+        labels: ["Registered", "Pending", "Not-Registered"],
         datasets: [
           {
-            backgroundColor: ["#27ae60","#2d9cdb", "#f2994a"],
-            data: [0,0, 0],
+            backgroundColor: ["#27ae60", "#2d9cdb", "#f2994a"],
+            data: [0, 0, 0],
           },
         ],
       },
@@ -88,34 +79,23 @@ export default {
       },
     };
   },
-  watch:{
-    getUserByRegistration(){
-      return this.getUserByRegistration();
+  computed: {
+    getChartData(){
+      let data = {
+        labels: ["Registered", "Pending", "Not-Registered"],
+        datasets: [
+          {
+            backgroundColor: ["#27ae60", "#2d9cdb", "#f2994a"],
+            data: this.$store.getters.getPieChartData,
+          },
+        ],
+      }
+      return data;
     }
   },
+  watch: {
+  },
   methods: {
-    getUserByRegistration(){
-      let organisation_id = this.getOrganisationId;
-      let payload = {
-        status: "none",
-        url: `/api/protected/organisations/users?organisation_id=${organisation_id}`,
-        has_path_val: true,
-        show_feedback: false,
-        msg: "none",
-        color: "default",
-        error_msg: "default",
-        commit: "",
-        has_commit: false,
-        to_be_store_data: {
-          required: true,
-          has_value: false,
-          data: null,
-        },
-      };
-      this.$store.dispatch("getRequest", payload).then((res) => {
-        this.chartData.datasets[0].data = res.data;
-      });
-    }
   },
   components: {
     Doughnut,
@@ -123,5 +103,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

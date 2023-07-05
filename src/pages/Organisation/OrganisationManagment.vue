@@ -248,7 +248,7 @@
                 font-size="52px"
                 v-if="organisation.logo != null"
               >
-                <img :src="organisation.logo" alt="" width="160px" />
+                <img :src="getOrganisationLogo" alt="" width="160px" />
               </q-avatar>
               <q-avatar
                 size="150px"
@@ -397,6 +397,10 @@ export default {
 
     checkIfOrganisationExist() {
       return this.$store.getters.getOrganisation == null ? true : false
+    },
+
+    getOrganisationLogo() {
+      return process.env.FILE_API_URL+process.env.FILE_DOWNLOAD_PATH + this.$store.getters.getOrganisation.logo;
     }
   },
   methods: {

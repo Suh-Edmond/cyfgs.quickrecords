@@ -1,9 +1,6 @@
 <template>
   <q-page class="page">
-    <div
-      class="row q-px-sm"
-      :class="$q.screen.lg ? 'q-pt-lg flex flex-center' : 'q-pt-sm'"
-    >
+    <div class="row q-px-sm" :class="$q.screen.lg ? 'q-pt-lg flex flex-center' : 'q-pt-sm'">
       <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12">
         <q-card :class="$q.screen.lg ? 'q-mt-lg' : 'q-mt-md q-mb-xl'">
           <q-card-section>
@@ -11,54 +8,27 @@
             <div class="text-subtitle2 text-center q-pb-xs">
               Sign in to continue to Financial Assistant
             </div>
-            <q-form
-              @submit="onSubmit"
-              class="q-gutter-md q-mt-lg q-px-md"
-            >
+            <q-form @submit="onSubmit" class="q-gutter-md q-mt-lg q-px-md">
               <div>
                 <label for="credential" class="form_field">Telephone <span class="text-red">*</span></label>
-                <q-input
-                  v-model="user.credential"
-                  outlined
-                  dense
-                  type="tel"
-                  mask="(+###) ### - ### - ###"
-                  unmasked-value
-                  hint="Example: (+237) ### - ### - ###"
-                />
+                <q-input v-model="user.credential" outlined dense type="tel" mask="(+###) ### - ### - ###" unmasked-value
+                  hint="Example: (+237) ### - ### - ###" />
               </div>
               <div>
                 <label for="password" class="form_field">Password <span class="text-red">*</span></label>
-                <q-input
-                  v-model="user.password"
-                  :type="isPwd ? 'password' : 'text'"
-                  outlined
-                  dense
-                >
+                <q-input v-model="user.password" :type="isPwd ? 'password' : 'text'" outlined dense>
                   <template v-slot:append>
-                    <q-icon
-                      :name="isPwd ? 'visibility_off' : 'visibility'"
-                      class="cursor-pointer"
-                      @click="isPwd = !isPwd"
-                    />
+                    <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
+                      @click="isPwd = !isPwd" />
                   </template>
                 </q-input>
               </div>
               <div class="q-mt-lg">
-                <q-btn
-                  class="form_button q-pa-xs"
-                  :label="label_sigin"
-                  :loading="loading"
-                  :disabled="validateLogin"
-                  :color="color"
-                  :no_caps="no_caps"
-                  type="submit"
-                >
-                <q-icon name="arrow_forward" size="xs" class="q-pl-lg"></q-icon>
+                <q-btn class="form_button q-pa-xs" :label="label_sigin" :loading="loading" :disabled="validateLogin"
+                  :color="color" :no_caps="no_caps" type="submit">
+                  <q-icon name="arrow_forward" size="xs" class="q-pl-lg"></q-icon>
                 </q-btn>
-                <span class="forgot_password text-right"
-                  >Forgot Password ?</span
-                >
+                <span class="forgot_password text-right">Forgot Password ?</span>
               </div>
             </q-form>
           </q-card-section>
@@ -69,9 +39,7 @@
 </template>
 
 <script>
-import { SessionStorage } from "quasar";
 import organisationMixin from "src/mixins/organisationMixin.vue";
-import CurrentYearMixin from "src/mixins/CurrentYearMixin.vue";
 
 export default {
   name: "PageIndex",
@@ -81,7 +49,7 @@ export default {
       user: {
         password: null,
         password_confirmation: null,
-        credential:null,
+        credential: null,
       },
       isPwd: true,
       label_sigin: "SIGN IN",
@@ -113,9 +81,9 @@ export default {
         },
         msg: "Login Successful",
         color: "default",
-        to_on_ok: "dashboard",
+        to_on_ok: "none",
         to_on_fail: "none",
-        show_feedback:true,
+        show_feedback: true,
         error_msg: "Invalid Credentials! Please try again",
         to_be_store_data: {
           required: true,
@@ -125,13 +93,34 @@ export default {
       };
       this.$store
         .dispatch("postRequest", payload)
-        .then((res) => {
-          if(res.data != undefined){
-            SessionStorage.set("to_tab", 'Dashboard');
-            this.getOrganisationInfo();
-            this.fetchCurrentYear();
-          }
-        }).catch((error) => {
+        .then(() => {
+          let payload = {
+            status: "none",
+            url: "/api/protected/organisation-info",
+            has_path_val: true,
+            show_feedback: false,
+            msg: "none",
+            color: "default",
+            error_msg: "default",
+            to_on_ok: "none",
+            commit: "SET_ORGANISATION",
+            has_commit: true,
+            to_be_store_data: {
+              required: true,
+              has_value: false,
+              data: null,
+            },
+          };
+          this.$store.dispatch("getRequest", payload).then(() => {
+            this.$router.push({
+              name: "dashboard",
+            });
+          }).catch(() => {
+            this.$router.push({
+              name: "create_organisation",
+            });
+          })
+        }).catch(() => {
 
         })
         .finally(() => {
@@ -181,7 +170,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 11px;
+  font-size: 12px;
   align-items: center;
   letter-spacing: 0.01em;
   color: $grey2;
@@ -206,5 +195,4 @@ export default {
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
 }
-
 </style>

@@ -2,17 +2,8 @@
   <div class="q-pa-sm">
     <q-card flat>
       <q-card-section>
-        <Bar
-          :chart-options="chartOptions"
-          :chart-data="chartData"
-          :chart-id="chartId"
-          :dataset-id-key="datasetIdKey"
-          :plugins="plugins"
-          :css-classes="cssClasses"
-          :styles="styles"
-          :width="width"
-          :height="height"
-        />
+        <Bar :chart-options="chartOptions" :chart-data="getChartData" :chart-id="chartId" :dataset-id-key="datasetIdKey"
+          :plugins="plugins" :css-classes="cssClasses" :styles="styles" :width="width" :height="height" />
       </q-card-section>
     </q-card>
   </div>
@@ -30,6 +21,8 @@ import {
   CategoryScale,
   LinearScale,
 } from "chart.js";
+import organisationMixinVue from 'src/mixins/organisationMixin.vue';
+import memberMixinVue from 'src/mixins/memberMixin.vue';
 
 ChartJS.register(
   Title,
@@ -42,9 +35,7 @@ ChartJS.register(
 
 export default {
   name: "BarChart",
-  components: {
-    Bar,
-  },
+  mixins: [organisationMixinVue, memberMixinVue],
   props: {
     chartId: {
       type: String,
@@ -68,12 +59,16 @@ export default {
     },
     styles: {
       type: Object,
-      default: () => {},
+      default: () => { },
     },
     plugins: {
       type: Array,
       default: () => [],
     },
+  },
+  mounted() {
+    let organisation_id = this.$store.getters.getOrganisation != null ? this.$store.getters.getOrganisation.id : null;
+    this.getUserByRegistration(organisation_id);
   },
   data() {
     return {
@@ -94,9 +89,9 @@ export default {
         ],
         datasets: [
           {
-            label: "Registration Statistics",
-            backgroundColor: "#5384ae",
-            data: [40, 20, 12, 39, 10, 40, 39, 100, 40, 20, 12, 11],
+            label: "Registered Members",
+            backgroundColor: "#27ae60",
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
           },
         ],
       },
@@ -105,6 +100,39 @@ export default {
         maintainAspectRatio: false,
       },
     };
+  },
+  computed: {
+    getChartData() {
+      let data = {
+        labels: [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December",
+        ],
+        datasets: [
+          {
+            label: "Registered Members",
+            backgroundColor: "#27ae60",
+            data: this.$store.getters.getBarChartData,
+          },
+        ],
+      }
+      return data
+    }
+  },
+  methods: {
+  },
+  components: {
+    Bar,
   },
 };
 </script>

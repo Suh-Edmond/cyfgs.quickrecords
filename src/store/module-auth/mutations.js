@@ -177,3 +177,11 @@ export function SET_SESSIONS(state, data) {
 export function SET_REPORT_DATA(state, data){
   state.report_data = data
 }
+
+export function SET_BAR_CHART_DATA(state, data){
+  state.bar_chart_data = data;
+}
+
+export function SET_PIE_CHART_DATA(state, data){
+  state.pie_chart_data = data;
+}

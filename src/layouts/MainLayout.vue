@@ -13,7 +13,7 @@
         <div class="bg-white left_drawer">
           <div class="bg-transparent q-pa-sm flex flex-center">
             <q-avatar size="90px" v-if="getOrganisation != null">
-              <q-img :src="getOrganisation.logo"> </q-img>
+              <q-img :src="getOrganisationLogo"> </q-img>
             </q-avatar>
           </div>
           <div
@@ -81,7 +81,7 @@
               @click="setItem({ name: 'Settings', selected: true }, false)"
               v-if="checkRole(['PRESIDENT', null])"
               :disable="getOrganisation == null"
-              :to="{name: 'settings'}"
+              :to="{ name: 'settings' }"
             >
               <q-item-section
                 avatar
@@ -519,10 +519,11 @@
         >
         </MemberRegistration>
 
-        <ViewPaymentItem  v-if="current_tab == 'View Payment Item'"
+        <ViewPaymentItem
+          v-if="current_tab == 'View Payment Item'"
           @close-right-drawer="closeRightDrawer"
-          @set-heading="setHeading">
-
+          @set-heading="setHeading"
+        >
         </ViewPaymentItem>
       </q-page>
     </q-drawer>
@@ -557,8 +558,7 @@ import ViewPaymentItem from "src/components/ViewPaymentItem.vue";
 
 export default {
   mixins: [organisationMixinVue],
-  mounted() {
-   },
+  mounted() {},
   data() {
     return {
       left: false,
@@ -580,10 +580,16 @@ export default {
     getOrganisation() {
       return this.$store.getters.getOrganisation;
     },
+    getOrganisationLogo() {
+      return (
+        process.env.FILE_API_URL +
+        process.env.FILE_DOWNLOAD_PATH +
+        this.getOrganisation.logo
+      );
+    },
   },
   watch: {},
   methods: {
-
     setItem(item, requires_add) {
       this.item.name = item.name;
 
@@ -600,18 +606,15 @@ export default {
       this.$store.dispatch("setIntermediateTabs", []);
     },
 
-
     updateRightDrawer({ right, current_tab, data }) {
       this.current_tab = current_tab;
       this.right = right;
       this.data = data;
     },
 
-
     updateLeftDrawer(left) {
       this.left = left;
     },
-
 
     checkRole(tab_roles) {
       let user_roles = [];
@@ -624,8 +627,6 @@ export default {
         ? true
         : false;
     },
-
-
 
     logoutUser() {
       let payload = {
@@ -644,20 +645,13 @@ export default {
       this.$store.dispatch("logoutUser", payload);
     },
 
-
-
-
     goBack() {
       this.right = !this.right;
     },
 
-
-
     closeRightDrawer() {
       this.right = !this.right;
     },
-
-
 
     setHeading(data) {
       this.heading = data;
@@ -685,7 +679,7 @@ export default {
     ViewExpenditureItemVue,
     ViewExpenditureItemDetail,
     MemberRegistration,
-    ViewPaymentItem
+    ViewPaymentItem,
   },
 };
 </script>

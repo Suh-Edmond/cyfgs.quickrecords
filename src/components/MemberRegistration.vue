@@ -16,35 +16,20 @@
         </div>
         <div v-if="isMonthlyRegFrequency">
           <label for="month" class="form_field">Select Month <span class="text-red">*</span></label>
-          <q-select
-              v-model="user.month_name"
-              outlined
-              dense
-              :options="monthsOptions"
-              label="Search month..."
-              use-input
-              input-debounce="0"
-              clearable
-              @filter="filterMonths"
-            >
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No results
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
+          <q-select v-model="user.month_name" outlined dense :options="monthsOptions" label="Search month..." use-input
+            input-debounce="0" clearable @filter="filterMonths">
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey">
+                  No results
+                </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
         </div>
         <div class="flex q-mt-lg justify-end">
           <div>
-            <ButtonVue
-              label="Save"
-              :loading="loading"
-              color="primary"
-              :no_caps="true"
-              :disabled="validateForm"
-            >
+            <ButtonVue label="Save" :loading="loading" color="primary" :no_caps="true" :disabled="validateForm">
             </ButtonVue>
           </div>
         </div>
@@ -57,6 +42,7 @@ import ButtonVue from "src/components/Button.vue";
 import memberMixinVue from "src/mixins/memberMixin.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import RegistrationAmountMixinVue from 'src/mixins/RegistrationAmountMixin.vue';
+import { Notify,Platform } from 'quasar';
 const months = [
   "January",
   "February",
@@ -85,16 +71,24 @@ export default {
         user_name: null,
         year: null,
         amount: null,
-        month_name:"",
+        month_name: "",
       },
-      monthsOptions:[],
+      monthsOptions: [],
     };
   },
   computed: {
-    isMonthlyRegFrequency(){
+    isMonthlyRegFrequency() {
       return this.$store.getters.getRegAmount.frequency == 'MONTHLY';
     },
     getRegisterMember() {
+      if (this.$store.getters.getRegAmount == 0) {
+        Notify.create({
+          color: "info",
+          message: "Registration amount has not been set! Please set the amount under Settings",
+          type: "info",
+          position: Platform.is.mobile ? "bottom" : "top-right",
+        });
+      }
       return this.setFormField(
         this.$store.getters.getMemberToRegister.name,
         this.$store.getters.getCurrentYear.year,
@@ -102,8 +96,8 @@ export default {
       );
     },
 
-    validateForm(){
-      return this.isMonthlyRegFrequency && this.user.month_name == "" ? true : false;
+    validateForm() {
+      return this.isMonthlyRegFrequency && this.user.month_name == "" || this.$store.getters.getRegAmount == 0;
     }
   },
   watch: {

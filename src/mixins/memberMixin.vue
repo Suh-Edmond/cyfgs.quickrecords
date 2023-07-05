@@ -39,11 +39,11 @@ export default {
         url: `/api/protected/organisations/${id}/users`,
         msg: "none",
         color: "default",
-        status:"none",
+        status: "none",
         error_msg: "An Error occurred! Could not fetch users",
         has_commit: true,
-        show_feedback:false,
-        show_spinner:show_spinner,
+        show_feedback: false,
+        show_spinner: show_spinner,
         commit: "SET_MEMBERS",
         to_be_store_data: {
           required: false,
@@ -76,9 +76,52 @@ export default {
       };
       this.$store
         .dispatch("getRequest", payload)
-        .then(() => {})
-        .catch((e) => {});
+        .then(() => { })
+        .catch((e) => { });
     },
+
+    getUserByRegistrationStatus(organisation_id) {
+      let payload = {
+        status: "none",
+        url: `/api/protected/organisations/registered_users?organisation_id=${organisation_id}`,
+        has_path_val: true,
+        show_feedback: false,
+        msg: "none",
+        color: "default",
+        error_msg: "default",
+        commit: "SET_BAR_CHART_DATA",
+        has_commit: true,
+        to_be_store_data: {
+          required: true,
+          has_value: false,
+          data: null,
+        },
+      };
+      this.$store.dispatch("getRequest", payload).then(() => {
+      });
+    },
+
+    getUserByRegistration(organisation_id){
+      let payload = {
+        status: "none",
+        url: `/api/protected/organisations/users?organisation_id=${organisation_id}`,
+        has_path_val: true,
+        show_feedback: false,
+        msg: "none",
+        color: "default",
+        error_msg: "default",
+        commit: "SET_PIE_CHART_DATA",
+        has_commit: true,
+        to_be_store_data: {
+          required: true,
+          has_value: false,
+          data: null,
+        },
+      };
+      this.$store.dispatch("getRequest", payload).then((res) => {
+
+      });
+    }
   }
 }
 </script>

@@ -222,7 +222,9 @@ export default {
           data: [],
         },
       };
-      this.$store.dispatch("logoutUser", payload);
+      this.$store.dispatch("logoutUser", payload).then(() => {
+        this.$store.dispatch("setOrganisation", null);
+      });
     },
     goBack(tab) {
       history.back();

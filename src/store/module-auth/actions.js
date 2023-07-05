@@ -1,11 +1,11 @@
 import { LocalStorage, Notify, Platform } from "quasar";
 import { axios } from "src/boot/axios";
 
-const API_URL = process.env.API_BASE_URL
+const API_URL = process.env.API_BASE_URL;
 
-const FILE_UPLOAD_URL = process.env.FILE_UPLOAD_URL;
+const FILE_API_URL = process.env.FILE_API_URL;
 
-export function handleRequestResponse({}, payload) {
+export function handleRequestResponse({getters}, payload) {
   if (payload.status == "success" && payload.show_feedback) {
     if (payload.msg == "default") {
       Notify.create({
@@ -32,9 +32,21 @@ export function handleRequestResponse({}, payload) {
       });
     }
     if (payload.to_on_ok !== "none" && payload.status == "success") {
-      this.$router.push({
-        name: payload.to_on_ok,
-      });
+       if (payload.to_on_ok == "create_organisation") {
+        if (getters.getOrganisation == null) {
+          this.$router.push({
+            name: payload.to_on_ok,
+          });
+        } else {
+          this.$router.push({
+            name: "dashboard",
+          });
+        }
+      } else {
+        this.$router.push({
+          name: payload.to_on_ok,
+        });
+      }
     }
   }
   if (payload.status == "fail" && payload.show_feedback) {
@@ -107,7 +119,6 @@ export function postRequest({ dispatch }, payload) {
         status_code: 404,
       };
       dispatch("handleRequestResponse", handle_error_payload);
-      console.log(error.response);
       return error;
     });
 }
@@ -138,31 +149,31 @@ export function uploadFileRequest({ dispatch }, payload) {
       return res;
     })
     .catch((error) => {
-        let handle_error_payload = {
-          status: "fail",
-          color: "negative",
-          to_on_fail: "none",
-          show_feedback: payload.show_feedback,
-          fail_msg:
-            payload.error_msg != "default"
-              ? payload.error_msg
-              : error.response.data.message,
-          status_code: 404,
-        };
-        dispatch("handleRequestResponse", handle_error_payload);
+      let handle_error_payload = {
+        status: "fail",
+        color: "negative",
+        to_on_fail: "none",
+        show_feedback: payload.show_feedback,
+        fail_msg:
+          payload.error_msg != "default"
+            ? payload.error_msg
+            : error.response.data.message,
+        status_code: 404,
+      };
+      dispatch("handleRequestResponse", handle_error_payload);
     });
 }
 
 export function getRequest({ commit, dispatch }, payload) {
-  if(payload.show_spinner){
+  if (payload.show_spinner) {
     commit("SET_IS_FETCHING", true);
   }
   return axios
     .get(API_URL + payload.url)
     .then((res) => {
-     if(payload.show_spinner){
-      commit("SET_IS_FETCHING", false);
-     }
+      if (payload.show_spinner) {
+        commit("SET_IS_FETCHING", false);
+      }
       let handle_response_payload = {
         data: res.data,
         status: payload.status ? payload.status : "success",
@@ -200,7 +211,7 @@ export function getRequest({ commit, dispatch }, payload) {
     });
 }
 
-export function putRequest({ dispatch }, payload) {
+export function putRequest({ dispatch, commit }, payload) {
   return axios
     .put(API_URL + payload.url, payload.data)
     .then((res) => {
@@ -211,16 +222,13 @@ export function putRequest({ dispatch }, payload) {
         color: payload.color,
         msg: payload.msg ? payload.msg : "default",
         to_on_ok: payload.to_on_ok,
-        to_be_store_data: {
-          has_value: payload.to_be_store_data.has_value,
-          required: payload.to_be_store_data.required,
-          data: payload.to_be_store_data.has_value
-            ? payload.to_be_store_data.data
-            : [],
-        },
+        to_be_store_data: null,
       };
+      if (payload.has_commit) {
+        commit(payload.commit, res.data.data);
+      }
       dispatch("handleRequestResponse", handle_response_payload);
-      return res;
+      return res.data;
     })
     .catch((error) => {
       let handle_fail_res_payload = {
@@ -228,13 +236,11 @@ export function putRequest({ dispatch }, payload) {
         color: "negative",
         to_on_fail: payload.to_on_fail,
         show_feedback: payload.show_feedback,
-        fail_msg:
-          payload.error_msg != "default"
-            ? payload.error_msg
-            : error.response.data.message,
+        fail_msg: (payload.error_msg = payload.error_msg),
         status_code: 404,
       };
       dispatch("handleRequestResponse", handle_fail_res_payload);
+      return error;
     });
 }
 
@@ -298,7 +304,7 @@ export function downloadPdf({}, payload) {
 //upload any other files being used in the system
 export async function uploadImageRequest({ commit, dispatch }, payload) {
   return axios
-    .post(FILE_UPLOAD_URL + payload.url, payload.data, {
+    .post(FILE_API_URL + payload.url, payload.data, {
       withCredentials: false,
     })
     .then((res) => {
@@ -331,7 +337,7 @@ export async function uploadImageRequest({ commit, dispatch }, payload) {
 
 //fetch uploaded files
 export async function fetchUploadedImageRequest({}, payload) {
-  const res = await axios.get(FILE_UPLOAD_URL + payload.url, {
+  const res = await axios.get(FILE_API_URL + payload.url, {
     withCredentials: false,
   });
   return res;
@@ -457,60 +463,58 @@ export function setSelectedContribution({ commit }, data) {
   commit("SET_SELECTED_CONTRIBUTON", data);
 }
 
-export function setExpenditures({commit}, data){
-  commit("SET_EXPENDITURES", data)
+export function setExpenditures({ commit }, data) {
+  commit("SET_EXPENDITURES", data);
 }
 
-export function setExpenditureCategory({commit}, data){
-  commit("SET_EXPENDITURE_CATEGORY", data)
+export function setExpenditureCategory({ commit }, data) {
+  commit("SET_EXPENDITURE_CATEGORY", data);
 }
 
-export function setSavings({commit}, data) {
+export function setSavings({ commit }, data) {
   commit("SET_SAVINGS", data);
 }
 
-
-export function setExpenditureItemName({commit}, data) {
+export function setExpenditureItemName({ commit }, data) {
   commit("SET_EXPENDITURE_ITEM_NAME", data);
 }
 
-export function setSearchSavingsParams({commit}, data) {
+export function setSearchSavingsParams({ commit }, data) {
   commit("SET_SEARCH_SAVING_PARAMS", data);
 }
 
-
-export function setFilteredContributions({commit}, data) {
+export function setFilteredContributions({ commit }, data) {
   commit("SET_FILTERED_CONTRIBUTIONS", data);
 }
 
-export function setIntermediateTabs({commit}, data) {
+export function setIntermediateTabs({ commit }, data) {
   commit("SET_INTERMEDIATE_TABS", data);
 }
 
-export function setMemberContributions({commit}, data) {
+export function setMemberContributions({ commit }, data) {
   commit("SET_MEMBER_CONTRIBUTIONS", data);
 }
 
-export function setPaymentActivities({commit}, data) {
+export function setPaymentActivities({ commit }, data) {
   commit("SET_PAYMENT_ACTIVITIES", data);
 }
 
-export function setSponsorship({commit}, data) {
-  commit("SET_SPONSORSHIPS", data)
+export function setSponsorship({ commit }, data) {
+  commit("SET_SPONSORSHIPS", data);
 }
 
-export function setSelectedSponsorship({commit}, data) {
+export function setSelectedSponsorship({ commit }, data) {
   commit("SET_SELECTED_SPONSORSHIP", data);
 }
 
-export function setMemberToRegister({commit}, data) {
+export function setMemberToRegister({ commit }, data) {
   commit("SET_MEMBER_TO_REGISTER", data);
 }
 
-export function setCurrentMember({commit}, data) {
+export function setCurrentMember({ commit }, data) {
   commit("SET_CURRENT_MEMBER", data);
 }
 
-export function setCurrentYear({commit}, data) {
-  commit("SET_CURRENT_YEAR", data)
+export function setCurrentYear({ commit }, data) {
+  commit("SET_CURRENT_YEAR", data);
 }

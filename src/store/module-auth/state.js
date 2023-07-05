@@ -48,6 +48,8 @@ export default function () {
     member_to_register:null,
     current_member:null,
     current_year:null,
-    reg_amount:0.0
+    reg_amount:0.0,
+    bar_chart_data:[],
+    pie_chart_data:[]
   };
 }

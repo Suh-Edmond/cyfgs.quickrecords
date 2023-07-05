@@ -2,17 +2,8 @@
   <div class="q-pa-sm">
     <q-card flat>
       <q-card-section>
-        <Bar
-          :chart-options="chartOptions"
-          :chart-data="chartData"
-          :chart-id="chartId"
-          :dataset-id-key="datasetIdKey"
-          :plugins="plugins"
-          :css-classes="cssClasses"
-          :styles="styles"
-          :width="width"
-          :height="height"
-        />
+        <Bar :chart-options="chartOptions" :chart-data="chartData" :chart-id="chartId" :dataset-id-key="datasetIdKey"
+          :plugins="plugins" :css-classes="cssClasses" :styles="styles" :width="width" :height="height" />
       </q-card-section>
     </q-card>
   </div>
@@ -43,10 +34,7 @@ ChartJS.register(
 
 export default {
   name: "BarChart",
-  mixins:[organisationMixinVue],
-  beforeMount(){
-    this.getUserByRegistrationStatus();
-  },
+  mixins: [organisationMixinVue],
   props: {
     chartId: {
       type: String,
@@ -70,7 +58,7 @@ export default {
     },
     styles: {
       type: Object,
-      default: () => {},
+      default: () => { },
     },
     plugins: {
       type: Array,
@@ -108,30 +96,35 @@ export default {
       },
     };
   },
-
-  methods:{
-    getUserByRegistrationStatus(){
-      let organisation_id = this.getOrganisationId;
-      let payload = {
-        status: "none",
-        url: `/api/protected/organisations/registered_users?organisation_id=${organisation_id}`,
-        has_path_val: true,
-        show_feedback: false,
-        msg: "none",
-        color: "default",
-        error_msg: "default",
-        commit: "",
-        has_commit: false,
-        to_be_store_data: {
-          required: true,
-          has_value: false,
-          data: null,
-        },
-      };
-      this.$store.dispatch("getRequest", payload).then((res) => {
-        this.chartData.datasets[0].data = res.data;
-      });
+  computed:{
+    getChartData(){
+      let data = {
+        labels: [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December",
+        ],
+        datasets: [
+          {
+            label: "Registered Members",
+            backgroundColor: "#27ae60",
+            data: this.$store.getters.getBarChartData,
+          },
+        ],
+      }
+      return data
     }
+  },
+  methods: {
   },
   components: {
     Bar,

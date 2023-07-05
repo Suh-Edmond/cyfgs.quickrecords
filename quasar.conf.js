@@ -45,12 +45,15 @@ module.exports = function (ctx) {
     build: {
       vueRouterMode: "history", // available values: 'hash', 'history'
       env: {
-
         API_BASE_URL: ctx.dev ? "http://localhost:8000" : "financial-assistant-api.com",
         CLIENT_SERVER: ctx.dev ? "http://localhost:7000" : "financial-assistant.com",
         REDIRECT_URL: ctx.dev ? "http://localhost:7000/auth/invite-member" : "financial-assistant.com/auth/invite-member",
-        FILE_UPLOAD_URL: ctx.dev ? "http://localhost:9000": "file-storage-web-api"
-
+        FILE_API_URL: ctx.dev ? "http://localhost:9000/api/v1/protected": "file-storage-web-api",
+        APP_NAME : "FINANCIAL_ASSISTANT_APP",
+        FILE_CATEGORY : "IMAGES",
+        BASE_FOLDER : "LOGOS",
+        FILE_DOWNLOAD_PATH: "/downloadFile?directory=",
+        FILE_SEPARATOR_KEY: "?directory="
       },
       // env: envparser(),
       // transpile: false,

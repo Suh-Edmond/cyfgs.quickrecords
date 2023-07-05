@@ -9,12 +9,7 @@
 
           <q-card-actions align="around" class="q-pb-sm">
             <div>
-              <q-avatar
-                color="positive"
-                icon="groups"
-                size="xl"
-                text-color="white"
-              >
+              <q-avatar color="positive" icon="groups" size="xl" text-color="white">
               </q-avatar>
             </div>
             <div>
@@ -31,20 +26,13 @@
 
           <q-card-actions align="around" class="q-pb-sm">
             <div>
-              <q-avatar
-                color="pink-11"
-                icon="savings"
-                size="xl"
-                text-color="white"
-              ></q-avatar>
+              <q-avatar color="pink-11" icon="savings" size="xl" text-color="white"></q-avatar>
             </div>
             <div>
-              <label for="total" class="total"
-                >{{
-                  Number(getTotalMembersSavings).toLocaleString()
-                }}
-                XAF</label
-              >
+              <label for="total" class="total">{{
+                Number(getTotalMembersSavings).toLocaleString()
+              }}
+                XAF</label>
             </div>
           </q-card-actions>
         </q-card>
@@ -57,12 +45,7 @@
 
           <q-card-actions align="around" class="q-pb-sm">
             <div>
-              <q-avatar
-                color="indigo-11"
-                icon="payments"
-                size="xl"
-                text-color="white"
-              ></q-avatar>
+              <q-avatar color="indigo-11" icon="payments" size="xl" text-color="white"></q-avatar>
             </div>
             <div>
               <label for="total" class="total">100 XAF</label>
@@ -78,12 +61,7 @@
 
           <q-card-actions align="around" class="q-pb-sm">
             <div>
-              <q-avatar
-                color="teal-2"
-                icon="data_exploration"
-                size="xl"
-                text-color="white"
-              ></q-avatar>
+              <q-avatar color="teal-2" icon="data_exploration" size="xl" text-color="white"></q-avatar>
             </div>
             <div>
               <label for="total" class="total">100 XAF</label>
@@ -93,14 +71,9 @@
       </div>
     </div>
 
-    <!-- <div> -->
+    <div>
       <!-----------------------------------------------MEMBERSHIP STATISTICS--------------------------------------->
-      <transition
-          appear
-          enter-active-class="animated fadeIn"
-          leave-active-class="animated fadeOut"
-        >
-      <div class="row q-mx-sm q-mt-sm" v-show="statistics_type == 'MEMBERSHIP' && show_statistics">
+      <div class="row q-mx-sm q-mt-sm" v-show="statistics_type == 'MEMBERSHIP'">
         <div class="col-4 col-md-4 col-sm-12 col-xs-12 col-lg-4">
           <PieChartsVue></PieChartsVue>
         </div>
@@ -108,11 +81,10 @@
           <BarChartVue></BarChartVue>
         </div>
       </div>
-      </transition>
       <!--------------------------------------------END OF MEMBERSHIP STATISTICS----------------------------------->
 
       <!-----------------------------------------------SAVINGS STATISTICS--------------------------------------->
-      <div class="row q-mx-sm q-mt-sm" v-show="statistics_type == 'SAVINGS' && show_statistics">
+      <div class="row q-mx-sm q-mt-sm" v-show="statistics_type == 'SAVINGS'">
         <div class="col-4 col-md-4 col-sm-12 col-xs-12 col-lg-4">
           <PieChartsVue></PieChartsVue>
         </div>
@@ -122,19 +94,11 @@
       </div>
       <!--------------------------------------------END OF SAVINGS STATISTICS----------------------------------->
 
-      <q-inner-loading
-        :showing="visible"
-        label="Please wait..."
-        label-class="text-primary"
-        label-style="font-size: 1.1em"
-        color="primary"
-      />
-    <!-- </div> -->
+    </div>
   </q-page>
 </template>
 <script>
 import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
-import RegistrationAmountMixin from "src/mixins/RegistrationAmountMixin.vue";
 import organisationMixin from "src/mixins/organisationMixin.vue";
 import memberMixinVue from "src/mixins/memberMixin.vue";
 import UserSavingMixin from "src/mixins/UserSavingMixin.vue";
@@ -145,18 +109,18 @@ import LineChartVue from "src/components/charts/LineChart.vue";
 export default {
   mixins: [
     CurrentYearMixinVue,
-    RegistrationAmountMixin,
     organisationMixin,
     memberMixinVue,
     UserSavingMixin,
   ],
-  beforeMount() {
-    this.getOrganisationMembers(this.getOrganisationId);
-    this.getOrganisationMemberSavings(this.getOrganisationId);
-  },
   mounted() {
-    this.getRegistrationAmount();
-    this.getSessions();
+    let organisation_id = this.$store.getters.getOrganisation != null ? this.$store.getters.getOrganisation.id : null;
+
+    if (organisation_id != null) {
+      this.getOrganisationMembers(organisation_id);
+      this.getOrganisationMemberSavings(organisation_id);
+    }
+
     if (this.getOrganisationId == "") {
       this.getOrganisationInfo();
     }
@@ -167,8 +131,8 @@ export default {
   data() {
     return {
       statistics_type: "MEMBERSHIP",
-      visible:false,
-      show_statistics:false
+      visible: false,
+      show_statistics: false
     };
   },
   computed: {
@@ -213,9 +177,11 @@ export default {
   text-align: center;
   color: $primary;
 }
+
 .heading {
   text-align: center;
 }
+
 .total {
   font-family: "Roboto";
   font-style: normal;
@@ -258,6 +224,7 @@ export default {
   letter-spacing: 0.005em;
   color: #5384ae;
 }
+
 .chart_heading {
   font-family: Arial, Helvetica, sans-serif;
   font-weight: bolder;
@@ -267,7 +234,7 @@ export default {
   text-decoration: underline;
 }
 
-.loading_label{
+.loading_label {
   color: $primary;
 }
 </style>

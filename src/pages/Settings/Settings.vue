@@ -324,10 +324,13 @@ import ButtonVue from "src/components/Button.vue";
 import moment from "moment";
 import RegistrationFeeTable from "src/components/RegistrationFeeTable.vue";
 import SessionsTable from "src/components/SessionsTable.vue";
+import RegistrationAmountMixin from "src/mixins/RegistrationAmountMixin.vue";
 export default {
+  mixins:[RegistrationAmountMixin],
   mounted() {
     this.getSessions();
-  },
+    this.getRegistrationAmount();
+   },
   data() {
     return {
       mode: false,

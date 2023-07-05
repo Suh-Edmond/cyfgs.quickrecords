@@ -71,7 +71,6 @@
 <script>
 import { SessionStorage } from "quasar";
 import organisationMixin from "src/mixins/organisationMixin.vue";
-import CurrentYearMixin from "src/mixins/CurrentYearMixin.vue";
 
 export default {
   name: "PageIndex",
@@ -113,7 +112,7 @@ export default {
         },
         msg: "Login Successful",
         color: "default",
-        to_on_ok: "dashboard",
+        to_on_ok: "create_organisation",
         to_on_fail: "none",
         show_feedback:true,
         error_msg: "Invalid Credentials! Please try again",
@@ -125,13 +124,8 @@ export default {
       };
       this.$store
         .dispatch("postRequest", payload)
-        .then((res) => {
-          if(res.data != undefined){
-            SessionStorage.set("to_tab", 'Dashboard');
-            this.getOrganisationInfo();
-            this.fetchCurrentYear();
-          }
-        }).catch((error) => {
+        .then(() => {
+        }).catch(() => {
 
         })
         .finally(() => {

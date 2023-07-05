@@ -2,21 +2,31 @@
   <q-layout view="hHh lpR fFf">
     <q-header class="header text-white">
       <q-toolbar>
-        <q-toolbar-title :class="$q.screen.lg? 'header_title':'header_title_small'">
+        <q-toolbar-title
+          :class="$q.screen.lg ? 'header_title' : 'header_title_small'"
+        >
           <span class="app_name">Financial</span>Assistant
         </q-toolbar-title>
         <div class="header_note" v-show="$q.screen.lg">
-          <div class="account_text" v-show="hasAccount && isSignUpEnable">
-            Don't Have an Account ?
+          <div class="flex" v-if="this.$router.currentRoute.name == 'Login' && getOrganisation == null">
+            <div class="account_text">Don't Have an Account ?</div>
+            <div class="account_text__signup">
+              <router-link to="/auth/register" class="sign_link"
+                ><span @click="checkAccountExist('SIGN_UP')"
+                  >SIGN UP</span
+                ></router-link
+              >
+            </div>
           </div>
-          <div class="account_text__signup" v-show="hasAccount && isSignUpEnable" >
-            <router-link to="/auth/register" class="sign_link"><span @click="checkAccountExist">SIGN UP</span></router-link>
-          </div>
-          <div class="account_text" v-show="!hasAccount && isSignUpEnable">
-            Already Have an Account ?
-          </div>
-          <div class="account_text__signup" v-show="!hasAccount && isSignUpEnable" >
-            <router-link to="/auth/login" class="sign_link"><span @click="checkAccountExist">SIGN IN</span></router-link>
+          <div class="flex" v-if="this.$router.currentRoute.name == 'Register' && getOrganisation == null">
+            <div class="account_text">Already Have an Account ?</div>
+            <div class="account_text__signup">
+              <router-link to="/auth/login" class="sign_link"
+                ><span @click="checkAccountExist('SIGN_IN')"
+                  >SIGN IN</span
+                ></router-link
+              >
+            </div>
           </div>
           <div class="q-pa-md header_language">
             <q-btn-dropdown color="black" :label="language" flat>
@@ -63,9 +73,10 @@
     <q-footer class="text-black footer flex flex-center">
       <q-toolbar>
         <q-toolbar-title>
-          <p class="footer_text"><span class="material-icons copy_right">
-              copyright
-            </span>Copy Right {{year}}. All Rights Reserved.</p>
+          <p class="footer_text">
+            <span class="material-icons copy_right"> copyright </span>Copy Right
+            {{ year }}. All Rights Reserved.
+          </p>
         </q-toolbar-title>
       </q-toolbar>
     </q-footer>
@@ -74,34 +85,34 @@
 
 <script>
 export default {
-
+  mounted(){
+    return this.$store.getters.getOrganisation
+  },
   data() {
     return {
       year: new Date().getFullYear(),
       language: "EN",
-      hasAccount: true,
+      type: "SIGN_IN",
     };
   },
   computed: {
-    isSignUpEnable() {
-      return this.$router.currentRoute.meta.enableSignUp;
-    }
+    getOrganisation() {
+       return this.$store.getters.getOrganisation;
+    },
   },
   methods: {
     onItemClick(lang) {
-      if(lang == 'French'){
-        this.language = 'FR'
+      if (lang == "French") {
+        this.language = "FR";
       }
-      if(lang == 'English'){
-        this.language = 'EN'
+      if (lang == "English") {
+        this.language = "EN";
       }
     },
-    checkAccountExist(){
-
-      this.hasAccount = !this.hasAccount
-    }
-
-  }
+    checkAccountExist(type) {
+      return (this.type = type);
+    },
+  },
 };
 </script>
 
@@ -134,7 +145,7 @@ export default {
   text-transform: capitalize;
   color: $orange;
   font-weight: bold;
-  padding: .6rem;
+  padding: 0.6rem;
   font-size: xx-large;
   font-family: "Roboto";
   letter-spacing: 0.009em;
@@ -145,12 +156,11 @@ export default {
   text-transform: capitalize;
   color: $orange;
   font-weight: bold;
-  padding: .6rem;
+  padding: 0.6rem;
   font-size: large;
   font-family: "Roboto";
   letter-spacing: 0.009em;
   display: block;
-
 }
 
 .logo {
@@ -170,15 +180,14 @@ export default {
 }
 
 .account_text {
-  font-family: 'Roboto';
+  font-family: "Roboto";
   font-style: normal;
   font-weight: bold;
   font-size: 13px;
   color: $dark;
-  margin-right: .5rem;
+  margin-right: 0.5rem;
   text-transform: uppercase;
   line-height: 37px;
-
 }
 
 .sign_link {
@@ -187,7 +196,7 @@ export default {
 }
 
 .account_text__signup {
-  font-family: 'Roboto';
+  font-family: "Roboto";
   font-style: normal;
   font-weight: bold;
   font-size: 13px;
@@ -199,11 +208,11 @@ export default {
 }
 
 .header_language {
-  margin-right: .5rem;
+  margin-right: 0.5rem;
 }
 
 .footer_text {
-  font-family: 'Roboto';
+  font-family: "Roboto";
   font-style: normal;
   font-weight: 400;
   font-size: 13px;
@@ -212,8 +221,8 @@ export default {
   letter-spacing: 0.005em;
   padding-bottom: 1rem;
 }
+
 .copy_right {
   font-size: large;
 }
-
 </style>

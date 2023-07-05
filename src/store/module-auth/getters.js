@@ -182,3 +182,11 @@ export function getSessions(state) {
 export function getReportData(state) {
   return state.report_data
 }
+
+export function getBarChartData(state) {
+  return state.bar_chart_data;
+}
+
+export function getPieChartData(state) {
+  return state.pie_chart_data;
+}

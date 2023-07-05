@@ -20,12 +20,13 @@ import {
   CategoryScale,
 } from "chart.js";
 import organisationMixinVue from 'src/mixins/organisationMixin.vue';
+import memberMixinVue from 'src/mixins/memberMixin.vue';
 
 ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale);
 
 export default {
   name: "App",
-  mixins: [organisationMixinVue],
+  mixins: [organisationMixinVue, memberMixinVue],
 
   props: {
     chartId: {
@@ -57,7 +58,10 @@ export default {
       default: () => [],
     },
   },
-
+  mounted(){
+    let organisation_id = this.$store.getters.getOrganisation != null ? this.$store.getters.getOrganisation.id : null;
+    this.getUserByRegistrationStatus(organisation_id);
+  },
   data() {
     return {
       chartData: {

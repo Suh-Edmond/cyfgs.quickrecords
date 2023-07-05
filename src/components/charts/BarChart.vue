@@ -22,6 +22,7 @@ import {
   LinearScale,
 } from "chart.js";
 import organisationMixinVue from 'src/mixins/organisationMixin.vue';
+import memberMixinVue from 'src/mixins/memberMixin.vue';
 
 ChartJS.register(
   Title,
@@ -34,7 +35,7 @@ ChartJS.register(
 
 export default {
   name: "BarChart",
-  mixins: [organisationMixinVue],
+  mixins: [organisationMixinVue, memberMixinVue],
   props: {
     chartId: {
       type: String,
@@ -64,6 +65,10 @@ export default {
       type: Array,
       default: () => [],
     },
+  },
+  mounted(){
+    let organisation_id = this.$store.getters.getOrganisation != null ? this.$store.getters.getOrganisation.id : null;
+    this.getUserByRegistration(organisation_id);
   },
   data() {
     return {

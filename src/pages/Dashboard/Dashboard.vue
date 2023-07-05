@@ -116,10 +116,9 @@ export default {
   mounted() {
     let organisation_id = this.$store.getters.getOrganisation != null ? this.$store.getters.getOrganisation.id : null;
 
-    if (organisation_id != null) {
-      this.getOrganisationMembers(organisation_id);
-      this.getOrganisationMemberSavings(organisation_id);
-    }
+    this.getOrganisationMembers(organisation_id);
+    this.getOrganisationMemberSavings(organisation_id);
+
 
     if (this.getOrganisationId == "") {
       this.getOrganisationInfo();

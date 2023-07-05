@@ -224,7 +224,10 @@ export function putRequest({ dispatch, commit }, payload) {
         color: "negative",
         to_on_fail: payload.to_on_fail,
         show_feedback: payload.show_feedback,
-        fail_msg: (payload.error_msg = payload.error_msg),
+        fail_msg:
+          payload.error_msg != "default"
+            ? payload.error_msg
+            : error.response.data.message,
         status_code: 404,
       };
       dispatch("handleRequestResponse", handle_fail_res_payload);

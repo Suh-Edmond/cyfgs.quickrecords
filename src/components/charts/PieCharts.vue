@@ -2,7 +2,7 @@
   <div class="q-pa-md">
     <q-card flat>
       <q-card-section>
-        <Doughnut :chart-options="chartOptions" :chart-data="getChartData" :chart-id="chartId" :dataset-id-key="datasetIdKey"
+        <Doughnut :chart-options="chartOptions" :chart-data="chartData" :chart-id="chartId" :dataset-id-key="datasetIdKey"
           :plugins="plugins" :css-classes="cssClasses" :styles="styles" :width="width" :height="height"></Doughnut>
       </q-card-section>
     </q-card>
@@ -57,22 +57,13 @@ export default {
       type: Array,
       default: () => [],
     },
-  },
-  mounted(){
-    let organisation_id = this.$store.getters.getOrganisation != null ? this.$store.getters.getOrganisation.id : null;
-    this.getUserByRegistrationStatus(organisation_id);
+    chartData:{
+      type: Object,
+      required:true
+    }
   },
   data() {
     return {
-      chartData: {
-        labels: ["Registered", "Pending", "Not-Registered"],
-        datasets: [
-          {
-            backgroundColor: ["#27ae60", "#2d9cdb", "#f2994a"],
-            data: [0, 0, 0],
-          },
-        ],
-      },
       chartOptions: {
         responsive: true,
         maintainAspectRatio: false,
@@ -80,18 +71,6 @@ export default {
     };
   },
   computed: {
-    getChartData(){
-      let data = {
-        labels: ["Registered", "Pending", "Not-Registered"],
-        datasets: [
-          {
-            backgroundColor: ["#27ae60", "#2d9cdb", "#f2994a"],
-            data: this.$store.getters.getPieChartData,
-          },
-        ],
-      }
-      return data;
-    }
   },
   watch: {
   },

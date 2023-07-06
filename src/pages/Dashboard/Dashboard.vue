@@ -9,7 +9,12 @@
 
           <q-card-actions align="around" class="q-pb-sm">
             <div>
-              <q-avatar color="positive" icon="groups" size="xl" text-color="white">
+              <q-avatar
+                color="positive"
+                icon="groups"
+                size="xl"
+                text-color="white"
+              >
               </q-avatar>
             </div>
             <div>
@@ -26,13 +31,20 @@
 
           <q-card-actions align="around" class="q-pb-sm">
             <div>
-              <q-avatar color="pink-11" icon="savings" size="xl" text-color="white"></q-avatar>
+              <q-avatar
+                color="pink-11"
+                icon="savings"
+                size="xl"
+                text-color="white"
+              ></q-avatar>
             </div>
             <div>
-              <label for="total" class="total">{{
-                Number(getTotalMembersSavings).toLocaleString()
-              }}
-                XAF</label>
+              <label for="total" class="total"
+                >{{
+                  Number(getTotalMembersSavings).toLocaleString()
+                }}
+                XAF</label
+              >
             </div>
           </q-card-actions>
         </q-card>
@@ -45,7 +57,12 @@
 
           <q-card-actions align="around" class="q-pb-sm">
             <div>
-              <q-avatar color="indigo-11" icon="payments" size="xl" text-color="white"></q-avatar>
+              <q-avatar
+                color="indigo-11"
+                icon="payments"
+                size="xl"
+                text-color="white"
+              ></q-avatar>
             </div>
             <div>
               <label for="total" class="total">100 XAF</label>
@@ -61,7 +78,12 @@
 
           <q-card-actions align="around" class="q-pb-sm">
             <div>
-              <q-avatar color="teal-2" icon="data_exploration" size="xl" text-color="white"></q-avatar>
+              <q-avatar
+                color="teal-2"
+                icon="data_exploration"
+                size="xl"
+                text-color="white"
+              ></q-avatar>
             </div>
             <div>
               <label for="total" class="total">100 XAF</label>
@@ -73,9 +95,9 @@
 
     <div>
       <!-----------------------------------------------MEMBERSHIP STATISTICS--------------------------------------->
-      <div class="row q-mx-sm q-mt-sm" v-show="statistics_type == 'MEMBERSHIP'">
+      <div class="row q-mx-sm q-mt-sm" v-if="statistics_type == 'MEMBERSHIP'">
         <div class="col-4 col-md-4 col-sm-12 col-xs-12 col-lg-4">
-          <PieChartsVue></PieChartsVue>
+          <PieChartsVue :chart-data="getChartData"></PieChartsVue>
         </div>
         <div class="col-8 col-md-8 col-sm-12 col-xs-12 col-lg-8">
           <BarChartVue></BarChartVue>
@@ -84,16 +106,19 @@
       <!--------------------------------------------END OF MEMBERSHIP STATISTICS----------------------------------->
 
       <!-----------------------------------------------SAVINGS STATISTICS--------------------------------------->
-      <div class="row q-mx-sm q-mt-sm" v-show="statistics_type == 'SAVINGS'">
-        <div class="col-4 col-md-4 col-sm-12 col-xs-12 col-lg-4">
-          <PieChartsVue></PieChartsVue>
+      <div class="row" v-if="statistics_type == 'SAVINGS'">
+        <div class="col-md-2 col-sm-12 col-xs-12 col-lg-2">
+          <PieChartsVue :chart-data="pieChartData"></PieChartsVue>
         </div>
-        <div class="col-8 col-md-8 col-sm-12 col-xs-12 col-lg-8">
-          <BarChartCom :chartData="chartData"></BarChartCom>
+        <div class="col-5 col-md-5 col-sm-12 col-xs-12 col-lg-5">
+          <LineChart :chartData="lineChartData1"></LineChart>
+        </div>
+        <div class="col-5 col-md-5 col-sm-12 col-xs-12 col-lg-5">
+          <LineChart :chartData="lineChartData2"></LineChart>
         </div>
       </div>
-      <!--------------------------------------------END OF SAVINGS STATISTICS----------------------------------->
 
+      <!--------------------------------------------END OF SAVINGS STATISTICS----------------------------------->
     </div>
   </q-page>
 </template>
@@ -104,7 +129,7 @@ import memberMixinVue from "src/mixins/memberMixin.vue";
 import UserSavingMixin from "src/mixins/UserSavingMixin.vue";
 import PieChartsVue from "src/components/charts/PieCharts.vue";
 import BarChartVue from "src/components/charts/BarChart.vue";
-import BarChartCom from "src/components/charts/BarChartCom.vue";
+import LineChart from "src/components/charts/LineChart.vue";
 
 export default {
   mixins: [
@@ -114,11 +139,13 @@ export default {
     UserSavingMixin,
   ],
   mounted() {
-    let organisation_id = this.$store.getters.getOrganisation != null ? this.$store.getters.getOrganisation.id : null;
+    let organisation_id =
+      this.$store.getters.getOrganisation != null
+        ? this.$store.getters.getOrganisation.id
+        : null;
 
     this.getOrganisationMembers(organisation_id);
     this.getOrganisationMemberSavings(organisation_id);
-
 
     if (this.getOrganisationId == "") {
       this.getOrganisationInfo();
@@ -126,13 +153,14 @@ export default {
     if (this.getCurrentYear == null) {
       this.fetchCurrentYear();
     }
+    this.getSessions();
   },
   data() {
     return {
       statistics_type: "MEMBERSHIP",
       visible: false,
       show_statistics: false,
-      chartData: {
+      lineChartData1: {
         labels: [
           "January",
           "February",
@@ -149,12 +177,31 @@ export default {
         ],
         datasets: [
           {
-            label: "Registered Members",
-            backgroundColor: "#27ae60",
-            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            label: "",
+            backgroundColor: "",
+            data: [],
           },
         ],
       },
+      lineChartData2: {
+        labels: [],
+        datasets: [
+          {
+            label: "",
+            backgroundColor: "",
+            data: [],
+          },
+        ],
+      },
+      pieChartData: {
+        labels: [],
+        datasets: [
+          {
+            backgroundColor: "",
+            data: [],
+          },
+        ],
+      }
     };
   },
   computed: {
@@ -166,23 +213,85 @@ export default {
         ? this.$store.getters.getOrganisationMembersSavings.total_savings
         : 0;
     },
+    getChartData(){
+      let data = {
+        labels: ["Registered", "Pending", "Not-Registered"],
+        datasets: [
+          {
+            backgroundColor: ["#27ae60", "#2d9cdb", "#f2994a"],
+            data: this.$store.getters.getPieChartData,
+          },
+        ],
+      }
+      return data;
+    }
   },
   methods: {
     showStatistics(type) {
-      this.visible = true
-      this.show_statistics = false
-      setTimeout(() => {
-        this.visible = false
-        this.show_statistics = true
-      }, 3000)
-      return (this.statistics_type = type);
+      let organisation_id =
+        this.$store.getters.getOrganisation != null
+          ? this.$store.getters.getOrganisation.id
+          : null;
+      switch (type) {
+        case "MEMBERSHIP":
+          this.statistics_type = "MEMBERSHIP";
+          this.getUserByRegistrationStatus(organisation_id);
+          this.getUserByRegistration(organisation_id);
+          break;
+        case "SAVINGS":
+          this.statistics_type = "SAVINGS";
+          this.getSavingsStatistics();
+          break;
+      }
+    },
+
+    setSavingStatistics(monthly_savings, yearly_savings, status_stat) {
+      this.statistics_type = "SAVINGS";
+
+      this.lineChartData1.datasets[0].label = "Monthly Savings";
+      this.lineChartData1.datasets[0].backgroundColor = "#ff80ab";
+      this.lineChartData1.datasets[0].data = monthly_savings;
+
+      this.lineChartData2.labels = [];
+      this.lineChartData2.datasets[0].label = "Yearly Savings";
+      this.lineChartData2.datasets[0].backgroundColor = "#ff80ab";
+      this.lineChartData2.datasets[0].data = yearly_savings;
+      this.$store.getters.getSessions.forEach((session) => {
+        this.lineChartData2.labels.push(session.year);
+      });
+
+      this.pieChartData.labels = ["PENDING", "APPROVED", "DECLINED"];
+      this.pieChartData.datasets[0].backgroundColor = ["#2d9cdb","#27ae60", "#f2994a"];
+      this.pieChartData.datasets[0].data = status_stat;
+    },
+
+    getSavingsStatistics() {
+      let session_id = this.getCurrentYear.id;
+      let payload = {
+        url: `/api/protected/savings/statistics?session_id=${session_id}`,
+        msg: "none",
+        color: "default",
+        status: "none",
+        error_msg: "An Error occurred! Could not fetch member savings",
+        has_commit: false,
+        show_feedback: false,
+        show_spinner: false,
+        commit: "none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.$store.dispatch("getRequest", payload).then((res) => {
+        this.setSavingStatistics(res.data.monthly_stat, res.data.yearly_stat, res.data.status_stat)
+      });
     },
   },
   components: {
     PieChartsVue,
     BarChartVue,
-    // LineChartVue,
-    BarChartCom
+    LineChart,
   },
 };
 </script>

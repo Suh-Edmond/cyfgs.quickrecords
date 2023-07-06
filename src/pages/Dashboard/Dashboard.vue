@@ -2,9 +2,19 @@
   <q-page>
     <div class="row">
       <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12 q-px-xs">
-        <q-card class="card" bordered @click="showStatistics('MEMBERSHIP')">
+        <q-card
+          :class="statistics_type == 'MEMBERSHIP' ? 'members_card' : 'card'"
+          bordered
+          @click="showStatistics('MEMBERSHIP')"
+        >
           <q-card-section>
-            <div class="text-h6 text-capitalize text-center">Members</div>
+            <div
+              :class="
+                statistics_type == 'MEMBERSHIP' ? 'text-h6-active' : 'text-h6'
+              "
+            >
+              Members
+            </div>
           </q-card-section>
 
           <q-card-actions align="around" class="q-pb-sm">
@@ -18,15 +28,31 @@
               </q-avatar>
             </div>
             <div>
-              <label for="total" class="total">{{ getTotalMembers }}</label>
+              <label
+                for="total"
+                :class="
+                  statistics_type == 'MEMBERSHIP' ? 'total-active' : 'total'
+                "
+                >{{ getTotalMembers }}</label
+              >
             </div>
           </q-card-actions>
         </q-card>
       </div>
       <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12 q-px-xs">
-        <q-card class="card" bordered @click="showStatistics('SAVINGS')">
+        <q-card
+          :class="statistics_type == 'SAVINGS' ? 'saving_card' : 'card'"
+          bordered
+          @click="showStatistics('SAVINGS')"
+        >
           <q-card-section>
-            <div class="text-h6 text-capitalize text-center">Savings</div>
+            <div
+              :class="
+                statistics_type == 'SAVINGS' ? 'text-h6-active' : 'text-h6'
+              "
+            >
+              Savings
+            </div>
           </q-card-section>
 
           <q-card-actions align="around" class="q-pb-sm">
@@ -39,7 +65,9 @@
               ></q-avatar>
             </div>
             <div>
-              <label for="total" class="total"
+              <label
+                for="total"
+                :class="statistics_type == 'SAVINGS' ? 'total-active' : 'total'"
                 >{{
                   Number(getTotalMembersSavings).toLocaleString()
                 }}
@@ -201,7 +229,7 @@ export default {
             data: [],
           },
         ],
-      }
+      },
     };
   },
   computed: {
@@ -213,7 +241,7 @@ export default {
         ? this.$store.getters.getOrganisationMembersSavings.total_savings
         : 0;
     },
-    getChartData(){
+    getChartData() {
       let data = {
         labels: ["Registered", "Pending", "Not-Registered"],
         datasets: [
@@ -222,9 +250,9 @@ export default {
             data: this.$store.getters.getPieChartData,
           },
         ],
-      }
+      };
       return data;
-    }
+    },
   },
   methods: {
     showStatistics(type) {
@@ -261,7 +289,11 @@ export default {
       });
 
       this.pieChartData.labels = ["PENDING", "APPROVED", "DECLINED"];
-      this.pieChartData.datasets[0].backgroundColor = ["#2d9cdb","#27ae60", "#f2994a"];
+      this.pieChartData.datasets[0].backgroundColor = [
+        "#2d9cdb",
+        "#27ae60",
+        "#f2994a",
+      ];
       this.pieChartData.datasets[0].data = status_stat;
     },
 
@@ -284,7 +316,11 @@ export default {
         },
       };
       this.$store.dispatch("getRequest", payload).then((res) => {
-        this.setSavingStatistics(res.data.monthly_stat, res.data.yearly_stat, res.data.status_stat)
+        this.setSavingStatistics(
+          res.data.monthly_stat,
+          res.data.yearly_stat,
+          res.data.status_stat
+        );
       });
     },
   },
@@ -300,6 +336,18 @@ export default {
   cursor: pointer;
 }
 
+.saving_card {
+  background-color: #ff80ab;
+  cursor: pointer;
+  color: white;
+}
+
+.members_card {
+  background-color: #27ae60;
+  cursor: pointer;
+  color: white;
+}
+
 .text-h6 {
   font-family: "Roboto";
   font-style: normal;
@@ -308,6 +356,18 @@ export default {
   line-height: 29px;
   text-align: center;
   color: $primary;
+  text-transform: capitalize;
+}
+
+.text-h6-active {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 17px;
+  line-height: 29px;
+  text-align: center;
+  color: $white1;
+  text-transform: capitalize;
 }
 
 .heading {
@@ -321,6 +381,15 @@ export default {
   font-size: 18px;
   text-align: center;
   color: $primary;
+}
+
+.total-active {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 18px;
+  text-align: center;
+  color: $white1;
 }
 
 .card_icon {

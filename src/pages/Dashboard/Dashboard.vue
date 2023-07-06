@@ -78,9 +78,23 @@
         </q-card>
       </div>
       <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12 q-px-xs">
-        <q-card class="card" bordered @click="showStatistics('CONTRIBUTIONS')">
+        <q-card
+          :class="
+            statistics_type == 'CONTRIBUTIONS' ? 'contribution_card' : 'card'
+          "
+          bordered
+          @click="showStatistics('CONTRIBUTIONS')"
+        >
           <q-card-section>
-            <div class="text-h6 text-capitalize text-center">Contributions</div>
+            <div
+              :class="
+                statistics_type == 'CONTRIBUTIONS'
+                  ? 'text-h6-active'
+                  : 'text-h6'
+              "
+            >
+              Contributions
+            </div>
           </q-card-section>
 
           <q-card-actions align="around" class="q-pb-sm">
@@ -93,15 +107,33 @@
               ></q-avatar>
             </div>
             <div>
-              <label for="total" class="total">100 XAF</label>
+              <label
+                for="total"
+                :class="
+                  statistics_type == 'CONTRIBUTIONS' ? 'total-active' : 'total'
+                "
+                >100 XAF</label
+              >
             </div>
           </q-card-actions>
         </q-card>
       </div>
       <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12 q-px-xs">
-        <q-card class="card" bordered @click="showStatistics('EXPENDITURES')">
+        <q-card
+          :class="
+            statistics_type == 'EXPENDITURES' ? 'expenditures_card' : 'card'
+          "
+          bordered
+          @click="showStatistics('EXPENDITURES')"
+        >
           <q-card-section>
-            <div class="text-h6 text-capitalize text-center">Expenditures</div>
+            <div
+              :class="
+                statistics_type == 'EXPENDITURES' ? 'text-h6-active' : 'text-h6'
+              "
+            >
+              Expenditures
+            </div>
           </q-card-section>
 
           <q-card-actions align="around" class="q-pb-sm">
@@ -114,7 +146,13 @@
               ></q-avatar>
             </div>
             <div>
-              <label for="total" class="total">100 XAF</label>
+              <label
+                for="total"
+                :class="
+                  statistics_type == 'EXPENDITURES' ? 'total-active' : 'total'
+                "
+                >100 XAF</label
+              >
             </div>
           </q-card-actions>
         </q-card>
@@ -145,8 +183,35 @@
           <LineChart :chartData="lineChartData2"></LineChart>
         </div>
       </div>
-
       <!--------------------------------------------END OF SAVINGS STATISTICS----------------------------------->
+
+      <!-----------------------------------------------CONTRIBUTIONS STATISTICS--------------------------------------->
+      <div class="row" v-if="statistics_type == 'CONTRIBUTIONS'">
+        <div class="col-md-2 col-sm-12 col-xs-12 col-lg-2">
+          <PieChartsVue :chart-data="pieChartData"></PieChartsVue>
+        </div>
+        <div class="col-5 col-md-5 col-sm-12 col-xs-12 col-lg-5">
+          <LineChart :chartData="lineChartData1"></LineChart>
+        </div>
+        <div class="col-5 col-md-5 col-sm-12 col-xs-12 col-lg-5">
+          <LineChart :chartData="lineChartData2"></LineChart>
+        </div>
+      </div>
+      <!--------------------------------------------END OF CONTRIBUTIONS STATISTICS----------------------------------->
+
+      <!-----------------------------------------------EXPENDITURES STATISTICS--------------------------------------->
+      <div class="row" v-if="statistics_type == 'EXPENDITURES'">
+        <div class="col-md-2 col-sm-12 col-xs-12 col-lg-2">
+          <PieChartsVue :chart-data="pieChartData"></PieChartsVue>
+        </div>
+        <div class="col-5 col-md-5 col-sm-12 col-xs-12 col-lg-5">
+          <LineChart :chartData="lineChartData1"></LineChart>
+        </div>
+        <div class="col-5 col-md-5 col-sm-12 col-xs-12 col-lg-5">
+          <LineChart :chartData="lineChartData2"></LineChart>
+        </div>
+      </div>
+      <!--------------------------------------------END OF EXPENDITURES STATISTICS----------------------------------->
     </div>
   </q-page>
 </template>
@@ -270,6 +335,12 @@ export default {
           this.statistics_type = "SAVINGS";
           this.getSavingsStatistics();
           break;
+        case "CONTRIBUTIONS":
+          this.statistics_type = "CONTRIBUTIONS";
+          break;
+        case "EXPENDITURES":
+          this.statistics_type = "EXPENDITURES";
+          break;
       }
     },
 
@@ -346,6 +417,18 @@ export default {
   background-color: #27ae60;
   cursor: pointer;
   color: white;
+}
+
+.contribution_card {
+  cursor: pointer;
+  color: white;
+  background-color: #8c9eff;
+}
+
+.expenditures_card {
+  cursor: pointer;
+  color: white;
+  background-color:  #b2dfdb;
 }
 
 .text-h6 {

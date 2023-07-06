@@ -62,7 +62,7 @@ export default {
     },
     height: {
       type: Number,
-      default: 500,
+      default: 400,
     },
     cssClasses: {
       default: "",
@@ -76,32 +76,13 @@ export default {
       type: Array,
       default: () => [],
     },
+    chartData:{
+      type: Object,
+      required: true
+    }
   },
   data() {
     return {
-      chartData: {
-        labels: [
-          "January",
-          "February",
-          "March",
-          "April",
-          "May",
-          "June",
-          "July",
-          "August",
-          "September",
-          "October",
-          "November",
-          "December",
-        ],
-        datasets: [
-          {
-            label: "Registration Statistics",
-            backgroundColor: "#2d9cdb",
-            data: [40, 39, 10, 40, 39, 80, 40, 50, 60, 70, 80, 10],
-          },
-        ],
-      },
       chartOptions: {
         responsive: true,
         maintainAspectRatio: false,

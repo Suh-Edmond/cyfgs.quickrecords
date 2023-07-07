@@ -2,90 +2,160 @@
   <q-page>
     <div class="row">
       <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12 q-px-xs">
-        <q-card :class="statistics_type == 'MEMBERSHIP' ? 'members_card' : 'card'" bordered
-          @click="showStatistics('MEMBERSHIP')">
+        <q-card
+          :class="statistics_type == 'MEMBERSHIP' ? 'members_card' : 'card'"
+          bordered
+          @click="showStatistics('MEMBERSHIP')"
+        >
           <q-card-section>
-            <div :class="statistics_type == 'MEMBERSHIP' ? 'text-h6-active' : 'text-h6'
-              ">
+            <div
+              :class="
+                statistics_type == 'MEMBERSHIP' ? 'text-h6-active' : 'text-h6'
+              "
+            >
               Members
             </div>
           </q-card-section>
 
           <q-card-actions align="around" class="q-pb-sm">
             <div>
-              <q-avatar color="positive" icon="groups" size="xl" text-color="white">
+              <q-avatar
+                color="positive"
+                icon="groups"
+                size="xl"
+                text-color="white"
+              >
               </q-avatar>
             </div>
             <div>
-              <label for="total" :class="statistics_type == 'MEMBERSHIP' ? 'total-active' : 'total'
-                ">{{ getTotalMembers }}</label>
+              <label
+                for="total"
+                :class="
+                  statistics_type == 'MEMBERSHIP' ? 'total-active' : 'total'
+                "
+                >{{ getTotalMembers }}</label
+              >
             </div>
           </q-card-actions>
         </q-card>
       </div>
       <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12 q-px-xs">
-        <q-card :class="statistics_type == 'SAVINGS' ? 'saving_card' : 'card'" bordered
-          @click="showStatistics('SAVINGS')">
+        <q-card
+          :class="statistics_type == 'SAVINGS' ? 'saving_card' : 'card'"
+          bordered
+          @click="showStatistics('SAVINGS')"
+        >
           <q-card-section>
-            <div :class="statistics_type == 'SAVINGS' ? 'text-h6-active' : 'text-h6'
-              ">
+            <div
+              :class="
+                statistics_type == 'SAVINGS' ? 'text-h6-active' : 'text-h6'
+              "
+            >
               Savings
             </div>
           </q-card-section>
 
           <q-card-actions align="around" class="q-pb-sm">
             <div>
-              <q-avatar color="pink-11" icon="savings" size="xl" text-color="white"></q-avatar>
+              <q-avatar
+                color="pink-11"
+                icon="savings"
+                size="xl"
+                text-color="white"
+              ></q-avatar>
             </div>
             <div>
-              <label for="total" :class="statistics_type == 'SAVINGS' ? 'total-active' : 'total'">{{
-                Number(getTotalMembersSavings).toLocaleString()
-              }}
-                XAF</label>
+              <label
+                for="total"
+                :class="statistics_type == 'SAVINGS' ? 'total-active' : 'total'"
+                >{{
+                  Number(getTotalMembersSavings).toLocaleString()
+                }}
+                XAF</label
+              >
             </div>
           </q-card-actions>
         </q-card>
       </div>
       <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12 q-px-xs">
-        <q-card :class="statistics_type == 'CONTRIBUTIONS' ? 'contribution_card' : 'card'
-            " bordered @click="showStatistics('CONTRIBUTIONS')">
+        <q-card
+          :class="
+            statistics_type == 'CONTRIBUTIONS' ? 'contribution_card' : 'card'
+          "
+          bordered
+          @click="showStatistics('CONTRIBUTIONS')"
+        >
           <q-card-section>
-            <div :class="statistics_type == 'CONTRIBUTIONS'
-                ? 'text-h6-active'
-                : 'text-h6'
-              ">
+            <div
+              :class="
+                statistics_type == 'CONTRIBUTIONS'
+                  ? 'text-h6-active'
+                  : 'text-h6'
+              "
+            >
               Contributions
             </div>
           </q-card-section>
 
           <q-card-actions align="around" class="q-pb-sm">
             <div>
-              <q-avatar color="indigo-11" icon="payments" size="xl" text-color="white"></q-avatar>
+              <q-avatar
+                color="indigo-11"
+                icon="payments"
+                size="xl"
+                text-color="white"
+              ></q-avatar>
             </div>
             <div>
-              <label for="total" :class="statistics_type == 'CONTRIBUTIONS' ? 'total-active' : 'total'
-                ">{{ Number(getTotalYearlyContribution).toLocaleString() }} XAF</label>
+              <label
+                for="total"
+                :class="
+                  statistics_type == 'CONTRIBUTIONS' ? 'total-active' : 'total'
+                "
+                >{{
+                  Number(getTotalYearlyContribution).toLocaleString()
+                }}
+                XAF</label
+              >
             </div>
           </q-card-actions>
         </q-card>
       </div>
       <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12 q-px-xs">
-        <q-card :class="statistics_type == 'EXPENDITURES' ? 'expenditures_card' : 'card'
-          " bordered @click="showStatistics('EXPENDITURES')">
+        <q-card
+          :class="
+            statistics_type == 'EXPENDITURES' ? 'expenditures_card' : 'card'
+          "
+          bordered
+          @click="showStatistics('EXPENDITURES')"
+        >
           <q-card-section>
-            <div :class="statistics_type == 'EXPENDITURES' ? 'text-h6-active' : 'text-h6'
-              ">
+            <div
+              :class="
+                statistics_type == 'EXPENDITURES' ? 'text-h6-active' : 'text-h6'
+              "
+            >
               Expenditures
             </div>
           </q-card-section>
 
           <q-card-actions align="around" class="q-pb-sm">
             <div>
-              <q-avatar color="teal-2" icon="data_exploration" size="xl" text-color="white"></q-avatar>
+              <q-avatar
+                color="teal-2"
+                icon="data_exploration"
+                size="xl"
+                text-color="white"
+              ></q-avatar>
             </div>
             <div>
-              <label for="total" :class="statistics_type == 'EXPENDITURES' ? 'total-active' : 'total'
-                ">100 XAF</label>
+              <label
+                for="total"
+                :class="
+                  statistics_type == 'EXPENDITURES' ? 'total-active' : 'total'
+                "
+                >100 XAF</label
+              >
             </div>
           </q-card-actions>
         </q-card>
@@ -275,13 +345,11 @@ export default {
       return this.getMembers.length;
     },
 
-
     getTotalMembersSavings() {
       return this.$store.getters.getOrganisationMembersSavings != null
         ? this.$store.getters.getOrganisationMembersSavings.total_savings
         : 0;
     },
-
 
     getChartData() {
       let data = {
@@ -295,7 +363,6 @@ export default {
       };
       return data;
     },
-
 
     getBarData() {
       let data = {
@@ -324,10 +391,9 @@ export default {
       return data;
     },
 
-
     getTotalYearlyContribution() {
-      return this.$store.getters.getTotalYearlyContribution
-    }
+      return this.$store.getters.getTotalYearlyContribution;
+    },
   },
   methods: {
     showStatistics(type) {
@@ -426,43 +492,46 @@ export default {
     },
 
     setContributionStatistics(percentages) {
-      console.log(percentages);
-      this.lineChartData3.labels = percentages[0].percentages_data.map((ele) => ele.name);
-      this.lineChartData3.datasets[0].label = "Number of Members";
-      this.lineChartData3.datasets[0].backgroundColor = "#8c9eff";
-      this.lineChartData3.datasets[0].data = percentages[0].percentages_data.map(
-        (ele) => ele.contributors
-      );
+      if (percentages.length > 0) {
+        this.lineChartData3.labels = percentages[0].percentages_data.map(
+          (ele) => ele.name
+        );
+        this.lineChartData3.datasets[0].label = "Number of Members";
+        this.lineChartData3.datasets[0].backgroundColor = "#8c9eff";
+        this.lineChartData3.datasets[0].data =
+          percentages[0].percentages_data.map((ele) => ele.contributors);
 
-      this.lineChartData4.labels = percentages[0].percentages_data.map((ele) => ele.name);
-      this.lineChartData4.datasets[0].label = "Percentage Contributed";
-      this.lineChartData4.datasets[0].backgroundColor = "#8c9eff";
-      this.lineChartData4.datasets[0].data = percentages[0].percentages_data.map(
-        (ele) => ele.percentage
-      );
+        this.lineChartData4.labels = percentages[0].percentages_data.map(
+          (ele) => ele.name
+        );
+        this.lineChartData4.datasets[0].label = "Percentage Contributed";
+        this.lineChartData4.datasets[0].backgroundColor = "#8c9eff";
+        this.lineChartData4.datasets[0].data =
+          percentages[0].percentages_data.map((ele) => ele.percentage);
 
-      this.barChartData1.labels = [
-        "YEARLY",
-        "QUARTERLY",
-        "MONTHLY",
-        "ONE_TIME",
-      ];
-      (this.barChartData1.datasets[0].label =
-        "Average Contributions By Payment Frequency"),
-        (this.barChartData1.datasets[0].backgroundColor = "#8c9eff");
-      this.barChartData1.datasets[0].data = percentages[1].avg_by_frequency;
+        this.barChartData1.labels = [
+          "YEARLY",
+          "QUARTERLY",
+          "MONTHLY",
+          "ONE_TIME",
+        ];
+        (this.barChartData1.datasets[0].label =
+          "Average Contributions By Payment Frequency"),
+          (this.barChartData1.datasets[0].backgroundColor = "#8c9eff");
+        this.barChartData1.datasets[0].data = percentages[1].avg_by_frequency;
 
-      this.barChartData2.labels = [
-        "ALL_MEMBERS",
-        "A_MEMBER",
-        "MEMBERS_WITH_ROLES",
-        "MEMBERS_WITHOUT_ROLES",
-        "GROUPED_MEMBERS",
-      ];
-      (this.barChartData2.datasets[0].label =
-        "Average Contributions By Payment Type"),
-        (this.barChartData2.datasets[0].backgroundColor = "#8c9eff");
-      this.barChartData2.datasets[0].data = percentages[2].avg_by_type;
+        this.barChartData2.labels = [
+          "ALL_MEMBERS",
+          "A_MEMBER",
+          "MEMBERS_WITH_ROLES",
+          "MEMBERS_WITHOUT_ROLES",
+          "GROUPED_MEMBERS",
+        ];
+        (this.barChartData2.datasets[0].label =
+          "Average Contributions By Payment Type"),
+          (this.barChartData2.datasets[0].backgroundColor = "#8c9eff");
+        this.barChartData2.datasets[0].data = percentages[2].avg_by_type;
+      }
     },
 
     resetData() {
@@ -476,7 +545,6 @@ export default {
       this.lineChartData2.datasets[0].backgroundColor = "";
       this.lineChartData2.datasets[0].data = [];
     },
-
   },
   components: {
     PieChartsVue,

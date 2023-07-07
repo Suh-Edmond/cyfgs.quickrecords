@@ -199,10 +199,10 @@
     </div>
 
     <div class="row" v-if="statistics_type == 'CONTRIBUTIONS'">
-      <div class="col-4 col-md-4 col-sm-12 col-xs-12 col-lg-4">
+      <div class="col-6 col-md-6 col-sm-12 col-xs-12 col-lg-6">
         <BarChartVue :chartData="barChartData1"></BarChartVue>
       </div>
-      <div class="col-8 col-md-8 col-sm-12 col-xs-12 col-lg-8">
+      <div class="col-6 col-md-6 col-sm-12 col-xs-12 col-lg-6">
         <BarChartVue :chartData="barChartData2"></BarChartVue>
       </div>
     </div>

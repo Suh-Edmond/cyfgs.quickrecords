@@ -3,6 +3,7 @@ export default {
   data() {
     return {
       loading: false,
+      total_contributions:0,
     };
   },
 
@@ -120,6 +121,32 @@ export default {
       };
       this.$store.dispatch("getRequest", payload).then(() => {});
     },
+
+    getTotalContributionByYear(session_id){
+      this.total_contributions = 0;
+      let payload = {
+        status: "none",
+        url: `/api/protected/contributions/yearly/total?session_id=${session_id}`,
+        has_path_val: false,
+        show_feedback: false,
+        show_spinner: false,
+        msg: "none",
+        color: "default",
+        error_msg: "default",
+        commit: "",
+        has_commit: false,
+        to_be_store_data: {
+          required: true,
+          has_value: false,
+          data: null,
+        },
+      };
+      this.$store.dispatch("getRequest", payload).then((res) => {
+          this.total_contributions = res.data
+      });
+
+      return this.total_contributions;
+    }
   },
 };
 </script>

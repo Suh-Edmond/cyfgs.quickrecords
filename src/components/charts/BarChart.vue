@@ -2,7 +2,7 @@
   <div class="q-pa-sm">
     <q-card flat>
       <q-card-section>
-        <Bar :chart-options="chartOptions" :chart-data="getChartData" :chart-id="chartId" :dataset-id-key="datasetIdKey"
+        <Bar :chart-options="chartOptions" :chart-data="chartData" :chart-id="chartId" :dataset-id-key="datasetIdKey"
           :plugins="plugins" :css-classes="cssClasses" :styles="styles" :width="width" :height="height" />
       </q-card-section>
     </q-card>
@@ -65,36 +65,13 @@ export default {
       type: Array,
       default: () => [],
     },
-  },
-  mounted() {
-    let organisation_id = this.$store.getters.getOrganisation != null ? this.$store.getters.getOrganisation.id : null;
-    this.getUserByRegistration(organisation_id);
+    chartData:{
+      type: Object,
+      required: true,
+    }
   },
   data() {
     return {
-      chartData: {
-        labels: [
-          "January",
-          "February",
-          "March",
-          "April",
-          "May",
-          "June",
-          "July",
-          "August",
-          "September",
-          "October",
-          "November",
-          "December",
-        ],
-        datasets: [
-          {
-            label: "Registered Members",
-            backgroundColor: "#27ae60",
-            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          },
-        ],
-      },
       chartOptions: {
         responsive: true,
         maintainAspectRatio: false,
@@ -102,32 +79,6 @@ export default {
     };
   },
   computed: {
-    getChartData() {
-      let data = {
-        labels: [
-          "January",
-          "February",
-          "March",
-          "April",
-          "May",
-          "June",
-          "July",
-          "August",
-          "September",
-          "October",
-          "November",
-          "December",
-        ],
-        datasets: [
-          {
-            label: "Registered Members",
-            backgroundColor: "#27ae60",
-            data: this.$store.getters.getBarChartData,
-          },
-        ],
-      }
-      return data
-    }
   },
   methods: {
   },

@@ -112,7 +112,7 @@
                 :class="
                   statistics_type == 'CONTRIBUTIONS' ? 'total-active' : 'total'
                 "
-                >100 XAF</label
+                >{{ Number(total_contributions).toLocaleString() }} XAF</label
               >
             </div>
           </q-card-actions>
@@ -166,7 +166,7 @@
           <PieChartsVue :chart-data="getChartData"></PieChartsVue>
         </div>
         <div class="col-8 col-md-8 col-sm-12 col-xs-12 col-lg-8">
-          <BarChartVue></BarChartVue>
+          <BarChartVue :chartData="getBarData"></BarChartVue>
         </div>
       </div>
       <!--------------------------------------------END OF MEMBERSHIP STATISTICS----------------------------------->
@@ -187,14 +187,20 @@
 
       <!-----------------------------------------------CONTRIBUTIONS STATISTICS--------------------------------------->
       <div class="row" v-if="statistics_type == 'CONTRIBUTIONS'">
-        <div class="col-md-2 col-sm-12 col-xs-12 col-lg-2">
-          <PieChartsVue :chart-data="pieChartData"></PieChartsVue>
-        </div>
-        <div class="col-5 col-md-5 col-sm-12 col-xs-12 col-lg-5">
+        <div class="col-6 col-md-6 col-sm-12 col-xs-12 col-lg-6">
           <LineChart :chartData="lineChartData1"></LineChart>
         </div>
-        <div class="col-5 col-md-5 col-sm-12 col-xs-12 col-lg-5">
+        <div class="col-6 col-md-6 col-sm-12 col-xs-12 col-lg-6">
           <LineChart :chartData="lineChartData2"></LineChart>
+        </div>
+      </div>
+
+      <div class="row" v-if="statistics_type == 'CONTRIBUTIONS'">
+        <div class="col-4 col-md-4 col-sm-12 col-xs-12 col-lg-4">
+          <BarChartVue :chartData="barChartData1"></BarChartVue>
+        </div>
+        <div class="col-8 col-md-8 col-sm-12 col-xs-12 col-lg-8">
+          <BarChartVue :chartData="barChartData2"></BarChartVue>
         </div>
       </div>
       <!--------------------------------------------END OF CONTRIBUTIONS STATISTICS----------------------------------->
@@ -223,6 +229,7 @@ import UserSavingMixin from "src/mixins/UserSavingMixin.vue";
 import PieChartsVue from "src/components/charts/PieCharts.vue";
 import BarChartVue from "src/components/charts/BarChart.vue";
 import LineChart from "src/components/charts/LineChart.vue";
+import ContributionsMixin from "src/mixins/ContributionsMixin.vue";
 
 export default {
   mixins: [
@@ -230,16 +237,9 @@ export default {
     organisationMixin,
     memberMixinVue,
     UserSavingMixin,
+    ContributionsMixin,
   ],
   mounted() {
-    let organisation_id =
-      this.$store.getters.getOrganisation != null
-        ? this.$store.getters.getOrganisation.id
-        : null;
-
-    this.getOrganisationMembers(organisation_id);
-    this.getOrganisationMemberSavings(organisation_id);
-
     if (this.getOrganisationId == "") {
       this.getOrganisationInfo();
     }
@@ -295,6 +295,27 @@ export default {
           },
         ],
       },
+      barChartData1: {
+        labels: [],
+        datasets: [
+          {
+            label: "",
+            backgroundColor: "",
+            data: [],
+          },
+        ],
+      },
+      barChartData2: {
+        labels: [],
+        datasets: [
+          {
+            label: "",
+            backgroundColor: "",
+            data: [],
+          },
+        ],
+      },
+      total_contributions: 0,
     };
   },
   computed: {
@@ -318,6 +339,32 @@ export default {
       };
       return data;
     },
+    getBarData() {
+      let data = {
+        labels: [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December",
+        ],
+        datasets: [
+          {
+            label: "Registered Members",
+            backgroundColor: "#27ae60",
+            data: this.$store.getters.getBarChartData,
+          },
+        ],
+      };
+      return data;
+    },
   },
   methods: {
     showStatistics(type) {
@@ -328,8 +375,13 @@ export default {
       switch (type) {
         case "MEMBERSHIP":
           this.statistics_type = "MEMBERSHIP";
+          let current_session_id = this.getCurrentYear.id;
+          this.total_contributions =
+            this.getTotalContributionByYear(current_session_id);
           this.getUserByRegistrationStatus(organisation_id);
           this.getUserByRegistration(organisation_id);
+          this.getOrganisationMembers(organisation_id);
+          this.getOrganisationMemberSavings(organisation_id);
           break;
         case "SAVINGS":
           this.statistics_type = "SAVINGS";
@@ -337,6 +389,7 @@ export default {
           break;
         case "CONTRIBUTIONS":
           this.statistics_type = "CONTRIBUTIONS";
+          this.setContributionStatistics();
           break;
         case "EXPENDITURES":
           this.statistics_type = "EXPENDITURES";
@@ -345,8 +398,21 @@ export default {
     },
 
     setSavingStatistics(monthly_savings, yearly_savings, status_stat) {
-      this.statistics_type = "SAVINGS";
-
+      this.resetData();
+      this.lineChartData1.labels = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+      ];
       this.lineChartData1.datasets[0].label = "Monthly Savings";
       this.lineChartData1.datasets[0].backgroundColor = "#ff80ab";
       this.lineChartData1.datasets[0].data = monthly_savings;
@@ -394,6 +460,63 @@ export default {
         );
       });
     },
+
+    setContributionStatistics() {
+      this.resetData();
+      this.lineChartData1.labels = ["Operation 1000", "Rally", "Cometogether"];
+      this.lineChartData1.datasets[0].label = "Number of Members";
+      this.lineChartData1.datasets[0].backgroundColor = "#8c9eff";
+      this.lineChartData1.datasets[0].data = [56, 78, 100];
+
+      this.lineChartData2.labels = ["Operation 1000", "Rally", "Cometogether"];
+      this.lineChartData2.datasets[0].label = "Total Amount Contributed";
+      this.lineChartData2.datasets[0].backgroundColor = "#8c9eff";
+      this.lineChartData2.datasets[0].data = [50000, 65000, 40000];
+
+      this.barChartData1.labels = [
+        "YEARLY",
+        "QUARTERLY",
+        "ONE_TIME",
+        "MONTHLY",
+      ];
+      (this.barChartData1.datasets[0].label =
+        "Percentage Contributions By Payment Frequency"),
+        (this.barChartData1.datasets[0].backgroundColor = "#8c9eff");
+      this.barChartData1.datasets[0].data = [];
+
+      this.barChartData2.labels = [
+        "ALL_MEMBERS",
+        "A_MEMBER",
+        "MEMBERS_WITH_ROLES",
+        "MEMBERS_WITHOUT_ROLES",
+        "GROUPED_MEMBERS",
+      ];
+      (this.barChartData2.datasets[0].label =
+        "Percentage Contributions By Payment Type"),
+        (this.barChartData2.datasets[0].backgroundColor = "#8c9eff");
+      this.barChartData2.datasets[0].data = [];
+    },
+
+    resetData() {
+      this.lineChartData1.labels = [];
+      this.lineChartData1.datasets[0].label = "";
+      this.lineChartData1.datasets[0].backgroundColor = "";
+      this.lineChartData1.datasets[0].data = [];
+
+      this.lineChartData2.labels = [];
+      this.lineChartData2.datasets[0].label = "";
+      this.lineChartData2.datasets[0].backgroundColor = "";
+      this.lineChartData2.datasets[0].data = [];
+
+      this.barChartData1.labels = [];
+      this.barChartData1.datasets[0].backgroundColor = "";
+      this.barChartData1.datasets[0].data = [];
+
+      this.barChartData2.labels = [];
+      (this.barChartData2.datasets[0].label = ""),
+        (this.barChartData2.datasets[0].backgroundColor = "");
+      this.barChartData2.datasets[0].data = [];
+    },
   },
   components: {
     PieChartsVue,
@@ -428,7 +551,7 @@ export default {
 .expenditures_card {
   cursor: pointer;
   color: white;
-  background-color:  #b2dfdb;
+  background-color: #b2dfdb;
 }
 
 .text-h6 {

@@ -3,6 +3,7 @@ export default {
   data() {
     return {
       loading: false,
+      percentage_contributions:[],
     };
   },
 
@@ -120,6 +121,57 @@ export default {
       };
       this.$store.dispatch("getRequest", payload).then(() => {});
     },
+
+    getTotalContributionByYear(session_id){
+      this.total_contributions = 0;
+      let payload = {
+        status: "none",
+        url: `/api/protected/contributions/yearly/total?session_id=${session_id}`,
+        has_path_val: false,
+        show_feedback: false,
+        show_spinner: false,
+        msg: "none",
+        color: "default",
+        error_msg: "default",
+        commit: "SET_TOTAL_YEARLY_CONTRIBUTION",
+        has_commit: true,
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: null,
+        },
+      };
+      this.$store.dispatch("getRequest", payload).then((res) => {
+          this.total_contributions = res.data
+      });
+
+      return this.total_contributions;
+    },
+
+    getPercentageContributionsBySession(session_id){
+      let payload = {
+        status: "none",
+        url: `/api/protected/contributions_statistics?session_id=${session_id}`,
+        has_path_val: false,
+        show_feedback: false,
+        show_spinner: false,
+        msg: "none",
+        color: "default",
+        error_msg: "default",
+        commit: "none",
+        has_commit: false,
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: null,
+        },
+      };
+      this.$store.dispatch("getRequest", payload).then((res) => {
+        this.percentage_contributions = res.data
+       });
+
+       return this.percentage_contributions
+    }
   },
 };
 </script>

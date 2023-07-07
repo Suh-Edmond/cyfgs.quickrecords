@@ -190,3 +190,7 @@ export function getBarChartData(state) {
 export function getPieChartData(state) {
   return state.pie_chart_data;
 }
+
+export function getTotalYearlyContribution(state) {
+  return state.total_yearly_contribution;
+}

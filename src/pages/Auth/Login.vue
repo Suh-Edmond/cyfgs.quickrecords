@@ -40,10 +40,20 @@
 
 <script>
 import organisationMixin from "src/mixins/organisationMixin.vue";
+import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
+import memberMixinVue from "src/mixins/memberMixin.vue";
+import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
+import ContributionsMixinVue from 'src/mixins/ContributionsMixin.vue';
 
 export default {
   name: "PageIndex",
-  mixins: [organisationMixin],
+  mixins: [
+    organisationMixin,
+    CurrentYearMixinVue,
+    memberMixinVue,
+    UserSavingMixinVue,
+    ContributionsMixinVue
+  ],
   data() {
     return {
       user: {
@@ -111,25 +121,33 @@ export default {
               data: null,
             },
           };
-          this.$store.dispatch("getRequest", payload).then(() => {
-            this.$router.push({
-              name: "dashboard",
+          this.$store
+            .dispatch("getRequest", payload)
+            .then((res) => {
+              this.fetchCurrentYear();
+              this.getOrganisationMembers(res.data.id);
+              this.getUserByRegistrationStatus(res.data.id);
+              this.getUserByRegistration(res.data.id);
+              this.$router.push({
+                name: "dashboard",
+              });
+            })
+            .catch(() => {
+              this.$router.push({
+                name: "create_organisation",
+              });
+            }).finally(() => {
+              this.getOrganisationMemberSavings(this.$store.getters.getOrganisation.id);
+              // this.getTotalContributionByYear( this.$store.getters.getCurrentYear.id);
             });
-          }).catch(() => {
-            this.$router.push({
-              name: "create_organisation",
-            });
-          })
-        }).catch(() => {
-
         })
+        .catch(() => { })
         .finally(() => {
           this.loading = false;
         });
     },
   },
-  components: {
-  },
+  components: {},
 };
 </script>
 

@@ -138,7 +138,7 @@ export default {
               });
             }).finally(() => {
               this.getOrganisationMemberSavings(this.$store.getters.getOrganisation.id);
-              this.getTotalContributionByYear( this.$store.getters.getCurrentYear.id);
+              // this.getTotalContributionByYear( this.$store.getters.getCurrentYear.id);
             });
         })
         .catch(() => { })

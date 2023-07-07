@@ -188,10 +188,10 @@
     <!-----------------------------------------------CONTRIBUTIONS STATISTICS--------------------------------------->
     <div class="row" v-if="statistics_type == 'CONTRIBUTIONS'">
       <div class="col-md-6 col-sm-12 col-xs-12 col-lg-6">
-        <LineChart :chartData="lineChartData1"></LineChart>
+        <LineChart :chartData="lineChartData3"></LineChart>
       </div>
       <div class="col-md-6 col-sm-12 col-xs-12 col-lg-6">
-        <LineChart :chartData="lineChartData2"></LineChart>
+        <LineChart :chartData="lineChartData4"></LineChart>
       </div>
     </div>
 
@@ -315,6 +315,26 @@ export default {
           },
         ],
       },
+      lineChartData3: {
+        labels: [],
+        datasets: [
+          {
+            label: "",
+            backgroundColor: "",
+            data: [],
+          },
+        ],
+      },
+      lineChartData4: {
+        labels: [],
+        datasets: [
+          {
+            label: "",
+            backgroundColor: "",
+            data: [],
+          },
+        ],
+      },
     };
   },
   computed: {
@@ -390,7 +410,7 @@ export default {
           this.getUserByRegistrationStatus(organisation_id);
           this.getUserByRegistration(organisation_id);
           this.getOrganisationMembers(organisation_id);
-          // this.getOrganisationMemberSavings(organisation_id);
+          this.getOrganisationMemberSavings(organisation_id);
           break;
         case "SAVINGS":
           this.statistics_type = "SAVINGS";
@@ -473,18 +493,18 @@ export default {
     },
 
     setContributionStatistics(percentages) {
-      this.resetData();
-      this.lineChartData1.labels = percentages.map((ele) => ele.name);
-      this.lineChartData1.datasets[0].label = "Number of Members";
-      this.lineChartData1.datasets[0].backgroundColor = "#8c9eff";
-      this.lineChartData1.datasets[0].data = percentages.map(
+      console.log(this.lineChartData3);
+      this.lineChartData3.labels = percentages.map((ele) => ele.name);
+      this.lineChartData3.datasets[0].label = "Number of Members";
+      this.lineChartData3.datasets[0].backgroundColor = "#8c9eff";
+      this.lineChartData3.datasets[0].data = percentages.map(
         (ele) => ele.contributors
       );
 
-      this.lineChartData2.labels = percentages.map((ele) => ele.name);
-      this.lineChartData2.datasets[0].label = "Percentage Contributed";
-      this.lineChartData2.datasets[0].backgroundColor = "#8c9eff";
-      this.lineChartData2.datasets[0].data = percentages.map(
+      this.lineChartData4.labels = percentages.map((ele) => ele.name);
+      this.lineChartData4.datasets[0].label = "Percentage Contributed";
+      this.lineChartData4.datasets[0].backgroundColor = "#8c9eff";
+      this.lineChartData4.datasets[0].data = percentages.map(
         (ele) => ele.percentage
       );
 

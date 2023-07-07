@@ -185,3 +185,7 @@ export function SET_BAR_CHART_DATA(state, data){
 export function SET_PIE_CHART_DATA(state, data){
   state.pie_chart_data = data;
 }
+
+export function SET_TOTAL_YEARLY_CONTRIBUTION(state, data){
+  state.total_yearly_contribution = data;
+}

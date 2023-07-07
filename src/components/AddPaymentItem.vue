@@ -269,11 +269,11 @@ export default {
     },
 
     validateDisableFrequency(){
-      return this.payment_item.frequency != null;
+      return this.payment_item.id != null && this.payment_item.frequency != null;
     },
 
     validateDisableType(){
-      return this.payment_item.type != null
+      return this.payment_item.id != null && this.payment_item.type != null
     },
 
 

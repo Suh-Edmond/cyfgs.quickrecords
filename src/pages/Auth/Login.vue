@@ -43,6 +43,7 @@ import organisationMixin from "src/mixins/organisationMixin.vue";
 import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
 import memberMixinVue from "src/mixins/memberMixin.vue";
 import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
+import ContributionsMixinVue from 'src/mixins/ContributionsMixin.vue';
 
 export default {
   name: "PageIndex",
@@ -51,6 +52,7 @@ export default {
     CurrentYearMixinVue,
     memberMixinVue,
     UserSavingMixinVue,
+    ContributionsMixinVue
   ],
   data() {
     return {
@@ -136,6 +138,7 @@ export default {
               });
             }).finally(() => {
               this.getOrganisationMemberSavings(this.$store.getters.getOrganisation.id);
+              this.getTotalContributionByYear( this.$store.getters.getCurrentYear.id);
             });
         })
         .catch(() => { })

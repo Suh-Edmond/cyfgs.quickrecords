@@ -50,6 +50,7 @@ export default function () {
     current_year:null,
     reg_amount:0.0,
     bar_chart_data:[],
-    pie_chart_data:[]
+    pie_chart_data:[],
+    total_yearly_contribution:0
   };
 }

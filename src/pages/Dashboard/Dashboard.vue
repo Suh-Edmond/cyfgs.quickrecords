@@ -112,7 +112,7 @@
                 :class="
                   statistics_type == 'CONTRIBUTIONS' ? 'total-active' : 'total'
                 "
-                >{{ Number(total_contributions).toLocaleString() }} XAF</label
+                >{{ Number(getTotalYearlyContribution).toLocaleString() }} XAF</label
               >
             </div>
           </q-card-actions>
@@ -159,66 +159,66 @@
       </div>
     </div>
 
-    <div>
-      <!-----------------------------------------------MEMBERSHIP STATISTICS--------------------------------------->
-      <div class="row q-mx-sm q-mt-sm" v-if="statistics_type == 'MEMBERSHIP'">
-        <div class="col-4 col-md-4 col-sm-12 col-xs-12 col-lg-4">
-          <PieChartsVue :chart-data="getChartData"></PieChartsVue>
-        </div>
-        <div class="col-8 col-md-8 col-sm-12 col-xs-12 col-lg-8">
-          <BarChartVue :chartData="getBarData"></BarChartVue>
-        </div>
+    <!-- <div> -->
+    <!-----------------------------------------------MEMBERSHIP STATISTICS--------------------------------------->
+    <div class="row q-mx-sm q-mt-sm" v-if="statistics_type == 'MEMBERSHIP'">
+      <div class="col-4 col-md-4 col-sm-12 col-xs-12 col-lg-4">
+        <PieChartsVue :chart-data="getChartData"></PieChartsVue>
       </div>
-      <!--------------------------------------------END OF MEMBERSHIP STATISTICS----------------------------------->
-
-      <!-----------------------------------------------SAVINGS STATISTICS--------------------------------------->
-      <div class="row" v-if="statistics_type == 'SAVINGS'">
-        <div class="col-md-2 col-sm-12 col-xs-12 col-lg-2">
-          <PieChartsVue :chart-data="pieChartData"></PieChartsVue>
-        </div>
-        <div class="col-5 col-md-5 col-sm-12 col-xs-12 col-lg-5">
-          <LineChart :chartData="lineChartData1"></LineChart>
-        </div>
-        <div class="col-5 col-md-5 col-sm-12 col-xs-12 col-lg-5">
-          <LineChart :chartData="lineChartData2"></LineChart>
-        </div>
+      <div class="col-8 col-md-8 col-sm-12 col-xs-12 col-lg-8">
+        <BarChartVue :chartData="getBarData"></BarChartVue>
       </div>
-      <!--------------------------------------------END OF SAVINGS STATISTICS----------------------------------->
-
-      <!-----------------------------------------------CONTRIBUTIONS STATISTICS--------------------------------------->
-      <div class="row" v-if="statistics_type == 'CONTRIBUTIONS'">
-        <div class="col-6 col-md-6 col-sm-12 col-xs-12 col-lg-6">
-          <LineChart :chartData="lineChartData1"></LineChart>
-        </div>
-        <div class="col-6 col-md-6 col-sm-12 col-xs-12 col-lg-6">
-          <LineChart :chartData="lineChartData2"></LineChart>
-        </div>
-      </div>
-
-      <div class="row" v-if="statistics_type == 'CONTRIBUTIONS'">
-        <div class="col-4 col-md-4 col-sm-12 col-xs-12 col-lg-4">
-          <BarChartVue :chartData="barChartData1"></BarChartVue>
-        </div>
-        <div class="col-8 col-md-8 col-sm-12 col-xs-12 col-lg-8">
-          <BarChartVue :chartData="barChartData2"></BarChartVue>
-        </div>
-      </div>
-      <!--------------------------------------------END OF CONTRIBUTIONS STATISTICS----------------------------------->
-
-      <!-----------------------------------------------EXPENDITURES STATISTICS--------------------------------------->
-      <div class="row" v-if="statistics_type == 'EXPENDITURES'">
-        <div class="col-md-2 col-sm-12 col-xs-12 col-lg-2">
-          <PieChartsVue :chart-data="pieChartData"></PieChartsVue>
-        </div>
-        <div class="col-5 col-md-5 col-sm-12 col-xs-12 col-lg-5">
-          <LineChart :chartData="lineChartData1"></LineChart>
-        </div>
-        <div class="col-5 col-md-5 col-sm-12 col-xs-12 col-lg-5">
-          <LineChart :chartData="lineChartData2"></LineChart>
-        </div>
-      </div>
-      <!--------------------------------------------END OF EXPENDITURES STATISTICS----------------------------------->
     </div>
+    <!--------------------------------------------END OF MEMBERSHIP STATISTICS----------------------------------->
+
+    <!-----------------------------------------------SAVINGS STATISTICS--------------------------------------->
+    <div class="row" v-if="statistics_type == 'SAVINGS'">
+      <div class="col-md-2 col-sm-12 col-xs-12 col-lg-2">
+        <PieChartsVue :chart-data="pieChartData"></PieChartsVue>
+      </div>
+      <div class="col-5 col-md-5 col-sm-12 col-xs-12 col-lg-5">
+        <LineChart :chartData="lineChartData1"></LineChart>
+      </div>
+      <div class="col-5 col-md-5 col-sm-12 col-xs-12 col-lg-5">
+        <LineChart :chartData="lineChartData2"></LineChart>
+      </div>
+    </div>
+    <!--------------------------------------------END OF SAVINGS STATISTICS----------------------------------->
+
+    <!-----------------------------------------------CONTRIBUTIONS STATISTICS--------------------------------------->
+    <div class="row" v-if="statistics_type == 'CONTRIBUTIONS'">
+      <div class="col-md-6 col-sm-12 col-xs-12 col-lg-6">
+        <LineChart :chartData="lineChartData1"></LineChart>
+      </div>
+      <div class="col-md-6 col-sm-12 col-xs-12 col-lg-6">
+        <LineChart :chartData="lineChartData2"></LineChart>
+      </div>
+    </div>
+
+    <div class="row" v-if="statistics_type == 'CONTRIBUTIONS'">
+      <div class="col-4 col-md-4 col-sm-12 col-xs-12 col-lg-4">
+        <BarChartVue :chartData="barChartData1"></BarChartVue>
+      </div>
+      <div class="col-8 col-md-8 col-sm-12 col-xs-12 col-lg-8">
+        <BarChartVue :chartData="barChartData2"></BarChartVue>
+      </div>
+    </div>
+    <!--------------------------------------------END OF CONTRIBUTIONS STATISTICS----------------------------------->
+
+    <!-----------------------------------------------EXPENDITURES STATISTICS--------------------------------------->
+    <div class="row" v-if="statistics_type == 'EXPENDITURES'">
+      <div class="col-md-2 col-sm-12 col-xs-12 col-lg-2">
+        <PieChartsVue :chart-data="pieChartData"></PieChartsVue>
+      </div>
+      <div class="col-5 col-md-5 col-sm-12 col-xs-12 col-lg-5">
+        <LineChart :chartData="lineChartData1"></LineChart>
+      </div>
+      <div class="col-5 col-md-5 col-sm-12 col-xs-12 col-lg-5">
+        <LineChart :chartData="lineChartData2"></LineChart>
+      </div>
+    </div>
+    <!--------------------------------------------END OF EXPENDITURES STATISTICS----------------------------------->
+    <!-- </div> -->
   </q-page>
 </template>
 <script>
@@ -315,18 +315,21 @@ export default {
           },
         ],
       },
-      total_contributions: 0,
     };
   },
   computed: {
     getTotalMembers() {
       return this.getMembers.length;
     },
+
+
     getTotalMembersSavings() {
       return this.$store.getters.getOrganisationMembersSavings != null
         ? this.$store.getters.getOrganisationMembersSavings.total_savings
         : 0;
     },
+
+
     getChartData() {
       let data = {
         labels: ["Registered", "Pending", "Not-Registered"],
@@ -339,6 +342,8 @@ export default {
       };
       return data;
     },
+
+
     getBarData() {
       let data = {
         labels: [
@@ -365,6 +370,11 @@ export default {
       };
       return data;
     },
+
+
+    getTotalYearlyContribution(){
+      return this.$store.getters.getTotalYearlyContribution
+    }
   },
   methods: {
     showStatistics(type) {
@@ -372,16 +382,15 @@ export default {
         this.$store.getters.getOrganisation != null
           ? this.$store.getters.getOrganisation.id
           : null;
+      let current_session_id = this.getCurrentYear.id;
       switch (type) {
         case "MEMBERSHIP":
           this.statistics_type = "MEMBERSHIP";
-          let current_session_id = this.getCurrentYear.id;
-          this.total_contributions =
-            this.getTotalContributionByYear(current_session_id);
+          this.getTotalContributionByYear(current_session_id);
           this.getUserByRegistrationStatus(organisation_id);
           this.getUserByRegistration(organisation_id);
           this.getOrganisationMembers(organisation_id);
-          this.getOrganisationMemberSavings(organisation_id);
+          // this.getOrganisationMemberSavings(organisation_id);
           break;
         case "SAVINGS":
           this.statistics_type = "SAVINGS";
@@ -389,7 +398,9 @@ export default {
           break;
         case "CONTRIBUTIONS":
           this.statistics_type = "CONTRIBUTIONS";
-          this.setContributionStatistics();
+          this.setContributionStatistics(
+            this.getPercentageContributionsBySession(current_session_id)
+          );
           break;
         case "EXPENDITURES":
           this.statistics_type = "EXPENDITURES";
@@ -461,17 +472,21 @@ export default {
       });
     },
 
-    setContributionStatistics() {
+    setContributionStatistics(percentages) {
       this.resetData();
-      this.lineChartData1.labels = ["Operation 1000", "Rally", "Cometogether"];
+      this.lineChartData1.labels = percentages.map((ele) => ele.name);
       this.lineChartData1.datasets[0].label = "Number of Members";
       this.lineChartData1.datasets[0].backgroundColor = "#8c9eff";
-      this.lineChartData1.datasets[0].data = [56, 78, 100];
+      this.lineChartData1.datasets[0].data = percentages.map(
+        (ele) => ele.contributors
+      );
 
-      this.lineChartData2.labels = ["Operation 1000", "Rally", "Cometogether"];
-      this.lineChartData2.datasets[0].label = "Total Amount Contributed";
+      this.lineChartData2.labels = percentages.map((ele) => ele.name);
+      this.lineChartData2.datasets[0].label = "Percentage Contributed";
       this.lineChartData2.datasets[0].backgroundColor = "#8c9eff";
-      this.lineChartData2.datasets[0].data = [50000, 65000, 40000];
+      this.lineChartData2.datasets[0].data = percentages.map(
+        (ele) => ele.percentage
+      );
 
       this.barChartData1.labels = [
         "YEARLY",
@@ -517,6 +532,7 @@ export default {
         (this.barChartData2.datasets[0].backgroundColor = "");
       this.barChartData2.datasets[0].data = [];
     },
+
   },
   components: {
     PieChartsVue,

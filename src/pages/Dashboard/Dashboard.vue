@@ -246,13 +246,12 @@ export default {
     if (this.getOrganisationId == "") {
       this.getOrganisationInfo();
     }
-    if (this.getCurrentYear == null) {
-      this.fetchCurrentYear();
-    }
+    this.fetchCurrentYear();
     this.getSessions();
   },
   data() {
     return {
+      loading:false,
       statistics_type: "MEMBERSHIP",
       visible: false,
       show_statistics: false,
@@ -341,6 +340,10 @@ export default {
     };
   },
   computed: {
+
+    getLoadingState() {
+      return this.$store.getters.getFetchingState;
+    },
     getTotalMembers() {
       return this.getMembers.length;
     },
@@ -401,7 +404,7 @@ export default {
         this.$store.getters.getOrganisation != null
           ? this.$store.getters.getOrganisation.id
           : null;
-      let current_session_id = this.getCurrentYear.id;
+      let current_session_id = this.$store.getters.getCurrentYear.id;
       switch (type) {
         case "MEMBERSHIP":
           this.statistics_type = "MEMBERSHIP";
@@ -492,11 +495,11 @@ export default {
     },
 
     setContributionStatistics(percentages) {
-      if (percentages.length > 0) {
+       if (percentages.length > 0) {
         this.lineChartData3.labels = percentages[0].percentages_data.map(
           (ele) => ele.name
         );
-        this.lineChartData3.datasets[0].label = "Number of Members";
+        this.lineChartData3.datasets[0].label = "NUMBER OF MEMBERS";
         this.lineChartData3.datasets[0].backgroundColor = "#8c9eff";
         this.lineChartData3.datasets[0].data =
           percentages[0].percentages_data.map((ele) => ele.contributors);
@@ -504,7 +507,7 @@ export default {
         this.lineChartData4.labels = percentages[0].percentages_data.map(
           (ele) => ele.name
         );
-        this.lineChartData4.datasets[0].label = "Percentage Contributed";
+        this.lineChartData4.datasets[0].label = "AMOUNT CONTRIBUTED";
         this.lineChartData4.datasets[0].backgroundColor = "#8c9eff";
         this.lineChartData4.datasets[0].data =
           percentages[0].percentages_data.map((ele) => ele.percentage);
@@ -531,7 +534,7 @@ export default {
           "Average Contributions By Payment Type"),
           (this.barChartData2.datasets[0].backgroundColor = "#8c9eff");
         this.barChartData2.datasets[0].data = percentages[2].avg_by_type;
-      }
+       }
     },
 
     resetData() {

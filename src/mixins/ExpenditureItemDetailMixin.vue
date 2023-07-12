@@ -1,9 +1,10 @@
 <script>
 export default {
-  data(){
+  data() {
     return {
-        total: 0,
-    }
+      total: 0,
+      expenditure_statistics: null,
+    };
   },
   methods: {
     getExpenditureDetailsByItemId(id) {
@@ -15,7 +16,7 @@ export default {
         error_msg: "An Error occurred! Could not fetch payment categories",
         has_commit: true,
         show_feedback: false,
-        show_spinner:true,
+        show_spinner: true,
         commit: "SET_EXPENDITURE_ITEM_DETAIL",
         to_be_store_data: {
           required: false,
@@ -23,8 +24,7 @@ export default {
           data: [],
         },
       };
-      this.$store.dispatch("getRequest", payload).then(() => {
-      });
+      this.$store.dispatch("getRequest", payload).then(() => {});
     },
 
     getTotalYearlyExpenditures(id) {
@@ -36,7 +36,7 @@ export default {
         error_msg: "An Error occurred! Could not fetch payment categories",
         has_commit: false,
         show_feedback: false,
-        show_spinner:false,
+        show_spinner: false,
         commit: "",
         to_be_store_data: {
           required: false,
@@ -45,13 +45,13 @@ export default {
         },
       };
       this.$store.dispatch("getRequest", payload).then((res) => {
-        if(res){
-          this.total = res.data
+        if (res) {
+          this.total = res.data;
         }
       });
 
       return this.total;
-    }
-  }
-}
+    },
+  },
+};
 </script>

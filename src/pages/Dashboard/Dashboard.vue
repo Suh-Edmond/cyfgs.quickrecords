@@ -210,14 +210,11 @@
 
     <!-----------------------------------------------EXPENDITURES STATISTICS--------------------------------------->
     <div class="row" v-if="statistics_type == 'EXPENDITURES'">
-      <div class="col-md-2 col-sm-12 col-xs-12 col-lg-2">
-        <PieChartsVue :chart-data="pieChartData"></PieChartsVue>
-      </div>
-      <div class="col-5 col-md-5 col-sm-12 col-xs-12 col-lg-5">
+      <div class="col-6 col-md-6 col-sm-12 col-xs-12 col-lg-6">
         <LineChart :chartData="lineChartData1"></LineChart>
       </div>
-      <div class="col-5 col-md-5 col-sm-12 col-xs-12 col-lg-5">
-        <LineChart :chartData="lineChartData2"></LineChart>
+      <div class="col-6 col-md-6 col-sm-12 col-xs-12 col-lg-6">
+        <BarChartVue :chartData="barChartData2"></BarChartVue>
       </div>
     </div>
     <!--------------------------------------------END OF EXPENDITURES STATISTICS----------------------------------->
@@ -407,7 +404,11 @@ export default {
         this.$store.getters.getOrganisation != null
           ? this.$store.getters.getOrganisation.id
           : null;
-      let current_session_id = this.$store.getters.getCurrentYear != null || this.$store.getters.getCurrentYear != undefined ? this.$store.getters.getCurrentYear.id : "";
+      let current_session_id =
+        this.$store.getters.getCurrentYear != null ||
+        this.$store.getters.getCurrentYear != undefined
+          ? this.$store.getters.getCurrentYear.id
+          : "";
       switch (type) {
         case "MEMBERSHIP":
           this.statistics_type = "MEMBERSHIP";
@@ -431,6 +432,9 @@ export default {
           break;
         case "EXPENDITURES":
           this.statistics_type = "EXPENDITURES";
+          this.setExpenditureStatistics(
+            this.getYearlyExpenditureStatistics(current_session_id)
+          );
           break;
       }
     },
@@ -542,6 +546,39 @@ export default {
       }
     },
 
+    setExpenditureStatistics(data) {
+      this.resetData();
+
+      this.lineChartData1.labels = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+      ];
+      this.lineChartData1.datasets[0].label = "Monthly Expenditures";
+      this.lineChartData1.datasets[0].backgroundColor = "#b2dfdb";
+      this.lineChartData1.datasets[0].data = [];
+
+      this.barChartData2.labels = [
+        "ALL_MEMBERS",
+        "A_MEMBER",
+        "MEMBERS_WITH_ROLES",
+        "MEMBERS_WITHOUT_ROLES",
+        "GROUPED_MEMBERS",
+      ];
+      this.barChartData2.datasets[0].label = "Expenditures By Payment Type";
+      this.barChartData2.datasets[0].backgroundColor = "#b2dfdb";
+      this.barChartData2.datasets[0].data = [];
+    },
+
     resetData() {
       this.lineChartData1.labels = [];
       this.lineChartData1.datasets[0].label = "";
@@ -552,6 +589,36 @@ export default {
       this.lineChartData2.datasets[0].label = "";
       this.lineChartData2.datasets[0].backgroundColor = "";
       this.lineChartData2.datasets[0].data = [];
+
+      this.barChartData2.labels = [];
+      this.datasets = [];
+    },
+
+    getYearlyExpenditureStatistics(id) {
+      let data = null;
+      let payload = {
+        status: "none",
+        url: `api/protected/expenditure_statistics?session_id=${id}`,
+        has_path_val: true,
+        show_feedback: false,
+        show_spinner: false,
+        msg: "none",
+        color: "default",
+        error_msg: "default",
+        commit: "SET_REG_AMOUNT",
+        has_commit: true,
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: null,
+        },
+      };
+      this.$store
+        .dispatch("getRequest", payload)
+        .then(() => {
+        })
+        .finally(() => {
+        });
     },
   },
   components: {

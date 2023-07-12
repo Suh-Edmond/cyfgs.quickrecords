@@ -5,7 +5,7 @@ const API_URL = process.env.API_BASE_URL;
 
 const FILE_API_URL = process.env.FILE_API_URL;
 
-export function handleRequestResponse({getters, dispatch}, payload) {
+export function handleRequestResponse({ getters, dispatch }, payload) {
   if (payload.status == "success" && payload.show_feedback) {
     if (payload.msg == "default") {
       Notify.create({
@@ -184,8 +184,11 @@ export function getRequest({ commit, dispatch }, payload) {
         fail_msg:
           payload.error_msg != "default"
             ? payload.error_msg
-            : error.response != "undefined" ? error.response.data.message: "An Error occurred not found",
-        status_code: error.response != undefined ? error.response.data.status: 404,
+            : error.response != undefined
+            ? error.response.data.message
+            : "An Error occurred not found",
+        status_code:
+          error.response != undefined ? error.response.data.status : 404,
       };
       dispatch("handleRequestResponse", handle_fail_res_payload);
     });
@@ -219,7 +222,9 @@ export function putRequest({ dispatch, commit }, payload) {
         fail_msg:
           payload.error_msg != "default"
             ? payload.error_msg
-            : error.response != "undefined" ? error.response.data.message : "An error occurred",
+            : error.response != undefined
+            ? error.response.data.message
+            : "An error occurred",
         status_code: 404,
       };
       dispatch("handleRequestResponse", handle_fail_res_payload);
@@ -258,7 +263,9 @@ export function deleteRequest({ dispatch }, payload) {
         fail_msg:
           payload.error_msg != "default"
             ? payload.error_msg
-            : error.response.data.message,
+            : error.response != undefined
+            ? error.response.data.message
+            : "An error occured",
         status_code: 404,
       };
       dispatch("handleRequestResponse", handle_fail_res_payload);

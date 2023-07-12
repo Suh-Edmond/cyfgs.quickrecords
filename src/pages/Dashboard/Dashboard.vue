@@ -211,10 +211,10 @@
     <!-----------------------------------------------EXPENDITURES STATISTICS--------------------------------------->
     <div class="row" v-if="statistics_type == 'EXPENDITURES'">
       <div class="col-6 col-md-6 col-sm-12 col-xs-12 col-lg-6">
-        <LineChart :chartData="lineChartData1"></LineChart>
+        <LineChart :chartData="expenditureLineChartData1"></LineChart>
       </div>
       <div class="col-6 col-md-6 col-sm-12 col-xs-12 col-lg-6">
-        <BarChartVue :chartData="barChartData2"></BarChartVue>
+        <BarChartVue :chartData="expenditureBarChartData2"></BarChartVue>
       </div>
     </div>
     <!--------------------------------------------END OF EXPENDITURES STATISTICS----------------------------------->
@@ -338,6 +338,39 @@ export default {
         ],
       },
       total_expenditures: 0,
+      expenditureLineChartData1: {
+        labels: [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December",
+        ],
+        datasets: [
+          {
+            label: "",
+            backgroundColor: "",
+            data: [],
+          },
+        ],
+      },
+      expenditureBarChartData2: {
+        labels: [],
+        datasets: [
+          {
+            label: "",
+            backgroundColor: "",
+            data: [],
+          },
+        ],
+      },
     };
   },
   computed: {
@@ -426,21 +459,16 @@ export default {
           break;
         case "CONTRIBUTIONS":
           this.statistics_type = "CONTRIBUTIONS";
-          this.setContributionStatistics(
-            this.getPercentageContributionsBySession(current_session_id)
-          );
+          this.getPercentageContributionsBySession(current_session_id);
           break;
         case "EXPENDITURES":
           this.statistics_type = "EXPENDITURES";
-          this.setExpenditureStatistics(
-            this.getYearlyExpenditureStatistics(current_session_id)
-          );
+          this.getYearlyExpenditureStatistics(current_session_id);
           break;
       }
     },
 
     setSavingStatistics(monthly_savings, yearly_savings, status_stat) {
-      this.resetData();
       this.lineChartData1.labels = [
         "January",
         "February",
@@ -546,10 +574,32 @@ export default {
       }
     },
 
-    setExpenditureStatistics(data) {
-      this.resetData();
+    getPercentageContributionsBySession(session_id) {
+      let payload = {
+        status: "none",
+        url: `/api/protected/contributions_statistics?session_id=${session_id}`,
+        has_path_val: false,
+        show_feedback: false,
+        show_spinner: false,
+        msg: "none",
+        color: "default",
+        error_msg: "default",
+        commit: "none",
+        has_commit: false,
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: null,
+        },
+      };
+      this.$store.dispatch("getRequest", payload).then((res) => {
+        this.setContributionStatistics(res.data);
+      });
+    },
 
-      this.lineChartData1.labels = [
+    setExpenditureStatistics(data) {
+
+      this.expenditureLineChartData1.labels = [
         "January",
         "February",
         "March",
@@ -563,62 +613,39 @@ export default {
         "November",
         "December",
       ];
-      this.lineChartData1.datasets[0].label = "Monthly Expenditures";
-      this.lineChartData1.datasets[0].backgroundColor = "#b2dfdb";
-      this.lineChartData1.datasets[0].data = [];
+      this.expenditureLineChartData1.datasets[0].label = "Monthly Expenditures";
+      this.expenditureLineChartData1.datasets[0].backgroundColor = "#b2dfdb";
+      this.expenditureLineChartData1.datasets[0].data = data.monthly_expenses;
 
-      this.barChartData2.labels = [
-        "ALL_MEMBERS",
-        "A_MEMBER",
-        "MEMBERS_WITH_ROLES",
-        "MEMBERS_WITHOUT_ROLES",
-        "GROUPED_MEMBERS",
-      ];
-      this.barChartData2.datasets[0].label = "Expenditures By Payment Type";
-      this.barChartData2.datasets[0].backgroundColor = "#b2dfdb";
-      this.barChartData2.datasets[0].data = [];
-    },
-
-    resetData() {
-      this.lineChartData1.labels = [];
-      this.lineChartData1.datasets[0].label = "";
-      this.lineChartData1.datasets[0].backgroundColor = "";
-      this.lineChartData1.datasets[0].data = [];
-
-      this.lineChartData2.labels = [];
-      this.lineChartData2.datasets[0].label = "";
-      this.lineChartData2.datasets[0].backgroundColor = "";
-      this.lineChartData2.datasets[0].data = [];
-
-      this.barChartData2.labels = [];
-      this.datasets = [];
+      this.expenditureBarChartData2.labels = data.expenses_by_items.map((ele) => ele.name);
+      this.expenditureBarChartData2.datasets[0].label = "Expenditures By Payment Type";
+      this.expenditureBarChartData2.datasets[0].backgroundColor = "#b2dfdb";
+      this.expenditureBarChartData2.datasets[0].data = data.expenses_by_items.map(
+        (ele) => ele.amount
+      );
     },
 
     getYearlyExpenditureStatistics(id) {
-      let data = null;
       let payload = {
         status: "none",
-        url: `api/protected/expenditure_statistics?session_id=${id}`,
-        has_path_val: true,
+        url: `/api/protected/expenditure_statistics?session_id=${id}`,
+        has_path_val: false,
         show_feedback: false,
         show_spinner: false,
         msg: "none",
         color: "default",
         error_msg: "default",
-        commit: "SET_REG_AMOUNT",
-        has_commit: true,
+        commit: "",
+        has_commit: false,
         to_be_store_data: {
           required: false,
           has_value: false,
           data: null,
         },
       };
-      this.$store
-        .dispatch("getRequest", payload)
-        .then(() => {
-        })
-        .finally(() => {
-        });
+      this.$store.dispatch("getRequest", payload).then((res) => {
+        this.setExpenditureStatistics(res.data);
+      });
     },
   },
   components: {

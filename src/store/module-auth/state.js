@@ -51,6 +51,7 @@ export default function () {
     reg_amount:0.0,
     bar_chart_data:[],
     pie_chart_data:[],
-    total_yearly_contribution:0
+    total_yearly_contribution:0,
+    total_yearly_expenditure:0
   };
 }

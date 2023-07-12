@@ -154,7 +154,7 @@
                 :class="
                   statistics_type == 'EXPENDITURES' ? 'total-active' : 'total'
                 "
-                >{{ Number(total_expenditures).toLocaleString() }} XAF</label
+                >{{ Number(getTotalYearlyExpenditure).toLocaleString() }} XAF</label
               >
             </div>
           </q-card-actions>
@@ -246,7 +246,6 @@ export default {
       this.getOrganisationInfo();
     }
     this.fetchCurrentYear();
-    this.getSessions();
     this.showStatistics("MEMBERSHIP");
   },
   data() {
@@ -430,6 +429,10 @@ export default {
     getTotalYearlyContribution() {
       return this.$store.getters.getTotalYearlyContribution;
     },
+
+    getTotalYearlyExpenditure(){
+      return this.$store.getters.getTotalYearlyExpenditure;
+    }
   },
   methods: {
     showStatistics(type) {
@@ -448,10 +451,9 @@ export default {
           this.getTotalContributionByYear(current_session_id);
           this.getUserByRegistrationStatus(organisation_id);
           this.getUserByRegistration(organisation_id);
-          this.getOrganisationMembers(organisation_id);
           this.getOrganisationMemberSavings(organisation_id);
-          this.total_expenditures =
-            this.getTotalYearlyExpenditures(current_session_id);
+          this.getTotalYearlyExpenditures(current_session_id);
+          this.getOrganisationMembers(organisation_id);
           break;
         case "SAVINGS":
           this.statistics_type = "SAVINGS";

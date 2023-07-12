@@ -28,16 +28,16 @@ export default {
     },
 
     getTotalYearlyExpenditures(id) {
-      let payload = {
+       let payload = {
         url: `api/protected/expenditures_total?session_id=${id}`,
-        msg: "msg",
+        msg: "none",
         color: "default",
         status: "none",
         error_msg: "An Error occurred! Could not fetch payment categories",
-        has_commit: false,
+        has_commit: true,
         show_feedback: false,
         show_spinner: false,
-        commit: "",
+        commit: "SET_TOTAL_YEARLY_EXPENDITURE",
         to_be_store_data: {
           required: false,
           has_value: false,
@@ -45,12 +45,7 @@ export default {
         },
       };
       this.$store.dispatch("getRequest", payload).then((res) => {
-        if (res) {
-          this.total = res.data;
-        }
       });
-
-      return this.total;
     },
   },
 };

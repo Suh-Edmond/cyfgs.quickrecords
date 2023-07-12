@@ -194,3 +194,7 @@ export function getPieChartData(state) {
 export function getTotalYearlyContribution(state) {
   return state.total_yearly_contribution;
 }
+
+export function getTotalYearlyExpenditure(state) {
+  return state.total_yearly_expenditure;
+}

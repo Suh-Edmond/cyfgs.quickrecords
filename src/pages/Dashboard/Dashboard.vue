@@ -154,7 +154,7 @@
                 :class="
                   statistics_type == 'EXPENDITURES' ? 'total-active' : 'total'
                 "
-                >100 XAF</label
+                >{{ Number(total_expenditures).toLocaleString() }} XAF</label
               >
             </div>
           </q-card-actions>
@@ -233,6 +233,7 @@ import PieChartsVue from "src/components/charts/PieCharts.vue";
 import BarChartVue from "src/components/charts/BarChart.vue";
 import LineChart from "src/components/charts/LineChart.vue";
 import ContributionsMixin from "src/mixins/ContributionsMixin.vue";
+import ExpenditureItemDetailMixinVue from "src/mixins/ExpenditureItemDetailMixin.vue";
 
 export default {
   mixins: [
@@ -241,18 +242,19 @@ export default {
     memberMixinVue,
     UserSavingMixin,
     ContributionsMixin,
+    ExpenditureItemDetailMixinVue,
   ],
   mounted() {
     if (this.getOrganisationId == "") {
       this.getOrganisationInfo();
     }
-    if (this.getCurrentYear == null) {
-      this.fetchCurrentYear();
-    }
+    this.fetchCurrentYear();
     this.getSessions();
+    this.showStatistics("MEMBERSHIP");
   },
   data() {
     return {
+      loading: false,
       statistics_type: "MEMBERSHIP",
       visible: false,
       show_statistics: false,
@@ -338,9 +340,13 @@ export default {
           },
         ],
       },
+      total_expenditures: 0,
     };
   },
   computed: {
+    getLoadingState() {
+      return this.$store.getters.getFetchingState;
+    },
     getTotalMembers() {
       return this.getMembers.length;
     },
@@ -401,7 +407,7 @@ export default {
         this.$store.getters.getOrganisation != null
           ? this.$store.getters.getOrganisation.id
           : null;
-      let current_session_id = this.getCurrentYear.id;
+      let current_session_id = this.$store.getters.getCurrentYear != null || this.$store.getters.getCurrentYear != undefined ? this.$store.getters.getCurrentYear.id : "";
       switch (type) {
         case "MEMBERSHIP":
           this.statistics_type = "MEMBERSHIP";
@@ -410,6 +416,8 @@ export default {
           this.getUserByRegistration(organisation_id);
           this.getOrganisationMembers(organisation_id);
           this.getOrganisationMemberSavings(organisation_id);
+          this.total_expenditures =
+            this.getTotalYearlyExpenditures(current_session_id);
           break;
         case "SAVINGS":
           this.statistics_type = "SAVINGS";
@@ -496,7 +504,7 @@ export default {
         this.lineChartData3.labels = percentages[0].percentages_data.map(
           (ele) => ele.name
         );
-        this.lineChartData3.datasets[0].label = "Number of Members";
+        this.lineChartData3.datasets[0].label = "NUMBER OF MEMBERS";
         this.lineChartData3.datasets[0].backgroundColor = "#8c9eff";
         this.lineChartData3.datasets[0].data =
           percentages[0].percentages_data.map((ele) => ele.contributors);
@@ -504,7 +512,7 @@ export default {
         this.lineChartData4.labels = percentages[0].percentages_data.map(
           (ele) => ele.name
         );
-        this.lineChartData4.datasets[0].label = "Percentage Contributed";
+        this.lineChartData4.datasets[0].label = "AMOUNT CONTRIBUTED";
         this.lineChartData4.datasets[0].backgroundColor = "#8c9eff";
         this.lineChartData4.datasets[0].data =
           percentages[0].percentages_data.map((ele) => ele.percentage);

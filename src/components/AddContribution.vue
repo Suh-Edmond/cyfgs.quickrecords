@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div>
+  <div class="q-mb-md">
+    <div class="q-mb-lg">
       <q-tabs
         v-model="tab"
         dense

@@ -470,7 +470,7 @@
                         >
                           <label for="register"
                             >Member has Completed Registration for the Year:
-                            {{ getCurrentYear }}</label
+                            {{ getCurrentYear.year }}</label
                           >
                         </div>
                         <div
@@ -819,7 +819,7 @@
                   <td class="text-left text-weight-bold">Total</td>
                   <td class="text-left"></td>
                   <td class="text-left text-weight-bold">
-                    {{ total_amount_payable }} XAF
+                    {{ Number(total_amount_payable).toLocaleString() }} XAF
                   </td>
                 </tr>
               </tbody>
@@ -1406,6 +1406,7 @@ export default {
             quarterly_name: ele.quarterly_name,
             month_name: ele.month_name,
             registration_id: ele.id,
+            contributed_via_saving:false
           });
         } else {
           data.push({

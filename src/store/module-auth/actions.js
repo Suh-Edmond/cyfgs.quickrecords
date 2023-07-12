@@ -184,8 +184,8 @@ export function getRequest({ commit, dispatch }, payload) {
         fail_msg:
           payload.error_msg != "default"
             ? payload.error_msg
-            : error.response.data.message,
-        status_code: error.response.data.status,
+            : error.response != "undefined" ? error.response.data.message: "An Error occurred not found",
+        status_code: error.response != undefined ? error.response.data.status: 404,
       };
       dispatch("handleRequestResponse", handle_fail_res_payload);
     });
@@ -219,7 +219,7 @@ export function putRequest({ dispatch, commit }, payload) {
         fail_msg:
           payload.error_msg != "default"
             ? payload.error_msg
-            : error.response.data.message,
+            : error.response != "undefined" ? error.response.data.message : "An error occurred",
         status_code: 404,
       };
       dispatch("handleRequestResponse", handle_fail_res_payload);

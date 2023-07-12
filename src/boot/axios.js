@@ -12,7 +12,7 @@ axios.interceptors.response.use(function(response)  {
   return Promise.resolve(response);
 
 }, function(error) {
-  if(typeof error.response == "undefined"){
+  if(typeof error.response == undefined){
     Notify.create({
       type:'info',
       message:'No Internet Connection',

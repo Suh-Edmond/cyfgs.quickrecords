@@ -649,6 +649,28 @@ export default {
         this.setExpenditureStatistics(res.data);
       });
     },
+
+    getTotalYearlyExpenditures(id) {
+       let payload = {
+        url: `/api/protected/expenditures_total?session_id=${id}`,
+        msg: "none",
+        color: "default",
+        status: "none",
+        error_msg: "An Error occurred! Could not fetch payment categories",
+        has_commit: true,
+        show_feedback: false,
+        show_spinner: false,
+        has_path_val: false,
+        commit: "SET_TOTAL_YEARLY_EXPENDITURE",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.$store.dispatch("getRequest", payload).then(() => {
+      });
+    }
   },
   components: {
     PieChartsVue,

@@ -89,7 +89,6 @@ export default {
     memberMixinVue,
     UserSavingMixinVue,
     ContributionsMixinVue,
-    ExpenditureItemDetailMixinVue,
   ],
   data() {
     return {
@@ -165,16 +164,17 @@ export default {
               this.getOrganisationMembers(res.data.id);
               this.getUserByRegistrationStatus(res.data.id);
               this.getUserByRegistration(res.data.id);
-              this.$router.push({
-                name: "dashboard",
-              });
             })
             .catch(() => {
               this.$router.push({
                 name: "create_organisation",
               });
             })
-            .finally(() => {});
+            .finally(() => {
+              this.$router.push({
+                name: "dashboard",
+              });
+            });
         })
         .catch(() => {})
         .finally(() => {
@@ -194,6 +194,28 @@ export default {
           );
         });
     },
+
+    getTotalYearlyExpenditures(id) {
+       let payload = {
+        url: `/api/protected/expenditures_total?session_id=${id}`,
+        msg: "none",
+        color: "default",
+        status: "none",
+        error_msg: "An Error occurred! Could not fetch payment categories",
+        has_commit: true,
+        show_feedback: false,
+        show_spinner: false,
+        has_path_val: false,
+        commit: "SET_TOTAL_YEARLY_EXPENDITURE",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.$store.dispatch("getRequest", payload).then(() => {
+      });
+    }
   },
   components: {},
 };

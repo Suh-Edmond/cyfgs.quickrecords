@@ -29,7 +29,7 @@ export default {
 
     getTotalYearlyExpenditures(id) {
        let payload = {
-        url: `api/protected/expenditures_total?session_id=${id}`,
+        url: `/api/protected/expenditures_total?session_id=${id}`,
         msg: "none",
         color: "default",
         status: "none",

@@ -5,25 +5,25 @@
         <q-toolbar-title
           :class="$q.screen.lg ? 'header_title' : 'header_title_small'"
         >
-          <span class="app_name">Financial</span>Assistant
+          <span class="app_name">{{$t('app.nameOne')}}</span>{{$t('app.nameTwo')}}
         </q-toolbar-title>
         <div class="header_note" v-show="$q.screen.lg">
           <div class="flex" v-if="this.$router.currentRoute.name == 'Login' && getOrganisation == null">
-            <div class="account_text">Don't Have an Account ?</div>
+            <div class="account_text">{{$t('app.noAccountMsg')}}</div>
             <div class="account_text__signup">
               <router-link to="/auth/register" class="sign_link"
                 ><span @click="checkAccountExist('SIGN_UP')"
-                  >SIGN UP</span
+                  >{{$t('app.signUpLabel')}}</span
                 ></router-link
               >
             </div>
           </div>
           <div class="flex" v-if="this.$router.currentRoute.name == 'Register' && getOrganisation == null">
-            <div class="account_text">Already Have an Account ?</div>
+            <div class="account_text">{{$t('app.haveAccountMsg')}}</div>
             <div class="account_text__signup">
               <router-link to="/auth/login" class="sign_link"
                 ><span @click="checkAccountExist('SIGN_IN')"
-                  >SIGN IN</span
+                  >{{$t('app.signInLabel')}}</span
                 ></router-link
               >
             </div>
@@ -74,8 +74,8 @@
       <q-toolbar>
         <q-toolbar-title>
           <p class="footer_text">
-            <span class="material-icons copy_right"> copyright </span>Copy Right
-            {{ year }}. All Rights Reserved.
+            <span class="material-icons copy_right"> copyright </span>{{$t('app.copyright')}}
+            {{ year }}.{{$t('app.allRightsReserved')}}
           </p>
         </q-toolbar-title>
       </q-toolbar>

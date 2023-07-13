@@ -7,14 +7,14 @@
       <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12">
         <q-card>
           <q-card-section>
-            <div class="text_h6 text-center q-pt-xs q-pb-sm">SIGN UP</div>
+            <div class="text_h6 text-center q-pt-xs q-pb-sm">{{$t('app.signUpLabel')}}</div>
             <div class="text-subtitle2 text-center q-pb-xs">
-              Sign up to get started with Financial Assistant
+              {{$t('app.signUpCaptionMsg')}}
             </div>
             <div class="q-pa-md">
               <q-form @submit="onSubmit" class="q-gutter-md">
                 <div class="q-pb-md">
-                  <label for="name" class="form_field">Name <span class="text-red">*</span></label>
+                  <label for="name" class="form_field">{{$t('app.nameLabel')}} <span class="text-red">*</span></label>
                   <q-input
                     v-model="user.name"
                     outlined
@@ -24,7 +24,7 @@
                   />
                 </div>
                 <div class="q-pb-md">
-                  <label for="telephone" class="form_field">Telephone <span class="text-red">*</span></label>
+                  <label for="telephone" class="form_field">{{$t('app.telephoneLabel')}} <span class="text-red">*</span></label>
                   <q-input
                     v-model="user.telephone"
                     outlined
@@ -36,7 +36,7 @@
                   />
                 </div>
                 <div class="q-pb-sm">
-                  <label for="email" class="form_field">Email</label>
+                  <label for="email" class="form_field">{{$t('app.emailLabel')}}</label>
                   <q-input
                     v-model="user.email"
                     outlined
@@ -44,11 +44,11 @@
                     type="email"
                     bottom-slots
                   >
-                    <template v-slot:hint> Email is Optional </template>
+                    <template v-slot:hint> {{$t('app.emailHint')}} </template>
                   </q-input>
                 </div>
                 <div class="q-pb-md">
-                  <label for="password" class="form_field">Password <span class="text-red">*</span></label>
+                  <label for="password" class="form_field">{{$t('app.passwordLabel')}} <span class="text-red">*</span></label>
                   <q-input
                     v-model="user.password"
                     :type="is_pwd ? 'password' : 'text'"
@@ -66,7 +66,7 @@
                 </div>
                 <div class="q-pb-sm">
                   <label for="confirm_password" class="form_field"
-                    >Confirm Password <span class="text-red">*</span></label
+                    >{{ $t('app.confirmPasswordLabel') }}<span class="text-red">*</span></label
                   >
                   <q-input
                     v-model="user.password_confirmation"
@@ -84,7 +84,7 @@
                       />
                     </template>
                     <template v-slot:hint v-if="!validatePasswordMatch">
-                      <span class="text-red">Password must match</span>
+                      <span class="text-red">{{$t('app.passwordNotMatchMsg')}}</span>
                     </template>
                   </q-input>
                 </div>
@@ -101,11 +101,11 @@
                   <q-icon name="arrow_forward" size="xs" class="q-pl-lg"></q-icon>
                   </q-btn>
                   <div class="account_text" v-if="!$q.screen.lg">
-                    Already Have an Account ?<router-link
+                   {{$t('app.haveAccountMsg')}}<router-link
                       to="/auth/login"
                       class="sign_link"
                     >
-                      <span>SIGN IN</span>
+                      <span>{{$t('app.signInLabel')}}</span>
                     </router-link>
                   </div>
                 </div>
@@ -132,7 +132,7 @@ export default {
       },
       is_pwd: true,
       is_confirm_pwd: true,
-      label_sigup: "SIGN UP",
+      label_sigup: this.$t('app.signUpLabel'),
       loading: false,
       has_logged_in: false,
       disabled: true,

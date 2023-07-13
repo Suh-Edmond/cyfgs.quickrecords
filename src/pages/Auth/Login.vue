@@ -9,12 +9,12 @@
           <q-card-section>
             <div class="text_h6 text-center q-pt-sm q-pb-sm"> {{ $t('app.signIn') }}</div>
             <div class="text-subtitle2 text-center q-pb-xs">
-              Sign in to continue to Financial Assistant
+              {{$t('app.loginCaption')}}
             </div>
             <q-form @submit="onSubmit" class="q-gutter-md q-mt-lg q-px-md">
               <div>
                 <label for="credential" class="form_field"
-                  >Telephone <span class="text-red">*</span></label
+                  >{{$t('app.telephoneLabel')}} <span class="text-red">*</span></label
                 >
                 <q-input
                   v-model="user.credential"
@@ -28,7 +28,7 @@
               </div>
               <div>
                 <label for="password" class="form_field"
-                  >Password <span class="text-red">*</span></label
+                  >{{$t('app.passwordLabel')}} <span class="text-red">*</span></label
                 >
                 <q-input
                   v-model="user.password"
@@ -62,7 +62,7 @@
                   ></q-icon>
                 </q-btn>
                 <span class="forgot_password text-right"
-                  >Forgot Password ?</span
+                  >{{$t('app.forgotPasswordMsg')}}</span
                 >
               </div>
             </q-form>
@@ -97,7 +97,7 @@ export default {
         credential: null,
       },
       isPwd: true,
-      label_sigin: "SIGN IN",
+      label_sigin: this.$t('app.loginBtnLabel'),
       loading: false,
       color: "primary",
       no_caps: true,

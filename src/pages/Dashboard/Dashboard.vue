@@ -13,7 +13,7 @@
                 statistics_type == 'MEMBERSHIP' ? 'text-h6-active' : 'text-h6'
               "
             >
-              Members
+              {{$t('app.memberLabel')}}
             </div>
           </q-card-section>
 
@@ -51,7 +51,7 @@
                 statistics_type == 'SAVINGS' ? 'text-h6-active' : 'text-h6'
               "
             >
-              Savings
+              {{$t('app.savingtitle')}}
             </div>
           </q-card-section>
 
@@ -93,7 +93,7 @@
                   : 'text-h6'
               "
             >
-              Contributions
+              {{$t('app.contributionName')}}
             </div>
           </q-card-section>
 
@@ -135,7 +135,7 @@
                 statistics_type == 'EXPENDITURES' ? 'text-h6-active' : 'text-h6'
               "
             >
-              Expenditures
+              {{$t('app.expenditureName')}}
             </div>
           </q-card-section>
 

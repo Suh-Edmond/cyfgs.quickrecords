@@ -11,7 +11,7 @@
           v-if="$q.screen.lt.md"
         />
         <q-toolbar-title class="toolbar_title">
-          Welcome {{ auth_user_role }}
+          {{$t('app.welcomeLabel')}} {{ auth_user_role }}
         </q-toolbar-title>
         <div>
           <q-avatar size="xl">
@@ -27,7 +27,7 @@
                   </span>
                 </q-item-section>
                 <q-item-section class="text-center drop_down_text">
-                  <q-item-label>My Account</q-item-label>
+                  <q-item-label>{{$t('app.accountLabel')}}</q-item-label>
                 </q-item-section>
               </q-item>
               <q-separator />
@@ -41,7 +41,7 @@
                   class="text-center drop_down_text"
                   @click="logoutUser"
                 >
-                  <q-item-label>Logout</q-item-label>
+                  <q-item-label>{{$t('app.logoutLabel')}}</q-item-label>
                 </q-item-section>
               </q-item>
             </q-list>
@@ -133,8 +133,8 @@
       <q-toolbar>
         <q-toolbar-title>
           <p class="footer_text">
-            <span class="material-icons copy_right"> copyright </span>Copy Right
-            {{ year }}. All Rights Reserved.
+            <span class="material-icons copy_right"> copyright </span>{{ $t('app.copyright') }}
+            {{ year }}. {{$t('app.allRightsReserved')}}
           </p>
         </q-toolbar-title>
       </q-toolbar>

@@ -3,10 +3,9 @@
 
 
 export default {
-  app: {
-    failed: "Action failed",
-    success: "Action was successful",
-    fin: 'Financial',
-    appName2: "Assistant",
-  },
+  app:{
+    signIn: 'SIGN IN',
+    english:'English',
+    french:'French'
+  }
 };

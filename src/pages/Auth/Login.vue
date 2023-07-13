@@ -7,7 +7,7 @@
       <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12">
         <q-card :class="$q.screen.lg ? 'q-mt-lg' : 'q-mt-md q-mb-xl'">
           <q-card-section>
-            <div class="text_h6 text-center q-pt-sm q-pb-sm">SIGN IN</div>
+            <div class="text_h6 text-center q-pt-sm q-pb-sm"> {{ $t('app.signIn') }}</div>
             <div class="text-subtitle2 text-center q-pb-xs">
               Sign in to continue to Financial Assistant
             </div>
@@ -79,7 +79,6 @@ import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
 import memberMixinVue from "src/mixins/memberMixin.vue";
 import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
 import ContributionsMixinVue from "src/mixins/ContributionsMixin.vue";
-import ExpenditureItemDetailMixinVue from "src/mixins/ExpenditureItemDetailMixin.vue";
 
 export default {
   name: "PageIndex",

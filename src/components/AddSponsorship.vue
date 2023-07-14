@@ -2,7 +2,7 @@
   <div class="q-pa-md">
     <div class="q-ml-sm q-mb-lg">
       <label class="instruction_info"
-        >All fields with <span class="text-red">*</span> are required</label
+        >{{ $t('app.warningField') }} <span class="text-red">*</span> {{$t('app.fields')}}</label
       >
     </div>
     <div class="q-px-sm">
@@ -10,14 +10,14 @@
         <div>
           <div class="q-mb-md">
             <label for="name" class="form_field"
-              >Payment Activity <span class="text-red">*</span>
+              >{{$t('app.paymentItem')}} <span class="text-red">*</span>
             </label>
             <q-select
               outlined
               dense
               v-model="sponsorship.payment_item_id"
               :options="payment_items"
-              label="Search..."
+              :label="$t('app.searchPaymentItem')"
               input-debounce="0"
               use-input
               clearable
@@ -27,7 +27,7 @@
               <template v-slot:no-option>
                 <q-item>
                   <q-item-section class="text-grey">
-                    No results
+                    {{$t('app.noResults')}}
                   </q-item-section>
                 </q-item>
               </template>
@@ -36,7 +36,7 @@
           <div>
             <div class="q-mb-md">
               <label for="name" class="form_field"
-                >Sponsor's Name <span class="text-red">*</span>
+                >{{$t('app.sponsorNameLabel')}} <span class="text-red">*</span>
               </label>
               <q-input
                 outlined
@@ -48,7 +48,7 @@
             </div>
             <div class="q-mb-md">
               <label for="credential" class="form_field"
-                >Amount Deposited(XAF)<span class="text-red">*</span></label
+                >{{$t('app.amountDeposited')}}<span class="text-red">*</span></label
               >
               <q-input
                 v-model.lazy="sponsorship.amount_deposited"
@@ -60,7 +60,7 @@
               </q-input>
             </div>
             <div class="q-mb-md">
-              <label for="credential" class="form_field">Comment </label>
+              <label for="credential" class="form_field">{{$t('app.comment')}} </label>
               <q-input
                 v-model="sponsorship.comment"
                 outlined
@@ -74,7 +74,7 @@
               <div>
                 <ButtonVue
                   class="form_button"
-                  label="Save"
+                  :label="$t('app.saveBtnLabel')"
                   :loading="loading"
                   :color="'primary'"
                   :disabled="validateForm"
@@ -92,13 +92,12 @@
 <script>
 import ButtonVue from "src/components/Button.vue";
 import SponsorshipMixin from "src/mixins/SponsorshipMixin.vue";
-import PaymentItemMixinVue from 'src/mixins/PaymentItemMixin.vue';
 
 export default {
   mixins: [SponsorshipMixin],
 
   mounted() {
-    let heading = "Sponsorship Information";
+    let heading = this.$t('app.sponsorshipHeading');
 
     this.$emit("set-heading", heading);
     this.getPaymentActivitiesFromStatus();
@@ -150,12 +149,12 @@ export default {
           amount_deposited: JSON.parse(this.sponsorship.amount_deposited),
           comment: this.sponsorship.comment,
         },
-        msg: "Sponsorship saved Successfully",
+        msg: this.$t('app.addSponsorshipSuccessMsg'),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: "An Error occurred! Please try again",
+        error_msg: this.$t('app.defaultErrorMsg'),
         has_commit: false,
         commit: "none",
         to_be_store_data: {

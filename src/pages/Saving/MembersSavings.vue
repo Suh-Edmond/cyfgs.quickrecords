@@ -26,7 +26,7 @@
               outlined
               dense
               :options="years"
-              label="Search year..."
+              :label="$t('app.searchYear')"
               use-input
               input-debounce="0"
               clearable
@@ -35,7 +35,7 @@
               <template v-slot:no-option>
                 <q-item>
                   <q-item-section class="text-grey">
-                    No results
+                    {{ $t("app.noResults") }}
                   </q-item-section>
                 </q-item>
               </template>
@@ -47,7 +47,7 @@
               outlined
               dense
               :options="monthsOptions"
-              label="Search month..."
+              :label="$t('app.searchMonth')"
               use-input
               input-debounce="0"
               clearable
@@ -56,7 +56,7 @@
               <template v-slot:no-option>
                 <q-item>
                   <q-item-section class="text-grey">
-                    No results
+                    {{ $t("app.noResults") }}
                   </q-item-section>
                 </q-item>
               </template>
@@ -65,7 +65,7 @@
           <div class="col-md-6 col-lg-6 col-xs-12 col-sm-12 flex q-pl-md">
             <div>
               <q-btn
-                :label="'Filter'"
+                :label="$t('app.filter')"
                 :loading="is_fetching"
                 :color="'primary'"
                 :disabled="validateFilter"
@@ -78,7 +78,7 @@
             <q-space />
             <div class="button q-pb-xs">
               <q-btn
-                :label="'Print'"
+                :label="$t('app.print')"
                 :loading="loading"
                 :color="'positive'"
                 :disabled="false"
@@ -124,7 +124,7 @@
       >
         <div>
           <q-btn
-            label="Filter"
+            :label="$t('app.filter')"
             :loading="is_fetching"
             :color="'primary'"
             :disabled="false"
@@ -137,7 +137,7 @@
         <q-space />
         <div class="button q-pb-xs">
           <q-btn
-            :label="'Print'"
+            :label="$t('app.print')"
             :loading="loading"
             :color="'positive'"
             :disabled="getFilteredSavings.length == 0"
@@ -178,18 +178,18 @@ import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
 import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
 const months = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
+  this.$t("app.januaryName"),
+  this.$t("app.februaryName"),
+  this.$t("app.marchName"),
+  this.$t("app.aprilName"),
+  this.$t("app.mayName"),
+  this.$t("app.juneName"),
+  this.$t("app.julyName"),
+  this.$t("app.augustName"),
+  this.$t("app.septemberName"),
+  this.$t("app.octoberName"),
+  this.$t("app.novemberName"),
+  this.$t("app.decemberName"),
 ];
 export default {
   mixins: [UserSavingMixinVue, HelperMixinVue, CurrentYearMixinVue],
@@ -303,8 +303,8 @@ export default {
           field: "action",
         },
       ],
-      label: "Delete",
-      message: "Are you sure you want to delete this Member Saving?",
+      label: this.$t("app.delete"),
+      message: this.$t("app.deleteSavingWarningMsg"),
       is_fetching: false,
       search_data: null,
       savings: [],
@@ -461,7 +461,7 @@ export default {
     searchSavings() {
       let payload = {
         data: null,
-        tab: "Search Savings",
+        tab: this.$t("app.searchSaving"),
       };
 
       this.$emit("search-member-saving", payload);
@@ -482,7 +482,7 @@ export default {
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: false,
-        error_msg: "An Error occurred! Please try again",
+        error_msg: this.$t("app.defaultErrorMsg"),
         has_commit: false,
         commit: "none",
         to_be_store_data: {

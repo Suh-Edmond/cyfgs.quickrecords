@@ -2,14 +2,14 @@
   <div class="q-pa-md">
     <div class="q-ml-sm q-mb-lg">
       <label class="text-muted q-ml-sm instruction_info"
-        >All fields with <span class="text-red">*</span> are required</label
+        >{{$t('app.warningField')}}<span class="text-red">*</span> {{$t('app.fields')}}</label
       >
     </div>
     <div class="q-mt-md q-mx-md">
       <q-form @submit="onAddSaving" class="q-gutter-md">
         <div>
           <label for="name" class="form_field"
-            >Member Name <span class="text-red">*</span>
+            >{{$t('app.memberName')}}<span class="text-red">*</span>
           </label>
           <q-select
             outlined
@@ -28,7 +28,7 @@
             </template>
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey"> No results </q-item-section>
+                <q-item-section class="text-grey"> {{$t('app.noResults')}} </q-item-section>
               </q-item>
             </template>
 
@@ -36,7 +36,7 @@
         </div>
         <div>
           <label for="credential" class="form_field q-mt-ms"
-            >Amount <span class="text-red">*</span></label
+            >{{$t('app.amount')}} <span class="text-red">*</span></label
           >
           <q-input
             v-model="saving.amount_deposited"
@@ -47,21 +47,21 @@
         </div>
         <div>
           <label for="credential" class="form_field"
-            >Comment </label
+            >{{$t('app.comment')}} </label
           >
           <q-input
             v-model="saving.comment"
             outlined
             dense
             type="textarea"
-            placeholder="Provide any comment about this saving"
+            :placeholder="$t('app.savingComment')"
           />
         </div>
         <div class="flex q-mt-lg justify-end">
           <div>
             <ButtonVue
               class="form_button"
-              :label="'Save'"
+              :label="$t('app.saveBtnLabel')"
               :loading="loading"
               :color="'primary'"
               :disabled="validateForm"
@@ -84,7 +84,7 @@ export default {
   mixins: [memberMixinVue, organisationMixinVue, UserSavingMixinVue],
 
   mounted() {
-    let heading = "Member Savings Information";
+    let heading = this.$t('app.addSavingHeading');
     this.$emit("set-heading", heading);
 
     this.getOrganisationMembers(this.getOrganisationId, false);
@@ -157,12 +157,12 @@ export default {
           comment: this.saving.comment,
           id: this.saving.id,
         },
-        msg: "Member Saving save successfully",
+        msg: this.$t('app.addSavingSuccessMsg'),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: "An Error occurred! Please try again",
+        error_msg: this.$t('app.defaultErrorMsg'),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -272,7 +272,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 11px;
+  font-size: 12px;
   align-items: center;
   letter-spacing: 0.01em;
   color: $grey2;

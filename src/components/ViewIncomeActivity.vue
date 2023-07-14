@@ -4,7 +4,7 @@
       <div class="flex q-pb-md">
         <label for="name" class="field"
           ><span> <q-icon name="category" size="xs" class="q-pr-sm" /> </span
-          >Name:
+          >{{$t('app.nameLabel')}}:
           <span class="field_value field_name">{{
             getCurrentIncomeActivity.name
           }}</span></label
@@ -14,7 +14,7 @@
         <label for="name" class="field"
           ><span>
             <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
-          >Amount:
+          >{{$t('app.amount')}}:
           <span class="field_value field_amount"
             >{{
               Number(getCurrentIncomeActivity.amount).toLocaleString()
@@ -26,7 +26,7 @@
       <div class="flex q-pb-md">
         <label for="name" class="field"
           ><span> <q-icon name="category" size="xs" class="q-pr-sm" /> </span
-          >Payment Activity:
+          >{{$t('app.paymentItem')}}:
           <span
             class="field_value field_item"
             v-if="getCurrentIncomeActivity.payment_item != null"
@@ -35,14 +35,14 @@
           <span
             class="field_value field_item"
             v-if="getCurrentIncomeActivity.payment_item == null"
-            >None</span
+            >{{$t('app.none')}}</span
           >
         </label>
       </div>
       <div class="flex q-pb-md">
         <label for="name" class="field"
           ><span> <q-icon name="schedule" size="xs" class="q-pr-sm" /> </span
-          >Date:
+          >{{$t('app.date')}}:
           <span class="field_value field_date">{{
             getFormatIncomeDate
           }}</span></label
@@ -51,7 +51,7 @@
       <div class="flex q-pb-md">
         <label for="name" class="field"
           ><span> <q-icon name="location_on" size="xs" class="q-pr-sm" /> </span
-          >Venue:
+          >{{$t('app.venue')}}:
           <span class="field_value field_venue">{{
             getCurrentIncomeActivity.venue
           }}</span></label
@@ -64,7 +64,7 @@
           v-show="getCurrentIncomeActivity.approve == 'DECLINED'"
           ><span>
             <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span
-          >Status:
+          >{{$t('app.status')}}:
           <span class="item_statue unapproved_color">{{
             getCurrentIncomeActivity.approve
           }}</span></label
@@ -75,7 +75,7 @@
           v-show="getCurrentIncomeActivity.approve == 'APPROVED'"
           ><span>
             <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span
-          >Status:
+          >{{$t('app.status')}}:
           <span class="item_statue approved_color">
             {{ getCurrentIncomeActivity.approve }}</span
           ></label
@@ -86,7 +86,7 @@
           v-show="getCurrentIncomeActivity.approve == 'PENDING'"
           ><span>
             <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span
-          >Status:
+          >{{$t('app.status')}}:
           <span class="item_statue pending_color">
             {{ getCurrentIncomeActivity.approve }}</span
           ></label
@@ -96,7 +96,7 @@
       <div class="q-mb-md">
         <label for="amount" class="field"
           ><span> <q-icon name="person" size="xs" class="q-pr-sm" /> </span
-          >Created By:
+          >{{$t('app.createdBy')}}:
           <span class="field_value detail_created_by">
             {{ getCurrentIncomeActivity.updated_by }}
           </span></label
@@ -105,8 +105,8 @@
       <div class="flex q-pb-md">
         <label for="name" class="field"
           ><span> <q-icon name="description" size="xs" class="q-pr-sm" /> </span
-          >Comment: <span class="field_value description" v-if="getCurrentIncomeActivity.description == null">
-        None
+          >{{$t('app.comment')}}: <span class="field_value description" v-if="getCurrentIncomeActivity.description == null">
+
       </span>
         </label>
       </div>
@@ -123,7 +123,7 @@ import moment from "moment";
 
 export default {
   created() {
-    let heading = "Income Activity Information";
+    let heading = this.$t('app.addIncomeActivityHeading');
     this.$emit("set-heading", heading);
   },
   data() {

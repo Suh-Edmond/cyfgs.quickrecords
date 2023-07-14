@@ -18,7 +18,7 @@
             outlined
             dense
             :options="options"
-            label="Select an option to Generate Report"
+            :label="$t('app.selectOptionGenerateReport')"
             @input="selectedOption"
             clearable
           />
@@ -40,7 +40,7 @@
           >
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey"> No results </q-item-section>
+                <q-item-section class="text-grey"> {{$t('app.noResults')}} </q-item-section>
               </q-item>
             </template>
           </q-select>
@@ -50,7 +50,7 @@
           :class="$q.screen.lg ? 'q-pr-md' : ''"
         >
           <q-btn
-            label="Generate Report"
+            :label="$t('app.generateReport')"
             color="primary"
             @click="generateReport"
             no-caps
@@ -64,7 +64,7 @@
           class="button q-pb-xs col-md-3 col-lg-3 col-xs-12 col-sm-12 flex justify-end"
         >
           <q-btn
-            label="Print"
+            :label="$t('app.print')"
             :loading="loading"
             color="positive"
             :disabled="false"
@@ -151,14 +151,14 @@ export default {
         switch (this.option.value) {
           case 1:
             this.getPaymentItems();
-            this.selected_option_label = "Select Activity";
+            this.selected_option_label = this.$t('app.searchPaymentItem');
             break;
           case 2:
-            this.selected_option_label = "Select Quarter";
+            this.selected_option_label = this.$t('app.selectQuarter');
             break;
           case 3:
             this.getSessionsFromState;
-            this.selected_option_label = "Select Year";
+            this.selected_option_label = this.$t('app.selectYearLabel');
             break;
         }
       }
@@ -219,7 +219,7 @@ export default {
 
     generateActivityReport() {
       this.is_fetching = true;
-       this.heading = `Financial Report for  ${this.group.label} ${this.getCurrentYear.year}`;
+       this.heading = this.$t('app.reportTitle')+`${this.group.label} ${this.getCurrentYear.year}`;
       let payload = {
         status: "none",
         url: `/api/protected/activity/${this.group.value}/generate-report`,
@@ -250,7 +250,7 @@ export default {
 
     generateQuarterlyReport() {
       this.is_fetching = true;
-      this.heading = `Quarterly Report from  ${this.group.label} ${this.getCurrentYear.year}`;
+      this.heading = this.$t('app.quarterReportTitle') +`${this.group.label} ${this.getCurrentYear.year}`;
       let payload = {
         status: "none",
         url: `/api/protected/generate-quarterly-report?quarter=${this.group.value}`,
@@ -281,7 +281,7 @@ export default {
 
     generatYearlyReport() {
       this.is_fetching = true;
-      this.heading = `Financial Report for the Year  ${this.getCurrentYear.year}`;
+      this.heading = this.$t('app.yearReportTitle') + `${this.getCurrentYear.year}`;
       let payload = {
         status: "none",
         url: `/api/protected/report/yearly/generate?year_id=${this.group.value}&year_label=${this.group.label}`,

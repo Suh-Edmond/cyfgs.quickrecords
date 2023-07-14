@@ -2,7 +2,7 @@
   <div class="q-pa-md">
     <div>
       <div class="q-mb-md">
-        <label for="heading" class="text">Filter by user information </label>
+        <label for="heading" class="text">{{$t('app.filterUserSaving')}}</label>
       </div>
       <!-- search by name of member -->
       <div class="q-mb-lg row q-gutter-md">
@@ -12,13 +12,13 @@
             outlined
             dense
             type="text"
-            placeholder="Filter by name"
+            :placeholder="$t('app.filterName')"
           />
         </div>
         <div class="col-md-2 col-lg-2 col-sm-12 col xs-12">
           <q-btn
             class="form_button"
-            label="Filter"
+            :label="$t('app.filter')"
             :loading="loading_user_info"
             :color="'primary'"
             :disabled="validateFilterByUserInfo"
@@ -30,7 +30,7 @@
       </div>
       <hr class="separator" />
       <div class="q-my-md">
-        <label for="heading" class="text">Filter by saved amount </label>
+        <label for="heading" class="text">{{$t('app.filterAmount')}} </label>
       </div>
       <!-- search by amount deposited -->
       <div class="q-mb-lg row q-gutter-md">
@@ -46,7 +46,7 @@
         <div class="col-md-2 col-lg-2 col-sm-12 col xs-12">
           <q-btn
             class="form_button"
-            label="Filter"
+            :label="$t('app.filter')"
             :loading="loading_save_amount"
             :color="'primary'"
             :disabled="validateAmount"
@@ -58,7 +58,7 @@
       </div>
       <hr class="separator" />
       <div class="q-my-md">
-        <label for="heading" class="text">Filter by status</label>
+        <label for="heading" class="text">{{$t('app.filterStatus')}}</label>
       </div>
       <!-- filter by status of savings -->
       <div class="q-mb-lg row q-gutter-xs">
@@ -81,7 +81,7 @@
 
       <hr class="separator" />
       <div class="q-my-md">
-        <label for="heading" class="text">Filter by delay</label>
+        <label for="heading" class="text">{{$t('app.filterDelay')}}</label>
       </div>
       <!-- search by year -->
       <div class="q-mb-md row">
@@ -90,7 +90,7 @@
             v-model="param.year"
             outlined
             dense
-            label="Search year..."
+            :label="$t('app.searchYear')"
             :options="years"
             input-debounce="0"
             use-input
@@ -99,7 +99,7 @@
           >
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey"> No results </q-item-section>
+                <q-item-section class="text-grey"> {{$t('app.noResults')}}</q-item-section>
               </q-item>
             </template>
           </q-select>
@@ -113,7 +113,7 @@
             outlined
             dense
             :options="months"
-            label="Search month..."
+            :label="$t('app.searchMonth')"
             input-debounce="0"
             use-input
             clearable
@@ -121,7 +121,7 @@
           >
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey"> No results </q-item-section>
+                <q-item-section class="text-grey">{{$t('app.noResults')}} </q-item-section>
               </q-item>
             </template>
           </q-select>
@@ -136,7 +136,7 @@
             v-model="param.date"
             mask="date"
             outlined
-            placeholder="Search by date"
+            :placeholder="$t('app.selectDate')"
           >
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
@@ -165,7 +165,7 @@
             v-model="param.date_range"
             mask="date"
             outlined
-            placeholder="Search by date-range"
+            :placeholder="$t('app.selectDateRange')"
           >
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
@@ -189,7 +189,7 @@
       <div class="flex justify-end q-mb-lg">
         <div class="q-mr-xl">
           <q-btn
-            label="Reset"
+            :label="$t('app.reset')"
             color="primary"
             no-caps
             outline
@@ -200,7 +200,7 @@
         <div>
           <q-btn
             class="filter_btn"
-            label="Filter"
+            :label="$t('app.filter')"
             :loading="loading"
             :color="'primary'"
             :disabled="validateForm"
@@ -237,7 +237,7 @@ export default {
   mixins: [organisationMixinVue, UserSavingMixinVue, CurrentYearMixinVue],
 
   mounted() {
-    let heading = "Search Member's Savings";
+    let heading = this.$t('app.searchSaving');
 
     this.$emit("set-heading", heading);
   },

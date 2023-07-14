@@ -2,14 +2,14 @@
   <div class="q-pa-md">
     <div class="q-ml-sm q-mb-lg">
       <label class="text-muted"
-        >All fields with <span class="text-red">*</span> are required</label
+        >{{$t('app.warningField')}} <span class="text-red">*</span> {{$t('app.fields')}}</label
       >
     </div>
     <div class="q-px-sm">
       <q-form @submit="onUpdateContribution" class="q-gutter-md">
         <div>
           <div class="q-mb-md">
-            <label for="name" class="form_field">Payment Category </label>
+            <label for="name" class="form_field">{{$t('app.paymentCategory')}} </label>
             <q-select
               outlined
               dense
@@ -19,7 +19,7 @@
             </q-select>
           </div>
           <div class="q-mb-md">
-            <label for="name" class="form_field">Payment Item </label>
+            <label for="name" class="form_field">{{$t('app.paymentItem')}}</label>
             <q-select
               outlined
               dense
@@ -30,7 +30,7 @@
           </div>
           <div class="q-mb-md">
             <label for="credential" class="form_field"
-              >Amount Payable(XAF)</label
+              >{{$t('app.amountPayable')}} (XAF)</label
             >
             <q-input
               v-model="contribution.amount_payable"
@@ -43,19 +43,19 @@
 
           <div>
             <div class="q-mb-md">
-              <label for="name" class="form_field">Member's Name </label>
+              <label for="name" class="form_field">{{$t('app.membersName')}} </label>
               <q-select
                 outlined
                 dense
                 v-model="contribution.user_id"
-                placeholder="Type name to search..."
+                :placeholder="$t('app.searchMember')"
                 disable
               >
               </q-select>
             </div>
             <div class="q-mb-md">
               <label for="credential" class="form_field"
-                >Amount Deposited(XAF) <span class="text-red">*</span></label
+                >{{$t('app.amount_deposited')}}(XAF) <span class="text-red">*</span></label
               >
               <q-input
                 v-model.lazy="contribution.amount_deposited"

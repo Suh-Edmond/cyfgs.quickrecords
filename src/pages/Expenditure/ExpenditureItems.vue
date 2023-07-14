@@ -2,52 +2,100 @@
   <q-page>
     <!-- spinners -->
     <div class="flex justify-center">
-      <q-spinner-ios color="primary" size="2em" class="q-mb-lg" v-if="getLoadingState" />
+      <q-spinner-ios
+        color="primary"
+        size="2em"
+        class="q-mb-lg"
+        v-if="getLoadingState"
+      />
     </div>
 
     <div>
       <!-- header for filter categories -->
-      <div class="row q-ml-xs q-pt-xs" :class="$q.screen.lg ? 'q-pa-sm' : ''" :style="$q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-        ">
+      <div
+        class="row q-ml-xs q-pt-xs"
+        :class="$q.screen.lg ? 'q-pa-sm' : ''"
+        :style="
+          $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+        "
+      >
         <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
-          <q-select v-model="payment_item_id" outlined dense :options="filtered_payment_items"
-            label="Search payment item..." input-debounce="0" use-input clearable @filter="filterPaymentItems">
+          <q-select
+            v-model="payment_item_id"
+            outlined
+            dense
+            :options="filtered_payment_items"
+            :label="$t('app.searchPaymentItem')"
+            input-debounce="0"
+            use-input
+            clearable
+            @filter="filterPaymentItems"
+          >
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey"> No results </q-item-section>
+                <q-item-section class="text-grey">{{$t('app.notResults')}} </q-item-section>
               </q-item>
             </template>
           </q-select>
         </div>
         <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-pl-md">
-          <q-select v-model="status" outlined dense :options="statuses" label="Select status">
+          <q-select
+            v-model="status"
+            outlined
+            dense
+            :options="statuses"
+            :label="$t('app.selectStatusLabel')"
+          >
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey"> No results </q-item-section>
+                <q-item-section class="text-grey">{{$t('app.notResults')}} </q-item-section>
               </q-item>
             </template>
           </q-select>
         </div>
         <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-pl-md">
-          <q-select v-model="session" outlined dense :options="years" label="Search year..." use-input input-debounce="0"
-            clearable @filter="filterYears">
+          <q-select
+            v-model="session"
+            outlined
+            dense
+            :options="years"
+            :label="$t('app.searchYear')"
+            use-input
+            input-debounce="0"
+            clearable
+            @filter="filterYears"
+          >
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey"> No results </q-item-section>
+                <q-item-section class="text-grey">{{$t('app.notResults')}} </q-item-section>
               </q-item>
             </template>
           </q-select>
         </div>
         <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 flex q-pl-md">
           <div>
-            <q-btn label="Filter" color="primary" :disabled="validateFilter" no-caps icon-right="filter_list"
-              @click="filterItems" :loading="is_fetching">
+            <q-btn
+              :label="$t('app.filter')"
+              color="primary"
+              :disabled="validateFilter"
+              no-caps
+              icon-right="filter_list"
+              @click="filterItems"
+              :loading="is_fetching"
+            >
             </q-btn>
           </div>
           <q-space />
           <div class="button q-pb-xs">
-            <q-btn label="Print" :loading="loading" color="positive" :disabled="validateDownload" no-caps
-              icon-right="print" @click="downloadExpenditureItems"></q-btn>
+            <q-btn
+              :label="$t('app.print')"
+              :loading="loading"
+              color="positive"
+              :disabled="validateDownload"
+              no-caps
+              icon-right="print"
+              @click="downloadExpenditureItems"
+            ></q-btn>
           </div>
         </div>
       </div>
@@ -56,11 +104,21 @@
       <div>
         <div class="row q-pt-sm">
           <div class="col-md-12 col-xs-12 col-sm-12">
-            <CategoryTable :columns="columns" :data="getExpenditureItems" :label="label" :message="message"
-              :title="getExpenditureCategoryName" :show_payment_category="false" :show_payment_item="false"
-              :show_expenditure_category="false" :show_expenditure_item="true"
-              @edit-expenditure-item="editExpenditureItem" @view-expenditure-item="viewExpenditureItem"
-              @show-expenditure-item-details="showExpenditureItemDetails" @delete-row="deleteRow">
+            <CategoryTable
+              :columns="columns"
+              :data="getExpenditureItems"
+              :label="label"
+              :message="message"
+              :title="getExpenditureCategoryName"
+              :show_payment_category="false"
+              :show_payment_item="false"
+              :show_expenditure_category="false"
+              :show_expenditure_item="true"
+              @edit-expenditure-item="editExpenditureItem"
+              @view-expenditure-item="viewExpenditureItem"
+              @show-expenditure-item-details="showExpenditureItemDetails"
+              @delete-row="deleteRow"
+            >
             </CategoryTable>
           </div>
         </div>
@@ -139,8 +197,8 @@ export default {
         },
       ],
       data: [],
-      label: "Delete",
-      message: "Are you sure you want to delete this Expenditure Item ?",
+      label: this.$t('app.delete'),
+      message: this.$t('app.deleteExpenditureItemWarningMsg'),
       statuses: ["PENDING", "APPROVED", "DECLINED", "ALL"],
       status: "",
       start_filter: false,
@@ -173,15 +231,7 @@ export default {
     getTableTitle() {
       let title = "";
       if (this.payment_item_id != null) {
-        title = `Expenditures for ${this.payment_item_id.label}`;
-      }
-      return title;
-    },
-
-    getNotFoundMsgForPaymentItems() {
-      let title = "";
-      if (this.$store.getters.getCurrentExpenditureCategory != null) {
-        title = `Ooops!! No Expenditure Activity found under this Category [${this.$store.getters.getCurrentExpenditureCategory.name}]. Click the add button to add Expenditure Items.`;
+        title = this.$t('app.expenditureItemTitlePartName')`${this.payment_item_id.label}`;
       }
       return title;
     },
@@ -219,7 +269,7 @@ export default {
       );
 
       intermediate_tabs.push({
-        name: "Expenditure Item Details",
+        name: this.$t('app.expenditureItemDetailLabel'),
         has_intermediate_tab: true,
       });
 
@@ -261,7 +311,7 @@ export default {
         this.$store.getters.getCurrentExpenditureCategory.id;
       let payment_item_id =
         this.payment_item_id != null ? this.payment_item_id.value : "";
-        let session_id = this.session != "" ? this.session.value: "";
+      let session_id = this.session != "" ? this.session.value : "";
       let url = `/api/protected/expenditure-categories/expenditure-items/download?expenditure_category_id=${expenditure_category_id}&status=${this.status}&payment_item_id=${payment_item_id}&session_id=${session_id}`;
       let file_name = "Expenditure_Items.pdf";
       this.loading = this.downloadPdf(url, file_name);
@@ -282,13 +332,13 @@ export default {
           session: this.session.label,
         },
       });
-      let session_id = this.session != "" ? this.session.value: "";
+      let session_id = this.session != "" ? this.session.value : "";
       let payload = {
         url: `/api/protected/expenditure-items/payment-items/${this.payment_item_id.value}?status=${this.status}&session_id=${session_id}`,
         msg: "none",
         color: "default",
         status: "none",
-        error_msg: "An Error occurred! Could not fetch payment categories",
+        error_msg: this.$t('app.searchExpenditureItemErrorMsg'),
         has_commit: false,
         show_feedback: false,
         show_spinner: true,
@@ -352,7 +402,7 @@ export default {
           data: null,
         },
       };
-      this.$store.dispatch("getRequest", payload).then(() => { });
+      this.$store.dispatch("getRequest", payload).then(() => {});
     },
 
     getPaymentItemsFromStore() {
@@ -370,12 +420,12 @@ export default {
     deleteRow(data) {
       let payload = {
         url: `/api/protected/expenditure-categories/${data.expenditure_category.id}/expenditure-items/${data.id}`,
-        msg: `Payment Category deleted successfully`,
+        msg: this.$t('app.deleteExpenditureItemFeedbackMsg'),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: "An Error occurred! Please try again",
+        error_msg: this.$t('app.defaultErrorMsg'),
         has_commit: false,
         commit: "none",
         to_be_store_data: {

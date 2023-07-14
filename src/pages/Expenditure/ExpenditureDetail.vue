@@ -30,14 +30,14 @@
             outlined
             dense
             :options="statuses"
-            label="Select Status"
+            :label="$t('app.selectStatusLabel')"
             @input="filterItems"
           />
         </div>
         <q-space />
         <div class="button q-pb-xs">
           <q-btn
-            :label="'Print'"
+            :label="$t('app.print')"
             :loading="loading"
             :color="'positive'"
             :disabled="false"
@@ -166,7 +166,7 @@ export default {
           sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
         },
       ],
-      label: "Delete",
+      label: this.$t('app.delete'),
       message: "",
       statuses: ["PENDING", "APPROVED", "DECLINED", "ALL"],
       status: null,
@@ -183,7 +183,7 @@ export default {
     },
 
     getNotFoundMsg() {
-      return `Ooops!! No Details were recorded for this Expenditure Item [${this.getExpenditureItemName}].`;
+      return this.$t('app.notDetailsFound') + `[${this.getExpenditureItemName}].`;
     },
 
     getExpenditureItemAmount() {

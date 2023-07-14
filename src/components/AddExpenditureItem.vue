@@ -2,20 +2,20 @@
   <div class="q-pa-md">
     <div class="q-ml-sm q-mb-lg">
       <label class="text-muted q-ml-sm info"
-        >All fields with <span class="text-red">*</span> are required</label
+        >{{$t('app.warningField')}} <span class="text-red">*</span> {{$t('app.fields')}}</label
       >
     </div>
     <div class="q-mt-md q-mx-md">
       <q-form @submit="onAddExpenditureItem" class="q-gutter-sm">
         <div class="q-mb-md">
           <label for="name" class="form_field"
-            >Payment Activity <span class="text-red">*</span>
+            >{{$t('app.paymentItem')}} <span class="text-red">*</span>
           </label>
           <q-select
             outlined
             dense
             v-model="expenditure_item.payment_item_id"
-            label="Type to search..."
+            :label="$t('app.searchPaymentItem')"
             :options="payment_items"
             input-debounce="0"
             class="text_color"
@@ -27,7 +27,7 @@
         </div>
         <div>
           <label for="credential" class="form_field"
-            >Name <span class="text-red">*</span></label
+            >{{$t('app.nameLabel')}} <span class="text-red">*</span></label
           >
           <q-input
             v-model="expenditure_item.name"
@@ -39,7 +39,7 @@
         </div>
         <div>
           <label for="credential" class="form_field"
-            >Estimated Amount <span class="text-red">*</span></label
+            >{{$t('app.estimatedAmount')}} <span class="text-red">*</span></label
           >
           <q-input
             v-model="expenditure_item.amount"
@@ -51,7 +51,7 @@
         </div>
         <div>
           <label for="credential" class="form_field"
-            >Venue </label
+            >{{$t('app.venue')}} </label
           >
           <q-input
             v-model="expenditure_item.venue"
@@ -63,7 +63,7 @@
         </div>
         <div>
           <label for="credential" class="form_field"
-            >Date <span class="text-red">*</span></label
+            >{{$t('app.date')}} <span class="text-red">*</span></label
           >
           <q-input
             v-model="expenditure_item.date"
@@ -90,7 +90,7 @@
         </div>
         <div>
           <label for="credential" class="form_field"
-            >Comment </label
+            >{{$t('app.comment')}} </label
           >
           <q-input
             v-model="expenditure_item.comment"
@@ -98,14 +98,14 @@
             dense
             class="text_color"
             type="textarea"
-            placeholder="Provide any comment about this expenditure"
+            :placeholder="$t('app.expenditureComment')"
           />
         </div>
         <div class="flex q-mt-lg justify-end">
           <div>
             <ButtonVue
               class="form_button"
-              :label="'Save'"
+              :label="$t('app.saveBtnLabel')"
               :loading="loading"
               :color="'primary'"
               :disabled="validateForm"
@@ -127,7 +127,7 @@ export default {
   mixins: [expenditureItemMixinVue],
 
   mounted() {
-    let heading = "Expenditure Item Information";
+    let heading = this.$t('app.addExpenditureItemHeading');
     this.$emit("set-heading", heading);
 
     this.setFormFields(this.$store.getters.getUpdatedExpenditureItem);
@@ -191,12 +191,12 @@ export default {
           amount: this.expenditure_item.amount,
           comment: this.expenditure_item.comment,
         },
-        msg: "Expenditure Item save Successfully",
+        msg: this.$t('app.addExpenditureItemSuccessMsg'),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: "An Error occurred! Please try again",
+        error_msg: this.$t('app.defaultErrorMsg'),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -317,7 +317,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 11px;
+  font-size: 12;
   align-items: center;
   letter-spacing: 0.01em;
   color: $grey2;

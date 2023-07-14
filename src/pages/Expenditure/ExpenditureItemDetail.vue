@@ -25,12 +25,12 @@
             outlined
             dense
             :options="statuses"
-            label="Select Status"
+            :label="$t('app.selectStatusLabel')"
           />
         </div>
         <div class="q-pl-lg col-md-3 col-lg-3 col-xs-12 col-sm-12">
           <q-btn
-            label="Filter"
+            :label="$t('app.filter')"
             color="primary"
             :disabled="validateFilter"
             no-caps
@@ -43,7 +43,7 @@
         <q-space />
         <div class="button q-pb-xs">
           <q-btn
-            label="Print"
+            :label="$t('app.print')"
             :loading="loading"
             color="positive"
             :disabled="validateDownload"
@@ -149,8 +149,8 @@ export default {
           sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
         },
       ],
-      label: "Delete",
-      message: "Are you sure you want to delete this Expenditure Item Detail?",
+      label: this.$t('app.delete'),
+      message: this.$t('app.expenditureItemDetailDeleteMsg'),
       statuses: ["PENDING", "APPROVED", "DECLINED", "ALL"],
       status: "",
       filtered_items: [],
@@ -168,7 +168,7 @@ export default {
     getExpenditureItemDetails() {
       let data = [];
       if (this.filtered_items.length == 0 && !this.start_filter) {
-        if (this.$store.getters.getExpenditureItemDetails.length > 0) {
+        if (this.$store.getters.getExpenditureItemDetails != null) {
           this.$store.getters.getExpenditureItemDetails[0].forEach((ele) => {
             data.push({
               counter:
@@ -313,8 +313,7 @@ export default {
         msg: "none",
         color: "default",
         status: "none",
-        error_msg:
-          "An Error occurred! Could not fetch expenditure item details",
+        error_msg:this.$t('app.defaultErrorMsg'),
         has_commit: false,
         show_feedback: false,
         show_spinner: true,
@@ -373,12 +372,12 @@ export default {
     onDeleteRow(data) {
       let payload = {
         url: `/api/protected/expenditure-item-details/${data.id}`,
-        msg: `Expenditure item detail deleted successfully`,
+        msg: this.$t('app.expenditureItemDetailDeletedSuccessMsg'),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: "An Error occurred! Please try again",
+        error_msg:this.$t('app.defaultErrorMsg'),
         has_commit: false,
         commit: "none",
         to_be_store_data: {

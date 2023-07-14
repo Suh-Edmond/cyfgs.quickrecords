@@ -25,12 +25,12 @@
             outlined
             dense
             :options="getSessionsFromState"
-            label="Select year"
+            :label="$t('app.selectYearLabel')"
           />
         </div>
         <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-ml-md">
             <q-btn
-              label="Filter"
+              :label="$t('app.filter')"
               :loading="is_fetching"
               color="primary"
               :disabled="validateFilter"
@@ -43,7 +43,7 @@
         <q-space />
         <div class="button q-pb-xs">
           <q-btn
-            label="Print"
+            :label="$t('app.print')"
             :loading="loading"
             color="positive"
             :disabled="validateDownload"
@@ -130,8 +130,8 @@ export default {
           field: "action",
         },
       ],
-      label: "Delete",
-      message: "Are you sure you want to delete this Expenditure Category ?",
+      label: this.$t('app.delete'),
+      message: this.$t('app.deleteExpenditureCategoryWarningMsg'),
       start_filter: false,
       filteredExpenditureCategories: [],
       is_fetching:false,
@@ -152,7 +152,7 @@ export default {
             counter:
               this.$store.getters.getExpenditureCategories.indexOf(element) + 1,
             name: element.name,
-            expenditure_items: "View Expenditure Items",
+            expenditure_items: this.$t('app.viewExpenditureItems'),
             id: element.id,
             description: element.description,
             type: "EXPENDITURE_CATEGORY",
@@ -185,7 +185,7 @@ export default {
       let intermediate_tabs = [];
 
       intermediate_tabs.push({
-        name: "Expenditure Items",
+        name: this.$t('app.expenditureItemLabel'),
         has_intermediate_tab: true,
       });
 
@@ -214,7 +214,7 @@ export default {
         msg: "none",
         color: "default",
         status: "none",
-        error_msg: "An Error occurred! Could not fetch payment categories",
+        error_msg: this.$t('app.expenditureCategoryErrorMsg'),
         has_commit: false,
         show_feedback: false,
         show_spinner: true,
@@ -233,7 +233,7 @@ export default {
             this.filteredExpenditureCategories.push({
               counter: res.data.indexOf(element) + 1,
               name: element.name,
-              expenditure_items: "View Expenditure Items",
+              expenditure_items: this.$t('app.viewExpenditureItems'),
               id: element.id,
               description: element.description,
               type: "EXPENDITURE_CATEGORY",
@@ -254,12 +254,12 @@ export default {
     onDeleteRow(data) {
       let payload = {
         url: `/api/protected/organisations/${data.organisation_id}/expenditure-categories/${data.id}`,
-        msg: `Payment Item deleted successfully`,
+        msg: this.$t('app.expenditureItemDeleteSuccessMsg'),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: "An Error occurred! Please try again",
+        error_msg: this.$t('app.defaultErrorMsg'),
         has_commit: false,
         commit: "none",
         to_be_store_data: {

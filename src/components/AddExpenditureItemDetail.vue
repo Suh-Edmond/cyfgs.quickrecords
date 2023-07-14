@@ -2,14 +2,14 @@
   <div class="q-pa-md">
     <div class="q-ml-sm q-mb-md">
       <label class="text-muted q-ml-sm info"
-        >All fields with <span class="text-red">*</span> are required</label
+        >{{$t('app.warningField')}}<span class="text-red">*</span>{{ $t('app.fields') }}</label
       >
     </div>
     <div class="q-mt-md q-mx-md">
       <q-form @submit="onAddExpenditureItemDetail" class="q-gutter-sm">
         <div class="q-mb-md">
           <label for="credential" class="form_field"
-            >Name <span class="text-red">*</span></label
+            >{{$t('app.nameLabel')}} <span class="text-red">*</span></label
           >
           <q-input
             v-model="expenditure_item_detail.name"
@@ -20,7 +20,7 @@
         </div>
         <div class="q-mb-md">
           <label for="credential" class="form_field"
-            >Amount Given<span class="text-red">*</span></label
+            >{{$t('app.amountGivenLabel')}}<span class="text-red">*</span></label
           >
           <q-input
             v-model="expenditure_item_detail.amount_given"
@@ -30,12 +30,12 @@
             @input="validateExpenditureAmountGiven"
           />
           <small v-if="is_valid_amount_given" class="text-red">
-                <b>Amount given can not be more than Estimated Amount for the Activity</b>
+                <b>{{$t('app.amountGivenWarningMsg')}}</b>
               </small>
         </div>
         <div class="q-mb-md">
           <label for="credential" class="form_field"
-            >Amount Spent<span class="text-red">*</span></label
+            >{{ $t('app.amountSpent') }}<span class="text-red">*</span></label
           >
           <q-input
             v-model="expenditure_item_detail.amount_spent"
@@ -46,21 +46,21 @@
           </q-input>
         </div>
         <div class="q-mb-md">
-          <label for="credential" class="form_field">Comment</label>
+          <label for="credential" class="form_field">{{$t('app.comment')}}</label>
           <q-input
             v-model="expenditure_item_detail.comment"
             dense
             class="text_color"
             type="textarea"
             outlined
-            placeholder="Provide any comment about this expenditure"
+            :placeholder="$t('app.provideCommentDetail')"
           />
         </div>
         <div class="flex q-mt-lg justify-end">
           <div>
             <ButtonVue
               class="form_button"
-              :label="'Save'"
+              :label="$t('app.saveBtnLabel')"
               :loading="loading"
               :color="'primary'"
               :disabled="validateForm"
@@ -81,7 +81,7 @@ import moment from "moment";
 export default {
   mixins: [ExpenditureItemDetailMixinVue],
   created() {
-    let heading = "Expenditure activity detail information";
+    let heading = this.$t('app.detailHeading');
     this.$emit("set-heading", heading);
   },
   data() {
@@ -135,12 +135,12 @@ export default {
       let payload = {
         url: this.setActionUrl(this.expenditure_item_detail.id, item),
         data: this.expenditure_item_detail,
-        msg: "Expenditure Item detail save Successfully",
+        msg: this.$t('app.saveDetailSuccessMsg'),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: "An Error occurred! Please try again",
+        error_msg: this.t('app.defaultErrorMsg'),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -225,7 +225,6 @@ export default {
 
     validateExpenditureAmountGiven(){
       if (this.$store.getters.getCurrentExpenditureItem.amount > this.expenditure_item_detail.amount_given) {
-        console.log(1);
         this.is_valid_amount_given = true;
       }
     },
@@ -241,7 +240,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 11px;
+  font-size: 12px;
   align-items: center;
   letter-spacing: 0.01em;
   color: $grey2;

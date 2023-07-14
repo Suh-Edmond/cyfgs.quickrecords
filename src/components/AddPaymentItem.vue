@@ -2,27 +2,27 @@
   <div class="q-pa-md">
     <div class="q-ml-sm q-mb-lg">
       <label class="text-muted q-pl-sm info"
-        >All fields with <span class="text-red">*</span> are required</label
+        >{{$t('app.warningField')}}<span class="text-red">*</span>{{$t('app.fields')}}</label
       >
     </div>
     <div class="q-mt-md q-mx-md">
       <q-form @submit="onAddPaymentItem" class="q-gutter-md">
         <div>
           <label for="credential" class="form_field"
-            >Name <span class="text-red">*</span></label
+            >{{$t('app.nameLabel')}} <span class="text-red">*</span></label
           >
           <q-input v-model="payment_item.name" outlined dense type="text" />
         </div>
         <div>
           <label for="credential" class="form_field"
-            >Amount <span class="text-red">*</span></label
+            >{{$t('app.amount')}} <span class="text-red">*</span></label
           >
           <q-input v-model="payment_item.amount" outlined dense type="number" />
         </div>
         <div class="flex">
           <div>
             <label for="credential" class="form_field"
-              >Compulsory <span class="text-red">*</span></label
+              >{{$t('app.compulsory')}} <span class="text-red">*</span></label
             >
           </div>
           <div class="q-gutter-sm q-ml-lg">
@@ -30,41 +30,41 @@
               dense
               v-model="payment_item.compulsory"
               :val="true"
-              label="YES"
+              :label="$t('app.yes')"
               size="xs"
             />
             <q-radio
               dense
               v-model="payment_item.compulsory"
               :val="false"
-              label="NO"
+              :label="$t('app.no')"
               size="xs"
             />
           </div>
         </div>
         <div>
           <label for="credential" class="form_field"
-            >Frequency <span class="text-red">*</span></label
+            >{{$t('app.frequency')}} <span class="text-red">*</span></label
           >
           <q-select
             v-model="payment_item.frequency"
             outlined
             dense
             :options="frequencies"
-            label="Select frequency"
+            :label="$t('app.selectFrequency')"
             :disable="validateDisableFrequency"
           />
         </div>
         <div>
           <label for="credential" class="form_field"
-            >Type <span class="text-red">*</span></label
+            >{{$t('app.type')}} <span class="text-red">*</span></label
           >
           <q-select
             v-model="payment_item.type"
             outlined
             dense
             :options="payment_item_types"
-            label="Select type"
+            :label="$t('app.selectType')"
             @input="handlePaymentItemType()"
             :disable="validateDisableType"
           />
@@ -74,12 +74,12 @@
         <div v-if="payment_item.type == 'A_MEMBER'">
           <div v-if="references.length == 0">
             <label for="title" class="q-mt-sm form_field"
-              >Select Member <span class="text-red">*</span></label
+              >{{$t('app.selectMember')}} <span class="text-red">*</span></label
             >
           </div>
           <div v-if="references.length > 0">
             <label for="title" class="q-mt-sm form_field"
-              >Selected Member:</label
+              >{{$t('app.selectedMember')}}:</label
             >
             <div class="q-gutter-sm q-mb-lg">
               <q-btn
@@ -90,7 +90,7 @@
                 @click="removeSelectedReference(ref)"
                 >{{ref.label}}
                 <q-icon name="clear" class="q-pl-sm" size="xs"></q-icon>
-                <q-tooltip>Remove member</q-tooltip>
+                <q-tooltip>{{$t('app.removeMemberTip')}}</q-tooltip>
               </q-btn>
             </div>
           </div>
@@ -99,7 +99,7 @@
             :class="references.length > 0 ? 'q-mt-lg' : ''"
             v-model="payment_item.reference"
             :options="members"
-            label="Type member's name"
+            :label="$t('app.searchMember')"
             outlined
             dense
             @input="selectMember()"
@@ -117,7 +117,7 @@
             <template v-slot:no-option>
               <q-item>
                 <q-item-section class="text-grey">
-                  No member found
+                  {{$t('app.notFound')}}
                 </q-item-section>
               </q-item>
             </template>
@@ -128,12 +128,12 @@
         <div v-if="payment_item.type == 'GROUPED_MEMBERS'">
           <div v-if="references.length == 0">
             <label for="title" class="q-mt-sm form_field"
-              >Select Members <span class="text-red">*</span></label
+              >{{$t('app.selectMembers')}} <span class="text-red">*</span></label
             >
           </div>
           <div v-if="references.length > 0">
             <label for="title" class="q-mt-sm form_field"
-              >Selected Members:</label
+              >{{$t('app.selectedMembers')}}</label
             >
             <div class="q-gutter-sm q-mb-lg">
               <q-btn
@@ -144,7 +144,7 @@
                 @click="removeSelectedReference(ref)"
                 >{{ref.label}}
                 <q-icon name="clear" class="q-pl-sm" size="xs"></q-icon>
-                <q-tooltip>Remove member</q-tooltip>
+                <q-tooltip>{{$t('app.removeMemberTip')}}</q-tooltip>
               </q-btn>
             </div>
           </div>
@@ -153,7 +153,7 @@
             :class="references.length > 0 ? 'q-mt-lg' : ''"
             v-model="payment_item.reference"
             :options="members"
-            label="Type member's name"
+            :label="$t('app.searchMember')"
             multiple
             outlined
             dense
@@ -171,7 +171,7 @@
             <template v-slot:no-option>
               <q-item>
                 <q-item-section class="text-grey">
-                  No member found
+                  {{$t('app.notFound')}}
                 </q-item-section>
               </q-item>
             </template>
@@ -180,20 +180,20 @@
         <!-- END OF SELECTIONS -->
 
         <div class="q-mt-lg">
-          <label for="credential" class="form_field">Description </label>
+          <label for="credential" class="form_field">{{$t('app.description')}} </label>
           <q-input
             v-model="payment_item.description"
             outlined
             dense
             type="textarea"
-            placeholder="Please provide a description about the category"
+            :placeholder="$t('app.provideDescription')"
           />
         </div>
         <div class="flex q-mt-lg justify-end">
           <div>
             <ButtonVue
               class="form_button"
-              label="Save"
+              :label="$t('app.saveBtnLabel')"
               :loading="loading"
               color="primary"
               :disabled="validateForm"
@@ -217,7 +217,7 @@ export default {
   mixins: [PaymentItemMixin, PaymentItemMixinVue, memberMixin],
 
   created() {
-    let heading = "Payment Item Information";
+    let heading = this.$t('app.paymentItemHeading');
     this.$emit("set-heading", heading);
   },
 
@@ -300,12 +300,12 @@ export default {
           description: this.payment_item.description,
           reference: this.buildStringOfReferences(this.references),
         },
-        msg: "Payment Item save Successfully",
+        msg: this.$t('app.Payment Item save Successfully'),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: "An Error occurred! Please try again",
+        error_msg: this.$t('app.defaultErrorMsg'),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -442,7 +442,7 @@ export default {
           } else {
             Notify.create({
               type: "info",
-              message: "Member has already been selected",
+              message: this.$t('app.memberExist'),
               position: Platform.is.mobile ? "bottom" : "top-right",
             });
           }
@@ -500,7 +500,7 @@ export default {
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: false,
-        error_msg: "An Error occurred! Please try again",
+        error_msg: this.$t('app.defaultErrorMsg'),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -535,7 +535,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 12.8px;
+  font-size: 12px;
   align-items: center;
   letter-spacing: 0.01em;
   color: $grey2;

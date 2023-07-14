@@ -2,7 +2,7 @@
   <q-page class="q-pa-xs">
     <div v-if="!exist_organisation">
       <div class="flex flex-center q-mb-md">
-        <label for="title" class="title">Organisation Information</label>
+        <label for="title" class="title">{{$t('app.organisationMgtHeading')}}</label>
       </div>
       <div>
         <q-form
@@ -20,7 +20,7 @@
             >
               <div>
                 <label for="credential" class="form_field"
-                  >Name <span class="text-red q-pl-xs">*</span></label
+                  >{{$t('app.nameLabel')}} <span class="text-red q-pl-xs">*</span></label
                 >
                 <q-input
                   v-model="organisation.name"
@@ -46,7 +46,7 @@
             >
               <div>
                 <label for="credential" class="form_field"
-                  >Email <span class="text-red q-pl-xs">*</span></label
+                  >{{$t('app.emailLabel')}} <span class="text-red q-pl-xs">*</span></label
                 >
                 <q-input
                   dense
@@ -69,7 +69,7 @@
             >
               <div>
                 <label for="credential" class="form_field"
-                  >Telephone Number <span class="text-red q-pl-xs">*</span
+                  >{{ $t('app.telephoneLabel') }} <span class="text-red q-pl-xs">*</span
                   ><q-space></q-space>
                   <a @click.prevent="showAddTelephone" class="add_telephone">
                     <q-icon
@@ -77,7 +77,7 @@
                       size="xs"
                       color="primary"
                       v-if="!show_telephone2"
-                      ><q-tooltip>Add Telephone</q-tooltip></q-icon
+                      ><q-tooltip>{{$t('app.addTelephoneLabel')}}</q-tooltip></q-icon
                     >
                     <q-icon
                       name="close"
@@ -85,7 +85,7 @@
                       color="primary"
                       v-if="show_telephone2"
                     >
-                      <q-tooltip>Remove</q-tooltip>
+                      <q-tooltip>{{$t('app.remove')}}</q-tooltip>
                     </q-icon>
                   </a>
                 </label>
@@ -118,7 +118,7 @@
             >
               <div>
                 <label for="credential" class="form_field"
-                  >Address <span class="text-red q-pl-xs">*</span></label
+                  >{{$t('app.addressLabel')}} <span class="text-red q-pl-xs">*</span></label
                 >
                 <q-input
                   v-model="organisation.address"
@@ -140,7 +140,7 @@
               :class="$q.screen.lg ? 'q-px-sm' : 'q-py-sm'"
             >
               <div>
-                <label for="credential" class="form_field">Salutation</label>
+                <label for="credential" class="form_field">{{$t('app.salutation')}}</label>
                 <q-input
                   v-model="organisation.salutation"
                   outlined
@@ -154,7 +154,7 @@
               :class="$q.screen.lg ? 'q-px-sm' : 'q-py-sm'"
             >
               <div>
-                <label for="credential" class="form_field">P.O Box</label>
+                <label for="credential" class="form_field">{{$t('app.boxLabel')}}</label>
                 <q-input
                   v-model="organisation.box_number"
                   outlined
@@ -176,7 +176,7 @@
             >
               <div>
                 <label for="credential" class="form_field"
-                  >Description <span class="text-red q-pl-xs">*</span></label
+                  >{{$t('app.description')}} <span class="text-red q-pl-xs">*</span></label
                 >
                 <q-input
                   v-model="organisation.description"
@@ -192,7 +192,7 @@
             >
               <div>
                 <label for="credential" class="form_field"
-                  >Region <span class="text-red q-pl-xs">*</span></label
+                  >{{$t('app.region')}} <span class="text-red q-pl-xs">*</span></label
                 >
                 <q-input
                   v-model="organisation.region"
@@ -214,7 +214,7 @@
                 <q-btn
                   outline
                   color="primary"
-                  label="Cancel"
+                  :label="$t('app.cancel')"
                   no-caps
                   @click="showDetail"
                   class="q-pa-xs"
@@ -223,7 +223,7 @@
               </div>
               <div>
                 <ButtonVue
-                  :label="label"
+                  :label="$t('app.saveBtnLabel')"
                   :loading="loading"
                   :disabled="validateForm"
                   :color="color"
@@ -271,13 +271,13 @@
                   class="camara"
                   @click="openFileUpload"
                 >
-                <q-tooltip>Upload Logo</q-tooltip>
+                <q-tooltip>{{$t('app.uploadLogo')}}</q-tooltip>
                 </q-icon>
               </div>
             </q-card-section>
             <q-card-section>
               <div class="flex">
-                <div class="text-h6 title">Organisation information</div>
+                <div class="text-h6 title">{{$t('app.organisationMgtHeading')}}</div>
                 <q-space />
                 <div>
                   <q-btn

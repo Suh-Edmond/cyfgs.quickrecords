@@ -5,38 +5,36 @@
         <q-card class="q-mb-xl q-pa-md">
           <q-card-section>
             <div class="text_h6 text-center q-pt-sm q-pb-sm">
-              Create Organisation
+              {{$t('app.createOrganisation')}}
             </div>
             <div class="text-subtitle2 text-center q-pb-xs">
-              Create your organisation or group to get started with Financial
-              Assistant
+              {{$t('app.createOrganisationCaption')}}
             </div>
             <div class="validation_warning text-left q-my-sm">
-              All fields with <span class="text-red">*</span> are required.
+              {{$t('app.warningField')}}<span class="text-red">*</span> {{$t('app.fields')}}
             </div>
             <q-form @submit="onSubmit">
               <div class="row q-my-md">
                 <div class="col-md-12 col-lg-12 col-xs-12 col-sm-12">
-                  <label for="credential" class="form_field">Name <span class="text-red q-pl-xs">*</span></label>
+                  <label for="credential" class="form_field">{{$t('app.NameLabel')}} <span class="text-red q-pl-xs">*</span></label>
                   <q-input v-model="organisation.name" outlined type="text" dense />
                 </div>
               </div>
               <div class="row q-my-lg">
                 <div class="col-md-12 col-lg-12 col-xs-12 col-sm-12">
-                  <label for="credential" class="form_field">Email <span class="text-red q-pl-xs">*</span></label>
+                  <label for="credential" class="form_field">{{$t('app.emailLabel')}} <span class="text-red q-pl-xs">*</span></label>
                   <q-input dense v-model="organisation.email" outlined type="email" />
                 </div>
               </div>
               <div class="row q-my-lg">
                 <div class="col-md-12 col-lg-12 col-xs-12 col-sm-12">
                   <div>
-                    <label for="credential" class="form_field flex">Telephone Number <span
+                    <label for="credential" class="form_field flex">{{$t('app.telephoneLabel')}} <span
                         class="text-red q-pl-xs">*</span><q-space />
                       <a @click.prevent="showAddTelephone" class="add_telephone">
-                        <q-icon name="add" size="xs" color="primary" v-if="!show_telephone2"><q-tooltip>Add
-                            Telephone</q-tooltip></q-icon>
+                        <q-icon name="add" size="xs" color="primary" v-if="!show_telephone2"><q-tooltip>{{ $t('app.addTelephoneLabel') }}</q-tooltip></q-icon>
                         <q-icon name="close" size="xs" color="primary" v-if="show_telephone2">
-                          <q-tooltip>Remove</q-tooltip>
+                          <q-tooltip>{{$t('app.remove')}}</q-tooltip>
                         </q-icon>
                       </a>
                     </label>
@@ -52,7 +50,7 @@
               <div class="row q-my-lg">
                 <div class="col-md-12 col-lg-12 col-xs-12 col-sm-12">
                   <div>
-                    <label for="credential" class="form_field">Address <span class="text-red q-pl-xs">*</span></label>
+                    <label for="credential" class="form_field">{{ $t('app.addressLabel') }}<span class="text-red q-pl-xs">*</span></label>
                     <q-input v-model="organisation.address" outlined type="text" dense />
                   </div>
                 </div>
@@ -60,7 +58,7 @@
               <div class="row q-my-lg">
                 <div class="col-md-12 col-lg-12 col-xs-12 col-sm-12">
                   <div>
-                    <label for="credential" class="form_field">Salutation/Motto<span
+                    <label for="credential" class="form_field">{{$t('app.salutation')}}<span
                         class="text-red q-pl-xs">*</span></label>
                     <q-input v-model="organisation.salutation" outlined type="text" dense />
                   </div>
@@ -75,7 +73,7 @@
                 <div class="row q-my-lg">
                   <div class="col-md-12 col-lg-12 col-xs-12 col-sm-12">
                     <div>
-                      <label for="credential" class="form_field">P.O Box <span class="text-red q-pl-xs">*</span></label>
+                      <label for="credential" class="form_field">{{$t('app.boxLabel')}}<span class="text-red q-pl-xs">*</span></label>
                       <q-input v-model="organisation.box_number" outlined type="number" dense />
                     </div>
                   </div>
@@ -83,7 +81,7 @@
                 <div class="row q-my-lg">
                   <div class="col-md-12 col-lg-12 col-xs-12 col-sm-12">
                     <div>
-                      <label for="credential" class="form_field">Region/City<span
+                      <label for="credential" class="form_field">{{$t('app.region')}}<span
                           class="text-red q-pl-xs">*</span></label>
                       <q-input v-model="organisation.region" outlined type="text" dense />
                     </div>
@@ -92,7 +90,7 @@
                 <div class="row q-my-lg">
                   <div class="col-md-12 col-lg-12 col-xs-12 col-sm-12">
                     <div>
-                      <label for="credential" class="form_field">Logo <span class="text-red q-pl-xs">*</span></label>
+                      <label for="credential" class="form_field">{{$t('app.logo')}} <span class="text-red q-pl-xs">*</span></label>
                       <q-file accept="image/png,image/jpg,image/jpeg" outlined dense v-model="organisation.logo"
                         label="Upload logo" />
                     </div>
@@ -101,7 +99,7 @@
                 <div class="row q-my-lg">
                   <div class="col-md-12 col-lg-12 col-xs-12 col-sm-12">
                     <div>
-                      <label for="credential" class="form_field">Description
+                      <label for="credential" class="form_field">{{$t('app.description')}}
                         <span class="text-red q-pl-xs">*</span></label>
                       <q-input v-model="organisation.description" outlined dense type="textarea" />
                     </div>
@@ -109,7 +107,7 @@
                 </div>
                 <div class="row flex justify-end q-mb-md q-gutter-md">
                   <div>
-                    <ButtonVue :label="label" :loading="loading" :disabled="validateForm" :color="color" :no_caps="true"
+                    <ButtonVue :label="$t('app.saveBtnLabel')" :loading="loading" :disabled="validateForm" :color="color" :no_caps="true"
                       class="submit_btn" >
                     </ButtonVue>
                   </div>
@@ -147,7 +145,7 @@ export default {
         id: null,
         logo: null,
       },
-      label: "Save",
+      label: this.$t('app.saveBtnLabel'),
       loading: false,
       color: "primary",
       show_telephone2: false,

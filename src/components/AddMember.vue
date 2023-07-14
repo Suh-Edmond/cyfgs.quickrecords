@@ -10,10 +10,10 @@
         align="justify"
         narrow-indicator
       >
-        <q-tab name="Add Member" label="Add Member" no-caps icon="person_add" />
+        <q-tab name="Add Member" :label="$t('app.addMember')" no-caps icon="person_add" />
         <q-tab
           name="Upload File"
-          label="Upload File"
+          :label="$t('app.uploadFile')"
           no-caps
           icon="file_upload"
         />
@@ -26,21 +26,20 @@
           <div class="q-mx-md">
             <q-form @submit="onAddMember" class="q-gutter-md">
               <div class="text-subtitle2 text-left text-primary q-pt-xs">
-                Personal Information
+                {{$t('app.personalInformationLabel')}}
               </div>
               <small class="hint"
-                >All fields with <span class="text-red">*</span> are
-                required</small
+                >{{$t('app.warningField')}}<span class="text-red">*</span>{{$t('app.fields')}}</small
               >
               <div>
                 <label for="credential" class="form_field"
-                  >Name <span class="text-red">*</span></label
+                  >{{$t('app.nameLabel')}} <span class="text-red">*</span></label
                 >
                 <q-input v-model="user.name" outlined dense type="text" />
               </div>
               <div>
                 <label for="credential" class="form_field"
-                  >Gender <span class="text-red">*</span></label
+                  >{{$t('app.gender')}} <span class="text-red">*</span></label
                 >
                 <q-select
                   v-model="user.gender"
@@ -50,12 +49,12 @@
                 />
               </div>
               <div>
-                <label for="credential" class="form_field">Email</label>
+                <label for="credential" class="form_field">{{$t('app.emailLabel')}}</label>
                 <q-input v-model="user.email" outlined dense type="email" />
               </div>
               <div>
                 <label for="credential" class="form_field"
-                  >Telephone <span class="text-red">*</span></label
+                  >{{$t('app.telephoneLabel')}} <span class="text-red">*</span></label
                 >
                 <q-input
                   v-model="user.telephone"
@@ -69,13 +68,13 @@
               </div>
               <div>
                 <label for="credential" class="form_field"
-                  >Address <span class="text-red">*</span></label
+                  >{{$t('app.addressLabel')}} <span class="text-red">*</span></label
                 >
                 <q-input v-model="user.address" outlined dense type="text" />
               </div>
               <div>
                 <label for="credential" class="form_field"
-                  >Occupation <span class="text-red">*</span></label
+                  >{{$t('app.occupation')}} <span class="text-red">*</span></label
                 >
                 <q-input v-model="user.occupation" outlined dense type="text" />
               </div>
@@ -98,11 +97,11 @@
           <div>
             <q-form @submit="uploadFile">
               <div class="text-subtitle2 text-center text-primary">
-                Import Members from an Excel File
+               {{$t('app.importMemberMsg')}}
                 <span class="q-pl-md">
                   <q-btn flat @click="openHelp">
                     <q-icon name="help_outline" size="sm"> </q-icon>
-                    <q-tooltip> Help </q-tooltip>
+                    <q-tooltip> {{$t('app.help')}} </q-tooltip>
                   </q-btn>
                 </span>
               </div>
@@ -145,7 +144,7 @@
           <q-space />
 
           <q-btn dense flat icon="close" v-close-popup class="text-white">
-            <q-tooltip>Close</q-tooltip>
+            <q-tooltip>{{$t('app.close')}}</q-tooltip>
           </q-btn>
         </q-bar>
         <q-card-section
@@ -154,7 +153,7 @@
         >
           <div>
             <div class="q-pb-md help_text">
-              Below is a structure of an example excel file to upload members
+              {{$t('app.importMemberHelpMsg')}}
             </div>
             <div class="q-mx-lg">
               <q-img
@@ -177,12 +176,12 @@
           <q-space />
 
           <q-btn dense flat icon="close" v-close-popup class="text-white">
-            <q-tooltip>Close</q-tooltip>
+            <q-tooltip>{{$t('app.close')}}</q-tooltip>
           </q-btn>
         </q-bar>
         <q-card-section>
           <div class="q-pb-md help_text">
-            Below is a structure of an example excel file to upload members
+           {{$t('app.importMemberHelpMsg')}}
           </div>
         </q-card-section>
 
@@ -205,14 +204,14 @@ import organisationMixinVue from "src/mixins/organisationMixin.vue";
 export default {
   mixins: [memberMixinVue, organisationMixinVue],
   created() {
-    let heading = "Add Members to the Organisation";
+    let heading = this.$t('app.addMemberOrganisation')
     this.$emit("set-heading", heading);
   },
   data() {
     return {
       full_width: false,
       image_width: "370px",
-      label_save: "Save",
+      label_save: this.$t('app.saveBtnLabel'),
       loading: false,
       color: "primary",
       user: {
@@ -225,11 +224,11 @@ export default {
       },
       gender_options: ["MALE", "FEMALE", "OTHER"],
       file: null,
-      label_upload: "Import",
+      label_upload: this.$t('app.import'),
       position: "right",
       dialog: false,
       no_caps: true,
-      tab: "Add Member",
+      tab: this.$t('app.addMember'),
     };
   },
   computed: {

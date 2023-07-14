@@ -15,7 +15,7 @@
                 </q-icon>
                 <img
                   :src="getUserInfo.picture"
-                  alt="User picture"
+                  :alt="$t('app.profilePicAlt')"
                   v-if="getUserInfo.picture != null"
                 />
               </q-avatar>
@@ -33,7 +33,7 @@
                   size="sm"
                   @click="openFileUpload"
                 >
-                  <q-tooltip>Upload Picture</q-tooltip>
+                  <q-tooltip>{{$t('app.uploadPicture')}}</q-tooltip>
                 </q-icon>
               </div>
             </div>
@@ -46,7 +46,7 @@
                       name="military_tech"
                       class="role_icon"
                     ></q-icon></span
-                  >My Roles:
+                  >{{$t('app.rolesName')}}:
                 </label>
               </div>
               <q-space />
@@ -92,7 +92,7 @@
                       role.name
                     }}</q-item-label>
                     <q-item-label caption class="text-sm role_update_date"
-                      >Updated by:
+                      >{{$t('app.updatedBy')}}:
                       <span> {{ role.updated_by }}</span></q-item-label
                     >
                   </q-item-section>
@@ -116,7 +116,7 @@
             <div class="q-pa-sm" v-if="!edit_profile">
               <div class="q-pa-sm row">
                 <div>
-                  <label for="info" class="info">Personal information</label>
+                  <label for="info" class="info">{{$t('app.personalInformationLabel')}}</label>
                 </div>
                 <q-space />
                 <div class="flex justify-end">
@@ -127,7 +127,7 @@
                     class="edit_icon"
                     @click="showEditProfile"
                   >
-                    <q-tooltip>Edit Profile</q-tooltip>
+                    <q-tooltip>{{$t('app.editProfile')}}</q-tooltip>
                   </q-icon>
                 </div>
               </div>
@@ -136,7 +136,7 @@
                   ><span
                     ><q-icon name="person" class="q-pr-xs person_icon"></q-icon
                   ></span>
-                  Name:
+                  {{$t('app.nameLabel')}}:
                   <span class="value q-pl-xl value_code">{{
                     getUserInfo.name
                   }}</span></label
@@ -159,14 +159,14 @@
                     ></q-icon
                   ></span>
                   <span class="q-pr-xs"></span>
-                  Gender:
+                  {{$t('app.gender')}}:
                   <span class="value value_code gender">{{
                     getUserInfo.gender
                   }}</span>
                   <span
                     class="value value_code q-pl-lg"
                     v-if="getUserInfo.gender == null"
-                    >Not Set</span
+                    >{{$t('app.notSet')}}</span
                   >
                 </label>
               </div>
@@ -178,7 +178,7 @@
                       size="xs"
                       class="q-pr-sm"
                     ></q-icon></span
-                  >Email:
+                  >{{$t('app.emailLabel')}}:
                   <span class="value value_code email">{{
                     getUserInfo.email
                   }}</span></label
@@ -192,7 +192,7 @@
                       size="xs"
                       class="q-pr-xs"
                     ></q-icon></span
-                  >Telephone:
+                  >{{$t('app.telephoneLabel')}}:
                   <span class="value phone value_code">{{
                     getUserInfo.telephone
                   }}</span></label
@@ -207,7 +207,7 @@
                       class="q-pr-xs"
                     ></q-icon
                   ></span>
-                  Address:
+                  {{$t('app.addressLabel')}}:
                   <span class="value address value_code">{{
                     getUserInfo.address
                   }}</span></label
@@ -218,7 +218,7 @@
                   ><span
                     ><q-icon name="work" size="xs" class="q-pr-xs"></q-icon
                   ></span>
-                  Occupation:
+                  {{$t('app.occupation')}}:
                   <span class="value occupation value_code">{{
                     getUserInfo.occupation
                   }}</span></label
@@ -232,7 +232,7 @@
                       size="xs"
                       class="q-pr-xs"
                     ></q-icon></span
-                  >Created Date:
+                  >{{$t('app.createdDate')}}:
                   <span class="value date value_code">{{
                     getFormatedCreatedDate
                   }}</span></label
@@ -246,7 +246,7 @@
                       size="xs"
                       class="q-pr-xs"
                     ></q-icon></span
-                  >Updated Date:
+                  >{{$t('app.updatedDate')}}:
                   <span class="value date value_code">{{
                     getFormatedUpdatedDate
                   }}</span></label
@@ -257,20 +257,19 @@
             <!-- edit personal information -->
             <div class="q-pa-sm q-mb-lg" v-if="edit_profile">
               <q-form @submit="onUpdateProfile" class="q-gutter-md">
-                <div class="info2 q-pb-md">Update Profile</div>
+                <div class="info2 q-pb-md">{{$t('app.editProfile')}}</div>
                 <small class="hint"
-                  >All fields with <span class="text-red">*</span> are
-                  required</small
+                  >{{$t('app.warningField')}}<span class="text-red">*</span>{{$t('app.fields')}}</small
                 >
                 <div>
                   <label for="credential" class="form_field"
-                    >Name <span class="text-red">*</span></label
+                    >{{$t('app.nameLabel')}} <span class="text-red">*</span></label
                   >
                   <q-input v-model="user.name" outlined dense type="text" />
                 </div>
                 <div>
                   <label for="credential" class="form_field"
-                    >Gender <span class="text-red">*</span></label
+                    >{{$t('app.gender')}} <span class="text-red">*</span></label
                   >
                   <q-select
                     v-model="user.gender"
@@ -280,18 +279,18 @@
                   />
                 </div>
                 <div>
-                  <label for="credential" class="form_field">Email</label>
+                  <label for="credential" class="form_field">{{$t('app.emailLabel')}}</label>
                   <q-input v-model="user.email" outlined dense type="email" />
                 </div>
                 <div>
                   <label for="credential" class="form_field"
-                    >Address <span class="text-red">*</span></label
+                    >{{$t('app.addressLabel')}} <span class="text-red">*</span></label
                   >
                   <q-input v-model="user.address" outlined dense type="text" />
                 </div>
                 <div>
                   <label for="credential" class="form_field"
-                    >Occupation <span class="text-red">*</span></label
+                    >{{$t('app.occupation')}} <span class="text-red">*</span></label
                   >
                   <q-input
                     v-model="user.occupation"
@@ -303,7 +302,7 @@
                 <div class="row justify-end">
                   <q-btn
                     class="q-mr-lg"
-                    label="Cancel"
+                    :label="$t('app.cancel')"
                     color="primary"
                     no-caps
                     outline
@@ -311,7 +310,7 @@
                   >
                   </q-btn>
                   <ButtonVue
-                    label="Save"
+                    :label="$t('app.saveBtnLabel')"
                     :loading="loading"
                     color="primary"
                     :disabled="validateForm"
@@ -326,7 +325,7 @@
             <div class="q-pa-xs" v-if="!edit_password">
               <div class="q-pa-sm row">
                 <div>
-                  <label for="info" class="security">Security</label>
+                  <label for="info" class="security">{{$t('app.security')}}</label>
                 </div>
                 <q-space />
                 <div class="flex justify-end">
@@ -337,7 +336,7 @@
                     class="edit_icon"
                     @click="showEditPassword"
                   >
-                    <q-tooltip>Edit Password</q-tooltip>
+                    <q-tooltip>{{$t('app.editProfile')}}</q-tooltip>
                   </q-icon>
                 </div>
               </div>
@@ -346,7 +345,7 @@
                   ><span
                     ><q-icon name="key" class="q-pr-xs person_icon"></q-icon
                   ></span>
-                  Password:
+                  {{$t('app.passwordLabel')}}:
                   <span class="value password value_code"
                     >***********</span
                   ></label
@@ -357,13 +356,12 @@
             <!-- edit user password -->
             <div class="q-pa-sm" v-if="edit_password">
               <q-form @submit="onUpdatePassword" class="q-gutter-md">
-                <div class="info q-pb-md">Update Password</div>
+                <div class="info q-pb-md">{{$t('app.editPassword')}}</div>
                 <small class="hint"
-                  >All fields with <span class="text-red">*</span> are
-                  required</small
+                  >{{$t('app.warningField')}}<span class="text-red">*</span>{{ $t('app.fields') }}</small
                 >
                 <div>
-                  <label for="password" class="form_field">Old Password</label>
+                  <label for="password" class="form_field">{{$t('app.oldPassword')}}</label>
                   <q-input
                     v-model="security.old_password"
                     :type="is_pwd ? 'password' : 'text'"
@@ -380,7 +378,7 @@
                   </q-input>
                 </div>
                 <div>
-                  <label for="password" class="form_field">New Password</label>
+                  <label for="password" class="form_field">{{$t('app.newPassword')}}</label>
                   <q-input
                     v-model="security.password"
                     :type="is_old_pwd ? 'password' : 'text'"
@@ -398,7 +396,7 @@
                 </div>
                 <div>
                   <label for="confirm_password" class="form_field"
-                    >Confirm Password</label
+                    >{{$t('app.confirmPasswordLabel')}}</label
                   >
                   <q-input
                     v-model="security.password_confirmation"
@@ -415,14 +413,14 @@
                       />
                     </template>
                     <template v-slot:hint v-if="validatePasswordMatch">
-                      <span class="text-red">Password must match</span>
+                      <span class="text-red">{{$t('app.passwordNotMatchMsg')}}</span>
                     </template>
                   </q-input>
                 </div>
                 <div class="row justify-end">
                   <q-btn
                     class="q-mr-lg"
-                    label="Cancel"
+                    :label="$t('app.cancel')"
                     color="primary"
                     no-caps
                     outline
@@ -430,7 +428,7 @@
                   >
                   </q-btn>
                   <ButtonVue
-                    label="Save"
+                    :label="$t('app.saveBtnLabel')"
                     :loading="loading"
                     color="primary"
                     :disabled="validatePassword"

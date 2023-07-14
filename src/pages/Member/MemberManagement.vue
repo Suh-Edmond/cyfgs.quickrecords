@@ -28,7 +28,7 @@
             outlined
             dense
             :options="registrationStatuses"
-            label="Select status"
+            :label="$t('app.selectStatusLabel')"
           />
         </div>
         <div
@@ -40,7 +40,7 @@
             outlined
             dense
             :options="getSessions"
-            label="Select year"
+            :label="$t('app.selectYearLabel')"
           />
         </div>
         <div
@@ -52,13 +52,13 @@
             outlined
             dense
             :options="genders"
-            label="Select gender"
+            :label="$t('app.selectGenderLabel')"
           />
         </div>
         <div class="flex col-md-3 col-lg-3 col-xs-12 col-sm-12">
           <div :class="$q.screen.lg ? 'q-pr-md' : ''">
             <q-btn
-              label="Filter"
+              :label="$t('app.filter')"
               :loading="loading_filter"
               color="primary"
               :disabled="validateFilter"
@@ -71,7 +71,7 @@
           <q-space />
           <div>
             <q-btn
-              label="Print"
+              :label="$t('app.print')"
               :loading="loading"
               color="positive"
               :disabled="false"
@@ -127,8 +127,8 @@ export default {
       genders: ["MALE", "FEMALE", "ALL", "OTHER"],
       registrationStatuses: ["REGISTERED", "NOT_REGISTERED"],
       gender: "",
-      message: "Are you sure you want to delete this Member?",
-      label: "Delete",
+      message: this.$t('app.deleteMemberWarningMsg'),
+      label: this.$t('app.delete'),
       columns: [
         {
           name: "counter",
@@ -309,12 +309,12 @@ export default {
     deleteRow(data) {
       let payload = {
         url: `/api/protected/users/${data.id}`,
-        msg: `Member deleted successfully`,
+        msg: this.$t('app.deleteMemberFeedbackMsg'),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: "An Error occurred! Please try again",
+        error_msg: this.$t('app.defaultErrorMsg'),
         has_commit: false,
         commit: "none",
         to_be_store_data: {

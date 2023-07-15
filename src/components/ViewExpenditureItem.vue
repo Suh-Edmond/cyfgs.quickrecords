@@ -4,7 +4,7 @@
       <div class="flex q-mb-md">
         <label for="expenditure_item" class="label"
           ><span> <q-icon name="category" size="xs" class="q-pr-sm" /> </span
-          >Payment Activity:
+          >{{$t('app.paymentItem')}}:
           <span class="value payment_activity">{{
             getUpdatedExpenditureFromState.payment_item.name
           }}</span></label
@@ -13,7 +13,7 @@
       <div class="flex q-mb-md">
         <label for="expenditure_item" class="label"
           ><span> <q-icon name="category" size="xs" class="q-pr-sm" /> </span
-          >Expenditure Activity:
+          >{{$t('app.expenditureItem')}}:
           <span class="value value_item">{{
             getUpdatedExpenditureFromState.name
           }}</span></label
@@ -22,7 +22,7 @@
       <div class="flex q-mb-md">
         <label for="venue" class="label"
           ><span> <q-icon name="location_on" size="xs" class="q-pr-sm" /> </span
-          >Venue:
+          >{{$t('app.venue')}}:
           <span class="value value_venue">{{
             getUpdatedExpenditureFromState.venue
           }}</span></label
@@ -31,7 +31,7 @@
       <div class="q-mb-md">
         <label for="date" class="label"
           ><span> <q-icon name="schedule" size="xs" class="q-pr-sm" /> </span
-          >Date:
+          >{{$t('app.date')}}:
           <span class="value value_date">{{
             getFormatedCreatedDate
           }}</span></label
@@ -41,7 +41,7 @@
         <label for="amount" class="label"
           ><span>
             <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
-          >Estimated Amount:
+          >{{$t('app.estimatedAmount')}}:
           <span class="value value_amount">
             {{
               Number(getUpdatedExpenditureFromState.amount).toLocaleString()
@@ -54,7 +54,7 @@
         <label for="amount" class="label"
           ><span>
             <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
-          >Total Amount Given:
+          >{{$t('app.totalAmountGiven')}}:
           <span class="value value_item">
             {{ getUpdatedExpenditureFromState.total_amount_given }} XAF</span
           ></label
@@ -64,7 +64,7 @@
         <label for="amount" class="label"
           ><span>
             <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
-          >Total Amount Spent:
+          >{{$t('app.totalAmountSpent')}}:
           <span class="value value_item">
             {{ getUpdatedExpenditureFromState.total_amount_spent }} XAF</span
           ></label
@@ -74,7 +74,7 @@
         <label for="amount" class="label"
           ><span>
             <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
-          >Total Balance:
+          >{{$t('app.totalBalance')}}:
           <span class="value value_balance">
             {{
               Number(
@@ -92,7 +92,7 @@
           v-show="getUpdatedExpenditureFromState.approve == 'DECLINED'"
           ><span>
             <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span
-          >Transaction Status:
+          >{{$t('app.transactionStatus')}}:
           <span class="value_trxn unapproved_color">{{
             getUpdatedExpenditureFromState.approve
           }}</span></label
@@ -103,7 +103,7 @@
           v-show="getUpdatedExpenditureFromState.approve == 'APPROVED'"
           ><span>
             <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span
-          >Transaction Status:
+          >{{$t('app.transactionStatus')}}:
           <span class="value_trxn approved_color">
             {{ getUpdatedExpenditureFromState.approve }}</span
           ></label
@@ -114,7 +114,7 @@
           v-show="getUpdatedExpenditureFromState.approve == 'PENDING'"
           ><span>
             <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span
-          >Transaction Status:
+          >{{$t('app.transactionStatus')}}:
           <span class="value_trxn pending_color">
             {{ getUpdatedExpenditureFromState.approve }}</span
           ></label
@@ -123,7 +123,7 @@
       <div class="q-mb-md">
         <label for="amount" class="label"
           ><span> <q-icon name="person" size="xs" class="q-pr-sm" /> </span
-          >Updated By:
+          >{{$t('app.updatedBy')}}:
           <span class="value value_created_by">
             {{ getUpdatedExpenditureFromState.updated_by }}</span
           ></label
@@ -132,7 +132,7 @@
       <div class="q-mb-md">
         <label for="comment" class="field"
           ><span> <q-icon name="description" size="xs" class="q-pr-sm" /> </span
-          >Comment:</label
+          >{{$t('app.comment')}}:</label
         >
         <p class="value q-pl-lg">
           {{ getUpdatedExpenditureFromState.comment }}
@@ -149,7 +149,7 @@ export default {
   mixins: [expenditureItemMixinVue],
 
   created() {
-    let heading = "Expenditure Item Information";
+    let heading = this.$t('app.addExpenditureItemHeading');
     this.$emit("set-heading", heading);
   },
   data() {

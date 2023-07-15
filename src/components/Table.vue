@@ -1207,7 +1207,7 @@ export default {
     onRegisterMember(data) {
       let payload = {
         data: data,
-        tab: this.$t('app.registerMember'),
+        tab: 'Register Member',
       };
       this.$store.dispatch("setMemberToRegister", data);
       this.$emit("register-member", payload);
@@ -1311,7 +1311,7 @@ export default {
 
     setApproveUrlBaseOnType(data) {
       let url = "";
-      let type = this.chosen_state == "Approve" ? "APPROVED" : "DECLINED";
+      let type = this.chosen_state == "Approve" ? 'APPROVED' : 'DECLINED';
       switch (data.type) {
         case "INCOME_ACTIVITIES":
           url = `/api/protected/income-activities/${data.id}/approve?type=${type}`;
@@ -1331,9 +1331,9 @@ export default {
     },
 
     setApproveFeedbackMsg(data) {
-      let msg = `Record was ${this.chosen_state} successfully`;
+      let msg = this.$t('app.recordWas') + `${this.chosen_state}` + this.$t('app.successfull');
       if (data.type == "MEMBERS") {
-        msg = `Member registration ${this.chosen_state} successfully`;
+        msg = this.$t('app.memberReg') + `${this.chosen_state}` + this.$t('app.successfull');
       }
       return msg;
     },
@@ -1344,21 +1344,21 @@ export default {
         case "INCOME_ACTIVITIES":
           this.income_amount = data.amount;
           this.contributor = data.name;
-          this.approve_msg = ` Contribution for ${data.payment_item.name}`;
+          this.approve_msg = this.$t('app.contributionFor') + `${data.payment_item.name}`;
           break;
         case "MEMBERS_SAVINGS":
           date = moment(data.created_at).format("MMMM Do YYYY");
           this.income_amount = data.amount_deposited;
           this.contributor = data.user_name;
-          this.approve_msg = `Member Saving on the ${date}`;
+          this.approve_msg = this.$t('app.memberContribution') + `${date}`;
           break;
         case "MEMBERS_CONTRIBUTIONS":
           date = moment(data.date).format("MMMM Do YYYY");
-          this.approve_msg = `Member's Contribution for ${data.payment_item_name} on the ${date}`;
+          this.approve_msg = this.$t('app.memberContributionDownloadLabel') + `${data.payment_item_name}`+this.$t('app.on') +`${date}`;
           break;
         case "MEMBERS":
           this.register_member_name = data.name;
-          this.approve_msg = `Member Registration for ${data.year} `;
+          this.approve_msg = this.$t('app.regFor') + `${data.year} `;
           break;
       }
       return this.approve_msg;
@@ -1438,7 +1438,7 @@ export default {
       );
 
       intermediate_tabs.push({
-        name: data.user_name + "  Savings",
+        name: data.user_name + " "+ this.$t('app.savingtitle'),
         has_intermediate_tab: true,
       });
 

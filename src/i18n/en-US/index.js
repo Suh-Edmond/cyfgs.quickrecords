@@ -382,6 +382,21 @@ export default {
     joinPartTwo:".  If you don't recognize the sender, simply ignore this message.",
     memberProfile:'Member Profile',
     deleteMemberWarningMsg:'Are you sure you want to delete this Member ?',
-    deleteIncomeWarningMsg:'Are you sure you want to delete this Income Activity ?'
+    deleteIncomeWarningMsg:'Are you sure you want to delete this Income Activity ?',
+    memberReg:'Member Registration ',
+    contributionFor:'Contribution for ',
+    memberContribution:'Member Saving on the ',
+    regFor:'Member Registration for ',
+    totalAmountPaid:'Total Amount Paid',
+    paymentStatus:'Payment Status',
+    viewContributionInformation:'Member Contribution Detail',
+    category:'Category',
+    payment:'PAYMENT',
+    members:'Member(s)',
+    noMember:'No Member has been Selected',
+    createdAt:'Created At',
+    downloadFileErrorMsg:'Could not download pdf file',
+    accessDeniedMsg:'Access denied to view this page',
+    loginRequiredInfo:'Login is required to view this page'
    }
 };

@@ -4,7 +4,7 @@
       <div class="flex q-mb-md">
         <label for="expenditure_item" class="label"
           ><span> <q-icon name="category" size="xs" class="q-pr-sm" /> </span
-          >Category:
+          >{{$t('app.category')}}:
           <span class="value category">{{
             getUpdatedExpenditureFromState.payment_category_name
           }}</span></label
@@ -13,7 +13,7 @@
       <div class="flex q-mb-md">
         <label for="expenditure_item" class="label"
           ><span> <q-icon name="category" size="xs" class="q-pr-sm" /> </span
-          >Payment Item:
+          >{{$t('app.paymentItem')}}:
           <span class="value payment_activity">{{
             getUpdatedExpenditureFromState.name
           }}</span></label
@@ -22,9 +22,9 @@
       <div class="q-mb-md">
         <label for="date" class="label"
           ><span> <q-icon name="priority_high" size="xs" class="q-pr-sm" /> </span
-          >Compulsory:
-          <span class="value value_com" v-if="getUpdatedExpenditureFromState.compulsory == '1'">YES</span>
-          <span class="value value_com" v-else>NO</span>
+          >{{$t('app.compulsory')}}:
+          <span class="value value_com" v-if="getUpdatedExpenditureFromState.compulsory == '1'">{{$t('app.yes')}}</span>
+          <span class="value value_com" v-else>{{$t('app.no')}}</span>
         </label>
 
       </div>
@@ -32,7 +32,7 @@
         <label for="amount" class="label"
           ><span>
             <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
-          >Amount:
+          >{{$t('app.amount')}}:
           <span class="value value_amount">
             {{ Number(getUpdatedExpenditureFromState.amount).toLocaleString() }}
             XAF</span
@@ -43,9 +43,9 @@
         <label for="amount" class="label"
           ><span>
             <q-icon name="schedule" size="xs" class="q-pr-sm" /> </span
-          >Frequency:
+          >{{$t('app.frequency')}}:
           <span class="value frequency">
-            {{ getUpdatedExpenditureFromState.frequency }} PAYMENT
+            {{ getUpdatedExpenditureFromState.frequency }} {{this.$t('app.payment')}}
           </span></label
         >
       </div>
@@ -53,7 +53,7 @@
         <label for="amount" class="label"
           ><span>
             <q-icon name="title" size="xs" class="q-pr-sm" /> </span
-          >Type:
+          >{{$t('app.type')}}:
           <span class="value type">
             {{ getUpdatedExpenditureFromState.payment_item_type }}
           </span></label
@@ -63,7 +63,7 @@
         <label for="amount" class="label"
           ><span>
             <q-icon name="people" size="xs" class="q-pr-sm" /> </span
-          >Member(s):
+          >{{$t('app.members')}}:
         </label>
         <div v-if="getReferences.length > 0">
           <div class="q-gutter-sm q-mt-sm q-ml-md">
@@ -78,13 +78,13 @@
           </div>
         </div>
         <div v-else>
-          <label  class="no_member ">No Member has been Selected</label>
+          <label  class="no_member ">{{$t('app.noMember')}}</label>
         </div>
       </div>
       <div class="q-mb-md">
         <label for="amount" class="label"
           ><span> <q-icon name="person" size="xs" class="q-pr-sm" /> </span
-          >Created At:
+          >{{$t('app.createdAt')}}:
           <span class="value created_at">
             {{ getFormatedCreatedDate }}</span
           ></label
@@ -93,7 +93,7 @@
       <div class="q-mb-md">
         <label for="amount" class="label"
           ><span> <q-icon name="person" size="xs" class="q-pr-sm" /> </span
-          >Updated By:
+          >{{$t('app.updatedBy')}}:
           <span class="value value_created_by">
             {{ getUpdatedExpenditureFromState.updated_by }}</span
           ></label
@@ -102,7 +102,7 @@
       <div class="q-mb-md">
         <label for="comment" class="label"
           ><span> <q-icon name="description" size="xs" class="q-pr-sm" /> </span
-          >Comment:</label
+          >{{$t('app.comment')}}:</label
         >
         <p class="value q-pl-lg">
           {{ getUpdatedExpenditureFromState.description }}
@@ -119,7 +119,7 @@ export default {
   mixins: [expenditureItemMixinVue],
 
   created() {
-    let heading = "Payment Item Information";
+    let heading = this.$t('app.paymentItemHeading');
     this.$emit("set-heading", heading);
   },
   data() {

@@ -4,7 +4,7 @@
       <div class="q-mb-md">
         <label for="expenditure_item" class="field"
           ><span> <q-icon name="category" size="xs" class="q-pr-sm" /> </span
-          >Name:
+          >{{$t('app.nameLabel')}}:
           <span class="field_value detail_name">{{
             getUpdatedExpenditureItemDetailFromState.name
           }}</span></label
@@ -13,7 +13,7 @@
       <div class="q-mb-md">
         <label for="venue" class="field"
           ><span> <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
-          >Amount Given:
+          >{{$t('app.amountGivenLabel')}}:
           <span class="field_value detail_amount"
             >{{
               Number(
@@ -27,7 +27,7 @@
       <div class="q-mb-md">
         <label for="date" class="field"
           ><span> <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
-          >Amount Spent:
+          >{{$t('app.amountSpent')}}:
           <span class="field_value detail_amount"
             >{{
               Number(
@@ -41,7 +41,7 @@
       <div class="q-mb-md">
         <label for="amount" class="field"
           ><span> <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
-          >Balance:
+          >{{$t('app.balance')}}:
           <span class="field_value item_bal">
             {{
               Number(
@@ -59,7 +59,7 @@
           v-show="getUpdatedExpenditureItemDetailFromState.approve == 'DECLINED'"
           ><span>
             <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span
-          >Transaction Status:
+          >{{$t('app.transactionStatus')}}:
           <span class="value_trxn unapproved_color field_value">{{
             getUpdatedExpenditureItemDetailFromState.approve
           }}</span></label
@@ -70,7 +70,7 @@
           v-show="getUpdatedExpenditureItemDetailFromState.approve == 'APPROVED'"
           ><span>
             <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span
-          >Transaction Status:
+          >{{$t('app.transactionStatus')}}:
           <span class="value_trxn approved_color field_value">
             {{ getUpdatedExpenditureItemDetailFromState.approve }}</span
           ></label
@@ -81,7 +81,7 @@
           v-show="getUpdatedExpenditureItemDetailFromState.approve == 'PENDING'"
           ><span>
             <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span
-          >Transaction Status:
+          >{{$t('app.transactionStatus')}}:
           <span class="value_trxn pending_color field_value">
             {{ getUpdatedExpenditureItemDetailFromState.approve }}</span
           ></label
@@ -92,7 +92,7 @@
         <label for="amount" class="field"
           ><span>
             <q-icon name="schedule" size="xs" class="q-pr-sm" /> </span
-          >Created Date:
+          >{{$t('app.createdDate')}}:
           <span class="field_value detail_date">
             {{ getFormatDetailCreatedDate }}
           </span></label
@@ -103,7 +103,7 @@
         <label for="amount" class="field"
           ><span>
             <q-icon name="person" size="xs" class="q-pr-sm" /> </span
-          >Created By:
+          >{{$t('app.createdBy')}}:
           <span class="field_value detail_created_by">
             {{ getUpdatedExpenditureItemDetailFromState.updated_by }}
           </span></label
@@ -112,7 +112,7 @@
       <div class="q-mb-md">
         <label for="comment" class="field"><span>
             <q-icon name="description" size="xs" class="q-pr-sm" /> </span
-          >Comment:</label>
+          >{{$t('app.comment')}}:</label>
         <p class="value_comment">{{ getUpdatedExpenditureItemDetailFromState.comment }}.</p>
       </div>
     </div>
@@ -125,7 +125,7 @@ import moment from "moment";
 export default {
   mixins: [ExpenditureItemDetailMixinVue],
   mounted() {
-    let heading = "Expenditure Item Detail Information";
+    let heading = this.$t('app.detailHeading');
     this.$emit("set-heading", heading);
   },
   data() {

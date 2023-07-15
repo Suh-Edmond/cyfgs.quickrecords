@@ -89,27 +89,8 @@
                     </q-icon>
                   </a>
                 </label>
-                <q-input
-                  v-model="organisation.telephone"
-                  outlined
-                  type="tel"
-                  dense
-                  mask="(+###) ### - ### - ###"
-                  unmasked-value
-                  hint="Example: (+237) ### - ### - ###"
-                >
-                </q-input>
-                <q-input
-                  v-model="organisation.telephone2"
-                  outlined
-                  dense
-                  type="tel"
-                  class="q-mt-xs"
-                  mask="(+###) ### - ### - ###"
-                  unmasked-value
-                  hint="Example: (+237) ### - ### - ###"
-                  v-if="show_telephone2"
-                />
+                <vue-tel-input v-model="organisation.telephone" defaultCountry="cm" mode="international" class="q-pa-xs"></vue-tel-input>
+                <vue-tel-input v-model="organisation.telephone2" defaultCountry="cm" mode="international" class="q-pa-xs"  v-if="show_telephone2"></vue-tel-input>
               </div>
             </div>
             <div
@@ -351,6 +332,7 @@ import ButtonVue from "src/components/Button.vue";
 import FileConstants from "src/components/Constants/FileConstants.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import { Notify, Platform } from 'quasar';
+import { VueTelInput } from 'vue-tel-input';
 
 export default {
   mixins: [organisationMixinVue],
@@ -560,6 +542,7 @@ export default {
   },
   components: {
     ButtonVue,
+    VueTelInput
   },
 };
 </script>

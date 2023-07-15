@@ -16,16 +16,8 @@
                 <label for="credential" class="form_field"
                   >{{$t('app.telephoneLabel')}} <span class="text-red">*</span></label
                 >
-                <q-input
-                  v-model="user.credential"
-                  outlined
-                  dense
-                  type="tel"
-                  mask="(+###) ### - ### - ###"
-                  unmasked-value
-                  hint="Example: (+237) ### - ### - ###"
-                />
-              </div>
+                <vue-tel-input v-model="user.credential" defaultCountry="cm" mode="international" class="q-pa-xs"></vue-tel-input>
+               </div>
               <div>
                 <label for="password" class="form_field"
                   >{{$t('app.passwordLabel')}} <span class="text-red">*</span></label
@@ -79,6 +71,8 @@ import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
 import memberMixinVue from "src/mixins/memberMixin.vue";
 import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
 import ContributionsMixinVue from "src/mixins/ContributionsMixin.vue";
+import { VueTelInput } from 'vue-tel-input';
+
 
 export default {
   name: "PageIndex",
@@ -192,7 +186,8 @@ export default {
               : ""
           );
         });
-    },
+
+      },
 
     getTotalYearlyExpenditures(id) {
        let payload = {
@@ -214,16 +209,21 @@ export default {
       };
       this.$store.dispatch("getRequest", payload).then(() => {
       });
-    }
+    },
+
   },
-  components: {},
+  components: {
+    VueTelInput
+ },
 };
 </script>
 
+<style src="vue-tel-input/dist/vue-tel-input.css"></style>
 <style lang="scss" scoped>
 * {
   box-sizing: border-box;
 }
+
 
 .page {
   background-color: $grey1;

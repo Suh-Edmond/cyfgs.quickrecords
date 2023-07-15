@@ -38,12 +38,9 @@
                         </q-icon>
                       </a>
                     </label>
-                    <q-input v-model="organisation.telephone" outlined type="tel" dense mask="(+###) ### - ### - ###"
-                      unmasked-value hint="Example: (+237) ### - ### - ###">
-                    </q-input>
-                    <q-input v-model="organisation.telephone2" outlined dense type="tel" class="q-mt-xs"
-                      mask="(+###) ### - ### - ###" unmasked-value hint="Example: (+237) ### - ### - ###"
-                      v-if="show_telephone2" />
+                      <vue-tel-input v-model="organisation.telephone" defaultCountry="cm" mode="international" class="q-pa-xs"></vue-tel-input>
+
+                      <vue-tel-input v-model="organisation.telephone2" defaultCountry="cm" mode="international" class="q-pa-xs" v-if="show_telephone2"></vue-tel-input>
                   </div>
                 </div>
               </div>
@@ -126,6 +123,7 @@ import organisationMixin from "src/mixins/organisationMixin.vue";
 import ButtonVue from "src/components/Button.vue";
 import memberMixinVue from "src/mixins/memberMixin.vue";
 import UserSavingMixin from "src/mixins/UserSavingMixin.vue";
+import { VueTelInput } from 'vue-tel-input';
 export default {
   name: "PageIndex",
   mixins: [organisationMixin, memberMixinVue, UserSavingMixin],
@@ -276,6 +274,7 @@ export default {
   },
   components: {
     ButtonVue,
+    VueTelInput
   },
 };
 </script>

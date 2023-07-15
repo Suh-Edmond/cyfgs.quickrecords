@@ -860,7 +860,7 @@
             class="text-bold total_label q-mt-md summary"
             v-if="show_members && total_members > 0"
           >
-           {{$t('app.totalMembers')}}:
+           {{$t('app.totalMember')}}:
           </q-th>
           <q-th class="total_value" v-if="show_members && total_members > 0">
             {{ total_members }}

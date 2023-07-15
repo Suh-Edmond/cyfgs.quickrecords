@@ -25,15 +25,7 @@
                 </div>
                 <div class="q-pb-md">
                   <label for="telephone" class="form_field">{{$t('app.telephoneLabel')}} <span class="text-red">*</span></label>
-                  <q-input
-                    v-model="user.telephone"
-                    outlined
-                    dense
-                    type="tel"
-                    mask="(+###) ### - ### - ###"
-                    unmasked-value
-                    hint="Example: (+237) ### - ### - ###"
-                  />
+                  <vue-tel-input v-model="user.telephone" defaultCountry="cm" mode="international" class="q-pa-xs"></vue-tel-input>
                 </div>
                 <div class="q-pb-sm">
                   <label for="email" class="form_field">{{$t('app.emailLabel')}}</label>
@@ -119,6 +111,7 @@
 </template>
 
 <script>
+import { VueTelInput } from 'vue-tel-input';
 export default {
   name: "PageIndex",
   data() {
@@ -186,6 +179,7 @@ export default {
     },
   },
   components: {
+    VueTelInput
   },
 };
 </script>

@@ -56,15 +56,7 @@
                 <label for="credential" class="form_field"
                   >{{$t('app.telephoneLabel')}} <span class="text-red">*</span></label
                 >
-                <q-input
-                  v-model="user.telephone"
-                  outlined
-                  dense
-                  type="tel"
-                  mask="(+###) ### - ### - ###"
-                  unmasked-value
-                  hint="Example: (+237) ### - ### - ###"
-                />
+                <vue-tel-input v-model="user.telephone" defaultCountry="cm" mode="international" class="q-pa-xs"></vue-tel-input>
               </div>
               <div>
                 <label for="credential" class="form_field"
@@ -200,7 +192,7 @@
 import ButtonVue from "src/components/Button.vue";
 import memberMixinVue from "src/mixins/memberMixin.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
-
+import { VueTelInput } from 'vue-tel-input';
 export default {
   mixins: [memberMixinVue, organisationMixinVue],
   created() {
@@ -329,6 +321,7 @@ export default {
   },
   components: {
     ButtonVue,
+    VueTelInput
   },
 };
 </script>
@@ -340,14 +333,14 @@ export default {
 
 .hint {
   color: $grey2;
-  font-size: smaller;
+  font-size: small;
 }
 
 .form_field {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 11px;
+  font-size: 12px;
   align-items: center;
   letter-spacing: 0.01em;
   color: $grey2;

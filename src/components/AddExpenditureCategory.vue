@@ -2,27 +2,27 @@
   <div class="q-pa-md">
     <div class="q-ml-sm q-mb-lg">
       <label class="text-muted info"
-        >All fields with <span class="text-red">*</span> are required</label
+        >{{$t('app.warningField')}}<span class="text-red">*</span>{{$t('app.fields')}}</label
       >
     </div>
     <div class="q-mt-lg q-mx-sm">
       <q-form @submit="onAddExpenditureCategory" class="q-gutter-md">
         <div>
           <label for="credential" class="form_field"
-            >Name <span class="text-red">*</span></label
+            >{{$t('app.nameLabel')}} <span class="text-red">*</span></label
           >
           <q-input v-model="expenditure.name" outlined dense type="text" />
         </div>
         <div>
           <label for="credential" class="form_field"
-            >Description <span class="text-red">*</span></label
+            >{{$t('app.description')}} <span class="text-red">*</span></label
           >
           <q-input
             v-model="expenditure.description"
             outlined
             dense
             type="textarea"
-            placeholder="Please provide a description about the category"
+            :placeholder="$t('app.provideDescription')"
           />
         </div>
         <div class="row q-mt-lg justify-end">
@@ -50,12 +50,12 @@ import ExpenditureCategoryMixinVue from "src/mixins/ExpenditureCategoryMixin.vue
 export default {
   mixins: [organisationMixinVue, ExpenditureCategoryMixinVue],
   created() {
-    let heading = " Expenditure Category Information";
+    let heading = this.$t('app.expenditureCategoryHeading');
     this.$emit("set-heading", heading);
   },
   data() {
     return {
-      label_save: "Save",
+      label_save: this.$t('app.saveBtnLabel'),
       loading: false,
       color: "primary",
       expenditure: {
@@ -97,12 +97,12 @@ export default {
               ? null
               : this.getUpdatedExpenditureCategoryFromState().id,
         },
-        msg: "Expenditure Category save Successfully",
+        msg: this.$t('app.expenditureCategorySuccessMsg'),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: "An Error occurred! Please try again",
+        error_msg: this.$t('app.defaultErrorMsg'),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -170,7 +170,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 11px;
+  font-size: 12px;
   align-items: center;
   letter-spacing: 0.01em;
   color: $grey2;

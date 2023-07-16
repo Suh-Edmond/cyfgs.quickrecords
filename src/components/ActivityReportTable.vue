@@ -19,17 +19,17 @@
       <div class="col-1 col-md-1 col-sm-12 col-xs-12"></div>
       <div class="col-10 col-md-10 col-sm-12 col-xs-12">
         <div class="text-center q-pt-md">
-          <label for="income" class="income_heading">INCOME (F CFA)</label>
+          <label for="income" class="income_heading">{{$t('app.income')}} (F CFA)</label>
         </div>
         <div class="q-mt-md">
           <!-------------------------------------------------------------------TABLE TITLE------------------------------------------------------------------>
           <div class="row table_header">
-            <div class="col-1 col-md-1 columns text-bold">S/N</div>
+            <div class="col-1 col-md-1 columns text-bold">{{$t('app.sn')}}</div>
             <div class="col-6 col-md-6 columns text-bold text-center">
-              Description
+              {{$t('app.description')}}
             </div>
             <div class="col-5 col-md-5 column_details_end text-bold">
-              Amount
+              {{$t('app.amount')}}
             </div>
           </div>
           <!---------------------------------------------------------------------END OF TABLE TITLE--------------------------------------------------------------------------->
@@ -54,7 +54,7 @@
             <div
               class="col-md-6 column_details text-bold text-center text-uppercase"
             >
-              Total Income
+              {{$t('app.totalIncome')}}
             </div>
             <div class="col-md-5 column_details_end text-bold">
               {{ Number(getTotalIncome).toLocaleString() }}
@@ -73,20 +73,20 @@
       <div class="col-10 col-md-10 col-sm-12 col-xs-12">
         <div class="text-center q-pt-md">
           <label for="income" class="income_heading"
-            >EXPENDITURES (F CFA)</label
+            >{{$t('app.expenditures')}} (F CFA)</label
           >
         </div>
         <div class="q-mt-md">
           <!-------------------------------------------------------------------TABLE TITLE------------------------------------------------------------------>
           <div class="row table_header">
-            <div class="col-1 col-md-1 columns text-bold">S/N</div>
+            <div class="col-1 col-md-1 columns text-bold">{{$t('app.sn')}}</div>
             <div class="col-5 col-md-5 columns text-bold text-center">
-              Description
+              {{$t('app.description')}}
             </div>
-            <div class="col-2 col-md-2 columns text-bold">Amount Given</div>
-            <div class="col-2 col-md-2 columns text-bold">Amount Spent</div>
+            <div class="col-2 col-md-2 columns text-bold">{{$t('app.amountGivenLabel')}}</div>
+            <div class="col-2 col-md-2 columns text-bold">{{$t('app.amountSpent')}}</div>
             <div class="col-2 col-md-2 column_details_end text-bold">
-              Balance
+              {{$t('app.balance')}}
             </div>
           </div>
           <!---------------------------------------------------------------------END OF TABLE TITLE--------------------------------------------------------------------------->
@@ -121,7 +121,7 @@
             <div
               class="col-md-5 column_details text-bold text-center text-uppercase"
             >
-              Total Expenditures
+              {{$t('app.totalExpenditure')}}
             </div>
             <div class="col-md-2 column_details text-bold text-center">
               {{ Number(getTotalAmountGiven).toLocaleString() }}
@@ -146,7 +146,7 @@
       <div class="col-1 col-md-1 col-sm-12 col-xs-12"></div>
       <div class="col-10 col-md-10 col-sm-12 col-xs-12">
         <div class="text-center q-pt-md">
-          <label for="income" class="income_heading">SUMMARY (F CFA)</label>
+          <label for="income" class="income_heading">{{$t('app.summary')}} (F CFA)</label>
         </div>
         <div class="q-mt-md">
           <!-------------------------------------------------------------------TABLE TITLE------------------------------------------------------------------>
@@ -155,7 +155,7 @@
             <div class="col-md-6 columns text-bold text-center">
               Description
             </div>
-            <div class="col-md-5 columns text-bold">Amount</div>
+            <div class="col-md-5 columns text-bold">{{$t('app.amount')}}</div>
           </div>
           <!---------------------------------------------------------------------END OF TABLE TITLE--------------------------------------------------------------------------->
 
@@ -164,7 +164,7 @@
             <div
               class="col-md-6 column_details text-bold text-uppercase text-center"
             >
-              Total Income
+             {{$t('app.totalIncome')}}
             </div>
             <div class="col-md-5 column_details_end text-bold text-center">
               {{ Number(getTotalIncome).toLocaleString() }}
@@ -176,7 +176,7 @@
             <div
               class="col-md-6 column_details text-bold text-uppercase text-center"
             >
-              Total Expenditure
+              {{$t('app.totalExpenditureLabel')}}
             </div>
             <div class="col-md-5 column_details_end text-bold text-center">
               {{ Number(getTotalExpenditure).toLocaleString() }}
@@ -188,7 +188,7 @@
             <div
               class="col-md-6 column_details text-bold text-uppercase text-center"
             >
-              Total Balance
+              {{$t('app.totalBalance')}}
             </div>
             <div class="col-md-5 column_details_end text-bold text-center">
               {{ Number(getTotalBalance).toLocaleString() }}
@@ -205,28 +205,28 @@
       <div class="col-md-1 col-sm-1 col-xs-1"></div>
       <div class="col-md-10 col-xs-12 col-sm-12">
         <div class="q-my-lg text-center">
-          <label for="income" class="summary text-uppercase">Presented By:</label>
+          <label for="income" class="summary text-uppercase">{{$t('app.presentedBy')}}:</label>
         </div>
         <div class="flex justify-between">
           <div class="col-md-6 text-bold text-center text-uppercase admin_details">
             <div>
-              <label for="name">Financial Secretary </label><br/>
+              <label for="name">{{$t('app.finSec')}} </label><br/>
               <span class="admin_name">{{getFinancialSecretary.name}}</span>
             </div>
             <br/>
             <div>
-              <label for="name">SIGN </label>
+              <label for="name">{{$t('app.sign')}} </label>
               <hr class="q-mt-lg"/>
             </div>
           </div>
           <div class="col-md-6 text-bold text-center text-uppercase admin_details">
             <div>
-              <label for="name">Treasurer</label><br/>
+              <label for="name">{{$t('app.treasurer')}}</label><br/>
               <span class="admin_name">{{getTreasurer.name}}</span>
             </div>
             <br/>
             <div>
-              <label for="name">SIGN </label>
+              <label for="name">{{$t('app.sign')}} </label>
               <hr class="q-mt-lg"/>
             </div>
           </div>
@@ -235,12 +235,12 @@
         <div class="flex justify-center">
           <div class="col-md-12 text-bold text-center text-uppercase admin_details">
             <div>
-              <label for="name">President</label><br/>
+              <label for="name">{{$t('app.president')}}</label><br/>
               <span class="admin_name">{{getPresident.name}}</span>
             </div>
             <br/>
             <div>
-              <label for="name">SIGN </label>
+              <label for="name">{{$t('app.sign')}} </label>
               <hr class="q-mt-lg"/>
             </div>
           </div>
@@ -268,7 +268,7 @@ export default {
 
   data() {
     return {
-      label_download: "Print",
+      label_download: this.$t('app.print'),
       loading: false,
       color: "positive",
       no_caps: true,

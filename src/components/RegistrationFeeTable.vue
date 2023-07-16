@@ -14,7 +14,7 @@
             icon-right="add"
             @click="show_add_fee = true"
           >
-            <q-tooltip> Add registration fee </q-tooltip>
+            <q-tooltip> {{$t('app.addRegFee')}} </q-tooltip>
           </q-btn>
         </div>
       </div>
@@ -71,14 +71,14 @@
                 :props="props"
                 v-if="props.row.is_compulsory"
               >
-                YES
+                {{$t('app.yes')}}
               </q-td>
               <q-td
                 key="is_complusory"
                 :props="props"
                 v-if="!props.row.is_compulsory"
               >
-                NO
+                {{$t('app.no')}}
               </q-td>
               <q-td key="action" :props="props">
                 <q-icon
@@ -87,7 +87,7 @@
                   class="edit_fee q-mr-xl"
                   @click="editFee(props.row)"
                 >
-                  <q-tooltip>Edit</q-tooltip>
+                  <q-tooltip>{{$t('app.edit')}}</q-tooltip>
                 </q-icon>
 
                 <q-icon
@@ -96,7 +96,7 @@
                   class="delete_fee q-ml-md"
                   @click="deleteFee(props.row)"
                 >
-                  <q-tooltip>Delete</q-tooltip>
+                  <q-tooltip>{{$t('app.delete')}}</q-tooltip>
                 </q-icon>
               </q-td>
             </q-tr>
@@ -110,8 +110,8 @@
     <q-dialog v-model="show_add_fee">
       <q-card style="min-width: 450px" class="q-px-md q-pt-sm q-pb-sm">
         <q-card-section class="row items-center q-pb-lg">
-          <div class="text-h6 add_year" v-if="fee.id == null">Add Member's Registration Fee</div>
-          <div class="text-h6 add_year" v-else>Update Member's Registration Fee</div>
+          <div class="text-h6 add_year" v-if="fee.id == null">{{$t('app.addRegFee')}}</div>
+          <div class="text-h6 add_year" v-else>{{$t('app.updateRegFee')}}</div>
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
@@ -120,14 +120,14 @@
           <q-form @submit="onAddFee" class="q-gutter-md">
             <div>
               <label for="credential" class="form_field"
-                >Amount <span class="text-red">*</span></label
+                >{{$t('app.amount')}} <span class="text-red">*</span></label
               >
               <q-input v-model="fee.amount" outlined dense type="number" />
             </div>
             <div class="flex">
               <div>
                 <label for="credential" class="form_field"
-                  >Compulsory <span class="text-red">*</span></label
+                  >{{$t('app.compulsory')}} <span class="text-red">*</span></label
                 >
               </div>
               <div class="q-gutter-sm q-ml-lg">
@@ -135,21 +135,21 @@
                   dense
                   v-model="fee.is_compulsory"
                   :val="true"
-                  label="YES"
+                  :label="$t('app.yes')"
                   size="xs"
                 />
                 <q-radio
                   dense
                   v-model="fee.is_compulsory"
                   :val="false"
-                  label="NO"
+                  :label="$t('app.no')"
                   size="xs"
                 />
               </div>
             </div>
             <div>
               <label for="credential" class="form_field"
-                >Frequency <span class="text-red">*</span></label
+                >{{$t('app.frequency')}} <span class="text-red">*</span></label
               >
               <q-select
                 v-model="fee.frequency"
@@ -162,7 +162,7 @@
               <div>
                 <ButtonVue
                   class="form_button"
-                  :label="'Save'"
+                  :label="$t('app.saveBtnLabel')"
                   :loading="is_fetching"
                   :color="'primary'"
                   :disabled="fee.amount == 0"
@@ -250,7 +250,7 @@ export default {
     deleteFee(data) {
       this.show_confirm_dialog = !this.show_confirm_dialog;
       this.deleted_data = data;
-      this.delete_msg = "Are you sure, you want delete this Registration Fee ?";
+      this.delete_msg = this.$t('app.removeRegFeeWarningMsg');
       return this.show_confirm_dialog;
     },
 
@@ -264,13 +264,13 @@ export default {
         data: this.fee,
         msg:
           this.fee.id == null
-            ? "Registration saved Successfully"
-            : "Registration updated Successfully",
+            ? this.$t('app.saveRegFeeSuccessMsg')
+            : this.$t('app.saveRegFeeSuccessMsg'),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: "An Error occurred! Please try again",
+        error_msg: this.$t('app.defaultErrorMsg'),
         has_commit: false,
         commit: "none",
         to_be_store_data: {

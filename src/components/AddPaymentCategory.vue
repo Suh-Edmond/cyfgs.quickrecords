@@ -2,20 +2,20 @@
   <div class="q-pa-md">
     <div class="q-ml-sm q-mb-lg">
       <label class="text-muted info"
-        >All fields with <span class="text-red">*</span> are required</label
+        >{{$t('app.warningField')}}<span class="text-red">*</span>{{ $t('app.fields') }}</label
       >
     </div>
     <div class="q-mt-lg q-mx-sm">
       <q-form @submit="onAddPaymentCategory" class="q-gutter-md">
         <div>
           <label for="credential" class="form_field"
-            >Name <span class="text-red">*</span></label
+            >{{$t('app.nameLabel')}} <span class="text-red">*</span></label
           >
           <q-input v-model="payment_category.name" outlined dense type="text" />
         </div>
         <div>
           <label for="credential" class="form_field"
-            >Description <span class="text-red">*</span></label
+            >{{$t('app.description')}} <span class="text-red">*</span></label
           >
           <q-input
             v-model="payment_category.description"
@@ -50,12 +50,12 @@ import PaymentCategoryMixinVue from "src/mixins/PaymentCategoryMixin.vue";
 export default {
   mixins: [organisationMixinVue, PaymentCategoryMixinVue],
   created() {
-    let heading = "Payment Category Information";
+    let heading = this.$t('app.paymentCategoryHeading');
     this.$emit("set-heading", heading);
   },
   data() {
     return {
-      label_save: "Save",
+      label_save: this.$t('app.saveBtnLabel'),
       loading: false,
       color: "primary",
       payment_category: {
@@ -91,12 +91,12 @@ export default {
           description: this.payment_category.description,
           id: this.getUpdatedPaymentCategoryFromState() != null ? this.getUpdatedPaymentCategoryFromState().id: null,
         },
-        msg: "Payment Category save Successfully",
+        msg: this.$t('app.paymentCategorySuccessMsg'),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: "An Error occurred! Please try again",
+        error_msg: this.$t('app.defaultErrorMsg'),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -150,7 +150,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 11px;
+  font-size: 12px;
   align-items: center;
   letter-spacing: 0.01em;
   color: $grey2;

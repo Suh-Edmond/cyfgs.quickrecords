@@ -40,7 +40,7 @@
                 <q-icon name="grid_view" size="xs" />
               </q-item-section>
 
-              <q-item-section class="item_name"> Dashboard </q-item-section>
+              <q-item-section class="item_name"> {{$t('app.dashboardLabel')}} </q-item-section>
             </q-item>
             <q-item
               clickable
@@ -69,7 +69,7 @@
                 <q-icon name="diversity_3" size="xs" />
               </q-item-section>
               <q-item-section class="item_name">
-                Organisation Management
+                {{$t('app.organisationLabel')}}
               </q-item-section>
             </q-item>
 
@@ -89,7 +89,7 @@
               >
                 <q-icon name="settings" size="xs" />
               </q-item-section>
-              <q-item-section class="item_name"> Settings Zone </q-item-section>
+              <q-item-section class="item_name">{{ $t('app.settingsLabel') }}</q-item-section>
             </q-item>
 
             <q-item
@@ -117,7 +117,7 @@
                 <q-icon name="manage_accounts" size="xs" />
               </q-item-section>
               <q-item-section class="item_name">
-                Member Management
+                {{$t('app.memberMgtLabel')}}
               </q-item-section>
             </q-item>
             <q-item
@@ -145,7 +145,7 @@
                 <q-icon name="monetization_on" size="xs" />
               </q-item-section>
               <q-item-section class="item_name">
-                Payment Categories
+                {{$t('app.paymentCategoryLabel')}}
               </q-item-section>
             </q-item>
 
@@ -177,7 +177,7 @@
                 <q-icon name="monetization_on" size="xs" />
               </q-item-section>
               <q-item-section class="item_name">
-                Expenditure Categories
+               {{$t('app.expenditureCategoryLabel')}}
               </q-item-section>
             </q-item>
 
@@ -197,7 +197,7 @@
               >
                 <q-icon name="monetization_on" size="xs" />
               </q-item-section>
-              <q-item-section class="item_name"> Expenditures </q-item-section>
+              <q-item-section class="item_name"> {{$t('app.expenditureLabel')}} </q-item-section>
             </q-item>
 
             <q-item
@@ -223,7 +223,7 @@
                 <q-icon name="savings" size="xs" />
               </q-item-section>
               <q-item-section class="item_name">
-                Member Savings
+               {{$t('app.savingLabel')}}
               </q-item-section>
             </q-item>
 
@@ -252,7 +252,7 @@
                 <q-icon name="local_activity" size="xs" />
               </q-item-section>
               <q-item-section class="item_name">
-                Income Activities
+                {{$t('app.incomeActivityLabel')}}
               </q-item-section>
             </q-item>
 
@@ -283,7 +283,7 @@
                 <q-icon name="payments" size="xs" />
               </q-item-section>
               <q-item-section class="item_name"
-                >Members Contributions
+                >{{$t('app.contributionLabel')}}
               </q-item-section>
             </q-item>
 
@@ -320,7 +320,7 @@
                 />
               </q-item-section>
               <q-item-section class="item_name"
-                >Sponsorship Management
+                >{{$t('app.sponsorshipLabel')}}
               </q-item-section>
             </q-item>
 
@@ -347,7 +347,7 @@
                 <q-icon name="summarize" size="xs" />
               </q-item-section>
               <q-item-section class="item_name">
-                Reports Generation
+                {{$t('app.reportGenerationLabel')}}
               </q-item-section>
             </q-item>
           </q-list>

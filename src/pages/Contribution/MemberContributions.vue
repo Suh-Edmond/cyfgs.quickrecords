@@ -71,14 +71,14 @@ export default {
   },
   data() {
     return {
-      label_print: "Print",
+      label_print: this.$t("app.print"),
       color_print: "positive",
-      label_fetch_user: "Filter",
+      label_fetch_user: this.$t("app.filter"),
       loading: false,
       color: "primary",
       no_caps: true,
-      message: "Are you sure you want to delete this member's contribution ?",
-      label: "Delete",
+      message: this.$t("app.deleteContributionWarningMsg"),
+      label: this.$t("app.delete"),
       title: "",
       columns: [
         {
@@ -145,8 +145,11 @@ export default {
 
     getTableTile() {
       let title = "";
-      if (this.$store.getters.getMemberContributions.length != 0) {
-        title = `${this.$store.getters.getMemberContributions[0].user_name} Contributions for ${this.$store.getters.getMemberContributions[0].payment_item_name}`;
+      if (this.$store.getters.getMemberContributions.length > 0) {
+        title =
+          `${this.$store.getters.getMemberContributions[0].user_name} ` +
+          this.$t("app.partContributionTitle") +
+          ` ${this.$store.getters.getMemberContributions[0].payment_item_name}`;
       }
       return title;
     },
@@ -213,7 +216,7 @@ export default {
       let user_id = this.$router.currentRoute.params.id;
       let payment_item_name = "";
       let user_name = "";
-      if (this.$store.getters.getMemberContributions.length != 0) {
+      if (this.$store.getters.getMemberContributions.length > 0) {
         user_name = this.$store.getters.getMemberContributions[0].user_name;
         payment_item_name =
           this.$store.getters.getMemberContributions[0].payment_item_name;

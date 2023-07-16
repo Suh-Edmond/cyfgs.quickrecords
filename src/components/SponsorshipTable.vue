@@ -72,7 +72,7 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="edit">Edit</q-item-label>
+                        <q-item-label class="edit">{{$t('app.edit')}}</q-item-label>
                       </q-item-section>
                     </q-item>
 
@@ -88,7 +88,7 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="edit">View</q-item-label>
+                        <q-item-label class="edit">{{$t('app.view')}}</q-item-label>
                       </q-item-section>
                     </q-item>
 
@@ -104,7 +104,7 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="text-red">Delete</q-item-label>
+                        <q-item-label class="text-red">{{$t('app.delete')}}</q-item-label>
                       </q-item-section>
                     </q-item>
                   </q-list>
@@ -154,7 +154,7 @@
               : 'text-h6-sm'
           "
           v-model="filter"
-          placeholder="Type to search..."
+          :placeholder="$t('app.search')"
         >
           <template v-slot:append>
             <q-icon name="search" />
@@ -165,7 +165,7 @@
       <template v-slot:bottom>
         <q-tr>
           <q-th class="text-bold total q-my-md">
-            Total:
+            {{$t('app.total')}}:
           </q-th>
           <q-th class="text-bold total_given">
             {{ Number(total).toLocaleString() }} XAF
@@ -180,14 +180,14 @@
         <q-card-section class="q-pa-lg">
           <div class="q-mb-md">
             <label class="text-dark message">{{ message }}</label><br/>
-            <small class="warning_caption">This action can not be undone</small>
+            <small class="warning_caption">{{$t('app.actionUndoneMsg')}}</small>
           </div>
-          <div class="text-weight-bold text-left text-red">Sponsor:  <span class="q-pl-md">{{ deleted_row.supporter }}</span> </div>
-          <div class="text-weight-bold text-left text-red"> Amount: <span class="q-pl-md">{{ Number(deleted_row.amount_deposited).toLocaleString() }} XAF</span></div>
+          <div class="text-weight-bold text-left text-red">{{$t('app.sponsor')}}:  <span class="q-pl-md">{{ deleted_row.supporter }}</span> </div>
+          <div class="text-weight-bold text-left text-red"> {{$t('app.amount')}}: <span class="q-pl-md">{{ Number(deleted_row.amount_deposited).toLocaleString() }} XAF</span></div>
         </q-card-section>
         <q-card-actions align="right">
           <q-btn
-            label="Cancel"
+            :label="$t('app.cancel')"
             color="primary"
             :disabled="false"
             :loading="loading"
@@ -197,7 +197,7 @@
             no-caps
           ></q-btn>
           <q-btn
-            label="Delete"
+            :label="$t('app.delete')"
             color="primary"
             class="dialog_button"
             :disabled="false"
@@ -219,7 +219,7 @@
             <div class="col-md-12">
               <label for="msg">
                 <span class="text-weight-bold"
-                  >Do you want to {{ chosen_state }} {{ approve_msg }}</span
+                  >{{$t('app.doYouKnow')}}{{ chosen_state }} {{ approve_msg }}</span
                 >
                 <br />
               </label>
@@ -227,12 +227,12 @@
           </div>
           <div  class="text-red">
               <div class="text-weight-bold text-left">
-                Sponsor:
+                {{$t('app.sponsor')}}:
                 <span class="q-pl-md">{{ supporter }}</span>
               </div>
 
               <div class="text-weight-bold text-left">
-                Amount:
+                {{$t('app.amount')}}:
                 <span class="q-pl-lg"
                   >{{ Number(supporter_amount).toLocaleString() }} XAF</span
                 >
@@ -244,7 +244,7 @@
           <q-btn
             :class="chosen_state == 'Approve' ? 'approve' : 'decline'"
             size="md"
-            label="Cancel"
+            :label="$t('app.cancel')"
             flat
             v-close-popup
             no-caps
@@ -266,7 +266,6 @@
 <script>
 import { LocalStorage } from "quasar";
 import SponsorshipMixin from "src/mixins/SponsorshipMixin.vue";
-import moment from "moment";
 
 export default {
   mixins:[SponsorshipMixin],
@@ -300,8 +299,7 @@ export default {
 
   data() {
     return {
-      label_download: "Print",
-      loading: false,
+       loading: false,
       color: "positive",
       no_caps: true,
       filter: "",
@@ -323,7 +321,7 @@ export default {
     onViewSupport(data) {
       let payload = {
         data: data,
-        tab: "View Sponsorship",
+        tab: this.$t('app.viewSponsorship'),
       };
       this.$store.dispatch("setSelectedSponsorship", data);
       this.$emit("view-sponsorship", payload);
@@ -332,7 +330,7 @@ export default {
     onEditSupport(data){
       let payload = {
         data: data,
-        tab: "Sponsorship Management",
+        tab: this.$t('app.sponsorshipMgt'),
       };
 
       this.$store.dispatch("setSelectedSponsorship", data);
@@ -350,7 +348,7 @@ export default {
       this.chosen_state = state;
       this.supporter_amount = row.amount_deposited;
       this.supporter = row.supporter;
-      this.approve_msg = `Sponsorship for ${row.payment_item.name} ?`;
+      this.approve_msg =  this.$t('app.sponsorshipPart')+`${row.payment_item.name} ?`;
     },
 
     onApprovedRecord(row, state) {
@@ -359,7 +357,7 @@ export default {
       this.chosen_state = state;
       this.supporter_amount = row.amount_deposited;
       this.supporter = row.supporter;
-      this.approve_msg = `Sponsorship for ${row.payment_item.name} ?`;
+      this.approve_msg =  this.$t('app.sponsorshipPart')+`${row.payment_item.name} ?`;
     },
 
     checkTreasurerRole() {
@@ -372,13 +370,13 @@ export default {
     deleteRow(data) {
       let payload = {
         url: `/api/protected/sponsorships/${data.id}`,
-        msg: "Sponsorship deleted successfully",
+        msg: this.$t('app.sponsorDeletedSuccessMsg'),
         status: "success",
         color: "default",
         to_on_ok: "none",
         show_feedback: true,
         to_on_fail: "none",
-        error_msg: "An Error occurred! Please try again",
+        error_msg: this.$t('app.defaultErrorMsg'),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -394,16 +392,16 @@ export default {
     },
 
     onChangeRecordState() {
-      let state = this.chosen_state == 'Approve' ? 'APPROVED':'DECLINED'
+      let state = this.chosen_state == 'Approve' ? this.$t('app.approveLabel'):this.$t('app.declineLabel')
       let payload = {
         url: `/api/protected/sponsorships/${this.approve_data.id}/approve?type=${state}`,
-        msg: `Sponsorship has been ${this.chosen_state} successfully`,
+        msg: this.$t('app.sponsorPart') + `${this.chosen_state}` + this.$t('app.successfull'),
         data: null,
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: "An Error occurred! Please try again",
+        error_msg: this.$t('app.defaultErrorMsg'),
         has_commit: false,
         commit: "none",
         to_be_store_data: {

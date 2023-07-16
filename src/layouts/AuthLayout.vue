@@ -5,41 +5,41 @@
         <q-toolbar-title
           :class="$q.screen.lg ? 'header_title' : 'header_title_small'"
         >
-          <span class="app_name">Financial</span>Assistant
+          <span class="app_name">{{$t('app.nameOne')}}</span>{{$t('app.nameTwo')}}
         </q-toolbar-title>
         <div class="header_note" v-show="$q.screen.lg">
           <div class="flex" v-if="this.$router.currentRoute.name == 'Login' && getOrganisation == null">
-            <div class="account_text">Don't Have an Account ?</div>
+            <div class="account_text">{{$t('app.noAccountMsg')}}</div>
             <div class="account_text__signup">
               <router-link to="/auth/register" class="sign_link"
                 ><span @click="checkAccountExist('SIGN_UP')"
-                  >SIGN UP</span
+                  >{{$t('app.signUpLabel')}}</span
                 ></router-link
               >
             </div>
           </div>
           <div class="flex" v-if="this.$router.currentRoute.name == 'Register' && getOrganisation == null">
-            <div class="account_text">Already Have an Account ?</div>
+            <div class="account_text">{{$t('app.haveAccountMsg')}}</div>
             <div class="account_text__signup">
               <router-link to="/auth/login" class="sign_link"
                 ><span @click="checkAccountExist('SIGN_IN')"
-                  >SIGN IN</span
+                  >{{$t('app.signInLabel')}}</span
                 ></router-link
               >
             </div>
           </div>
           <div class="q-pa-md header_language">
-            <q-btn-dropdown color="black" :label="language" flat>
+            <q-btn-dropdown color="black" :label="getLocale" flat>
               <q-list>
-                <q-item clickable v-close-popup @click="onItemClick('English')">
+                <q-item clickable v-close-popup @click="onItemClick('en-US')">
                   <q-item-section class="text-center">
-                    <q-item-label>English</q-item-label>
+                    <q-item-label>{{$t('app.english')}}</q-item-label>
                   </q-item-section>
                 </q-item>
 
-                <q-item clickable v-close-popup @click="onItemClick('French')">
+                <q-item clickable v-close-popup @click="onItemClick('fr')">
                   <q-item-section class="text-center">
-                    <q-item-label>French</q-item-label>
+                    <q-item-label>{{$t('app.french')}}</q-item-label>
                   </q-item-section>
                 </q-item>
               </q-list>
@@ -48,17 +48,17 @@
         </div>
         <div class="header_note" v-show="!$q.screen.lg">
           <div class="q-pa-md header_language">
-            <q-btn-dropdown color="black" :label="language" flat>
+            <q-btn-dropdown color="black" :label="getLocale" flat>
               <q-list>
-                <q-item clickable v-close-popup @click="onItemClick('English')">
+                <q-item clickable v-close-popup @click="onItemClick('en-US')">
                   <q-item-section class="text-center">
-                    <q-item-label>English</q-item-label>
+                    <q-item-label>{{$t('app.english')}}</q-item-label>
                   </q-item-section>
                 </q-item>
 
-                <q-item clickable v-close-popup @click="onItemClick('French')">
+                <q-item clickable v-close-popup @click="onItemClick('fr')">
                   <q-item-section class="text-center">
-                    <q-item-label>French</q-item-label>
+                    <q-item-label>{{$t('app.french')}}</q-item-label>
                   </q-item-section>
                 </q-item>
               </q-list>
@@ -74,8 +74,8 @@
       <q-toolbar>
         <q-toolbar-title>
           <p class="footer_text">
-            <span class="material-icons copy_right"> copyright </span>Copy Right
-            {{ year }}. All Rights Reserved.
+            <span class="material-icons copy_right"> copyright </span>{{$t('app.copyright')}}
+            {{ year }}.{{$t('app.allRightsReserved')}}
           </p>
         </q-toolbar-title>
       </q-toolbar>
@@ -91,7 +91,7 @@ export default {
   data() {
     return {
       year: new Date().getFullYear(),
-      language: "EN",
+      language:this.$i18n.locale,
       type: "SIGN_IN",
     };
   },
@@ -99,14 +99,18 @@ export default {
     getOrganisation() {
        return this.$store.getters.getOrganisation;
     },
+
+    getLocale(){
+      return this.$i18n.locale === 'en-US' ? this.$t('app.english') :this.$t('app.french');
+    }
   },
   methods: {
     onItemClick(lang) {
-      if (lang == "French") {
-        this.language = "FR";
+      if (lang == "fr") {
+        this.$i18n.locale = 'fr'
       }
-      if (lang == "English") {
-        this.language = "EN";
+      if (lang == "en-US") {
+        this.$i18n.locale = 'en-US'
       }
     },
     checkAccountExist(type) {

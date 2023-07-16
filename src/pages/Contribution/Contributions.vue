@@ -21,7 +21,7 @@
       >
         <div>
           <q-btn
-            :label="'Filter'"
+            :label="$t('app.filter')"
             :color="'primary'"
             :disabled="false"
             no-caps
@@ -33,7 +33,7 @@
         <q-space />
         <div class="button q-pb-xs">
           <q-btn
-            :label="'Print'"
+            :label="$t('app.print')"
             :loading="loading"
             :color="'positive'"
             :disabled="getTableData == 0"
@@ -78,7 +78,7 @@
       >
         <div>
           <q-btn
-            :label="'Filter'"
+            :label="$t('app.filter')"
             :color="'primary'"
             :disabled="false"
             no-caps
@@ -90,7 +90,7 @@
         <q-space />
         <div class="button q-pb-xs">
           <q-btn
-            :label="'Print'"
+            :label="$t('app.print')"
             :loading="loading"
             :color="'positive'"
             :disabled="getFilteredContributions.length == 0"
@@ -146,8 +146,8 @@ export default {
     return {
       payment_item_id: null,
       loading: false,
-      message: "Are you sure you want to delete this member's contribution ?",
-      label: "Delete",
+      message: this.$t("app.deleteContributionWarningMsg"),
+      label: this.$t("app.delete"),
       columns: [
         {
           name: "counter",
@@ -320,11 +320,11 @@ export default {
       const route_data = Object.assign({}, this.$route.query);
       title =
         route_data.payment_item_id != undefined
-          ? `Members Contributions for ${
-              route_data.payment_item_id
-            }, Amount Payable:  ${Number(
-              route_data.payment_item_amount
-            ).toLocaleString()} XAF`
+          ? this.$t(
+              "app.contributionPartTitle"
+            )`${route_data.payment_item_id}` +
+            this.$t("app.amountPartTitle") +
+            `${Number(route_data.payment_item_amount).toLocaleString()} XAF`
           : "";
       return title;
     },
@@ -421,22 +421,24 @@ export default {
     openSearchBar() {
       let payload = {
         data: null,
-        tab: "Search Members Contributions",
+        tab: this.$t("app.searchContribution"),
       };
 
       this.$emit("search-members-contribution", payload);
     },
 
     downloadContributions() {
-      let payment_item_id = this.$store.getters.getSearchSavingParams.item.value;
-      let payment_item_name = this.$store.getters.getSearchSavingParams.item.label;
+      let payment_item_id =
+        this.$store.getters.getSearchSavingParams.item.value;
+      let payment_item_name =
+        this.$store.getters.getSearchSavingParams.item.label;
       let month = this.$store.getters.getSearchSavingParams.month;
       let year = this.$store.getters.getSearchSavingParams.year;
       let status = this.$store.getters.getSearchSavingParams.status;
       let url = `/api/protected/download-contributions?payment_item_id=${payment_item_id}&month=${month}&year=${year}&status=${status}&payment_item_name=${payment_item_name}`;
 
       let file_name =
-        "Member's Contribution for " +
+        this.$t("app.memberContributionDownloadLabel") +
         this.$store.getters.getSearchSavingParams.item.label +
         ".pdf";
       this.loading = this.downloadPdf(url, file_name);

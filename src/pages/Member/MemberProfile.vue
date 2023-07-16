@@ -23,10 +23,10 @@
           shadow-2
           active-class="active_tab"
         >
-          <q-tab name="profile" label="Profile" class="tab" icon="person" />
+          <q-tab name="profile" :label="$t('app.profileLabel')" class="tab" icon="person" />
           <q-tab
             name="contributions"
-            label="Contributions"
+            :label="$t('app.contributionName')"
             class="tab"
             icon="payments"
           />
@@ -54,7 +54,7 @@
                           </q-icon>
                           <img
                             :src="getCurrentMember.picture"
-                            alt="User picture"
+                            :alt="$t('app.profilePicAlt')"
                             v-if="
                               getCurrentMember != null &&
                               getCurrentMember.picture != null
@@ -74,7 +74,7 @@
                             size="sm"
                             @click="openFileUpload"
                           >
-                            <q-tooltip>Upload Picture</q-tooltip>
+                            <q-tooltip>{{$t('app.uploadPicture')}}</q-tooltip>
                           </q-icon>
                         </div>
                       </div>
@@ -87,7 +87,7 @@
                                 name="military_tech"
                                 class="role_icon"
                               ></q-icon></span
-                            >My Roles:
+                            >{{$t('app.rolesName')}}
                           </label>
                         </div>
                         <q-space />
@@ -99,7 +99,7 @@
                             class="edit_icon"
                             @click="showAddRole()"
                           >
-                            <q-tooltip>Add Role</q-tooltip>
+                            <q-tooltip>{{$t('app.addRoleLabel')}}</q-tooltip>
                           </q-icon>
                         </div>
                       </div>
@@ -174,7 +174,7 @@
                               <q-item-label
                                 caption
                                 class="text-sm role_update_date"
-                                >Updated by:
+                                >{{$t('app.updatedBy')}}:
                                 <span>
                                   {{ role.updated_by }}</span
                                 ></q-item-label
@@ -198,7 +198,7 @@
                                   color="negative"
                                   size="xs"
                                 >
-                                  <q-tooltip>Remove Role</q-tooltip>
+                                  <q-tooltip>{{$t('app.removeRole')}}</q-tooltip>
                                 </q-icon>
                               </q-btn>
                             </q-item-section>
@@ -215,7 +215,7 @@
                         <div class="row">
                           <div class="q-pb-md">
                             <label for="info" class="personal_info"
-                              >Personal information</label
+                              >{{$t('app.personalInformationLabel')}}</label
                             >
                           </div>
                           <q-space />
@@ -227,7 +227,7 @@
                               class="edit_icon"
                               @click="showEditProfile"
                             >
-                              <q-tooltip>Edit Profile</q-tooltip>
+                              <q-tooltip>{{$t('app.editProfile')}}</q-tooltip>
                             </q-icon>
                           </div>
                         </div>
@@ -239,7 +239,7 @@
                                 class="q-pr-xs person_icon"
                               ></q-icon
                             ></span>
-                            Name:
+                            {{$t('app.nameLabel')}}:
                             <span class="value q-pl-xl value_code">{{
                               getCurrentMember.name
                             }}</span></label
@@ -262,14 +262,14 @@
                               ></q-icon
                             ></span>
                             <span class="q-pr-xs"></span>
-                            Gender:
+                            {{$t('app.gender')}}:
                             <span class="value value_code gender">{{
                               getCurrentMember.gender
                             }}</span>
                             <span
                               class="value value_code q-pl-lg"
                               v-if="getCurrentMember.gender == null"
-                              >Not Set</span
+                              >{{ $t('app.notSet') }}</span
                             >
                           </label>
                         </div>
@@ -281,7 +281,7 @@
                                 size="xs"
                                 class="q-pr-sm"
                               ></q-icon></span
-                            >Email:
+                            >{{$t('app.emailLabel')}}:
                             <span class="value value_code email">{{
                               getCurrentMember.email
                             }}</span></label
@@ -295,7 +295,7 @@
                                 size="xs"
                                 class="q-pr-xs"
                               ></q-icon></span
-                            >Telephone:
+                            >{{$t('app.telephoneLabel')}}:
                             <span class="value phone value_code">{{
                               getCurrentMember.telephone
                             }}</span></label
@@ -310,7 +310,7 @@
                                 class="q-pr-xs"
                               ></q-icon
                             ></span>
-                            Address:
+                            {{$t('app.addressLabel')}}:
                             <span class="value address value_code">{{
                               getCurrentMember.address
                             }}</span></label
@@ -325,7 +325,7 @@
                                 class="q-pr-xs"
                               ></q-icon
                             ></span>
-                            Occupation:
+                            {{$t('app.occupation')}}:
                             <span class="value occupation value_code">{{
                               getCurrentMember.occupation
                             }}</span></label
@@ -339,7 +339,7 @@
                                 size="xs"
                                 class="q-pr-xs"
                               ></q-icon></span
-                            >Created Date:
+                            >{{$t('app.createdDate')}}:
                             <span class="value date value_code">{{
                               getFormatedCreatedDate
                             }}</span></label
@@ -353,7 +353,7 @@
                                 size="xs"
                                 class="q-pr-xs"
                               ></q-icon></span
-                            >Updated Date:
+                            >{{$t('app.updatedDate')}}:
                             <span class="value date value_code">{{
                               getFormatedUpdatedDate
                             }}</span></label
@@ -366,15 +366,14 @@
                       <div class="q-pa-sm q-mb-lg" v-if="edit_profile">
                         <q-form @submit="onUpdateMember" class="q-gutter-md">
                           <div class="update_profile q-pb-md">
-                            Update Profile
+                           {{$t('app.editProfile')}}
                           </div>
                           <small class="hint"
-                            >All fields with <span class="text-red">*</span> are
-                            required</small
+                            >{{$t('app.warningField')}}<span class="text-red">*</span> {{$t('app.fields')}}</small
                           >
                           <div>
                             <label for="credential" class="form_field"
-                              >Name <span class="text-red">*</span></label
+                              >{{$t('app.nameLabel')}} <span class="text-red">*</span></label
                             >
                             <q-input
                               v-model="user.name"
@@ -385,7 +384,7 @@
                           </div>
                           <div>
                             <label for="credential" class="form_field"
-                              >Gender <span class="text-red">*</span></label
+                              >{{$t('app.gender')}} <span class="text-red">*</span></label
                             >
                             <q-select
                               v-model="user.gender"
@@ -396,7 +395,7 @@
                           </div>
                           <div>
                             <label for="credential" class="form_field"
-                              >Email</label
+                              >{{$t('app.emailLabel')}}</label
                             >
                             <q-input
                               v-model="user.email"
@@ -407,7 +406,7 @@
                           </div>
                           <div>
                             <label for="credential" class="form_field"
-                              >Address <span class="text-red">*</span></label
+                              >{{$t('app.addressLabel')}} <span class="text-red">*</span></label
                             >
                             <q-input
                               v-model="user.address"
@@ -418,7 +417,7 @@
                           </div>
                           <div>
                             <label for="credential" class="form_field"
-                              >Occupation <span class="text-red">*</span></label
+                              >{{$t('app.occupation')}} <span class="text-red">*</span></label
                             >
                             <q-input
                               v-model="user.occupation"
@@ -438,7 +437,7 @@
                             >
                             </q-btn>
                             <ButtonVue
-                              label="Save"
+                              :label="$t('app.saveBtnLabel')"
                               :loading="loading"
                               color="primary"
                               :disabled="validateForm"
@@ -460,7 +459,7 @@
                           "
                         >
                           <label for="not_register"
-                            >Member has not Completed Registration for the Year:
+                            >{{$t('app.notCompletedRegistration')}}:
                             {{ getCurrentYear.year }}</label
                           >
                         </div>
@@ -469,7 +468,7 @@
                           v-if="getCurrentMember.has_register == 'REGISTERED'"
                         >
                           <label for="register"
-                            >Member has Completed Registration for the Year:
+                            >{{$t('app.hasCompletedRegistration')}}:
                             {{ getCurrentYear.year }}</label
                           >
                         </div>
@@ -481,7 +480,7 @@
                           "
                         >
                           <label for="pending"
-                            >Registration Payment is awaiting Approval</label
+                            >{{$t('app.registrationPending')}}</label
                           >
                         </div>
                       </div>
@@ -511,7 +510,7 @@
                 >
                   <template v-slot:top-left>
                     <div class="text-h6 contribution_item_header">
-                      Payment Items:
+                      {{$t('app.paymentItemLabel')}}:
                       {{ Number(due_amount).toLocaleString() }} XAF
                     </div>
                   </template>
@@ -569,7 +568,7 @@
             <div class="flex q-my-lg justify-center">
               <div>
                 <label for="total" class="amount_payable_title"
-                  >Total Amount Payable</label
+                  >{{$t('app.totalAmountPayable')}}</label
                 >
               </div>
               <div class="q-pl-lg">
@@ -583,7 +582,7 @@
               </div>
               <div class="q-pl-lg">
                 <q-btn
-                  label="Make Payment"
+                  :label="$t('app.makePaymentBtnLabel')"
                   color="primary"
                   :disabled="validatePayment"
                   no-caps
@@ -614,7 +613,7 @@
                 >
                   <template v-slot:top-left>
                     <div class="text-h6 contribution_item_header">
-                      Paid Items: {{ Number(amount_paid).toLocaleString() }} XAF
+                     {{$t('app.paidItem')}}: {{ Number(amount_paid).toLocaleString() }} XAF
                     </div>
                   </template>
                   <template v-slot:body="props">
@@ -713,7 +712,7 @@
     <q-dialog v-model="show_add_role_dialog">
       <q-card style="min-width: 400px" class="q-pa-xs">
         <q-card-section class="row items-center q-pb-md">
-          <div class="text-h6 add_role_title">Add Member Role</div>
+          <div class="text-h6 add_role_title">{{$t('app.addRoleLabel')}}</div>
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
@@ -722,7 +721,7 @@
           <q-form @submit="onAddRole" class="q-gutter-md">
             <div>
               <label for="credential" class="form_field"
-                >Select role <span class="text-red">*</span></label
+                >{{$t('app.selectRole')}} <span class="text-red">*</span></label
               >
               <q-select
                 v-model="role"
@@ -735,7 +734,7 @@
               <div class="q-mt-xs">
                 <ButtonVue
                   class="form_button"
-                  label="Add"
+                  :label="$t('app.addLabel')"
                   :loading="loading"
                   color="primary"
                   :disabled="validateAddRole"
@@ -756,19 +755,19 @@
         <q-card-section>
           <div class="text-center q-pb-xs">
             <label class="text-dark message text-bold"
-              >Are you sure you want to remove this role ?</label
+              >{{$t('app.removeRoleWarningMsg')}}</label
             >
           </div>
           <div
             class="text-weight-medium text-center text-red"
             v-if="show_remove_role_dialog"
           >
-            Role: <span class="q-pl-md">{{ role_deleted.name }}</span>
+            {{$t('app.role')}}: <span class="q-pl-md">{{ role_deleted.name }}</span>
           </div>
         </q-card-section>
         <q-card-actions align="right">
           <q-btn
-            label="Cancel"
+            :label="$t('app.cancel')"
             color="primary"
             size="md"
             no-caps
@@ -777,7 +776,7 @@
             v-close-popup
           ></q-btn>
           <q-btn
-            label="Remove"
+            :label="$t('app.remove')"
             color="primary"
             class="dialog_button"
             @click="removeUserRole"
@@ -795,7 +794,7 @@
     <q-dialog v-model="show_payment_dialog">
       <q-card style="min-width: 600px" class="q-pa-xs">
         <q-card-section class="row items-center q-pb-sm">
-          <div class="text-h6 confirm_payment_title">Confirm Payment(s)</div>
+          <div class="text-h6 confirm_payment_title">{{$t('app.confirmPaymentLabel')}}</div>
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
@@ -804,9 +803,9 @@
             <q-markup-table flat>
               <thead>
                 <tr class="text-weight-bold">
-                  <th class="text-left text-weight-bold">S/N</th>
-                  <th class="text-left text-weight-bold">Payment Item</th>
-                  <th class="text-left text-weight-bold">Amount (XAF)</th>
+                  <th class="text-left text-weight-bold">{{$t('app.sn')}}</th>
+                  <th class="text-left text-weight-bold">{{$t('app.paymentItem')}}</th>
+                  <th class="text-left text-weight-bold">{{ $t('app.amount') }}</th>
                 </tr>
               </thead>
               <tbody>
@@ -816,7 +815,7 @@
                   <td class="text-left">{{ item.balance }}</td>
                 </tr>
                 <tr>
-                  <td class="text-left text-weight-bold">Total</td>
+                  <td class="text-left text-weight-bold">{{$t('app.total')}}</td>
                   <td class="text-left"></td>
                   <td class="text-left text-weight-bold">
                     {{ Number(total_amount_payable).toLocaleString() }} XAF
@@ -832,7 +831,7 @@
             <q-btn
               icon-right="check"
               class="form_button"
-              label="Confirm"
+              :label="$t('app.confirm')"
               :loading="loading_payment"
               color="primary"
               :disabled="false"
@@ -884,7 +883,6 @@ export default {
       no_caps: true,
       selected_items: [],
       loading_payment: false,
-      member_registration: "Member's Registration",
       columns: [
         {
           name: "counter",

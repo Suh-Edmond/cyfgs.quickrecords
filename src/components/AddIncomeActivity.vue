@@ -2,20 +2,20 @@
   <div class="q-pa-md">
     <div class="q-ml-sm q-mb-md">
       <label class="text-muted q-ml-sm info"
-        >All fields with <span class="text-red">*</span> are required</label
+        >{{$t('app.warningField')}}<span class="text-red">*</span> {{$t('app.fields')}}</label
       >
     </div>
     <div class="q-mx-md">
       <q-form @submit="onAddIncomeActivity" class="q-gutter-sm">
         <div class="q-mb-md">
           <label for="name" class="form_field"
-            >Payment Item <span class="text-red">*</span></label
+            >{{$t('app.paymentItem')}}<span class="text-red">*</span></label
           >
           <q-select
             outlined
             dense
             v-model="income_activity.payment_item_id"
-            label="Type to search..."
+            :label="$t('app.searchPaymentItem')"
             :options="payment_items"
             input-debounce="0"
             clearable
@@ -30,7 +30,7 @@
             <template v-slot:no-option>
               <q-item>
                 <q-item-section class="text-grey">
-                  No item found
+                 {{$t('app.noResults')}}
                 </q-item-section>
               </q-item>
             </template>
@@ -38,13 +38,13 @@
         </div>
         <div class="q-mb-md">
           <label for="credential" class="form_field"
-            >Name <span class="text-red">*</span></label
+            >{{$t('app.nameLabel')}} <span class="text-red">*</span></label
           >
           <q-input v-model="income_activity.name" outlined dense type="text" />
         </div>
         <div class="q-mb-md">
           <label for="credential" class="form_field"
-            >Amount <span class="text-red">*</span></label
+            >{{$t('app.amount')}} <span class="text-red">*</span></label
           >
           <q-input
             v-model="income_activity.amount"
@@ -55,13 +55,13 @@
         </div>
         <div class="q-mb-md">
           <label for="credential" class="form_field"
-            >Venue <span class="text-red">*</span></label
+            >{{$t('app.venue')}} <span class="text-red">*</span></label
           >
           <q-input v-model="income_activity.venue" outlined dense type="text" />
         </div>
         <div class="q-mb-md">
           <label for="credential" class="form_field"
-            >Date <span class="text-red">*</span></label
+            >{{$t('app.date')}} <span class="text-red">*</span></label
           >
           <q-input v-model="income_activity.date" outlined dense>
             <template v-slot:append>
@@ -82,20 +82,20 @@
           </q-input>
         </div>
         <div class="q-mb-md">
-          <label for="credential" class="form_field">Description</label>
+          <label for="credential" class="form_field">{{$t('app.description')}}</label>
           <q-input
             v-model="income_activity.description"
             outlined
             dense
             type="textarea"
-            placeholder="Provide any comment about this income activity"
+            :placeholder="$t('app.incomeDescription')"
           />
         </div>
         <div class="row q-mt-lg justify-end">
           <div class="col-md-2 col-sm-2 col-xs-2">
             <ButtonVue
               class="form_button"
-              label="Save"
+              :label="$t('app.saveBtnLabel')"
               :loading="loading"
               color="primary"
               :disabled="validateForm"
@@ -118,7 +118,7 @@ export default {
   mixins: [IncomeActivityMixinVue, organisationMixinVue],
 
   mounted() {
-    let heading = "Income Activity Information";
+    let heading = this.$t('app.addIncomeActivityHeading');
     this.$emit("set-heading", heading);
     this.getPaymentActivities();
   },
@@ -220,12 +220,12 @@ export default {
               ? this.income_activity.payment_item_id.value
               : null,
         },
-        msg: "Income Activity saved Successfully",
+        msg: this.$t('app.addIncomeSuccessFeedbackMsg'),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: "An Error occurred! Please try again",
+        error_msg: this.$t('app.defaultErrorMsg'),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -329,7 +329,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 11px;
+  font-size: 12px;
   align-items: center;
   letter-spacing: 0.01em;
   color: $grey2;

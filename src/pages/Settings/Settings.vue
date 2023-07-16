@@ -15,7 +15,7 @@
         <div class="items">
           <q-list bordered padding>
             <q-item-label header class="setting_title"
-              >Organisation</q-item-label
+              >{{$t('app.organisationLabel')}}</q-item-label
             >
 
             <q-item
@@ -43,13 +43,13 @@
                       ? 'text_header_active'
                       : 'text_header_in_active'
                   "
-                  >Session</q-item-label
+                  >{{$t('app.sessionLabel')}}</q-item-label
                 >
                 <q-item-label
                   caption
                   :class="tag == 'Session' ? 'text_active' : 'text_in_active'"
                 >
-                  Set the current Session for the organisation
+                  {{$t('app.sessionCaptionMsg')}}
                 </q-item-label>
               </q-item-section>
             </q-item>
@@ -79,7 +79,7 @@
                       ? 'text_header_active'
                       : 'text_header_in_active'
                   "
-                  >Registration Fee</q-item-label
+                  >{{$t('app.registrationFeeLabel')}}</q-item-label
                 >
                 <q-item-label
                   caption
@@ -87,12 +87,12 @@
                     tag == 'Registration_fee' ? 'text_active' : 'text_in_active'
                   "
                 >
-                  Set the Registration fee for memebers
+                 {{$t('app.registrationFeeCaptionMsg')}}
                 </q-item-label>
               </q-item-section>
             </q-item>
 
-            <q-item
+            <!-- <q-item
               clickable
               v-ripple
               @click="getCurrentItem('Roles')"
@@ -126,9 +126,9 @@
                   Set the number of members for each role
                 </q-item-label>
               </q-item-section>
-            </q-item>
+            </q-item> -->
 
-            <q-item
+            <!-- <q-item
               clickable
               v-ripple
               @click="getCurrentItem('Subscription')"
@@ -164,25 +164,25 @@
                   Manage organisation subscription plans
                 </q-item-label>
               </q-item-section>
-            </q-item>
+            </q-item> -->
 
             <q-separator spaced />
-            <q-item-label header class="setting_title">General</q-item-label>
+            <q-item-label header class="setting_title">{{$t('app.settingsGeneralLabel')}}</q-item-label>
 
             <q-item>
               <q-item-section avatar top>
                 <q-icon
-                  name="folder"
+                  name="notifications"
                   class="icon_color_general"
                   size="xs"
                 ></q-icon>
               </q-item-section>
               <q-item-section>
                 <q-item-label class="text_header_general"
-                  >Notifications</q-item-label
+                  >{{$t('app.settingsNotificationLabel')}}</q-item-label
                 >
                 <q-item-label caption class="caption_text_general">
-                  Notify me when a member with a role joins the system
+                 {{$t('app.settingsNotificationCaption')}}
                 </q-item-label>
               </q-item-section>
               <q-item-section side>
@@ -197,21 +197,45 @@
             <q-item tag="label" v-ripple>
               <q-item-section avatar top>
                 <q-icon
-                  name="folder"
+                  name="translate"
                   class="icon_color_general"
                   size="xs"
                 ></q-icon>
               </q-item-section>
               <q-item-section>
                 <q-item-label class="text_header_general"
-                  >Dark Mode</q-item-label
+                  >{{$t('app.settingsLanguage')}}</q-item-label
                 >
                 <q-item-label caption class="caption_text_general">
-                  Change my appearance to dark mode
+                  {{$t('app.settingsLanguageCaption')}}
                 </q-item-label>
               </q-item-section>
               <q-item-section side>
-                <q-toggle color="blue" v-model="mode" val="battery" />
+                  <q-btn-dropdown :label="getLocale" flat class="labelText">
+                    <q-list>
+                      <q-item
+                        clickable
+                        v-close-popup
+                        @click="onItemClick('en-US')"
+                        class="lang_text"
+                      >
+                        <q-item-section class="text-center" >
+                          <q-item-label>{{ $t("app.english") }}</q-item-label>
+                        </q-item-section>
+                      </q-item>
+
+                      <q-item
+                        clickable
+                        v-close-popup
+                        @click="onItemClick('fr')"
+                        class="lang_text"
+                      >
+                        <q-item-section class="text-center">
+                          <q-item-label>{{ $t("app.french") }}</q-item-label>
+                        </q-item-section>
+                      </q-item>
+                    </q-list>
+                  </q-btn-dropdown>
               </q-item-section>
             </q-item>
           </q-list>
@@ -247,7 +271,7 @@
     <q-dialog v-model="show_add_year">
       <q-card style="min-width: 400px" class="q-px-md q-pt-sm q-pb-md">
         <q-card-section class="row items-center q-pb-lg">
-          <div class="text-h6 add_year">Add Session</div>
+          <div class="text-h6 add_year">{{$t('app.settingsAddSessionLabel')}}</div>
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
@@ -261,7 +285,7 @@
               <div class="q-mt-xs">
                 <ButtonVue
                   class="form_button"
-                  label="Save"
+                  :label="saveBtnLabel"
                   :loading="is_fetching"
                   color="primary"
                   :disabled="validateForm"
@@ -279,7 +303,7 @@
     <q-dialog v-model="show_edit_year">
       <q-card style="min-width: 400px" class="q-px-md q-pt-sm q-pb-sm">
         <q-card-section class="row items-center q-pb-lg">
-          <div class="text-h6 add_year">Update Session</div>
+          <div class="text-h6 add_year">{{$t('app.settingsUpdateSessionLabel')}}</div>
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
@@ -296,14 +320,14 @@
                 outlined
                 :options="year_statuses"
                 dense
-                label="Select year"
+                :label="yearLabel"
               />
             </div>
             <div class="flex q-mt-lg justify-end">
               <div class="q-mt-xs">
                 <ButtonVue
                   class="form_button"
-                  label="Save"
+                  :label="saveBtnLabel"
                   :loading="is_fetching"
                   color="primary"
                   :no_caps="true"
@@ -326,15 +350,17 @@ import RegistrationFeeTable from "src/components/RegistrationFeeTable.vue";
 import SessionsTable from "src/components/SessionsTable.vue";
 import RegistrationAmountMixin from "src/mixins/RegistrationAmountMixin.vue";
 export default {
-  mixins:[RegistrationAmountMixin],
+  mixins: [RegistrationAmountMixin],
   mounted() {
     this.getSessions();
     this.getRegistrationAmount();
-   },
+  },
   data() {
     return {
       mode: false,
-      new_role_member: false,
+      saveBtnLabel:this.$t('app.saveBtnLabel'),
+      yearLabel:this.$t('app.selectYearLabel'),
+      new_role_member: true,
       columns: [
         {
           name: "counter",
@@ -430,12 +456,17 @@ export default {
     getLoadingState() {
       return this.$store.getters.getFetchingState;
     },
+    getLocale(){
+      return this.$i18n.locale === 'en-US' ? this.$t('app.english') :this.$t('app.french');
+    }
   },
 
   methods: {
     formDateTime(date) {
       return moment(date).format("MMMM Do YYYY");
     },
+
+
     getCurrentItem(type) {
       this.tag = type;
       switch (this.tag) {
@@ -447,6 +478,8 @@ export default {
           break;
       }
     },
+
+
     onAddYear() {
       this.is_fetching = true;
       let payload = {
@@ -585,6 +618,15 @@ export default {
         return this.reg_table_data;
       });
     },
+
+    onItemClick(lang) {
+      if (lang == "fr") {
+        this.$i18n.locale = 'fr'
+      }
+      if (lang == "en-US") {
+        this.$i18n.locale = 'en-US'
+      }
+    },
   },
 
   components: {
@@ -681,8 +723,18 @@ export default {
   line-height: 24px;
 }
 
+.lang_text {
+  color: $grey8;
+}
+
+.labelText {
+  font-size: small;
+  color: $grey8;
+}
+
 .caption_text_general {
   color: $grey2;
+
 }
 
 .edit_year {

@@ -25,7 +25,7 @@
             outlined
             dense
             :options="years"
-            label="Select year"
+            :label="$t('app.selectYearLabel')"
             use-input
             input-debounce="0"
             clearable
@@ -33,7 +33,7 @@
           >
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey"> No results </q-item-section>
+                <q-item-section class="text-grey"> {{$t('app.noResults')}} </q-item-section>
               </q-item>
             </template>
           </q-select>
@@ -44,12 +44,12 @@
             outlined
             dense
             :options="statuses"
-            label="Select Status"
+            :label="$t('app.selectStatusLabel')"
             clearable
           >
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey"> No results </q-item-section>
+                <q-item-section class="text-grey"> {{$t('app.noResults')}}</q-item-section>
               </q-item>
             </template>
           </q-select>
@@ -57,7 +57,7 @@
         <div class="col-md-6 col-lg-6 col-xs-12 col-sm-12 flex q-pl-md">
           <div>
             <q-btn
-              :label="'Filter'"
+              :label="$t('app.filter')"
               :loading="is_fetching"
               :color="'primary'"
               :disabled="validateFilter"
@@ -70,7 +70,7 @@
           <q-space />
           <div class="button">
             <q-btn
-              label="Print"
+              :label="$t('app.print')"
               :loading="loading"
               color="positive"
               :disabled="false"
@@ -157,8 +157,8 @@ export default {
           align: "left",
         },
       ],
-      label: "Delete",
-      message: "Are you sure you want to delete this Saving ?",
+      label: this.$t('app.delete'),
+      message: this.$t('app.deleteSavingWarningMsg'),
       statuses: ["PENDING", "APPROVED", "DECLINED", "ALL"],
       status: "",
       start_filter: false,
@@ -249,7 +249,7 @@ export default {
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: false,
-        error_msg: "An Error occurred! Please try again",
+        error_msg: $t('app.defaultErrorMsg'),
         has_commit: false,
         commit: "none",
         to_be_store_data: {

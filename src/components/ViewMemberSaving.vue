@@ -4,7 +4,7 @@
       <div class="q-mb-md">
         <label for="name" class="field"
           ><span> <q-icon name="person" size="xs" class="q-pr-sm" /> </span
-          >Member Name:
+          >{{$t('app.memberName')}}:
           <span class="field_value item_value">{{
             getCurrentMemberSaving.user_name
           }}</span></label
@@ -13,7 +13,7 @@
       <div class="q-mb-md">
         <label for="email" class="field"
           ><span> <q-icon name="email" size="xs" class="q-pr-sm" /> </span
-          >Email:
+          >{{$t('app.emailLabel')}}:
           <span class="field_value item_venue">{{
             getCurrentMemberSaving.email
           }}</span></label
@@ -22,7 +22,7 @@
       <div class="q-mb-md">
         <label for="telephone" class="field"
           ><span> <q-icon name="phone" size="xs" class="q-pr-sm" /> </span
-          >Telephone:
+          >{{$t('app.telephoneLabel')}}:
           <span class="field_value item_tel">{{
             getCurrentMemberSaving.telephone
           }}</span></label
@@ -32,7 +32,7 @@
         <label for="amount" class="field"
           ><span>
             <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
-          >Amount Deposited:
+          >{{ $t('app.amountDeposited') }}:
           <span class="field_value item_amount">
             {{
               Number(getCurrentMemberSaving.amount_deposited).toLocaleString()
@@ -48,7 +48,7 @@
           v-show="getCurrentMemberSaving.approve == 'DECLINED'"
           ><span>
             <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span
-          >Transaction Status:
+          >{{$t('app.transactionStatus')}}:
           <span class="field_value item_statue unapproved_color">
             {{ getCurrentMemberSaving.approve }}</span
           ></label
@@ -59,7 +59,7 @@
           v-show="getCurrentMemberSaving.approve == 'APPROVED'"
           ><span>
             <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span
-          >Transaction Status:
+          >{{$t('app.transactionStatus')}}:
           <span class="field_value item_statue approved_color">
             {{ getCurrentMemberSaving.approve }}</span
           ></label
@@ -70,7 +70,7 @@
           v-show="getCurrentMemberSaving.approve == 'PENDING'"
           ><span>
             <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span
-          >Transaction Status:
+          >{{$t('app.transactionStatus')}}:
           <span class="field_value item_statue pending_color">
             {{ getCurrentMemberSaving.approve }}</span
           ></label
@@ -79,7 +79,7 @@
       <div class="q-mb-md">
         <label for="amount" class="field"
           ><span> <q-icon name="schedule" size="xs" class="q-pr-sm" /> </span
-          >Created Date:
+          >{{$t('app.createdDate')}}:
           <span class="field_value detail_date">
             {{ getFormatSavingCreatedDate }}
           </span></label
@@ -89,7 +89,7 @@
       <div class="q-mb-md">
         <label for="amount" class="field"
           ><span> <q-icon name="person" size="xs" class="q-pr-sm" /> </span
-          >Created By:
+          >{{$t('app.createdBy')}}:
           <span class="field_value detail_created_by">
             {{ getCurrentMemberSaving.updated_by }}
           </span></label
@@ -98,7 +98,7 @@
       <div class="q-mb-md">
         <label for="comment" class="field"
           ><span> <q-icon name="description" size="xs" class="q-pr-sm" /> </span
-          >Comment:</label
+          >{{$t('app.comment')}}:</label
         >
         <p class="value_comment">{{ getCurrentMemberSaving.comment }}.</p>
       </div>
@@ -110,7 +110,7 @@ import moment from "moment";
 
 export default {
   created() {
-    let heading = "Member Saving Information";
+    let heading = this.$t('app.viewSavingHeading');
     this.$emit("set-heading", heading);
   },
 

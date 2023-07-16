@@ -15,7 +15,7 @@ export default {
         msg: "none",
         color: "default",
         status: "none",
-        error_msg: "An Error occurred! Could not fetch payment categories",
+        error_msg: this.$t('app.defaultErrorMsg'),
         has_commit: true,
         show_feedback: false,
         show_spinner:true,

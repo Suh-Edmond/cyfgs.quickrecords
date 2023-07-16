@@ -25,7 +25,7 @@
             outlined
             dense
             :options="payment_items"
-            label="Search payment item..."
+            :label="$t('app.searchPaymentItem')"
             input-debounce="0"
             use-input
             clearable
@@ -33,7 +33,7 @@
           >
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey"> No results </q-item-section>
+                <q-item-section class="text-grey"> {{$t('app.noResults')}} </q-item-section>
               </q-item>
             </template>
           </q-select>
@@ -44,11 +44,11 @@
             outlined
             dense
             :options="statuses"
-            label="Select status"
+            :label="$t('app.selectStatusLabel')"
           >
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey"> No results </q-item-section>
+                <q-item-section class="text-grey"> {{$t('app.noResults')}} </q-item-section>
               </q-item>
             </template>
           </q-select>
@@ -56,7 +56,7 @@
         <div class="col-md-6 col-lg-6 col-xs-12 col-sm-12 flex q-pl-md">
           <div>
             <q-btn
-              label="Filter"
+              :label="$t('app.filter')"
               color="primary"
               :disabled="validateFilter"
               no-caps
@@ -69,7 +69,7 @@
           <q-space />
           <div class="button q-pb-xs">
             <q-btn
-              label="Print"
+              :label="$t('app.print')"
               :loading="loading"
               color="positive"
               :disabled="validateDownload"
@@ -153,15 +153,13 @@ export default {
           align: "center",
         },
       ],
-      label: "Delete",
-      message: "Are you sure you want to delete this Sponsorship ?",
+      label: this.$t('app.delete'),
+      message: this.$t('app.deleteSponsorshipWarningMsg'),
       loading: false,
       payment_item_id: null,
       payment_items: [],
       start_filtering: false,
       is_fetching: false,
-      not_found_msg:
-        "Ooops!! No Sponsorship has been record for any Activity or Item for this Session.Click the add button to add Sponsorhip",
     };
   },
   computed: {
@@ -183,7 +181,7 @@ export default {
 
     setTableTitle() {
       return this.$store.getters.getSponsorships.length > 0
-        ? `Sponsorships for ${this.$store.getters.getSponsorships[0].payment_item.name}`
+        ? this.$t('app.partSponsorshipTitle') + `${this.$store.getters.getSponsorships[0].payment_item.name}`
         : "";
     },
 

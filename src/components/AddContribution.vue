@@ -13,11 +13,11 @@
       >
         <q-tab
           name="Enter Contribution"
-          label="Enter Contribution"
+          :label="$t('app.enterContribution')"
           no-caps
           icon="payments"
         />
-        <q-tab name="Use Saving" label="Use Saving" no-caps icon="savings" />
+        <q-tab name="Use Saving" :label="$t('app.useSaving')" no-caps icon="savings" />
       </q-tabs>
 
       <q-separator />
@@ -26,8 +26,7 @@
           <div>
             <div class="q-ml-sm q-mb-lg">
               <label class="text-muted"
-                >All fields with <span class="text-red">*</span> are
-                required</label
+                >{{$t('app.warningField')}}<span class="text-red">*</span>{{ $t('app.fields') }}</label
               >
             </div>
             <div class="q-px-sm">
@@ -35,7 +34,7 @@
                 <div>
                   <div class="q-mb-md">
                     <label for="name" class="form_field"
-                      >Payment Category <span class="text-red">*</span>
+                      >{{$t('app.paymentCategory')}}<span class="text-red">*</span>
                     </label>
                     <q-select
                       outlined
@@ -43,7 +42,7 @@
                       v-model="contribution.payment_category_id"
                       :options="payment_categories"
                       @input="fetchPaymentItems"
-                      label="Search payment category..."
+                      :label="$t('app.searchPaymentCategory')"
                       input-debounce="0"
                       use-input
                       clearable
@@ -52,7 +51,7 @@
                       <template v-slot:no-option>
                         <q-item>
                           <q-item-section class="text-grey">
-                            No results
+                            {{$t('app.noResults')}}
                           </q-item-section>
                         </q-item>
                       </template>
@@ -60,7 +59,7 @@
                   </div>
                   <div class="q-mb-md">
                     <label for="name" class="form_field"
-                      >Payment Item <span class="text-red">*</span>
+                      >{{$t('app.paymentItem')}}<span class="text-red">*</span>
                     </label>
                     <q-select
                       outlined
@@ -68,7 +67,7 @@
                       v-model="contribution.payment_item_id"
                       :options="filtered_payment_items"
                       @input="fetchPaymentItem"
-                      label="Search payment item..."
+                      :label="$t('app.searchPaymentItem')"
                       input-debounce="0"
                       use-input
                       clearable
@@ -77,7 +76,7 @@
                       <template v-slot:no-option>
                         <q-item>
                           <q-item-section class="text-grey">
-                            No results
+                            {{$t('app.noResults')}}
                           </q-item-section>
                         </q-item>
                       </template>
@@ -85,7 +84,7 @@
                   </div>
                   <div class="q-mb-md">
                     <label for="credential" class="form_field"
-                      >Amount Payable(XAF)</label
+                      >{{$t('app.amountPayable')}}</label
                     >
                     <q-input
                       v-model="contribution.amount_payable"
@@ -104,7 +103,7 @@
                         has_selected_payment_item = !has_selected_payment_item
                       "
                       color="primary"
-                      label="Next"
+                      :label="$t('app.next')"
                       no-caps
                       :disable="validatePaymentItem"
                       ><q-icon
@@ -117,7 +116,7 @@
                   <div v-show="has_selected_payment_item">
                     <div class="q-mb-md">
                       <label for="name" class="form_field"
-                        >Member Name <span class="text-red">*</span>
+                        >{{$t('app.memberName')}} <span class="text-red">*</span>
                       </label>
                       <q-select
                         outlined
@@ -125,7 +124,7 @@
                         v-model="contribution.user_id"
                         :options="members"
                         @input="selectMember"
-                        label="Search member..."
+                        :label="$t('app.searchMember')"
                         input-debounce="0"
                         use-input
                         clearable
@@ -138,14 +137,14 @@
                       v-if="valideteMonthlyPaymentItemFrequency"
                     >
                       <label for="credential" class="form_field"
-                        >Select Month <span class="text-red">*</span></label
+                        >{{$t('app.selectMonth')}}<span class="text-red">*</span></label
                       >
                       <q-select
                         v-model="contribution.month_name"
                         outlined
                         dense
                         :options="monthsOptions"
-                        label="Search month..."
+                        :label="$t('app.searchMonth')"
                         use-input
                         input-debounce="0"
                         clearable
@@ -154,7 +153,7 @@
                         <template v-slot:no-option>
                           <q-item>
                             <q-item-section class="text-grey">
-                              No results
+                              {{$t('app.noResults')}}
                             </q-item-section>
                           </q-item>
                         </template>
@@ -165,7 +164,7 @@
                       v-if="valideteQuarterlyPaymentItemFrequency"
                     >
                       <label for="credential" class="form_field"
-                        >Select Quarter <span class="text-red">*</span></label
+                        >{{$t('app.selectQuarter')}}<span class="text-red">*</span></label
                       >
                       <q-select
                         v-model="contribution.quarterly_name"
@@ -178,7 +177,7 @@
                         <template v-slot:no-option>
                           <q-item>
                             <q-item-section class="text-grey">
-                              No results
+                              {{$t('app.noResults')}}
                             </q-item-section>
                           </q-item>
                         </template>
@@ -186,7 +185,7 @@
                     </div>
                     <div class="q-mb-md">
                       <label for="credential" class="form_field"
-                        >Total Amount Deposited (XAF)</label
+                        >{{$t('app.totalAmountDeposited')}}</label
                       >
                       <q-input
                         v-model.number="contribution.total_amount_deposited"
@@ -199,7 +198,7 @@
                     </div>
                     <div class="q-mb-md">
                       <label for="credential" class="form_field"
-                        >Balance (XAF)</label
+                        >{{$t('app.balance')}}</label
                       >
                       <q-input
                         v-model="contribution.balance"
@@ -211,7 +210,7 @@
                     </div>
                     <div class="q-mb-md">
                       <label for="credential" class="form_field"
-                        >Deposite Amount (XAF)<span class="text-red"
+                        >{{$t('app.depositedAmount')}}<span class="text-red"
                           >*</span
                         ></label
                       >
@@ -226,26 +225,25 @@
                       </q-input>
                       <small v-if="checkPaymentItemBal" class="text-red">
                         <b
-                          >Amount deposited can not be more than Amount
-                          Payable</b
+                          >{{$t('app.excessAmountLabel')}}</b
                         >
                       </small>
                       <small v-if="has_completed_payment" class="text-info">
                         <b
-                          >Member has already completed payment for
+                          >{{$t('app.hasCompletedAmountLabel')}}
                           {{ selected_payment_item.label }}</b
                         >
                       </small>
                     </div>
                     <div class="q-mb-md">
                       <label for="credential" class="form_field"
-                        >Comment
+                        >{{$t('app.comment')}}
                       </label>
                       <q-input
                         v-model="contribution.comment"
                         outlined
                         type="textarea"
-                        placeholder="Provide any comment about this contribution"
+                        :placeholder="$t('app.commentContribution')"
                         :disable="has_completed_payment"
                       />
                     </div>
@@ -253,7 +251,7 @@
                       <div class="q-mr-lg">
                         <q-btn
                           class="form_button"
-                          label="Reset"
+                          :label="$t('app.reset')"
                           :color="'primary'"
                           :disabled="!validateForm"
                           no-caps
@@ -265,7 +263,7 @@
                       <div>
                         <ButtonVue
                           class="form_button"
-                          :label="'Save'"
+                          :label="$t('app.saveBtnLabel')"
                           :loading="loading"
                           :color="'primary'"
                           :disabled="validateForm"
@@ -284,8 +282,7 @@
           <div>
             <div class="q-ml-sm q-mb-lg">
               <label class="text-muted"
-                >All fields with <span class="text-red">*</span> are
-                required</label
+                >{{$t('app.warningField')}}<span class="text-red">*</span>{{ $t('app.fields') }}</label
               >
             </div>
             <div class="q-px-sm">
@@ -293,7 +290,7 @@
                 <div>
                   <div class="q-mb-md">
                     <label for="name" class="form_field"
-                      >Payment Category <span class="text-red">*</span>
+                      >{{$t('app.paymentCategory')}} <span class="text-red">*</span>
                     </label>
                     <q-select
                       outlined
@@ -301,7 +298,7 @@
                       v-model="contribution.payment_category_id"
                       :options="payment_categories"
                       @input="fetchPaymentItems"
-                      label="Search payment category..."
+                      :label="$t('app.searchPaymentCategory')"
                       input-debounce="0"
                       use-input
                       clearable
@@ -310,7 +307,7 @@
                       <template v-slot:no-option>
                         <q-item>
                           <q-item-section class="text-grey">
-                            No results
+                           {{$t('app.noResults')}}
                           </q-item-section>
                         </q-item>
                       </template>
@@ -318,7 +315,7 @@
                   </div>
                   <div class="q-mb-md">
                     <label for="name" class="form_field"
-                      >Payment Item <span class="text-red">*</span>
+                      >{{$t('app.paymentItem')}} <span class="text-red">*</span>
                     </label>
                     <q-select
                       outlined
@@ -326,7 +323,7 @@
                       v-model="contribution.payment_item_id"
                       :options="filtered_payment_items"
                       @input="fetchPaymentItem"
-                      label="Search payment item..."
+                      :label="$t('app.searchPaymentItem')"
                       input-debounce="0"
                       use-input
                       clearable
@@ -335,7 +332,7 @@
                       <template v-slot:no-option>
                         <q-item>
                           <q-item-section class="text-grey">
-                            No results
+                            {{$t('app.noResults')}}
                           </q-item-section>
                         </q-item>
                       </template>
@@ -343,7 +340,7 @@
                   </div>
                   <div class="q-mb-md">
                     <label for="credential" class="form_field"
-                      >Amount Payable(XAF)</label
+                      >{{$t('app.amountPayable')}}</label
                     >
                     <q-input
                       v-model="contribution.amount_payable"
@@ -362,7 +359,7 @@
                         has_selected_payment_item = !has_selected_payment_item
                       "
                       color="primary"
-                      label="Next"
+                      :label="$t('app.next')"
                       no-caps
                       :disable="validatePaymentItem"
                       ><q-icon
@@ -375,7 +372,7 @@
                   <div v-show="has_selected_payment_item">
                     <div class="q-mb-md">
                       <label for="name" class="form_field"
-                        >Member Name <span class="text-red">*</span>
+                        >{{$t('app.memberName')}} <span class="text-red">*</span>
                       </label>
                       <q-select
                         outlined
@@ -383,7 +380,7 @@
                         v-model="contribution.user_id"
                         :options="members"
                         @input="selectMember"
-                        label="Search member..."
+                        :label="$t('app.searchMember')"
                         input-debounce="0"
                         use-input
                         clearable
@@ -396,14 +393,14 @@
                       v-if="valideteMonthlyPaymentItemFrequency"
                     >
                       <label for="credential" class="form_field"
-                        >Select Month <span class="text-red">*</span></label
+                        >{{$t('app.selectMonth')}} <span class="text-red">*</span></label
                       >
                       <q-select
                         v-model="contribution.month_name"
                         outlined
                         dense
                         :options="monthsOptions"
-                        label="Search month..."
+                        :label="$t('app.searchMonth')"
                         use-input
                         input-debounce="0"
                         clearable
@@ -412,7 +409,7 @@
                         <template v-slot:no-option>
                           <q-item>
                             <q-item-section class="text-grey">
-                              No results
+                              {{$t('app.noResults')}}
                             </q-item-section>
                           </q-item>
                         </template>
@@ -423,7 +420,7 @@
                       v-if="valideteQuarterlyPaymentItemFrequency"
                     >
                       <label for="credential" class="form_field"
-                        >Select Quarter <span class="text-red">*</span></label
+                        >{{$t('app.selectQuarter')}}<span class="text-red">*</span></label
                       >
                       <q-select
                         v-model="contribution.quarterly_name"
@@ -436,7 +433,7 @@
                         <template v-slot:no-option>
                           <q-item>
                             <q-item-section class="text-grey">
-                              No results
+                              {{$t('app.noResults')}}
                             </q-item-section>
                           </q-item>
                         </template>
@@ -444,7 +441,7 @@
                     </div>
                     <div class="q-mb-md">
                       <label for="credential" class="form_field"
-                        >Total Saving (XAF)</label
+                        >{{$t('app.totalSaving')}}</label
                       >
                       <q-input
                         v-model.number="contribution.total_saving"
@@ -457,7 +454,7 @@
                     </div>
                     <div class="q-mb-md">
                       <label for="credential" class="form_field"
-                        >Total Amount Deposited (XAF)</label
+                        >{{$t('app.totalAmountDeposited')}}</label
                       >
                       <q-input
                         v-model.number="contribution.total_amount_deposited"
@@ -470,7 +467,7 @@
                     </div>
                     <div class="q-mb-md">
                       <label for="credential" class="form_field"
-                        >Balance (XAF)</label
+                        >{{$t('app.balance')}}</label
                       >
                       <q-input
                         v-model="contribution.balance"
@@ -482,7 +479,7 @@
                     </div>
                     <div class="q-mb-md">
                       <label for="credential" class="form_field"
-                        >Deposite Amount (XAF)<span class="text-red"
+                        >{{$t('app.depositedAmount')}}<span class="text-red"
                           >*</span
                         ></label
                       >
@@ -497,29 +494,28 @@
                       </q-input>
                       <small v-if="checkPaymentItemBal" class="text-red">
                         <b
-                          >Amount Deposited can not be more than Amount
-                          Payable</b
+                          >{{$t('app.excessAmountLabel')}}</b
                         >
                       </small>
                       <small v-if="checkAmountDepositedBasedOnSaving" class="text-red">
-                       Insufficient Saved Amount! Please Enter the contribution or add more saving
+                       {{$t('app.insuffientSaving')}}
                       </small>
                       <small v-if="has_completed_payment" class="text-info">
                         <b
-                          >Member has already completed payment for
+                          >{{$t('app.hasCompletedAmountLabel')}}
                           {{ selected_payment_item.label }}</b
                         >
                       </small>
                     </div>
                     <div class="q-mb-md">
                       <label for="credential" class="form_field"
-                        >Comment
+                        >{{$t('app.comment')}}
                       </label>
                       <q-input
                         v-model="contribution.comment"
                         outlined
                         type="textarea"
-                        placeholder="Provide any comment about this contribution"
+                        :placeholder="$t('app.contributionComment')"
                         :disable="has_completed_payment"
                       />
                     </div>
@@ -527,7 +523,7 @@
                       <div class="q-mr-lg">
                         <q-btn
                           class="form_button"
-                          label="Reset"
+                          :label="$t('app.reset')"
                           :color="'primary'"
                           :disabled="!validateForm"
                           no-caps
@@ -539,7 +535,7 @@
                       <div>
                         <ButtonVue
                           class="form_button"
-                          :label="'Save'"
+                          :label="$t('app.saveBtnLabel')"
                           :loading="loading"
                           :color="'primary'"
                           :disabled="validateForm"
@@ -594,7 +590,7 @@ export default {
   ],
 
   mounted() {
-    let heading = "Contribution Information";
+    let heading = this.$t('app.contributionHeading');
 
     this.$emit("set-heading", heading);
 
@@ -706,12 +702,12 @@ export default {
           quarterly_name: this.contribution.quarterly_name,
           contributed_via_saving: this.tab == "Use Saving" ? true : false
         },
-        msg: "Member Contribution saved Successfully",
+        msg: this.$t('app.saveContributionSuccessMsg'),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: "An Error occurred! Please try again",
+        error_msg: this.$t('app.defaultErrorMsg'),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -984,7 +980,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 11px;
+  font-size: 12px;
   align-items: center;
   letter-spacing: 0.01em;
   color: $grey2;

@@ -21,9 +21,9 @@
           {{ title }}
         </div>
         <div class="text-h6 title" v-show="show_members">
-          Organisation Members
+         {{$t('app.organisationMembers')}}
         </div>
-        <div class="text-h6 title" v-show="show_savings">Members Savings</div>
+        <div class="text-h6 title" v-show="show_savings">{{$t('app.memberSaving')}}</div>
       </template>
       <template v-slot:body="props">
         <!-- body for members -->
@@ -95,7 +95,7 @@
             <q-btn
               class="decline_btn_saving"
               size="md"
-              label="Decline"
+              :label="$t('app.decline')"
               no-caps
               @click="onDeclineRecord(props.row, 'Decline')"
               v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
@@ -104,7 +104,7 @@
             <q-btn
               class="approve_btn"
               size="md"
-              label="Approve"
+              :label="$t('app.approve')"
               no-caps
               @click="onApprovedRecord(props.row, 'Approve')"
               v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
@@ -137,7 +137,7 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="edit">View Profile</q-item-label>
+                        <q-item-label class="edit">{{$t('app.viewProfile')}}</q-item-label>
                       </q-item-section>
                     </q-item>
                     <!-- invite members to the app -->
@@ -153,7 +153,7 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="edit">Invite Member</q-item-label>
+                        <q-item-label class="edit">{{$t('app.inviteMember')}}</q-item-label>
                       </q-item-section>
                     </q-item>
 
@@ -171,7 +171,7 @@
                       </q-item-section>
                       <q-item-section>
                         <q-item-label class="edit"
-                          >Register Member</q-item-label
+                          >{{$t('app.registerMember')}}</q-item-label
                         >
                       </q-item-section>
                     </q-item>
@@ -189,7 +189,7 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="text-red">Delete</q-item-label>
+                        <q-item-label class="text-red">{{$t('app.delete')}}</q-item-label>
                       </q-item-section>
                     </q-item>
                   </q-list>
@@ -233,7 +233,7 @@
             <q-btn
               class="decline_btn_saving"
               size="md"
-              label="Decline"
+              :label="$t('app.decline')"
               no-caps
               unelevated
               @click="onDeclineRecord(props.row, 'Decline')"
@@ -243,7 +243,7 @@
             <q-btn
               class="approve_btn"
               size="md"
-              label="Approve"
+              :label="$t('app.approve')"
               no-caps
               unelevated
               @click="onApprovedRecord(props.row, 'Approve')"
@@ -256,7 +256,7 @@
               dense
               color="primary"
               class="view_savings q-py-xs"
-              label="All Savings"
+              :label="$t('app.allSavings')"
               @click="showMemberSavings(props.row)"
               :to="{ name: 'user_savings', params: { id: props.row.user_id } }"
               v-if="show_savings && !checkTreasurerRole()"
@@ -316,7 +316,7 @@
             <q-btn
               class="decline_btn_saving"
               size="md"
-              label="Decline"
+              :label="$t('app.decline')"
               no-caps
               unelevated
               @click="onDeclineRecord(props.row, 'Decline')"
@@ -326,7 +326,7 @@
             <q-btn
               class="approve_btn"
               size="md"
-              label="Approve"
+              :label="$t('app.approve')"
               no-caps
               unelevated
               @click="onApprovedRecord(props.row, 'Approve')"
@@ -339,7 +339,7 @@
               dense
               color="primary"
               class="view_income q-px-sm q-mr-md"
-              label="View"
+              :label="$t('app.view')"
               @click="onViewMemberSaving(props.row)"
             >
               <q-icon name="visibility" size="xs" class="q-pl-md"></q-icon>
@@ -415,7 +415,7 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="edit">Edit</q-item-label>
+                        <q-item-label class="edit">{{$t('app.edit')}}</q-item-label>
                       </q-item-section>
                     </q-item>
 
@@ -430,7 +430,7 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="edit">View</q-item-label>
+                        <q-item-label class="edit">{{$t('app.view')}}</q-item-label>
                       </q-item-section>
                     </q-item>
                   </q-list>
@@ -490,7 +490,7 @@
               dense
               color="primary"
               class="view_income q-px-sm q-mr-md"
-              label="View"
+              :label="$t('app.view')"
               @click="onViewIncomeActivity(props.row)"
               v-if="show_income_activity && checkTreasurerRole()"
             >
@@ -501,7 +501,7 @@
             <q-btn
               class="decline_btn_income_activity"
               size="md"
-              label="Decline"
+              :label="$t('app.decline')"
               no-caps
               unelevated
               @click="onDeclineRecord(props.row, 'Decline')"
@@ -511,7 +511,7 @@
             <q-btn
               class="approve_btn_income_activity q-ml-md"
               size="md"
-              label="Approve"
+              :label="$t('app.approve')"
               no-caps
               unelevated
               @click="onApprovedRecord(props.row, 'Approve')"
@@ -541,7 +541,7 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="edit">Edit</q-item-label>
+                        <q-item-label class="edit">{{$t('app.edit')}}</q-item-label>
                       </q-item-section>
                     </q-item>
 
@@ -556,7 +556,7 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="edit">View</q-item-label>
+                        <q-item-label class="edit">{{$t('app.view')}}</q-item-label>
                       </q-item-section>
                     </q-item>
 
@@ -572,7 +572,7 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="text-red">Delete</q-item-label>
+                        <q-item-label class="text-red">{{$t('app.delete')}}</q-item-label>
                       </q-item-section>
                     </q-item>
                   </q-list>
@@ -626,7 +626,7 @@
             <q-btn
               unelevated
               color="primary"
-              label="Details"
+              :label="$t('app.details')"
               no-caps
               class="view_items q-mr-md"
               icon-right="visibility"
@@ -644,7 +644,7 @@
             <!-- buttons for approve and decline row data -->
             <q-btn
               class="decline_btn_income_activity"
-              label="Decline"
+              :label="$t('app.decline')"
               no-caps
               unelevated
               @click="onDeclineRecord(props.row, 'Decline')"
@@ -653,7 +653,7 @@
 
             <q-btn
               class="approve_btn_income_activity q-ml-md"
-              label="Approve"
+              :label="$t('app.approve')"
               no-caps
               unelevated
               @click="onApprovedRecord(props.row, 'Approve')"
@@ -716,7 +716,7 @@
               no-caps
               color="primary"
               class="view_income q-mr-md"
-              label="View"
+              :label="$t('app.view')"
               @click="onViewContribution(props.row)"
               v-if="checkTreasurerRole()"
             >
@@ -746,7 +746,7 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="edit">View</q-item-label>
+                        <q-item-label class="edit">{{$t('app.view')}}</q-item-label>
                       </q-item-section>
                     </q-item>
                     <!-- edit a contribution -->
@@ -762,7 +762,7 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="edit">Edit</q-item-label>
+                        <q-item-label class="edit">{{$t('app.edit')}}</q-item-label>
                       </q-item-section>
                     </q-item>
                     <!-- end of edit contribution -->
@@ -778,7 +778,7 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="text-red">Delete</q-item-label>
+                        <q-item-label class="text-red">{{$t('app.delete')}}</q-item-label>
                       </q-item-section>
                     </q-item>
                   </q-list>
@@ -799,7 +799,7 @@
               ? 'text-h6-sm q-mb-lg q-mt-lg full-width'
               : 'text-h6-sm'
           "
-          placeholder="Type name to search..."
+          :placeholder="$t('app.search')"
         >
           <template v-slot:append>
             <q-icon name="search" />
@@ -813,7 +813,7 @@
             class="text-bold total_label q-mt-md summary"
             v-if="show_contribution"
           >
-            Total Members Contribution:
+            {{$t('app.totalMemberContribution')}}:
           </q-th>
           <q-th v-if="show_contribution" class="total_value">
             {{ Number(total_contribution).toLocaleString() }} XAF
@@ -822,7 +822,7 @@
         <!-- member contribution -->
         <div class="text-bold q-pb-md" v-if="show_member_contribution">
           <div class="q-mt-md summary">
-            Amount Contributed:
+           {{$t('app.amountContributed')}}:
             <span class="total_value">
               {{ Number(total_contribution).toLocaleString() }} XAF
             </span>
@@ -830,7 +830,7 @@
           <div class="q-my-md summary">
             <!-- member balance contribution -->
             <q-tr>
-              Total Balance:
+              {{$t('app.totalBalance')}}:
               <span class="total_contribution_balance">
                 {{ Number(total_balance).toLocaleString() }} XAF
               </span>
@@ -844,7 +844,7 @@
             class="text-bold total_label q-mt-md summary"
             v-if="show_income_activity && total_income > 0"
           >
-            Total Income:
+            {{ $t('app.totalIncome') }}:
           </q-th>
           <q-th
             class="total_value"
@@ -860,7 +860,7 @@
             class="text-bold total_label q-mt-md summary"
             v-if="show_members && total_members > 0"
           >
-            Total Members:
+           {{$t('app.totalMember')}}:
           </q-th>
           <q-th class="total_value" v-if="show_members && total_members > 0">
             {{ total_members }}
@@ -873,7 +873,7 @@
             class="text-bold total_label q-mt-md summary"
             v-if="show_member_savings && total_saving > 0"
           >
-            Total Amount Saved:
+            {{$t('app.totalAmountSaved')}}:
           </q-th>
           <q-th
             class="total_value"
@@ -889,7 +889,7 @@
             class="text-bold total_label q-mt-md summary"
             v-if="show_savings && total_saving > 0"
           >
-            Total Members Savings:
+            {{$t('app.totalMembersSavings')}}:
           </q-th>
           <q-th class="total_value" v-if="show_savings && total_saving > 0">
             {{ Number(total_saving).toLocaleString() }} XAF
@@ -916,7 +916,7 @@
       <q-card>
         <q-card-section>
           <div class="text-h6 q-pa-sm heading">
-            Invite your Team Members to use Financial Assistance
+            {{$t('app.inviteMsg')}}
           </div>
         </q-card-section>
 
@@ -936,14 +936,14 @@
                   invite_msg
                 "
               >
-                <q-tooltip>Invite via email</q-tooltip></q-btn
+                <q-tooltip>{{$t('app.inviteVia')}}</q-tooltip></q-btn
               >
             </div>
             <div>
               <q-btn flat color="secondary" size="sm" @click="whatsappInvite()"
                 ><img src="../../src/assets/whatsapp.png" class="whatsapp_icon"
               /></q-btn>
-              <q-tooltip>Invite via Whatsapp</q-tooltip>
+              <q-tooltip>{{$t('app.inviteWhatsapp')}}</q-tooltip>
             </div>
           </div>
         </q-card-section>
@@ -962,19 +962,19 @@
             <div class="col-md-12">
               <label for="msg">
                 <span class="text-weight-bold"
-                  >Do you want to {{ chosen_state }} {{ approve_msg }} ?</span
+                  >{{$t('app.doYouKnow')}}{{ chosen_state }} {{ approve_msg }} ?</span
                 >
               </label>
             </div>
 
             <div v-if="show_members" class="text-red">
               <div class="text-weight-bold text-left">
-                Name:
+                {{$t('app.nameLabel')}}:
                 <span class="q-pl-lg">{{ approve_data.name }}</span>
               </div>
 
               <div class="text-weight-bold text-left">
-                Amount:
+                {{$t('app.amount')}}:
                 <span class="amount"
                   >{{ Number(registration_amount).toLocaleString() }} XAF</span
                 >
@@ -982,12 +982,12 @@
             </div>
             <div v-if="show_income_activity" class="text-red">
               <div class="text-weight-bold text-left">
-                Contributor:
+                {{$t('app.contributor')}}:
                 <span class="q-pl-lg">{{ contributor }}</span>
               </div>
 
               <div class="text-weight-bold text-left">
-                Amount:
+                {{$t('app.amount')}}:
                 <span class="q-pl-xl"
                   >{{ Number(income_amount).toLocaleString() }} XAF</span
                 >
@@ -996,12 +996,12 @@
 
             <div v-if="show_contribution" class="q-mt-md">
               <div class="text-weight-bold text-left text-red">
-                Name:
+                {{$t('app.nameLabel')}}:
                 <span class="q-pl-md">{{ approve_data.user_name }}</span>
               </div>
 
               <div class="text-weight-bold text-left text-red">
-                Amount:
+                {{$t('app.amount')}}:
                 <span class="amount"
                   >{{
                     Number(approve_data.total_amount_deposited).toLocaleString()
@@ -1012,11 +1012,11 @@
             </div>
             <div v-if="show_savings" class="q-mt-md text-red">
               <div class="text-weight-bold text-left">
-                Member:
+                {{$t('app.member')}}::
                 <span class="q-pl-sm">{{ contributor }}</span>
               </div>
               <div class="text-weight-bold text-left">
-                Amount:
+                {{$t('app.amount')}}:
                 <span class="amount"
                   >{{ Number(income_amount).toLocaleString() }} XAF</span
                 >
@@ -1029,7 +1029,7 @@
           <q-btn
             :class="chosen_state == 'Approve' ? 'approve' : 'decline'"
             size="md"
-            label="Cancel"
+            :label="$t('app.cancel')"
             flat
             v-close-popup
             no-caps
@@ -1152,12 +1152,10 @@ export default {
       show_invite: false,
       member_to_be_invited: null,
       redirect_url: process.env.REDIRECT_URL,
-      invite_msg_subject: "Invitation to Join Financial Assistance",
+      invite_msg_subject: this.$t('app.join'),
       invite_msg:
-        "Hello there! You have been invited to join Financial Assistance in order to better manage your financial transaction.  " +
-        "Click the link to join: " +
-        process.env.REDIRECT_URL +
-        ".  If you don't recognize the sender, simply ignore this message.",
+        this.$t('app.joinPartOne') +
+        process.env.REDIRECT_URL +this.$t('app.joinPartTwo'),
       show_approve_dialog: false,
       chosen_state: null,
       approve_msg: null,
@@ -1209,7 +1207,7 @@ export default {
     onRegisterMember(data) {
       let payload = {
         data: data,
-        tab: "Register Member",
+        tab: 'Register Member',
       };
       this.$store.dispatch("setMemberToRegister", data);
       this.$emit("register-member", payload);
@@ -1224,7 +1222,7 @@ export default {
       );
 
       intermediate_tabs.push({
-        name: "Member Profile",
+        name: this.$t('app.memberProfile'),
         has_intermediate_tab: true,
       });
 
@@ -1239,15 +1237,14 @@ export default {
       this.deleted_row = data;
       this.dialog = true;
       this.type = "MEMBERS";
-      this.delete_msg = "Are you sure you want to delete this Member ?";
+      this.delete_msg = this.$t('app.deleteMemberWarningMsg');
     },
 
     onDeleteIncomeActivity(data) {
       this.deleted_row = data;
       this.dialog = true;
       this.type = "INCOME_ACTIVITIES";
-      this.delete_msg =
-        "Are you sure you want to delete this Income Activity ?";
+      this.delete_msg = this.$t('app.deleteIncomeWarningMsg');
     },
 
     deleteRow() {
@@ -1296,7 +1293,7 @@ export default {
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: "An Error occurred! Please try again",
+        error_msg: this.$t('app.defaultErrorMsg'),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -1314,7 +1311,7 @@ export default {
 
     setApproveUrlBaseOnType(data) {
       let url = "";
-      let type = this.chosen_state == "Approve" ? "APPROVED" : "DECLINED";
+      let type = this.chosen_state == "Approve" ? 'APPROVED' : 'DECLINED';
       switch (data.type) {
         case "INCOME_ACTIVITIES":
           url = `/api/protected/income-activities/${data.id}/approve?type=${type}`;
@@ -1334,9 +1331,9 @@ export default {
     },
 
     setApproveFeedbackMsg(data) {
-      let msg = `Record was ${this.chosen_state} successfully`;
+      let msg = this.$t('app.recordWas') + `${this.chosen_state}` + this.$t('app.successfull');
       if (data.type == "MEMBERS") {
-        msg = `Member registration ${this.chosen_state} successfully`;
+        msg = this.$t('app.memberReg') + `${this.chosen_state}` + this.$t('app.successfull');
       }
       return msg;
     },
@@ -1347,21 +1344,21 @@ export default {
         case "INCOME_ACTIVITIES":
           this.income_amount = data.amount;
           this.contributor = data.name;
-          this.approve_msg = ` Contribution for ${data.payment_item.name}`;
+          this.approve_msg = this.$t('app.contributionFor') + `${data.payment_item.name}`;
           break;
         case "MEMBERS_SAVINGS":
           date = moment(data.created_at).format("MMMM Do YYYY");
           this.income_amount = data.amount_deposited;
           this.contributor = data.user_name;
-          this.approve_msg = `Member Saving on the ${date}`;
+          this.approve_msg = this.$t('app.memberContribution') + `${date}`;
           break;
         case "MEMBERS_CONTRIBUTIONS":
           date = moment(data.date).format("MMMM Do YYYY");
-          this.approve_msg = `Member's Contribution for ${data.payment_item_name} on the ${date}`;
+          this.approve_msg = this.$t('app.memberContributionDownloadLabel') + `${data.payment_item_name}`+this.$t('app.on') +`${date}`;
           break;
         case "MEMBERS":
           this.register_member_name = data.name;
-          this.approve_msg = `Member Registration for ${data.year} `;
+          this.approve_msg = this.$t('app.regFor') + `${data.year} `;
           break;
       }
       return this.approve_msg;
@@ -1441,7 +1438,7 @@ export default {
       );
 
       intermediate_tabs.push({
-        name: data.user_name + "  Savings",
+        name: data.user_name + " "+ this.$t('app.savingtitle'),
         has_intermediate_tab: true,
       });
 

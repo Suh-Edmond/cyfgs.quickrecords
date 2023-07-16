@@ -1,34 +1,61 @@
 <template>
   <q-page class="page">
-    <div class="row q-px-sm" :class="$q.screen.lg ? 'q-pt-lg flex flex-center' : 'q-pt-sm'">
+    <div
+      class="row q-px-sm"
+      :class="$q.screen.lg ? 'q-pt-lg flex flex-center' : 'q-pt-sm'"
+    >
       <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12">
         <q-card :class="$q.screen.lg ? 'q-mt-lg' : 'q-mt-md q-mb-xl'">
           <q-card-section>
-            <div class="text_h6 text-center q-pt-sm q-pb-sm">SIGN IN</div>
+            <div class="text_h6 text-center q-pt-sm q-pb-sm"> {{ $t('app.signIn') }}</div>
             <div class="text-subtitle2 text-center q-pb-xs">
-              Sign in to continue to Financial Assistant
+              {{$t('app.loginCaption')}}
             </div>
             <q-form @submit="onSubmit" class="q-gutter-md q-mt-lg q-px-md">
               <div>
-                <label for="credential" class="form_field">Telephone <span class="text-red">*</span></label>
-                <q-input v-model="user.credential" outlined dense type="tel" mask="(+###) ### - ### - ###" unmasked-value
-                  hint="Example: (+237) ### - ### - ###" />
-              </div>
+                <label for="credential" class="form_field"
+                  >{{$t('app.telephoneLabel')}} <span class="text-red">*</span></label
+                >
+                <vue-tel-input v-model="user.credential" defaultCountry="cm" mode="international" class="q-pa-xs"></vue-tel-input>
+               </div>
               <div>
-                <label for="password" class="form_field">Password <span class="text-red">*</span></label>
-                <q-input v-model="user.password" :type="isPwd ? 'password' : 'text'" outlined dense>
+                <label for="password" class="form_field"
+                  >{{$t('app.passwordLabel')}} <span class="text-red">*</span></label
+                >
+                <q-input
+                  v-model="user.password"
+                  :type="isPwd ? 'password' : 'text'"
+                  outlined
+                  dense
+                >
                   <template v-slot:append>
-                    <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
-                      @click="isPwd = !isPwd" />
+                    <q-icon
+                      :name="isPwd ? 'visibility_off' : 'visibility'"
+                      class="cursor-pointer"
+                      @click="isPwd = !isPwd"
+                    />
                   </template>
                 </q-input>
               </div>
               <div class="q-mt-lg">
-                <q-btn class="form_button q-pa-xs" :label="label_sigin" :loading="loading" :disabled="validateLogin"
-                  :color="color" :no_caps="no_caps" type="submit">
-                  <q-icon name="arrow_forward" size="xs" class="q-pl-lg"></q-icon>
+                <q-btn
+                  class="form_button q-pa-xs"
+                  :label="label_sigin"
+                  :loading="loading"
+                  :disabled="validateLogin"
+                  :color="color"
+                  :no_caps="no_caps"
+                  type="submit"
+                >
+                  <q-icon
+                    name="arrow_forward"
+                    size="xs"
+                    class="q-pl-lg"
+                  ></q-icon>
                 </q-btn>
-                <span class="forgot_password text-right">Forgot Password ?</span>
+                <span class="forgot_password text-right"
+                  >{{$t('app.forgotPasswordMsg')}}</span
+                >
               </div>
             </q-form>
           </q-card-section>
@@ -43,7 +70,9 @@ import organisationMixin from "src/mixins/organisationMixin.vue";
 import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
 import memberMixinVue from "src/mixins/memberMixin.vue";
 import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
-import ContributionsMixinVue from 'src/mixins/ContributionsMixin.vue';
+import ContributionsMixinVue from "src/mixins/ContributionsMixin.vue";
+import { VueTelInput } from 'vue-tel-input';
+
 
 export default {
   name: "PageIndex",
@@ -52,7 +81,7 @@ export default {
     CurrentYearMixinVue,
     memberMixinVue,
     UserSavingMixinVue,
-    ContributionsMixinVue
+    ContributionsMixinVue,
   ],
   data() {
     return {
@@ -62,7 +91,7 @@ export default {
         credential: null,
       },
       isPwd: true,
-      label_sigin: "SIGN IN",
+      label_sigin: this.$t('app.loginBtnLabel'),
       loading: false,
       color: "primary",
       no_caps: true,
@@ -128,33 +157,73 @@ export default {
               this.getOrganisationMembers(res.data.id);
               this.getUserByRegistrationStatus(res.data.id);
               this.getUserByRegistration(res.data.id);
-              this.$router.push({
-                name: "dashboard",
-              });
             })
             .catch(() => {
               this.$router.push({
                 name: "create_organisation",
               });
-            }).finally(() => {
-              this.getOrganisationMemberSavings(this.$store.getters.getOrganisation.id);
-              this.getTotalContributionByYear( this.$store.getters.getCurrentYear != null ? this.$store.getters.getCurrentYear.id :"");
+            })
+            .finally(() => {
+              this.$router.push({
+                name: "dashboard",
+              });
             });
         })
-        .catch(() => { })
+        .catch(() => {})
         .finally(() => {
           this.loading = false;
+          this.getOrganisationMemberSavings(
+            this.$store.getters.getOrganisation.id
+          );
+          this.getTotalContributionByYear(
+            this.$store.getters.getCurrentYear != null
+              ? this.$store.getters.getCurrentYear.id
+              : ""
+          );
+          this.getTotalYearlyExpenditures(
+            this.$store.getters.getCurrentYear != null
+              ? this.$store.getters.getCurrentYear.id
+              : ""
+          );
         });
+
+      },
+
+    getTotalYearlyExpenditures(id) {
+       let payload = {
+        url: `/api/protected/expenditures_total?session_id=${id}`,
+        msg: "none",
+        color: "default",
+        status: "none",
+        error_msg: "An Error occurred! Could not fetch payment categories",
+        has_commit: true,
+        show_feedback: false,
+        show_spinner: false,
+        has_path_val: false,
+        commit: "SET_TOTAL_YEARLY_EXPENDITURE",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.$store.dispatch("getRequest", payload).then(() => {
+      });
     },
+
   },
-  components: {},
+  components: {
+    VueTelInput
+ },
 };
 </script>
 
+<style src="vue-tel-input/dist/vue-tel-input.css"></style>
 <style lang="scss" scoped>
 * {
   box-sizing: border-box;
 }
+
 
 .page {
   background-color: $grey1;

@@ -25,25 +25,25 @@
             outlined
             dense
             :options="getSessionsFromState"
-            label="Select year"
+            :label="$t('app.selectYearLabel')"
           />
         </div>
         <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-ml-md">
-            <q-btn
-              label="Filter"
-              :loading="is_fetching"
-              color="primary"
-              :disabled="validateFilter"
-              @click="filterPaymentCategories"
-              no-caps
-              icon-right="filter_list"
-            >
-            </q-btn>
+          <q-btn
+            :label="$t('app.filter')"
+            :loading="is_fetching"
+            color="primary"
+            :disabled="validateFilter"
+            @click="filterPaymentCategories"
+            no-caps
+            icon-right="filter_list"
+          >
+          </q-btn>
         </div>
         <q-space />
         <div class="button q-pb-xs">
           <q-btn
-            label="Print"
+            :label="$t('app.print')"
             :loading="loading"
             color="positive"
             :disabled="validateDownload"
@@ -90,8 +90,6 @@ export default {
   },
   data() {
     return {
-      not_found_msg:
-        "Ooops!! No Payment Categories found. Click the add button to add Payment Categories.",
       year: null,
       is_fetching: false,
       loading: false,
@@ -124,53 +122,52 @@ export default {
           field: "action",
         },
       ],
-      label: "Delete",
-      message: "Are you sure you want to delete this Payment Category?",
+      label: this.$t("app.delete"),
+      message: this.$t("app.deletePaymentCategoryWarningMsg"),
       filteredPaymentCategories: [],
-      is_filtering:false,
+      is_filtering: false,
     };
   },
   computed: {
     getData() {
       let data = [];
-      if(this.filteredPaymentCategories.length == 0 && !this.is_filtering){
+      if (this.filteredPaymentCategories.length == 0 && !this.is_filtering) {
         this.$store.getters.getPaymentCategories.forEach((element) => {
-        data.push({
-          counter:
-            this.$store.getters.getPaymentCategories.indexOf(element) + 1,
-          name: element.name,
-          item: "View Payment Items",
-          id: element.id,
-          description: element.description,
-          type: "PAYMENT_CATEGORY",
-          organisation_id: element.organisation_id,
+          data.push({
+            counter:
+              this.$store.getters.getPaymentCategories.indexOf(element) + 1,
+            name: element.name,
+            item: this.$t("app.viewPaymentItems"),
+            id: element.id,
+            description: element.description,
+            type: "PAYMENT_CATEGORY",
+            organisation_id: element.organisation_id,
+          });
         });
-      });
-      }else {
-        data = this.filteredPaymentCategories
+      } else {
+        data = this.filteredPaymentCategories;
       }
       return data;
     },
 
     getLoadingState() {
-      return this.$store.getters.getFetchingState
+      return this.$store.getters.getFetchingState;
     },
 
-    validateFilter(){
-      return this.year == null
+    validateFilter() {
+      return this.year == null;
     },
 
-    validateDownload(){
+    validateDownload() {
       return this.getData.length == 0;
-    }
+    },
   },
 
   watch: {
     getLoadingState() {
-      return this.$store.getters.getFetchingState
+      return this.$store.getters.getFetchingState;
     },
   },
-
 
   methods: {
     updatePaymentCategory(data) {
@@ -179,15 +176,17 @@ export default {
       this.$emit("update-payment-category", data);
     },
 
-
     showPaymentItems(data) {
       this.getPaymentItemsByCategory(data.data.id);
 
       let intermediate_tabs = [];
 
-      intermediate_tabs.push({name: "Payment Items", has_intermediate_tab: true})
+      intermediate_tabs.push({
+        name: this.$t("app.paymentItemLabel"),
+        has_intermediate_tab: true,
+      });
 
-      this.$store.dispatch("setIntermediateTabs", intermediate_tabs)
+      this.$store.dispatch("setIntermediateTabs", intermediate_tabs);
 
       this.$store.dispatch("setCurrentPaymentCategory", data.data);
     },
@@ -199,7 +198,7 @@ export default {
     filterPaymentCategories() {
       this.$router.push({
         path: "/dashboard/payment-categories",
-        query: { year: this.year.label},
+        query: { year: this.year.label },
       });
 
       this.filteredPaymentCategories = [];
@@ -212,10 +211,10 @@ export default {
         msg: "none",
         color: "default",
         status: "none",
-        error_msg: "An Error occurred! Could not fetch payment categories",
+        error_msg: this.$t("app.paymentCategoryErrorMsg"),
         has_commit: false,
         show_feedback: false,
-        show_spinner:true,
+        show_spinner: true,
         commit: "none",
         to_be_store_data: {
           required: false,
@@ -230,7 +229,7 @@ export default {
           this.filteredPaymentCategories.push({
             counter: res.data.indexOf(element) + 1,
             name: element.name,
-            item: "View Payment Items",
+            item: this.$t("app.viewPaymentItems"),
             id: element.id,
             description: element.description,
             type: "PAYMENT_CATEGORY",
@@ -241,7 +240,7 @@ export default {
     },
 
     downloadPaymentCategory() {
-      let year = this.year != null ? this.year.label.substring(0, 4): null;
+      let year = this.year != null ? this.year.label.substring(0, 4) : null;
 
       let organisationId = this.$store.getters.getOrganisation.id;
       let url = `/api/protected/download-payment-categories?organisation_id=${organisationId}&year=${year}`;
@@ -255,7 +254,7 @@ export default {
         url: `/api/protected/payment-categories/${id}/payment-items`,
         has_path_val: true,
         show_feedback: false,
-        show_spinner:true,
+        show_spinner: true,
         msg: "none",
         color: "default",
         error_msg: "default",
@@ -270,15 +269,15 @@ export default {
       this.$store.dispatch("getRequest", payload).then(() => {});
     },
 
-    deleteRow(data){
+    deleteRow(data) {
       let payload = {
         url: `/api/protected/organisations/${data.organisation_id}/payment-categories/${data.id}`,
-        msg:`Payment Item deleted successfully`,
+        msg: this.$t("app.deletePaymentItemFeedbackMsg"),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: "An Error occurred! Please try again",
+        error_msg: this.$t("app.defaultErrorMsg"),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -288,7 +287,7 @@ export default {
         },
       };
       this.$store.dispatch("deleteRequest", payload).then(() => {
-        this.fetchCategories(data.organisation_id, true)
+        this.fetchCategories(data.organisation_id, true);
       });
     },
   },
@@ -298,6 +297,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

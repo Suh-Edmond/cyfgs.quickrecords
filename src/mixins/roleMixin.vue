@@ -8,7 +8,7 @@ export default {
         msg: "none",
         color: "default",
         status:"none",
-        error_msg: "An Error occurred! Please try again",
+        error_msg: this.$t('app.defaultErrorMsg'),
         has_commit: false,
         show_spinner:true,
         commit: "none",

@@ -12,13 +12,13 @@
       <!---------------DETAILS--------------------->
       <div class="col-5 col-md-5 col-sm-12 col-xs-12 flex justify-end text-left">
         <label>
-          <span class="text-uppercase detail">Organisation Name &nbsp;:&nbsp;&nbsp;{{ getOrganisation.name }}</span> <br />
-          <span class="detail">Salutation &nbsp;:&nbsp;&nbsp;{{ getOrganisation.salutation }}</span> <br />
-          <span class="detail">P.O Box &nbsp;:&nbsp;&nbsp;{{ getOrganisation.box_number }}</span><br />
-          <span class="detail">Address &nbsp;:&nbsp;&nbsp;{{ getOrganisation.address }}</span><br />
-          <span class="detail">Phone_No &nbsp;:&nbsp;&nbsp;{{ getOrganisation.telephone }}</span><br />
-          <span class="detail">Email &nbsp;:&nbsp;&nbsp;{{ getOrganisation.email }}</span><br /><br/>
-          <span class="detail">Printed Date &nbsp;:&nbsp;&nbsp;{{ getPrintedDate }}</span><br />
+          <span class="text-uppercase detail">{{$t('app.organisationName')}} &nbsp;:&nbsp;&nbsp;{{ getOrganisation.name }}</span> <br />
+          <span class="detail">{{$t('app.salutation')}} &nbsp;:&nbsp;&nbsp;{{ getOrganisation.salutation }}</span> <br />
+          <span class="detail">{{$t('app.boxLabel')}} &nbsp;:&nbsp;&nbsp;{{ getOrganisation.box_number }}</span><br />
+          <span class="detail">{{$t('app.addressLabel')}} &nbsp;:&nbsp;&nbsp;{{ getOrganisation.address }}</span><br />
+          <span class="detail">{{$t('app.phone')}} &nbsp;:&nbsp;&nbsp;{{ getOrganisation.telephone }}</span><br />
+          <span class="detail">{{$t('app.emailLabel')}} &nbsp;:&nbsp;&nbsp;{{ getOrganisation.email }}</span><br /><br/>
+          <span class="detail">{{$t('app.printedDate')}} &nbsp;:&nbsp;&nbsp;{{ getPrintedDate }}</span><br />
         </label>
       </div>
       <!-------------END OF DETAILS------------->

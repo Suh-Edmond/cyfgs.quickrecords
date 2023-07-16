@@ -4,7 +4,7 @@
       <div class="flex q-pb-md">
         <label for="name" class="label"
           ><span> <q-icon name="category" size="xs" class="q-pr-sm" /> </span
-          >Payment Activity:
+          >{{$t('app.paymentItem')}}:
           <span class="value value_item">{{
             getSelectedSponsorship.payment_item.name
           }}</span></label
@@ -13,7 +13,7 @@
       <div class="flex q-pb-md">
         <label for="name" class="label"
           ><span> <q-icon name="person" size="xs" class="q-pr-sm" /> </span
-          >Sponsor's Name:
+          >{{$t('app.sponsorNameLabel')}}:
           <span class="value value_name">{{
             getSelectedSponsorship.supporter
           }}</span></label
@@ -23,7 +23,7 @@
         <label for="name" class="label">
           <span>
             <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
-          >Amount:
+          >{{$t('app.amount')}}:
           <span class="value value_amount"
             >{{
               Number(getSelectedSponsorship.amount_deposited).toLocaleString()
@@ -35,7 +35,7 @@
       <div class="flex q-pb-md">
         <label for="name" class="label"
           ><span> <q-icon name="schedule" size="xs" class="q-pr-sm" /> </span
-          >Payment Date:
+          >{{$t('app.paymentDate')}}:
           <span class="value value_date">{{
             getFormatedCreatedDate
           }}</span></label
@@ -48,7 +48,7 @@
           v-show="getSelectedSponsorship.approve == 'DECLINED'"
           ><span>
             <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span
-          >Transaction Status:
+          >{{$t('app.transactionStatus')}}:
           <span class="value_trxn unapproved_color">{{
             getSelectedSponsorship.approve
           }}</span></label
@@ -59,7 +59,7 @@
           v-show="getSelectedSponsorship.approve == 'APPROVED'"
           ><span>
             <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span
-          >Transaction Status:
+          >{{$t('app.transactionStatus')}}:
           <span class="value_trxn approved_color">
             {{ getSelectedSponsorship.approve }}</span
           ></label
@@ -70,7 +70,7 @@
           v-show="getSelectedSponsorship.approve == 'PENDING'"
           ><span>
             <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span
-          >Transaction Status:
+          >{{$t('app.transactionStatus')}}:
           <span class="value_trxn pending_color">
             {{ getSelectedSponsorship.approve }}</span
           ></label
@@ -79,7 +79,7 @@
       <div class="flex q-pb-md">
         <label for="name" class="label"
           ><span> <q-icon name="badge" size="xs" class="q-pr-sm" /> </span
-          >Transaction code:
+          >{{$t('app.transactionCode')}}:
           <span class="value q-pl-md value_code">{{
             getSelectedSponsorship.code
           }}</span></label
@@ -88,7 +88,7 @@
       <div class="flex q-pb-lg">
         <label for="name" class="label"
           ><span> <q-icon name="person" size="xs" class="q-pr-sm" /> </span
-          >Created By:
+          >{{$t('app.createdBy')}}:
           <span class="value q-pl-md value_created_by">{{
             getSelectedSponsorship.updated_by
           }}</span></label
@@ -97,7 +97,7 @@
       <div class="flex q-pb-xs">
         <label for="name" class="label"
           ><span> <q-icon name="description" size="xs" class="q-pr-sm" /> </span
-          >Comment:
+          >{{$t('app.comment')}}:
         </label>
       </div>
       <p class="value_comment">
@@ -114,7 +114,7 @@ import SponsorshipMixin from "src/mixins/SponsorshipMixin.vue";
 export default {
   mixins: [SponsorshipMixin],
   mounted() {
-    let heading = "Sponsorship information";
+    let heading = this.$t('app.sponsorshipHeading');
     this.$emit("set-heading", heading);
   },
 

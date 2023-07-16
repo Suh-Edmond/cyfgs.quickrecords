@@ -14,7 +14,7 @@
             icon-right="add"
             @click="show_add_session = true"
           >
-            <q-tooltip> Add Session </q-tooltip>
+            <q-tooltip> {{$t('app.settingsAddSessionLabel')}} </q-tooltip>
           </q-btn>
         </div>
       </div>
@@ -73,7 +73,7 @@
                   class="edit_fee q-mr-xl"
                   @click="editSession(props.row)"
                 >
-                  <q-tooltip>Edit</q-tooltip>
+                  <q-tooltip>{{$t('app.edit')}}</q-tooltip>
                 </q-icon>
               </q-td>
             </q-tr>
@@ -88,9 +88,9 @@
       <q-card style="min-width: 450px" class="q-px-md q-pt-sm q-pb-sm">
         <q-card-section class="row items-center q-pb-lg">
           <div class="text-h6 add_year" v-if="session.id == null">
-            Add Session
+            {{$t('app.settingsAddSessionLabel')}}
           </div>
-          <div class="text-h6 add_year" v-else>Update Session</div>
+          <div class="text-h6 add_year" v-else>{{$t('app.updateSession')}}</div>
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
@@ -99,7 +99,7 @@
           <q-form @submit="onSetSession" class="q-gutter-md">
             <div>
               <label for="credential" class="form_field"
-                >Year <span class="text-red">*</span></label
+                >{{$t('app.year')}} <span class="text-red">*</span></label
               >
               <q-input
                 v-model="session.year"
@@ -111,7 +111,7 @@
             </div>
             <div>
               <label for="credential" class="form_field"
-                >Status <span class="text-red">*</span></label
+                >{{$t('app.status')}} <span class="text-red">*</span></label
               >
               <q-select
                 v-model="session.status"
@@ -196,7 +196,7 @@ export default {
       },
       is_fetching: false,
       session_statuses: [SessionStatusVue.ACTIVE, SessionStatusVue.IN_ACTIVE],
-      msg: `All information of the Active Year will be Set to `,
+      msg: this.$t('app.sessionWarningMsg'),
       show_dialog: false,
       show_warning: false,
       current_year:null,
@@ -206,9 +206,9 @@ export default {
     setLabel() {
       let label = "";
       if (this.session.id == null) {
-        label = "SAVE";
+        label = this.$t('app.saveBtnLabel');
       } else {
-        label = "Update";
+        label = this.$t('app.updateBtnLabel');
       }
       return label;
     },
@@ -248,13 +248,13 @@ export default {
           data: this.session,
           msg:
             this.session.id == null
-              ? "Session saved Successfully"
-              : "Session updated Successfully",
+              ? this.$t('app.saveSessionSuccessMsg')
+              : this.$t('app.saveSessionSuccessMsg'),
           color: "default",
           to_on_ok: "none",
           to_on_fail: "none",
           show_feedback: true,
-          error_msg: "An Error occurred! Please try again",
+          error_msg: this.$t('app.defaultErrorMsg'),
           has_commit: false,
           commit: "none",
           to_be_store_data: {
@@ -285,12 +285,12 @@ export default {
       let payload = {
           url:`/api/protected/sessions/update?id=${this.session.id}&status=${this.session.status}`,
           data: this.session,
-          msg: "Current Session updated Successfully",
+          msg: this.$t('app.updateSessionMsg'),
           color: "default",
           to_on_ok: "none",
           to_on_fail: "none",
           show_feedback: true,
-          error_msg: "An Error occurred! Please try again",
+          error_msg: this.$t('app.defaultErrorMsg'),
           has_commit: false,
           commit: "none",
           to_be_store_data: {

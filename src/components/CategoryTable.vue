@@ -59,7 +59,7 @@
                       </q-item-section>
                       <q-item-section>
                         <q-item-label class="details q-pl-lg"
-                          >View</q-item-label
+                          >{{$t('app.view')}}</q-item-label
                         >
                       </q-item-section>
                     </q-item>
@@ -77,7 +77,7 @@
                       </q-item-section>
                       <q-item-section>
                         <q-item-label class="text-red q-pl-lg"
-                          >Delete</q-item-label
+                          >{{$t('app.delete')}}</q-item-label
                         >
                       </q-item-section>
                     </q-item>
@@ -120,7 +120,7 @@
               @click="showReferences(props.row)"
               v-if="props.row.payment_item_type == 'A_MEMBER'"
             >
-              View Member
+              {{$t('app.viewMember')}}
             </q-btn>
 
             <!-- button for view members -->
@@ -136,7 +136,7 @@
                 props.row.payment_item_type == 'MEMBERS_WITHOUT_ROLES'
               "
             >
-              View Members
+              {{$t('app.viewMembers')}}
               <span class="q-pl-md"
                 ><q-icon name="visibility" size="xs"></q-icon
               ></span>
@@ -166,7 +166,7 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="details">View</q-item-label>
+                        <q-item-label class="details">{{$t('app.view')}}</q-item-label>
                       </q-item-section>
                     </q-item>
                     <q-separator />
@@ -182,7 +182,7 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="details">Edit</q-item-label>
+                        <q-item-label class="details">{{$t('app.edit')}}</q-item-label>
                       </q-item-section>
                     </q-item>
                     <q-item
@@ -196,7 +196,7 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="text-red">Delete</q-item-label>
+                        <q-item-label class="text-red">{{$t('app.delete')}}</q-item-label>
                       </q-item-section>
                     </q-item>
                   </q-list>
@@ -254,7 +254,7 @@
                       </q-item-section>
                       <q-item-section>
                         <q-item-label class="details q-pl-lg"
-                          >View</q-item-label
+                          >{{$t('app.view')}}</q-item-label
                         >
                       </q-item-section>
                     </q-item>
@@ -271,7 +271,7 @@
                       </q-item-section>
                       <q-item-section>
                         <q-item-label class="text-red q-pl-lg"
-                          >Delete</q-item-label
+                          >{{$t('app.delete')}}</q-item-label
                         >
                       </q-item-section>
                     </q-item>
@@ -394,7 +394,7 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="details">View</q-item-label>
+                        <q-item-label class="details">{{$t('app.view')}}</q-item-label>
                       </q-item-section>
                     </q-item>
                     <q-separator />
@@ -409,7 +409,7 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="details">Edit</q-item-label>
+                        <q-item-label class="details">{{$t('app.edit')}}</q-item-label>
                       </q-item-section>
                     </q-item>
                     <q-separator />
@@ -424,7 +424,7 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="details">Details</q-item-label>
+                        <q-item-label class="details">{{$t('app.details')}}</q-item-label>
                       </q-item-section>
                     </q-item>
                     <q-separator />
@@ -439,7 +439,7 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="text-red">Delete</q-item-label>
+                        <q-item-label class="text-red">{{$t('app.delete')}}</q-item-label>
                       </q-item-section>
                     </q-item>
                   </q-list>
@@ -514,7 +514,7 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="details">View</q-item-label>
+                        <q-item-label class="details">{{$t('app.view')}}</q-item-label>
                       </q-item-section>
                     </q-item>
                     <q-separator />
@@ -529,7 +529,7 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="details">Edit</q-item-label>
+                        <q-item-label class="details">{{$t('app.edit')}}</q-item-label>
                       </q-item-section>
                     </q-item>
                     <q-separator />
@@ -544,7 +544,7 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="text-red">Delete</q-item-label>
+                        <q-item-label class="text-red">{{$t('app.delete')}}</q-item-label>
                       </q-item-section>
                     </q-item>
                   </q-list>
@@ -584,7 +584,7 @@
       <!-- slot for table headings -->
       <template v-slot:top-left>
         <div class="text-h6 title" v-show="show_payment_item">
-          Payment Category: {{ title }}
+          {{$t('app.paymentCategory')}}: {{ title }}
         </div>
         <div
           class="text-h6 title"
@@ -594,13 +594,13 @@
             !show_expenditure_item_name
           "
         >
-          Expenditure Category: {{ title }}
+          {{$t('app.expenditureCategory')}}: {{ title }}
         </div>
         <div class="text-h6 title" v-show="show_expenditure_item_name">
           {{ title }}
         </div>
         <div class="text-h6 title" v-show="show_expenditure_item_detail">
-          Expenditure Item: {{ title }}
+          {{$t('app.expenditureItem')}}: {{ title }}
         </div>
       </template>
 
@@ -626,7 +626,7 @@
       <template v-slot:bottom>
         <div v-if="show_expenditure_item_detail && !checkTreasurerRole()">
           <div class="q-py-xs text-bold summary q-mt-sm">
-              <span>A:</span> &nbsp; Estimated Expenditure:
+              <span>A:</span> &nbsp; {{$t('app.estimatedExpenditure')}}:
               <span class="expenditure_amount"
                 >{{
                   Number(expenditure_item_amount).toLocaleString()
@@ -635,7 +635,7 @@
               >
           </div>
           <div class="q-py-xs text-bold summary">
-              <span>B:</span> &nbsp;Total Amount Given:
+              <span>B:</span> &nbsp;{{$t('app.totalAmountGiven')}}:
               <span class="expenditure_amount q-ml-lg"
                 >{{
                   Number(total_amount_given).toLocaleString()
@@ -644,7 +644,7 @@
               >
           </div>
           <div class="q-py-xs text-bold summary">
-              <span>C:</span> &nbsp;Total Amount Spent:
+              <span>C:</span> &nbsp;{{$t('app.totalAmountSpent')}}:
               <span class="expenditure_amount q-ml-lg"
                 >{{
                   Number(total_amount_spent).toLocaleString()
@@ -689,7 +689,7 @@
               <div class="col-md-12">
                 <label for="msg">
                   <span class="text-weight-bold"
-                    >Do you want to {{ chosen_state }} {{ approve_msg }}</span
+                    >{{ $t('app.doYouKnow') }}  {{ chosen_state }} {{ approve_msg }}</span
                   >
                 </label>
               </div>
@@ -700,7 +700,7 @@
             <q-btn
               :class="chosen_state == 'Approve' ? 'approve' : 'decline'"
               size="md"
-              label="Cancel"
+              :label="$t('app.cancel')"
               flat
               v-close-popup
               no-caps
@@ -853,7 +853,7 @@ export default {
     onViewPaymentCategory(categories) {
       let payload = {
         data: categories,
-        tab: "Payment Categories",
+        tab: this.$t('app.paymentCategories'),
       };
       this.$emit("update-payment-category", payload);
     },
@@ -861,7 +861,7 @@ export default {
     onViewPaymentItem(payment_items) {
       let payload = {
         data: payment_items,
-        tab: "View Payment Item",
+        tab: this.$t('app.viewPaymentItem'),
       };
       this.$emit("view-payment-item", payload);
     },
@@ -869,7 +869,7 @@ export default {
     onEditPaymentItem(payment_items) {
       let payload = {
         data: payment_items,
-        tab: "Payment Items",
+        tab: this.$t('app.paymentItemLabel'),
       };
       this.$emit("update-payment-item", payload);
     },
@@ -900,24 +900,19 @@ export default {
       this.type = type;
       switch (this.type) {
         case "PAYMENT_CATEGORY":
-          this.delete_msg =
-            "Are you sure you want to delete this Payment Category ?";
+          this.delete_msg = this.$t('app.deletePaymentCategory');
           break;
         case "PAYMENT_ITEMS":
-          this.delete_msg =
-            "Are you sure you want to delete this Payment Item ?";
+          this.delete_msg = this.$t('app.deletePaymentItem');
           break;
         case "EXPENDITURE_CATEGORY":
-          this.delete_msg =
-            "Are you sure you want to delete this Expenditure Category ?";
+          this.delete_msg = this.$t('app.deleteExpenditureCategory');
           break;
         case "EXPENDITURE_ITEMS":
-          this.delete_msg =
-            "Are you sure you want to delete this Expenditure Item ?";
+          this.delete_msg = this.$t('app.deleteExpenditureItem')
           break;
         case "EXPENDITURE_DETAILS":
-          this.delete_msg =
-            "Are you sure you want to delete this Expenditure Item Detail ?";
+          this.delete_msg = this.$t('app.deleteExpenditureItemDetail');
           break;
       }
     },
@@ -942,7 +937,7 @@ export default {
     onViewExpenditureCategory(expenditure_category) {
       let payload = {
         data: expenditure_category,
-        tab: "Expenditure Categories",
+        tab: this.$t('app.expenditureCategoryLabel'),
       };
       this.$emit("update-expenditure-category", payload);
     },
@@ -950,7 +945,7 @@ export default {
     onViewExpenditureItem(data) {
       let payload = {
         data: data,
-        tab: "Expenditure Activity Information",
+        tab: this.$t('app.addExpenditureItemHeading'),
       };
       this.$emit("view-expenditure-item", payload);
     },
@@ -958,7 +953,7 @@ export default {
     onEditExpenditureItem(expenditure_item) {
       let payload = {
         data: expenditure_item,
-        tab: "Expenditure Items",
+        tab: this.$t('app.expenditureItemLabel'),
       };
       this.$emit("edit-expenditure-item", payload);
     },
@@ -979,7 +974,7 @@ export default {
     onEditExpenditureItemDetail(expenditure_item_detail) {
       let payload = {
         data: expenditure_item_detail,
-        tab: "Expenditure Item Details",
+        tab: this.$t('app.expenditureItemDetailLabel'),
       };
       this.$emit("edit-expenditure-item-detail", payload);
     },
@@ -987,7 +982,7 @@ export default {
     onViewItemDetail(data) {
       let payload = {
         data: data,
-        tab: "Expenditure Activity Detail Information",
+        tab: this.$t('app.expenditureItemDetail'),
       };
       this.$emit("view-expenditure-item-detail", payload);
     },
@@ -1008,7 +1003,7 @@ export default {
 
     setApproveUrlBaseOnType(data) {
       let url = "";
-      let type = this.chosen_state == "Approve" ? "APPROVED" : "DECLINED";
+      let type = this.chosen_state == "Approve" ? this.$t('app.approveLabel') : this.$t('app.declineLabel');
       switch (data.type) {
         case "EXPENDITURE_ITEMS":
           url = `/api/protected/expenditure-items/${data.id}/approve?type=${type}`;
@@ -1021,7 +1016,7 @@ export default {
     },
 
     setApproveFeedbackMsg() {
-      let msg = `Record was ${this.chosen_state} successfully`;
+      let msg = this.$t('app.recordWas')+`${this.chosen_state}`+this.$t('app.successfull');
       return msg;
     },
 
@@ -1030,11 +1025,11 @@ export default {
       switch (data.type) {
         case "EXPENDITURE_ITEMS":
           date = moment(data.date).format("MMMM Do YYYY");
-          this.approve_msg = ` ${data.amount}  F CFA Expenditure for ${data.name} on the ${date} at ${data.venue} ?`;
+          this.approve_msg = ` ${data.amount}  `+ this.$t('app.approveExpenditureItemPartMsg')+` ${data.name} `+  this.$t('app.on') +` ${date} `+this.$t('app.at') +` ${data.venue} ?`;
           break;
         case "EXPENDITURE_DETAILS":
           date = moment(data.created_at).format("MMMM Do YYYY");
-          this.approve_msg = ` ${data.amount_given} F CFA Spent for ${data.name} on the ${date} ?`;
+          this.approve_msg = ` ${data.amount_given} `+ this.$t('app.approveDetail') +` ${data.name} `+  this.$('app.on') +` ${date} ?`;
           break;
       }
 
@@ -1061,7 +1056,7 @@ export default {
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: "An Error occurred! Please try again",
+        error_msg: this.$t('app.defaultWarningMsg'),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -1086,7 +1081,7 @@ export default {
       );
 
       intermediate_tabs.push({
-        name: "Details",
+        name: this.$t('app.details'),
         has_intermediate_tab: true,
       });
 
@@ -1211,7 +1206,7 @@ export default {
   font-size: 13px;
 }
 
- 
+
 
 .message {
   font-family: "Roboto";

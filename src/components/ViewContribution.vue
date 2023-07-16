@@ -2,67 +2,67 @@
   <div class="q-pa-md">
     <div class="q-px-md">
       <div class="flex q-pb-md">
-        <label for="name" class="label"><span> <q-icon name="category" size="xs" class="q-pr-sm" /> </span>Payment Activity:
+        <label for="name" class="label"><span> <q-icon name="category" size="xs" class="q-pr-sm" /> </span>{{$t('app.paymentItem')}}:
           <span class="value value_item">{{ getSelectedContribution.payment_item_name }}</span></label>
       </div>
       <div class="flex q-pb-md">
-        <label for="name" class="label"><span> <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span>Total Amount Payable:
+        <label for="name" class="label"><span> <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span>{{$t('app.totalAmountPayable')}}:
           <span class="value value_amount">{{ Number(getSelectedContribution.payment_item_amount).toLocaleString() }}
             XAF</span></label>
       </div>
       <div class="flex q-pb-md">
-        <label for="name" class="label"><span> <q-icon name="check" size="xs" class="q-pr-sm" /> </span>Complusory:
-          <span class="value value_complusory" v-if="getSelectedContribution.payment_item_complusory">YES</span>
-          <span class="value value_complusory" v-if="!getSelectedContribution.payment_item_complusory">NO</span></label>
+        <label for="name" class="label"><span> <q-icon name="check" size="xs" class="q-pr-sm" /> </span>{{$t('app.compulsory')}}:
+          <span class="value value_complusory" v-if="getSelectedContribution.payment_item_complusory">{{$t('app.yes')}}</span>
+          <span class="value value_complusory" v-if="!getSelectedContribution.payment_item_complusory">{{$t('app.no')}}</span></label>
 
       </div>
       <div class="flex q-pb-md">
-        <label for="name" class="label"><span> <q-icon name="person" size="xs" class="q-pr-sm"/> </span>Member's Name:
+        <label for="name" class="label"><span> <q-icon name="person" size="xs" class="q-pr-sm"/> </span>{{$t('app.membersName')}}:
           <span class="value value_name">{{ getSelectedContribution.user_name }}</span></label>
       </div>
       <div class="flex q-pb-md">
-        <label for="name" class="label"> <span> <q-icon name="monetization_on" size="xs" class="q-pr-sm"/> </span>Amount:
+        <label for="name" class="label"> <span> <q-icon name="monetization_on" size="xs" class="q-pr-sm"/> </span>{{$t('app.amount')}}:
           <span class="value value_amount_paid">{{ Number(getSelectedContribution.amount_deposited).toLocaleString() }}
             XAF</span></label>
       </div>
       <div class="flex q-pb-md">
-        <label for="name" class="label"><span> <q-icon name="monetization_on" size="xs" class="q-pr-sm"/> </span>Total Amount Paid:
+        <label for="name" class="label"><span> <q-icon name="monetization_on" size="xs" class="q-pr-sm"/> </span>{{$t('app.totalAmountPaid')}}:
           <span class="value value_amount_total">{{ Number(computeTotalAmountContributed).toLocaleString() }}
             XAF</span></label>
       </div>
       <div class="flex q-pb-md">
-        <label for="name" class="label"> <span> <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span>Balance: <span
+        <label for="name" class="label"> <span> <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span>{{$t('app.balance')}}: <span
             class="value value_balance">{{ Number(getSelectedContribution.balance).toLocaleString() }} XAF</span></label>
       </div>
       <div class="flex q-pb-md">
-        <label for="name" class="label"><span> <q-icon name="schedule" size="xs" class="q-pr-sm"/> </span>Payment Date:
+        <label for="name" class="label"><span> <q-icon name="schedule" size="xs" class="q-pr-sm"/> </span>{{$t('app.paymentDate')}}:
           <span class="value value_date">{{ getFormatedCreatedDate }}</span></label>
       </div>
       <div class="flex q-pb-md">
-        <label for="status" class="label" v-show="getSelectedContribution.approve == 'DECLINED'"><span> <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span>Transaction Status:
+        <label for="status" class="label" v-show="getSelectedContribution.approve == 'DECLINED'"><span> <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span>{{$t('app.transactionStatus')}}:
           <span class=" value_trxn unapproved_color">{{getSelectedContribution.approve}}</span></label>
-        <label for="status" class="label" v-show="getSelectedContribution.approve == 'APPROVED'"><span> <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span>Transaction Status:
+        <label for="status" class="label" v-show="getSelectedContribution.approve == 'APPROVED'"><span> <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span>{{$t('app.transactionStatus')}}:
           <span class=" value_trxn approved_color"> {{getSelectedContribution.approve}}</span></label>
-          <label for="status" class="label" v-show="getSelectedContribution.approve == 'PENDING'"><span> <q-icon name="check_circle" size="xs" class="q-pr-sm"/> </span>Transaction Status:
+          <label for="status" class="label" v-show="getSelectedContribution.approve == 'PENDING'"><span> <q-icon name="check_circle" size="xs" class="q-pr-sm"/> </span>{{$t('app.transactionStatus')}}:
           <span class=" value_trxn pending_color"> {{getSelectedContribution.approve}}</span></label>
       </div>
       <div class="flex q-pb-md">
-        <label for="name" class="label" v-show="getSelectedContribution.status == 'INCOMPLETE'"><span> <q-icon name="check_circle" size="xs" class="q-pr-sm"/> </span>Payment Status:
+        <label for="name" class="label" v-show="getSelectedContribution.status == 'INCOMPLETE'"><span> <q-icon name="check_circle" size="xs" class="q-pr-sm"/> </span>{{$t('app.paymentStatus')}}:
           <span class="unapproved_color q-pl-md value_status">{{ getSelectedContribution.status }}</span></label>
 
-        <label for="name" class="label" v-show="getSelectedContribution.status == 'COMPLETE'"><span> <q-icon name="check_circle" size="xs" class="q-pr-sm"/> </span>Payment Status:
+        <label for="name" class="label" v-show="getSelectedContribution.status == 'COMPLETE'"><span> <q-icon name="check_circle" size="xs" class="q-pr-sm"/> </span>{{$t('app.paymentStatus')}}:
           <span class="value text-secondary q-pl-md value_status">{{ getSelectedContribution.status }}</span></label>
       </div>
       <div class="flex q-pb-lg">
-        <label for="name" class="label"><span> <q-icon name="badge" size="xs" class="q-pr-sm"/> </span>Transaction code:
+        <label for="name" class="label"><span> <q-icon name="badge" size="xs" class="q-pr-sm"/> </span>{{$t('app.transactionCode')}}:
           <span class="value  q-pl-md value_code">{{ getSelectedContribution.code }}</span></label>
       </div>
       <div class="flex q-pb-lg">
-        <label for="name" class="label"><span> <q-icon name="person" size="xs" class="q-pr-sm"/> </span>Created By:
+        <label for="name" class="label"><span> <q-icon name="person" size="xs" class="q-pr-sm"/> </span>{{$t('app.createdBy')}}:
           <span class="value  q-pl-md value_created_by">{{ getSelectedContribution.updated_by }}</span></label>
       </div>
       <div class="flex q-pb-md">
-        <label for="name" class="label"><span> <q-icon name="description" size="xs" class="q-pr-sm"/> </span>Comment: </label>
+        <label for="name" class="label"><span> <q-icon name="description" size="xs" class="q-pr-sm"/> </span>{{$t('app.comment')}}: </label>
       </div>
       <p class="value_comment">
           {{ getSelectedContribution.comment }}
@@ -81,7 +81,7 @@ import HelperMixin from "src/mixins/HelperMixin.vue";
 export default {
   mixins:[organisationMixin, memberMixin, HelperMixin],
   mounted() {
-    let heading = "Member Contribution Detail";
+    let heading = this.$t('app.viewContributionInformation');
     this.$emit("set-heading", heading);
   },
 

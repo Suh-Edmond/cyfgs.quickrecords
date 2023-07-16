@@ -13,7 +13,7 @@
                 statistics_type == 'MEMBERSHIP' ? 'text-h6-active' : 'text-h6'
               "
             >
-              Members
+              {{ $t("app.memberLabel") }}
             </div>
           </q-card-section>
 
@@ -51,7 +51,7 @@
                 statistics_type == 'SAVINGS' ? 'text-h6-active' : 'text-h6'
               "
             >
-              Savings
+              {{ $t("app.savingtitle") }}
             </div>
           </q-card-section>
 
@@ -93,7 +93,7 @@
                   : 'text-h6'
               "
             >
-              Contributions
+              {{ $t("app.contributionName") }}
             </div>
           </q-card-section>
 
@@ -135,7 +135,7 @@
                 statistics_type == 'EXPENDITURES' ? 'text-h6-active' : 'text-h6'
               "
             >
-              Expenditures
+              {{ $t("app.expenditureName") }}
             </div>
           </q-card-section>
 
@@ -154,7 +154,10 @@
                 :class="
                   statistics_type == 'EXPENDITURES' ? 'total-active' : 'total'
                 "
-                >{{ Number(total_expenditures).toLocaleString() }} XAF</label
+                >{{
+                  Number(getTotalYearlyExpenditure).toLocaleString()
+                }}
+                XAF</label
               >
             </div>
           </q-card-actions>
@@ -246,7 +249,6 @@ export default {
       this.getOrganisationInfo();
     }
     this.fetchCurrentYear();
-    this.getSessions();
     this.showStatistics("MEMBERSHIP");
   },
   data() {
@@ -257,18 +259,18 @@ export default {
       show_statistics: false,
       lineChartData1: {
         labels: [
-          "January",
-          "February",
-          "March",
-          "April",
-          "May",
-          "June",
-          "July",
-          "August",
-          "September",
-          "October",
-          "November",
-          "December",
+          this.$t("app.januaryName"),
+          this.$t("app.februaryName"),
+          this.$t("app.marchName"),
+          this.$t("app.aprilName"),
+          this.$t("app.mayName"),
+          this.$t("app.juneName"),
+          this.$t("app.julyName"),
+          this.$t("app.augustName"),
+          this.$t("app.septemberName"),
+          this.$t("app.octoberName"),
+          this.$t("app.novemberName"),
+          this.$t("app.decemberName"),
         ],
         datasets: [
           {
@@ -340,18 +342,18 @@ export default {
       total_expenditures: 0,
       expenditureLineChartData1: {
         labels: [
-          "January",
-          "February",
-          "March",
-          "April",
-          "May",
-          "June",
-          "July",
-          "August",
-          "September",
-          "October",
-          "November",
-          "December",
+          this.$t("app.januaryName"),
+          this.$t("app.februaryName"),
+          this.$t("app.marchName"),
+          this.$t("app.aprilName"),
+          this.$t("app.mayName"),
+          this.$t("app.juneName"),
+          this.$t("app.julyName"),
+          this.$t("app.augustName"),
+          this.$t("app.septemberName"),
+          this.$t("app.octoberName"),
+          this.$t("app.novemberName"),
+          this.$t("app.decemberName"),
         ],
         datasets: [
           {
@@ -389,7 +391,11 @@ export default {
 
     getChartData() {
       let data = {
-        labels: ["Registered", "Pending", "Not-Registered"],
+        labels: [
+          this.$t("app.registeredName"),
+          this.$t("app.pendingName"),
+          this.$t("app.notRegisteredName"),
+        ],
         datasets: [
           {
             backgroundColor: ["#27ae60", "#2d9cdb", "#f2994a"],
@@ -430,6 +436,10 @@ export default {
     getTotalYearlyContribution() {
       return this.$store.getters.getTotalYearlyContribution;
     },
+
+    getTotalYearlyExpenditure() {
+      return this.$store.getters.getTotalYearlyExpenditure;
+    },
   },
   methods: {
     showStatistics(type) {
@@ -448,10 +458,9 @@ export default {
           this.getTotalContributionByYear(current_session_id);
           this.getUserByRegistrationStatus(organisation_id);
           this.getUserByRegistration(organisation_id);
-          this.getOrganisationMembers(organisation_id);
           this.getOrganisationMemberSavings(organisation_id);
-          this.total_expenditures =
-            this.getTotalYearlyExpenditures(current_session_id);
+          this.getTotalYearlyExpenditures(current_session_id);
+          this.getOrganisationMembers(organisation_id);
           break;
         case "SAVINGS":
           this.statistics_type = "SAVINGS";
@@ -598,7 +607,6 @@ export default {
     },
 
     setExpenditureStatistics(data) {
-
       this.expenditureLineChartData1.labels = [
         "January",
         "February",
@@ -617,12 +625,14 @@ export default {
       this.expenditureLineChartData1.datasets[0].backgroundColor = "#b2dfdb";
       this.expenditureLineChartData1.datasets[0].data = data.monthly_expenses;
 
-      this.expenditureBarChartData2.labels = data.expenses_by_items.map((ele) => ele.name);
-      this.expenditureBarChartData2.datasets[0].label = "Expenditures By Payment Type";
-      this.expenditureBarChartData2.datasets[0].backgroundColor = "#b2dfdb";
-      this.expenditureBarChartData2.datasets[0].data = data.expenses_by_items.map(
-        (ele) => ele.amount
+      this.expenditureBarChartData2.labels = data.expenses_by_items.map(
+        (ele) => ele.name
       );
+      this.expenditureBarChartData2.datasets[0].label =
+        "Expenditures By Payment Type";
+      this.expenditureBarChartData2.datasets[0].backgroundColor = "#b2dfdb";
+      this.expenditureBarChartData2.datasets[0].data =
+        data.expenses_by_items.map((ele) => ele.amount);
     },
 
     getYearlyExpenditureStatistics(id) {
@@ -646,6 +656,27 @@ export default {
       this.$store.dispatch("getRequest", payload).then((res) => {
         this.setExpenditureStatistics(res.data);
       });
+    },
+
+    getTotalYearlyExpenditures(id) {
+      let payload = {
+        url: `/api/protected/expenditures_total?session_id=${id}`,
+        msg: "none",
+        color: "default",
+        status: "none",
+        error_msg: "An Error occurred! Could not fetch payment categories",
+        has_commit: true,
+        show_feedback: false,
+        show_spinner: false,
+        has_path_val: false,
+        commit: "SET_TOTAL_YEARLY_EXPENDITURE",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.$store.dispatch("getRequest", payload).then(() => {});
     },
   },
   components: {

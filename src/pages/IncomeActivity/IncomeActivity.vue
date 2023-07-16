@@ -24,7 +24,7 @@
             outlined
             dense
             :options="payment_items"
-            label="Search payment item..."
+            :label="$t('app.searchPaymentItem')"
             input-debounce="0"
             use-input
             clearable
@@ -32,7 +32,9 @@
           >
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey"> No results </q-item-section>
+                <q-item-section class="text-grey">
+                  {{ $t("app.noResults") }}
+                </q-item-section>
               </q-item>
             </template>
           </q-select>
@@ -43,7 +45,7 @@
             outlined
             dense
             :options="monthsOptions"
-            label="Search month..."
+            :label="$t('app.searchMonth')"
             input-debounce="0"
             @filter="filterMonths"
             use-input
@@ -51,7 +53,9 @@
           >
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey"> No results </q-item-section>
+                <q-item-section class="text-grey">
+                  {{ $t("app.noResults") }}
+                </q-item-section>
               </q-item>
             </template>
           </q-select>
@@ -62,11 +66,13 @@
             outlined
             dense
             :options="statuses"
-            label="Select status"
+            :label="$t('app.selectStatusLabel')"
           >
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey"> No results </q-item-section>
+                <q-item-section class="text-grey">
+                  {{ $t("app.noResults") }}
+                </q-item-section>
               </q-item>
             </template>
           </q-select>
@@ -74,7 +80,7 @@
         <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 flex q-pl-md">
           <div>
             <q-btn
-              label="Filter"
+              :label="$t('app.filter')"
               :loading="loading_filter"
               color="primary"
               :disabled="validateFilter"
@@ -87,7 +93,7 @@
           <q-space />
           <div class="button q-pb-xs">
             <q-btn
-              label="Print"
+              :label="$t('app.print')"
               :loading="loading"
               color="positive"
               :disabled="validateDownload"
@@ -127,18 +133,18 @@ import TableVue from "src/components/Table.vue";
 import IncomeActivityMixinVue from "src/mixins/IncomeActivityMixin.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
 const months = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
+  this.$t("app.januaryName"),
+  this.$t("app.februaryName"),
+  this.$t("app.marchName"),
+  this.$t("app.aprilName"),
+  this.$t("app.mayName"),
+  this.$t("app.juneName"),
+  this.$t("app.julyName"),
+  this.$t("app.augustName"),
+  this.$t("app.septemberName"),
+  this.$t("app.octoberName"),
+  this.$t("app.novemberName"),
+  this.$t("app.decemberName"),
 ];
 export default {
   mixins: [IncomeActivityMixinVue, HelperMixinVue],
@@ -151,7 +157,6 @@ export default {
       this.fetchPaymentActivities(); //fetch from endpoint
     }
     this.getPaymentActivitiesFromStatus();
-
   },
 
   data() {
@@ -211,8 +216,8 @@ export default {
           align: "left",
         },
       ],
-      label: "Delete",
-      message: "Are you sure you want to delete this Income Activity ?",
+      label: this.$t('app.delete'),
+      message: this.$t('app.deleteIncomeActvityWarningMsg'),
       filteredActivities: [],
       start_filter: false,
       loading: false,
@@ -245,9 +250,9 @@ export default {
       let title = "";
       if (this.filteredActivities.length > 0) {
         if (this.payment_item_id != null) {
-          title = `Income Raised for ${this.filteredActivities[0].payment_item.name}`;
+          title = this.$t('app.incomeTitlePart') + `${this.filteredActivities[0].payment_item.name}`;
         } else {
-          title = `Income Raised for the month of ${this.month}`;
+          title = this.$t('app.incomeTitle') + `${this.month}`;
         }
       }
       return title;
@@ -285,10 +290,9 @@ export default {
       return this.$store.getters.getFetchingState;
     },
 
-    validateDownload()
-    {
-      return this.getIncomeActivities.length == 0
-    }
+    validateDownload() {
+      return this.getIncomeActivities.length == 0;
+    },
   },
   methods: {
     getPaymentActivitiesFromStatus() {
@@ -446,12 +450,12 @@ export default {
     deleteRow(data) {
       let payload = {
         url: `/api/protected/income-activities/${data.id}`,
-        msg: `Income Activity deleted successfully`,
+        msg: this.$t('app.deleteIncomeSuccessMsg'),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: "An Error occurred! Please try again",
+        error_msg: this.$t('app.defaultErrorMsg'),
         has_commit: false,
         commit: "none",
         to_be_store_data: {

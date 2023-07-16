@@ -3,7 +3,7 @@
     <div>
       <div class="q-my-md">
         <label for="heading" class="text"
-          >Filter by Payment Category, Item
+          >{{$t('app.filterMsg')}}
         </label>
       </div>
       <div class="q-mb-lg row">
@@ -13,7 +13,7 @@
             outlined
             dense
             :options="filtered_payment_items"
-            label="Search payment item..."
+            :label="$t('app.searchPaymentItem')"
             input-debounce="0"
             use-input
             clearable
@@ -21,7 +21,7 @@
           >
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey"> No results </q-item-section>
+                <q-item-section class="text-grey"> {{$t('app.noResults')}} </q-item-section>
               </q-item>
             </template>
           </q-select>
@@ -30,7 +30,7 @@
 
       <!-- filter by status of contributions -->
       <div class="q-my-md">
-        <label for="heading" class="text">Filter by status</label>
+        <label for="heading" class="text">{{$t('app.filterStatus')}}</label>
       </div>
       <div class="q-mb-lg row">
         <div
@@ -54,7 +54,7 @@
       <!-- filter by duration -->
       <hr class="separator" />
       <div class="q-my-md">
-        <label for="heading" class="text">Filter by delay</label>
+        <label for="heading" class="text">{{$t('app.filterDelay')}}</label>
       </div>
       <!-- by year -->
       <div class="q-mb-md row">
@@ -63,7 +63,7 @@
             v-model="param.year"
             outlined
             dense
-            label="Search year..."
+            :label="$t('app.searchYear')"
             :options="years"
             input-debounce="0"
             use-input
@@ -72,7 +72,7 @@
           >
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey"> No results </q-item-section>
+                <q-item-section class="text-grey">  {{$t('app.noResults')}} </q-item-section>
               </q-item>
             </template>
           </q-select>
@@ -86,7 +86,7 @@
             outlined
             dense
             :options="months"
-            label="Search month..."
+            :label="$t('app.searchMonth')"
             input-debounce="0"
             use-input
             clearable
@@ -94,7 +94,7 @@
           >
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey"> No results </q-item-section>
+                <q-item-section class="text-grey">{{$t('app.noResults')}} </q-item-section>
               </q-item>
             </template>
           </q-select>
@@ -109,7 +109,7 @@
             v-model="param.date"
             mask="date"
             outlined
-            placeholder="Select date"
+            :placeholder="$t('app.selectDate')"
           >
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
@@ -138,7 +138,7 @@
             v-model="param.date_range"
             mask="date"
             outlined
-            placeholder="Select date-range"
+            :placeholder="$t('app.selectDateRange')"
           >
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
@@ -167,7 +167,7 @@
         <div>
           <q-btn
             class="filter_btn"
-            label="Filter"
+            :label="$t('app.filter')"
             :loading="loading"
             :color="'primary'"
             :disabled="validateForm"
@@ -211,7 +211,7 @@ export default {
   ],
 
   mounted() {
-    let heading = "Search Member's Contribution";
+    let heading = this.$t('app.searchContributionlabel');
 
     this.$emit("set-heading", heading);
 

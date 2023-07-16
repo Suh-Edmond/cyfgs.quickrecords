@@ -43,7 +43,7 @@ export default function (
       Notify.create({
         type: "info",
         position: Platform.is.mobile ? "bottom" : "top-right",
-        message: "Login is required to view this page",
+        message: this.$t('app.loginRequiredInfo'),
       });
     }
 
@@ -57,7 +57,7 @@ export default function (
         Notify.create({
           type: "info",
           position: Platform.is.mobile ? "bottom" : "top-right",
-          message: "Access denied to view this page",
+          message: this.$t('app.accessDeniedMsg'),
         });
       }
     }

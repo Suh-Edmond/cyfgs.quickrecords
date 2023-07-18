@@ -397,6 +397,7 @@ export default {
     createdAt:'Created At',
     downloadFileErrorMsg:'Could not download pdf file',
     accessDeniedMsg:'Access denied to view this page',
-    loginRequiredInfo:'Login is required to view this page'
+    loginRequiredInfo:'Login is required to view this page',
+    organisationNotSet:"Please add you Organisation or Group"
    }
 };

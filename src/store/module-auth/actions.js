@@ -191,6 +191,7 @@ export function getRequest({ commit, dispatch }, payload) {
           error.response != undefined ? error.response.data.status : 404,
       };
       dispatch("handleRequestResponse", handle_fail_res_payload);
+      return error.response
     });
 }
 

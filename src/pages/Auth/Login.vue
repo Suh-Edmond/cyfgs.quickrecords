@@ -7,20 +7,29 @@
       <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12">
         <q-card :class="$q.screen.lg ? 'q-mt-lg' : 'q-mt-md q-mb-xl'">
           <q-card-section>
-            <div class="text_h6 text-center q-pt-sm q-pb-sm"> {{ $t('app.signIn') }}</div>
+            <div class="text_h6 text-center q-pt-sm q-pb-sm">
+              {{ $t("app.signIn") }}
+            </div>
             <div class="text-subtitle2 text-center q-pb-xs">
-              {{$t('app.loginCaption')}}
+              {{ $t("app.loginCaption") }}
             </div>
             <q-form @submit="onSubmit" class="q-gutter-md q-mt-lg q-px-md">
               <div>
                 <label for="credential" class="form_field"
-                  >{{$t('app.telephoneLabel')}} <span class="text-red">*</span></label
+                  >{{ $t("app.telephoneLabel") }}
+                  <span class="text-red">*</span></label
                 >
-                <vue-tel-input v-model="user.credential" defaultCountry="cm" mode="international" class="q-pa-xs"></vue-tel-input>
-               </div>
+                <vue-tel-input
+                  v-model="user.credential"
+                  defaultCountry="cm"
+                  mode="international"
+                  class="q-pa-xs"
+                ></vue-tel-input>
+              </div>
               <div>
                 <label for="password" class="form_field"
-                  >{{$t('app.passwordLabel')}} <span class="text-red">*</span></label
+                  >{{ $t("app.passwordLabel") }}
+                  <span class="text-red">*</span></label
                 >
                 <q-input
                   v-model="user.password"
@@ -53,9 +62,9 @@
                     class="q-pl-lg"
                   ></q-icon>
                 </q-btn>
-                <span class="forgot_password text-right"
-                  >{{$t('app.forgotPasswordMsg')}}</span
-                >
+                <span class="forgot_password text-right">{{
+                  $t("app.forgotPasswordMsg")
+                }}</span>
               </div>
             </q-form>
           </q-card-section>
@@ -71,8 +80,8 @@ import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
 import memberMixinVue from "src/mixins/memberMixin.vue";
 import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
 import ContributionsMixinVue from "src/mixins/ContributionsMixin.vue";
-import { VueTelInput } from 'vue-tel-input';
-
+import { VueTelInput } from "vue-tel-input";
+import { Notify } from "quasar";
 
 export default {
   name: "PageIndex",
@@ -91,7 +100,7 @@ export default {
         credential: null,
       },
       isPwd: true,
-      label_sigin: this.$t('app.loginBtnLabel'),
+      label_sigin: this.$t("app.loginBtnLabel"),
       loading: false,
       color: "primary",
       no_caps: true,
@@ -115,7 +124,7 @@ export default {
       let payload = {
         url: "/api/public/auth/login",
         data: {
-          telephone: this.user.credential,
+          telephone: this.user.credential.replace(/\s+/g, ""),
           password: this.user.password,
         },
         msg: "Login Successful",
@@ -132,65 +141,81 @@ export default {
       };
       this.$store
         .dispatch("postRequest", payload)
-        .then(() => {
-          let payload = {
-            status: "none",
-            url: "/api/protected/organisation-info",
-            has_path_val: true,
-            show_feedback: false,
-            msg: "none",
-            color: "default",
-            error_msg: "default",
-            to_on_ok: "none",
-            commit: "SET_ORGANISATION",
-            has_commit: true,
-            to_be_store_data: {
-              required: true,
-              has_value: false,
-              data: null,
-            },
-          };
-          this.$store
-            .dispatch("getRequest", payload)
-            .then((res) => {
-              this.fetchCurrentYear();
-              this.getOrganisationMembers(res.data.id);
-              this.getUserByRegistrationStatus(res.data.id);
-              this.getUserByRegistration(res.data.id);
-            })
-            .catch(() => {
-              this.$router.push({
-                name: "create_organisation",
-              });
-            })
-            .finally(() => {
-              this.$router.push({
-                name: "dashboard",
-              });
-            });
+        .then((response) => {
+          if (response.status == 200) {
+            let payload = {
+              status: "none",
+              url: "/api/protected/organisation-info",
+              has_path_val: true,
+              show_feedback: false,
+              msg: "none",
+              color: "default",
+              error_msg: "default",
+              to_on_ok: "none",
+              commit: "SET_ORGANISATION",
+              has_commit: true,
+              to_be_store_data: {
+                required: true,
+                has_value: false,
+                data: null,
+              },
+            };
+            this.$store
+              .dispatch("getRequest", payload)
+              .then((res) => {
+                if (res.status == 200) {
+                  this.fetchCurrentYear();
+                  this.getOrganisationMembers(res.data.id);
+                  this.getUserByRegistrationStatus(res.data.id);
+                  this.getUserByRegistration(res.data.id);
+                } else {
+                  this.$router.push({
+                    name: "create_organisation",
+                  });
+                  Notify.create({
+                    type: "info",
+                    position: Platform.is.mobile ? "bottom" : "top-right",
+                    message: this.$t("app.organisationNotSet"),
+                  });
+                }
+                return res;
+              })
+              .then(async (res) => {
+                if (res.status == 200) {
+                  this.getOrganisationMemberSavings(
+                    this.$store.getters.getOrganisation.id
+                  );
+                  this.getTotalContributionByYear(
+                    this.$store.getters.getCurrentYear != null
+                      ? this.$store.getters.getCurrentYear.id
+                      : ""
+                  );
+                  this.getTotalYearlyExpenditures(
+                    this.$store.getters.getCurrentYear != null
+                      ? this.$store.getters.getCurrentYear.id
+                      : ""
+                  );
+                }
+              })
+              .then(async (res) => {
+                this.loading = false;
+                if (res.status == 200) {
+                  this.$router.push({
+                    name: "dashboard",
+                  });
+                }
+              })
+              .catch(() => {});
+          }
         })
         .catch(() => {})
         .finally(() => {
           this.loading = false;
-          this.getOrganisationMemberSavings(
-            this.$store.getters.getOrganisation.id
-          );
-          this.getTotalContributionByYear(
-            this.$store.getters.getCurrentYear != null
-              ? this.$store.getters.getCurrentYear.id
-              : ""
-          );
-          this.getTotalYearlyExpenditures(
-            this.$store.getters.getCurrentYear != null
-              ? this.$store.getters.getCurrentYear.id
-              : ""
-          );
         });
-
-      },
+    },
 
     getTotalYearlyExpenditures(id) {
-       let payload = {
+      let payload = {
         url: `/api/protected/expenditures_total?session_id=${id}`,
         msg: "none",
         color: "default",
@@ -207,14 +232,12 @@ export default {
           data: [],
         },
       };
-      this.$store.dispatch("getRequest", payload).then(() => {
-      });
+      this.$store.dispatch("getRequest", payload).then(() => {});
     },
-
   },
   components: {
-    VueTelInput
- },
+    VueTelInput,
+  },
 };
 </script>
 
@@ -223,7 +246,6 @@ export default {
 * {
   box-sizing: border-box;
 }
-
 
 .page {
   background-color: $grey1;

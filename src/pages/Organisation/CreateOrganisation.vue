@@ -16,7 +16,7 @@
             <q-form @submit="onSubmit">
               <div class="row q-my-md">
                 <div class="col-md-12 col-lg-12 col-xs-12 col-sm-12">
-                  <label for="credential" class="form_field">{{$t('app.NameLabel')}} <span class="text-red q-pl-xs">*</span></label>
+                  <label for="credential" class="form_field">{{$t('app.nameLabel')}} <span class="text-red q-pl-xs">*</span></label>
                   <q-input v-model="organisation.name" outlined type="text" dense />
                 </div>
               </div>
@@ -304,7 +304,7 @@ export default {
   color: $grey2;
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 400;
+  font-weight: 500;
   font-size: 13px;
   line-height: 18px;
 }

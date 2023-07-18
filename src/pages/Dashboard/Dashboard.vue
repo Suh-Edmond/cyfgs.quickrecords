@@ -248,7 +248,9 @@ export default {
     if (this.getOrganisationId == "") {
       this.getOrganisationInfo();
     }
-    this.fetchCurrentYear();
+    if(this.$store.getters.getCurrentYear !==  null){
+      this.fetchCurrentYear();
+    }
     this.showStatistics("MEMBERSHIP");
   },
   data() {

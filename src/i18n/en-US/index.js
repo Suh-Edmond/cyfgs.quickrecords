@@ -86,7 +86,7 @@ export default {
     cancel:'Cancel',
     uploadLogo:'Upload Logo',
     createOrganisation:'Create Organisation',
-    createOrganisationCaption:"Create your organisation or group to get started with Financial Assistant",
+    createOrganisationCaption:"Create your Organisation or Group to get started with Financial Assistant",
     warningField:'All fields with ',
     fields:'are required.',
     salutation:'Salutation/Motto',

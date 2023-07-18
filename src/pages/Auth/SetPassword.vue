@@ -31,22 +31,14 @@
             >
               <div>
                 <label for="credential" class="form_field">Telephone <span class="text-red">*</span></label>
-                <q-input
-                  v-model="check_user.credential"
-                  outlined
-                  dense
-                  type="tel"
-                  mask="(+###) ### - ### - ###"
-                  unmasked-value
-                  hint="Example: (+237) ### - ### - ###"
-                />
+                <vue-tel-input v-model="check_user.credential" defaultCountry="cm" mode="international" class="q-pa-xs"></vue-tel-input>
               </div>
               <div>
                 <q-btn
                   class="form_button q-mt-md q-pa-xs"
                   :label="label_continue"
                   :loading="loading"
-                  :disabled="!validatePhone"
+                  :disabled="validatePhone"
                   :color="color"
                   :no_caps="no_caps"
                   type="submit"
@@ -72,15 +64,7 @@
             >
               <div>
                 <label for="credential" class="form_field">Telephone <span class="text-red">*</span></label>
-                <q-input
-                  v-model="user.credential"
-                  outlined
-                  dense
-                  type="tel"
-                  mask="(+###) ### - ### - ###"
-                  unmasked-value
-                  hint="Example: (+237) ### - ### - ###"
-                />
+                <vue-tel-input v-model="user.credential" defaultCountry="cm" mode="international" class="q-pa-xs"></vue-tel-input>
               </div>
               <div>
                 <label for="password" class="form_field">Password <span class="text-red">*</span></label>
@@ -158,24 +142,24 @@
 <script>
 import { LocalStorage, SessionStorage } from "quasar";
 import organisationMixin from "src/mixins/organisationMixin.vue";
+import { VueTelInput } from 'vue-tel-input';
 export default {
   mixins:[organisationMixin],
   mounted(){
     LocalStorage.clear();
-    this.getOrganisationInfo();
   },
   data() {
     return {
       user: {
-        password: null,
-        password_confirmation: null,
+        password: "",
+        password_confirmation: "",
         credential:
           LocalStorage.getItem("credential") !== undefined
             ? LocalStorage.getItem("credentail")
-            : null,
+            : "",
       },
       check_user: {
-        credential: null,
+        credential: "",
       },
       isPwd: true,
       is_pwd_confirm: true,
@@ -189,17 +173,13 @@ export default {
   },
   computed: {
     validatePhone() {
-      return this.check_user.credential == null ? false : true;
+      return this.check_user.credential === "";
     },
     validatePasswordMatch() {
-      return this.user.password === this.user.password_confirmation
-        ? false
-        : true;
+      return this.user.password !== this.user.password_confirmation;
     },
     validateLogin() {
-      return this.user.credential === null || this.user.password === null
-        ? true
-        : false;
+      return this.user.credential === "" || this.user.password === "";
     },
   },
   methods: {
@@ -232,10 +212,11 @@ export default {
       this.$store
         .dispatch("postRequest", payload)
         .then((res) => {
-          if (res !== undefined) {
+           if (res.status == 200) {
             this.is_exist_user = true;
             this.user.credential = this.check_user.credential;
           }
+        }).catch((error) => {
         })
         .finally(() => {
           this.loading = false;
@@ -243,7 +224,7 @@ export default {
     },
     onSetPassword() {
       let payload = {
-        url: "/api/public/auth/set-password",
+        url: "/api/protected/auth/set-password",
         data: this.user,
         msg: "Login Successful",
         color: "default",
@@ -270,10 +251,12 @@ export default {
     },
   },
   components: {
+    VueTelInput
   },
 }
 </script>
 
+<style src="vue-tel-input/dist/vue-tel-input.css"></style>
 <style lang="scss" scoped>
 * {
   box-sizing: border-box;

@@ -99,7 +99,7 @@ export function postRequest({ dispatch }, payload) {
         status_code: 404,
       };
       dispatch("handleRequestResponse", handle_error_payload);
-      return error;
+      return error.response;
     });
 }
 

@@ -81,7 +81,7 @@ export default {
       return this.$store.getters.getRegAmount.frequency == 'MONTHLY';
     },
     getRegisterMember() {
-      if (this.$store.getters.getRegAmount == 0) {
+      if (this.$store.getters.getRegAmount == null) {
         Notify.create({
           color: "info",
           message: this.$t('app.registrationAmountNotSet'),

@@ -23,7 +23,12 @@
           shadow-2
           active-class="active_tab"
         >
-          <q-tab name="profile" :label="$t('app.profileLabel')" class="tab" icon="person" />
+          <q-tab
+            name="profile"
+            :label="$t('app.profileLabel')"
+            class="tab"
+            icon="person"
+          />
           <q-tab
             name="contributions"
             :label="$t('app.contributionName')"
@@ -74,7 +79,7 @@
                             size="sm"
                             @click="openFileUpload"
                           >
-                            <q-tooltip>{{$t('app.uploadPicture')}}</q-tooltip>
+                            <q-tooltip>{{ $t("app.uploadPicture") }}</q-tooltip>
                           </q-icon>
                         </div>
                       </div>
@@ -87,7 +92,7 @@
                                 name="military_tech"
                                 class="role_icon"
                               ></q-icon></span
-                            >{{$t('app.rolesName')}}
+                            >{{ $t("app.rolesName") }}
                           </label>
                         </div>
                         <q-space />
@@ -99,7 +104,7 @@
                             class="edit_icon"
                             @click="showAddRole()"
                           >
-                            <q-tooltip>{{$t('app.addRoleLabel')}}</q-tooltip>
+                            <q-tooltip>{{ $t("app.addRoleLabel") }}</q-tooltip>
                           </q-icon>
                         </div>
                       </div>
@@ -174,7 +179,7 @@
                               <q-item-label
                                 caption
                                 class="text-sm role_update_date"
-                                >{{$t('app.updatedBy')}}:
+                                >{{ $t("app.updatedBy") }}:
                                 <span>
                                   {{ role.updated_by }}</span
                                 ></q-item-label
@@ -198,7 +203,9 @@
                                   color="negative"
                                   size="xs"
                                 >
-                                  <q-tooltip>{{$t('app.removeRole')}}</q-tooltip>
+                                  <q-tooltip>{{
+                                    $t("app.removeRole")
+                                  }}</q-tooltip>
                                 </q-icon>
                               </q-btn>
                             </q-item-section>
@@ -214,9 +221,9 @@
                       <div class="q-pa-sm" v-if="!edit_profile">
                         <div class="row">
                           <div class="q-pb-md">
-                            <label for="info" class="personal_info"
-                              >{{$t('app.personalInformationLabel')}}</label
-                            >
+                            <label for="info" class="personal_info">{{
+                              $t("app.personalInformationLabel")
+                            }}</label>
                           </div>
                           <q-space />
                           <div class="flex justify-end">
@@ -227,7 +234,7 @@
                               class="edit_icon"
                               @click="showEditProfile"
                             >
-                              <q-tooltip>{{$t('app.editProfile')}}</q-tooltip>
+                              <q-tooltip>{{ $t("app.editProfile") }}</q-tooltip>
                             </q-icon>
                           </div>
                         </div>
@@ -239,7 +246,7 @@
                                 class="q-pr-xs person_icon"
                               ></q-icon
                             ></span>
-                            {{$t('app.nameLabel')}}:
+                            {{ $t("app.nameLabel") }}:
                             <span class="value q-pl-xl value_code">{{
                               getCurrentMember.name
                             }}</span></label
@@ -262,14 +269,14 @@
                               ></q-icon
                             ></span>
                             <span class="q-pr-xs"></span>
-                            {{$t('app.gender')}}:
+                            {{ $t("app.gender") }}:
                             <span class="value value_code gender">{{
                               getCurrentMember.gender
                             }}</span>
                             <span
                               class="value value_code q-pl-lg"
                               v-if="getCurrentMember.gender == null"
-                              >{{ $t('app.notSet') }}</span
+                              >{{ $t("app.notSet") }}</span
                             >
                           </label>
                         </div>
@@ -281,7 +288,7 @@
                                 size="xs"
                                 class="q-pr-sm"
                               ></q-icon></span
-                            >{{$t('app.emailLabel')}}:
+                            >{{ $t("app.emailLabel") }}:
                             <span class="value value_code email">{{
                               getCurrentMember.email
                             }}</span></label
@@ -295,7 +302,7 @@
                                 size="xs"
                                 class="q-pr-xs"
                               ></q-icon></span
-                            >{{$t('app.telephoneLabel')}}:
+                            >{{ $t("app.telephoneLabel") }}:
                             <span class="value phone value_code">{{
                               getCurrentMember.telephone
                             }}</span></label
@@ -310,7 +317,7 @@
                                 class="q-pr-xs"
                               ></q-icon
                             ></span>
-                            {{$t('app.addressLabel')}}:
+                            {{ $t("app.addressLabel") }}:
                             <span class="value address value_code">{{
                               getCurrentMember.address
                             }}</span></label
@@ -325,7 +332,7 @@
                                 class="q-pr-xs"
                               ></q-icon
                             ></span>
-                            {{$t('app.occupation')}}:
+                            {{ $t("app.occupation") }}:
                             <span class="value occupation value_code">{{
                               getCurrentMember.occupation
                             }}</span></label
@@ -339,7 +346,7 @@
                                 size="xs"
                                 class="q-pr-xs"
                               ></q-icon></span
-                            >{{$t('app.createdDate')}}:
+                            >{{ $t("app.createdDate") }}:
                             <span class="value date value_code">{{
                               getFormatedCreatedDate
                             }}</span></label
@@ -353,7 +360,7 @@
                                 size="xs"
                                 class="q-pr-xs"
                               ></q-icon></span
-                            >{{$t('app.updatedDate')}}:
+                            >{{ $t("app.updatedDate") }}:
                             <span class="value date value_code">{{
                               getFormatedUpdatedDate
                             }}</span></label
@@ -366,14 +373,17 @@
                       <div class="q-pa-sm q-mb-lg" v-if="edit_profile">
                         <q-form @submit="onUpdateMember" class="q-gutter-md">
                           <div class="update_profile q-pb-md">
-                           {{$t('app.editProfile')}}
+                            {{ $t("app.editProfile") }}
                           </div>
                           <small class="hint"
-                            >{{$t('app.warningField')}}<span class="text-red">*</span> {{$t('app.fields')}}</small
+                            >{{ $t("app.warningField")
+                            }}<span class="text-red">*</span>
+                            {{ $t("app.fields") }}</small
                           >
                           <div>
                             <label for="credential" class="form_field"
-                              >{{$t('app.nameLabel')}} <span class="text-red">*</span></label
+                              >{{ $t("app.nameLabel") }}
+                              <span class="text-red">*</span></label
                             >
                             <q-input
                               v-model="user.name"
@@ -384,7 +394,8 @@
                           </div>
                           <div>
                             <label for="credential" class="form_field"
-                              >{{$t('app.gender')}} <span class="text-red">*</span></label
+                              >{{ $t("app.gender") }}
+                              <span class="text-red">*</span></label
                             >
                             <q-select
                               v-model="user.gender"
@@ -394,9 +405,9 @@
                             />
                           </div>
                           <div>
-                            <label for="credential" class="form_field"
-                              >{{$t('app.emailLabel')}}</label
-                            >
+                            <label for="credential" class="form_field">{{
+                              $t("app.emailLabel")
+                            }}</label>
                             <q-input
                               v-model="user.email"
                               outlined
@@ -406,7 +417,8 @@
                           </div>
                           <div>
                             <label for="credential" class="form_field"
-                              >{{$t('app.addressLabel')}} <span class="text-red">*</span></label
+                              >{{ $t("app.addressLabel") }}
+                              <span class="text-red">*</span></label
                             >
                             <q-input
                               v-model="user.address"
@@ -417,7 +429,8 @@
                           </div>
                           <div>
                             <label for="credential" class="form_field"
-                              >{{$t('app.occupation')}} <span class="text-red">*</span></label
+                              >{{ $t("app.occupation") }}
+                              <span class="text-red">*</span></label
                             >
                             <q-input
                               v-model="user.occupation"
@@ -449,8 +462,8 @@
                       </div>
                       <!------------------------------------------END OF EDIT MEMBER PROFILE FORM---------------------------------->
 
-                       <!---------------------------------------------START OF ALERT OF MEMBER'S REGISTRATION STATUS------------------>
-                       <div>
+                      <!---------------------------------------------START OF ALERT OF MEMBER'S REGISTRATION STATUS------------------>
+                      <div>
                         <div
                           class="not_register q-pa-sm"
                           v-if="
@@ -459,7 +472,7 @@
                           "
                         >
                           <label for="not_register"
-                            >{{$t('app.notCompletedRegistration')}}:
+                            >{{ $t("app.notCompletedRegistration") }}:
                             {{ getCurrentYear.year }}</label
                           >
                         </div>
@@ -468,7 +481,7 @@
                           v-if="getCurrentMember.has_register == 'REGISTERED'"
                         >
                           <label for="register"
-                            >{{$t('app.hasCompletedRegistration')}}:
+                            >{{ $t("app.hasCompletedRegistration") }}:
                             {{ getCurrentYear.year }}</label
                           >
                         </div>
@@ -479,9 +492,9 @@
                             getCurrentMember.approve == 'PENDING'
                           "
                         >
-                          <label for="pending"
-                            >{{$t('app.registrationPending')}}</label
-                          >
+                          <label for="pending">{{
+                            $t("app.registrationPending")
+                          }}</label>
                         </div>
                       </div>
                       <!---------------------------------------END OF ALERT FOR MEMBER'S REGISTRATION STATUS---------------------->
@@ -510,7 +523,7 @@
                 >
                   <template v-slot:top-left>
                     <div class="text-h6 contribution_item_header">
-                      {{$t('app.paymentItemLabel')}}:
+                      {{ $t("app.paymentItemLabel") }}:
                       {{ Number(due_amount).toLocaleString() }} XAF
                     </div>
                   </template>
@@ -567,9 +580,9 @@
             <!----------------------------------------TOTAL AMOUNT PAYABLE------------------------------------------->
             <div class="flex q-my-lg justify-center">
               <div>
-                <label for="total" class="amount_payable_title"
-                  >{{$t('app.totalAmountPayable')}}</label
-                >
+                <label for="total" class="amount_payable_title">{{
+                  $t("app.totalAmountPayable")
+                }}</label>
               </div>
               <div class="q-pl-lg">
                 <q-input
@@ -613,7 +626,8 @@
                 >
                   <template v-slot:top-left>
                     <div class="text-h6 contribution_item_header">
-                     {{$t('app.paidItem')}}: {{ Number(amount_paid).toLocaleString() }} XAF
+                      {{ $t("app.paidItem") }}:
+                      {{ Number(amount_paid).toLocaleString() }} XAF
                     </div>
                   </template>
                   <template v-slot:body="props">
@@ -621,10 +635,7 @@
                       <q-td key="counter" :props="props">
                         {{ props.row.counter }}
                       </q-td>
-                      <q-td
-                        key="name"
-                        :props="props"
-                      >
+                      <q-td key="name" :props="props">
                         {{ props.row.name }}
                       </q-td>
                       <q-td key="frequency" :props="props">
@@ -712,7 +723,7 @@
     <q-dialog v-model="show_add_role_dialog">
       <q-card style="min-width: 400px" class="q-pa-xs">
         <q-card-section class="row items-center q-pb-md">
-          <div class="text-h6 add_role_title">{{$t('app.addRoleLabel')}}</div>
+          <div class="text-h6 add_role_title">{{ $t("app.addRoleLabel") }}</div>
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
@@ -721,7 +732,8 @@
           <q-form @submit="onAddRole" class="q-gutter-md">
             <div>
               <label for="credential" class="form_field"
-                >{{$t('app.selectRole')}} <span class="text-red">*</span></label
+                >{{ $t("app.selectRole") }}
+                <span class="text-red">*</span></label
               >
               <q-select
                 v-model="role"
@@ -754,15 +766,16 @@
       <q-card style="min-width: 400px" class="q-pa-xs">
         <q-card-section>
           <div class="text-center q-pb-xs">
-            <label class="text-dark message text-bold"
-              >{{$t('app.removeRoleWarningMsg')}}</label
-            >
+            <label class="text-dark message text-bold">{{
+              $t("app.removeRoleWarningMsg")
+            }}</label>
           </div>
           <div
             class="text-weight-medium text-center text-red"
             v-if="show_remove_role_dialog"
           >
-            {{$t('app.role')}}: <span class="q-pl-md">{{ role_deleted.name }}</span>
+            {{ $t("app.role") }}:
+            <span class="q-pl-md">{{ role_deleted.name }}</span>
           </div>
         </q-card-section>
         <q-card-actions align="right">
@@ -794,7 +807,9 @@
     <q-dialog v-model="show_payment_dialog">
       <q-card style="min-width: 600px" class="q-pa-xs">
         <q-card-section class="row items-center q-pb-sm">
-          <div class="text-h6 confirm_payment_title">{{$t('app.confirmPaymentLabel')}}</div>
+          <div class="text-h6 confirm_payment_title">
+            {{ $t("app.confirmPaymentLabel") }}
+          </div>
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
@@ -803,9 +818,13 @@
             <q-markup-table flat>
               <thead>
                 <tr class="text-weight-bold">
-                  <th class="text-left text-weight-bold">{{$t('app.sn')}}</th>
-                  <th class="text-left text-weight-bold">{{$t('app.paymentItem')}}</th>
-                  <th class="text-left text-weight-bold">{{ $t('app.amount') }}</th>
+                  <th class="text-left text-weight-bold">{{ $t("app.sn") }}</th>
+                  <th class="text-left text-weight-bold">
+                    {{ $t("app.paymentItem") }}
+                  </th>
+                  <th class="text-left text-weight-bold">
+                    {{ $t("app.amount") }}
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -815,7 +834,9 @@
                   <td class="text-left">{{ item.balance }}</td>
                 </tr>
                 <tr>
-                  <td class="text-left text-weight-bold">{{$t('app.total')}}</td>
+                  <td class="text-left text-weight-bold">
+                    {{ $t("app.total") }}
+                  </td>
                   <td class="text-left"></td>
                   <td class="text-left text-weight-bold">
                     {{ Number(total_amount_payable).toLocaleString() }} XAF
@@ -1154,6 +1175,7 @@ export default {
         error_msg: "An Error occurred! Please try again",
         has_commit: false,
         commit: "none",
+        status: "success",
         to_be_store_data: {
           required: false,
           has_value: false,
@@ -1167,7 +1189,9 @@ export default {
           this.loading = false;
           this.getMemberProfile(this.user.user_id);
         })
-        .finally(() => {});
+        .finally(() => {
+          this.loading = false;
+        });
     },
 
     showEditProfile() {
@@ -1404,7 +1428,7 @@ export default {
             quarterly_name: ele.quarterly_name,
             month_name: ele.month_name,
             registration_id: ele.id,
-            contributed_via_saving:false
+            contributed_via_saving: false,
           });
         } else {
           data.push({

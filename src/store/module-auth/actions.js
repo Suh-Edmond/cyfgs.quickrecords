@@ -191,7 +191,7 @@ export function getRequest({ commit, dispatch }, payload) {
           error.response != undefined ? error.response.data.status : 404,
       };
       dispatch("handleRequestResponse", handle_fail_res_payload);
-      return error.response
+      return error.response;
     });
 }
 
@@ -206,7 +206,13 @@ export function putRequest({ dispatch, commit }, payload) {
         color: payload.color,
         msg: payload.msg ? payload.msg : "default",
         to_on_ok: payload.to_on_ok,
-        to_be_store_data: null,
+        to_be_store_data: {
+          has_value: payload.to_be_store_data.has_value,
+          required: payload.to_be_store_data.required,
+          data: payload.to_be_store_data.has_value
+            ? payload.to_be_store_data.data
+            : res.data,
+        },
       };
       if (payload.has_commit) {
         commit(payload.commit, res.data.data);
@@ -229,7 +235,7 @@ export function putRequest({ dispatch, commit }, payload) {
         status_code: 404,
       };
       dispatch("handleRequestResponse", handle_fail_res_payload);
-      return error;
+      return error.response;
     });
 }
 

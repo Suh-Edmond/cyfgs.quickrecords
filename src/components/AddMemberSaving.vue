@@ -24,7 +24,7 @@
             :disable="onMemberExist"
           >
           <template v-slot:append v-if="start_filtering">
-              <q-spinner color="primary" size="1.2em" :thickness="5" />
+              <q-spinner color="primary" size="1.2em" :thickness="3" />
             </template>
             <template v-slot:no-option>
               <q-item>

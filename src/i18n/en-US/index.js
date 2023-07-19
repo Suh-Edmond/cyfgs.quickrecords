@@ -269,7 +269,7 @@ export default {
     commentContribution:'Provide any comment about this Contribution',
     reset:'Reset',
     totalSaving:'Total Saving (XAF)',
-    insuffientSaving:'Insufficient Saved Amount! Please Enter the contribution or add more saving',
+    insuffientSaving:'Insufficient Saved Amount! Please Enter the Contribution or add more Savings',
     contributionComment:'Provide any comment about this contribution',
     contributionHeading:'Contribution Information',
     saveContributionSuccessMsg:'Member Contribution saved Successfully',
@@ -402,6 +402,13 @@ export default {
     loginRequiredInfo:'Login is required to view this page',
     organisationNotSet:"Please add you Organisation or Group",
     deleteIncomeActvityWarningMsg:"Are you sure you want delete this Income Activity ?",
-    noResults:"No Results"
+    noResults:"No Results",
+    firstQuarter:'January - March',
+    secondQuarter:'April - June',
+    thirdQuarter:'July - September',
+    fourthQuarter:'October - December',
+    reportByPaymentItem:'By Activity/Event',
+    reportByQuarter:'Quaterly (3 months)',
+    reportByYear:'Yearly (12 months)',
    }
 };

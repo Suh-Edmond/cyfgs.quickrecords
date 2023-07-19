@@ -20,12 +20,22 @@ export default {
         this.$t("app.novemberName"),
         this.$t("app.decemberName"),
       ],
+      quarters: [
+        this.$t('app.firstQuarter'),
+        this.$t('app.secondQuarter'),
+        this.$t('app.thirdQuarter'),
+        this.$t('app.fourthQuarter'),
+      ],
     };
   },
-  computed:{
-    getMonths(){
+  computed: {
+    getMonths() {
       return this.months;
+    },
+
+    getQuarters(){
+      return this.quarters;
     }
-  }
+  },
 };
 </script>

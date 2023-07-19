@@ -37,7 +37,11 @@
             use-input
             clearable
             @filter="filterOptions"
+            @input="stopSearch"
           >
+          <template v-slot:append v-if="start_filtering">
+              <q-spinner color="primary" size="1.2em" :thickness="3" />
+            </template>
             <template v-slot:no-option>
               <q-item>
                 <q-item-section class="text-grey"> {{$t('app.noResults')}} </q-item-section>
@@ -118,11 +122,11 @@ export default {
       loading: false,
       group: null,
       options: [
-        { label: "By Activity/Event", value: 1 },
-        { label: "Quaterly (3 months)", value: 2 },
-        { label: "Yearly (12 months)", value: 3 },
+        { label: this.$t('app.reportByPaymentItem'), value: 1 },
+        { label: this.$t('app.reportByQuarter'), value: 2 },
+        { label: this.$t('app.reportByYear'), value: 3 },
       ],
-      label: "Generate Report",
+      label: this.$t('app.generateReport'),
       year: null,
       heading: null,
       is_fetching: false,
@@ -130,13 +134,14 @@ export default {
       selected_option_label: null,
       report_options: [],
       quarters: [
-        { label: "January - March", value: "1" },
-        { label: "April - June", value: "2" },
-        { label: "July - September", value: "3" },
-        { label: "October - December", value: "4" },
+        { label: this.$t('app.firstQuarter'), value: "1" },
+        { label: this.$t('app.secondQuarter'), value: "2" },
+        { label: this.$t('app.thirdQuarter'), value: "3" },
+        { label: this.$t('app.fourthQuarter'), value: "4" },
       ],
       incomes:[],
       activity_report_data:[],
+      start_filtering:false,
     };
   },
   computed: {
@@ -381,9 +386,11 @@ export default {
     filterPaymentItems(val, update, abort) {
       if (val < 1) {
         abort();
+        this.start_filtering = false;
         return;
       }
       update(() => {
+        this.start_filtering = true;
         this.report_options = this.getPaymentActivitiesFromStatus().filter(
           (item) => item.label.toLowerCase().includes(val.toLowerCase())
         );
@@ -396,10 +403,12 @@ export default {
       this.report_options = [];
       if (val < 1) {
         abort();
+        this.start_filtering = false;
         return;
       }
 
       update(() => {
+        this.start_filtering = true;
         this.report_options = this.quarters.filter((item) =>
           item.label.toLowerCase().includes(val.toLowerCase())
         );
@@ -411,16 +420,24 @@ export default {
       this.report_options = [];
       if (val < 1) {
         abort();
+        this.start_filtering = false;
         return;
       }
 
       update(() => {
+        this.start_filtering = true;
         this.report_options = this.getSessionsFromState.filter((item) =>
           item.label.toLowerCase().includes(val.toLowerCase())
         );
         return this.report_options;
       });
     },
+
+    stopSearch(){
+      if(this.group != null) {
+        this.start_filtering = false
+      }
+    }
   },
   components: {
     ActivityReportTable,

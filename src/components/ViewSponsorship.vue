@@ -219,7 +219,7 @@ export default {
 }
 
 .value_item {
-  padding-left: 2.3rem;
+  padding-left: 3.2rem;
 }
 
 .value_amount {

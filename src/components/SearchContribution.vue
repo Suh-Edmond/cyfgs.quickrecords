@@ -18,7 +18,11 @@
             use-input
             clearable
             @filter="filterPaymentItems"
+            @input="stopSearch"
           >
+          <template v-slot:append v-if="start_filtering">
+              <q-spinner color="primary" size="1.2em" :thickness="3" />
+            </template>
             <template v-slot:no-option>
               <q-item>
                 <q-item-section class="text-grey"> {{$t('app.noResults')}} </q-item-section>
@@ -261,6 +265,7 @@ export default {
       payment_items_by_category: [],
       payment_categories: [],
       filtered_payment_items: [],
+      start_filter_payment_item:false
     };
   },
   computed: {
@@ -369,10 +374,12 @@ export default {
     filterPaymentItems(val, update, abort) {
       if (val < 2) {
         abort();
+        this.start_filter_payment_item = false
         return;
       }
 
       update(() => {
+        this.start_filter_payment_item = true
         this.filtered_payment_items = this.payment_items_by_category.filter(
           (item) => item.label.toLowerCase().includes(val.toLowerCase())
         );
@@ -407,6 +414,12 @@ export default {
         return this.years;
       });
     },
+
+    stopSearch(){
+      if(this.param.payment_item_id != null){
+        this.start_filter_payment_item = false;
+      }
+    }
   },
   components: {},
 };

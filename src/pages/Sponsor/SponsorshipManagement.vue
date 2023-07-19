@@ -30,7 +30,11 @@
             use-input
             clearable
             @filter="filterPaymentItems"
+            @input="stopSearch"
           >
+          <template v-slot:append v-if="start_filtering">
+              <q-spinner color="primary" size="1.2em" :thickness="3" />
+            </template>
             <template v-slot:no-option>
               <q-item>
                 <q-item-section class="text-grey"> {{$t('app.noResults')}} </q-item-section>
@@ -276,6 +280,12 @@ export default {
       });
       return this.payment_items;
     },
+
+    stopSearch(){
+      if(this.payment_item_id != null) {
+        this.start_filtering = false
+      }
+    }
   },
   components: {
     SponsorshipTable,

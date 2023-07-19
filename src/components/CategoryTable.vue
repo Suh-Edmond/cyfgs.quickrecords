@@ -348,7 +348,6 @@
             <q-btn
               class="decline_btn"
               dense
-              size="md"
               :label="$t('app.decline')"
               unelevated
               no-caps
@@ -363,7 +362,6 @@
             <q-btn
               class="approve_btn"
               dense
-              size="md"
               :label="$t('app.approve')"
               no-caps
               unelevated
@@ -573,7 +571,6 @@
             <q-btn
               class="decline_btn"
               dense
-              size="md"
               :label="$t('app.decline')"
               unelevated
               no-caps
@@ -584,7 +581,6 @@
             <q-btn
               class="approve_btn"
               dense
-              size="md"
               :label="$t('app.approve')"
               no-caps
               unelevated
@@ -597,7 +593,6 @@
               color="primary"
               :class="props.row.approve == 'PENDING' ? 'viewExpenditureItem':'viewPending'"
               dense
-              size="md"
               :label="$t('app.view')"
               no-caps
               unelevated

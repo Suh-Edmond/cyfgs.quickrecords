@@ -449,7 +449,7 @@ export default {
     searchSavings() {
       let payload = {
         data: null,
-        tab: this.$t("app.searchSaving"),
+        tab: "Search Savings",
       };
 
       this.$emit("search-member-saving", payload);
@@ -482,7 +482,6 @@ export default {
       this.$store.dispatch("getRequest", payload).then((res) => {
         this.is_fetching = false;
         this.is_filtering = true;
-        console.log(res.data);
         if (res.data) {
           res.data.forEach((saving) => {
             this.filtered_savings.push({

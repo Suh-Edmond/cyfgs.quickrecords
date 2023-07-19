@@ -154,7 +154,7 @@ export default {
           name: "action",
           label: "Action",
           field: "action",
-          align: "center",
+          align: "left",
         },
       ],
       label: this.$t('app.delete'),

@@ -10,13 +10,13 @@
                   name="account_circle"
                   size="190px"
                   class="icon"
-                  v-if="getUserInfo.picture == null"
+                  v-if="user.picture == null"
                 >
                 </q-icon>
                 <img
-                  :src="getUserInfo.picture"
+                  :src="getProfilePicture"
                   :alt="$t('app.profilePicAlt')"
-                  v-if="getUserInfo.picture != null"
+                  v-if="user.picture != null"
                 />
               </q-avatar>
               <div>
@@ -33,7 +33,7 @@
                   size="sm"
                   @click="openFileUpload"
                 >
-                  <q-tooltip>{{$t('app.uploadPicture')}}</q-tooltip>
+                  <q-tooltip>{{ $t("app.uploadPicture") }}</q-tooltip>
                 </q-icon>
               </div>
             </div>
@@ -46,7 +46,7 @@
                       name="military_tech"
                       class="role_icon"
                     ></q-icon></span
-                  >{{$t('app.rolesName')}}:
+                  >{{ $t("app.rolesName") }}:
                 </label>
               </div>
               <q-space />
@@ -55,7 +55,7 @@
             <div class="q-mt-md">
               <q-list>
                 <q-item
-                  v-for="(role, index) in getUserInfo.roles"
+                  v-for="(role, index) in user.roles"
                   :key="index"
                   class="q-mb-md"
                 >
@@ -92,7 +92,7 @@
                       role.name
                     }}</q-item-label>
                     <q-item-label caption class="text-sm role_update_date"
-                      >{{$t('app.updatedBy')}}:
+                      >{{ $t("app.updatedBy") }}:
                       <span> {{ role.updated_by }}</span></q-item-label
                     >
                   </q-item-section>
@@ -116,7 +116,9 @@
             <div class="q-pa-sm" v-if="!edit_profile">
               <div class="q-pa-sm row">
                 <div>
-                  <label for="info" class="info">{{$t('app.personalInformationLabel')}}</label>
+                  <label for="info" class="info">{{
+                    $t("app.personalInformationLabel")
+                  }}</label>
                 </div>
                 <q-space />
                 <div class="flex justify-end">
@@ -127,7 +129,7 @@
                     class="edit_icon"
                     @click="showEditProfile"
                   >
-                    <q-tooltip>{{$t('app.editProfile')}}</q-tooltip>
+                    <q-tooltip>{{ $t("app.editProfile") }}</q-tooltip>
                   </q-icon>
                 </div>
               </div>
@@ -136,9 +138,9 @@
                   ><span
                     ><q-icon name="person" class="q-pr-xs person_icon"></q-icon
                   ></span>
-                  {{$t('app.nameLabel')}}:
+                  {{ $t("app.nameLabel") }}:
                   <span class="value q-pl-xl value_code">{{
-                    getUserInfo.name
+                    user.name
                   }}</span></label
                 >
               </div>
@@ -147,26 +149,24 @@
                   ><span
                     ><q-icon
                       name="female"
-                      v-if="getUserInfo.gender == 'FEMALE'"
+                      v-if="user.gender == 'FEMALE'"
                       class="q-pr-xs gender_icon"
                     ></q-icon
                   ></span>
                   <span
                     ><q-icon
                       name="male"
-                      v-if="getUserInfo.gender == 'MALE'"
+                      v-if="user.gender == 'MALE'"
                       class="q-pr-xs gender_icon"
                     ></q-icon
                   ></span>
                   <span class="q-pr-xs"></span>
-                  {{$t('app.gender')}}:
-                  <span class="value value_code gender">{{
-                    getUserInfo.gender
-                  }}</span>
+                  {{ $t("app.gender") }}:
+                  <span class="value value_code gender">{{ user.gender }}</span>
                   <span
                     class="value value_code q-pl-lg"
-                    v-if="getUserInfo.gender == null"
-                    >{{$t('app.notSet')}}</span
+                    v-if="user.gender == null"
+                    >{{ $t("app.notSet") }}</span
                   >
                 </label>
               </div>
@@ -178,9 +178,9 @@
                       size="xs"
                       class="q-pr-sm"
                     ></q-icon></span
-                  >{{$t('app.emailLabel')}}:
+                  >{{ $t("app.emailLabel") }}:
                   <span class="value value_code email">{{
-                    getUserInfo.email
+                    user.email
                   }}</span></label
                 >
               </div>
@@ -192,9 +192,9 @@
                       size="xs"
                       class="q-pr-xs"
                     ></q-icon></span
-                  >{{$t('app.telephoneLabel')}}:
+                  >{{ $t("app.telephoneLabel") }}:
                   <span class="value phone value_code">{{
-                    getUserInfo.telephone
+                    user.telephone
                   }}</span></label
                 >
               </div>
@@ -207,9 +207,9 @@
                       class="q-pr-xs"
                     ></q-icon
                   ></span>
-                  {{$t('app.addressLabel')}}:
+                  {{ $t("app.addressLabel") }}:
                   <span class="value address value_code">{{
-                    getUserInfo.address
+                    user.address
                   }}</span></label
                 >
               </div>
@@ -218,9 +218,9 @@
                   ><span
                     ><q-icon name="work" size="xs" class="q-pr-xs"></q-icon
                   ></span>
-                  {{$t('app.occupation')}}:
+                  {{ $t("app.occupation") }}:
                   <span class="value occupation value_code">{{
-                    getUserInfo.occupation
+                    user.occupation
                   }}</span></label
                 >
               </div>
@@ -232,7 +232,7 @@
                       size="xs"
                       class="q-pr-xs"
                     ></q-icon></span
-                  >{{$t('app.createdDate')}}:
+                  >{{ $t("app.createdDate") }}:
                   <span class="value date value_code">{{
                     getFormatedCreatedDate
                   }}</span></label
@@ -246,7 +246,7 @@
                       size="xs"
                       class="q-pr-xs"
                     ></q-icon></span
-                  >{{$t('app.updatedDate')}}:
+                  >{{ $t("app.updatedDate") }}:
                   <span class="value date value_code">{{
                     getFormatedUpdatedDate
                   }}</span></label
@@ -257,19 +257,22 @@
             <!-- edit personal information -->
             <div class="q-pa-sm q-mb-lg" v-if="edit_profile">
               <q-form @submit="onUpdateProfile" class="q-gutter-md">
-                <div class="info2 q-pb-md">{{$t('app.editProfile')}}</div>
+                <div class="info2 q-pb-md">{{ $t("app.editProfile") }}</div>
                 <small class="hint"
-                  >{{$t('app.warningField')}}<span class="text-red">*</span>{{$t('app.fields')}}</small
+                  >{{ $t("app.warningField") }}<span class="text-red">*</span
+                  >{{ $t("app.fields") }}</small
                 >
                 <div>
                   <label for="credential" class="form_field"
-                    >{{$t('app.nameLabel')}} <span class="text-red">*</span></label
+                    >{{ $t("app.nameLabel") }}
+                    <span class="text-red">*</span></label
                   >
                   <q-input v-model="user.name" outlined dense type="text" />
                 </div>
                 <div>
                   <label for="credential" class="form_field"
-                    >{{$t('app.gender')}} <span class="text-red">*</span></label
+                    >{{ $t("app.gender") }}
+                    <span class="text-red">*</span></label
                   >
                   <q-select
                     v-model="user.gender"
@@ -279,18 +282,22 @@
                   />
                 </div>
                 <div>
-                  <label for="credential" class="form_field">{{$t('app.emailLabel')}}</label>
+                  <label for="credential" class="form_field">{{
+                    $t("app.emailLabel")
+                  }}</label>
                   <q-input v-model="user.email" outlined dense type="email" />
                 </div>
                 <div>
                   <label for="credential" class="form_field"
-                    >{{$t('app.addressLabel')}} <span class="text-red">*</span></label
+                    >{{ $t("app.addressLabel") }}
+                    <span class="text-red">*</span></label
                   >
                   <q-input v-model="user.address" outlined dense type="text" />
                 </div>
                 <div>
                   <label for="credential" class="form_field"
-                    >{{$t('app.occupation')}} <span class="text-red">*</span></label
+                    >{{ $t("app.occupation") }}
+                    <span class="text-red">*</span></label
                   >
                   <q-input
                     v-model="user.occupation"
@@ -325,7 +332,9 @@
             <div class="q-pa-xs" v-if="!edit_password">
               <div class="q-pa-sm row">
                 <div>
-                  <label for="info" class="security">{{$t('app.security')}}</label>
+                  <label for="info" class="security">{{
+                    $t("app.security")
+                  }}</label>
                 </div>
                 <q-space />
                 <div class="flex justify-end">
@@ -336,7 +345,7 @@
                     class="edit_icon"
                     @click="showEditPassword"
                   >
-                    <q-tooltip>{{$t('app.editProfile')}}</q-tooltip>
+                    <q-tooltip>{{ $t("app.editProfile") }}</q-tooltip>
                   </q-icon>
                 </div>
               </div>
@@ -345,7 +354,7 @@
                   ><span
                     ><q-icon name="key" class="q-pr-xs person_icon"></q-icon
                   ></span>
-                  {{$t('app.passwordLabel')}}:
+                  {{ $t("app.passwordLabel") }}:
                   <span class="value password value_code"
                     >***********</span
                   ></label
@@ -356,12 +365,15 @@
             <!-- edit user password -->
             <div class="q-pa-sm" v-if="edit_password">
               <q-form @submit="onUpdatePassword" class="q-gutter-md">
-                <div class="info q-pb-md">{{$t('app.editPassword')}}</div>
+                <div class="info q-pb-md">{{ $t("app.editPassword") }}</div>
                 <small class="hint"
-                  >{{$t('app.warningField')}}<span class="text-red">*</span>{{ $t('app.fields') }}</small
+                  >{{ $t("app.warningField") }}<span class="text-red">*</span
+                  >{{ $t("app.fields") }}</small
                 >
                 <div>
-                  <label for="password" class="form_field">{{$t('app.oldPassword')}}</label>
+                  <label for="password" class="form_field">{{
+                    $t("app.oldPassword")
+                  }}</label>
                   <q-input
                     v-model="security.old_password"
                     :type="is_pwd ? 'password' : 'text'"
@@ -378,7 +390,9 @@
                   </q-input>
                 </div>
                 <div>
-                  <label for="password" class="form_field">{{$t('app.newPassword')}}</label>
+                  <label for="password" class="form_field">{{
+                    $t("app.newPassword")
+                  }}</label>
                   <q-input
                     v-model="security.password"
                     :type="is_old_pwd ? 'password' : 'text'"
@@ -395,9 +409,9 @@
                   </q-input>
                 </div>
                 <div>
-                  <label for="confirm_password" class="form_field"
-                    >{{$t('app.confirmPasswordLabel')}}</label
-                  >
+                  <label for="confirm_password" class="form_field">{{
+                    $t("app.confirmPasswordLabel")
+                  }}</label>
                   <q-input
                     v-model="security.password_confirmation"
                     :type="is_confirm_pwd ? 'password' : 'text'"
@@ -413,7 +427,9 @@
                       />
                     </template>
                     <template v-slot:hint v-if="validatePasswordMatch">
-                      <span class="text-red">{{$t('app.passwordNotMatchMsg')}}</span>
+                      <span class="text-red">{{
+                        $t("app.passwordNotMatchMsg")
+                      }}</span>
                     </template>
                   </q-input>
                 </div>
@@ -450,18 +466,11 @@ import { LocalStorage } from "quasar";
 import ButtonVue from "src/components/Button.vue";
 import moment from "moment";
 import organisationMixin from "src/mixins/organisationMixin.vue";
+
 export default {
   mixins: [organisationMixin],
 
   mounted() {
-    let storage_data = LocalStorage.getItem("data");
-    if (
-      storage_data.occupation == null ||
-      storage_data.address == null ||
-      storage_data.gender == null
-    ) {
-      this.getUser();
-    }
     this.getOrganisationInfo();
   },
 
@@ -474,6 +483,9 @@ export default {
         address: LocalStorage.getItem("data").address,
         occupation: LocalStorage.getItem("data").occupation,
         user_id: LocalStorage.getItem("data").id,
+        roles: LocalStorage.getItem("data").roles,
+        picture: LocalStorage.getItem("data").picture,
+        telephone: LocalStorage.getItem("data").telephone,
       },
       security: {
         old_password: null,
@@ -492,11 +504,6 @@ export default {
     };
   },
   computed: {
-    getUserInfo() {
-      const data = LocalStorage.getItem("data");
-      return data;
-    },
-
     getFormatedCreatedDate() {
       return moment(LocalStorage.getItem("data").created_at).format(
         "MMMM Do YYYY"
@@ -508,6 +515,7 @@ export default {
         "MMMM Do YYYY"
       );
     },
+
     validateForm() {
       return this.user.name == null ||
         this.user.address == null ||
@@ -515,12 +523,14 @@ export default {
         ? true
         : false;
     },
+
     validatePasswordMatch() {
       return (
         this.security.password != null &&
         this.security.password != this.security.password_confirmation
       );
     },
+
     validatePassword() {
       return this.security.old_password == null ||
         this.security.password == null ||
@@ -528,41 +538,20 @@ export default {
         ? true
         : false;
     },
+
+    getProfilePicture() {
+      return (
+        process.env.FILE_API_URL +
+        process.env.FILE_DOWNLOAD_PATH +
+        this.user.picture
+      );
+    },
   },
   methods: {
     formDateTime(date) {
       return moment(date).format("MMMM Do YYYY");
     },
-    getUser() {
-      let data = LocalStorage.getItem("data");
-      let payload = {
-        url: `/api/protected/organisations/users/${data.id}`,
-        data: this.user,
-        msg: "none",
-        color: "default",
-        to_on_ok: "none",
-        to_on_fail: "none",
-        show_feedback: false,
-        error_msg: "An Error occurred! Please try again",
-        has_commit: false,
-        commit: "none",
-        show_spinner: false,
-        to_be_store_data: {
-          required: false,
-          has_value: false,
-          data: [],
-        },
-      };
-      this.$store
-        .dispatch("getRequest", payload)
-        .then((res) => {
-          data.address = res.data.address;
-          data.occupation = res.data.occupation;
-          data.gender = res.data.gender;
-          LocalStorage.set("data", data);
-        })
-        .finally(() => {});
-    },
+
     onUpdateProfile() {
       this.loading = true;
       let payload = {
@@ -586,11 +575,11 @@ export default {
         .dispatch("putRequest", payload)
         .then((res) => {
           this.edit_profile = false;
-          this.getUser();
+          LocalStorage.remove("data");
+          LocalStorage.set("data", res.data);
         })
         .finally(() => {
           this.loading = false;
-          // location.reload();
         });
     },
 
@@ -651,52 +640,43 @@ export default {
     onFileChanged(e) {
       const formData = new FormData();
       formData.append("file", e.target.files[0]);
+
       let user = LocalStorage.getItem("data");
       let organisation = this.$store.getters.getOrganisation;
-      let fileCategory = "IMAGES";
-      let APP_NAME = "FINANCIAL_ASSISTANT_APP";
-      let upload_folder = "PROFILE_PICTURES";
-      let directory = `${APP_NAME}/${organisation.name}/${upload_folder}`;
+      let directory = `${process.env.APP_NAME}/${organisation.name}/${process.env.PROFILE_PICTURES}`;
       let payload = {
-        url: `/api/v1/protected/upload-file?directory=${directory}&fileCategory=${fileCategory}`,
+        url: `/upload-file?directory=${directory}&fileCategory=${process.env.FILE_CATEGORY}`,
         data: formData,
         status: "none",
-        show_feedback: false,
+        show_feedback: true,
         msg: "Picture uploaded successfully",
         color: "default",
         error_msg: "default",
         commit: "none",
         has_commit: false,
       };
-      this.$store.dispatch("uploadImageRequest", payload).then(() => {
-        let get_file_payload = {
-          url: `/api/v1/protected/file?directory=${directory}&fileCategory=${fileCategory}&fileName=${e.target.files[0].name}`,
-          data: formData,
-          show_feedback: false,
-        };
-        this.$store
-          .dispatch("fetchUploadedImageRequest", get_file_payload)
-          .then((res) => {
-            let data = {
-              name: user.name,
-              email: user.email,
-              gender: user.gender,
-              address: user.address,
-              occupation: user.occupation,
-              picture: res.data.fileDownloadUri,
-            };
-            let update_user = {
-              url: `/api/protected/users/${user.id}`,
-              data: data,
-              status: "none",
-              show_feedback: false,
-            };
-            this.$store.dispatch("putRequest", update_user).then(() => {
-              user.picture = res.data.fileDownloadUri;
-              LocalStorage.set("data", user);
-              location.reload();
-            });
+
+      this.$store.dispatch("uploadImageRequest", payload).then((response) => {
+        if (response.status == 200) {
+          this.user.picture = response.data.fileDownloadUri.split(
+            process.env.FILE_SEPARATOR_KEY
+          )[1];
+          let update_user = {
+            url: `/api/protected/users/${user.id}`,
+            data: {
+              picture: this.user.picture,
+            },
+            status: "none",
+            show_feedback: false,
+          };
+          this.$store.dispatch("putRequest", update_user).then(() => {
+            this.user.picture = response.data.fileDownloadUri.split(
+              process.env.FILE_SEPARATOR_KEY
+            )[1];
+            LocalStorage.remove("data");
+            LocalStorage.set("data", user);
           });
+        }
       });
     },
   },

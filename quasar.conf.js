@@ -52,6 +52,7 @@ module.exports = function (ctx) {
         APP_NAME : "FINANCIAL_ASSISTANT_APP",
         FILE_CATEGORY : "IMAGES",
         BASE_FOLDER : "LOGOS",
+        PROFILE_PICTURES:"PROFILE_PICTURES",
         FILE_DOWNLOAD_PATH: "/downloadFile?directory=",
         FILE_SEPARATOR_KEY: "?directory="
       },
@@ -135,8 +136,8 @@ module.exports = function (ctx) {
       workboxPluginMode: "GenerateSW", // 'GenerateSW' or 'InjectManifest'
       workboxOptions: {}, // only for GenerateSW
       manifest: {
-        name: `Financial-Assistant`,
-        short_name: `Financial-Assistant`,
+        name: `Quick-Records`,
+        short_name: `Quick-Records`,
         description: `A web,mobile and desktop application for assisting the management of financial transactions in a group or organisation`,
         display: "standalone",
         orientation: "portrait",

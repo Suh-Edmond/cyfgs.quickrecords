@@ -186,6 +186,7 @@ export default {
         ? this.$store.getters.getOrganisation.id
         : "";
     this.getOrganisationMemberSavings(organisation_id);
+    this.getSessions()
   },
   data() {
     return {
@@ -448,7 +449,7 @@ export default {
     searchSavings() {
       let payload = {
         data: null,
-        tab: this.$t("app.searchSaving"),
+        tab: "Search Savings",
       };
 
       this.$emit("search-member-saving", payload);
@@ -497,7 +498,7 @@ export default {
               created_at: saving.created_at,
               updated_by: saving.updated_by,
               date: saving.created_at,
-              total_amount: ele.total_amount,
+              total_amount: saving.total_amount,
             });
           });
         }

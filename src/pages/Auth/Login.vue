@@ -81,7 +81,7 @@ import memberMixinVue from "src/mixins/memberMixin.vue";
 import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
 import ContributionsMixinVue from "src/mixins/ContributionsMixin.vue";
 import { VueTelInput } from "vue-tel-input";
-import { Notify } from "quasar";
+import { Notify, SessionStorage } from "quasar";
 
 export default {
   name: "PageIndex",
@@ -165,25 +165,16 @@ export default {
               .then((res) => {
                 if (res.success) {
                   this.fetchCurrentYear();
-                } else {
-                  Notify.create({
-                    type: "info",
-                    position: Platform.is.mobile ? "bottom" : "top-right",
-                    message: this.$t("app.organisationNotSet"),
+                  this.$router.push({
+                    name: "dashboard",
                   });
+                  SessionStorage.set("to_tab", "Dashboard");
+                } else {
                   this.$router.push({
                     name: "create_organisation",
                   });
                 }
                 return res;
-              })
-              .then(async (res) => {
-                if (res.success) {
-                  this.$router.push({
-                    name: "dashboard",
-                  });
-                }
-                this.loading = false;
               })
               .catch(() => {});
           }

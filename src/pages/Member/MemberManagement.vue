@@ -110,13 +110,15 @@ import TableVue from "src/components/Table.vue";
 import memberMixin from "src/mixins/memberMixin.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
+import RegistrationAmountMixinVue from 'src/mixins/RegistrationAmountMixin.vue';
 
 export default {
-  mixins: [memberMixin, organisationMixinVue, HelperMixinVue],
+  mixins: [memberMixin, organisationMixinVue, HelperMixinVue, RegistrationAmountMixinVue],
 
   mounted() {
     let id = this.getOrganisationId;
     this.getOrganisationMembers(id, true);
+    this.getRegistrationAmount();
   },
   data() {
     return {

@@ -190,21 +190,8 @@ import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
 import ContributionsMixinVue from "src/mixins/ContributionsMixin.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
 import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
+import MonthsMixinVue from 'src/mixins/MonthsMixin.vue';
 
-const monthOptions = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
 export default {
   mixins: [
     organisationMixinVue,
@@ -212,6 +199,7 @@ export default {
     ContributionsMixinVue,
     HelperMixinVue,
     CurrentYearMixinVue,
+    MonthsMixinVue
   ],
 
   mounted() {
@@ -265,7 +253,8 @@ export default {
       payment_items_by_category: [],
       payment_categories: [],
       filtered_payment_items: [],
-      start_filter_payment_item:false
+      start_filter_payment_item:false,
+      start_filtering:false,
     };
   },
   computed: {
@@ -394,7 +383,7 @@ export default {
       }
 
       update(() => {
-        this.months = monthOptions.filter((item) =>
+        this.months = this.getMonths.filter((item) =>
           item.toLowerCase().includes(val.toLowerCase())
         );
         return this.months;

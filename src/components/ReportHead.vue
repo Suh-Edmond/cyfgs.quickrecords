@@ -4,7 +4,7 @@
     <!----------------LOGO--------------------->
     <div class="col-5 col-md-5 col-sm-12 col-xs-12">
         <q-avatar size="110px" font-size="52px" v-if="getOrganisation.logo != null">
-          <img :src="getOrganisation.logo" alt="" width="160px" />
+          <img :src="getOrganisationLogo" alt="" width="160px" />
         </q-avatar>
       </div>
       <!-------------END OF LOGO----------------->
@@ -36,6 +36,14 @@ export default {
 
     getPrintedDate(){
       return   moment(new Date()).format("MMMM Do YYYY");
+    },
+
+    getOrganisationLogo() {
+      return (
+        process.env.FILE_API_URL +
+        process.env.FILE_DOWNLOAD_PATH +
+        this.$store.getters.getOrganisation.logo
+      );
     },
   },
 };

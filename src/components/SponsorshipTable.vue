@@ -36,18 +36,6 @@
           </q-td>
 
           <q-td key="action" :props="props">
-            <q-btn
-              unelevated
-              no-caps
-              size="md"
-              color="primary"
-              class="view_income q-mr-md"
-              label="View"
-              @click="onViewSupport(props.row)"
-              v-if="checkTreasurerRole()"
-            >
-              <q-icon name="visibility" size="xs" class="q-pl-md"></q-icon>
-            </q-btn>
 
             <!-- button to handle edit, view and delete of row data  q-px-sm -->
             <q-btn flat round v-if="!checkTreasurerRole()">
@@ -115,23 +103,36 @@
             <!-- buttons for approve and decline row data -->
             <q-btn
               class="decline_btn"
-              size="md"
-              label="Decline"
+              :label="$t('app.decline')"
               no-caps
+              dense
               unelevated
               @click="onDeclineRecord(props.row, 'Decline')"
               v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
             />
 
             <q-btn
-              class="approve_btn q-ml-md"
-              size="md"
-              label="Approve"
+              class="approve_btn q-mx-xl"
+              dense
+              :label="$t('app.approve')"
               no-caps
               unelevated
               @click="onApprovedRecord(props.row, 'Approve')"
               v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
             />
+
+            <q-btn
+              unelevated
+              no-caps
+              dense
+              color="primary"
+              class="view_income"
+              :label="$t('app.view')"
+              @click="onViewSupport(props.row)"
+              v-if="checkTreasurerRole()"
+            >
+              <q-icon name="visibility" size="xs" class="q-pl-md"></q-icon>
+            </q-btn>
           </q-td>
         </q-tr>
       </template>
@@ -411,7 +412,7 @@ export default {
         },
       };
       this.$store.dispatch("putRequest", payload).then((res) => {
-        if (res.status == 200) {
+        if (res.success) {
          if(this.approve_data.payment_item == null){
           this.getAllSponsorships();
          }else{
@@ -447,6 +448,7 @@ export default {
 .approve_btn {
   background-color: $secondary;
   color: white;
+  width: 5.5rem;
 }
 
 .approve_card {
@@ -457,7 +459,7 @@ export default {
 .decline_btn {
   background-color: $orange;
   color: white;
-  // margin-right: 3rem;
+  width: 5.5rem;
 }
 
 .message {
@@ -501,6 +503,7 @@ export default {
   letter-spacing: 0.01em;
   text-transform: capitalize;
   color: $primary;
+  width: 5.5rem;
 
 }
 

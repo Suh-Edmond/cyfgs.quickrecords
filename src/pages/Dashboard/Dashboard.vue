@@ -248,7 +248,7 @@ export default {
     if (this.getOrganisationId == "") {
       this.getOrganisationInfo();
     }
-    if(this.$store.getters.getCurrentYear !==  null){
+    if(this.$store.getters.getCurrentYear ==  null){
       this.fetchCurrentYear();
     }
     this.showStatistics("MEMBERSHIP");
@@ -457,10 +457,10 @@ export default {
       switch (type) {
         case "MEMBERSHIP":
           this.statistics_type = "MEMBERSHIP";
-          this.getTotalContributionByYear(current_session_id);
           this.getUserByRegistrationStatus(organisation_id);
           this.getUserByRegistration(organisation_id);
           this.getOrganisationMemberSavings(organisation_id);
+          this.getTotalContributionByYear(current_session_id);
           this.getTotalYearlyExpenditures(current_session_id);
           this.getOrganisationMembers(organisation_id);
           break;

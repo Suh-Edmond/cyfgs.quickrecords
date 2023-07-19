@@ -30,7 +30,11 @@
             input-debounce="0"
             clearable
             @filter="filterCategories"
+            @input="stopSearch"
           >
+          <template v-slot:append v-if="start_filtering_expenditure_category">
+              <q-spinner color="primary" size="1.2em" :thickness="3" />
+            </template>
             <template v-slot:no-option>
               <q-item>
                 <q-item-section class="text-grey"> {{$t('app.noResults')}} </q-item-section>
@@ -49,7 +53,11 @@
             input-debounce="0"
             clearable
             @filter="filterPaymentItems"
+            @input="stopSearch"
           >
+          <template v-slot:append v-if="start_filtering_payment_item">
+              <q-spinner color="primary" size="1.2em" :thickness="3" />
+            </template>
             <template v-slot:no-option>
               <q-item>
                 <q-item-section class="text-grey">{{$t('app.noResults')}} </q-item-section>
@@ -68,7 +76,11 @@
             input-debounce="0"
             clearable
             @filter="filterYear"
+            @input="stopSearch"
           >
+          <template v-slot:append v-if="start_filtering_year">
+              <q-spinner color="primary" size="1.2em" :thickness="3" />
+            </template>
             <template v-slot:no-option>
               <q-item>
                 <q-item-section class="text-grey"> {{$t('app.noResults')}} </q-item-section>
@@ -112,11 +124,12 @@
               :data="getExpenditures"
               :label="label"
               :message="message"
-              :title="getExpenditureCategoryName"
+              :title="table_title"
               :show_payment_category="false"
               :show_payment_item="false"
               :show_expenditure_category="false"
               :show_expenditure_item="true"
+
             >
             </CategoryTable>
           </div>
@@ -225,6 +238,10 @@ export default {
       year: null,
       payment_item_id: null,
       loading_filter: false,
+      start_filtering_expenditure_category:false,
+      start_filtering_payment_item:false,
+      start_filtering_year:false,
+      table_title:"Expenditures",
     };
   },
   computed: {
@@ -265,19 +282,11 @@ export default {
             total_amount_spent: ele.total_amount_spent,
             total_balance: ele.total_balance,
             type: "EXPENDITURE_ITEMS",
-            show_state_action: this.checkIfExpendituredetailsStatus(
-              ele.expenditure_details
-            ),
+            show_state_action: this.checkIfExpendituredetailsStatus(ele.expenditure_details),
           });
         });
       }
       return data;
-    },
-
-    getExpenditureCategoryName() {
-      return this.$store.getters.getExpenditureCategory != null
-        ? this.$store.getters.getExpenditureCategory.name
-        : "";
     },
   },
   methods: {
@@ -331,10 +340,12 @@ export default {
     filterCategories(val, update, abort) {
       if (val < 2) {
         abort();
+        this.start_filtering_expenditure_category = false;
         return;
       }
 
       update(() => {
+        this.start_filtering_expenditure_category  = true;
         this.expenditure_categories =
           this.getExpenditureCategoriesFromStore().filter((item) =>
             item.label.toLowerCase().includes(val.toLowerCase())
@@ -358,10 +369,12 @@ export default {
     filterPaymentItems(val, update, abort) {
       if (val < 2) {
         abort();
+        this.start_filtering = false;
         return;
       }
 
       update(() => {
+        this.start_filtering = true;
         this.filtered_items = this.getPaymentActivitiesFromStore().filter(
           (item) => item.label.toLowerCase().includes(val.toLowerCase())
         );
@@ -372,10 +385,12 @@ export default {
     filterYear(val, update, abort) {
       if (val < 2) {
         abort();
+        this.start_filtering = false;
         return;
       }
 
       update(() => {
+        this.start_filtering = true;
         this.years = this.getSessionsFromState.filter((item) =>
           item.label.toLowerCase().includes(val.toLowerCase())
         );
@@ -392,6 +407,7 @@ export default {
       let selected_payment_item =
         this.payment_item_id != null ? this.payment_item_id.value : "";
       let session = this.year != null ? this.year.value : "";
+
       let payload = {
         status: "none",
         url: `/api/protected/expenditure_categories/expenditure_items/filter?expenditure_category_id=${selected_expenditure_cat}&payment_item_id=${selected_payment_item}&session_id=${session}`,
@@ -427,6 +443,20 @@ export default {
       let file_name = "Expenditure_Items.pdf";
       this.loading = this.downloadPdf(url, file_name);
     },
+
+    stopSearch(){
+      if(this.expenditure_category_id != null){
+        this.start_filtering_expenditure_category = false;
+      }
+      if(this.year != null){
+        this.start_filtering_year = false;
+      }
+      if(this.payment_item_id != null){
+        this.start_filtering_payment_item = false
+      }
+    },
+
+
   },
   components: {
     CategoryTable,

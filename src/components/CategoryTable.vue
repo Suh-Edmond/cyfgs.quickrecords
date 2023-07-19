@@ -58,9 +58,9 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="details q-pl-lg"
-                          >{{$t('app.view')}}</q-item-label
-                        >
+                        <q-item-label class="details q-pl-lg">{{
+                          $t("app.view")
+                        }}</q-item-label>
                       </q-item-section>
                     </q-item>
                     <q-separator />
@@ -76,9 +76,9 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="text-red q-pl-lg"
-                          >{{$t('app.delete')}}</q-item-label
-                        >
+                        <q-item-label class="text-red q-pl-lg">{{
+                          $t("app.delete")
+                        }}</q-item-label>
                       </q-item-section>
                     </q-item>
                   </q-list>
@@ -120,7 +120,7 @@
               @click="showReferences(props.row)"
               v-if="props.row.payment_item_type == 'A_MEMBER'"
             >
-              {{$t('app.viewMember')}}
+              {{ $t("app.viewMember") }}
             </q-btn>
 
             <!-- button for view members -->
@@ -136,7 +136,7 @@
                 props.row.payment_item_type == 'MEMBERS_WITHOUT_ROLES'
               "
             >
-              {{$t('app.viewMembers')}}
+              {{ $t("app.viewMembers") }}
               <span class="q-pl-md"
                 ><q-icon name="visibility" size="xs"></q-icon
               ></span>
@@ -166,7 +166,9 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="details">{{$t('app.view')}}</q-item-label>
+                        <q-item-label class="details">{{
+                          $t("app.view")
+                        }}</q-item-label>
                       </q-item-section>
                     </q-item>
                     <q-separator />
@@ -182,7 +184,9 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="details">{{$t('app.edit')}}</q-item-label>
+                        <q-item-label class="details">{{
+                          $t("app.edit")
+                        }}</q-item-label>
                       </q-item-section>
                     </q-item>
                     <q-item
@@ -196,7 +200,9 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="text-red">{{$t('app.delete')}}</q-item-label>
+                        <q-item-label class="text-red">{{
+                          $t("app.delete")
+                        }}</q-item-label>
                       </q-item-section>
                     </q-item>
                   </q-list>
@@ -253,9 +259,9 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="details q-pl-lg"
-                          >{{$t('app.view')}}</q-item-label
-                        >
+                        <q-item-label class="details q-pl-lg">{{
+                          $t("app.view")
+                        }}</q-item-label>
                       </q-item-section>
                     </q-item>
                     <q-separator />
@@ -270,9 +276,9 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="text-red q-pl-lg"
-                          >{{$t('app.delete')}}</q-item-label
-                        >
+                        <q-item-label class="text-red q-pl-lg">{{
+                          $t("app.delete")
+                        }}</q-item-label>
                       </q-item-section>
                     </q-item>
                   </q-list>
@@ -329,9 +335,8 @@
               no-caps
               dense
               unelevated
-              color="teal"
-              padding="5px 7px"
-              label="Details"
+              color="primary"
+              :label="$t('app.details')"
               v-if="checkTreasurerRole()"
               class="view"
               @click="showDetails(props.row)"
@@ -343,32 +348,28 @@
             <q-btn
               class="decline_btn"
               dense
-              size="md"
-              padding="5px 7px"
-              label="Decline"
+              :label="$t('app.decline')"
               unelevated
               no-caps
               @click="onDeclineRecord(props.row, 'Decline')"
               v-if="
                 checkTreasurerRole() &&
                 props.row.approve == 'PENDING' &&
-                props.row.show_state_action
+                checkIfExpendituredetailsStatus()
               "
             />
             <!-- decline btn for expenditure items -->
             <q-btn
               class="approve_btn"
               dense
-              size="md"
-              padding="5px 7px"
-              label="Approve"
+              :label="$t('app.approve')"
               no-caps
               unelevated
               @click="onApprovedRecord(props.row, 'Approve')"
               v-if="
                 checkTreasurerRole() &&
                 props.row.approve == 'PENDING' &&
-                props.row.show_state_action
+                checkIfExpendituredetailsStatus()
               "
             />
 
@@ -394,7 +395,9 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="details">{{$t('app.view')}}</q-item-label>
+                        <q-item-label class="details">{{
+                          $t("app.view")
+                        }}</q-item-label>
                       </q-item-section>
                     </q-item>
                     <q-separator />
@@ -409,7 +412,9 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="details">{{$t('app.edit')}}</q-item-label>
+                        <q-item-label class="details">{{
+                          $t("app.edit")
+                        }}</q-item-label>
                       </q-item-section>
                     </q-item>
                     <q-separator />
@@ -424,7 +429,9 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="details">{{$t('app.details')}}</q-item-label>
+                        <q-item-label class="details">{{
+                          $t("app.details")
+                        }}</q-item-label>
                       </q-item-section>
                     </q-item>
                     <q-separator />
@@ -439,7 +446,9 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="text-red">{{$t('app.delete')}}</q-item-label>
+                        <q-item-label class="text-red">{{
+                          $t("app.delete")
+                        }}</q-item-label>
                       </q-item-section>
                     </q-item>
                   </q-list>
@@ -514,7 +523,9 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="details">{{$t('app.view')}}</q-item-label>
+                        <q-item-label class="details">{{
+                          $t("app.view")
+                        }}</q-item-label>
                       </q-item-section>
                     </q-item>
                     <q-separator />
@@ -529,7 +540,9 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="details">{{$t('app.edit')}}</q-item-label>
+                        <q-item-label class="details">{{
+                          $t("app.edit")
+                        }}</q-item-label>
                       </q-item-section>
                     </q-item>
                     <q-separator />
@@ -544,7 +557,9 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="text-red">{{$t('app.delete')}}</q-item-label>
+                        <q-item-label class="text-red">{{
+                          $t("app.delete")
+                        }}</q-item-label>
                       </q-item-section>
                     </q-item>
                   </q-list>
@@ -556,9 +571,7 @@
             <q-btn
               class="decline_btn"
               dense
-              size="md"
-              padding="5px 7px"
-              label="Decline"
+              :label="$t('app.decline')"
               unelevated
               no-caps
               @click="onDeclineRecord(props.row, 'Decline')"
@@ -568,14 +581,26 @@
             <q-btn
               class="approve_btn"
               dense
-              size="md"
-              padding="5px 7px"
-              label="Approve"
+              :label="$t('app.approve')"
               no-caps
               unelevated
               @click="onApprovedRecord(props.row, 'Approve')"
               v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
             />
+
+            <!-- decline btn for expenditure item details -->
+            <q-btn
+              color="primary"
+              :class="props.row.approve == 'PENDING' ? 'viewExpenditureItem':'viewPending'"
+              dense
+              :label="$t('app.view')"
+              no-caps
+              unelevated
+              @click="onViewExpenditureDetail(props.row)"
+              v-if="checkTreasurerRole()"
+            >
+              <q-icon name="visibility" size="xs" class="q-pl-md"></q-icon>
+            </q-btn>
           </q-td>
         </q-tr>
         <!-- end of table body for expenditure item details -->
@@ -583,23 +608,23 @@
 
       <!-- slot for table headings -->
       <template v-slot:top-left>
-        <div class="text-h6 title" v-show="show_payment_item">
-          {{$t('app.paymentCategory')}}: {{ title }}
+        <div class="text-h5 title" v-show="show_payment_item">
+          {{ $t("app.paymentCategory") }}: {{ title }}
         </div>
         <div
-          class="text-h6 title"
+          class="text-h5 title"
           v-show="
             show_expenditure_item &&
             title != null &&
             !show_expenditure_item_name
           "
         >
-          {{$t('app.expenditureCategory')}}: {{ title }}
-        </div>
-        <div class="text-h6 title" v-show="show_expenditure_item_name">
           {{ title }}
         </div>
-        <div class="text-h6 title" v-show="show_expenditure_item_detail">
+        <div class="text-h5 title" v-show="show_expenditure_item_name">
+          {{ title }}
+        </div>
+        <div class="text-h5 title" v-show="show_expenditure_item_detail">
           {{ title }}
         </div>
       </template>
@@ -624,42 +649,33 @@
       </template>
 
       <template v-slot:bottom>
-        <div v-if="show_expenditure_item_detail && !checkTreasurerRole()">
+        <div v-if="show_expenditure_item_detail">
           <div class="q-py-xs text-bold summary q-mt-sm">
-              <span>A:</span> &nbsp; {{$t('app.estimatedExpenditure')}}:
-              <span class="expenditure_amount"
-                >{{
-                  Number(expenditure_item_amount).toLocaleString()
-                }}
-                XAF</span
-              >
+            <span>A:</span> &nbsp; {{ $t("app.estimatedExpenditure") }}:
+            <span class="expenditure_amount"
+              >{{ Number(expenditure_item_amount).toLocaleString() }} XAF</span
+            >
           </div>
           <div class="q-py-xs text-bold summary">
-              <span>B:</span> &nbsp;{{$t('app.totalAmountGiven')}}:
-              <span class="expenditure_amount q-ml-lg"
-                >{{
-                  Number(total_amount_given).toLocaleString()
-                }}
-                XAF</span
-              >
+            <span>B:</span> &nbsp;{{ $t("app.totalAmountGiven") }}:
+            <span class="expenditure_amount q-ml-lg"
+              >{{ Number(total_amount_given).toLocaleString() }} XAF</span
+            >
           </div>
           <div class="q-py-xs text-bold summary">
-              <span>C:</span> &nbsp;{{$t('app.totalAmountSpent')}}:
-              <span class="expenditure_amount q-ml-lg"
-                >{{
-                  Number(total_amount_spent).toLocaleString()
-                }}
-                XAF</span
-              >
+            <span>C:</span> &nbsp;{{ $t("app.totalAmountSpent") }}:
+            <span class="expenditure_amount q-ml-lg"
+              >{{ Number(total_amount_spent).toLocaleString() }} XAF</span
+            >
           </div>
           <div class="q-py-xs text-bold summary q-mb-lg">
-              <span>D:</span> &nbsp;Net Balance:
-              <span class="expenditure_amount net_balance"
-                >{{
-                  Number(total_balance).toLocaleString()
-                }}
-                XAF</span
-              >
+            <span>D:</span> &nbsp;Net Balance:
+            <span class="expenditure_amount net_balance" v-show="total_balance != null"
+              >{{ Number(total_balance ).toLocaleString() }} XAF</span
+            >
+            <span class="expenditure_amount net_balance" v-show="total_balance == null"
+              >{{ Number(0 ).toLocaleString() }} XAF</span
+            >
           </div>
         </div>
       </template>
@@ -689,7 +705,8 @@
               <div class="col-md-12">
                 <label for="msg">
                   <span class="text-weight-bold"
-                    >{{ $t('app.doYouKnow') }}  {{ chosen_state }} {{ approve_msg }}</span
+                    >{{ $t("app.doYouKnow") }} {{ chosen_state }}
+                    {{ approve_msg }}</span
                   >
                 </label>
               </div>
@@ -808,6 +825,8 @@ export default {
     },
   },
 
+
+
   data() {
     return {
       loading: false,
@@ -900,19 +919,19 @@ export default {
       this.type = type;
       switch (this.type) {
         case "PAYMENT_CATEGORY":
-          this.delete_msg = this.$t('app.deletePaymentCategory');
+          this.delete_msg = this.$t("app.deletePaymentCategory");
           break;
         case "PAYMENT_ITEMS":
-          this.delete_msg = this.$t('app.deletePaymentItem');
+          this.delete_msg = this.$t("app.deletePaymentItem");
           break;
         case "EXPENDITURE_CATEGORY":
-          this.delete_msg = this.$t('app.deleteExpenditureCategory');
+          this.delete_msg = this.$t("app.deleteExpenditureCategory");
           break;
         case "EXPENDITURE_ITEMS":
-          this.delete_msg = this.$t('app.deleteExpenditureItem')
+          this.delete_msg = this.$t("app.deleteExpenditureItem");
           break;
         case "EXPENDITURE_DETAILS":
-          this.delete_msg = this.$t('app.deleteExpenditureItemDetail');
+          this.delete_msg = this.$t("app.deleteExpenditureItemDetail");
           break;
       }
     },
@@ -987,6 +1006,14 @@ export default {
       this.$emit("view-expenditure-item-detail", payload);
     },
 
+    onViewExpenditureDetail(data) {
+      let payload = {
+        data: data,
+        tab: "Expenditure Item Detail Information",
+      };
+      this.$emit("view-expenditure-item-detail", payload);
+    },
+
     onApprovedRecord(row, state) {
       this.show_approve_dialog = true;
       this.approve_data = row;
@@ -1003,7 +1030,10 @@ export default {
 
     setApproveUrlBaseOnType(data) {
       let url = "";
-      let type = this.chosen_state == "Approve" ? this.$t('app.approveLabel') : this.$t('app.declineLabel');
+      let type =
+        this.chosen_state == "Approve"
+          ? this.$t("app.approveLabel")
+          : this.$t("app.declineLabel");
       switch (data.type) {
         case "EXPENDITURE_ITEMS":
           url = `/api/protected/expenditure-items/${data.id}/approve?type=${type}`;
@@ -1016,7 +1046,10 @@ export default {
     },
 
     setApproveFeedbackMsg() {
-      let msg = this.$t('app.recordWas')+`${this.chosen_state}`+this.$t('app.successfull');
+      let msg =
+        this.$t("app.recordWas") +
+        `${this.chosen_state}` +
+        this.$t("app.successfull");
       return msg;
     },
 
@@ -1025,11 +1058,23 @@ export default {
       switch (data.type) {
         case "EXPENDITURE_ITEMS":
           date = moment(data.date).format("MMMM Do YYYY");
-          this.approve_msg = ` ${data.amount}  `+ this.$t('app.approveExpenditureItemPartMsg')+` ${data.name} `+  this.$t('app.on') +` ${date} `+this.$t('app.at') +` ${data.venue} ?`;
+          this.approve_msg =
+            ` ${data.amount}  ` +
+            this.$t("app.approveExpenditureItemPartMsg") +
+            ` ${data.name} ` +
+            this.$t("app.on") +
+            ` ${date} ` +
+            this.$t("app.at") +
+            ` ${data.venue} ?`;
           break;
         case "EXPENDITURE_DETAILS":
           date = moment(data.created_at).format("MMMM Do YYYY");
-          this.approve_msg = ` ${data.amount_given} `+ this.$t('app.approveDetail') +` ${data.name} `+  this.$('app.on') +` ${date} ?`;
+          this.approve_msg =
+            ` ${data.amount_given} ` +
+            this.$t("app.approveDetail") +
+            ` ${data.name} ` +
+            this.$t("app.on") +
+            ` ${date} ?`;
           break;
       }
 
@@ -1056,7 +1101,7 @@ export default {
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: this.$t('app.defaultWarningMsg'),
+        error_msg: this.$t("app.defaultErrorMsg"),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -1066,7 +1111,7 @@ export default {
         },
       };
       this.$store.dispatch("putRequest", payload).then((res) => {
-        if (res.status == 200) {
+         if (res.success) {
           this.callFetchDataAfterApproveAction(this.approve_data);
         }
       });
@@ -1074,6 +1119,7 @@ export default {
 
     showDetails(data) {
       this.$store.dispatch("setExpenditureItemName", data.name);
+
       this.getExpenditureDetailsByItemId(data.id);
 
       const intermediate_tabs = Array.from(
@@ -1081,12 +1127,17 @@ export default {
       );
 
       intermediate_tabs.push({
-        name: this.$t('app.details'),
+        name: this.$t("app.details"),
         has_intermediate_tab: true,
       });
 
       this.$store.dispatch("setIntermediateTabs", intermediate_tabs);
     },
+
+    checkIfExpendituredetailsStatus() {
+      return this.$store.getters.getExpenditures.length > 0  ? this.$store.getters.getExpenditures[0].expenditure_details.filter((ele) => ele.approve == "PENDING").length == 0: false;
+    },
+
   },
   components: {
     ConfirmDialog,
@@ -1136,7 +1187,9 @@ export default {
 }
 
 .title {
-  font-size: small;
+  // font-size: small;
+  font-size: medium;
+  font-weight: 500;
 }
 
 .dialog_button {
@@ -1148,6 +1201,7 @@ export default {
 .approve_btn {
   background-color: $secondary;
   color: white;
+  width: 5.5rem;
 }
 .approve_card {
   width: 25rem;
@@ -1157,9 +1211,19 @@ export default {
   background-color: $orange;
   color: white;
   margin-right: 4.5rem;
+  width: 5.5rem;
 }
 .view {
   margin-right: 4.5rem;
+  width: 6rem;
+}
+
+.viewExpenditureItem {
+  width: 5.5rem;
+  margin-left: 5rem;
+}
+.viewPending{
+  width: 5.5rem;
 }
 .approve {
   color: $secondary;
@@ -1191,7 +1255,7 @@ export default {
   padding-left: 15rem;
 }
 
-.summary{
+.summary {
   font-size: 15px;
 }
 .amount_spent {
@@ -1199,14 +1263,10 @@ export default {
   padding-left: 13.5rem;
 }
 
-
-
 .balance {
   padding-left: 13.4rem;
   font-size: 13px;
 }
-
-
 
 .message {
   font-family: "Roboto";
@@ -1223,7 +1283,6 @@ export default {
 .detail_name {
   padding-left: 4.3rem;
 }
-
 
 .net_balance {
   margin-left: 4.6rem;

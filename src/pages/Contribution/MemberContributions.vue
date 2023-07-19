@@ -42,12 +42,14 @@
             :show_income_activity="false"
             :show_members="false"
             :show_contribution="false"
+            :show_delete_contribution="true"
             :title="getTableTile"
             :total_contribution="getTotalMemberContribution"
             :total_balance="getTotalBalance"
             :show_member_contribution="true"
             @view-contribution="viewContribution"
             @edit-contribution="editContribution"
+            @delete-row="deleteRow"
           >
           </TableVue>
         </div>
@@ -146,10 +148,7 @@ export default {
     getTableTile() {
       let title = "";
       if (this.$store.getters.getMemberContributions.length > 0) {
-        title =
-          `${this.$store.getters.getMemberContributions[0].user_name} ` +
-          this.$t("app.partContributionTitle") +
-          ` ${this.$store.getters.getMemberContributions[0].payment_item_name}`;
+        title = this.$t("app.partContributionTitle") + ` ${this.$store.getters.getMemberContributions[0].payment_item_name}`;
       }
       return title;
     },
@@ -226,6 +225,30 @@ export default {
 
       let file_name = "Contributions Details.pdf";
       this.loading = this.downloadPdf(url, file_name);
+    },
+
+    deleteRow(data) {
+      let payload = {
+        url: `/api/protected/contributions/${data.id}`,
+        msg: this.$t('app.deleteContributionSuccessMsg'),
+        color: "default",
+        to_on_ok: "none",
+        to_on_fail: "none",
+        show_feedback: true,
+        error_msg: this.$t('app.defaultErrorMsg'),
+        has_commit: false,
+        commit: "none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.$store.dispatch("deleteRequest", payload).then(() => {
+        this.getMemberContributionsByPaymentItem(data.payment_item_id, data.user_id);
+        let contributions = this.$store.getters.getFilteredContributions.filter((ele) => ele.id != data.id)
+        this.$store.dispatch("setFilteredContributions", contributions)
+      });
     },
   },
   components: {

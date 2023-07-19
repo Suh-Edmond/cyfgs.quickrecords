@@ -316,10 +316,9 @@ export default {
 .form_field {
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 500;
-  font-size: 12;
+  font-weight: 400;
+  font-size: 11;
   align-items: center;
-  letter-spacing: 0.01em;
   color: $grey2;
 }
 
@@ -327,10 +326,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 400;
-  font-size: 14px;
-  line-height: 11px;
-
-  letter-spacing: 0.01em;
+  font-size: 11px;
   color: $grey5;
 }
 

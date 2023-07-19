@@ -25,7 +25,7 @@
         <q-tab-panel name="Enter Contribution">
           <div>
             <div class="q-ml-sm q-mb-lg">
-              <label class="text-muted"
+              <label class="text-muted info"
                 >{{$t('app.warningField')}}<span class="text-red">*</span>{{ $t('app.fields') }}</label
               >
             </div>
@@ -987,6 +987,10 @@ export default {
 }
 
 .noPaymentItems {
+  color: $grey2;
+}
+
+.info {
   color: $grey2;
 }
 </style>

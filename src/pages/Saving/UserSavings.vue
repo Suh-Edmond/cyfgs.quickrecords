@@ -192,6 +192,7 @@ export default {
               created_at: ele.created_at,
               updated_by: ele.updated_by,
               date: ele.created_at,
+              user_name:ele.user_name
             });
           });
         }

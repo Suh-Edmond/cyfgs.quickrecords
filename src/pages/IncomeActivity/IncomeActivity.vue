@@ -132,22 +132,10 @@
 import TableVue from "src/components/Table.vue";
 import IncomeActivityMixinVue from "src/mixins/IncomeActivityMixin.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
-const months = [
-  this.$t("app.januaryName"),
-  this.$t("app.februaryName"),
-  this.$t("app.marchName"),
-  this.$t("app.aprilName"),
-  this.$t("app.mayName"),
-  this.$t("app.juneName"),
-  this.$t("app.julyName"),
-  this.$t("app.augustName"),
-  this.$t("app.septemberName"),
-  this.$t("app.octoberName"),
-  this.$t("app.novemberName"),
-  this.$t("app.decemberName"),
-];
+import MonthsMixinVue from 'src/mixins/MonthsMixin.vue';
+
 export default {
-  mixins: [IncomeActivityMixinVue, HelperMixinVue],
+  mixins: [IncomeActivityMixinVue, HelperMixinVue, MonthsMixinVue],
 
   mounted() {
     let organisation = this.$store.getters.getOrganisation;
@@ -329,11 +317,11 @@ export default {
         return;
       }
       if (this.month == "") {
-        this.monthsOptions = months;
+        this.monthsOptions = this.getMonths;
       }
       update(() => {
         const needle = val.toLowerCase();
-        this.monthsOptions = months.filter(
+        this.monthsOptions = this.getMonths.filter(
           (v) => v.toLowerCase().indexOf(needle) > -1
         );
       });

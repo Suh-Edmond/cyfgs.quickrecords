@@ -600,7 +600,7 @@
           {{ title }}
         </div>
         <div class="text-h6 title" v-show="show_expenditure_item_detail">
-          {{$t('app.expenditureItem')}}: {{ title }}
+          {{ title }}
         </div>
       </template>
 
@@ -853,7 +853,7 @@ export default {
     onViewPaymentCategory(categories) {
       let payload = {
         data: categories,
-        tab: this.$t('app.paymentCategories'),
+        tab: "Payment Categories",
       };
       this.$emit("update-payment-category", payload);
     },
@@ -861,7 +861,7 @@ export default {
     onViewPaymentItem(payment_items) {
       let payload = {
         data: payment_items,
-        tab: this.$t('app.viewPaymentItem'),
+        tab: "View Payment Item",
       };
       this.$emit("view-payment-item", payload);
     },
@@ -869,7 +869,7 @@ export default {
     onEditPaymentItem(payment_items) {
       let payload = {
         data: payment_items,
-        tab: this.$t('app.paymentItemLabel'),
+        tab: "Payment Items",
       };
       this.$emit("update-payment-item", payload);
     },
@@ -937,7 +937,7 @@ export default {
     onViewExpenditureCategory(expenditure_category) {
       let payload = {
         data: expenditure_category,
-        tab: this.$t('app.expenditureCategoryLabel'),
+        tab: "Expenditure Categories",
       };
       this.$emit("update-expenditure-category", payload);
     },
@@ -945,7 +945,7 @@ export default {
     onViewExpenditureItem(data) {
       let payload = {
         data: data,
-        tab: this.$t('app.addExpenditureItemHeading'),
+        tab: "Expenditure Activity Information",
       };
       this.$emit("view-expenditure-item", payload);
     },
@@ -953,7 +953,7 @@ export default {
     onEditExpenditureItem(expenditure_item) {
       let payload = {
         data: expenditure_item,
-        tab: this.$t('app.expenditureItemLabel'),
+        tab: "Expenditure Items",
       };
       this.$emit("edit-expenditure-item", payload);
     },
@@ -974,7 +974,7 @@ export default {
     onEditExpenditureItemDetail(expenditure_item_detail) {
       let payload = {
         data: expenditure_item_detail,
-        tab: this.$t('app.expenditureItemDetailLabel'),
+        tab: "Expenditure Item Details",
       };
       this.$emit("edit-expenditure-item-detail", payload);
     },
@@ -982,7 +982,7 @@ export default {
     onViewItemDetail(data) {
       let payload = {
         data: data,
-        tab: this.$t('app.expenditureItemDetail'),
+        tab: "Expenditure Item Detail Information",
       };
       this.$emit("view-expenditure-item-detail", payload);
     },

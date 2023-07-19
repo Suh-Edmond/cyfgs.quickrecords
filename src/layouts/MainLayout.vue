@@ -507,7 +507,7 @@
         >
         </ViewExpenditureItemVue>
         <ViewExpenditureItemDetail
-          v-if="current_tab == 'Expenditure Activity Detail Information'"
+          v-if="current_tab == 'Expenditure Item Detail Information'"
           @close-right-drawer="closeRightDrawer"
           @set-heading="setHeading"
         >

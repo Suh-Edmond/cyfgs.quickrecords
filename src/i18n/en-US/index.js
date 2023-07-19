@@ -213,6 +213,7 @@ export default {
     incomeTitlePart:'Income Raised for ',
     incomeTitle:'Income Raised for the month of ',
     deleteIncomeSuccessMsg:'Income Activity deleted successfully',
+    deleteContributionSuccessMsg:"Contribution deleted successfully",
     incomeDescription:'Provide any comment about this income activity',
     addIncomeActivityHeading:'Income Activity Information',
     addIncomeSuccessFeedbackMsg:'Income Activity saved Successfully',
@@ -383,6 +384,7 @@ export default {
     memberProfile:'Member Profile',
     deleteMemberWarningMsg:'Are you sure you want to delete this Member ?',
     deleteIncomeWarningMsg:'Are you sure you want to delete this Income Activity ?',
+    deleteContributionWarningMsg:'Are you sure you want to delete this Contribution ?',
     memberReg:'Member Registration ',
     contributionFor:'Contribution for ',
     memberContribution:'Member Saving on the ',
@@ -398,6 +400,8 @@ export default {
     downloadFileErrorMsg:'Could not download pdf file',
     accessDeniedMsg:'Access denied to view this page',
     loginRequiredInfo:'Login is required to view this page',
-    organisationNotSet:"Please add you Organisation or Group"
+    organisationNotSet:"Please add you Organisation or Group",
+    deleteIncomeActvityWarningMsg:"Are you sure you want delete this Income Activity ?",
+    noResults:"No Results"
    }
 };

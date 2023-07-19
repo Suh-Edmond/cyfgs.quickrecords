@@ -208,7 +208,7 @@ export default {
     getExpenditureItemAmount() {
       let total = 0;
       if (
-        this.$store.getters.getExpenditureItemDetails.length > 0 &&
+        this.$store.getters.getExpenditureItemDetails != null && this.$store.getters.getExpenditureItemDetails.length > 0 &&
         !this.start_filter
       ) {
         total =

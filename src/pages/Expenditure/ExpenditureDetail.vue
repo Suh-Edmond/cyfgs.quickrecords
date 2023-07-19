@@ -10,12 +10,7 @@
       />
     </div>
 
-    <NotFound
-      :message="getNotFoundMsg"
-      v-if="getExpenditureDetails.length == 0 && !getLoadingState"
-    ></NotFound>
-
-    <div v-if="getExpenditureDetails.length > 0 && !getLoadingState">
+    <div>
       <!-- header for filter categories -->
       <div
         class="row q-ml-xs q-pt-xs"
@@ -66,6 +61,7 @@
             :total_amount_spent="getTotalAmountSpent"
             :balance="getBalance"
             :total_balance="getTotalBalance"
+            @view-expenditure-item-detail="viewExpenditureItemDetail"
           >
           </CategoryTable>
         </div>
@@ -88,6 +84,7 @@
             :total_amount_spent="getTotalAmountSpent"
             :balance="getBalance"
             :total_balance="getTotalBalance"
+            @view-expenditure-item-detail="viewExpenditureItemDetail"
           >
           </CategoryTable>
         </div>
@@ -97,15 +94,13 @@
 </template>
 
 <script>
-import NotFound from "src/components/NotFound.vue";
 import CategoryTable from "src/components/CategoryTable.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
 
 export default {
   mixins: [HelperMixinVue],
 
-  mounted() {
-   },
+  mounted() {},
 
   data() {
     return {
@@ -166,7 +161,7 @@ export default {
           sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
         },
       ],
-      label: this.$t('app.delete'),
+      label: this.$t("app.delete"),
       message: "",
       statuses: ["PENDING", "APPROVED", "DECLINED", "ALL"],
       status: null,
@@ -182,60 +177,52 @@ export default {
       return this.$store.getters.getExpenditureItemName;
     },
 
-    getNotFoundMsg() {
-      return this.$t('app.notDetailsFound') + `[${this.getExpenditureItemName}].`;
-    },
-
     getExpenditureItemAmount() {
-      return this.$store.getters.getExpenditureItemDetails.total_item_amount;
+      return this.$store.getters.getExpenditureItemDetails != null && this.$store.getters.getExpenditureItemDetails.length > 0 ? this.$store.getters.getExpenditureItemDetails[2]
+        .expenditure_item_amount : 0;
     },
 
     getTotalAmountGiven() {
-      return this.$store.getters.getExpenditureItemDetails.total_amount_given;
+      return this.$store.getters.getExpenditureItemDetails != null && this.$store.getters.getExpenditureItemDetails.length > 0 ? this.$store.getters.getExpenditureItemDetails[3]
+        .total_amount_given : 0;
     },
 
     getTotalAmountSpent() {
-      return this.$store.getters.getExpenditureItemDetails.total_amount_spent;
+      return this.$store.getters.getExpenditureItemDetails != null && this.$store.getters.getExpenditureItemDetails.length > 0 ? this.$store.getters.getExpenditureItemDetails[4]
+        .total_amount_spent : 0;
     },
 
-    getBalance (){
-      return (this.getTotalAmountGiven - this.getTotalAmountSpent);
+    getBalance() {
+      return this.getTotalAmountGiven - this.getTotalAmountSpent;
     },
 
     getTotalBalance() {
-      return this.$store.getters.getExpenditureItemDetails.total_balance
+      return this.$store.getters.getExpenditureItemDetails != null && this.$store.getters.getExpenditureItemDetails.length > 0 ? this.$store.getters.getExpenditureItemDetails[5].total_balance : 0;
     },
 
     getExpenditureDetails() {
       let data = [];
-      if (this.$store.getters.getExpenditureItemDetails != undefined) {
-        this.$store.getters.getExpenditureItemDetails.data.forEach((ele) => {
-          data.push({
-            counter:
-              this.$store.getters.getExpenditureItemDetails.data.indexOf(ele) +
-              1,
-            name: ele.name,
-            amount_given: ele.amount_given,
-            amount_spent: ele.amount_spent,
-            balance: ele.balance,
-            type: "EXPENDITURE_DETAILS",
-            id: ele.id,
-            expenditure_item_id: ele.expenditure_item_id,
-            comment: ele.comment,
-            approve: ele.approve,
-            created_at: ele.created_at,
-            updated_at: ele.updated_at,
-            updated_by: ele.updated_by,
-            total_item_amount: this.$store.getters.getExpenditureItemDetails.total_item_amount,
-            total_amount_given: this.$store.getters.getExpenditureItemDetails.total_amount_given,
-            total_amount_spent: this.$store.getters.getExpenditureItemDetails.total_amount_spent,
-            total_balance: this.$store.getters.getExpenditureItemDetails.total_balance,
+       if (this.$store.getters.getExpenditureItemDetails != null && this.$store.getters.getExpenditureItemDetails.length > 0) {
+          this.$store.getters.getExpenditureItemDetails[0].forEach((ele) => {
+              data.push({
+                counter: this.$store.getters.getExpenditureItemDetails[0].indexOf(ele) + 1,
+                name: ele.name,
+                amount_given: ele.amount_given,
+                amount_spent: ele.amount_spent,
+                balance: ele.balance,
+                type: "EXPENDITURE_DETAILS",
+                id: ele.id,
+                expenditure_item_id: ele.expenditure_item_id,
+                comment: ele.comment,
+                approve: ele.approve,
+                created_at: ele.created_at,
+                updated_at: ele.updated_at,
+                updated_by: ele.updated_by,
+              });
           });
-        });
       }
       return data;
     },
-
   },
   methods: {
     downloadExpenditureItemDetails() {
@@ -268,11 +255,12 @@ export default {
       return this.filtered_items;
     },
 
-
-
+    viewExpenditureItemDetail(data) {
+      this.$store.dispatch("setUpdatedExpenditureItemDetail", data.data);
+      this.$emit("view-expenditure-item-detail", data);
+    },
   },
   components: {
-    NotFound,
     CategoryTable,
   },
 };

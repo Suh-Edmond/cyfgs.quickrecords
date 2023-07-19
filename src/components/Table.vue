@@ -1491,7 +1491,6 @@ export default {
     },
 
     onViewAllMemberContributions(data) {
-      console.log(data);
       const intermediate_tabs = Array.from(
         this.$store.getters.getIntermediateTabs
       );
@@ -1619,6 +1618,7 @@ export default {
   background-color: $secondary;
   color: white;
   margin-right: 2.5rem;
+  width: 5.5rem;
 }
 
 .approve_btn_income_activity {
@@ -1630,6 +1630,7 @@ export default {
   font-size: 12px;
   align-items: center;
   text-transform: capitalize;
+  width: 5.5rem;
 }
 
 .approve_card {
@@ -1639,12 +1640,14 @@ export default {
 .decline_btn {
   background-color: $orange;
   color: white;
+  width: 5.5rem;
 }
 
 .decline_btn_saving {
   background-color: $orange;
   color: white;
   margin-right: 3rem;
+  width: 5.5rem;
 }
 
 .decline_btn_income_activity {
@@ -1656,6 +1659,7 @@ export default {
   font-size: 12px;
   align-items: center;
   text-transform: capitalize;
+  width: 5.5rem;
 }
 
 .approve {

@@ -165,22 +165,16 @@ export default {
               .then((res) => {
                 if (res.success) {
                   this.fetchCurrentYear();
+                  this.$router.push({
+                    name: "dashboard",
+                  });
+                  SessionStorage.set("to_tab", "Dashboard");
                 } else {
                   this.$router.push({
                     name: "create_organisation",
                   });
                 }
                 return res;
-              })
-              .then(async (res) => {
-                if (res.success) {
-                  this.$router.push({
-                    name: "dashboard",
-                  });
-                }
-                this.loading = false;
-              }).then(() => {
-                SessionStorage.set("to_tab", "Dashboard");
               })
               .catch(() => {});
           }

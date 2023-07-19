@@ -220,7 +220,7 @@ export default {
 }
 
 .field_item {
-  padding-left: 1.7rem;
+  padding-left: 2.9rem;
 }
 
 .field_date {

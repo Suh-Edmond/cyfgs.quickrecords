@@ -905,6 +905,8 @@
         :msg="delete_msg"
         :show_members="show_members"
         :show_income_activity="show_income_activity"
+        :show_contribution="show_contribution"
+        :show_delete_contribution="show_delete_contribution"
         @fetch-members="fetchMembers"
         @cancel-dialog="cancelDialog"
         @delete-row="deleteRow"
@@ -1112,6 +1114,10 @@ export default {
     show_contribution: {
       type: Boolean,
       required: true,
+    },
+    show_delete_contribution:{
+      type: Boolean,
+      required: false,
     },
     show_member_contribution: {
       required: false,
@@ -1484,6 +1490,18 @@ export default {
     },
 
     onViewAllMemberContributions(data) {
+      console.log(data);
+      const intermediate_tabs = Array.from(
+        this.$store.getters.getIntermediateTabs
+      );
+
+      intermediate_tabs.push({
+        name: data.user_name,
+        has_intermediate_tab: true,
+      });
+
+      this.$store.dispatch("setIntermediateTabs", intermediate_tabs);
+
       this.$router.push({
         name: "member_contributions",
         params: { item_id: data.payment_item_id, id: data.user_id },
@@ -1519,7 +1537,12 @@ export default {
       this.$emit("edit-contribution", payload);
     },
 
-    onDeleteContribution(data) {},
+    onDeleteContribution(data) {
+      this.deleted_row = data;
+      this.dialog = true;
+      this.type = "MEMBERS_CONTRIBUTIONS";
+      this.delete_msg = this.$t('app.deleteContributionWarningMsg');
+    },
   },
   components: {
     ConfirmDialogVue,
@@ -1562,6 +1585,7 @@ export default {
   font-size: 12px;
   align-items: center;
   text-transform: capitalize;
+  width: 8rem;
   }
 
 .view_income {

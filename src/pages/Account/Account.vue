@@ -585,14 +585,12 @@ export default {
       this.$store
         .dispatch("putRequest", payload)
         .then((res) => {
-          LocalStorage.set("data", res.data.data);
-          LocalStorage.set("has_logged_in", true);
           this.edit_profile = false;
-          this.getOrganisationInfo();
+          this.getUser();
         })
         .finally(() => {
           this.loading = false;
-          location.reload();
+          // location.reload();
         });
     },
 
@@ -722,7 +720,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 11px;
+  font-size: 12px;
   align-items: center;
   letter-spacing: 0.01em;
   color: $grey2;

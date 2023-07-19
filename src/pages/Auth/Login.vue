@@ -163,47 +163,27 @@ export default {
             this.$store
               .dispatch("getRequest", payload)
               .then((res) => {
-                if (res.status == 200) {
+                if (res.success) {
                   this.fetchCurrentYear();
-                  this.getOrganisationMembers(res.data.id);
-                  this.getUserByRegistrationStatus(res.data.id);
-                  this.getUserByRegistration(res.data.id);
                 } else {
-                  this.$router.push({
-                    name: "create_organisation",
-                  });
                   Notify.create({
                     type: "info",
                     position: Platform.is.mobile ? "bottom" : "top-right",
                     message: this.$t("app.organisationNotSet"),
                   });
+                  this.$router.push({
+                    name: "create_organisation",
+                  });
                 }
                 return res;
               })
               .then(async (res) => {
-                if (res.status == 200) {
-                  this.getOrganisationMemberSavings(
-                    this.$store.getters.getOrganisation.id
-                  );
-                  this.getTotalContributionByYear(
-                    this.$store.getters.getCurrentYear != null
-                      ? this.$store.getters.getCurrentYear.id
-                      : ""
-                  );
-                  this.getTotalYearlyExpenditures(
-                    this.$store.getters.getCurrentYear != null
-                      ? this.$store.getters.getCurrentYear.id
-                      : ""
-                  );
-                }
-              })
-              .then(async (res) => {
-                this.loading = false;
-                if (res.status == 200) {
+                if (res.success) {
                   this.$router.push({
                     name: "dashboard",
                   });
                 }
+                this.loading = false;
               })
               .catch(() => {});
           }

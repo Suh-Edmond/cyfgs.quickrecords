@@ -28,13 +28,12 @@
           </div>
 
           <!-- contribution details -->
-          <div v-if="show_contribution">
+          <div v-if="show_delete_contribution">
             <div class="text-weight-bold text-left text-red">
-              {{$t('app.nameLabel')}}:
+              {{$t('app.paymentItem')}}:
               <span
-                class="q-pl-md"
-                :class="show_members ? 'name' : ' q-ml-md'"
-                >{{ data.name }}</span
+                class="q-pl-xl"
+                >{{ data.payment_item_name }}</span
               >
             </div>
 
@@ -77,6 +76,7 @@
             </div>
           </div>
           <!-- end of income activity -->
+
 
           <!-- Payment Activity -->
           <div
@@ -191,6 +191,10 @@ export default {
       required: false,
     },
     show_contribution: {
+      type: Boolean,
+      required: false,
+    },
+    show_delete_contribution:{
       type: Boolean,
       required: false,
     },

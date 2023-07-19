@@ -17,7 +17,12 @@
           no-caps
           icon="payments"
         />
-        <q-tab name="Use Saving" :label="$t('app.useSaving')" no-caps icon="savings" />
+        <q-tab
+          name="Use Saving"
+          :label="$t('app.useSaving')"
+          no-caps
+          icon="savings"
+        />
       </q-tabs>
 
       <q-separator />
@@ -25,8 +30,9 @@
         <q-tab-panel name="Enter Contribution">
           <div>
             <div class="q-ml-sm q-mb-lg">
-              <label class="text-muted"
-                >{{$t('app.warningField')}}<span class="text-red">*</span>{{ $t('app.fields') }}</label
+              <label class="text-muted info"
+                >{{ $t("app.warningField") }}<span class="text-red">*</span
+                >{{ $t("app.fields") }}</label
               >
             </div>
             <div class="q-px-sm">
@@ -34,58 +40,41 @@
                 <div>
                   <div class="q-mb-md">
                     <label for="name" class="form_field"
-                      >{{$t('app.paymentCategory')}}<span class="text-red">*</span>
+                      >{{ $t("app.paymentItem")
+                      }}<span class="text-red">*</span>
                     </label>
                     <q-select
-                      outlined
-                      dense
-                      v-model="contribution.payment_category_id"
-                      :options="payment_categories"
-                      @input="fetchPaymentItems"
-                      :label="$t('app.searchPaymentCategory')"
-                      input-debounce="0"
-                      use-input
-                      clearable
-                      @filter="filterPaymentCategories"
-                    >
-                      <template v-slot:no-option>
-                        <q-item>
-                          <q-item-section class="text-grey">
-                            {{$t('app.noResults')}}
-                          </q-item-section>
-                        </q-item>
-                      </template>
-                    </q-select>
-                  </div>
-                  <div class="q-mb-md">
-                    <label for="name" class="form_field"
-                      >{{$t('app.paymentItem')}}<span class="text-red">*</span>
-                    </label>
-                    <q-select
-                      outlined
-                      dense
                       v-model="contribution.payment_item_id"
+                      outlined
+                      dense
                       :options="filtered_payment_items"
-                      @input="fetchPaymentItem"
                       :label="$t('app.searchPaymentItem')"
                       input-debounce="0"
                       use-input
                       clearable
                       @filter="filterPaymentItems"
+                      @input="fetchPaymentItem"
                     >
+                      <template v-slot:append v-if="start_filtering">
+                        <q-spinner
+                          color="primary"
+                          size="1.2em"
+                          :thickness="3"
+                        />
+                      </template>
                       <template v-slot:no-option>
                         <q-item>
                           <q-item-section class="text-grey">
-                            {{$t('app.noResults')}}
+                            {{ $t("app.noResults") }}
                           </q-item-section>
                         </q-item>
                       </template>
                     </q-select>
                   </div>
                   <div class="q-mb-md">
-                    <label for="credential" class="form_field"
-                      >{{$t('app.amountPayable')}}</label
-                    >
+                    <label for="credential" class="form_field">{{
+                      $t("app.amountPayable")
+                    }}</label>
                     <q-input
                       v-model="contribution.amount_payable"
                       outlined
@@ -116,7 +105,8 @@
                   <div v-show="has_selected_payment_item">
                     <div class="q-mb-md">
                       <label for="name" class="form_field"
-                        >{{$t('app.memberName')}} <span class="text-red">*</span>
+                        >{{ $t("app.memberName") }}
+                        <span class="text-red">*</span>
                       </label>
                       <q-select
                         outlined
@@ -130,6 +120,20 @@
                         clearable
                         @filter="filterMembers"
                       >
+                        <template v-slot:append v-if="start_filter_members">
+                          <q-spinner
+                            color="primary"
+                            size="1.2em"
+                            :thickness="5"
+                          />
+                        </template>
+                        <template v-slot:no-option>
+                          <q-item>
+                            <q-item-section class="text-grey">
+                              {{ $t("app.noResults") }}
+                            </q-item-section>
+                          </q-item>
+                        </template>
                       </q-select>
                     </div>
                     <div
@@ -137,7 +141,8 @@
                       v-if="valideteMonthlyPaymentItemFrequency"
                     >
                       <label for="credential" class="form_field"
-                        >{{$t('app.selectMonth')}}<span class="text-red">*</span></label
+                        >{{ $t("app.selectMonth")
+                        }}<span class="text-red">*</span></label
                       >
                       <q-select
                         v-model="contribution.month_name"
@@ -153,7 +158,7 @@
                         <template v-slot:no-option>
                           <q-item>
                             <q-item-section class="text-grey">
-                              {{$t('app.noResults')}}
+                              {{ $t("app.noResults") }}
                             </q-item-section>
                           </q-item>
                         </template>
@@ -164,7 +169,8 @@
                       v-if="valideteQuarterlyPaymentItemFrequency"
                     >
                       <label for="credential" class="form_field"
-                        >{{$t('app.selectQuarter')}}<span class="text-red">*</span></label
+                        >{{ $t("app.selectQuarter")
+                        }}<span class="text-red">*</span></label
                       >
                       <q-select
                         v-model="contribution.quarterly_name"
@@ -177,16 +183,16 @@
                         <template v-slot:no-option>
                           <q-item>
                             <q-item-section class="text-grey">
-                              {{$t('app.noResults')}}
+                              {{ $t("app.noResults") }}
                             </q-item-section>
                           </q-item>
                         </template>
                       </q-select>
                     </div>
                     <div class="q-mb-md">
-                      <label for="credential" class="form_field"
-                        >{{$t('app.totalAmountDeposited')}}</label
-                      >
+                      <label for="credential" class="form_field">{{
+                        $t("app.totalAmountDeposited")
+                      }}</label>
                       <q-input
                         v-model.number="contribution.total_amount_deposited"
                         outlined
@@ -197,9 +203,9 @@
                       </q-input>
                     </div>
                     <div class="q-mb-md">
-                      <label for="credential" class="form_field"
-                        >{{$t('app.balance')}}</label
-                      >
+                      <label for="credential" class="form_field">{{
+                        $t("app.balance")
+                      }}</label>
                       <q-input
                         v-model="contribution.balance"
                         outlined
@@ -210,9 +216,8 @@
                     </div>
                     <div class="q-mb-md">
                       <label for="credential" class="form_field"
-                        >{{$t('app.depositedAmount')}}<span class="text-red"
-                          >*</span
-                        ></label
+                        >{{ $t("app.depositedAmount")
+                        }}<span class="text-red">*</span></label
                       >
                       <q-input
                         v-model.number="contribution.amount_deposited"
@@ -224,20 +229,18 @@
                       >
                       </q-input>
                       <small v-if="checkPaymentItemBal" class="text-red">
-                        <b
-                          >{{$t('app.excessAmountLabel')}}</b
-                        >
+                        <b>{{ $t("app.excessAmountLabel") }}</b>
                       </small>
                       <small v-if="has_completed_payment" class="text-info">
                         <b
-                          >{{$t('app.hasCompletedAmountLabel')}}
+                          >{{ $t("app.hasCompletedAmountLabel") }}
                           {{ selected_payment_item.label }}</b
                         >
                       </small>
                     </div>
                     <div class="q-mb-md">
                       <label for="credential" class="form_field"
-                        >{{$t('app.comment')}}
+                        >{{ $t("app.comment") }}
                       </label>
                       <q-input
                         v-model="contribution.comment"
@@ -281,8 +284,9 @@
         <q-tab-panel name="Use Saving">
           <div>
             <div class="q-ml-sm q-mb-lg">
-              <label class="text-muted"
-                >{{$t('app.warningField')}}<span class="text-red">*</span>{{ $t('app.fields') }}</label
+              <label class="text-muted info"
+                >{{ $t("app.warningField") }}<span class="text-red">*</span
+                >{{ $t("app.fields") }}</label
               >
             </div>
             <div class="q-px-sm">
@@ -290,58 +294,41 @@
                 <div>
                   <div class="q-mb-md">
                     <label for="name" class="form_field"
-                      >{{$t('app.paymentCategory')}} <span class="text-red">*</span>
+                      >{{ $t("app.paymentItem") }}
+                      <span class="text-red">*</span>
                     </label>
                     <q-select
-                      outlined
-                      dense
-                      v-model="contribution.payment_category_id"
-                      :options="payment_categories"
-                      @input="fetchPaymentItems"
-                      :label="$t('app.searchPaymentCategory')"
-                      input-debounce="0"
-                      use-input
-                      clearable
-                      @filter="filterPaymentCategories"
-                    >
-                      <template v-slot:no-option>
-                        <q-item>
-                          <q-item-section class="text-grey">
-                           {{$t('app.noResults')}}
-                          </q-item-section>
-                        </q-item>
-                      </template>
-                    </q-select>
-                  </div>
-                  <div class="q-mb-md">
-                    <label for="name" class="form_field"
-                      >{{$t('app.paymentItem')}} <span class="text-red">*</span>
-                    </label>
-                    <q-select
-                      outlined
-                      dense
                       v-model="contribution.payment_item_id"
-                      :options="filtered_payment_items"
+                      outlined
+                      dense
                       @input="fetchPaymentItem"
+                      :options="filtered_payment_items"
                       :label="$t('app.searchPaymentItem')"
                       input-debounce="0"
                       use-input
                       clearable
                       @filter="filterPaymentItems"
                     >
+                      <template v-slot:append v-if="start_filtering">
+                        <q-spinner
+                          color="primary"
+                          size="1.2em"
+                          :thickness="3"
+                        />
+                      </template>
                       <template v-slot:no-option>
                         <q-item>
                           <q-item-section class="text-grey">
-                            {{$t('app.noResults')}}
+                            {{ $t("app.noResults") }}
                           </q-item-section>
                         </q-item>
                       </template>
                     </q-select>
                   </div>
                   <div class="q-mb-md">
-                    <label for="credential" class="form_field"
-                      >{{$t('app.amountPayable')}}</label
-                    >
+                    <label for="credential" class="form_field">{{
+                      $t("app.amountPayable")
+                    }}</label>
                     <q-input
                       v-model="contribution.amount_payable"
                       outlined
@@ -372,7 +359,8 @@
                   <div v-show="has_selected_payment_item">
                     <div class="q-mb-md">
                       <label for="name" class="form_field"
-                        >{{$t('app.memberName')}} <span class="text-red">*</span>
+                        >{{ $t("app.memberName") }}
+                        <span class="text-red">*</span>
                       </label>
                       <q-select
                         outlined
@@ -386,6 +374,20 @@
                         clearable
                         @filter="filterMembers"
                       >
+                        <template v-slot:append v-if="start_filter_members">
+                          <q-spinner
+                            color="primary"
+                            size="1.2em"
+                            :thickness="5"
+                          />
+                        </template>
+                        <template v-slot:no-option>
+                          <q-item>
+                            <q-item-section class="text-grey">
+                              {{ $t("app.noResults") }}
+                            </q-item-section>
+                          </q-item>
+                        </template>
                       </q-select>
                     </div>
                     <div
@@ -393,7 +395,8 @@
                       v-if="valideteMonthlyPaymentItemFrequency"
                     >
                       <label for="credential" class="form_field"
-                        >{{$t('app.selectMonth')}} <span class="text-red">*</span></label
+                        >{{ $t("app.selectMonth") }}
+                        <span class="text-red">*</span></label
                       >
                       <q-select
                         v-model="contribution.month_name"
@@ -409,7 +412,7 @@
                         <template v-slot:no-option>
                           <q-item>
                             <q-item-section class="text-grey">
-                              {{$t('app.noResults')}}
+                              {{ $t("app.noResults") }}
                             </q-item-section>
                           </q-item>
                         </template>
@@ -420,7 +423,8 @@
                       v-if="valideteQuarterlyPaymentItemFrequency"
                     >
                       <label for="credential" class="form_field"
-                        >{{$t('app.selectQuarter')}}<span class="text-red">*</span></label
+                        >{{ $t("app.selectQuarter")
+                        }}<span class="text-red">*</span></label
                       >
                       <q-select
                         v-model="contribution.quarterly_name"
@@ -433,16 +437,16 @@
                         <template v-slot:no-option>
                           <q-item>
                             <q-item-section class="text-grey">
-                              {{$t('app.noResults')}}
+                              {{ $t("app.noResults") }}
                             </q-item-section>
                           </q-item>
                         </template>
                       </q-select>
                     </div>
                     <div class="q-mb-md">
-                      <label for="credential" class="form_field"
-                        >{{$t('app.totalSaving')}}</label
-                      >
+                      <label for="credential" class="form_field">{{
+                        $t("app.totalSaving")
+                      }}</label>
                       <q-input
                         v-model.number="contribution.total_saving"
                         outlined
@@ -453,9 +457,9 @@
                       </q-input>
                     </div>
                     <div class="q-mb-md">
-                      <label for="credential" class="form_field"
-                        >{{$t('app.totalAmountDeposited')}}</label
-                      >
+                      <label for="credential" class="form_field">{{
+                        $t("app.totalAmountDeposited")
+                      }}</label>
                       <q-input
                         v-model.number="contribution.total_amount_deposited"
                         outlined
@@ -466,9 +470,9 @@
                       </q-input>
                     </div>
                     <div class="q-mb-md">
-                      <label for="credential" class="form_field"
-                        >{{$t('app.balance')}}</label
-                      >
+                      <label for="credential" class="form_field">{{
+                        $t("app.balance")
+                      }}</label>
                       <q-input
                         v-model="contribution.balance"
                         outlined
@@ -479,9 +483,8 @@
                     </div>
                     <div class="q-mb-md">
                       <label for="credential" class="form_field"
-                        >{{$t('app.depositedAmount')}}<span class="text-red"
-                          >*</span
-                        ></label
+                        >{{ $t("app.depositedAmount")
+                        }}<span class="text-red">*</span></label
                       >
                       <q-input
                         v-model.number="contribution.amount_deposited"
@@ -493,23 +496,25 @@
                       >
                       </q-input>
                       <small v-if="checkPaymentItemBal" class="text-red">
-                        <b
-                          >{{$t('app.excessAmountLabel')}}</b
-                        >
+                        <b>{{ $t("app.excessAmountLabel") }}</b>
                       </small>
-                      <small v-if="checkAmountDepositedBasedOnSaving" class="text-red">
-                       {{$t('app.insuffientSaving')}}
-                      </small>
+                      <br/>
+                      <small
+                        v-if="checkAmountDepositedBasedOnSaving"
+                        class="text-red"
+                      >
+                        <b>{{ $t("app.insuffientSaving") }}</b>
+                      </small><br/>
                       <small v-if="has_completed_payment" class="text-info">
                         <b
-                          >{{$t('app.hasCompletedAmountLabel')}}
+                          >{{ $t("app.hasCompletedAmountLabel") }}
                           {{ selected_payment_item.label }}</b
                         >
                       </small>
                     </div>
                     <div class="q-mb-md">
                       <label for="credential" class="form_field"
-                        >{{$t('app.comment')}}
+                        >{{ $t("app.comment") }}
                       </label>
                       <q-input
                         v-model="contribution.comment"
@@ -560,37 +565,19 @@ import PaymentCategoryMixinVue from "src/mixins/PaymentCategoryMixin.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import memberMixinVue from "src/mixins/memberMixin.vue";
 import ContributionsMixinVue from "src/mixins/ContributionsMixin.vue";
+import MonthsMixinVue from "src/mixins/MonthsMixin.vue";
 
-const months = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-const quarters = [
-  "January - March",
-  "April - June",
-  "July - September",
-  "October - December",
-];
 export default {
   mixins: [
     PaymentCategoryMixinVue,
     organisationMixinVue,
     memberMixinVue,
     ContributionsMixinVue,
+    MonthsMixinVue,
   ],
 
   mounted() {
-    let heading = this.$t('app.contributionHeading');
+    let heading = this.$t("app.contributionHeading");
 
     this.$emit("set-heading", heading);
 
@@ -602,7 +589,7 @@ export default {
       this.getMembersFromState();
     }
 
-    this.fetchCategories(organisation_id, false);
+    this.getPaymentItems();
   },
 
   data() {
@@ -633,8 +620,10 @@ export default {
       payment_categories: [],
       members: [],
       monthsOptions: [],
-      quartersOptions: quarters,
+      quartersOptions: this.getQuarters,
       tab: "Enter Contribution",
+      start_filter_members: false,
+      start_filtering: false,
     };
   },
   computed: {
@@ -669,24 +658,21 @@ export default {
     },
 
     validatePaymentItem() {
-      return this.contribution.payment_category_id == null ||
-        this.contribution.payment_item_id == null
-        ? true
-        : false;
+      return this.contribution.payment_item_id == null;
     },
 
     valideteMonthlyPaymentItemFrequency() {
-      return this.contribution.payment_item_id != null &&
+      return (
+        this.contribution.payment_item_id != null &&
         this.contribution.payment_item_id.frequency == "MONTHLY"
-        ? true
-        : false;
+      );
     },
 
     valideteQuarterlyPaymentItemFrequency() {
-      return this.contribution.payment_item_id != null &&
+      return (
+        this.contribution.payment_item_id != null &&
         this.contribution.payment_item_id.frequency == "QUARTERLY"
-        ? true
-        : false;
+      );
     },
   },
   methods: {
@@ -700,14 +686,14 @@ export default {
           comment: this.contribution.comment,
           month_name: this.contribution.month_name,
           quarterly_name: this.contribution.quarterly_name,
-          contributed_via_saving: this.tab == "Use Saving" ? true : false
+          contributed_via_saving: this.tab == "Use Saving" ? true : false,
         },
-        msg: this.$t('app.saveContributionSuccessMsg'),
+        msg: this.$t("app.saveContributionSuccessMsg"),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: this.$t('app.defaultErrorMsg'),
+        error_msg: this.$t("app.defaultErrorMsg"),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -719,42 +705,9 @@ export default {
       this.setDispatchAction(payload, this.contribution.payment_item_id);
     },
 
-    fetchPaymentItems() {
-      let payload = {
-        status: "none",
-        url: `/api/protected/payment-categories/${this.contribution.payment_category_id.value}/payment-items`,
-        has_path_val: true,
-        show_feedback: false,
-        show_spinner: false,
-        msg: "none",
-        color: "default",
-        error_msg: "default",
-        commit: "none",
-        has_commit: false,
-        to_be_store_data: {
-          required: true,
-          has_value: false,
-          data: null,
-        },
-      };
-      this.$store.dispatch("getRequest", payload).then((res) => {
-        this.payment_items_by_category = [];
-        if (res.success) {
-          res.data.data.forEach((ele) => {
-            this.payment_items_by_category.push({
-              label: ele.name,
-              value: ele.id,
-              amount: ele.amount,
-              frequency: ele.frequency,
-            });
-          });
-        }
-      });
-      return this.payment_items_by_category;
-    },
-
     fetchPaymentItem() {
       if (this.contribution.payment_item_id != null) {
+        this.start_filtering = false;
         this.selected_payment_item = this.filtered_payment_items.find(
           (item) => item.value == this.contribution.payment_item_id.value
         );
@@ -765,6 +718,7 @@ export default {
     },
 
     selectMember() {
+      this.start_filter_members = true;
       this.has_completed_payment = false;
       let user_id =
         this.contribution.user_id != null
@@ -800,6 +754,9 @@ export default {
                 this.has_completed_payment = true;
               }
             }
+          })
+          .finally(() => {
+            this.start_filter_members = false;
           });
       } else {
         let payload = {
@@ -819,9 +776,47 @@ export default {
             data: null,
           },
         };
-        this.$store.dispatch("getRequest", payload).then((res) => {
-          this.contribution.total_saving = res.data.total_savings;
-        });
+        this.$store
+          .dispatch("getRequest", payload)
+          .then((res) => {
+            this.contribution.total_saving = res.data.total_savings;
+            return res;
+          })
+          .then((res) => {
+            let amount_deposited_payload = {
+              status: "none",
+              url: `/api/protected/contributions/users/${user_id}/items/${this.contribution.payment_item_id.value}`,
+              has_path_val: true,
+              show_feedback: false,
+              show_spinner: false,
+              msg: "none",
+              color: "default",
+              error_msg: "default",
+              commit: "none",
+              has_commit: false,
+              to_be_store_data: {
+                required: true,
+                has_value: false,
+                data: null,
+              },
+            };
+            this.$store
+              .dispatch("getRequest", amount_deposited_payload)
+              .then((res) => {
+                // //set the balance to be paid by the member has paid anything got the item before
+                if (res) {
+                  this.contribution.total_amount_deposited = res.data;
+                  this.contribution.balance =
+                    this.contribution.amount_payable - res.data;
+                  if (this.contribution.balance == 0) {
+                    this.has_completed_payment = true;
+                  }
+                }
+              });
+          })
+          .finally(() => {
+            this.start_filter_members = false;
+          });
       }
     },
 
@@ -850,7 +845,7 @@ export default {
       this.contribution.total_amount_deposited = 0.0;
       this.contribution.month_name = "";
       this.contribution.quarterly_name = "";
-      this.contribution.total_saving = 0
+      this.contribution.total_saving = 0;
 
       return this.contribution;
     },
@@ -893,34 +888,6 @@ export default {
       });
     },
 
-    getPaymentCategoriesFromState() {
-      this.payment_categories = [];
-      this.$store.getters.getPaymentCategories.forEach((ele) => {
-        this.payment_categories.push({
-          label: ele.name,
-          value: ele.id,
-        });
-      });
-
-      return this.payment_categories;
-    },
-
-    filterPaymentCategories(val, update, abort) {
-      if (val < 1) {
-        this.start_filtering = false;
-        abort();
-        return;
-      }
-
-      update(() => {
-        this.start_filtering = true;
-        this.payment_categories = this.getPaymentCategoriesFromState().filter(
-          (item) => item.label.toLowerCase().includes(val.toLowerCase())
-        );
-        return this.payment_categories;
-      });
-    },
-
     getMembersFromState() {
       this.members = [];
       this.$store.getters.getMembers.forEach((ele) => {
@@ -935,13 +902,13 @@ export default {
 
     filterMembers(val, update, abort) {
       if (val < 1) {
-        this.start_filtering = false;
+        this.start_filter_members = false;
         abort();
         return;
       }
 
       update(() => {
-        this.start_filtering = true;
+        this.start_filter_members = true;
         this.members = this.getMembersFromState().filter((item) =>
           item.label.toLowerCase().includes(val.toLowerCase())
         );
@@ -955,14 +922,48 @@ export default {
         return;
       }
       if (this.month == "") {
-        this.monthsOptions = months;
+        this.monthsOptions = this.getMonths;
       }
       update(() => {
         const needle = val.toLowerCase();
-        this.monthsOptions = months.filter(
+        this.monthsOptions = this.getMonths.filter(
           (v) => v.toLowerCase().indexOf(needle) > -1
         );
       });
+    },
+
+    getPaymentItems() {
+      this.payment_items_by_category = [];
+      let payload = {
+        status: "none",
+        url: `/api/protected/payment-items`,
+        has_path_val: true,
+        show_feedback: false,
+        show_spinner: false,
+        msg: "none",
+        color: "default",
+        error_msg: "default",
+        commit: "none",
+        has_commit: false,
+        to_be_store_data: {
+          required: true,
+          has_value: false,
+          data: null,
+        },
+      };
+      this.$store.dispatch("getRequest", payload).then((res) => {
+        if (res.success) {
+          res.data.forEach((ele) => {
+            this.payment_items_by_category.push({
+              label: ele.name,
+              value: ele.id,
+              amount: ele.amount,
+            });
+          });
+        }
+      });
+
+      return this.payment_items_by_category;
     },
   },
   components: {
@@ -987,6 +988,10 @@ export default {
 }
 
 .noPaymentItems {
+  color: $grey2;
+}
+
+.info {
   color: $grey2;
 }
 </style>

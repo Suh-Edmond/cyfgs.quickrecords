@@ -219,7 +219,7 @@ export default {
 }
 
 .value_item {
-  padding-left: 3.5rem;
+  padding-left: 4.5rem;
 }
 
 .value_amount {
@@ -251,7 +251,7 @@ export default {
 }
 
 .value_balance {
-  padding-left: 7.2rem;
+  padding-left: 4.8rem;
 }
 
 

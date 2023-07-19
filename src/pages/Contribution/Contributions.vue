@@ -116,6 +116,7 @@
             :show_contribution="true"
             :total_contribution="computeTotalContributionsForFilteredRecord"
             :title="getTableTitleForSearchContributions"
+            @delete-row="deleteRow"
           >
           </TableVue>
         </div>
@@ -318,14 +319,7 @@ export default {
     getTableTitleForSearchContributions() {
       let title = "";
       const route_data = Object.assign({}, this.$route.query);
-      title =
-        route_data.payment_item_id != undefined
-          ? this.$t(
-              "app.contributionPartTitle"
-            )`${route_data.payment_item_id}` +
-            this.$t("app.amountPartTitle") +
-            `${Number(route_data.payment_item_amount).toLocaleString()} XAF`
-          : "";
+      title = route_data.payment_item_id != undefined ? this.$t('app.contributionPartTitle') + `${route_data.payment_item_id}` + this.$t('app.amountPartTitle') + `${Number(route_data.payment_item_amount).toLocaleString()} XAF`: "";
       return title;
     },
   },
@@ -442,6 +436,10 @@ export default {
         this.$store.getters.getSearchSavingParams.item.label +
         ".pdf";
       this.loading = this.downloadPdf(url, file_name);
+    },
+
+    deleteRow(data) {
+      this.$emit("delete-row", data);
     },
   },
   components: {

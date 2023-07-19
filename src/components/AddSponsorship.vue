@@ -22,8 +22,12 @@
               use-input
               clearable
               @filter="filterPaymentItems"
+              @input="stopSearch"
               class="text_color"
             >
+            <template v-slot:append v-if="start_filtering">
+              <q-spinner color="primary" size="1.2em" :thickness="3" />
+            </template>
               <template v-slot:no-option>
                 <q-item>
                   <q-item-section class="text-grey">
@@ -114,6 +118,7 @@ export default {
       },
       no_caps: true,
       payment_items: [],
+      start_filtering:false,
     };
   },
   computed: {
@@ -244,6 +249,13 @@ export default {
       });
       return payment_items;
     },
+
+
+    stopSearch(){
+      if(this.sponsorship.payment_item_id != null){
+        this.start_filtering = false
+      }
+    }
   },
   components: {
     ButtonVue,

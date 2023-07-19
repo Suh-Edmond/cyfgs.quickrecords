@@ -10,7 +10,12 @@
         align="justify"
         narrow-indicator
       >
-        <q-tab name="Add Member" :label="$t('app.addMember')" no-caps icon="person_add" />
+        <q-tab
+          name="Add Member"
+          :label="$t('app.addMember')"
+          no-caps
+          icon="person_add"
+        />
         <q-tab
           name="Upload File"
           :label="$t('app.uploadFile')"
@@ -26,20 +31,22 @@
           <div class="q-mx-md">
             <q-form @submit="onAddMember" class="q-gutter-md">
               <div class="text-subtitle2 text-left text-primary q-pt-xs">
-                {{$t('app.personalInformationLabel')}}
+                {{ $t("app.personalInformationLabel") }}
               </div>
               <small class="hint"
-                >{{$t('app.warningField')}}<span class="text-red">*</span>{{$t('app.fields')}}</small
+                >{{ $t("app.warningField") }}<span class="text-red">*</span
+                >{{ $t("app.fields") }}</small
               >
               <div>
                 <label for="credential" class="form_field"
-                  >{{$t('app.nameLabel')}} <span class="text-red">*</span></label
+                  >{{ $t("app.nameLabel") }}
+                  <span class="text-red">*</span></label
                 >
                 <q-input v-model="user.name" outlined dense type="text" />
               </div>
               <div>
                 <label for="credential" class="form_field"
-                  >{{$t('app.gender')}} <span class="text-red">*</span></label
+                  >{{ $t("app.gender") }} <span class="text-red">*</span></label
                 >
                 <q-select
                   v-model="user.gender"
@@ -49,24 +56,34 @@
                 />
               </div>
               <div>
-                <label for="credential" class="form_field">{{$t('app.emailLabel')}}</label>
+                <label for="credential" class="form_field">{{
+                  $t("app.emailLabel")
+                }}</label>
                 <q-input v-model="user.email" outlined dense type="email" />
               </div>
               <div>
                 <label for="credential" class="form_field"
-                  >{{$t('app.telephoneLabel')}} <span class="text-red">*</span></label
+                  >{{ $t("app.telephoneLabel") }}
+                  <span class="text-red">*</span></label
                 >
-                <vue-tel-input v-model="user.telephone" defaultCountry="cm" mode="international" class="q-pa-xs"></vue-tel-input>
+                <vue-tel-input
+                  v-model="user.telephone"
+                  defaultCountry="cm"
+                  mode="international"
+                  class="q-pa-xs"
+                ></vue-tel-input>
               </div>
               <div>
                 <label for="credential" class="form_field"
-                  >{{$t('app.addressLabel')}} <span class="text-red">*</span></label
+                  >{{ $t("app.addressLabel") }}
+                  <span class="text-red">*</span></label
                 >
                 <q-input v-model="user.address" outlined dense type="text" />
               </div>
               <div>
                 <label for="credential" class="form_field"
-                  >{{$t('app.occupation')}} <span class="text-red">*</span></label
+                  >{{ $t("app.occupation") }}
+                  <span class="text-red">*</span></label
                 >
                 <q-input v-model="user.occupation" outlined dense type="text" />
               </div>
@@ -89,11 +106,11 @@
           <div>
             <q-form @submit="uploadFile">
               <div class="text-subtitle2 text-center text-primary">
-               {{$t('app.importMemberMsg')}}
+                {{ $t("app.importMemberMsg") }}
                 <span class="q-pl-md">
                   <q-btn flat @click="openHelp">
                     <q-icon name="help_outline" size="sm"> </q-icon>
-                    <q-tooltip> {{$t('app.help')}} </q-tooltip>
+                    <q-tooltip> {{ $t("app.help") }} </q-tooltip>
                   </q-btn>
                 </span>
               </div>
@@ -136,7 +153,7 @@
           <q-space />
 
           <q-btn dense flat icon="close" v-close-popup class="text-white">
-            <q-tooltip>{{$t('app.close')}}</q-tooltip>
+            <q-tooltip>{{ $t("app.close") }}</q-tooltip>
           </q-btn>
         </q-bar>
         <q-card-section
@@ -145,7 +162,7 @@
         >
           <div>
             <div class="q-pb-md help_text">
-              {{$t('app.importMemberHelpMsg')}}
+              {{ $t("app.importMemberHelpMsg") }}
             </div>
             <div class="q-mx-lg">
               <q-img
@@ -168,12 +185,12 @@
           <q-space />
 
           <q-btn dense flat icon="close" v-close-popup class="text-white">
-            <q-tooltip>{{$t('app.close')}}</q-tooltip>
+            <q-tooltip>{{ $t("app.close") }}</q-tooltip>
           </q-btn>
         </q-bar>
         <q-card-section>
           <div class="q-pb-md help_text">
-           {{$t('app.importMemberHelpMsg')}}
+            {{ $t("app.importMemberHelpMsg") }}
           </div>
         </q-card-section>
 
@@ -192,18 +209,18 @@
 import ButtonVue from "src/components/Button.vue";
 import memberMixinVue from "src/mixins/memberMixin.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
-import { VueTelInput } from 'vue-tel-input';
+import { VueTelInput } from "vue-tel-input";
 export default {
   mixins: [memberMixinVue, organisationMixinVue],
   created() {
-    let heading = this.$t('app.addMemberOrganisation')
+    let heading = this.$t("app.addMemberOrganisation");
     this.$emit("set-heading", heading);
   },
   data() {
     return {
       full_width: false,
       image_width: "370px",
-      label_save: this.$t('app.saveBtnLabel'),
+      label_save: this.$t("app.saveBtnLabel"),
       loading: false,
       color: "primary",
       user: {
@@ -216,11 +233,11 @@ export default {
       },
       gender_options: ["MALE", "FEMALE", "OTHER"],
       file: null,
-      label_upload: this.$t('app.import'),
+      label_upload: this.$t("app.import"),
       position: "right",
       dialog: false,
       no_caps: true,
-      tab: this.$t('app.addMember'),
+      tab: this.$t("app.addMember"),
     };
   },
   computed: {
@@ -243,7 +260,14 @@ export default {
       this.loading = true;
       let payload = {
         url: `/api/protected/organisations/${id}/add-users`,
-        data: this.user,
+        data: {
+          name: this.user.name,
+          telephone: this.user.telephone.replace(/\s+/g, ""),
+          gender: this.user.gender,
+          address: this.user.address,
+          occupation: this.user.occupation,
+          email: this.user.email,
+        },
         msg: "Member added Successfully",
         color: "default",
         to_on_ok: "none",
@@ -321,11 +345,12 @@ export default {
   },
   components: {
     ButtonVue,
-    VueTelInput
+    VueTelInput,
   },
 };
 </script>
 
+<style src="vue-tel-input/dist/vue-tel-input.css"></style>
 <style scoped lang="scss">
 .csv_image_card {
   cursor: pointer;

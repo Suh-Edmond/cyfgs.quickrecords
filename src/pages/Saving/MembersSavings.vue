@@ -177,22 +177,9 @@ import TableVue from "src/components/Table.vue";
 import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
 import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
-const months = [
-  this.$t("app.januaryName"),
-  this.$t("app.februaryName"),
-  this.$t("app.marchName"),
-  this.$t("app.aprilName"),
-  this.$t("app.mayName"),
-  this.$t("app.juneName"),
-  this.$t("app.julyName"),
-  this.$t("app.augustName"),
-  this.$t("app.septemberName"),
-  this.$t("app.octoberName"),
-  this.$t("app.novemberName"),
-  this.$t("app.decemberName"),
-];
+import MonthsMixinVue from 'src/mixins/MonthsMixin.vue';
 export default {
-  mixins: [UserSavingMixinVue, HelperMixinVue, CurrentYearMixinVue],
+  mixins: [UserSavingMixinVue, HelperMixinVue, CurrentYearMixinVue, MonthsMixinVue],
   mounted() {
     let organisation_id =
       this.$store.getters.getOrganisation != null
@@ -434,11 +421,11 @@ export default {
         return;
       }
       if (this.month == "") {
-        this.monthsOptions = months;
+        this.monthsOptions = this.getMonths;
       }
       update(() => {
         const needle = val.toLowerCase();
-        this.monthsOptions = months.filter(
+        this.monthsOptions = this.getMonths.filter(
           (v) => v.toLowerCase().indexOf(needle) > -1
         );
       });

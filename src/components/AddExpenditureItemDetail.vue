@@ -140,7 +140,7 @@ export default {
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: this.t('app.defaultErrorMsg'),
+        error_msg: this.$t('app.defaultErrorMsg'),
         has_commit: false,
         commit: "none",
         to_be_store_data: {

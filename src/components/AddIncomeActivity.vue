@@ -21,6 +21,7 @@
             clearable
             use-input
             @filter="filterPaymentItems"
+            @input="stopSearch"
           >
             <template v-slot:append v-if="start_filtering">
               <q-spinner color="primary" size="1.2em" :thickness="5" />
@@ -317,6 +318,12 @@ export default {
 
       return this.income_activity;
     },
+
+    stopSearch(){
+      if(this.income_activity.payment_item_id != null){
+        this.start_filtering = false
+      }
+    }
   },
   components: {
     ButtonVue,

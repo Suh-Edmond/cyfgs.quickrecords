@@ -52,6 +52,7 @@ module.exports = function (ctx) {
         APP_NAME : "FINANCIAL_ASSISTANT_APP",
         FILE_CATEGORY : "IMAGES",
         BASE_FOLDER : "LOGOS",
+        PROFILE_PICTURES:"PROFILE_PICTURES",
         FILE_DOWNLOAD_PATH: "/downloadFile?directory=",
         FILE_SEPARATOR_KEY: "?directory="
       },

@@ -58,7 +58,7 @@
                           >
                           </q-icon>
                           <img
-                            :src="getCurrentMember.picture"
+                            :src="getProfilePicture"
                             :alt="$t('app.profilePicAlt')"
                             v-if="
                               getCurrentMember != null &&
@@ -1124,6 +1124,14 @@ export default {
     getFormField() {
       return this.setFormField(this.$store.getters.getCurrentMember);
     },
+
+    getProfilePicture() {
+      return (
+        process.env.FILE_API_URL +
+        process.env.FILE_DOWNLOAD_PATH +
+        this.getCurrentMember.picture
+      );
+    },
   },
   watch: {
     getFormField() {
@@ -1210,52 +1218,47 @@ export default {
     onFileChanged(e) {
       const formData = new FormData();
       formData.append("file", e.target.files[0]);
+
       let organisation = this.$store.getters.getOrganisation;
-      let fileCategory = "IMAGES";
-      let APP_NAME = "FINANCIAL_ASSISTANT_APP";
-      let upload_folder = "PROFILE_PICTURES";
-      let directory = `${APP_NAME}/${organisation.name}/${upload_folder}`;
+      let directory = `${process.env.APP_NAME}/${organisation.name}/${process.env.PROFILE_PICTURES}`;
       let payload = {
-        url: `/api/v1/protected/upload-file?directory=${directory}&fileCategory=${fileCategory}`,
+        url: `/upload-file?directory=${directory}&fileCategory=${process.env.FILE_CATEGORY}`,
         data: formData,
         status: "none",
-        show_feedback: false,
+        show_feedback: true,
         msg: "Picture uploaded successfully",
         color: "default",
         error_msg: "default",
         commit: "none",
         has_commit: false,
       };
-      this.$store.dispatch("uploadImageRequest", payload).then(() => {
-        let get_file_payload = {
-          url: `/api/v1/protected/file?directory=${directory}&fileCategory=${fileCategory}&fileName=${e.target.files[0].name}`,
-          data: formData,
-          show_feedback: false,
-        };
-        this.$store
-          .dispatch("fetchUploadedImageRequest", get_file_payload)
-          .then((res) => {
-            let user = this.$store.getters.getCurrentMember;
-            let data = {
-              name: user.name,
-              email: user.email,
-              gender: user.gender,
-              address: user.address,
-              occupation: user.occupation,
-              picture: res.data.fileDownloadUri,
-            };
-            let update_user = {
-              url: `/api/protected/users/${user.id}`,
-              data: data,
-              status: "none",
-              show_feedback: false,
-            };
-            this.$store.dispatch("putRequest", update_user).then(() => {
-              this.getMemberProfile(user.id);
-              this.user_roles = [];
-            });
-          });
-      });
+      this.$store
+        .dispatch("uploadImageRequest", payload)
+        .then((response) => {
+          let user = this.$store.getters.getCurrentMember;
+          if (response.status == 200) {
+            user.picture = response.data.fileDownloadUri.split(
+              process.env.FILE_SEPARATOR_KEY
+            )[1];
+
+            return user;
+          }
+        })
+        .then((user) => {
+          this.$store.dispatch("setCurrentMember", user);
+          return user;
+        })
+        .then((user) => {
+          let update_user = {
+            url: `/api/protected/users/${user.id}`,
+            data: {
+              picture: user.picture,
+            },
+            status: "none",
+            show_feedback: false,
+          };
+          this.$store.dispatch("putRequest", update_user).then(() => {});
+        });
     },
 
     computeTotal(data, evt) {

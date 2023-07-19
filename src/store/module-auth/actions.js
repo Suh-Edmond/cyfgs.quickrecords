@@ -309,6 +309,7 @@ export async function uploadImageRequest({ commit, dispatch }, payload) {
         data: "",
         status: payload.status,
         color: payload.color,
+        show_feedback: payload.show_feedback,
         msg: payload.msg ? payload.msg : "default",
         to_on_ok: "none",
       };
@@ -321,6 +322,7 @@ export async function uploadImageRequest({ commit, dispatch }, payload) {
           status: "fail",
           color: "negative",
           to_on_fail: "none",
+          show_feedback: payload.show_feedback,
           fail_msg:
             payload.error_msg != "default"
               ? payload.error_msg

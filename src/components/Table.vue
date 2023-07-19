@@ -1146,6 +1146,7 @@ export default {
       default: 0.0,
     },
   },
+
   data() {
     return {
       loading: false,

@@ -15,9 +15,9 @@
                 flat
               />
             </div>
-            <div class="text_h6 text-center q-pt-sm q-pb-sm">SIGN IN</div>
+            <div class="text_h6 text-center q-pt-sm q-pb-sm">{{$t('app.signIn')}}</div>
             <div class="text-subtitle2 text-center q-pb-xs">
-              Sign in to continue to Financial Assistant
+             {{$t('app.loginCaption')}}
             </div>
 
             <!-- form to check invited member exist -->
@@ -28,7 +28,7 @@
             >
               <div>
                 <label for="credential" class="form_field"
-                  >Telephone <span class="text-red">*</span></label
+                  >{{$t('app.telephoneLabel')}} <span class="text-red">*</span></label
                 >
                 <vue-tel-input
                   v-model="check_user.credential"
@@ -55,9 +55,9 @@
                 </q-btn>
                 <div class="row q-mb-xl justify-end">
                   <span class="account_text" v-if="!$q.screen.lg"
-                    >Don't Have an Account ?
+                    >{{$t('app.noAccountMsg')}}
                     <router-link to="/auth/register" class="sign_link">
-                      <span>SIGN UP</span>
+                      <span>{{$t('app.signUpLabel')}}</span>
                     </router-link>
                   </span>
                 </div>
@@ -72,7 +72,7 @@
             >
               <div>
                 <label for="credential" class="form_field"
-                  >Telephone <span class="text-red">*</span></label
+                  >{{$t('app.telephoneLabel')}} <span class="text-red">*</span></label
                 >
                 <vue-tel-input
                   v-model="user.credential"
@@ -83,7 +83,7 @@
               </div>
               <div>
                 <label for="password" class="form_field"
-                  >Password <span class="text-red">*</span></label
+                  >{{$t('app.passwordLabel')}} <span class="text-red">*</span></label
                 >
                 <q-input
                   v-model="user.password"
@@ -102,7 +102,7 @@
               </div>
               <div>
                 <label for="password_confirmation" class="form_field"
-                  >Confirm Password <span class="text-red">*</span></label
+                  >{{$t('app.confirmPasswordLabel')}}<span class="text-red">*</span></label
                 >
                 <q-input
                   v-model="user.password_confirmation"
@@ -119,7 +119,7 @@
                     />
                   </template>
                   <template v-slot:hint v-if="validatePasswordMatch">
-                    <span class="text-red">Password must match</span>
+                    <span class="text-red">{{$t('app.passwordNotMatchMsg')}}</span>
                   </template>
                 </q-input>
               </div>
@@ -144,12 +144,12 @@
                   :class="!$q.screen.lg ? 'justify-evenly' : 'justify-end'"
                 >
                   <span class="account_text" v-if="!$q.screen.lg"
-                    >Don't Have an Account ?
+                    >{{$t('app.noAccountMsg')}}
                     <router-link to="/auth/register" class="sign_link">
-                      <span>SIGN UP</span>
+                      <span>{{$t('app.signUpLabel')}}</span>
                     </router-link>
                   </span>
-                  <span class="forgot_password">Forgot Password ?</span>
+                  <span class="forgot_password">{{$t('app.forgotPasswordMsg')}}</span>
                 </div>
               </div>
             </q-form>
@@ -196,8 +196,8 @@ export default {
       },
       isPwd: true,
       is_pwd_confirm: true,
-      label_continue: "CONTINUE",
-      label_sigin: "SIGN IN",
+      label_continue: this.$t('app.continue'),
+      label_sigin: this.$t('app.signIn'),
       loading: false,
       is_exist_user: false,
       color: "primary",
@@ -229,12 +229,12 @@ export default {
         data: {
           credential: this.check_user.credential.replace(/\s+/g, ""),
         },
-        msg: "Success! please provide a password to Login",
+        msg: this.$t('app.inviteUserSuccessMsg'),
         color: "default",
         show_feedback: true,
         to_on_ok: "none",
         to_on_fail: "none",
-        error_msg: "User Account does not exist! Please try again",
+        error_msg: this.$t('app.inviteMemberFailMsg'),
         to_be_store_data: {
           required: true,
           has_value: true,
@@ -266,12 +266,12 @@ export default {
           password: this.user.password,
           password_confirmation: this.user.password_confirmation,
         },
-        msg: "Login Successful",
+        msg: this.$t('app.loginSuccess'),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: "Invalid Credentails! Please try again",
+        error_msg: this.$t('app.invalidNewMemberSetPasswordMsg'),
         to_be_store_data: {
           required: true,
           has_value: false,
@@ -282,7 +282,7 @@ export default {
       this.$store
         .dispatch("postRequest", payload)
         .then((response) => {
-          if (response.success) {
+          if (response.status == 200) {
             SessionStorage.set("to_tab", "Dashboard");
             this.getOrganisationInfo();
             this.fetchCurrentYear();
@@ -290,8 +290,8 @@ export default {
 
           return response;
         })
-        .then((response) => {
-          if (response.success) {
+        .then(async(response) => {
+          if (response.status == 200) {
             let organisation_id =
               this.$store.getters.getOrganisation != null
                 ? this.$store.getters.getOrganisation.id
@@ -308,8 +308,8 @@ export default {
 
           return response;
         })
-        .then((response) => {
-          if (response.success) {
+        .then(async (response) => {
+          if (response.status == 200) {
             let organisation_id =
               this.$store.getters.getOrganisation != null
                 ? this.$store.getters.getOrganisation.id
@@ -326,8 +326,10 @@ export default {
 
           return response;
         })
-        .then((response) => {
-          if (response.success) {
+        .then(async(response) => {
+
+          if (response.status == 200) {
+             
             this.$router.push({
               name: "dashboard",
             });

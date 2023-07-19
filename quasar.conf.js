@@ -136,8 +136,8 @@ module.exports = function (ctx) {
       workboxPluginMode: "GenerateSW", // 'GenerateSW' or 'InjectManifest'
       workboxOptions: {}, // only for GenerateSW
       manifest: {
-        name: `Financial-Assistant`,
-        short_name: `Financial-Assistant`,
+        name: `Quick-Records`,
+        short_name: `Quick-Records`,
         description: `A web,mobile and desktop application for assisting the management of financial transactions in a group or organisation`,
         display: "standalone",
         orientation: "portrait",

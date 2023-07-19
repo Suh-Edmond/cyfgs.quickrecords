@@ -186,6 +186,7 @@ export default {
         ? this.$store.getters.getOrganisation.id
         : "";
     this.getOrganisationMemberSavings(organisation_id);
+    this.getSessions()
   },
   data() {
     return {
@@ -481,6 +482,7 @@ export default {
       this.$store.dispatch("getRequest", payload).then((res) => {
         this.is_fetching = false;
         this.is_filtering = true;
+        console.log(res.data);
         if (res.data) {
           res.data.forEach((saving) => {
             this.filtered_savings.push({
@@ -497,7 +499,7 @@ export default {
               created_at: saving.created_at,
               updated_by: saving.updated_by,
               date: saving.created_at,
-              total_amount: ele.total_amount,
+              total_amount: saving.total_amount,
             });
           });
         }

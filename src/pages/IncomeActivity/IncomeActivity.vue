@@ -29,7 +29,11 @@
             use-input
             clearable
             @filter="filterPaymentItems"
+            @input="stopSearch"
           >
+          <template v-slot:append v-if="start_filtering">
+              <q-spinner color="primary" size="1.2em" :thickness="3" />
+            </template>
             <template v-slot:no-option>
               <q-item>
                 <q-item-section class="text-grey">
@@ -211,6 +215,7 @@ export default {
       loading: false,
       total_income_amount: 0,
       payment_items: [],
+      start_filtering:false,
     };
   },
   computed: {
@@ -311,6 +316,12 @@ export default {
       });
     },
 
+    stopSearch(){
+      if(this.payment_item_id != null){
+        this.start_filtering = false;
+      }
+    },
+
     filterMonths(val, update, abort) {
       if (val.length < 1) {
         abort();
@@ -353,10 +364,10 @@ export default {
           status: this.status,
         },
       });
-
+      let month = this.month != null ? this.month : ""
       let payload = {
         status: "none",
-        url: `/api/protected/organisations/income-activities/search?organisation_id=${id}&month=${this.month}&payment_item_id=${payment_item_value}&status=${this.status}`,
+        url: `/api/protected/organisations/income-activities/search?organisation_id=${id}&month=${month}&payment_item_id=${payment_item_value}&status=${this.status}`,
         has_path_val: true,
         show_feedback: false,
         show_spinner: true,
@@ -375,6 +386,7 @@ export default {
       this.$store
         .dispatch("getRequest", payload)
         .then((res) => {
+          console.log( res.data);
           this.loading_filter = false;
           this.start_filter = true;
 

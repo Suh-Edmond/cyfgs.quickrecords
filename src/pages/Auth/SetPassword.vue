@@ -164,8 +164,20 @@
 import { LocalStorage, SessionStorage } from "quasar";
 import organisationMixin from "src/mixins/organisationMixin.vue";
 import { VueTelInput } from "vue-tel-input";
+import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
+import memberMixinVue from "src/mixins/memberMixin.vue";
+import ContributionsMixinVue from "src/mixins/ContributionsMixin.vue";
+import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
+import ExpenditureItemDetailMixinVue from "src/mixins/ExpenditureItemDetailMixin.vue";
 export default {
-  mixins: [organisationMixin],
+  mixins: [
+    organisationMixin,
+    CurrentYearMixinVue,
+    memberMixinVue,
+    ContributionsMixinVue,
+    UserSavingMixinVue,
+    ExpenditureItemDetailMixinVue,
+  ],
   mounted() {
     LocalStorage.clear();
   },
@@ -215,7 +227,7 @@ export default {
       let payload = {
         url: "/api/public/auth/check-user",
         data: {
-          credential: this.check_user.replace(/\s+/g, ""),
+          credential: this.check_user.credential.replace(/\s+/g, ""),
         },
         msg: "Success! please provide a password to Login",
         color: "default",
@@ -248,7 +260,7 @@ export default {
     },
     onSetPassword() {
       let payload = {
-        url: "/api/protected/auth/set-password",
+        url: "/api/public/auth/set-password",
         data: {
           credential: this.user.credential.replace(/\s+/g, ""),
           password: this.user.password,
@@ -256,7 +268,7 @@ export default {
         },
         msg: "Login Successful",
         color: "default",
-        to_on_ok: "dashboard",
+        to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
         error_msg: "Invalid Credentails! Please try again",
@@ -270,9 +282,55 @@ export default {
       this.$store
         .dispatch("postRequest", payload)
         .then((response) => {
-          if (response.status == 200) {
+          if (response.success) {
             SessionStorage.set("to_tab", "Dashboard");
             this.getOrganisationInfo();
+            this.fetchCurrentYear();
+          }
+
+          return response;
+        })
+        .then((response) => {
+          if (response.success) {
+            let organisation_id =
+              this.$store.getters.getOrganisation != null
+                ? this.$store.getters.getOrganisation.id
+                : null;
+            let current_session_id =
+              this.$store.getters.getCurrentYear != null ||
+              this.$store.getters.getCurrentYear != undefined
+                ? this.$store.getters.getCurrentYear.id
+                : "";
+            this.getUserByRegistrationStatus(organisation_id);
+            this.getTotalContributionByYear(current_session_id);
+            this.getUserByRegistration(organisation_id);
+          }
+
+          return response;
+        })
+        .then((response) => {
+          if (response.success) {
+            let organisation_id =
+              this.$store.getters.getOrganisation != null
+                ? this.$store.getters.getOrganisation.id
+                : null;
+            let current_session_id =
+              this.$store.getters.getCurrentYear != null ||
+              this.$store.getters.getCurrentYear != undefined
+                ? this.$store.getters.getCurrentYear.id
+                : "";
+            this.getOrganisationMemberSavings(organisation_id);
+            this.getTotalYearlyExpenditures(current_session_id);
+            this.getOrganisationMembers(organisation_id);
+          }
+
+          return response;
+        })
+        .then((response) => {
+          if (response.success) {
+            this.$router.push({
+              name: "dashboard",
+            });
           }
         })
         .finally(() => {

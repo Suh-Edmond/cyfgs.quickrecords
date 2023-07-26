@@ -10,6 +10,7 @@ export default {
     continue:"CONTINUE",
     loginCaption:'Sign in to continue to Quick Records',
     signUpCaptionMsg:'Sign up to get started with Quick Records',
+    updateOrganisationHeading:"Update Organisation Information",
     telephoneLabel:'Telephone',
     passwordLabel:'Password',
     loginBtnLabel:'SIGN IN',

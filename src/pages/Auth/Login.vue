@@ -81,7 +81,7 @@ import memberMixinVue from "src/mixins/memberMixin.vue";
 import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
 import ContributionsMixinVue from "src/mixins/ContributionsMixin.vue";
 import { VueTelInput } from "vue-tel-input";
-import { Notify, SessionStorage } from "quasar";
+import { SessionStorage } from "quasar";
 
 export default {
   name: "PageIndex",
@@ -175,6 +175,10 @@ export default {
                   });
                 }
                 return res;
+              }).then( ()=>{
+                  this.getTotalContributionByYear(this.$store.getters.getCurrentYear.id);
+              }).then(() => {
+                this.getTotalYearlyExpenditures(this.$store.getters.getCurrentYear.id);
               })
               .catch(() => {});
           }

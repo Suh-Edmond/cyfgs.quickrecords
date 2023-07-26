@@ -3,7 +3,7 @@
     <div v-if="!exist_organisation">
       <div class="flex flex-center q-mb-md">
         <label for="title" class="title">{{
-          $t("app.organisationMgtHeading")
+          $t("app.updateOrganisationHeading")
         }}</label>
       </div>
       <div>
@@ -72,9 +72,12 @@
               :class="$q.screen.lg ? 'q-px-sm' : ''"
             >
               <div>
-                <label for="credential" class="form_field"
-                  >{{ $t("app.telephoneLabel") }}
-                  <span class="text-red q-pl-xs">*</span><q-space></q-space>
+                <label for="credential" class="form_field flex justify-between"
+                  >
+                  <span>
+                    {{ $t("app.telephoneLabel") }}
+                  <span class="text-red q-pl-xs">*</span>
+                  </span>
                   <a @click.prevent="showAddTelephone" class="add_telephone">
                     <q-icon
                       name="add"
@@ -99,7 +102,7 @@
                   v-model="organisation.telephone"
                   defaultCountry="cm"
                   mode="international"
-                  class="q-pa-xs"
+                  class="q-pa-xs q-mb-sm"
                 ></vue-tel-input>
                 <vue-tel-input
                   v-model="organisation.telephone2"
@@ -608,13 +611,11 @@ export default {
 .form_field {
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 400;
-  font-size: 13px;
-  line-height: 24px;
-  display: flex;
+  font-weight: 500;
+  font-size: 12px;
   align-items: center;
   letter-spacing: 0.01em;
-  color: $grey8;
+  color: $grey2;
 }
 
 .card {

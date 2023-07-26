@@ -827,4 +827,9 @@ export default {
 .role_update_date {
   font-weight: 500;
 }
+
+.hint {
+  color: $grey2;
+  font-size: small;
+}
 </style>

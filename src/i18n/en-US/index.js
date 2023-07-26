@@ -66,6 +66,7 @@ export default {
     contributionLabel:'Members Contributions',
     sponsorshipLabel:'Sponsorship Management',
     reportGenerationLabel:'Reports Generation',
+    nonRegisteredName:"Non Registered",
     welcomeLabel:'Welcome',
     accountLabel:'My Account',
     logoutLabel:'Logout',

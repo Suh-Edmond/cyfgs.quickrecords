@@ -395,10 +395,11 @@ export default {
           this.$t("app.registeredName"),
           this.$t("app.pendingName"),
           this.$t("app.declinedName"),
+          this.$t("app.nonRegisteredName"),
         ],
         datasets: [
           {
-            backgroundColor: ["#27ae60", "#2d9cdb", "#f2994a"],
+            backgroundColor: ["#27ae60", "#2d9cdb", "#f2994a", "#fe1915"],
             data: this.$store.getters.getPieChartData,
           },
         ],

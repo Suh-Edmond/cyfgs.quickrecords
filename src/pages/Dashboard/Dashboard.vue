@@ -394,7 +394,7 @@ export default {
         labels: [
           this.$t("app.registeredName"),
           this.$t("app.pendingName"),
-          this.$t("app.notRegisteredName"),
+          this.$t("app.declinedName"),
         ],
         datasets: [
           {
@@ -406,27 +406,61 @@ export default {
       return data;
     },
 
+    getApprovedUsers() {
+      let approved_users = [];
+      this.$store.getters.getBarChartData.forEach((ele) =>
+        approved_users.push(ele[0])
+      );
+      return approved_users;
+    },
+
+    getPendingUsers() {
+      let pending_users = [];
+      this.$store.getters.getBarChartData.forEach((ele) =>
+        pending_users.push(ele[1])
+      );
+      return pending_users;
+    },
+
+    getDeclineUsers() {
+      let decline_users = [];
+      this.$store.getters.getBarChartData.forEach((ele) =>
+        decline_users.push(ele[2])
+      );
+      return decline_users;
+    },
+
     getBarData() {
       let data = {
         labels: [
-          "January",
-          "February",
-          "March",
-          "April",
-          "May",
-          "June",
-          "July",
-          "August",
-          "September",
-          "October",
-          "November",
-          "December",
+          this.$t("app.januaryName"),
+          this.$t("app.februaryName"),
+          this.$t("app.marchName"),
+          this.$t("app.aprilName"),
+          this.$t("app.mayName"),
+          this.$t("app.juneName"),
+          this.$t("app.julyName"),
+          this.$t("app.augustName"),
+          this.$t("app.septemberName"),
+          this.$t("app.octoberName"),
+          this.$t("app.novemberName"),
+          this.$t("app.decemberName"),
         ],
         datasets: [
           {
-            label: "Registered Members",
+            label: this.$t("app.registeredMembersMsg"),
             backgroundColor: "#27ae60",
-            data: this.$store.getters.getBarChartData,
+            data: this.getApprovedUsers,
+          },
+          {
+            label: this.$t("app.pendingMembersMsg"),
+            backgroundColor: "#2d9cdb",
+            data: this.getPendingUsers,
+          },
+          {
+            label: this.$t("app.notDeclinedMembersMsg"),
+            backgroundColor: "#f2994a",
+            data: this.getDeclineUsers,
           },
         ],
       };
@@ -479,25 +513,25 @@ export default {
 
     setSavingStatistics(monthly_savings, yearly_savings, status_stat) {
       this.lineChartData1.labels = [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December",
+        this.$t("app.januaryName"),
+        this.$t("app.februaryName"),
+        this.$t("app.marchName"),
+        this.$t("app.aprilName"),
+        this.$t("app.mayName"),
+        this.$t("app.juneName"),
+        this.$t("app.julyName"),
+        this.$t("app.augustName"),
+        this.$t("app.septemberName"),
+        this.$t("app.octoberName"),
+        this.$t("app.novemberName"),
+        this.$t("app.decemberName"),
       ];
-      this.lineChartData1.datasets[0].label = "Monthly Savings";
+      this.lineChartData1.datasets[0].label = this.$t("app.monthlySavingsMsg");
       this.lineChartData1.datasets[0].backgroundColor = "#ff80ab";
       this.lineChartData1.datasets[0].data = monthly_savings;
 
       this.lineChartData2.labels = [];
-      this.lineChartData2.datasets[0].label = "Yearly Savings";
+      this.lineChartData2.datasets[0].label = this.$t("app.yearlySavingMsg");
       this.lineChartData2.datasets[0].backgroundColor = "#ff80ab";
       this.lineChartData2.datasets[0].data = yearly_savings;
       this.$store.getters.getSessions.forEach((session) => {
@@ -520,7 +554,7 @@ export default {
         msg: "none",
         color: "default",
         status: "none",
-        error_msg: "An Error occurred! Could not fetch member savings",
+        error_msg: this.$t("app.defaultErrorMsg"),
         has_commit: false,
         show_feedback: false,
         show_spinner: false,
@@ -545,7 +579,7 @@ export default {
         this.lineChartData3.labels = percentages[0].percentages_data.map(
           (ele) => ele.name
         );
-        this.lineChartData3.datasets[0].label = "NUMBER OF MEMBERS";
+        this.lineChartData3.datasets[0].label = this.$t("app.numOfMembers");
         this.lineChartData3.datasets[0].backgroundColor = "#8c9eff";
         this.lineChartData3.datasets[0].data =
           percentages[0].percentages_data.map((ele) => ele.contributors);
@@ -553,7 +587,9 @@ export default {
         this.lineChartData4.labels = percentages[0].percentages_data.map(
           (ele) => ele.name
         );
-        this.lineChartData4.datasets[0].label = "AMOUNT CONTRIBUTED";
+        this.lineChartData4.datasets[0].label = this.$t(
+          "app.amountContributedMsg"
+        );
         this.lineChartData4.datasets[0].backgroundColor = "#8c9eff";
         this.lineChartData4.datasets[0].data =
           percentages[0].percentages_data.map((ele) => ele.percentage);
@@ -564,8 +600,9 @@ export default {
           "MONTHLY",
           "ONE_TIME",
         ];
-        (this.barChartData1.datasets[0].label =
-          "Average Contributions By Payment Frequency"),
+        (this.barChartData1.datasets[0].label = this.$t(
+          "app.avgContributionFrequencyMsg"
+        )),
           (this.barChartData1.datasets[0].backgroundColor = "#8c9eff");
         this.barChartData1.datasets[0].data = percentages[1].avg_by_frequency;
 
@@ -576,8 +613,9 @@ export default {
           "MEMBERS_WITHOUT_ROLES",
           "GROUPED_MEMBERS",
         ];
-        (this.barChartData2.datasets[0].label =
-          "Average Contributions By Payment Type"),
+        (this.barChartData2.datasets[0].label = this.$t(
+          "app.avgContributionsByPaymentTypeMsg"
+        )),
           (this.barChartData2.datasets[0].backgroundColor = "#8c9eff");
         this.barChartData2.datasets[0].data = percentages[2].avg_by_type;
       }
@@ -621,15 +659,18 @@ export default {
         "November",
         "December",
       ];
-      this.expenditureLineChartData1.datasets[0].label = "Monthly Expenditures";
+      this.expenditureLineChartData1.datasets[0].label = this.$t(
+        "app.monthlyExpenditureMsg"
+      );
       this.expenditureLineChartData1.datasets[0].backgroundColor = "#b2dfdb";
       this.expenditureLineChartData1.datasets[0].data = data.monthly_expenses;
 
       this.expenditureBarChartData2.labels = data.expenses_by_items.map(
         (ele) => ele.name
       );
-      this.expenditureBarChartData2.datasets[0].label =
-        "Expenditures By Payment Type";
+      this.expenditureBarChartData2.datasets[0].label = this.$t(
+        "app.expenditureByPaymentType"
+      );
       this.expenditureBarChartData2.datasets[0].backgroundColor = "#b2dfdb";
       this.expenditureBarChartData2.datasets[0].data =
         data.expenses_by_items.map((ele) => ele.amount);

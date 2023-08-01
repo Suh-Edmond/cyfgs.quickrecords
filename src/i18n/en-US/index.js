@@ -428,5 +428,22 @@ export default {
     reportByPaymentItem:'By Activity/Event',
     reportByQuarter:'Quaterly (3 months)',
     reportByYear:'Yearly (12 months)',
+    passwordReset:'Forgot Password ?',
+    passwordResetCaption:'Enter your email address to get Password Reset Instructions',
+    getPasswordResetToken:'Get Password Reset Instructions',
+    passwordResetTokenSuccessMsg:"Password Reset Instructions sent successfully",
+    passwordTokenSentSuccessMsg:"Password Reset Token Sent Successfully",
+    passwordTokenCaption:'Please check your email address to get instructions to Reset your Password',
+    invalidEmailMsg:'Invalid Email Address! Please try again.',
+    passwordResetToken:'Password Reset Token',
+    passwordResetTokenCap:'Submit Password Reset Token in order to set new Password',
+    token:'Reset Token',
+    submit:'Submit',
+    newPassword:'New Password',
+    confirmPasword:'Confirm Password',
+    invalidTokenMsg:'Invalid Password Reset Token',
+    successResetTokenMsg:'Success!Please provide a new  strong password for you account',
+    resetPasswordMsg:'Reset Password',
+    resetCap:'Please provide a new strong Password for your Account'
    }
 };

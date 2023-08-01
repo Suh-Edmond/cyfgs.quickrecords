@@ -29,6 +29,24 @@ const routes = [
         },
       },
       {
+        name: "PasswordResetToken",
+        path: "auth/password-reset/get-token",
+        component: () => import("src/pages/Auth/PasswordResetToken.vue"),
+        meta: {
+          middleware: "guest",
+          enableSignUp: true,
+        },
+      },
+      {
+        name:"PasswordReset",
+        path:"/auth/password-reset",
+        component:() => import("src/pages/Auth/ResetPassword.vue"),
+        meta: {
+          middleware: "guest",
+          enableSignUp: true,
+        },
+      },
+      {
         name: "create_organisation",
         path: "organisation/create",
         component: () =>

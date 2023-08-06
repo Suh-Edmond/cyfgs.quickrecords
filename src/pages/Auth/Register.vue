@@ -28,7 +28,7 @@
                   <vue-tel-input v-model="user.telephone" defaultCountry="cm" mode="international" class="q-pa-xs"></vue-tel-input>
                 </div>
                 <div class="q-pb-sm">
-                  <label for="email" class="form_field">{{$t('app.emailLabel')}}</label>
+                  <label for="email" class="form_field">{{$t('app.emailLabel')}} <span class="text-red">*</span></label>
                   <q-input
                     v-model="user.email"
                     outlined
@@ -36,7 +36,6 @@
                     type="email"
                     bottom-slots
                   >
-                    <template v-slot:hint> {{$t('app.emailHint')}} </template>
                   </q-input>
                 </div>
                 <div class="q-pb-md">

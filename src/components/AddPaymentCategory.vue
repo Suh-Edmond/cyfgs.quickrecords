@@ -158,6 +158,7 @@ export default {
 
 .info {
   color: $grey2;
+  font-size: small;
 }
 
 </style>

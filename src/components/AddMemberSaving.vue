@@ -280,5 +280,6 @@ export default {
 
 .instruction_info {
   color: $grey2;
+  font-size: small;
 }
 </style>

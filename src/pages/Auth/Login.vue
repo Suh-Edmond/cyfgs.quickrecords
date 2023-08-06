@@ -46,7 +46,7 @@
                   </template>
                 </q-input>
               </div>
-              <div class="q-mt-lg">
+              <div class="q-mt-lg q-mb-lg">
                 <q-btn
                   class="form_button q-pa-xs"
                   :label="label_sigin"
@@ -62,9 +62,11 @@
                     class="q-pl-lg"
                   ></q-icon>
                 </q-btn>
-                <span class="forgot_password text-right">{{
+                <router-link to="/auth/password-reset/get-token" class="sign_link">
+                  <span class="forgot_password text-right">{{
                   $t("app.forgotPasswordMsg")
                 }}</span>
+                  </router-link>
               </div>
             </q-form>
           </q-card-section>
@@ -81,7 +83,7 @@ import memberMixinVue from "src/mixins/memberMixin.vue";
 import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
 import ContributionsMixinVue from "src/mixins/ContributionsMixin.vue";
 import { VueTelInput } from "vue-tel-input";
-import { Notify, SessionStorage } from "quasar";
+import { SessionStorage } from "quasar";
 
 export default {
   name: "PageIndex",
@@ -175,6 +177,10 @@ export default {
                   });
                 }
                 return res;
+              }).then( ()=>{
+                  this.getTotalContributionByYear(this.$store.getters.getCurrentYear.id);
+              }).then(() => {
+                this.getTotalYearlyExpenditures(this.$store.getters.getCurrentYear.id);
               })
               .catch(() => {});
           }
@@ -274,5 +280,10 @@ export default {
   cursor: pointer;
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
+}
+
+.sign_link {
+  text-decoration: none;
+  color: $primary;
 }
 </style>

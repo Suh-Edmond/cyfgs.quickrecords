@@ -66,7 +66,7 @@
                 @click="goBack(null)"
               />
             </label>
-            <div class="q-pa-xs">
+            <div class="q-pa-xs" v-show="verifyRequiredAdd()">
               <span class="q-pl-sm title tab" @click="goBack(item.name)">{{
                 item.name
               }}</span>
@@ -92,7 +92,7 @@
               size="md"
               dense
               no-caps
-              v-show="requires_add && !checkTreasurerRole() && !verifyRequiredAdd()"
+              v-show="requires_add && !checkTreasurerRole() && verifyRequiredAdd()"
               @click="showRightDrawer"
               class="q-pa-xs"
             />
@@ -373,7 +373,7 @@ export default {
     },
 
     verifyRequiredAdd(){
-      return this.$route.name === 'member_profile'? true:false;
+      return this.$route.name !== 'member_account'
     }
   },
 };

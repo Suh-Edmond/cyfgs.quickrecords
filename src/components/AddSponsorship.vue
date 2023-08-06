@@ -267,7 +267,7 @@ export default {
 .form_field {
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 400;
+  font-weight: 500;
   font-size: 12px;
   align-items: center;
   letter-spacing: 0.01em;
@@ -276,6 +276,7 @@ export default {
 
 .instruction_info {
   color: $grey2;
+  font-size: small;
 }
 
 .text_color {

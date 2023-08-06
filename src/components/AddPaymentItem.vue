@@ -543,12 +543,7 @@ export default {
 
 .info {
   color: $grey2;
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 13px;
-  align-items: center;
-  letter-spacing: 0.01em;
+  font-size: small;
 }
 
 .ref_btn {

@@ -62,11 +62,14 @@
                     class="q-pl-lg"
                   ></q-icon>
                 </q-btn>
-                <router-link to="/auth/password-reset/get-token" class="sign_link">
+                <router-link
+                  to="/auth/password-reset/get-token"
+                  class="sign_link"
+                >
                   <span class="forgot_password text-right">{{
-                  $t("app.forgotPasswordMsg")
-                }}</span>
-                  </router-link>
+                    $t("app.forgotPasswordMsg")
+                  }}</span>
+                </router-link>
               </div>
             </q-form>
           </q-card-section>
@@ -145,6 +148,10 @@ export default {
         .dispatch("postRequest", payload)
         .then((response) => {
           if (response.status == 200) {
+            this.$store.dispatch(
+              "setCurrentYear",
+              response.data.data.current_session
+            );
             let payload = {
               status: "none",
               url: "/api/protected/organisation-info",
@@ -166,7 +173,6 @@ export default {
               .dispatch("getRequest", payload)
               .then((res) => {
                 if (res.success) {
-                  this.fetchCurrentYear();
                   this.$router.push({
                     name: "dashboard",
                   });
@@ -177,12 +183,55 @@ export default {
                   });
                 }
                 return res;
-              }).then( ()=>{
-                  this.getTotalContributionByYear(this.$store.getters.getCurrentYear.id);
-              }).then(() => {
-                this.getTotalYearlyExpenditures(this.$store.getters.getCurrentYear.id);
               })
-              .catch(() => {});
+              .then(async (res) => {
+                if (res.success) {
+                  this.getTotalYearlyExpenditures(
+                    this.$store.getters.getCurrentYear.id
+                  );
+                }
+                return res;
+              })
+              .then(async (res) => {
+                if (res.success) {
+                  this.getUserByRegistration(
+                    this.$store.getters.getOrganisation.id
+                  );
+                }
+                return res;
+              })
+              .then(async (res) => {
+                if (res.success) {
+                  this.getUserByRegistrationStatus(
+                    this.$store.getters.getOrganisation.id
+                  );
+                }
+                return res;
+              })
+              .then(async (res) => {
+                if (res.success) {
+                  this.getOrganisationMemberSavings(
+                    this.$store.getters.getOrganisation.id
+                  );
+                }
+                return res;
+              })
+              .then(async (res) => {
+                if (res.success) {
+                  this.getOrganisationMembers(
+                    this.$store.getters.getOrganisation.id,
+                    false
+                  );
+                }
+                return res;
+              })
+              .then(async (res) => {
+                if (res.success) {
+                  this.getTotalContributionByYear(
+                    this.$store.getters.getCurrentYear.id
+                  );
+                }
+              });
           }
         })
         .catch(() => {})

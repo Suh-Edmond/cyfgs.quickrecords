@@ -58,7 +58,7 @@
               <div>
                 <label for="credential" class="form_field">{{
                   $t("app.emailLabel")
-                }}</label>
+                }} <span class="text-red">*</span></label>
                 <q-input v-model="user.email" outlined dense type="email" />
               </div>
               <div>

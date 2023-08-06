@@ -248,8 +248,6 @@ export default {
     if (this.getOrganisationId == "") {
       this.getOrganisationInfo();
     }
-    this.fetchCurrentYear();
-    this.showStatistics("MEMBERSHIP");
   },
   data() {
     return {
@@ -507,7 +505,7 @@ export default {
           break;
         case "EXPENDITURES":
           this.statistics_type = "EXPENDITURES";
-          this.getYearlyExpenditureStatistics(current_session_id);
+          this.getYearlyExpenditureStatistics(this.$store.getters.getCurrentYear.id);
           break;
       }
     },

@@ -147,9 +147,9 @@ import { LocalStorage, SessionStorage } from "quasar";
 
 export default {
   mounted() {
-    this.auth_name = LocalStorage.getItem("data").name;
+    this.auth_name = LocalStorage.getItem("data").user_data.name;
     this.auth_user_role = this.formatUserRole(
-      LocalStorage.getItem("data").roles.find((role) => role.name !== "MEMBER")
+      LocalStorage.getItem("data").user_data.roles.find((role) => role.name !== "MEMBER")
         .name
     );
   },
@@ -165,7 +165,7 @@ export default {
   },
   data() {
     return {
-      auth_name: LocalStorage.getItem("data").name,
+      auth_name: LocalStorage.getItem("data").user_data.name,
       auth_user_role: null,
       left: false,
       year: new Date().getFullYear(),
@@ -338,7 +338,7 @@ export default {
     },
 
     checkTreasurerRole() {
-      const treasurer_role = LocalStorage.getItem("data").roles.find(
+      const treasurer_role = LocalStorage.getItem("data").user_data.roles.find(
         (role) => role.name == "TREASURER"
       );
       return treasurer_role != undefined;

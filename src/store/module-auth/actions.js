@@ -376,7 +376,7 @@ export function setUpdatedPayCategories({ commit }, data) {
 }
 
 export function setNavigationTabByUserRole() {
-  let role = LocalStorage.getItem("data").roles.find(
+  let role = LocalStorage.getItem("data").user_data.roles.find(
     (role) => role.name === "PRESIDENT"
   );
   return role == undefined;

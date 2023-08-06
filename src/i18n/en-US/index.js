@@ -430,7 +430,7 @@ export default {
     reportByYear:'Yearly (12 months)',
     passwordReset:'Forgot Password ?',
     passwordResetCaption:'Enter your email address to get Password Reset Instructions',
-    getPasswordResetToken:'Get Password Reset Instructions',
+    getPasswordResetToken:'Send',
     passwordResetTokenSuccessMsg:"Password Reset Instructions sent successfully",
     passwordTokenSentSuccessMsg:"Password Reset Token Sent Successfully",
     passwordTokenCaption:'Please check your email address to get instructions to Reset your Password',

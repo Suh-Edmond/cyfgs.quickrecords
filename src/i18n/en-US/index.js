@@ -434,7 +434,7 @@ export default {
     passwordResetTokenSuccessMsg:"Password Reset Instructions sent successfully",
     passwordTokenSentSuccessMsg:"Password Reset Token Sent Successfully",
     passwordTokenCaption:'Please check your email address to get instructions to Reset your Password',
-    invalidEmailMsg:'Invalid Email Address! Please try again.',
+    invalidEmailMsg:'Invalid Email Address! Please use the correct Account Email Address .',
     passwordResetToken:'Password Reset Token',
     passwordResetTokenCap:'Submit Password Reset Token in order to set new Password',
     token:'Reset Token',
@@ -442,8 +442,15 @@ export default {
     newPassword:'New Password',
     confirmPasword:'Confirm Password',
     invalidTokenMsg:'Invalid Password Reset Token',
-    successResetTokenMsg:'Success!Please provide a new  strong password for you account',
+    successResetTokenMsg:'Success! Please provide a new  strong password for you account',
     resetPasswordMsg:'Reset Password',
-    resetCap:'Please provide a new strong Password for your Account'
+    resetCap:'Please provide a new strong Password for your Account',
+    successResetPasswordMsg:"Successfully reset account password",
+    failedResetPasswordMsg:"Fail to reset account password.Please try again",
+    newPasswordHintMsg:"Password must have at least 8 characters",
+    passwordNotMatchMsg:"Password did not match",
+    passwordTokenExpireCaption:"Oh! Sorry your password reset token has expired. Please click on the button to get a new password reset token",
+    tokenExpireMsg:"Password Reset Token Expired",
+    newPasswordResetTokenMsg:"Get New Password Reset Token"
    }
 };

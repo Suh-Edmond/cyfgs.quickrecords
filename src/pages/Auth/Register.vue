@@ -45,6 +45,7 @@
                     :type="is_pwd ? 'password' : 'text'"
                     outlined
                     dense
+                    bottom-slots
                   >
                     <template v-slot:append>
                       <q-icon
@@ -53,6 +54,9 @@
                         @click="is_pwd = !is_pwd"
                       />
                     </template>
+                    <template v-slot:hint>
+                    <span class="text-red">{{ $t('app.newPasswordHintMsg') }}</span>
+                  </template>
                   </q-input>
                 </div>
                 <div class="q-pb-sm">

@@ -248,6 +248,9 @@ export default {
     if (this.getOrganisationId == "") {
       this.getOrganisationInfo();
     }
+    if(this.$store.getters.getCurrentYear === null){
+      this.fetchCurrentYear();
+    }
   },
   data() {
     return {

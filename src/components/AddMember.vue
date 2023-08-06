@@ -282,7 +282,7 @@ export default {
           data: [],
         },
       };
-      this.$store
+       this.$store
         .dispatch("postRequest", payload)
         .then(() => {
           this.getOrganisationMembers(id, true);

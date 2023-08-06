@@ -530,12 +530,14 @@ export default {
       this.lineChartData1.datasets[0].data = monthly_savings;
 
       this.lineChartData2.labels = [];
+      this.lineChartData2.datasets[0].data = [];
       this.lineChartData2.datasets[0].label = this.$t("app.yearlySavingMsg");
       this.lineChartData2.datasets[0].backgroundColor = "#ff80ab";
-      this.lineChartData2.datasets[0].data = yearly_savings;
-      this.$store.getters.getSessions.forEach((session) => {
-        this.lineChartData2.labels.push(session.year);
-      });
+      yearly_savings.forEach((saving) => {
+         this.lineChartData2.datasets[0].data.push(saving.amount);
+        this.lineChartData2.labels.push(saving.year);
+      })
+
 
       this.pieChartData.labels = ["PENDING", "APPROVED", "DECLINED"];
       this.pieChartData.datasets[0].backgroundColor = [

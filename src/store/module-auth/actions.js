@@ -5,7 +5,7 @@ const API_URL = process.env.API_BASE_URL;
 
 const FILE_API_URL = process.env.FILE_API_URL;
 
-export function handleRequestResponse({ getters, dispatch }, payload) {
+export function handleRequestResponse({  }, payload) {
   if (payload.status == "success" && payload.show_feedback) {
     if (payload.msg == "default") {
       Notify.create({
@@ -376,7 +376,7 @@ export function setUpdatedPayCategories({ commit }, data) {
 }
 
 export function setNavigationTabByUserRole() {
-  let role = LocalStorage.getItem("data").roles.find(
+  let role = LocalStorage.getItem("data").user_data.roles.find(
     (role) => role.name === "PRESIDENT"
   );
   return role == undefined;

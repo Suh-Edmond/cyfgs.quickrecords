@@ -248,8 +248,9 @@ export default {
     if (this.getOrganisationId == "") {
       this.getOrganisationInfo();
     }
-    this.fetchCurrentYear();
-    this.showStatistics("MEMBERSHIP");
+    if(this.$store.getters.getCurrentYear === null){
+      this.fetchCurrentYear();
+    }
   },
   data() {
     return {
@@ -507,7 +508,7 @@ export default {
           break;
         case "EXPENDITURES":
           this.statistics_type = "EXPENDITURES";
-          this.getYearlyExpenditureStatistics(current_session_id);
+          this.getYearlyExpenditureStatistics(this.$store.getters.getCurrentYear.id);
           break;
       }
     },
@@ -532,12 +533,14 @@ export default {
       this.lineChartData1.datasets[0].data = monthly_savings;
 
       this.lineChartData2.labels = [];
+      this.lineChartData2.datasets[0].data = [];
       this.lineChartData2.datasets[0].label = this.$t("app.yearlySavingMsg");
       this.lineChartData2.datasets[0].backgroundColor = "#ff80ab";
-      this.lineChartData2.datasets[0].data = yearly_savings;
-      this.$store.getters.getSessions.forEach((session) => {
-        this.lineChartData2.labels.push(session.year);
-      });
+      yearly_savings.forEach((saving) => {
+         this.lineChartData2.datasets[0].data.push(saving.amount);
+        this.lineChartData2.labels.push(saving.year);
+      })
+
 
       this.pieChartData.labels = ["PENDING", "APPROVED", "DECLINED"];
       this.pieChartData.datasets[0].backgroundColor = [

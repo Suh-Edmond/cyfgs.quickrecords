@@ -618,7 +618,7 @@ export default {
 
     checkRole(tab_roles) {
       let user_roles = [];
-      LocalStorage.getItem("data").roles.forEach((role) => {
+      LocalStorage.getItem("data").user_data.roles.forEach((role) => {
         user_roles.push(role.name);
       });
       return user_roles.includes(tab_roles[0]) ||

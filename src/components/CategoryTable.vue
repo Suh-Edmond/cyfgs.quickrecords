@@ -852,14 +852,14 @@ export default {
     },
 
     checkTreasurerRole() {
-      const treasurer_role = LocalStorage.getItem("data").roles.find(
+      const treasurer_role = LocalStorage.getItem("data").user_data.roles.find(
         (role) => role.name == "TREASURER"
       );
       return treasurer_role != undefined;
     },
 
     checkPresidentRole() {
-      const president_role = LocalStorage.getItem("data").roles.find(
+      const president_role = LocalStorage.getItem("data").user_data.roles.find(
         (role) => role.name == "PRESIDENT"
       );
       return president_role != undefined;

@@ -332,7 +332,7 @@ export default {
     },
 
     canEditUserRole() {
-      let has_president_role = LocalStorage.getItem("data").roles.find(
+      let has_president_role = LocalStorage.getItem("data").user_data.roles.find(
         (role) => role.name === "PRESIDENT"
       );
       return has_president_role != undefined;
@@ -512,7 +512,7 @@ export default {
     },
 
     checkCanEditUserRole() {
-      let has_president_role = LocalStorage.getItem("data").roles.find(
+      let has_president_role = LocalStorage.getItem("data").user_data.roles.find(
         (role) => role.name === "PRESIDENT"
       );
       return has_president_role != undefined;

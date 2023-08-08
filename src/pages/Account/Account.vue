@@ -477,21 +477,21 @@ export default {
   data() {
     return {
       user: {
-        name: LocalStorage.getItem("data").name,
-        email: LocalStorage.getItem("data").email,
-        gender: LocalStorage.getItem("data").gender,
-        address: LocalStorage.getItem("data").address,
-        occupation: LocalStorage.getItem("data").occupation,
-        user_id: LocalStorage.getItem("data").id,
-        roles: LocalStorage.getItem("data").roles,
-        picture: LocalStorage.getItem("data").picture,
-        telephone: LocalStorage.getItem("data").telephone,
+        name: LocalStorage.getItem("data").user_data.name,
+        email: LocalStorage.getItem("data").user_data.email,
+        gender: LocalStorage.getItem("data").user_data.gender,
+        address: LocalStorage.getItem("data").user_data.address,
+        occupation: LocalStorage.getItem("data").user_data.occupation,
+        user_id: LocalStorage.getItem("data").user_data.id,
+        roles: LocalStorage.getItem("data").user_data.roles,
+        picture: LocalStorage.getItem("data").user_data.picture,
+        telephone: LocalStorage.getItem("data").user_data.telephone,
       },
       security: {
         old_password: null,
         password: null,
         password_confirmation: null,
-        user_id: LocalStorage.getItem("data").id,
+        user_id: LocalStorage.getItem("data").user_data.id,
       },
       loading: false,
       edit_profile: false,
@@ -505,13 +505,13 @@ export default {
   },
   computed: {
     getFormatedCreatedDate() {
-      return moment(LocalStorage.getItem("data").created_at).format(
+      return moment(LocalStorage.getItem("data").user_data.created_at).format(
         "MMMM Do YYYY"
       );
     },
 
     getFormatedUpdatedDate() {
-      return moment(LocalStorage.getItem("data").updated_at).format(
+      return moment(LocalStorage.getItem("data").user_data.updated_at).format(
         "MMMM Do YYYY"
       );
     },
@@ -641,7 +641,7 @@ export default {
       const formData = new FormData();
       formData.append("file", e.target.files[0]);
 
-      let user = LocalStorage.getItem("data");
+      let user = LocalStorage.getItem("data").user_data;
       let organisation = this.$store.getters.getOrganisation;
       let directory = `${process.env.APP_NAME}/${organisation.name}/${process.env.PROFILE_PICTURES}`;
       let payload = {
@@ -674,7 +674,7 @@ export default {
               process.env.FILE_SEPARATOR_KEY
             )[1];
             LocalStorage.remove("data");
-            LocalStorage.set("data", user);
+            LocalStorage.set("data.user_data", user);
           });
         }
       });

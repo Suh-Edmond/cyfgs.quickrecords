@@ -216,7 +216,10 @@ export default {
           if (response.status == 200) {
             SessionStorage.set("to_tab", "Dashboard");
             this.getOrganisationInfo();
-            this.fetchCurrentYear();
+            this.$store.dispatch(
+              "setCurrentYear",
+              response.data.data.current_session
+            );
           }
 
           return response;

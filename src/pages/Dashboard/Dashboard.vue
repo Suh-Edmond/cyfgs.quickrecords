@@ -245,8 +245,8 @@ export default {
     ExpenditureItemDetailMixinVue,
   ],
   mounted() {
-    if (this.getOrganisationId == "") {
-      this.getOrganisationInfo();
+     if (this.$store.getters.getOrganisation === null) {
+       this.getOrganisationInfo();
     }
     if(this.$store.getters.getCurrentYear === null){
       this.fetchCurrentYear();

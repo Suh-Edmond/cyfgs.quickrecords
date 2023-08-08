@@ -183,7 +183,7 @@ export default {
       );
     },
     validatePasswordSize(){
-      return this.user.new_password.length < 8
+      return this.user.new_password !== null && this.user.new_password.length < 8
     },
     validatePasswordMatch(){
       return this.user.new_password !== this.user.confirm_password

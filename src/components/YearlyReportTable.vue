@@ -306,9 +306,9 @@
               </div>
               <div class="col-md-2 column_details"></div>
               <div class="col-md-2 column_details text-bold">
-                {{ Number(expenditures.total).toLocaleString() }}
+                {{ Number(getTotalExpenditure).toLocaleString() }}
               </div>
-              <div class="col-md-2 column_details_end text-bold"> {{ Number(expenditures.total).toLocaleString() }}</div>
+              <div class="col-md-2 column_details_end text-bold"> {{ Number(getTotalExpenditure).toLocaleString() }}</div>
             </div>
           </div>
           <!------------------------------------------------END OF CATEGORIES OF EXPENDITURES-------------------------------------------------->

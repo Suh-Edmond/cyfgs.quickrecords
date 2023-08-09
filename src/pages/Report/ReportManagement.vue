@@ -10,21 +10,21 @@
         "
       >
         <div
-          class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+          class="col-md-4 col-lg-4 col-xs-12 col-sm-12"
           :class="$q.screen.lg ? 'q-pr-md' : ''"
         >
           <q-select
             v-model="option"
             outlined
             dense
-            :options="options"
+            :options="getReportGenerationOptions"
             :label="$t('app.selectOptionGenerateReport')"
             @input="selectedOption"
             clearable
           />
         </div>
         <div
-          class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+          class="col-md-4 col-lg-4 col-xs-12 col-sm-12"
           :class="$q.screen.lg ? 'q-pr-md' : ''"
         >
           <q-select
@@ -39,18 +39,20 @@
             @filter="filterOptions"
             @input="stopSearch"
           >
-          <template v-slot:append v-if="start_filtering">
+            <template v-slot:append v-if="start_filtering">
               <q-spinner color="primary" size="1.2em" :thickness="3" />
             </template>
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey"> {{$t('app.noResults')}} </q-item-section>
+                <q-item-section class="text-grey">
+                  {{ $t("app.noResults") }}
+                </q-item-section>
               </q-item>
             </template>
           </q-select>
         </div>
         <div
-          class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+          class="col-md-2 col-lg-2 col-xs-12 col-sm-12"
           :class="$q.screen.lg ? 'q-pr-md' : ''"
         >
           <q-btn
@@ -65,7 +67,7 @@
           </q-btn>
         </div>
         <div
-          class="button q-pb-xs col-md-3 col-lg-3 col-xs-12 col-sm-12 flex justify-end"
+          class="button q-pb-xs col-md-2 col-lg-2 col-xs-12 col-sm-12 flex justify-end"
         >
           <q-btn
             :label="$t('app.print')"
@@ -81,7 +83,10 @@
       <!-- table for report by activity -->
       <div class="row q-pt-sm" v-if="show_activity_report">
         <div class="col-md-12 col-xs-12 col-sm-12">
-          <ActivityReportTable :heading="heading" :activity_report_data="activity_report_data">
+          <ActivityReportTable
+            :heading="heading"
+            :activity_report_data="activity_report_data"
+          >
           </ActivityReportTable>
         </div>
       </div>
@@ -112,21 +117,19 @@ import YearlyReportTable from "src/components/YearlyReportTable.vue";
 
 export default {
   mixins: [HelperMixin, CurrentYearMixinVue],
-  mounted() {},
+  mounted() {
+    this.getSessions();
+  },
 
   data() {
     return {
       show_quarterly_report: false,
       show_activity_report: false,
-      show_yearly_report:false,
+      show_yearly_report: false,
       loading: false,
       group: null,
-      options: [
-        { label: this.$t('app.reportByPaymentItem'), value: 1 },
-        { label: this.$t('app.reportByQuarter'), value: 2 },
-        { label: this.$t('app.reportByYear'), value: 3 },
-      ],
-      label: this.$t('app.generateReport'),
+      options: [],
+      label: this.$t("app.generateReport"),
       year: null,
       heading: null,
       is_fetching: false,
@@ -134,19 +137,30 @@ export default {
       selected_option_label: null,
       report_options: [],
       quarters: [
-        { label: this.$t('app.firstQuarter'), value: "1" },
-        { label: this.$t('app.secondQuarter'), value: "2" },
-        { label: this.$t('app.thirdQuarter'), value: "3" },
-        { label: this.$t('app.fourthQuarter'), value: "4" },
+        { label: this.$t("app.firstQuarter"), value: "1" },
+        { label: this.$t("app.secondQuarter"), value: "2" },
+        { label: this.$t("app.thirdQuarter"), value: "3" },
+        { label: this.$t("app.fourthQuarter"), value: "4" },
       ],
-      incomes:[],
-      activity_report_data:[],
-      start_filtering:false,
+      incomes: [],
+      activity_report_data: [],
+      start_filtering: false,
     };
   },
   computed: {
     validateGenerateReport() {
       return this.option == null || this.group == null ? true : false;
+    },
+
+    getReportGenerationOptions() {
+      let data = [];
+      data.push(
+        { label: this.$t("app.reportByPaymentItem"), value: 1 },
+        { label: this.$t("app.reportByQuarter"), value: 2 },
+        { label: this.$t("app.reportByYear"), value: 3 }
+      );
+
+      return data;
     },
   },
 
@@ -156,14 +170,14 @@ export default {
         switch (this.option.value) {
           case 1:
             this.getPaymentItems();
-            this.selected_option_label = this.$t('app.searchPaymentItem');
+            this.selected_option_label = this.$t("app.searchPaymentItem");
             break;
           case 2:
-            this.selected_option_label = this.$t('app.selectQuarter');
+            this.selected_option_label = this.$t("app.selectQuarter");
             break;
           case 3:
             this.getSessionsFromState;
-            this.selected_option_label = this.$t('app.selectYearLabel');
+            this.selected_option_label = this.$t("app.selectYearLabel");
             break;
         }
       }
@@ -203,31 +217,34 @@ export default {
     },
 
     generateReport() {
-      switch(this.option.value){
+      switch (this.option.value) {
         case 1:
-          this.show_quarterly_report = false
+          this.show_quarterly_report = false;
           this.show_yearly_report = false;
           this.generateActivityReport();
-        break;
+          break;
         case 2:
           this.show_activity_report = false;
           this.show_yearly_report = false;
           this.generateQuarterlyReport();
-        break
+          break;
         case 3:
           this.show_activity_report = false;
           this.show_quarterly_report = false;
           this.generatYearlyReport();
-        break;
+          break;
       }
     },
 
     generateActivityReport() {
       this.is_fetching = true;
-       this.heading = this.$t('app.reportTitle')+`${this.group.label} ${this.getCurrentYear.year}`;
+      this.heading =
+        this.$t("app.reportTitle") +
+        `${this.group.label} ${this.getCurrentYear.year}`;
+      let organisation_id = this.$store.getters.getOrganisation.id;
       let payload = {
         status: "none",
-        url: `/api/protected/activity/${this.group.value}/generate-report`,
+        url: `/api/protected/activity/${this.group.value}/generate-report?organisation_id=${organisation_id}`,
         has_path_val: true,
         show_feedback: false,
         show_spinner: true,
@@ -245,7 +262,7 @@ export default {
       this.$store
         .dispatch("getRequest", payload)
         .then((res) => {
-          this.activity_report_data = res.data
+          this.activity_report_data = res.data;
           this.show_activity_report = true;
         })
         .finally(() => {
@@ -255,10 +272,13 @@ export default {
 
     generateQuarterlyReport() {
       this.is_fetching = true;
-      this.heading = this.$t('app.quarterReportTitle') +`${this.group.label} ${this.getCurrentYear.year}`;
+      let organisation_id = this.$store.getters.getOrganisation.id;
+      this.heading =
+        this.$t("app.quarterReportTitle") +
+        `${this.group.label} ${this.getCurrentYear.year}`;
       let payload = {
         status: "none",
-        url: `/api/protected/generate-quarterly-report?quarter=${this.group.value}`,
+        url: `/api/protected/generate-quarterly-report?quarter=${this.group.value}&organisation_id=${organisation_id}`,
         has_path_val: true,
         show_feedback: false,
         show_spinner: true,
@@ -281,15 +301,17 @@ export default {
         .finally(() => {
           this.is_fetching = false;
         });
-        return this.data;
+      return this.data;
     },
 
     generatYearlyReport() {
       this.is_fetching = true;
-      this.heading = this.$t('app.yearReportTitle') + `${this.getCurrentYear.year}`;
+      this.heading =
+        this.$t("app.yearReportTitle") + `${this.getCurrentYear.year}`;
+      let organisation_id = this.$store.getters.getOrganisation.id;
       let payload = {
         status: "none",
-        url: `/api/protected/report/yearly/generate?year_id=${this.group.value}&year_label=${this.group.label}`,
+        url: `/api/protected/report/yearly/generate?year_id=${this.group.value}&year_label=${this.group.label}&organisation_id=${organisation_id}`,
         has_path_val: true,
         show_feedback: false,
         show_spinner: true,
@@ -312,7 +334,7 @@ export default {
         .finally(() => {
           this.is_fetching = false;
         });
-     },
+    },
 
     getActivityReportIncomeData(data) {
       data.forEach((ele) => {
@@ -325,9 +347,9 @@ export default {
       return this.income_per_activity;
     },
 
-    getQuarterlyIncome(data){
+    getQuarterlyIncome(data) {
       this.data = [];
-      return this.data = data;
+      return (this.data = data);
     },
 
     getActivityReportExpenditureData(data) {
@@ -352,16 +374,15 @@ export default {
       let label = this.group != null ? this.group.label : "";
       this.loading = true;
       let url = "";
-      let file_name = ""
-       if (this.option.value == 1) {
+      let file_name = "";
+      if (this.option.value == 1) {
         url = `/api/protected/activity/${id}/report/download?payment_actvity=${label}`;
         file_name = "Activity_Report.pdf";
-      }
-      else if(this.option.value == 2){
+      } else if (this.option.value == 2) {
         url = `/api/protected/report/quarter/download?quarter=${this.group.value}`;
         file_name = "Quarterly_Report.pdf";
-      }else {
-        url = `/api/protected/report/yearly/download?year_id=${this.group.value}&year_label=${this.group.label}`
+      } else {
+        url = `/api/protected/report/yearly/download?year_id=${this.group.value}&year_label=${this.group.label}`;
         file_name = "Yearly_Report.pdf";
       }
       this.loading = this.downloadPdf(url, file_name);
@@ -433,16 +454,16 @@ export default {
       });
     },
 
-    stopSearch(){
-      if(this.group != null) {
-        this.start_filtering = false
+    stopSearch() {
+      if (this.group != null) {
+        this.start_filtering = false;
       }
-    }
+    },
   },
   components: {
     ActivityReportTable,
     QuarterlyReportTable,
-    YearlyReportTable
+    YearlyReportTable,
   },
 };
 </script>

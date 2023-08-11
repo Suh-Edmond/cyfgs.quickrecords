@@ -300,7 +300,7 @@ export default {
           description: this.payment_item.description,
           reference: this.buildStringOfReferences(this.references),
         },
-        msg: this.$t('app.Payment Item save Successfully'),
+        msg: this.$t('app.paymentItemSuccessMsg'),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",

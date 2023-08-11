@@ -19,6 +19,9 @@
           <q-td key="name" :props="props">
             {{ props.row.name }}
           </q-td>
+          <q-td key="code" :props="props">
+            {{ props.row.code }}
+          </q-td>
           <q-td key="item" :props="props">
             <q-btn
               unelevated
@@ -220,6 +223,9 @@
           </q-td>
           <q-td key="name" :props="props">
             {{ props.row.name }}
+          </q-td>
+          <q-td key="code" :props="props">
+            {{ props.row.code }}
           </q-td>
           <q-td key="expenditure_items" :props="props">
             <q-btn

@@ -22,6 +22,7 @@ export default {
     inviteMemberFailMsg:'User Account does not exist! Please try again',
     loginSuccess:'Login Successful',
     invalidNewMemberSetPasswordMsg:'Invalid Credentails! Please try again',
+    invalidAccount:"Unauthorized! You don't have permission to carryout this role, Please contact your President",
     registeredMembersMsg:"Registered Members",
     pendingMembersMsg:"Pending Registrations",
     monthlyExpenditureMsg:'Monthly Expenditures',

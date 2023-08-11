@@ -92,7 +92,7 @@
 </template>
 
 <script>
-import { LocalStorage, SessionStorage } from "quasar";
+import { LocalStorage, Notify, Platform, SessionStorage } from "quasar";
 import organisationMixin from "src/mixins/organisationMixin.vue";
 import { VueTelInput } from "vue-tel-input";
 import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
@@ -202,7 +202,7 @@ export default {
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: this.$t('app.invalidNewMemberSetPasswordMsg'),
+        error_msg: "",
         to_be_store_data: {
           required: true,
           has_value: false,
@@ -220,54 +220,51 @@ export default {
               "setCurrentYear",
               response.data.data.current_session
             );
-          }
-
-          return response;
-        })
-        .then(async (response) => {
-          if (response.status == 200) {
-            let organisation_id =
-              this.$store.getters.getOrganisation != null
-                ? this.$store.getters.getOrganisation.id
-                : null;
-            let current_session_id =
-              this.$store.getters.getCurrentYear != null ||
-                this.$store.getters.getCurrentYear != undefined
-                ? this.$store.getters.getCurrentYear.id
-                : "";
-            this.getUserByRegistrationStatus(organisation_id);
-            this.getTotalContributionByYear(current_session_id);
-            this.getUserByRegistration(organisation_id);
-          }
-
-          return response;
-        })
-        .then(async (response) => {
-          if (response.status == 200) {
-            let organisation_id =
-              this.$store.getters.getOrganisation != null
-                ? this.$store.getters.getOrganisation.id
-                : null;
-            let current_session_id =
-              this.$store.getters.getCurrentYear != null ||
-                this.$store.getters.getCurrentYear != undefined
-                ? this.$store.getters.getCurrentYear.id
-                : "";
-            this.getOrganisationMemberSavings(organisation_id);
-            this.getTotalYearlyExpenditures(current_session_id);
-            this.getOrganisationMembers(organisation_id);
-          }
-
-          return response;
-        })
-        .then(async (response) => {
-
-          if (response.status == 200) {
-
             this.$router.push({
               name: "dashboard",
             });
           }
+          if (response.status == 404 || 403) {
+            Notify.create({
+              type: "info",
+              message: this.$t('app.invalidAccount'),
+              position: Platform.is.mobile ? 'bottom' : 'top-right'
+            })
+          }
+          return response;
+        })
+        .then(async (response) => {
+          if (response.status == 200) {
+            this.getUserByRegistrationStatus(this.$store.getters.getOrganisation.id);
+          }
+          return response;
+        }).then(async (response) => {
+          if (response.status == 200) {
+            this.getTotalContributionByYear(this.$store.getters.getCurrentYear.id);
+          }
+          return response
+        }).then(async (response) => {
+          if (response.status == 200) {
+            this.getUserByRegistration(this.$store.getters.getOrganisation.id);
+          }
+          return response
+        })
+        .then(async (response) => {
+          if (response.status == 200) {
+            this.getOrganisationMemberSavings(this.$store.getters.getOrganisation.id);
+          }
+          return response;
+        })
+        .then(async (response) => {
+          if (response.status == 200) {
+            this.getOrganisationMembers(this.$store.getOrganisation.id);
+          }
+          return response;
+        }).then(async (response) => {
+          if (response.status == 200) {
+            this.getTotalYearlyExpenditures(this.$store.getCurrentYear.id);
+          }
+          return response;
         })
         .finally(() => {
           this.loading = false;

@@ -75,7 +75,7 @@
         <q-toolbar-title>
           <p class="footer_text">
             <span class="material-icons copy_right"> copyright </span>{{$t('app.copyright')}}
-            {{ year }}<span class="appName">{{$t('app.nameOne')}}{{$t('app.nameTwo')}}</span>.{{$t('app.allRightsReserved')}}
+            {{ year }}  <span class="appName">{{$t('app.nameOne')}}{{$t('app.nameTwo')}}</span>.{{$t('app.allRightsReserved')}}
           </p>
         </q-toolbar-title>
       </q-toolbar>

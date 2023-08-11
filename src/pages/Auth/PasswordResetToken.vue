@@ -49,6 +49,8 @@
 </template>
 
 <script>
+import { Notify, Platform } from 'quasar';
+
 export default {
 
   data() {
@@ -82,7 +84,7 @@ export default {
         show_feedback: true,
         to_on_ok: "none",
         to_on_fail: "none",
-        error_msg: this.$t('app.invalidEmailMsg'),
+        error_msg: "",
         to_be_store_data: {
           required: false,
           has_value: false,
@@ -94,7 +96,28 @@ export default {
       this.$store
         .dispatch("postRequest", payload)
         .then((res) => {
-          res.status === 200 ? this.show_token_form = false : this.show_token_form = true;
+          if(res.status == 200){
+            this.show_token_form = false
+          }
+          else if(res.status == 403) {
+            Notify.create({
+              type:'info',
+              message:this.$t('app.NonRoleUserEmailFailMsg'),
+              position:Platform.is.mobile ? 'bottom' :'top-right'
+            })
+          }else if (res.status == 404){
+            Notify.create({
+              type:'error',
+              message:this.$t('app.invalidEmailMsg'),
+              position:Platform.is.mobile ? 'bottom' :'top-right'
+            })
+          }else {
+            Notify.create({
+              type:'info',
+              message:this.$t('app.notSendEmailMsg'),
+              position:Platform.is.mobile ? 'bottom' :'top-right'
+            })
+          }
         })
         .catch((error) => {
         })

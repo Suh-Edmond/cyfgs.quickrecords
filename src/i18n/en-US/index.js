@@ -454,6 +454,8 @@ export default {
     passwordNotMatchMsg:"Password did not match",
     passwordTokenExpireCaption:"Oh! Sorry your password reset token has expired. Please click on the button to get a new password reset token",
     tokenExpireMsg:"Password Reset Token Expired",
-    newPasswordResetTokenMsg:"Get New Password Reset Token"
+    newPasswordResetTokenMsg:"Get New Password Reset Token",
+    NonRoleUserEmailFailMsg:"Unauthorized! Please you don't the role to carry out this action",
+    notSendEmailMsg:"Could not send  password email. Please check you connection"
    }
 };

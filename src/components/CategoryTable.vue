@@ -119,11 +119,13 @@
               color="primary"
               no-caps
               class="view_items"
-              icon-right="visibility"
               @click="showReferences(props.row)"
               v-if="props.row.payment_item_type == 'A_MEMBER'"
             >
               {{ $t("app.viewMember") }}
+              <span class="q-pl-md"
+                ><q-icon name="visibility" size="xs"></q-icon
+              ></span>
             </q-btn>
 
             <!-- button for view members -->

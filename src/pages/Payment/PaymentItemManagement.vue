@@ -103,20 +103,17 @@
     <div v-if="show_reference_dialog">
       <q-dialog v-model="show_reference_dialog">
         <q-card>
-          <q-card-section>
+          <q-card-section class="q-my-md">
             <q-toolbar class="bg-primary text-white shadow-2">
               <q-toolbar-title class="toolbar_title flex text-white">
                  {{$t('app.memberLabel')}}
               </q-toolbar-title>
             </q-toolbar>
-          </q-card-section>
-          <q-card-section>
             <div class="q-mt-md">
               <q-list style="width: 400px">
                 <q-item
                   v-for="reference in references"
                   :key="reference.id"
-                  class="q-my-sm"
                   clickable
                   v-ripple
                 >

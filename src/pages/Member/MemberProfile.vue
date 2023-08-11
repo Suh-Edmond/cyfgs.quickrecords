@@ -465,34 +465,37 @@
                       <!---------------------------------------------START OF ALERT OF MEMBER'S REGISTRATION STATUS------------------>
                       <div>
                         <div
-                          class="not_register q-pa-sm"
+                          class=" q-ml-sm"
                           v-if="
                             getCurrentMember.has_register == 'NOT_REGISTERED' &&
                             !getCurrentMember.has_paid
                           "
                         >
-                          <label for="not_register"
+                          <span> <q-icon name="info" color="warning" size="sm" class="q-pr-md"></q-icon> </span>
+                          <label for="not_register" class="text-bold text-warning"
                             >{{ $t("app.notCompletedRegistration") }}:
                             {{ getCurrentYear.year }}</label
                           >
                         </div>
                         <div
-                          class="q-mt-md has_register q-pa-sm"
+                          class="q-ml-sm"
                           v-if="getCurrentMember.has_register == 'REGISTERED'"
                         >
-                          <label for="register"
+                        <span> <q-icon name="info" color="secondary" size="sm" class="q-pr-md" ></q-icon> </span>
+                          <label for="register" class="text-bold text-secondary"
                             >{{ $t("app.hasCompletedRegistration") }}:
                             {{ getCurrentYear.year }}</label
                           >
                         </div>
                         <div
-                          class="q-mt-md pending_reg q-pa-sm"
+                          class="q-ml-sm"
                           v-if="
                             getCurrentMember.has_paid &&
                             getCurrentMember.approve == 'PENDING'
                           "
                         >
-                          <label for="pending">{{
+                        <span> <q-icon name="info" color="info" size="sm" class="q-pr-md"></q-icon> </span>
+                          <label for="pending" class="text-bold text-info">{{
                             $t("app.registrationPending")
                           }}</label>
                         </div>

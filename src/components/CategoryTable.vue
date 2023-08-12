@@ -19,6 +19,9 @@
           <q-td key="name" :props="props">
             {{ props.row.name }}
           </q-td>
+          <q-td key="code" :props="props">
+            {{ props.row.code }}
+          </q-td>
           <q-td key="item" :props="props">
             <q-btn
               unelevated
@@ -116,11 +119,13 @@
               color="primary"
               no-caps
               class="view_items"
-              icon-right="visibility"
               @click="showReferences(props.row)"
               v-if="props.row.payment_item_type == 'A_MEMBER'"
             >
               {{ $t("app.viewMember") }}
+              <span class="q-pl-md"
+                ><q-icon name="visibility" size="xs"></q-icon
+              ></span>
             </q-btn>
 
             <!-- button for view members -->
@@ -220,6 +225,9 @@
           </q-td>
           <q-td key="name" :props="props">
             {{ props.row.name }}
+          </q-td>
+          <q-td key="code" :props="props">
+            {{ props.row.code }}
           </q-td>
           <q-td key="expenditure_items" :props="props">
             <q-btn

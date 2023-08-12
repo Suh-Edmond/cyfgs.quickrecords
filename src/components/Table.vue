@@ -21,9 +21,11 @@
           {{ title }}
         </div>
         <div class="text-h6 title" v-show="show_members">
-         {{$t('app.organisationMembers')}}
+          {{ $t("app.organisationMembers") }}
         </div>
-        <div class="text-h6 title" v-show="show_savings">{{$t('app.memberSaving')}}</div>
+        <div class="text-h6 title" v-show="show_savings">
+          {{ $t("app.memberSaving") }}
+        </div>
       </template>
       <template v-slot:body="props">
         <!-- body for members -->
@@ -137,7 +139,9 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="edit">{{$t('app.viewProfile')}}</q-item-label>
+                        <q-item-label class="edit">{{
+                          $t("app.viewProfile")
+                        }}</q-item-label>
                       </q-item-section>
                     </q-item>
                     <!-- invite members to the app -->
@@ -153,7 +157,9 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="edit">{{$t('app.inviteMember')}}</q-item-label>
+                        <q-item-label class="edit">{{
+                          $t("app.inviteMember")
+                        }}</q-item-label>
                       </q-item-section>
                     </q-item>
 
@@ -170,9 +176,9 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="edit"
-                          >{{$t('app.registerMember')}}</q-item-label
-                        >
+                        <q-item-label class="edit">{{
+                          $t("app.registerMember")
+                        }}</q-item-label>
                       </q-item-section>
                     </q-item>
 
@@ -189,7 +195,9 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="text-red">{{$t('app.delete')}}</q-item-label>
+                        <q-item-label class="text-red">{{
+                          $t("app.delete")
+                        }}</q-item-label>
                       </q-item-section>
                     </q-item>
                   </q-list>
@@ -415,7 +423,9 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="edit">{{$t('app.edit')}}</q-item-label>
+                        <q-item-label class="edit">{{
+                          $t("app.edit")
+                        }}</q-item-label>
                       </q-item-section>
                     </q-item>
 
@@ -430,7 +440,9 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="edit">{{$t('app.view')}}</q-item-label>
+                        <q-item-label class="edit">{{
+                          $t("app.view")
+                        }}</q-item-label>
                       </q-item-section>
                     </q-item>
                   </q-list>
@@ -502,8 +514,8 @@
               v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
             />
 
-              <!-- button to handle view all activity -->
-              <q-btn
+            <!-- button to handle view all activity -->
+            <q-btn
               unelevated
               no-caps
               dense
@@ -515,7 +527,6 @@
             >
               <q-icon name="visibility" size="xs" class="q-pl-sm"></q-icon>
             </q-btn>
-
 
             <!-- menu to handle edit and view details of a single show_income_activity -->
             <q-btn flat round v-if="!checkTreasurerRole()">
@@ -540,7 +551,9 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="edit">{{$t('app.edit')}}</q-item-label>
+                        <q-item-label class="edit">{{
+                          $t("app.edit")
+                        }}</q-item-label>
                       </q-item-section>
                     </q-item>
 
@@ -555,7 +568,9 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="edit">{{$t('app.view')}}</q-item-label>
+                        <q-item-label class="edit">{{
+                          $t("app.view")
+                        }}</q-item-label>
                       </q-item-section>
                     </q-item>
 
@@ -571,7 +586,9 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="text-red">{{$t('app.delete')}}</q-item-label>
+                        <q-item-label class="text-red">{{
+                          $t("app.delete")
+                        }}</q-item-label>
                       </q-item-section>
                     </q-item>
                   </q-list>
@@ -676,10 +693,20 @@
           <q-td key="balance" :props="props">
             {{ Number(props.row.balance).toLocaleString() }}
           </q-td>
-          <q-td key="status" :props="props" class="registered"  v-if="props.row.status == 'COMPLETE'">
+          <q-td
+            key="status"
+            :props="props"
+            class="registered"
+            v-if="props.row.status == 'COMPLETE'"
+          >
             {{ props.row.status }}
           </q-td>
-          <q-td key="status" :props="props" class="not_registered"  v-if="props.row.status == 'INCOMPLETE'">
+          <q-td
+            key="status"
+            :props="props"
+            class="not_registered"
+            v-if="props.row.status == 'INCOMPLETE'"
+          >
             {{ props.row.status }}
           </q-td>
           <q-td key="date" :props="props">
@@ -746,7 +773,9 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="edit">{{$t('app.view')}}</q-item-label>
+                        <q-item-label class="edit">{{
+                          $t("app.view")
+                        }}</q-item-label>
                       </q-item-section>
                     </q-item>
                     <!-- edit a contribution -->
@@ -762,7 +791,9 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="edit">{{$t('app.edit')}}</q-item-label>
+                        <q-item-label class="edit">{{
+                          $t("app.edit")
+                        }}</q-item-label>
                       </q-item-section>
                     </q-item>
                     <!-- end of edit contribution -->
@@ -778,7 +809,9 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="text-red">{{$t('app.delete')}}</q-item-label>
+                        <q-item-label class="text-red">{{
+                          $t("app.delete")
+                        }}</q-item-label>
                       </q-item-section>
                     </q-item>
                   </q-list>
@@ -813,7 +846,7 @@
             class="text-bold total_label q-mt-md summary"
             v-if="show_contribution"
           >
-            {{$t('app.totalMemberContribution')}}:
+            {{ $t("app.totalMemberContribution") }}:
           </q-th>
           <q-th v-if="show_contribution" class="total_value">
             {{ Number(total_contribution).toLocaleString() }} XAF
@@ -822,7 +855,7 @@
         <!-- member contribution -->
         <div class="text-bold q-pb-md" v-if="show_member_contribution">
           <div class="q-mt-md summary">
-           {{$t('app.amountContributed')}}:
+            {{ $t("app.amountContributed") }}:
             <span class="total_value">
               {{ Number(total_contribution).toLocaleString() }} XAF
             </span>
@@ -830,7 +863,7 @@
           <div class="q-my-md summary">
             <!-- member balance contribution -->
             <q-tr>
-              {{$t('app.totalBalance')}}:
+              {{ $t("app.totalBalance") }}:
               <span class="total_contribution_balance">
                 {{ Number(total_balance).toLocaleString() }} XAF
               </span>
@@ -844,7 +877,7 @@
             class="text-bold total_label q-mt-md summary"
             v-if="show_income_activity && total_income > 0"
           >
-            {{ $t('app.totalIncome') }}:
+            {{ $t("app.totalIncome") }}:
           </q-th>
           <q-th
             class="total_value"
@@ -860,7 +893,7 @@
             class="text-bold total_label q-mt-md summary"
             v-if="show_members && total_members > 0"
           >
-           {{$t('app.totalMember')}}:
+            {{ $t("app.totalMember") }}:
           </q-th>
           <q-th class="total_value" v-if="show_members && total_members > 0">
             {{ total_members }}
@@ -873,7 +906,7 @@
             class="text-bold total_label q-mt-md summary"
             v-if="show_member_savings && total_saving > 0"
           >
-            {{$t('app.totalAmountSaved')}}:
+            {{ $t("app.totalAmountSaved") }}:
           </q-th>
           <q-th
             class="total_value"
@@ -889,7 +922,7 @@
             class="text-bold total_label q-mt-md summary"
             v-if="show_savings && total_saving > 0"
           >
-            {{$t('app.totalMembersSavings')}}:
+            {{ $t("app.totalMembersSavings") }}:
           </q-th>
           <q-th class="total_value" v-if="show_savings && total_saving > 0">
             {{ Number(total_saving).toLocaleString() }} XAF
@@ -918,7 +951,7 @@
       <q-card>
         <q-card-section>
           <div class="text-h6 q-pa-sm heading">
-            {{$t('app.inviteMsg')}}
+            {{ $t("app.inviteMsg") }}
           </div>
         </q-card-section>
 
@@ -938,14 +971,14 @@
                   invite_msg
                 "
               >
-                <q-tooltip>{{$t('app.inviteVia')}}</q-tooltip></q-btn
+                <q-tooltip>{{ $t("app.inviteVia") }}</q-tooltip></q-btn
               >
             </div>
             <div>
               <q-btn flat color="secondary" size="sm" @click="whatsappInvite()"
                 ><img src="../../src/assets/whatsapp.png" class="whatsapp_icon"
               /></q-btn>
-              <q-tooltip>{{$t('app.inviteWhatsapp')}}</q-tooltip>
+              <q-tooltip>{{ $t("app.inviteWhatsapp") }}</q-tooltip>
             </div>
           </div>
         </q-card-section>
@@ -964,19 +997,20 @@
             <div class="col-md-12">
               <label for="msg">
                 <span class="text-weight-bold"
-                  >{{$t('app.doYouKnow')}}{{ chosen_state }} {{ approve_msg }} ?</span
+                  >{{ $t("app.doYouKnow") }}{{ chosen_state }}
+                  {{ approve_msg }} ?</span
                 >
               </label>
             </div>
 
             <div v-if="show_members" class="text-red">
               <div class="text-weight-bold text-left">
-                {{$t('app.nameLabel')}}:
+                {{ $t("app.nameLabel") }}:
                 <span class="q-pl-lg">{{ approve_data.name }}</span>
               </div>
 
               <div class="text-weight-bold text-left">
-                {{$t('app.amount')}}:
+                {{ $t("app.amount") }}:
                 <span class="amount"
                   >{{ Number(registration_amount).toLocaleString() }} XAF</span
                 >
@@ -984,12 +1018,12 @@
             </div>
             <div v-if="show_income_activity" class="text-red">
               <div class="text-weight-bold text-left">
-                {{$t('app.contributor')}}:
+                {{ $t("app.contributor") }}:
                 <span class="q-pl-lg">{{ contributor }}</span>
               </div>
 
               <div class="text-weight-bold text-left">
-                {{$t('app.amount')}}:
+                {{ $t("app.amount") }}:
                 <span class="q-pl-xl"
                   >{{ Number(income_amount).toLocaleString() }} XAF</span
                 >
@@ -998,12 +1032,12 @@
 
             <div v-if="show_contribution" class="q-mt-md">
               <div class="text-weight-bold text-left text-red">
-                {{$t('app.nameLabel')}}:
+                {{ $t("app.nameLabel") }}:
                 <span class="q-pl-md">{{ approve_data.user_name }}</span>
               </div>
 
               <div class="text-weight-bold text-left text-red">
-                {{$t('app.amount')}}:
+                {{ $t("app.amount") }}:
                 <span class="amount"
                   >{{
                     Number(approve_data.total_amount_deposited).toLocaleString()
@@ -1014,11 +1048,11 @@
             </div>
             <div v-if="show_savings" class="q-mt-md text-red">
               <div class="text-weight-bold text-left">
-                {{$t('app.member')}}::
+                {{ $t("app.member") }}::
                 <span class="q-pl-sm">{{ contributor }}</span>
               </div>
               <div class="text-weight-bold text-left">
-                {{$t('app.amount')}}:
+                {{ $t("app.amount") }}:
                 <span class="amount"
                   >{{ Number(income_amount).toLocaleString() }} XAF</span
                 >
@@ -1115,7 +1149,7 @@ export default {
       type: Boolean,
       required: true,
     },
-    show_delete_contribution:{
+    show_delete_contribution: {
       type: Boolean,
       required: false,
     },
@@ -1159,10 +1193,11 @@ export default {
       show_invite: false,
       member_to_be_invited: null,
       redirect_url: process.env.REDIRECT_URL,
-      invite_msg_subject: this.$t('app.join'),
+      invite_msg_subject: this.$t("app.join"),
       invite_msg:
-        this.$t('app.joinPartOne') +
-        process.env.REDIRECT_URL +this.$t('app.joinPartTwo'),
+        this.$t("app.joinPartOne") +
+        process.env.REDIRECT_URL +
+        this.$t("app.joinPartTwo"),
       show_approve_dialog: false,
       chosen_state: null,
       approve_msg: null,
@@ -1214,7 +1249,7 @@ export default {
     onRegisterMember(data) {
       let payload = {
         data: data,
-        tab: 'Register Member',
+        tab: "Register Member",
       };
       this.$store.dispatch("setMemberToRegister", data);
       this.$emit("register-member", payload);
@@ -1229,7 +1264,7 @@ export default {
       );
 
       intermediate_tabs.push({
-        name: this.$t('app.memberProfile'),
+        name: this.$t("app.memberProfile"),
         has_intermediate_tab: true,
       });
 
@@ -1244,14 +1279,14 @@ export default {
       this.deleted_row = data;
       this.dialog = true;
       this.type = "MEMBERS";
-      this.delete_msg = this.$t('app.deleteMemberWarningMsg');
+      this.delete_msg = this.$t("app.deleteMemberWarningMsg");
     },
 
     onDeleteIncomeActivity(data) {
       this.deleted_row = data;
       this.dialog = true;
       this.type = "INCOME_ACTIVITIES";
-      this.delete_msg = this.$t('app.deleteIncomeWarningMsg');
+      this.delete_msg = this.$t("app.deleteIncomeWarningMsg");
     },
 
     deleteRow() {
@@ -1300,7 +1335,7 @@ export default {
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: this.$t('app.defaultErrorMsg'),
+        error_msg: this.$t("app.defaultErrorMsg"),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -1318,7 +1353,7 @@ export default {
 
     setApproveUrlBaseOnType(data) {
       let url = "";
-      let type = this.chosen_state == "Approve" ? 'APPROVED' : 'DECLINED';
+      let type = this.chosen_state == "Approve" ? "APPROVED" : "DECLINED";
       switch (data.type) {
         case "INCOME_ACTIVITIES":
           url = `/api/protected/income-activities/${data.id}/approve?type=${type}`;
@@ -1338,9 +1373,15 @@ export default {
     },
 
     setApproveFeedbackMsg(data) {
-      let msg = this.$t('app.recordWas') + `${this.chosen_state}` + this.$t('app.successfull');
+      let msg =
+        this.$t("app.recordWas") +
+        `${this.chosen_state}` +
+        this.$t("app.successfull");
       if (data.type == "MEMBERS") {
-        msg = this.$t('app.memberReg') + `${this.chosen_state}` + this.$t('app.successfull');
+        msg =
+          this.$t("app.memberReg") +
+          `${this.chosen_state}` +
+          this.$t("app.successfull");
       }
       return msg;
     },
@@ -1351,21 +1392,26 @@ export default {
         case "INCOME_ACTIVITIES":
           this.income_amount = data.amount;
           this.contributor = data.name;
-          this.approve_msg = this.$t('app.contributionFor') + `${data.payment_item.name}`;
+          this.approve_msg =
+            this.$t("app.contributionFor") + `${data.payment_item.name}`;
           break;
         case "MEMBERS_SAVINGS":
           date = moment(data.created_at).format("MMMM Do YYYY");
           this.income_amount = data.amount_deposited;
           this.contributor = data.user_name;
-          this.approve_msg = this.$t('app.memberContribution') + `${date}`;
+          this.approve_msg = this.$t("app.memberContribution") + `${date}`;
           break;
         case "MEMBERS_CONTRIBUTIONS":
           date = moment(data.date).format("MMMM Do YYYY");
-          this.approve_msg = this.$t('app.memberContributionDownloadLabel') + `${data.payment_item_name}`+this.$t('app.on') +`${date}`;
+          this.approve_msg =
+            this.$t("app.memberContributionDownloadLabel") +
+            `${data.payment_item_name}` +
+            this.$t("app.on") +
+            `${date}`;
           break;
         case "MEMBERS":
           this.register_member_name = data.name;
-          this.approve_msg = this.$t('app.regFor') + `${data.year} `;
+          this.approve_msg = this.$t("app.regFor") + `${data.year} `;
           break;
       }
       return this.approve_msg;
@@ -1445,7 +1491,7 @@ export default {
       );
 
       intermediate_tabs.push({
-        name: data.user_name + " "+ this.$t('app.savingtitle'),
+        name: data.user_name + " " + this.$t("app.savingtitle"),
         has_intermediate_tab: true,
       });
 
@@ -1466,7 +1512,7 @@ export default {
         data: data,
         tab: "View Member Saving",
       };
-       this.$store.dispatch("setCurrentMemberSaving", data);
+      this.$store.dispatch("setCurrentMemberSaving", data);
       this.$emit("view-member-saving", payload);
     },
 
@@ -1541,7 +1587,7 @@ export default {
       this.deleted_row = data;
       this.dialog = true;
       this.type = "MEMBERS_CONTRIBUTIONS";
-      this.delete_msg = this.$t('app.deleteContributionWarningMsg');
+      this.delete_msg = this.$t("app.deleteContributionWarningMsg");
     },
   },
   components: {
@@ -1586,7 +1632,7 @@ export default {
   align-items: center;
   text-transform: capitalize;
   width: 8rem;
-  }
+}
 
 .view_income {
   font-family: "Roboto";
@@ -1598,7 +1644,7 @@ export default {
   width: 5.5rem;
 }
 
-.view_contribution{
+.view_contribution {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;

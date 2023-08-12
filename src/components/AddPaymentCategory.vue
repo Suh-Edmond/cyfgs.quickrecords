@@ -1,40 +1,32 @@
 <template>
   <div class="q-pa-md">
     <div class="q-ml-sm q-mb-lg">
-      <label class="text-muted info"
-        >{{$t('app.warningField')}}<span class="text-red">*</span>{{ $t('app.fields') }}</label
-      >
+      <label class="text-muted info">{{ $t('app.warningField') }}<span class="text-red">*</span>{{ $t('app.fields')
+      }}</label>
     </div>
     <div class="q-mt-lg q-mx-sm">
       <q-form @submit="onAddPaymentCategory" class="q-gutter-md">
         <div>
-          <label for="credential" class="form_field"
-            >{{$t('app.nameLabel')}} <span class="text-red">*</span></label
-          >
+          <label for="credential" class="form_field">{{ $t('app.nameLabel') }} <span class="text-red">*</span></label>
           <q-input v-model="payment_category.name" outlined dense type="text" />
         </div>
         <div>
-          <label for="credential" class="form_field"
-            >{{$t('app.description')}} <span class="text-red">*</span></label
-          >
-          <q-input
-            v-model="payment_category.description"
-            outlined
-            dense
-            type="textarea"
-            placeholder="Please provide a description about the category"
-          />
+          <label for="credential" class="form_field">{{ $t('app.codeLabel') }} <span class="text-red">*</span></label>
+          <q-input v-model="payment_category.code" bottom-slots outlined dense type="text">
+            <template v-slot:hint>
+              {{ $t('app.codeHintCategory') }}
+            </template>
+          </q-input>
+        </div>
+        <div>
+          <label for="credential" class="form_field">{{ $t('app.description') }} <span class="text-red">*</span></label>
+          <q-input v-model="payment_category.description" outlined dense type="textarea"
+            placeholder="Please provide a description about the category" />
         </div>
         <div class="flex q-mt-lg justify-end">
           <div>
-            <ButtonVue
-              class="form_button"
-              :label="label_save"
-              :loading="loading"
-              :color="color"
-              :disabled="validateForm"
-              :no_caps="no_caps"
-            >
+            <ButtonVue class="form_button" :label="label_save" :loading="loading" :color="color" :disabled="validateForm"
+              :no_caps="no_caps">
             </ButtonVue>
           </div>
         </div>
@@ -62,6 +54,7 @@ export default {
         name: null,
         description: null,
         id: null,
+        code: null
       },
       position: "right",
       dialog: false,
@@ -89,7 +82,8 @@ export default {
         data: {
           name: this.payment_category.name,
           description: this.payment_category.description,
-          id: this.getUpdatedPaymentCategoryFromState() != null ? this.getUpdatedPaymentCategoryFromState().id: null,
+          id: this.getUpdatedPaymentCategoryFromState() != null ? this.getUpdatedPaymentCategoryFromState().id : null,
+          code: this.payment_category.code
         },
         msg: this.$t('app.paymentCategorySuccessMsg'),
         color: "default",
@@ -122,6 +116,7 @@ export default {
       this.payment_category.description = null;
       this.payment_category.name = null;
       this.payment_category.id = null
+      this.payment_category.code = null;
       return this.payment_category;
     },
 
@@ -134,6 +129,7 @@ export default {
         (this.payment_category.description =
           data == null ? null : data.description),
         (this.id = data == null ? null : data.id);
+      this.payment_category.code = data == null ? null : data.code;
 
       return this.payment_category;
     },
@@ -145,7 +141,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-
 .form_field {
   font-family: "Roboto";
   font-style: normal;
@@ -160,5 +155,4 @@ export default {
   color: $grey2;
   font-size: small;
 }
-
 </style>

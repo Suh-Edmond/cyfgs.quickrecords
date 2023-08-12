@@ -134,7 +134,7 @@
         <q-toolbar-title>
           <p class="footer_text">
             <span class="material-icons copy_right"> copyright </span>{{ $t('app.copyright') }}
-            {{ year }}. {{$t('app.allRightsReserved')}}
+            {{ year }}  <span class="appName">{{$t('app.nameOne')}}{{$t('app.nameTwo')}}</span>. {{$t('app.allRightsReserved')}}
           </p>
         </q-toolbar-title>
       </q-toolbar>
@@ -453,6 +453,15 @@ export default {
   color: $primary;
   font-weight: 500;
   font-size: smaller;
+}
+
+.appName {
+  font-family: "Roboto";
+  font-style: normal;
+  text-transform: capitalize;
+  color: $dark;
+  font-weight: 700;
+  font-size: medium;
 }
 
 .tab {

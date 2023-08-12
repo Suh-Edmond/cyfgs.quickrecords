@@ -87,6 +87,7 @@ export default {
   mounted() {
     let id = this.$store.getters.getOrganisation.id;
     this.fetchCategories(id, true);
+    this.getSessions();
   },
   data() {
     return {
@@ -107,6 +108,15 @@ export default {
           label: "Name",
           align: "left",
           field: (row) => row.name,
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "code",
+          required: true,
+          label: "Code",
+          align: "left",
+          field: (row) => row.code,
           format: (val) => `${val}`,
           sortable: true,
         },
@@ -142,6 +152,7 @@ export default {
             description: element.description,
             type: "PAYMENT_CATEGORY",
             organisation_id: element.organisation_id,
+            code:element.code,
           });
         });
       } else {
@@ -234,6 +245,7 @@ export default {
             description: element.description,
             type: "PAYMENT_CATEGORY",
             organisation_id: element.organisation_id,
+            code:element.code
           });
         });
       });

@@ -95,6 +95,7 @@ export default {
   ],
   mounted() {
     this.fetchExpenditureCategories();
+    this.getSessions();
   },
 
   data() {
@@ -115,6 +116,15 @@ export default {
           label: "Name",
           align: "left",
           field: (row) => row.name,
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "code",
+          required: true,
+          label: "Code",
+          align: "left",
+          field: (row) => row.code,
           format: (val) => `${val}`,
           sortable: true,
         },
@@ -152,6 +162,7 @@ export default {
             counter:
               this.$store.getters.getExpenditureCategories.indexOf(element) + 1,
             name: element.name,
+            code:element.code,
             expenditure_items: this.$t('app.viewExpenditureItems'),
             id: element.id,
             description: element.description,
@@ -233,6 +244,7 @@ export default {
             this.filteredExpenditureCategories.push({
               counter: res.data.indexOf(element) + 1,
               name: element.name,
+              code:element.code,
               expenditure_items: this.$t('app.viewExpenditureItems'),
               id: element.id,
               description: element.description,

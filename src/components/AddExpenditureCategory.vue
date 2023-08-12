@@ -15,6 +15,16 @@
         </div>
         <div>
           <label for="credential" class="form_field"
+            >{{$t('app.codeLabel')}} <span class="text-red">*</span></label
+          >
+          <q-input v-model="expenditure.code" outlined bottom-slots dense type="text" >
+            <template v-slot:hint>
+          {{$t('app.codeHintCategory')}}
+        </template>
+          </q-input>
+        </div>
+        <div>
+          <label for="credential" class="form_field"
             >{{$t('app.description')}} <span class="text-red">*</span></label
           >
           <q-input
@@ -62,6 +72,7 @@ export default {
         name: null,
         description: null,
         id: null,
+        code:null,
       },
       position: "right",
       dialog: false,
@@ -96,6 +107,7 @@ export default {
             this.getUpdatedExpenditureCategoryFromState() == null
               ? null
               : this.getUpdatedExpenditureCategoryFromState().id,
+          code :this.expenditure.code,
         },
         msg: this.$t('app.expenditureCategorySuccessMsg'),
         color: "default",
@@ -127,6 +139,7 @@ export default {
       this.expenditure.description = null;
       this.expenditure.name = null;
       this.expenditure.id = null;
+      this.expenditure.code = null;
       return this.expenditure;
     },
 
@@ -138,6 +151,7 @@ export default {
       (this.expenditure.name = data == null ? null : data.name),
         (this.expenditure.description = data == null ? null : data.description),
         (this.id = data == null ? null : data.id);
+        this.expenditure.code = data == null ? null : data.code;
 
       return this.expenditure;
     },

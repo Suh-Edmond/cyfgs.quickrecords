@@ -22,6 +22,7 @@ export default {
     inviteMemberFailMsg:'User Account does not exist! Please try again',
     loginSuccess:'Login Successful',
     invalidNewMemberSetPasswordMsg:'Invalid Credentails! Please try again',
+    invalidAccount:"Unauthorized! You don't have permission to carryout this role, Please contact your President",
     registeredMembersMsg:"Registered Members",
     pendingMembersMsg:"Pending Registrations",
     monthlyExpenditureMsg:'Monthly Expenditures',
@@ -167,9 +168,12 @@ export default {
     deletePaymentItemFeedbackMsg:'Payment Item deleted successfully',
     paymentCategoryHeading:'Payment Category Information',
     paymentCategorySuccessMsg:'Payment Category save Successfully',
+    paymentItemSuccessMsg:'Payment Item save Successfully',
     selectPaymentType:'Select  Payment type',
     selectFrequency:'Select frequency',
     ok:'OK',
+    codeLabel:'Code',
+    codeHintCategory:'A unique code for the category',
     deletePaymentItemWarningMsg:'Are you sure you want to delete this Payment Item ?',
     compulsory:'COMPULSORY',
     notCompulsory:'NOT COMPULSORY',
@@ -451,6 +455,8 @@ export default {
     passwordNotMatchMsg:"Password did not match",
     passwordTokenExpireCaption:"Oh! Sorry your password reset token has expired. Please click on the button to get a new password reset token",
     tokenExpireMsg:"Password Reset Token Expired",
-    newPasswordResetTokenMsg:"Get New Password Reset Token"
+    newPasswordResetTokenMsg:"Get New Password Reset Token",
+    NonRoleUserEmailFailMsg:"Unauthorized! Please you don't the role to carry out this action",
+    notSendEmailMsg:"Could not send  password email. Please check you connection"
    }
 };

@@ -80,7 +80,7 @@ export default {
     },
 
 
-    
+
     getPaymentActivitiesFromStatus() {
       let payment_items = [];
       this.$store.getters.getPaymentActivities.forEach((ele) => {

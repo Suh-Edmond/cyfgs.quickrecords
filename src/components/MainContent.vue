@@ -17,7 +17,7 @@
           <q-avatar size="xl" v-if="!hasProfilePic">
             <span class="material-icons"> account_circle </span>
           </q-avatar>
-          <q-avatar size="md" v-if="hasProfilePic">
+          <q-avatar size="sm" v-if="hasProfilePic">
             <img :src="getLoggedInUserProfilePic" alt="Profile Picture">
           </q-avatar>
           {{ auth_user.name }}

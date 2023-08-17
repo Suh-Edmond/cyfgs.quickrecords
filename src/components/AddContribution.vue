@@ -1,5 +1,6 @@
 <template>
   <div class="q-mb-md">
+    <q-linear-progress indeterminate v-show="is_fetching_members" />
     <div class="q-mb-lg">
       <q-tabs
         v-model="tab"
@@ -38,71 +39,71 @@
             <div class="q-px-sm">
               <q-form @submit="onAddContribution" class="q-gutter-md">
                 <div>
-                  <div class="q-mb-md">
-                    <label for="name" class="form_field"
-                      >{{ $t("app.paymentItem")
-                      }}<span class="text-red">*</span>
-                    </label>
-                    <q-select
-                      v-model="contribution.payment_item_id"
-                      outlined
-                      dense
-                      :options="filtered_payment_items"
-                      :label="$t('app.searchPaymentItem')"
-                      input-debounce="0"
-                      use-input
-                      clearable
-                      @filter="filterPaymentItems"
-                      @input="fetchPaymentItem"
+                  <div>
+                    <div class="q-mb-md">
+                      <label for="name" class="form_field"
+                        >{{ $t("app.paymentItem")
+                        }}<span class="text-red">*</span>
+                      </label>
+                      <q-select
+                        v-model="contribution.payment_item_id"
+                        outlined
+                        dense
+                        :options="filtered_payment_items"
+                        :label="$t('app.searchPaymentItem')"
+                        input-debounce="0"
+                        use-input
+                        clearable
+                        @filter="filterPaymentItems"
+                        @input="fetchPaymentItem"
+                      >
+                        <template v-slot:append v-if="start_filtering">
+                          <q-spinner
+                            color="primary"
+                            size="1.2em"
+                            :thickness="3"
+                          />
+                        </template>
+                        <template v-slot:no-option>
+                          <q-item>
+                            <q-item-section class="text-grey">
+                              {{ $t("app.noResults") }}
+                            </q-item-section>
+                          </q-item>
+                        </template>
+                      </q-select>
+                    </div>
+                    <div class="q-mb-md">
+                      <label for="credential" class="form_field">{{
+                        $t("app.amountPayable")
+                      }}</label>
+                      <q-input
+                        v-model="contribution.amount_payable"
+                        outlined
+                        dense
+                        type="number"
+                        disable
+                      />
+                    </div>
+                    <div
+                      class="row justify-end"
+                      v-show="!has_selected_payment_item"
                     >
-                      <template v-slot:append v-if="start_filtering">
-                        <q-spinner
-                          color="primary"
-                          size="1.2em"
-                          :thickness="3"
-                        />
-                      </template>
-                      <template v-slot:no-option>
-                        <q-item>
-                          <q-item-section class="text-grey">
-                            {{ $t("app.noResults") }}
-                          </q-item-section>
-                        </q-item>
-                      </template>
-                    </q-select>
+                      <q-btn
+                        @click="showNextForm()"
+                        color="primary"
+                        :label="$t('app.next')"
+                        no-caps
+                        :disable="validatePaymentItem"
+                        ><q-icon
+                          name="arrow_forward"
+                          size="xs"
+                          class="q-pl-sm"
+                        ></q-icon
+                      ></q-btn>
+                    </div>
                   </div>
-                  <div class="q-mb-md">
-                    <label for="credential" class="form_field">{{
-                      $t("app.amountPayable")
-                    }}</label>
-                    <q-input
-                      v-model="contribution.amount_payable"
-                      outlined
-                      dense
-                      type="number"
-                      disable
-                    />
-                  </div>
-                  <div
-                    class="row justify-end"
-                    v-show="!has_selected_payment_item"
-                  >
-                    <q-btn
-                      @click="
-                        has_selected_payment_item = !has_selected_payment_item
-                      "
-                      color="primary"
-                      :label="$t('app.next')"
-                      no-caps
-                      :disable="validatePaymentItem"
-                      ><q-icon
-                        name="arrow_forward"
-                        size="xs"
-                        class="q-pl-sm"
-                      ></q-icon
-                    ></q-btn>
-                  </div>
-                  <div v-show="has_selected_payment_item">
+                  <div v-show="has_selected_payment_item && !is_fetching_members">
                     <div class="q-mb-md">
                       <label for="name" class="form_field"
                         >{{ $t("app.memberName") }}
@@ -292,71 +293,73 @@
             <div class="q-px-sm">
               <q-form @submit="onAddContribution" class="q-gutter-md">
                 <div>
-                  <div class="q-mb-md">
-                    <label for="name" class="form_field"
-                      >{{ $t("app.paymentItem") }}
-                      <span class="text-red">*</span>
-                    </label>
-                    <q-select
-                      v-model="contribution.payment_item_id"
-                      outlined
-                      dense
-                      @input="fetchPaymentItem"
-                      :options="filtered_payment_items"
-                      :label="$t('app.searchPaymentItem')"
-                      input-debounce="0"
-                      use-input
-                      clearable
-                      @filter="filterPaymentItems"
+                  <div>
+                    <div class="q-mb-md">
+                      <label for="name" class="form_field"
+                        >{{ $t("app.paymentItem") }}
+                        <span class="text-red">*</span>
+                      </label>
+                      <q-select
+                        v-model="contribution.payment_item_id"
+                        outlined
+                        dense
+                        @input="fetchPaymentItem"
+                        :options="filtered_payment_items"
+                        :label="$t('app.searchPaymentItem')"
+                        input-debounce="0"
+                        use-input
+                        clearable
+                        @filter="filterPaymentItems"
+                      >
+                        <template v-slot:append v-if="start_filtering">
+                          <q-spinner
+                            color="primary"
+                            size="1.2em"
+                            :thickness="3"
+                          />
+                        </template>
+                        <template v-slot:no-option>
+                          <q-item>
+                            <q-item-section class="text-grey">
+                              {{ $t("app.noResults") }}
+                            </q-item-section>
+                          </q-item>
+                        </template>
+                      </q-select>
+                    </div>
+                    <div class="q-mb-md">
+                      <label for="credential" class="form_field">{{
+                        $t("app.amountPayable")
+                      }}</label>
+                      <q-input
+                        v-model="contribution.amount_payable"
+                        outlined
+                        dense
+                        type="number"
+                        disable
+                      />
+                    </div>
+                    <div
+                      class="row justify-end"
+                      v-show="!has_selected_payment_item"
                     >
-                      <template v-slot:append v-if="start_filtering">
-                        <q-spinner
-                          color="primary"
-                          size="1.2em"
-                          :thickness="3"
-                        />
-                      </template>
-                      <template v-slot:no-option>
-                        <q-item>
-                          <q-item-section class="text-grey">
-                            {{ $t("app.noResults") }}
-                          </q-item-section>
-                        </q-item>
-                      </template>
-                    </q-select>
-                  </div>
-                  <div class="q-mb-md">
-                    <label for="credential" class="form_field">{{
-                      $t("app.amountPayable")
-                    }}</label>
-                    <q-input
-                      v-model="contribution.amount_payable"
-                      outlined
-                      dense
-                      type="number"
-                      disable
-                    />
+                      <q-btn
+                        @click="showNextForm()"
+                        color="primary"
+                        :label="$t('app.next')"
+                        no-caps
+                        :disable="validatePaymentItem"
+                        ><q-icon
+                          name="arrow_forward"
+                          size="xs"
+                          class="q-pl-sm"
+                        ></q-icon
+                      ></q-btn>
+                    </div>
                   </div>
                   <div
-                    class="row justify-end"
-                    v-show="!has_selected_payment_item"
+                    v-show="has_selected_payment_item && !is_fetching_members"
                   >
-                    <q-btn
-                      @click="
-                        has_selected_payment_item = !has_selected_payment_item
-                      "
-                      color="primary"
-                      :label="$t('app.next')"
-                      no-caps
-                      :disable="validatePaymentItem"
-                      ><q-icon
-                        name="arrow_forward"
-                        size="xs"
-                        class="q-pl-sm"
-                      ></q-icon
-                    ></q-btn>
-                  </div>
-                  <div v-show="has_selected_payment_item">
                     <div class="q-mb-md">
                       <label for="name" class="form_field"
                         >{{ $t("app.memberName") }}
@@ -448,7 +451,7 @@
                         $t("app.totalSaving")
                       }}</label>
                       <q-input
-                        v-model.number="contribution.total_saving"
+                        v-model.number="getTotalSaving"
                         outlined
                         dense
                         type="number"
@@ -474,7 +477,7 @@
                         $t("app.balance")
                       }}</label>
                       <q-input
-                        v-model="contribution.balance"
+                        v-model.number="contribution.balance"
                         outlined
                         dense
                         type="number"
@@ -495,22 +498,22 @@
                         :disable="has_completed_payment"
                       >
                       </q-input>
-                      <small v-if="checkPaymentItemBal" class="text-red">
+                      <label v-if="checkPaymentItemBal" class="text-red">
                         <b>{{ $t("app.excessAmountLabel") }}</b>
-                      </small>
-                      <br/>
-                      <small
+                      </label>
+                      <br v-if="checkAmountDepositedBasedOnSaving" />
+                      <label
                         v-if="checkAmountDepositedBasedOnSaving"
                         class="text-red"
                       >
-                        <b>{{ $t("app.insuffientSaving") }}</b>
-                      </small><br/>
-                      <small v-if="has_completed_payment" class="text-info">
+                        <b>{{ $t("app.insuffientSaving") }}</b> </label
+                      ><br v-if="has_completed_payment" />
+                      <label v-if="has_completed_payment" class="text-info">
                         <b
                           >{{ $t("app.hasCompletedAmountLabel") }}
                           {{ selected_payment_item.label }}</b
                         >
-                      </small>
+                      </label>
                     </div>
                     <div class="q-mb-md">
                       <label for="credential" class="form_field"
@@ -530,7 +533,7 @@
                           class="form_button"
                           :label="$t('app.reset')"
                           :color="'primary'"
-                          :disabled="!validateForm"
+                          :disabled="false"
                           no-caps
                           outline
                           @click="resetForm"
@@ -566,6 +569,7 @@ import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import memberMixinVue from "src/mixins/memberMixin.vue";
 import ContributionsMixinVue from "src/mixins/ContributionsMixin.vue";
 import MonthsMixinVue from "src/mixins/MonthsMixin.vue";
+import { LocalStorage } from "quasar";
 
 export default {
   mixins: [
@@ -580,14 +584,6 @@ export default {
     let heading = this.$t("app.contributionHeading");
 
     this.$emit("set-heading", heading);
-
-    let organisation_id = this.getOrganisationId;
-
-    if (this.getMembersFromState().length == 0) {
-      this.getOrganisationMembers(organisation_id, false);
-    } else {
-      this.getMembersFromState();
-    }
 
     this.getPaymentItems();
   },
@@ -624,6 +620,8 @@ export default {
       tab: "Enter Contribution",
       start_filter_members: false,
       start_filtering: false,
+      payment_item_members: [],
+      is_fetching_members: false,
     };
   },
   computed: {
@@ -637,11 +635,11 @@ export default {
     },
 
     checkAmountDepositedBasedOnSaving() {
-      return this.contribution.amount_deposited != 0 &&
-        parseFloat(this.contribution.amount_deposited) >
-          parseFloat(this.contribution.total_saving)
-        ? true
-        : false;
+      return (
+        this.contribution.amount_deposited != 0 &&
+        parseInt(this.contribution.amount_deposited) >
+          parseFloat(LocalStorage.getItem("saving"))
+      );
     },
 
     validateForm() {
@@ -649,10 +647,11 @@ export default {
         this.contribution.amount_deposited == 0 ||
         this.contribution.payment_item_id == null ||
         this.checkPaymentItemBal ||
-        (this.validetePaymentItemFrequency &&
+        (this.valideteMonthlyPaymentItemFrequency &&
           this.contribution.month_name == "") ||
         (this.valideteQuarterlyPaymentItemFrequency &&
-          this.contribution.quarterly_name == "")
+          this.contribution.quarterly_name == "") ||
+        this.checkAmountDepositedBasedOnSaving
         ? true
         : false;
     },
@@ -674,8 +673,21 @@ export default {
         this.contribution.payment_item_id.frequency == "QUARTERLY"
       );
     },
+
+    getCurrentTab() {
+      return this.tab;
+    },
+
+    getTotalSaving() {
+      return parseFloat(this.contribution.total_saving);
+    },
   },
   methods: {
+    showNextForm() {
+      this.has_selected_payment_item = !this.has_selected_payment_item;
+      this.getPaymentItemMembers();
+    },
+
     onAddContribution() {
       let payload = {
         url: `/api/protected/contributions`,
@@ -686,7 +698,8 @@ export default {
           comment: this.contribution.comment,
           month_name: this.contribution.month_name,
           quarterly_name: this.contribution.quarterly_name,
-          contributed_via_saving: this.tab == "Use Saving" ? true : false,
+          contributed_via_saving:
+            this.getCurrentTab == "Use Saving" ? true : false,
         },
         msg: this.$t("app.saveContributionSuccessMsg"),
         color: "default",
@@ -779,7 +792,8 @@ export default {
         this.$store
           .dispatch("getRequest", payload)
           .then((res) => {
-            this.contribution.total_saving = res.data.total_savings;
+            this.contribution.total_saving = parseFloat(res.data.total_savings);
+            LocalStorage.set("saving", this.contribution.total_saving);
             return res;
           })
           .then((res) => {
@@ -829,6 +843,14 @@ export default {
           ? this.contribution.amount_payable - total_amount_paid
           : this.contribution.amount_payable -
             this.contribution.total_amount_deposited;
+      let savings = parseFloat(LocalStorage.getItem("saving"));
+      let deposite = parseFloat(this.contribution.amount_deposited);
+
+      this.contribution.total_saving =
+        this.contribution.amount_deposited != 0 &&
+        this.contribution.amount_deposited != NaN
+          ? savings - deposite
+          : savings;
     },
 
     resetForm() {
@@ -846,6 +868,7 @@ export default {
       this.contribution.month_name = "";
       this.contribution.quarterly_name = "";
       this.contribution.total_saving = 0;
+      LocalStorage.remove("saving");
 
       return this.contribution;
     },
@@ -888,16 +911,41 @@ export default {
       });
     },
 
-    getMembersFromState() {
-      this.members = [];
-      this.$store.getters.getMembers.forEach((ele) => {
-        this.members.push({
-          label: ele.name,
-          value: ele.id,
+    getPaymentItemMembers() {
+      let organisation_id = this.$store.getters.getOrganisation.id;
+      this.is_fetching_members = true;
+      let payload = {
+        status: "none",
+        url: `/api/protected/organisations/payment_items/${this.contribution.payment_item_id.value}/users?organisation_id=${organisation_id}`,
+        has_path_val: true,
+        show_feedback: false,
+        show_spinner: false,
+        msg: "none",
+        color: "default",
+        error_msg: "default",
+        commit: "none",
+        has_commit: false,
+        to_be_store_data: {
+          required: true,
+          has_value: false,
+          data: null,
+        },
+      };
+      this.$store
+        .dispatch("getRequest", payload)
+        .then((res) => {
+          res.data.forEach((member) => {
+            this.payment_item_members.push({
+              label: member.name,
+              value: member.id,
+            });
+          });
+        })
+        .finally(() => {
+          this.is_fetching_members = false;
         });
-      });
 
-      return this.members;
+      return this.payment_item_members;
     },
 
     filterMembers(val, update, abort) {
@@ -909,7 +957,7 @@ export default {
 
       update(() => {
         this.start_filter_members = true;
-        this.members = this.getMembersFromState().filter((item) =>
+        this.members = this.payment_item_members.filter((item) =>
           item.label.toLowerCase().includes(val.toLowerCase())
         );
         return this.members;

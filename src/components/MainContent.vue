@@ -11,23 +11,26 @@
           v-if="$q.screen.lt.md"
         />
         <q-toolbar-title class="toolbar_title">
-          {{$t('app.welcomeLabel')}} {{ auth_user_role }}
+          {{ $t("app.welcomeLabel") }} {{ auth_user_role }}
         </q-toolbar-title>
         <div>
-          <q-avatar size="xl">
+          <q-avatar size="xl" v-if="!hasProfilePic">
             <span class="material-icons"> account_circle </span>
           </q-avatar>
-          {{ auth_name }}
+          <q-avatar size="md" v-if="hasProfilePic">
+            <img :src="getLoggedInUserProfilePic" alt="Profile Picture">
+          </q-avatar>
+          {{ auth_user.name }}
           <q-btn-dropdown flat>
             <q-list>
-              <q-item clickable v-close-popup :to="{name:'member_account'}">
+              <q-item clickable v-close-popup :to="{ name: 'member_account' }">
                 <q-item-section avatar>
                   <span>
                     <q-icon name="person" size="sm" />
                   </span>
                 </q-item-section>
                 <q-item-section class="text-center drop_down_text">
-                  <q-item-label>{{$t('app.accountLabel')}}</q-item-label>
+                  <q-item-label>{{ $t("app.accountLabel") }}</q-item-label>
                 </q-item-section>
               </q-item>
               <q-separator />
@@ -41,7 +44,7 @@
                   class="text-center drop_down_text"
                   @click="logoutUser"
                 >
-                  <q-item-label>{{$t('app.logoutLabel')}}</q-item-label>
+                  <q-item-label>{{ $t("app.logoutLabel") }}</q-item-label>
                 </q-item-section>
               </q-item>
             </q-list>
@@ -92,7 +95,9 @@
               size="md"
               dense
               no-caps
-              v-show="requires_add && !checkTreasurerRole() && verifyRequiredAdd()"
+              v-show="
+                requires_add && !checkTreasurerRole() && verifyRequiredAdd()
+              "
               @click="showRightDrawer"
               class="q-pa-xs"
             />
@@ -133,8 +138,11 @@
       <q-toolbar>
         <q-toolbar-title>
           <p class="footer_text">
-            <span class="material-icons copy_right"> copyright </span>{{ $t('app.copyright') }}
-            {{ year }}  <span class="appName">{{$t('app.nameOne')}}{{$t('app.nameTwo')}}</span>. {{$t('app.allRightsReserved')}}
+            <span class="material-icons copy_right"> copyright </span
+            >{{ $t("app.copyright") }} {{ year }}
+            <span class="appName"
+              >{{ $t("app.nameOne") }}{{ $t("app.nameTwo") }}</span
+            >. {{ $t("app.allRightsReserved") }}
           </p>
         </q-toolbar-title>
       </q-toolbar>
@@ -147,10 +155,11 @@ import { LocalStorage, SessionStorage } from "quasar";
 
 export default {
   mounted() {
-    this.auth_name = LocalStorage.getItem("data").user_data.name;
+    this.auth_user = LocalStorage.getItem("data").user_data;
     this.auth_user_role = this.formatUserRole(
-      LocalStorage.getItem("data").user_data.roles.find((role) => role.name !== "MEMBER")
-        .name
+      LocalStorage.getItem("data").user_data.roles.find(
+        (role) => role.name !== "MEMBER"
+      ).name
     );
   },
   props: {
@@ -165,7 +174,7 @@ export default {
   },
   data() {
     return {
-      auth_name: LocalStorage.getItem("data").user_data.name,
+      auth_user: LocalStorage.getItem("data").user_data,
       auth_user_role: null,
       left: false,
       year: new Date().getFullYear(),
@@ -190,6 +199,18 @@ export default {
       });
       return data;
     },
+
+    getLoggedInUserProfilePic() {
+      return (
+        process.env.FILE_API_URL +
+        process.env.FILE_DOWNLOAD_PATH +
+        LocalStorage.getItem("data").user_data.picture
+      );
+    },
+
+    hasProfilePic(){
+      return this.auth_user !== undefined &&this.auth_user.picture !== null && this.auth_user.picture !== undefined
+    }
   },
 
   methods: {
@@ -238,7 +259,7 @@ export default {
       }
       this.$store.dispatch("setIntermediateTabs", Array.from(data));
     },
-    registerMember(data){
+    registerMember(data) {
       this.updateDrawer(data);
     },
 
@@ -274,7 +295,6 @@ export default {
       this.updateDrawer(data);
     },
 
-
     viewExpenditureItem(data) {
       this.updateDrawer(data);
     },
@@ -283,7 +303,7 @@ export default {
       this.updateDrawer(data);
     },
 
-    viewExpenditureItemDetail(data){
+    viewExpenditureItemDetail(data) {
       this.updateDrawer(data);
     },
     getCurrentRightDrawerTab() {
@@ -356,14 +376,12 @@ export default {
       this.updateDrawer(data);
     },
 
-    editSponsorship(data){
+    editSponsorship(data) {
       this.updateDrawer(data);
     },
 
-
-
     resetAllForms() {
-      this.$store.dispatch("setUpdatedPayCategories", null)
+      this.$store.dispatch("setUpdatedPayCategories", null);
       this.$store.dispatch("setUpdatedPaymentItem", null);
       this.$store.dispatch("setUpdatedExpenditureCategory", null);
       this.$store.dispatch("setUpdatedExpenditureItem", null);
@@ -372,9 +390,9 @@ export default {
       this.$store.dispatch("setUpdatedIncomeActivity", null);
     },
 
-    verifyRequiredAdd(){
-      return this.$route.name !== 'member_account'
-    }
+    verifyRequiredAdd() {
+      return this.$route.name !== "member_account";
+    },
   },
 };
 </script>

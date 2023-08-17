@@ -448,7 +448,7 @@
                         $t("app.totalSaving")
                       }}</label>
                       <q-input
-                        v-model.number="contribution.total_saving"
+                        v-model.number="getTotalSaving"
                         outlined
                         dense
                         type="number"
@@ -474,7 +474,7 @@
                         $t("app.balance")
                       }}</label>
                       <q-input
-                        v-model="contribution.balance"
+                        v-model.number="contribution.balance"
                         outlined
                         dense
                         type="number"
@@ -495,22 +495,22 @@
                         :disable="has_completed_payment"
                       >
                       </q-input>
-                      <small v-if="checkPaymentItemBal" class="text-red">
+                      <label v-if="checkPaymentItemBal" class="text-red">
                         <b>{{ $t("app.excessAmountLabel") }}</b>
-                      </small>
-                      <br/>
-                      <small
+                      </label>
+                      <br v-if="checkAmountDepositedBasedOnSaving" />
+                      <label
                         v-if="checkAmountDepositedBasedOnSaving"
                         class="text-red"
                       >
-                        <b>{{ $t("app.insuffientSaving") }}</b>
-                      </small><br/>
-                      <small v-if="has_completed_payment" class="text-info">
+                        <b>{{ $t("app.insuffientSaving") }}</b> </label
+                      ><br v-if="has_completed_payment" />
+                      <label v-if="has_completed_payment" class="text-info">
                         <b
                           >{{ $t("app.hasCompletedAmountLabel") }}
                           {{ selected_payment_item.label }}</b
                         >
-                      </small>
+                      </label>
                     </div>
                     <div class="q-mb-md">
                       <label for="credential" class="form_field"
@@ -530,7 +530,7 @@
                           class="form_button"
                           :label="$t('app.reset')"
                           :color="'primary'"
-                          :disabled="!validateForm"
+                          :disabled="false"
                           no-caps
                           outline
                           @click="resetForm"
@@ -566,6 +566,7 @@ import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import memberMixinVue from "src/mixins/memberMixin.vue";
 import ContributionsMixinVue from "src/mixins/ContributionsMixin.vue";
 import MonthsMixinVue from "src/mixins/MonthsMixin.vue";
+import { LocalStorage } from "quasar";
 
 export default {
   mixins: [
@@ -637,12 +638,9 @@ export default {
     },
 
     checkAmountDepositedBasedOnSaving() {
-      return this.contribution.amount_deposited != 0 &&
-        parseFloat(this.contribution.amount_deposited) >
-          parseFloat(this.contribution.total_saving)
-        ? true
-        : false;
+      return this.contribution.amount_deposited != 0 && parseInt(this.contribution.amount_deposited) > parseInt(this.contribution.total_saving);
     },
+
 
     validateForm() {
       return this.contribution.user_id === null ||
@@ -652,7 +650,8 @@ export default {
         (this.validetePaymentItemFrequency &&
           this.contribution.month_name == "") ||
         (this.valideteQuarterlyPaymentItemFrequency &&
-          this.contribution.quarterly_name == "")
+          this.contribution.quarterly_name == "") ||
+        this.checkAmountDepositedBasedOnSaving
         ? true
         : false;
     },
@@ -674,6 +673,14 @@ export default {
         this.contribution.payment_item_id.frequency == "QUARTERLY"
       );
     },
+
+    getCurrentTab() {
+      return this.tab;
+    },
+
+    getTotalSaving(){
+      return parseFloat(this.contribution.total_saving)
+    }
   },
   methods: {
     onAddContribution() {
@@ -686,7 +693,8 @@ export default {
           comment: this.contribution.comment,
           month_name: this.contribution.month_name,
           quarterly_name: this.contribution.quarterly_name,
-          contributed_via_saving: this.tab == "Use Saving" ? true : false,
+          contributed_via_saving:
+            this.getCurrentTab == "Use Saving" ? true : false,
         },
         msg: this.$t("app.saveContributionSuccessMsg"),
         color: "default",
@@ -779,7 +787,8 @@ export default {
         this.$store
           .dispatch("getRequest", payload)
           .then((res) => {
-            this.contribution.total_saving = res.data.total_savings;
+            this.contribution.total_saving = parseFloat(res.data.total_savings);
+            LocalStorage.set('saving', this.contribution.total_saving);
             return res;
           })
           .then((res) => {
@@ -829,6 +838,10 @@ export default {
           ? this.contribution.amount_payable - total_amount_paid
           : this.contribution.amount_payable -
             this.contribution.total_amount_deposited;
+      let savings = parseFloat(LocalStorage.getItem('saving'));
+      let deposite = parseFloat(this.contribution.amount_deposited);
+
+      this.contribution.total_saving = this.contribution.amount_deposited != 0  && this.contribution.amount_deposited != NaN ? savings - deposite : savings;
     },
 
     resetForm() {
@@ -846,6 +859,7 @@ export default {
       this.contribution.month_name = "";
       this.contribution.quarterly_name = "";
       this.contribution.total_saving = 0;
+      LocalStorage.remove('saving')
 
       return this.contribution;
     },

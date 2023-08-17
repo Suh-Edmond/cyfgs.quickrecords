@@ -88,9 +88,7 @@
                     v-show="!has_selected_payment_item"
                   >
                     <q-btn
-                      @click="
-                        has_selected_payment_item = !has_selected_payment_item
-                      "
+                      @click="showNextForm()"
                       color="primary"
                       :label="$t('app.next')"
                       no-caps
@@ -342,9 +340,7 @@
                     v-show="!has_selected_payment_item"
                   >
                     <q-btn
-                      @click="
-                        has_selected_payment_item = !has_selected_payment_item
-                      "
+                      @click="showNextForm()"
                       color="primary"
                       :label="$t('app.next')"
                       no-caps
@@ -582,14 +578,6 @@ export default {
 
     this.$emit("set-heading", heading);
 
-    let organisation_id = this.getOrganisationId;
-
-    if (this.getMembersFromState().length == 0) {
-      this.getOrganisationMembers(organisation_id, false);
-    } else {
-      this.getMembersFromState();
-    }
-
     this.getPaymentItems();
   },
 
@@ -625,6 +613,7 @@ export default {
       tab: "Enter Contribution",
       start_filter_members: false,
       start_filtering: false,
+      payment_item_members: [],
     };
   },
   computed: {
@@ -638,9 +627,12 @@ export default {
     },
 
     checkAmountDepositedBasedOnSaving() {
-      return this.contribution.amount_deposited != 0 && parseInt(this.contribution.amount_deposited) > parseInt(this.contribution.total_saving);
+      return (
+        this.contribution.amount_deposited != 0 &&
+        parseInt(this.contribution.amount_deposited) >
+          parseInt(this.contribution.total_saving)
+      );
     },
-
 
     validateForm() {
       return this.contribution.user_id === null ||
@@ -678,11 +670,16 @@ export default {
       return this.tab;
     },
 
-    getTotalSaving(){
-      return parseFloat(this.contribution.total_saving)
-    }
+    getTotalSaving() {
+      return parseFloat(this.contribution.total_saving);
+    },
   },
   methods: {
+    showNextForm() {
+      this.has_selected_payment_item = !this.has_selected_payment_item;
+      this.getPaymentItemMembers();
+    },
+
     onAddContribution() {
       let payload = {
         url: `/api/protected/contributions`,
@@ -788,7 +785,7 @@ export default {
           .dispatch("getRequest", payload)
           .then((res) => {
             this.contribution.total_saving = parseFloat(res.data.total_savings);
-            LocalStorage.set('saving', this.contribution.total_saving);
+            LocalStorage.set("saving", this.contribution.total_saving);
             return res;
           })
           .then((res) => {
@@ -838,10 +835,14 @@ export default {
           ? this.contribution.amount_payable - total_amount_paid
           : this.contribution.amount_payable -
             this.contribution.total_amount_deposited;
-      let savings = parseFloat(LocalStorage.getItem('saving'));
+      let savings = parseFloat(LocalStorage.getItem("saving"));
       let deposite = parseFloat(this.contribution.amount_deposited);
 
-      this.contribution.total_saving = this.contribution.amount_deposited != 0  && this.contribution.amount_deposited != NaN ? savings - deposite : savings;
+      this.contribution.total_saving =
+        this.contribution.amount_deposited != 0 &&
+        this.contribution.amount_deposited != NaN
+          ? savings - deposite
+          : savings;
     },
 
     resetForm() {
@@ -859,7 +860,7 @@ export default {
       this.contribution.month_name = "";
       this.contribution.quarterly_name = "";
       this.contribution.total_saving = 0;
-      LocalStorage.remove('saving')
+      LocalStorage.remove("saving");
 
       return this.contribution;
     },
@@ -902,16 +903,35 @@ export default {
       });
     },
 
-    getMembersFromState() {
-      this.members = [];
-      this.$store.getters.getMembers.forEach((ele) => {
-        this.members.push({
-          label: ele.name,
-          value: ele.id,
+    getPaymentItemMembers() {
+      let organisation_id = this.$store.getters.getOrganisation.id;
+      let payload = {
+        status: "none",
+        url: `/api/protected/organisations/payment_items/${this.contribution.payment_item_id.value}/users?organisation_id=${organisation_id}`,
+        has_path_val: true,
+        show_feedback: false,
+        show_spinner: false,
+        msg: "none",
+        color: "default",
+        error_msg: "default",
+        commit: "none",
+        has_commit: false,
+        to_be_store_data: {
+          required: true,
+          has_value: false,
+          data: null,
+        },
+      };
+      this.$store.dispatch("getRequest", payload).then((res) => {
+        res.data.forEach((member) => {
+          this.payment_item_members.push({
+            label: member.name,
+            value: member.id,
+          });
         });
       });
 
-      return this.members;
+      return this.payment_item_members
     },
 
     filterMembers(val, update, abort) {
@@ -923,7 +943,7 @@ export default {
 
       update(() => {
         this.start_filter_members = true;
-        this.members = this.getMembersFromState().filter((item) =>
+        this.members = this.payment_item_members.filter((item) =>
           item.label.toLowerCase().includes(val.toLowerCase())
         );
         return this.members;

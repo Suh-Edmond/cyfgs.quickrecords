@@ -9,7 +9,7 @@
         v-if="getLoadingState"
       />
     </div>
-
+    <!--------------------------------------------------TABLE FOR EXPENDITURE DETAILS---------------------------------------->
     <div>
       <!-- header for filter categories -->
       <div
@@ -90,12 +90,14 @@
         </div>
       </div>
     </div>
+    <!--------------------------------------------------END OF TABLE FOR EXPENDITURE DETAILS--------------------------------->
   </q-page>
 </template>
 
 <script>
 import CategoryTable from "src/components/CategoryTable.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
+import TransactionStatusVue from "src/components/Constants/TransactionStatus.vue";
 
 export default {
   mixins: [HelperMixinVue],
@@ -118,7 +120,7 @@ export default {
         {
           name: "name",
           required: true,
-          label: "Name",
+          label: this.$t('app.nameLabel'),
           align: "left",
           field: (row) => row.name,
           format: (val) => `${val}`,
@@ -127,34 +129,34 @@ export default {
         {
           name: "amount_given",
           align: "left",
-          label: "Amount Given (XAF)",
+          label: this.$t('app.amountGivenLabel')+"(XAF)",
           field: "amount_given",
           sortable: true,
         },
         {
           name: "amount_spent",
           align: "left",
-          label: "Amount Spent (XAF)",
+          label: this.$t('app.amountSpent')+"(XAF)",
           field: "amount_spent",
           sortable: true,
         },
         {
           name: "balance",
           align: "left",
-          label: "Balance (XAF)",
+          label: this.$t('app.balance'),
           field: "balance",
           sortable: true,
         },
         {
           name: "approve",
           align: "left",
-          label: "Transaction Status",
+          label: this.$t('app.transactionStatus'),
           field: "approve",
           sortable: true,
         },
         {
           name: "action",
-          label: "Action",
+          label: this.$t('app.action'),
           field: "action",
           sortable: true,
           align: "left",
@@ -167,6 +169,7 @@ export default {
       status: null,
       filtered_items: [],
       show_spinner: false,
+            selected: [],
     };
   },
   computed: {
@@ -178,18 +181,25 @@ export default {
     },
 
     getExpenditureItemAmount() {
-      return this.$store.getters.getExpenditureItemDetails != null && this.$store.getters.getExpenditureItemDetails.length > 0 ? this.$store.getters.getExpenditureItemDetails[2]
-        .expenditure_item_amount : 0;
+      return this.$store.getters.getExpenditureItemDetails != null &&
+        this.$store.getters.getExpenditureItemDetails.length > 0
+        ? this.$store.getters.getExpenditureItemDetails[2]
+            .expenditure_item_amount
+        : 0;
     },
 
     getTotalAmountGiven() {
-      return this.$store.getters.getExpenditureItemDetails != null && this.$store.getters.getExpenditureItemDetails.length > 0 ? this.$store.getters.getExpenditureItemDetails[3]
-        .total_amount_given : 0;
+      return this.$store.getters.getExpenditureItemDetails != null &&
+        this.$store.getters.getExpenditureItemDetails.length > 0
+        ? this.$store.getters.getExpenditureItemDetails[3].total_amount_given
+        : 0;
     },
 
     getTotalAmountSpent() {
-      return this.$store.getters.getExpenditureItemDetails != null && this.$store.getters.getExpenditureItemDetails.length > 0 ? this.$store.getters.getExpenditureItemDetails[4]
-        .total_amount_spent : 0;
+      return this.$store.getters.getExpenditureItemDetails != null &&
+        this.$store.getters.getExpenditureItemDetails.length > 0
+        ? this.$store.getters.getExpenditureItemDetails[4].total_amount_spent
+        : 0;
     },
 
     getBalance() {
@@ -197,29 +207,36 @@ export default {
     },
 
     getTotalBalance() {
-      return this.$store.getters.getExpenditureItemDetails != null && this.$store.getters.getExpenditureItemDetails.length > 0 ? this.$store.getters.getExpenditureItemDetails[5].total_balance : 0;
+      return this.$store.getters.getExpenditureItemDetails != null &&
+        this.$store.getters.getExpenditureItemDetails.length > 0
+        ? this.$store.getters.getExpenditureItemDetails[5].total_balance
+        : 0;
     },
 
     getExpenditureDetails() {
       let data = [];
-       if (this.$store.getters.getExpenditureItemDetails != null && this.$store.getters.getExpenditureItemDetails.length > 0) {
-          this.$store.getters.getExpenditureItemDetails[0].forEach((ele) => {
-              data.push({
-                counter: this.$store.getters.getExpenditureItemDetails[0].indexOf(ele) + 1,
-                name: ele.name,
-                amount_given: ele.amount_given,
-                amount_spent: ele.amount_spent,
-                balance: ele.balance,
-                type: "EXPENDITURE_DETAILS",
-                id: ele.id,
-                expenditure_item_id: ele.expenditure_item_id,
-                comment: ele.comment,
-                approve: ele.approve,
-                created_at: ele.created_at,
-                updated_at: ele.updated_at,
-                updated_by: ele.updated_by,
-              });
+      if (
+        this.$store.getters.getExpenditureItemDetails != null &&
+        this.$store.getters.getExpenditureItemDetails.length > 0
+      ) {
+        this.$store.getters.getExpenditureItemDetails[0].forEach((ele) => {
+          data.push({
+            counter:
+              this.$store.getters.getExpenditureItemDetails[0].indexOf(ele) + 1,
+            name: ele.name,
+            amount_given: ele.amount_given,
+            amount_spent: ele.amount_spent,
+            balance: ele.balance,
+            type: "EXPENDITURE_DETAILS",
+            id: ele.id,
+            expenditure_item_id: ele.expenditure_item_id,
+            comment: ele.comment,
+            approve: ele.approve,
+            created_at: ele.created_at,
+            updated_at: ele.updated_at,
+            updated_by: ele.updated_by,
           });
+        });
       }
       return data;
     },

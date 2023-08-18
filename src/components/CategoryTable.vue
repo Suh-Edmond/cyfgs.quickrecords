@@ -1,10 +1,10 @@
 <template>
   <div class="q-pa-xs">
-    <!-- table element -->
+    <!---------------------------------------------------MAIN TABLE COMPONENT------------------------------>
     <q-table
       :data="data"
       :columns="columns"
-      row-key="id"
+      row-key="counter"
       :table-header-style="{ backgroundColor: '#5384ae', color: '#FFFFFF' }"
       class="col-xs-12"
       :filter="filter"
@@ -688,7 +688,9 @@
         </div>
       </template>
     </q-table>
-    <!-- confirmation delete category dialog -->
+    <!---------------------------------------------------END OF MAIN TABLE COMPONENT------------------------>
+
+    <!----------------------------------------------------CONFIRM DELETE CATEGORY DIALOG--------------------->
     <div v-if="dialog">
       <ConfirmDialog
         :data="deleted_row"
@@ -703,8 +705,9 @@
         @delete-row="deleteRow"
       ></ConfirmDialog>
     </div>
+    <!---------------------------------------------------END OF CONFIRM DELETE CATEGORY DIALOG--------------->
 
-    <!-- confirmation dialog for approve and decline row data -->
+    <!--------------------------------------------------CONFIRM APPROVE/DECLINE A RECORD--------------------->
     <div v-if="show_approve_dialog">
       <q-dialog v-model="show_approve_dialog">
         <q-card class="approve_card q-px-md">
@@ -745,6 +748,7 @@
         </q-card>
       </q-dialog>
     </div>
+    <!--------------------------------------------------END OF CONFIRM APPROVE/DECLINE A-->
   </div>
 </template>
 <script>
@@ -851,7 +855,7 @@ export default {
       type: null,
       delete_msg: "",
       show_confirm_dialog_detail: false,
-    };
+     };
   },
   computed: {},
   methods: {

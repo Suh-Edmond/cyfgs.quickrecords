@@ -568,12 +568,9 @@ export default {
     },
 
     setReferences(data) {
-      let refs = [];
+      let refs = "";
       data.forEach((ele) => {
-        refs.push({
-          label: ele.name,
-          value: ele.id,
-        });
+        refs += ele.id+"/";
       });
       return refs;
     },

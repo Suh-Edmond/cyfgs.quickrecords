@@ -282,6 +282,10 @@ export default {
           label: this.$t("app.expired"),
           value: "expired",
         },
+        {
+          label: this.$t("app.all"),
+          value: "ALL",
+        },
       ],
       is_compulsory: "",
       filteredPaymentItems: [],

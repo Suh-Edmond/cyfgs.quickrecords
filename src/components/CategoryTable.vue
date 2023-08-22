@@ -596,7 +596,7 @@
               v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
             />
 
-            <!-- decline btn for expenditure item details -->
+            <!-- view expenditure item details -->
             <q-btn
               color="primary"
               :class="props.row.approve == 'PENDING' ? 'viewExpenditureItem':'viewPending'"
@@ -748,7 +748,11 @@
         </q-card>
       </q-dialog>
     </div>
-    <!--------------------------------------------------END OF CONFIRM APPROVE/DECLINE A-->
+    <!--------------------------------------------------END OF CONFIRM APPROVE/DECLINE A RECORD-------------->
+
+    <!-----------------------------------------------------------TABLE FOR EXPENDITURE ITEM DETAILS-------------------------------------------------->
+
+    <!-----------------------------------------------------------END OF TABLE FOR EXPENDITURE ITEM DETAILS------------------------------------------->
   </div>
 </template>
 <script>

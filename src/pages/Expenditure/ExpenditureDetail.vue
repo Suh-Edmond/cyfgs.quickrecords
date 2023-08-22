@@ -37,57 +37,120 @@
             :color="'positive'"
             :disabled="false"
             no-caps
-            icon-right="print"
+            icon-left="print"
             @click="downloadExpenditureItemDetails"
           ></q-btn>
         </div>
       </div>
-      <!-- table for categories -->
-      <div class="row q-pt-sm">
-        <div class="col-md-12 col-xs-12 col-sm-12" v-show="!start_filter">
-          <CategoryTable
-            :columns="columns"
-            :data="getExpenditureDetails"
-            :label="label"
-            :message="message"
-            :title="getExpenditureItemName"
-            :show_payment_category="false"
-            :show_payment_item="false"
-            :show_expenditure_category="false"
-            :show_expenditure_item="false"
-            :show_expenditure_item_detail="true"
-            :expenditure_item_amount="getExpenditureItemAmount"
-            :total_amount_given="getTotalAmountGiven"
-            :total_amount_spent="getTotalAmountSpent"
-            :balance="getBalance"
-            :total_balance="getTotalBalance"
-            @view-expenditure-item-detail="viewExpenditureItemDetail"
-          >
-          </CategoryTable>
-        </div>
+      <div class="q-px-sm q-pt-md">
+        <q-markup-table>
+          <thead class="bg-primary text-white">
+            <tr>
+              <th
+                class="text-left"
+                v-for="column in columns"
+                :key="column.name"
+              >
+                {{ column.label }}
+              </th>
+              <th class="text-left">
+                {{ $t("app.markAll")
+                }}<q-checkbox
+                  :color="check_all ? 'black' : ''"
+                  @input="checkAllExpenses"
+                  v-model="check_all"
+                />
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="(expenditure, index) in getExpenditureDetails"
+              :key="index"
+            >
+              <td class="text-left">{{ index + 1 }}</td>
+              <td class="text-left">{{ expenditure.name }}</td>
+              <td class="text-left">
+                {{ Number(expenditure.amount_given).toLocaleString() }}
+              </td>
+              <td class="text-left">
+                {{ Number(expenditure.amount_spent).toLocaleString() }}
+              </td>
+              <td class="text-left">
+                {{ Number(expenditure.balance).toLocaleString() }}
+              </td>
+              <q-td
+                key="approve"
+                v-if="expenditure.approve == 'PENDING'"
+                class="text-info"
+              >
+                {{ expenditure.approve }}
+              </q-td>
+              <q-td
+                key="approve"
+                v-if="expenditure.approve == 'DECLINED'"
+                class="text-orange"
+              >
+                {{ expenditure.approve }}
+              </q-td>
+              <q-td
+                key="approve"
+                v-if="expenditure.approve == 'APPROVED'"
+                class="text-positive"
+              >
+                {{ expenditure.approve }}
+              </q-td>
+              <td class="text-left">
+                <!-- approved btn for expenditure item details -->
+                <q-btn
+                  class="decline_btn"
+                  dense
+                  :label="$t('app.decline')"
+                  unelevated
+                  no-caps
+                  @click="onDeclineRecord(expenditure, 'Decline')"
+                  v-if="
+                    checkTreasurerRole() && expenditure.approve == 'PENDING'
+                  "
+                />
+                <!-- decline btn for expenditure item details -->
+                <q-btn
+                  class="approve_btn"
+                  dense
+                  :label="$t('app.approve')"
+                  no-caps
+                  unelevated
+                  @click="onApprovedRecord(expenditure, 'Approve')"
+                  v-if="
+                    checkTreasurerRole() && expenditure.approve == 'PENDING'
+                  "
+                />
 
-        <!-- table for filtered results -->
-        <div class="col-md-12 col-xs-12 col-sm-12" v-show="start_filter">
-          <CategoryTable
-            :columns="columns"
-            :data="filtered_items"
-            :label="label"
-            :message="message"
-            :title="getExpenditureItemName"
-            :show_payment_category="false"
-            :show_payment_item="false"
-            :show_expenditure_category="false"
-            :show_expenditure_item="false"
-            :show_expenditure_item_detail="true"
-            :expenditure_item_amount="getExpenditureItemAmount"
-            :total_amount_given="getTotalAmountGiven"
-            :total_amount_spent="getTotalAmountSpent"
-            :balance="getBalance"
-            :total_balance="getTotalBalance"
-            @view-expenditure-item-detail="viewExpenditureItemDetail"
-          >
-          </CategoryTable>
-        </div>
+                <!-- view expenditure item details -->
+                <q-btn
+                  color="primary"
+                  :class="
+                    expenditure.approve == 'PENDING'
+                      ? 'viewExpenditureItem'
+                      : 'viewPending'
+                  "
+                  dense
+                  :label="$t('app.view')"
+                  no-caps
+                  unelevated
+                  @click="onViewExpenditureDetail(expenditure)"
+                  v-if="checkTreasurerRole()"
+                >
+                  <q-icon name="visibility" size="xs" class="q-pl-md"></q-icon>
+                </q-btn>
+              </td>
+              <td class="text-left" v-show="expenditure.approve == 'PENDING'">
+                <q-checkbox v-model="selected" color="black" @input="markSingleExpense(expenditure)"  />
+              </td>
+              <td v-show="expenditure.approve != 'PENDING'"></td>
+            </tr>
+          </tbody>
+        </q-markup-table>
       </div>
     </div>
     <!--------------------------------------------------END OF TABLE FOR EXPENDITURE DETAILS--------------------------------->
@@ -98,6 +161,7 @@
 import CategoryTable from "src/components/CategoryTable.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
 import TransactionStatusVue from "src/components/Constants/TransactionStatus.vue";
+import { LocalStorage } from "quasar";
 
 export default {
   mixins: [HelperMixinVue],
@@ -106,6 +170,8 @@ export default {
 
   data() {
     return {
+      check_all: false,
+      val: false,
       start_filter: false,
       color: "primary",
       loading: false,
@@ -120,7 +186,7 @@ export default {
         {
           name: "name",
           required: true,
-          label: this.$t('app.nameLabel'),
+          label: this.$t("app.nameLabel"),
           align: "left",
           field: (row) => row.name,
           format: (val) => `${val}`,
@@ -129,34 +195,34 @@ export default {
         {
           name: "amount_given",
           align: "left",
-          label: this.$t('app.amountGivenLabel')+"(XAF)",
+          label: this.$t("app.amountGivenLabel") + "(XAF)",
           field: "amount_given",
           sortable: true,
         },
         {
           name: "amount_spent",
           align: "left",
-          label: this.$t('app.amountSpent')+"(XAF)",
+          label: this.$t("app.amountSpent") + "(XAF)",
           field: "amount_spent",
           sortable: true,
         },
         {
           name: "balance",
           align: "left",
-          label: this.$t('app.balance'),
+          label: this.$t("app.balance"),
           field: "balance",
           sortable: true,
         },
         {
           name: "approve",
           align: "left",
-          label: this.$t('app.transactionStatus'),
+          label: this.$t("app.transactionStatus"),
           field: "approve",
           sortable: true,
         },
         {
           name: "action",
-          label: this.$t('app.action'),
+          label: this.$t("app.action"),
           field: "action",
           sortable: true,
           align: "left",
@@ -169,7 +235,8 @@ export default {
       status: null,
       filtered_items: [],
       show_spinner: false,
-            selected: [],
+      selected:false,
+      approve_state:false,
     };
   },
   computed: {
@@ -235,6 +302,7 @@ export default {
             created_at: ele.created_at,
             updated_at: ele.updated_at,
             updated_by: ele.updated_by,
+            approve_state:ele.approve === 'PENDING' ? false:true
           });
         });
       }
@@ -242,6 +310,26 @@ export default {
     },
   },
   methods: {
+    checkAllExpenses(){
+      this.getExpenditureDetails.map(ele => ele.approve_state = this.check_all)
+      return this.getExpenditureDetails;
+    },
+
+    markSingleExpense(expense){
+      this.selected = true;
+      // console.log(expense);
+      // this.getExpenditureDetails.find(ele => ele.id === expense.id).approve_state = true;
+      // console.log(this.getExpenditureDetails);
+      // return this.getExpenditureDetails;
+      return this.selected;
+    },
+
+
+    evaluateAllRecord(expenses) {
+      return expenses.find((ele) => ele.approve == "PENDING") == undefined
+        ? (this.check_all = null)
+        : (this.check_all = false);
+    },
     downloadExpenditureItemDetails() {
       let expenditure_item_id = this.$router.currentRoute.params.id;
       let url = `/api/protected/expenditure-item-details/download?expenditure_item_id=${expenditure_item_id}&status=${this.status}`;
@@ -276,11 +364,54 @@ export default {
       this.$store.dispatch("setUpdatedExpenditureItemDetail", data.data);
       this.$emit("view-expenditure-item-detail", data);
     },
+    onDeclineRecord(data1, data) {},
+
+    checkTreasurerRole() {
+      const treasurer_role = LocalStorage.getItem("data").user_data.roles.find(
+        (role) => role.name == "TREASURER"
+      );
+      return treasurer_role != undefined;
+    },
+
+    onViewExpenditureDetail(data) {
+      let payload = {
+        data: data,
+        tab: "Expenditure Item Detail Information",
+      };
+      this.$emit("view-expenditure-item-detail", payload);
+    },
+
+    onApprovedRecord(data1, data) {},
   },
   components: {
-    CategoryTable,
+    // CategoryTable,
   },
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.tableHead {
+  background-color: "#5384ae";
+  color: "#FFFFFF";
+}
+.viewExpenditureItem {
+  width: 5.5rem;
+  margin-left: 1rem;
+}
+.viewPending {
+  width: 5.5rem;
+}
+
+.approve_btn {
+  background-color: $secondary;
+  color: white;
+  width: 5.5rem;
+  margin-left: 1rem;
+}
+
+.decline_btn {
+  background-color: $orange;
+  color: white;
+  width: 5.5rem;
+}
+</style>

@@ -114,13 +114,13 @@
     <div v-if="show_reference_dialog">
       <q-dialog v-model="show_reference_dialog">
         <q-card>
-          <q-card-section class="q-my-md">
-            <q-toolbar class="bg-primary text-white shadow-2">
-              <q-toolbar-title class="toolbar_title flex text-white">
-                {{ $t("app.memberLabel") }}
-              </q-toolbar-title>
-            </q-toolbar>
-            <div class="q-mt-md">
+          <q-card-section class="bg-primary ">
+            <label class="text-white  toolbar_title">
+                 {{ $t("app.memberLabel") }}
+             </label>
+          </q-card-section>
+          <q-card-section>
+            <div>
               <q-list style="width: 400px">
                 <q-item
                   v-for="reference in references"

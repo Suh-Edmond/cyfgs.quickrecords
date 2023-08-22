@@ -1,5 +1,6 @@
 <template>
   <div class="q-pa-sm">
+    <q-linear-progress rounded indeterminate color="primary" v-show="is_fetch_picture"/>
     <q-card class="my-card" flat>
       <div class="row">
         <div class="col col-md-4 col-sm-12 col-xs-12">
@@ -501,6 +502,7 @@ export default {
       is_old_pwd: true,
       no_caps: true,
       gender_options: ["MALE", "FEMALE", "OTHER"],
+      is_fetch_picture:false,
     };
   },
   computed: {
@@ -638,6 +640,7 @@ export default {
     },
 
     onFileChanged(e) {
+      this.is_fetch_picture = true;
       const formData = new FormData();
       formData.append("file", e.target.files[0]);
 
@@ -677,6 +680,8 @@ export default {
             LocalStorage.set("data.user_data", user);
           });
         }
+      }).finally(() => {
+        this.is_fetch_picture = false;
       });
     },
   },

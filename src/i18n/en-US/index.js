@@ -181,7 +181,6 @@ export default {
     paymentCategoryDeleteFeedbackMsg:'Payment Category deleted successfully',
     removeMember:'Are you sure you want to remove this Member ?',
     removeMemberSuccessMsg:'Member remove successfully',
-    compulsory:'Compulsory',
     yes:'YES',
     no:'NO',
     frequency:'Frequency',
@@ -254,6 +253,12 @@ export default {
     transactionStatus:'Transaction Status',
     action:"Action",
     markAll:"Check all",
+    all:"ALL",
+    selectState:"Select State",
+    deadline:"Deadline",
+    active:"Active",
+    expired:"Expired",
+    compulsoryLabel:"Compulsory",
     viewSavingHeading:'Member Saving Information',
     selectOptionGenerateReport:'Select an Option to Generate Report',
     selectQuarter:'Select Quarter',
@@ -460,6 +465,7 @@ export default {
     tokenExpireMsg:"Password Reset Token Expired",
     newPasswordResetTokenMsg:"Get New Password Reset Token",
     NonRoleUserEmailFailMsg:"Unauthorized! Please you don't the role to carry out this action",
-    notSendEmailMsg:"Could not send  password email. Please check you connection"
+    notSendEmailMsg:"Could not send  password email. Please check you connection",
+    invalidDeadline:"Invalid deadline! Deadline must be greater or lesser than today's date"
    }
 };

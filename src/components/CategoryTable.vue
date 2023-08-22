@@ -104,7 +104,7 @@
             {{ Number(props.row.amount).toLocaleString() }}
           </q-td>
           <q-td key="compulsory" :props="props">
-            {{ props.row.compulsory == 1 ? "YES" : "NO" }}
+            {{ props.row.compulsory === 1 ? "YES" : "NO" }}
           </q-td>
           <q-td key="frequency" :props="props">
             {{ props.row.frequency }}

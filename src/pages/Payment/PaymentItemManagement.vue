@@ -13,13 +13,13 @@
     <div>
       <!-------------------------------------------------HEADER FOR PAYMENT ITEMS-------------------------------->
       <div
-        class="row q-ml-xs q-pt-xs"
+        class="row q-ml-xs q-pt-xs q-gutter-md"
         :class="$q.screen.lg ? 'q-pa-sm' : ''"
         :style="
           $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
         "
       >
-        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
+        <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12">
           <q-select
             v-model="is_compulsory"
             outlined
@@ -28,7 +28,7 @@
             :label="$t('app.selectStatusLabel')"
           />
         </div>
-        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-ml-md">
+        <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12">
           <q-select
             v-model="type"
             outlined
@@ -37,7 +37,7 @@
             :label="$t('app.selectPaymentType')"
           />
         </div>
-        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-ml-md">
+        <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12">
           <q-select
             v-model="frequency"
             outlined
@@ -46,30 +46,41 @@
             :label="$t('app.selectFrequency')"
           />
         </div>
-        <div class="col-md-1 col-lg-1 col-xs-12 col-sm-12 q-ml-md">
-          <q-btn
-            :label="$t('app.filter')"
-            :loading="loading_filter"
-            color="primary"
-            :disabled="validateFilter"
-            @click="filterPaymentItems"
-            no-caps
-            icon-right="filter_list"
-          >
-          </q-btn>
+        <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12">
+          <q-select
+            v-model="state"
+            outlined
+            dense
+            :options="states"
+            :label="$t('app.selectState')"
+          />
         </div>
-
-        <q-space />
-        <div class="button q-pb-xs">
-          <q-btn
-            :label="$t('app.print')"
-            :loading="loading"
-            color="positive"
-            :disabled="validateDownload"
-            no-caps
-            icon-right="print"
-            @click="downloadItems"
-          ></q-btn>
+        <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12">
+          <div>
+            <q-btn
+              :label="$t('app.filter')"
+              :loading="loading_filter"
+              color="primary"
+              :disabled="validateFilter"
+              @click="filterPaymentItems"
+              no-caps
+              icon-right="filter_list"
+            >
+            </q-btn>
+          </div>
+        </div>
+        <div class="col-md-1 col-lg-1 col-xs-12 col-sm-12 flex justify-end">
+          <div class="q-pb-xs">
+            <q-btn
+              :label="$t('app.print')"
+              :loading="loading"
+              color="positive"
+              :disabled="validateDownload"
+              no-caps
+              icon-right="print"
+              @click="downloadItems"
+            ></q-btn>
+          </div>
         </div>
       </div>
       <!------------------------------------------------END OF HEADER------------------------------------------->
@@ -106,7 +117,7 @@
           <q-card-section class="q-my-md">
             <q-toolbar class="bg-primary text-white shadow-2">
               <q-toolbar-title class="toolbar_title flex text-white">
-                 {{$t('app.memberLabel')}}
+                {{ $t("app.memberLabel") }}
               </q-toolbar-title>
             </q-toolbar>
             <div class="q-mt-md">
@@ -204,7 +215,7 @@ export default {
         },
         {
           name: "amount",
-          align: "center",
+          align: "left",
           label: "Amount(XAF)",
           field: "amount",
           sortable: true,
@@ -253,12 +264,24 @@ export default {
           sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
         },
       ],
+      state:null,
       data: [],
-      label: this.$t('app.delete'),
-      message: this.$t('app.deletePaymentItemWarningMsg'),
+      label: this.$t("app.delete"),
+      message: this.$t("app.deletePaymentItemWarningMsg"),
       statuses: [
-        { label: this.$t('app.compulsory'), value: true },
-        { label: this.$t('app.notCompulsory'), value: false },
+        { label: this.$t("app.compulsory"), value: 1 },
+        { label: this.$t("app.notCompulsory"), value: 0 },
+        { label: this.$t("app.all"), value: "ALL" },
+      ],
+      states: [
+        {
+          label: this.$t("app.active"),
+          value: "active",
+        },
+        {
+          label: this.$t("app.expired"),
+          value: "expired",
+        },
       ],
       is_compulsory: "",
       filteredPaymentItems: [],
@@ -356,7 +379,7 @@ export default {
 
     downloadItems() {
       let id = this.$store.getters.getCurrentPaymentCategory.id;
-      let url = `/api/protected/download-payment-items?payment_category_id=${id}&is_compulsory=${this.is_compulsory.value}&frequency=${this.frequency}&type=${this.type}`;
+      let url = `/api/protected/download-payment-items?payment_category_id=${id}&is_compulsory=${this.is_compulsory.value}&frequency=${this.frequency}&type=${this.type}&state=${this.state.value}`;
       let file_name = "Payment_Items.pdf";
       this.loading = this.downloadPdf(url, file_name);
     },
@@ -375,11 +398,11 @@ export default {
       this.filteredPaymentItems = [];
       this.loading_filter = true;
       let payload = {
-        url: `/api/protected/filter-payment-items?payment_category_id=${id}&is_compulsory=${this.is_compulsory.value}&type=${this.type}&frequency=${this.frequency}`,
+        url: `/api/protected/filter-payment-items?payment_category_id=${id}&is_compulsory=${this.is_compulsory.value}&type=${this.type}&frequency=${this.frequency}&state=${this.state.value}`,
         msg: "none",
         color: "default",
         status: "none",
-        error_msg: this.$t('app.paymentItemErrorMsg'),
+        error_msg: this.$t("app.paymentItemErrorMsg"),
         has_commit: false,
         show_feedback: false,
         show_spinner: true,
@@ -399,7 +422,7 @@ export default {
             name: ele.name,
             amount: ele.amount,
             id: ele.id,
-            complusory: ele.complusory ? "YES" : "NO",
+            compulsory: ele.compulsory,
             payment_category_id: ele.payment_category_id,
             description: ele.description,
             payment_category_name: ele.payment_category_name,
@@ -439,12 +462,12 @@ export default {
     deleteRow(data) {
       let payload = {
         url: `/api/protected/payment-categories/${data.payment_category_id}/payment-items/${data.id}`,
-        msg: this.$t('app.paymentCategoryDeleteFeedbackMsg'),
+        msg: this.$t("app.paymentCategoryDeleteFeedbackMsg"),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: this.$t('app.defaultErrorMsg'),
+        error_msg: this.$t("app.defaultErrorMsg"),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -473,7 +496,7 @@ export default {
     removeReference(reference) {
       this.show_delete_dialog = true;
       this.deleted_row = reference;
-      this.delete_msg = this.$t('app.removeMember');
+      this.delete_msg = this.$t("app.removeMember");
     },
 
     removeMember() {
@@ -483,12 +506,12 @@ export default {
           id: this.selected_payment_item,
           reference_id: this.deleted_row.id,
         },
-        msg: this.$t('app.removeMemberSuccessMsg'),
+        msg: this.$t("app.removeMemberSuccessMsg"),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: this.$t('app.defaultErrorMsg'),
+        error_msg: this.$t("app.defaultErrorMsg"),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -555,6 +578,4 @@ export default {
   font-size: large;
   letter-spacing: 0.01em;
 }
-
-
 </style>

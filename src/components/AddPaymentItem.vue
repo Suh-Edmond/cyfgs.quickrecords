@@ -2,27 +2,29 @@
   <div class="q-pa-md">
     <div class="q-ml-sm q-mb-lg">
       <label class="text-muted q-pl-sm info"
-        >{{$t('app.warningField')}}<span class="text-red">*</span>{{$t('app.fields')}}</label
+        >{{ $t("app.warningField") }}<span class="text-red">*</span
+        >{{ $t("app.fields") }}</label
       >
     </div>
     <div class="q-mt-md q-mx-md">
       <q-form @submit="onAddPaymentItem" class="q-gutter-md">
         <div>
           <label for="credential" class="form_field"
-            >{{$t('app.nameLabel')}} <span class="text-red">*</span></label
+            >{{ $t("app.nameLabel") }} <span class="text-red">*</span></label
           >
           <q-input v-model="payment_item.name" outlined dense type="text" />
         </div>
         <div>
           <label for="credential" class="form_field"
-            >{{$t('app.amount')}} <span class="text-red">*</span></label
+            >{{ $t("app.amount") }} <span class="text-red">*</span></label
           >
           <q-input v-model="payment_item.amount" outlined dense type="number" />
         </div>
         <div class="flex">
           <div>
             <label for="credential" class="form_field"
-              >{{$t('app.compulsory')}} <span class="text-red">*</span></label
+              >{{ $t("app.compulsoryLabel") }}
+              <span class="text-red">*</span></label
             >
           </div>
           <div class="q-gutter-sm q-ml-lg">
@@ -42,9 +44,43 @@
             />
           </div>
         </div>
+
         <div>
           <label for="credential" class="form_field"
-            >{{$t('app.frequency')}} <span class="text-red">*</span></label
+            >{{ $t("app.deadline") }} <span class="text-red">*</span></label
+          >
+          <q-input
+            dense
+            outlined
+            v-model="payment_item.deadline"
+            @input="validateDeadline()"
+          >
+            <template v-slot:append>
+              <q-icon name="event" class="cursor-pointer">
+                <q-popup-proxy
+                  ref="qDateProxy"
+                  transition-show="scale"
+                  transition-hide="scale"
+                >
+                  <q-date
+                    v-model="payment_item.deadline"
+                    @input="validateDeadline()"
+                  >
+                    <div class="row items-center justify-end">
+                      <q-btn v-close-popup label="Close" color="primary" flat />
+                    </div>
+                  </q-date>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
+          <label v-if="invalid_deadline" class="text-red">
+            <b>{{ $t("app.invalidDeadline") }}</b>
+          </label>
+        </div>
+        <div>
+          <label for="credential" class="form_field"
+            >{{ $t("app.frequency") }} <span class="text-red">*</span></label
           >
           <q-select
             v-model="payment_item.frequency"
@@ -57,7 +93,7 @@
         </div>
         <div>
           <label for="credential" class="form_field"
-            >{{$t('app.type')}} <span class="text-red">*</span></label
+            >{{ $t("app.type") }} <span class="text-red">*</span></label
           >
           <q-select
             v-model="payment_item.type"
@@ -74,12 +110,13 @@
         <div v-if="payment_item.type == 'A_MEMBER'">
           <div v-if="references.length == 0">
             <label for="title" class="q-mt-sm form_field"
-              >{{$t('app.selectMember')}} <span class="text-red">*</span></label
+              >{{ $t("app.selectMember") }}
+              <span class="text-red">*</span></label
             >
           </div>
           <div v-if="references.length > 0">
             <label for="title" class="q-mt-sm form_field"
-              >{{$t('app.selectedMember')}}:</label
+              >{{ $t("app.selectedMember") }}:</label
             >
             <div class="q-gutter-sm q-mb-lg">
               <q-btn
@@ -88,9 +125,9 @@
                 v-for="ref in references"
                 :key="ref.value"
                 @click="removeSelectedReference(ref)"
-                >{{ref.label}}
+                >{{ ref.label }}
                 <q-icon name="clear" class="q-pl-sm" size="xs"></q-icon>
-                <q-tooltip>{{$t('app.removeMemberTip')}}</q-tooltip>
+                <q-tooltip>{{ $t("app.removeMemberTip") }}</q-tooltip>
               </q-btn>
             </div>
           </div>
@@ -117,7 +154,7 @@
             <template v-slot:no-option>
               <q-item>
                 <q-item-section class="text-grey">
-                  {{$t('app.notFound')}}
+                  {{ $t("app.notFound") }}
                 </q-item-section>
               </q-item>
             </template>
@@ -128,13 +165,14 @@
         <div v-if="payment_item.type == 'GROUPED_MEMBERS'">
           <div v-if="references.length == 0">
             <label for="title" class="q-mt-sm form_field"
-              >{{$t('app.selectMembers')}} <span class="text-red">*</span></label
+              >{{ $t("app.selectMembers") }}
+              <span class="text-red">*</span></label
             >
           </div>
           <div v-if="references.length > 0">
-            <label for="title" class="q-mt-sm form_field"
-              >{{$t('app.selectedMembers')}}</label
-            >
+            <label for="title" class="q-mt-sm form_field">{{
+              $t("app.selectedMembers")
+            }}</label>
             <div class="q-gutter-sm q-mb-lg">
               <q-btn
                 color="primary"
@@ -142,9 +180,9 @@
                 v-for="ref in references"
                 :key="ref.value"
                 @click="removeSelectedReference(ref)"
-                >{{ref.label}}
+                >{{ ref.label }}
                 <q-icon name="clear" class="q-pl-sm" size="xs"></q-icon>
-                <q-tooltip>{{$t('app.removeMemberTip')}}</q-tooltip>
+                <q-tooltip>{{ $t("app.removeMemberTip") }}</q-tooltip>
               </q-btn>
             </div>
           </div>
@@ -171,7 +209,7 @@
             <template v-slot:no-option>
               <q-item>
                 <q-item-section class="text-grey">
-                  {{$t('app.notFound')}}
+                  {{ $t("app.notFound") }}
                 </q-item-section>
               </q-item>
             </template>
@@ -180,7 +218,9 @@
         <!-- END OF SELECTIONS -->
 
         <div class="q-mt-lg">
-          <label for="credential" class="form_field">{{$t('app.description')}} </label>
+          <label for="credential" class="form_field"
+            >{{ $t("app.description") }}
+          </label>
           <q-input
             v-model="payment_item.description"
             outlined
@@ -217,7 +257,7 @@ export default {
   mixins: [PaymentItemMixin, PaymentItemMixinVue, memberMixin],
 
   created() {
-    let heading = this.$t('app.paymentItemHeading');
+    let heading = this.$t("app.paymentItemHeading");
     this.$emit("set-heading", heading);
   },
 
@@ -240,6 +280,7 @@ export default {
         frequency: null,
         amount: 0.0,
         reference: null,
+        deadline: null,
       },
       payment_item_types: [
         "ALL_MEMBERS",
@@ -252,6 +293,7 @@ export default {
       members: [],
       references: [],
       start_filtering: false,
+      invalid_deadline: false,
     };
   },
   computed: {
@@ -259,6 +301,7 @@ export default {
       return this.payment_item.name == null ||
         this.payment_item.type == null ||
         this.payment_item.frequency == null ||
+        this.payment_item.deadline == null ||
         this.payment_item.amount == 0.0
         ? true
         : false;
@@ -268,15 +311,15 @@ export default {
       return this.setFormFields(this.$store.getters.getUpdatedPaymentItem);
     },
 
-    validateDisableFrequency(){
-      return this.payment_item.id != null && this.payment_item.frequency != null;
+    validateDisableFrequency() {
+      return (
+        this.payment_item.id != null && this.payment_item.frequency != null
+      );
     },
 
-    validateDisableType(){
-      return this.payment_item.id != null && this.payment_item.type != null
+    validateDisableType() {
+      return this.payment_item.id != null && this.payment_item.type != null;
     },
-
-
   },
 
   watch: {
@@ -286,6 +329,15 @@ export default {
   },
 
   methods: {
+    validateDeadline() {
+      let date = new Date();
+      let month = date.getMonth() + 1 > 10 ? 0+date.getMonth() + 1: date.getMonth() + 1;
+      let current_date =
+        date.getFullYear() + "/" + 0+month + "/" + date.getDate();
+      return this.invalid_deadline =
+        this.payment_item.deadline !== null &&
+        this.payment_item.deadline < current_date;
+    },
     onAddPaymentItem() {
       let category = this.$store.getters.getCurrentPaymentCategory;
       let payload = {
@@ -299,13 +351,14 @@ export default {
           compulsory: this.payment_item.compulsory,
           description: this.payment_item.description,
           reference: this.buildStringOfReferences(this.references),
+          deadline: this.payment_item.deadline,
         },
-        msg: this.$t('app.paymentItemSuccessMsg'),
+        msg: this.$t("app.paymentItemSuccessMsg"),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: this.$t('app.defaultErrorMsg'),
+        error_msg: this.$t("app.defaultErrorMsg"),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -323,6 +376,7 @@ export default {
       this.payment_item.amount = 0.0;
       this.payment_item.frequency = null;
       this.payment_item.reference = null;
+      this.payment_item.deadline = null;
       (this.payment_item.description = ""),
         (this.payment_item.compulsory = true);
       this.payment_item.id = null;
@@ -385,6 +439,7 @@ export default {
         this.payment_item.type = data.payment_item_type;
         this.payment_item.compulsory = data.compulsory == 1 ? true : false;
         this.references = this.setReferences(data.references);
+        this.payment_item.deadline = data.deadline;
       }
       return this.payment_item;
     },
@@ -442,7 +497,7 @@ export default {
           } else {
             Notify.create({
               type: "info",
-              message: this.$t('app.memberExist'),
+              message: this.$t("app.memberExist"),
               position: Platform.is.mobile ? "bottom" : "top-right",
             });
           }
@@ -456,7 +511,7 @@ export default {
         (reference) => reference.value != ref.value
       );
       this.members.push(ref);
-      if(this.$store.getters.getUpdatedPaymentItem != null){
+      if (this.$store.getters.getUpdatedPaymentItem != null) {
         this.removeReference(ref);
       }
       return this.references;
@@ -487,20 +542,20 @@ export default {
       return ref_str;
     },
 
-    removeReference(ref){
-      let payment_item_id = this.$store.getters.getUpdatedPaymentItem.id
+    removeReference(ref) {
+      let payment_item_id = this.$store.getters.getUpdatedPaymentItem.id;
       let payload = {
         url: `/api/protected/payment-items/update/reference`,
-        data:{
-          id:payment_item_id,
-          reference_id:ref.value
+        data: {
+          id: payment_item_id,
+          reference_id: ref.value,
         },
         msg: ``,
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: false,
-        error_msg: this.$t('app.defaultErrorMsg'),
+        error_msg: this.$t("app.defaultErrorMsg"),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -509,20 +564,19 @@ export default {
           data: [],
         },
       };
-      this.$store.dispatch("putRequest", payload).then(() => {
-      });
+      this.$store.dispatch("putRequest", payload).then(() => {});
     },
 
-    setReferences(data){
+    setReferences(data) {
       let refs = [];
       data.forEach((ele) => {
-        refs.push ({
-          label:ele.name,
-          value:ele.id
-        })
-      })
+        refs.push({
+          label: ele.name,
+          value: ele.id,
+        });
+      });
       return refs;
-    }
+    },
   },
   components: {
     ButtonVue,

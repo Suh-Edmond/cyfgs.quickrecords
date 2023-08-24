@@ -3,7 +3,7 @@ export default function () {
   return {
     roles: [],
     organisation:null,
-    members:[],
+    members:null,
     is_fetching: false,
     sessions:[],
     report_data:[],

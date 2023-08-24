@@ -114,10 +114,10 @@
     <div v-if="show_reference_dialog">
       <q-dialog v-model="show_reference_dialog">
         <q-card>
-          <q-card-section class="bg-primary ">
-            <label class="text-white  toolbar_title">
-                 {{ $t("app.memberLabel") }}
-             </label>
+          <q-card-section class="bg-primary">
+            <label class="text-white toolbar_title">
+              {{ $t("app.memberLabel") }}
+            </label>
           </q-card-section>
           <q-card-section>
             <div>
@@ -264,7 +264,7 @@ export default {
           sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
         },
       ],
-      state:null,
+      state: null,
       data: [],
       label: this.$t("app.delete"),
       message: this.$t("app.deletePaymentItemWarningMsg"),
@@ -372,6 +372,8 @@ export default {
               created_at: ele.created_at,
               updated_at: ele.updated_at,
               updated_by: ele.updated_by,
+              deadline: ele.deadline,
+              deadline_state: ele.deadline_state,
             });
           });
         }
@@ -398,11 +400,12 @@ export default {
           frequency: this.frequency,
         },
       });
-
+      let is_compulsory = this.is_compulsory !== null ? this.is_compulsory.value: ""
+      let state = this.state !== null ? this.state.value:""
       this.filteredPaymentItems = [];
       this.loading_filter = true;
       let payload = {
-        url: `/api/protected/filter-payment-items?payment_category_id=${id}&is_compulsory=${this.is_compulsory.value}&type=${this.type}&frequency=${this.frequency}&state=${this.state.value}`,
+        url: `/api/protected/filter-payment-items?payment_category_id=${id}&is_compulsory=${is_compulsory}&type=${this.type}&frequency=${this.frequency}&state=${state}`,
         msg: "none",
         color: "default",
         status: "none",
@@ -437,6 +440,8 @@ export default {
             created_at: ele.created_at,
             updated_at: ele.updated_at,
             updated_by: ele.updated_by,
+            deadline: ele.deadline,
+            deadline_state: ele.deadline_state,
           });
         });
       });

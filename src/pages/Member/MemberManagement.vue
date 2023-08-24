@@ -59,7 +59,7 @@
           <div :class="$q.screen.lg ? 'q-pr-md' : ''">
             <q-btn
               :label="$t('app.filter')"
-              :loading="loading_filter"
+              :loading="false"
               color="primary"
               :disabled="validateFilter"
               @click="filterMembers"
@@ -72,7 +72,7 @@
           <div>
             <q-btn
               :label="$t('app.print')"
-              :loading="loading"
+              :loading="false"
               color="positive"
               :disabled="false"
               no-caps
@@ -94,10 +94,13 @@
             :show_income_activity="false"
             :show_members="true"
             :show_contribution="false"
+            :pagination="pagination"
             :total_members="computeTotalMembership"
+            :loading="loading"
             @fetch-members="onFetchMembers"
             @register-member="registerMember"
             @delete-row="deleteRow"
+            @onRequest="onRequest"
           >
           </TableVue>
         </div>
@@ -110,27 +113,32 @@ import TableVue from "src/components/Table.vue";
 import memberMixin from "src/mixins/memberMixin.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
-import RegistrationAmountMixinVue from 'src/mixins/RegistrationAmountMixin.vue';
+import RegistrationAmountMixinVue from "src/mixins/RegistrationAmountMixin.vue";
 
 export default {
-  mixins: [memberMixin, organisationMixinVue, HelperMixinVue, RegistrationAmountMixinVue],
+  mixins: [
+    memberMixin,
+    organisationMixinVue,
+    HelperMixinVue,
+    RegistrationAmountMixinVue,
+  ],
 
   mounted() {
     let id = this.getOrganisationId;
-    this.getOrganisationMembers(id, true);
+    this.getOrganisationMembers(id, true, 1, 7, "name");
     this.getRegistrationAmount();
   },
   data() {
     return {
       year: "",
       has_register: null,
-      loading: false,
       start_filter: false,
+      filter: "",
       genders: ["MALE", "FEMALE", "ALL", "OTHER"],
       registrationStatuses: ["REGISTERED", "NOT_REGISTERED"],
       gender: "",
-      message: this.$t('app.deleteMemberWarningMsg'),
-      label: this.$t('app.delete'),
+      message: this.$t("app.deleteMemberWarningMsg"),
+      label: this.$t("app.delete"),
       columns: [
         {
           name: "counter",
@@ -191,7 +199,14 @@ export default {
           sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
         },
       ],
-      loading_filter: false,
+      pagination: {
+        sortBy: "name",
+        descending: false,
+        page: 1,
+        rowsPerPage: 7,
+        rowsNumber: this.$store.getters.getMembers.total,
+      },
+      loading: false,
     };
   },
   computed: {
@@ -200,40 +215,49 @@ export default {
         ? true
         : false;
     },
+
     getMembers() {
       let data = [];
-      this.$store.getters.getMembers.forEach((member) => {
-        data.push({
-          counter: this.$store.getters.getMembers.indexOf(member) + 1,
-          name: member.name,
-          telephone: member.telephone,
-          gender: member.gender,
-          address: member.address,
-          occupation: member.occupation,
-          id: member.id,
-          email: member.email,
-          organisation_id: member.organisation_id,
-          has_register: member.has_register,
-          has_paid: member.has_paid,
-          type: "MEMBERS",
-          approve: member.approve,
-          year: member.year,
-          roles: member.roles,
-          created_at: member.created_at,
-          updated_at: member.updated_at,
-          picture: member.picture,
-          session_id: member.session_id,
+      if (this.$store.getters.getMembers !== null) {
+        this.$store.getters.getMembers.data.forEach((member) => {
+          data.push({
+            counter: this.$store.getters.getMembers.data.indexOf(member) + 1,
+            name: member.name,
+            telephone: member.telephone,
+            gender: member.gender,
+            address: member.address,
+            occupation: member.occupation,
+            id: member.id,
+            email: member.email,
+            organisation_id: member.organisation_id,
+            has_register: member.has_register,
+            has_paid: member.has_paid,
+            type: "MEMBERS",
+            approve: member.approve,
+            year: member.year,
+            roles: member.roles,
+            created_at: member.created_at,
+            updated_at: member.updated_at,
+            picture: member.picture,
+            session_id: member.session_id,
+          });
         });
-      });
+      }
       return data;
     },
 
     computeTotalMembership() {
-      return this.getMembers.length;
+      return this.$store.getters.getMembers !== null
+        ? this.$store.getters.getMembers.total
+        : 0;
     },
 
     getLoadingState() {
       return this.$store.getters.getFetchingState;
+    },
+
+    getTotalPages() {
+      return this.$store.getters.getMembers.last_page;
     },
 
     getSessions() {
@@ -258,6 +282,42 @@ export default {
   },
 
   methods: {
+    onRequest(props) {
+      const { page, rowsPerPage, sortBy, descending } = props.pagination;
+      let organisation_id = this.$store.getters.getOrganisation.id;
+      const fetch_count =
+        rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
+      this.loading = true;
+      let payload = {
+        url: `/api/protected/organisations/users-paginate?organisation_id=${organisation_id}&page=${page}&per_page=${fetch_count}&sort_by=${sortBy}`,
+        msg: "none",
+        color: "default",
+        status: "none",
+        error_msg: this.$t("app.defaultErrorMsg"),
+        has_commit: true,
+        show_feedback: false,
+        show_spinner: false,
+        commit: "SET_MEMBERS",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.$store.commit("SET_MEMBERS", null);
+      this.$store
+        .dispatch("getRequest", payload)
+        .then(() => {
+          const data = this.$store.getters.getMembers;
+          this.pagination.page = data.current_page;
+          this.pagination.rowsPerPage = data.per_page;
+          this.pagination.rowsNumber = data.total;
+        })
+        .finally(() => {
+          this.loading = false;
+        });
+    },
+
     registerMember(data) {
       this.$emit("register-member", data);
     },
@@ -288,35 +348,32 @@ export default {
           data: null,
         },
       };
-      this.loading_filter = true;
       this.$store
         .dispatch("getRequest", payload)
         .then(() => {})
-        .finally(() => {
-          this.loading_filter = false;
-        });
+        .finally(() => {});
     },
 
     downloadMembers() {
       let url = `/api/protected/organisations/download-users?has_register=${this.has_register}&gender=${this.gender}&year=${this.year}`;
       let file_name = "Organisation_Members.pdf";
-      this.loading = this.downloadPdf(url, file_name);
+      this.downloadPdf(url, file_name);
     },
 
     onFetchMembers() {
       let id = this.$store.getters.getOrganisation.id;
-      this.getOrganisationMembers(id, true);
+      // this.getOrganisationMembers(id, true);
     },
 
     deleteRow(data) {
       let payload = {
         url: `/api/protected/users/${data.id}`,
-        msg: this.$t('app.deleteMemberFeedbackMsg'),
+        msg: this.$t("app.deleteMemberFeedbackMsg"),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: this.$t('app.defaultErrorMsg'),
+        error_msg: this.$t("app.defaultErrorMsg"),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -326,7 +383,7 @@ export default {
         },
       };
       this.$store.dispatch("deleteRequest", payload).then(() => {
-        this.getOrganisationMembers(this.getOrganisationId);
+        // this.getOrganisationMembers(this.getOrganisationId);
       });
     },
   },

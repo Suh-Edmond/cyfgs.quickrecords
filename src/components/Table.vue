@@ -7,7 +7,10 @@
       row-key="index"
       :table-header-style="{ backgroundColor: '#5384ae', color: '#FFFFFF' }"
       :filter="filter"
-      :rows-per-page-options="[0]"
+      :loading="loading"
+      :pagination.sync="getPagination"
+      @request="onRequest"
+      binary-state-sort
     >
       <template v-slot:top-left>
         <div
@@ -839,95 +842,9 @@
           </template>
         </q-input>
       </template>
-      <template v-slot:bottom>
-        <!-- members contributions -->
-        <q-tr v-if="total_contribution > 0">
-          <q-th
-            class="text-bold total_label q-mt-md summary"
-            v-if="show_contribution"
-          >
-            {{ $t("app.totalMemberContribution") }}:
-          </q-th>
-          <q-th v-if="show_contribution" class="total_value">
-            {{ Number(total_contribution).toLocaleString() }} XAF
-          </q-th>
-        </q-tr>
-        <!-- member contribution -->
-        <div class="text-bold q-pb-md" v-if="show_member_contribution">
-          <div class="q-mt-md summary">
-            {{ $t("app.amountContributed") }}:
-            <span class="total_value">
-              {{ Number(total_contribution).toLocaleString() }} XAF
-            </span>
-          </div>
-          <div class="q-my-md summary">
-            <!-- member balance contribution -->
-            <q-tr>
-              {{ $t("app.totalBalance") }}:
-              <span class="total_contribution_balance">
-                {{ Number(total_balance).toLocaleString() }} XAF
-              </span>
-            </q-tr>
-          </div>
-        </div>
 
-        <!-- income  -->
-        <q-tr>
-          <q-th
-            class="text-bold total_label q-mt-md summary"
-            v-if="show_income_activity && total_income > 0"
-          >
-            {{ $t("app.totalIncome") }}:
-          </q-th>
-          <q-th
-            class="total_value"
-            v-if="show_income_activity && total_income > 0"
-          >
-            {{ Number(total_income).toLocaleString() }} XAF
-          </q-th>
-        </q-tr>
-
-        <!-- members -->
-        <q-tr>
-          <q-th
-            class="text-bold total_label q-mt-md summary"
-            v-if="show_members && total_members > 0"
-          >
-            {{ $t("app.totalMember") }}:
-          </q-th>
-          <q-th class="total_value" v-if="show_members && total_members > 0">
-            {{ total_members }}
-          </q-th>
-        </q-tr>
-
-        <!-- member savings-->
-        <q-tr>
-          <q-th
-            class="text-bold total_label q-mt-md summary"
-            v-if="show_member_savings && total_saving > 0"
-          >
-            {{ $t("app.totalAmountSaved") }}:
-          </q-th>
-          <q-th
-            class="total_value"
-            v-if="show_member_savings && total_saving > 0"
-          >
-            {{ Number(total_saving).toLocaleString() }} XAF
-          </q-th>
-        </q-tr>
-
-        <!-- members savings-->
-        <q-tr>
-          <q-th
-            class="text-bold total_label q-mt-md summary"
-            v-if="show_savings && total_saving > 0"
-          >
-            {{ $t("app.totalMembersSavings") }}:
-          </q-th>
-          <q-th class="total_value" v-if="show_savings && total_saving > 0">
-            {{ Number(total_saving).toLocaleString() }} XAF
-          </q-th>
-        </q-tr>
+      <template v-slot:loading>
+        <q-inner-loading showing color="primary" />
       </template>
     </q-table>
 
@@ -1179,16 +1096,21 @@ export default {
       type: Number,
       default: 0.0,
     },
+    pagination: {
+      required: true,
+      type: Object,
+    },
+    loading: {
+      required: false,
+      type: Boolean,
+    },
   },
 
   data() {
     return {
-      loading: false,
       dialog: false,
+      current: 1,
       filter: "",
-      pagination: {
-        rowsPerPage: 15, // current rows per page being displayed
-      },
       deleted_row: null,
       show_invite: false,
       member_to_be_invited: null,
@@ -1212,9 +1134,16 @@ export default {
     };
   },
 
-  computed: {},
+  computed: {
+    getPagination() {
+      return this.pagination;
+    },
+  },
 
   methods: {
+    onRequest(props) {
+      this.$emit("onRequest", props);
+    },
     getDate(date) {
       return moment(date).format("MMMM Do YYYY");
     },
@@ -1459,10 +1388,12 @@ export default {
           );
           break;
         case "MEMBERS":
-          this.getOrganisationMembers(
-            this.$store.getters.getOrganisation.id,
-            true
-          );
+          // this.getOrganisationMembers(
+          //   this.$store.getters.getOrganisation.id,
+          //   true,
+          //   1,
+          //   10, "name"
+          // );
           break;
       }
     },
@@ -1795,5 +1726,9 @@ export default {
 
 .summary {
   font-size: 15px;
+}
+
+.paginate {
+  float: right;
 }
 </style>

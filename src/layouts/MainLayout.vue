@@ -767,4 +767,33 @@ export default {
 .expand {
   color: red;
 }
+
+.footer_text {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 13px;
+  align-items: center;
+  text-align: center;
+  letter-spacing: 0.005em;
+}
+
+.copy_right {
+  font-size: large;
+}
+
+.footer {
+  height: 2rem;
+  background-color: $white1;
+  margin-left: 1rem;
+}
+
+.appName {
+  font-family: "Roboto";
+  font-style: normal;
+  text-transform: capitalize;
+  color: $dark;
+  font-weight: 700;
+  font-size: medium;
+}
 </style>

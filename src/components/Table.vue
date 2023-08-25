@@ -7,7 +7,7 @@
       row-key="index"
       :table-header-style="{ backgroundColor: '#5384ae', color: '#FFFFFF' }"
       :filter="filter"
-      :loading="loading"
+      :loading="table_loading"
       :pagination.sync="getPagination"
       @request="onRequest"
       binary-state-sort
@@ -1100,7 +1100,7 @@ export default {
       required: true,
       type: Object,
     },
-    loading: {
+    table_loading: {
       required: false,
       type: Boolean,
     },
@@ -1135,8 +1135,13 @@ export default {
   },
 
   computed: {
-    getPagination() {
+    getPagination:{
+     get(){
       return this.pagination;
+     },
+     set(pagination){
+      return pagination;
+     }
     },
   },
 

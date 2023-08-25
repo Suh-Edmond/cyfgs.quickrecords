@@ -3,7 +3,7 @@ import { LocalStorage } from 'quasar';
 export default {
   data() {
     return {
-      loading: false,
+      loading_download: false,
     }
   },
   computed: {
@@ -29,11 +29,11 @@ export default {
         },
       };
 
-      this.loading = true;
+      this.loading_download = true;
       this.$store
         .dispatch("downloadPdf", payload)
         .then(() => {
-          this.loading = false;
+          this.loading_download = false;
         })
         .catch(() => {
           Notify.create({
@@ -43,7 +43,7 @@ export default {
           });
         });
 
-      return this.loading
+      return this.loading_download
     },
 
     checkTreasurerRole() {

@@ -211,7 +211,7 @@
         </q-tr>
         <!-- end of body for members -->
 
-        <!-- body for members savings? -->
+        <!---------------------------------------------------START OF SAVINGS FOR ALL MEMBER TO BE VIEW BY USER WITH UNTREASUERER ROLE------------------------->
         <q-tr :props="props" v-if="show_savings && !checkTreasurerRole()">
           <q-td key="counter" :props="props">
             {{ props.row.counter }}
@@ -276,9 +276,9 @@
             </q-btn>
           </q-td>
         </q-tr>
-        <!----------------------------------------------------END OF ALL SAVINGS---------------------------------------------->
+        <!----------------------------------------------------END F SAVINGS FOR ALL MEMBER TO BE VIEW BY USER WITH UNTREASUERER ROLE---------------------------------------------->
 
-        <!----------------------------------------------------END OF MEMBER SAVINGS--------------------------------------------->
+        <!----------------------------------------------------END OF MEMBER SAVINGS TO BE VIEW BY THE TREASUERER--------------------------------------------->
         <q-tr :props="props" v-if="show_savings && checkTreasurerRole()">
           <q-td key="counter" :props="props">
             {{ props.row.counter }}
@@ -357,7 +357,7 @@
             </q-btn>
           </q-td>
         </q-tr>
-        <!-----------------------------------------------------------------------END OF ALL SAVINGS-------------------------------------------------------------------->
+        <!--------------------------------------------------------END OF ALL SAVINGS TO BE VIEW BY THE TREASUERER------------------------------------------------------------------->
 
         <!---------------------------------------------------------------------------MEMBER SAVINGS--------------------------------------------------->
         <q-tr :props="props" v-if="show_member_savings">
@@ -1421,7 +1421,7 @@ export default {
     },
 
     showMemberSavings(data) {
-      this.getMemberSavings(data.user_id);
+      this.$emit("fetch-member-saving", data);
       const intermediate_tabs = Array.from(
         this.$store.getters.getIntermediateTabs
       );

@@ -21,19 +21,21 @@
       >
         <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
           <q-select
-            v-model="year"
+            v-model="month"
             outlined
             dense
-            :options="years"
-            :label="$t('app.selectYearLabel')"
+            :options="monthsOptions"
+            :label="$t('app.searchMonth')"
             use-input
             input-debounce="0"
             clearable
-            @filter="filterYears"
+            @filter="filterMonths"
           >
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey"> {{$t('app.noResults')}} </q-item-section>
+                <q-item-section class="text-grey">
+                  {{ $t("app.noResults") }}
+                </q-item-section>
               </q-item>
             </template>
           </q-select>
@@ -49,7 +51,9 @@
           >
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey"> {{$t('app.noResults')}}</q-item-section>
+                <q-item-section class="text-grey">
+                  {{ $t("app.noResults") }}</q-item-section
+                >
               </q-item>
             </template>
           </q-select>
@@ -71,7 +75,7 @@
           <div class="button">
             <q-btn
               :label="$t('app.print')"
-              :loading="loading"
+              :loading="loading_download"
               color="positive"
               :disabled="false"
               no-caps
@@ -96,8 +100,12 @@
             :show_members="false"
             :show_contribution="false"
             :total_saving="getMemberTotalSaving"
+            :pagination="pagination"
+            :table_loading="table_loader"
+            @fetch-member-saving="fetchMemberSaving"
             @view-member-saving="ViewMemberSaving"
             @edit-member-saving="editMemberSaving"
+            @onRequest="onRequest"
           >
           </TableVue>
         </div>
@@ -110,14 +118,16 @@
 <script>
 import TableVue from "src/components/Table.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
-import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
+import MonthsMixinVue from "src/mixins/MonthsMixin.vue";
 export default {
-  mixins: [HelperMixinVue, CurrentYearMixinVue],
+  mixins: [HelperMixinVue, MonthsMixinVue],
+
+  mounted() {
+    this.fetchMemberSaving();
+  },
 
   data() {
     return {
-      filtered_savings: [],
-      loading: false,
       columns: [
         {
           name: "counter",
@@ -157,47 +167,56 @@ export default {
           align: "left",
         },
       ],
-      label: this.$t('app.delete'),
-      message: this.$t('app.deleteSavingWarningMsg'),
+      label: this.$t("app.delete"),
+      message: this.$t("app.deleteSavingWarningMsg"),
       statuses: ["PENDING", "APPROVED", "DECLINED", "ALL"],
       status: "",
-      start_filter: false,
-      year: null,
+      month: "",
       is_fetching: false,
-      years: [],
+      monthsOptions: [],
+      table_loader: false,
+      pagination: {
+        sortBy: "name",
+        descending: false,
+        page: 1,
+        rowsPerPage: 7,
+        rowsNumber:
+          this.$store.getters.getMemberSavings !== null
+            ? this.$store.getters.getMemberSavings.total
+            : 0,
+      },
+      session_id: this.$store.getters.getCurrentYear.id,
     };
   },
   computed: {
     validateFilter() {
-      return this.year == null;
+      return (
+        (this.month === null || this.month === "") &&
+        (this.status === null || this.status === "")
+      );
     },
     getMemberSavings() {
       let data = [];
-      if (this.filtered_savings.length == 0 && !this.start_filter) {
-        if (this.$store.getters.getMemberSavings != null) {
-          this.$store.getters.getMemberSavings.data.forEach((ele) => {
-            data.push({
-              counter:
-                this.$store.getters.getMemberSavings.data.indexOf(ele) + 1,
-              name: ele.user_name,
-              email: ele.email,
-              telephone: ele.telephone,
-              amount_deposited: ele.amount_deposited,
-              amount_used: ele.amount_used,
-              id: ele.id,
-              approve: ele.approve,
-              comment: ele.comment,
-              type: "MEMBER_SAVINGS",
-              user_id: ele.user_id,
-              created_at: ele.created_at,
-              updated_by: ele.updated_by,
-              date: ele.created_at,
-              user_name:ele.user_name
-            });
+      if (this.$store.getters.getMemberSavings !== null) {
+        this.$store.getters.getMemberSavings.data.forEach((ele) => {
+          data.push({
+            counter: this.$store.getters.getMemberSavings.data.indexOf(ele) + 1,
+            name: ele.user_name,
+            email: ele.email,
+            telephone: ele.telephone,
+            amount_deposited: ele.amount_deposited,
+            amount_used: ele.amount_used,
+            id: ele.id,
+            approve: ele.approve,
+            comment: ele.comment,
+            type: "MEMBER_SAVINGS",
+            user_id: ele.user_id,
+            created_at: ele.created_at,
+            updated_by: ele.updated_by,
+            date: ele.created_at,
+            user_name: ele.user_name,
           });
-        }
-      } else {
-        data = this.filtered_savings;
+        });
       }
       return data;
     },
@@ -207,22 +226,57 @@ export default {
     },
 
     getMemberTotalSaving() {
-      let total = 0;
-      if(this.filtered_savings.length == 0 && !this.start_filter){
-        if(this.$store.getters.getMemberSavings != null){
-          this.$store.getters.getMemberSavings.data.forEach((ele) => {{
-            total += (ele.amount_deposited - ele.amount_used);
-          }})
-        }
-      }else {
-        this.filtered_savings.forEach(ele => {
-          total += (ele.amount_deposited - ele.amount_used);
-        })
-      }
-      return total;
-     },
+      return this.$store.getters.getMemberSavings !== null
+        ? this.$store.getters.getMemberSavings.total_savings
+        : 0;
+    },
   },
   methods: {
+    onRequest(props) {
+      const { page, rowsPerPage } = props.pagination;
+      const fetch_count =
+        rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
+      let id = this.$route.params.id;
+      this.getPaginatedData(id, page, fetch_count);
+    },
+
+    fetchMemberSaving(data) {
+      this.getPaginatedData(this.$route.params.id, 1, 7);
+    },
+
+    getPaginatedData(id, page, fetch_count) {
+      this.table_loader = true;
+      const searched_month = this.month !== "" || null ? this.month.value : "";
+      const searched_status = this.status !== "" || null ? this.status : "";
+      let payload = {
+        url: `/api/protected/user-savings/${id}?month=${searched_month}&status=${searched_status}&page=${page}&per_page=${fetch_count}`,
+        color: "default",
+        status: "none",
+        error_msg: this.$t("app.defaultErrorMsg"),
+        has_commit: true,
+        show_feedback: false,
+        show_spinner: false,
+        commit: "SET_MEMBER_SAVINGS",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.$store.commit("SET_MEMBER_SAVINGS", null);
+      this.$store
+        .dispatch("getRequest", payload)
+        .then(() => {
+          const data = this.$store.getters.getMemberSavings;
+          this.pagination.page = data.current_page;
+          this.pagination.rowsPerPage = data.per_page;
+          this.pagination.rowsNumber = data.total;
+        })
+        .finally(() => {
+          this.table_loader = false;
+        });
+    },
+
     ViewMemberSaving(data) {
       this.$emit("view-member-saving", data);
     },
@@ -234,82 +288,40 @@ export default {
     },
 
     filterSavings() {
-      this.is_fetching = true;
-      this.start_filter = true;
-      this.filtered_savings = [];
-      let organisation_id = this.$store.getters.getOrganisation.id;
-      let user_id = this.$store.getters.getMemberSavings.data[0].user_id;
       this.$router.push({
         path: `/dashboard/members-savings/users/`,
-        query: { status: this.status, year: this.year.label },
-      });
-      let payload = {
-        url: `/api/protected/user-savings?status=${this.status}&session_id=${this.year.value}&organisation_id=${organisation_id}&user_id=${user_id}`,
-        msg: "",
-        color: "default",
-        to_on_ok: "none",
-        to_on_fail: "none",
-        show_feedback: false,
-        error_msg: $t('app.defaultErrorMsg'),
-        has_commit: false,
-        commit: "none",
-        to_be_store_data: {
-          required: false,
-          has_value: false,
-          data: [],
+        query: {
+          status: this.status,
+          month: this.month,
+          t: new Date().getTime(),
         },
-      };
-      this.$store.dispatch("getRequest", payload).then((res) => {
-        this.is_fetching = false;
-        if (res.data) {
-          res.data.forEach((saving) => {
-            this.filtered_savings.push({
-              counter: res.data.indexOf(saving) + 1,
-              name: saving.user_name,
-              email: saving.email,
-              telephone: saving.telephone,
-              amount_deposited: saving.amount_deposited,
-              amount_used: ele.amount_used,
-              id: saving.id,
-              approve: saving.approve,
-              comment: saving.comment,
-              type: "MEMBER_SAVINGS",
-              user_id: saving.user_id,
-              created_at: saving.created_at,
-              updated_by: saving.updated_by,
-              date: saving.created_at,
-              user_id:saving.user_id,
-              user_name:saving.user_name
-            });
-          });
-        }
       });
-      return this.filtered_savings;
+      this.getPaginatedData(this.$route.params.id, 1, 7);
     },
 
     downloadSavings() {
-      let user_id = this.$store.getters.getMemberSavings.data[0].user_id;
-      let current_session =
-        this.year == null ? this.getCurrentYear.id : this.year.value;
-
-      let url = `/api/protected/savings/download?user_id=${user_id}&status=${this.status}&session_id=${current_session}`;
+      let user_id = this.$route.params.id;
+      let status = this.status !== "" || null ? this.status : "";
+      let month = this.month !== "" || null ? this.month : "";
+      let url = `/api/protected/savings/download?user_id=${user_id}&status=${status}&session_id=${this.session_id}&month=${month}`;
 
       let file_name = "User_Savings.pdf";
 
-      this.loading = this.downloadPdf(url, file_name);
+      this.loading_download = this.downloadPdf(url, file_name);
     },
 
-    filterYears(val, update, abort) {
+    filterMonths(val, update, abort) {
       if (val.length < 1) {
         abort();
         return;
       }
-      if (this.year == "") {
-        this.years = this.getSessionsFromState;
+      if (this.month == "") {
+        this.monthsOptions = this.getMonths;
       }
       update(() => {
-        this.years = this.getSessionsFromState.filter((v) =>
-          v.label.toLowerCase().includes(val.toLowerCase())
+        const needle = val.toLowerCase();
+        this.monthsOptions = this.getMonths.filter(
+          (v) => v.label.toLowerCase().indexOf(needle) > -1
         );
       });
     },

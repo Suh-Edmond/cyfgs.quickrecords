@@ -527,7 +527,7 @@ export default {
       update(() => {
         const needle = val.toLowerCase();
         this.monthsOptions = this.getMonths.filter(
-          (v) => v.toLowerCase().indexOf(needle) > -1
+          (v) => v.label.toLowerCase().indexOf(needle) > -1
         );
       });
     },
@@ -538,7 +538,7 @@ export default {
 
     downloadMembersSavings() {
       let session = this.year !== "" ? this.year.value : this.session_id;
-      let month = this.month === "" || this.month === null ? "" : this.month;
+      let month = this.month === "" || this.month === null ? "" : this.month.value;
 
       let url = `/api/protected/organisation-savings/download?organisation_id=${this.organisation_id}&session_id=${session}&month=${month}`;
 
@@ -558,11 +558,11 @@ export default {
 
     filterSavings() {
       let session = this.year !== "" ? this.year.value : "";
-      let month = this.month === "" || this.month === null ? "" : this.month;
+      let month = this.month === "" || this.month === null ? "" : this.month.value;
       this.$router.push({
         path: `/dashboard/members-savings`,
         query: {
-          month: this.month,
+          month: this.month.label,
           year: this.year.label,
           t: new Date().getTime(),
         },

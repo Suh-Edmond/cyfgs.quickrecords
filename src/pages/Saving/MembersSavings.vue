@@ -79,7 +79,7 @@
             <div class="button q-pb-xs">
               <q-btn
                 :label="$t('app.print')"
-                :loading="loading"
+                :loading="loading_download"
                 :color="'positive'"
                 :disabled="false"
                 no-caps
@@ -103,7 +103,10 @@
               :show_members="false"
               :total_saving="getTotalMembersSavings"
               :show_contribution="false"
+              :pagination="pagination"
+              :table_loading="table_loader"
               @edit-member-saving="editMemberSaving"
+              @onRequest="onRequest"
             >
             </TableVue>
           </div>
@@ -138,7 +141,7 @@
         <div class="button q-pb-xs">
           <q-btn
             :label="$t('app.print')"
-            :loading="loading"
+            :loading="loading_download"
             :color="'positive'"
             :disabled="getFilteredSavings.length == 0"
             no-caps
@@ -161,7 +164,10 @@
             :show_members="false"
             :total_saving="computeTotalSavingsForFiltered"
             :show_contribution="false"
+            :pagination="pagination"
+            :table_loading="table_loader"
             @view-member-saving="ViewMemberSaving"
+            @onRequest="onRequest"
           >
           </TableVue>
         </div>
@@ -177,16 +183,28 @@ import TableVue from "src/components/Table.vue";
 import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
 import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
-import MonthsMixinVue from 'src/mixins/MonthsMixin.vue';
+import MonthsMixinVue from "src/mixins/MonthsMixin.vue";
 export default {
-  mixins: [UserSavingMixinVue, HelperMixinVue, CurrentYearMixinVue, MonthsMixinVue],
+  mixins: [
+    UserSavingMixinVue,
+    HelperMixinVue,
+    CurrentYearMixinVue,
+    MonthsMixinVue,
+  ],
   mounted() {
     let organisation_id =
       this.$store.getters.getOrganisation != null
         ? this.$store.getters.getOrganisation.id
         : "";
-    this.getOrganisationMemberSavings(organisation_id);
-    this.getSessions()
+    this.getPaginatedOrganisationMemberSavings(
+      organisation_id,
+      this.pagination.page,
+      this.pagination.rowsPerPage,
+      "",
+      "",
+      false
+    );
+    this.getSessions();
   },
   data() {
     return {
@@ -296,20 +314,29 @@ export default {
       is_fetching: false,
       search_data: null,
       savings: [],
-      is_filtering: false,
       filtered_savings: [],
+      table_loader: false,
+      pagination: {
+        sortBy: "name",
+        descending: false,
+        page: 1,
+        rowsPerPage: 2,
+        rowsNumber: 0,
+      },
+      organisation_id: this.$store.getters.getOrganisation.id,
+      session_id: this.$store.getters.getCurrentYear.id,
+      loading_download: false,
     };
   },
   computed: {
     validateFilter() {
-      return this.year !== null || this.month !== null ? false : true;
+      return this.year === "" || this.year === null;
     },
 
     getFetchingState() {
-      return typeof this.$store.getters.getOrganisationMemberSavings ===
-        undefined
-        ? true
-        : false;
+      return (
+        typeof this.$store.getters.getOrganisationMemberSavings === undefined
+      );
     },
 
     getTotalMembersSavings() {
@@ -394,6 +421,79 @@ export default {
     },
   },
   methods: {
+    getPaginatedOrganisationMemberSavings(
+      id,
+      page,
+      per_page,
+      month,
+      session_id,
+      is_filtering
+    ) {
+      const session = session_id === "" ? this.session_id : session_id;
+      this.is_fetching = is_filtering;
+      let payload = {
+        url: `/api/protected/savings?organisation_id=${id}&session_id=${session}&page=${page}&per_page=${per_page}&month=${month}`,
+        msg: "none",
+        color: "default",
+        status: "none",
+        error_msg: this.$t("app.defaultErrorMsg"),
+        has_commit: true,
+        show_feedback: false,
+        show_spinner: true,
+        commit: "SET_ORGANISATION_MEMBERS_SAVINGS",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.$store
+        .dispatch("getRequest", payload)
+        .then((response) => {
+          this.pagination.rowsNumber = response.data.total;
+        })
+        .finally(() => {
+          this.is_fetching = false;
+        });
+
+      return is_filtering;
+    },
+
+    onRequest(props) {
+      const { page, rowsPerPage } = props.pagination;
+      const fetch_count =
+        rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
+      this.table_loader = true;
+      let session = this.year === "" ? this.session_id : this.year.value;
+      let payload = {
+        url: `/api/protected/savings?organisation_id=${this.organisation_id}&session_id=${session}&page=${page}&per_page=${fetch_count}`,
+        color: "default",
+        status: "none",
+        error_msg: this.$t("app.defaultErrorMsg"),
+        has_commit: true,
+        show_feedback: false,
+        show_spinner: false,
+        commit: "SET_ORGANISATION_MEMBERS_SAVINGS",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.$store.commit("SET_ORGANISATION_MEMBERS_SAVINGS", null);
+      this.$store
+        .dispatch("getRequest", payload)
+        .then(() => {
+          const data = this.$store.getters.getOrganisationMembersSavings;
+          this.pagination.page = data.current_page;
+          this.pagination.rowsPerPage = data.per_page;
+          this.pagination.rowsNumber = data.total;
+        })
+        .finally(() => {
+          this.table_loader = false;
+        });
+    },
+
     checkTreasurerRole() {
       const treasurer_role = LocalStorage.getItem("data").user_data.roles.find(
         (role) => role.name == "TREASURER"
@@ -437,13 +537,14 @@ export default {
     },
 
     downloadMembersSavings() {
-      let id = this.$store.getters.getOrganisation.id;
+      let session = this.year !== "" ? this.year.value : this.session_id;
+      let month = this.month === "" || this.month === null ? "" : this.month;
 
-      let url = `/api/protected/organisation-savings/download?organisation_id=${id}`;
+      let url = `/api/protected/organisation-savings/download?organisation_id=${this.organisation_id}&session_id=${session}&month=${month}`;
 
       let file_name = "Organisation_Savings.pdf";
 
-      this.loading = this.downloadPdf(url, file_name);
+      this.loading_download = this.downloadPdf(url, file_name);
     },
 
     searchSavings() {
@@ -456,53 +557,24 @@ export default {
     },
 
     filterSavings() {
-      this.is_fetching = true;
-      this.filtered_savings = [];
-      let organisation_id = this.$store.getters.getOrganisation.id;
+      let session = this.year !== "" ? this.year.value : "";
+      let month = this.month === "" || this.month === null ? "" : this.month;
       this.$router.push({
         path: `/dashboard/members-savings`,
-        query: { month: this.month, year: this.year.label },
-      });
-      let payload = {
-        url: `/api/protected/user-savings?month=${this.month}&session_id=${this.year.value}&organisation_id=${organisation_id}`,
-        msg: "",
-        color: "default",
-        to_on_ok: "none",
-        to_on_fail: "none",
-        show_feedback: false,
-        error_msg: this.$t("app.defaultErrorMsg"),
-        has_commit: false,
-        commit: "none",
-        to_be_store_data: {
-          required: false,
-          has_value: false,
-          data: [],
+        query: {
+          month: this.month,
+          year: this.year.label,
+          t: new Date().getTime(),
         },
-      };
-      this.$store.dispatch("getRequest", payload).then((res) => {
-        this.is_fetching = false;
-        this.is_filtering = true;
-        if (res.data) {
-          res.data.forEach((saving) => {
-            this.filtered_savings.push({
-              counter: res.data.indexOf(saving) + 1,
-              user_name: saving.user_name,
-              email: saving.email,
-              telephone: saving.telephone,
-              amount_deposited: saving.amount_deposited,
-              id: saving.id,
-              approve: saving.approve,
-              comment: saving.comment,
-              type: "MEMBER_SAVINGS",
-              user_id: saving.user_id,
-              created_at: saving.created_at,
-              updated_by: saving.updated_by,
-              date: saving.created_at,
-              total_amount: saving.total_amount,
-            });
-          });
-        }
       });
+      this.is_fetching = this.getPaginatedOrganisationMemberSavings(
+        this.organisation_id,
+        this.pagination.page,
+        this.pagination.rowsPerPage,
+        month,
+        session,
+        true
+      );
     },
 
     ViewMemberSaving(data) {

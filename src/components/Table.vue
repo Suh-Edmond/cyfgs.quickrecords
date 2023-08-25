@@ -1135,13 +1135,13 @@ export default {
   },
 
   computed: {
-    getPagination:{
-     get(){
-      return this.pagination;
-     },
-     set(pagination){
-      return pagination;
-     }
+    getPagination: {
+      get() {
+        return this.pagination;
+      },
+      set(pagination) {
+        return pagination;
+      },
     },
   },
 

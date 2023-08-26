@@ -34,7 +34,7 @@
             </template>
           </q-select>
         </div>
-        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-pl-md">
+        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-pl-sm">
           <q-select
             v-model="month"
             outlined
@@ -43,9 +43,13 @@
             :label="$t('app.searchMonth')"
             input-debounce="0"
             @filter="filterMonths"
+            @input="stopSearch"
             use-input
             clearable
           >
+            <template v-slot:append v-if="start_month_filtering">
+              <q-spinner color="primary" size="1.2em" :thickness="3" />
+            </template>
             <template v-slot:no-option>
               <q-item>
                 <q-item-section class="text-grey">
@@ -55,12 +59,13 @@
             </template>
           </q-select>
         </div>
-        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-pl-md">
+        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-pl-sm">
           <q-select
             v-model="status"
             outlined
             dense
             :options="statuses"
+            clearable
             :label="$t('app.selectStatusLabel')"
           >
             <template v-slot:no-option>
@@ -72,7 +77,7 @@
             </template>
           </q-select>
         </div>
-        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 flex q-pl-md">
+        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 flex q-pl-sm">
           <div>
             <q-btn
               :label="$t('app.filter')"
@@ -216,6 +221,7 @@ export default {
       total_income_amount: 0,
       payment_items: [],
       start_filtering: false,
+      start_month_filtering: false,
       pagination: {
         sortBy: "name",
         descending: false,
@@ -363,10 +369,14 @@ export default {
       if (this.payment_item_id != null) {
         this.start_filtering = false;
       }
+      if (this.month != "") {
+        this.start_month_filtering = false;
+      }
     },
 
     filterMonths(val, update, abort) {
       if (val.length < 1) {
+        this.start_month_filtering = false;
         abort();
         return;
       }
@@ -374,6 +384,7 @@ export default {
         this.monthsOptions = this.getMonths;
       }
       update(() => {
+        this.start_month_filtering = true;
         const needle = val.toLowerCase();
         this.monthsOptions = this.getMonths.filter(
           (v) => v.label.toLowerCase().indexOf(needle) > -1
@@ -394,7 +405,8 @@ export default {
         this.payment_item_id != null ? this.payment_item_id.label : "";
       let payment_item_value =
         this.payment_item_id != null ? this.payment_item_id.value : "";
-      let month = this.month !== "" || this.month !== null ? this.month.value : "";
+      let month =
+        this.month !== "" && this.month !== null ? this.month.value : "";
       let page_num = this.payment_item_id !== null || "" ? 1 : page;
       let num_rows = this.payment_item_id !== null || "" ? 3 : per_page;
 
@@ -425,6 +437,7 @@ export default {
         },
       };
       this.table_loader = true;
+      this.loading_filter = true;
       this.$store.commit("SET_INCOME_ACTIVITIES", null);
       this.$store
         .dispatch("getRequest", payload)
@@ -435,6 +448,7 @@ export default {
         })
         .finally(() => {
           this.table_loader = false;
+          this.loading_filter = false;
         });
     },
 

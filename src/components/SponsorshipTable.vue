@@ -8,8 +8,10 @@
       :table-header-style="{ backgroundColor: '#5384ae', color: '#FFFFFF' }"
       class="col-xs-12"
       :filter="filter"
-      :rows-per-page-options="[0]"
-      hide-pagination
+      :loading="table_loading"
+      :pagination.sync="getPagination"
+      @request="onRequest"
+      binary-state-sort
     >
       <template v-slot:body="props">
         <q-tr :props="props">
@@ -22,21 +24,32 @@
           <q-td key="amount_deposited" :props="props">
             {{ Number(props.row.amount_deposited).toLocaleString() }}
           </q-td>
-          <q-td key="approve" :props="props"  v-if="props.row.approve == 'PENDING'"
-            class="text-info">
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'PENDING'"
+            class="text-info"
+          >
             {{ props.row.approve }}
           </q-td>
-          <q-td key="approve" :props="props"  v-if="props.row.approve == 'APPROVED'"
-            class="registered">
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'APPROVED'"
+            class="registered"
+          >
             {{ props.row.approve }}
           </q-td>
-          <q-td key="approve" :props="props"   v-if="props.row.approve == 'DECLINED'"
-            class="not_registered">
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'DECLINED'"
+            class="not_registered"
+          >
             {{ props.row.approve }}
           </q-td>
 
           <q-td key="action" :props="props">
-
             <!-- button to handle edit, view and delete of row data  q-px-sm -->
             <q-btn flat round v-if="!checkTreasurerRole()">
               <q-icon
@@ -48,8 +61,8 @@
               >
                 <q-menu>
                   <q-list style="width: 180px" bordered separator>
-                       <!-- edit support -->
-                       <q-item
+                    <!-- edit support -->
+                    <q-item
                       clickable
                       v-close-popup
                       @click="onEditSupport(props.row)"
@@ -60,7 +73,9 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="edit">{{$t('app.edit')}}</q-item-label>
+                        <q-item-label class="edit">{{
+                          $t("app.edit")
+                        }}</q-item-label>
                       </q-item-section>
                     </q-item>
 
@@ -76,7 +91,9 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="edit">{{$t('app.view')}}</q-item-label>
+                        <q-item-label class="edit">{{
+                          $t("app.view")
+                        }}</q-item-label>
                       </q-item-section>
                     </q-item>
 
@@ -92,7 +109,9 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="text-red">{{$t('app.delete')}}</q-item-label>
+                        <q-item-label class="text-red">{{
+                          $t("app.delete")
+                        }}</q-item-label>
                       </q-item-section>
                     </q-item>
                   </q-list>
@@ -163,15 +182,8 @@
         </q-input>
       </template>
 
-      <template v-slot:bottom>
-        <q-tr>
-          <q-th class="text-bold total q-my-md">
-            {{$t('app.total')}}:
-          </q-th>
-          <q-th class="text-bold total_given">
-            {{ Number(total).toLocaleString() }} XAF
-          </q-th>
-        </q-tr>
+      <template v-slot:loading>
+        <q-inner-loading showing color="primary" />
       </template>
     </q-table>
 
@@ -180,11 +192,25 @@
       <q-card>
         <q-card-section class="q-pa-lg">
           <div class="q-mb-md">
-            <label class="text-dark message">{{ message }}</label><br/>
-            <small class="warning_caption">{{$t('app.actionUndoneMsg')}}</small>
+            <label class="text-dark message">{{ message }}</label
+            ><br />
+            <small class="warning_caption">{{
+              $t("app.actionUndoneMsg")
+            }}</small>
           </div>
-          <div class="text-weight-bold text-left text-red">{{$t('app.sponsor')}}:  <span class="q-pl-md">{{ deleted_row.supporter }}</span> </div>
-          <div class="text-weight-bold text-left text-red"> {{$t('app.amount')}}: <span class="q-pl-md">{{ Number(deleted_row.amount_deposited).toLocaleString() }} XAF</span></div>
+          <div class="text-weight-bold text-left text-red">
+            {{ $t("app.sponsor") }}:
+            <span class="q-pl-md">{{ deleted_row.supporter }}</span>
+          </div>
+          <div class="text-weight-bold text-left text-red">
+            {{ $t("app.amount") }}:
+            <span class="q-pl-md"
+              >{{
+                Number(deleted_row.amount_deposited).toLocaleString()
+              }}
+              XAF</span
+            >
+          </div>
         </q-card-section>
         <q-card-actions align="right">
           <q-btn
@@ -220,25 +246,26 @@
             <div class="col-md-12">
               <label for="msg">
                 <span class="text-weight-bold"
-                  >{{$t('app.doYouKnow')}}{{ chosen_state }} {{ approve_msg }}</span
+                  >{{ $t("app.doYouKnow") }}{{ chosen_state }}
+                  {{ approve_msg }}</span
                 >
                 <br />
               </label>
             </div>
           </div>
-          <div  class="text-red">
-              <div class="text-weight-bold text-left">
-                {{$t('app.sponsor')}}:
-                <span class="q-pl-md">{{ supporter }}</span>
-              </div>
-
-              <div class="text-weight-bold text-left">
-                {{$t('app.amount')}}:
-                <span class="q-pl-lg"
-                  >{{ Number(supporter_amount).toLocaleString() }} XAF</span
-                >
-              </div>
+          <div class="text-red">
+            <div class="text-weight-bold text-left">
+              {{ $t("app.sponsor") }}:
+              <span class="q-pl-md">{{ supporter }}</span>
             </div>
+
+            <div class="text-weight-bold text-left">
+              {{ $t("app.amount") }}:
+              <span class="q-pl-lg"
+                >{{ Number(supporter_amount).toLocaleString() }} XAF</span
+              >
+            </div>
+          </div>
         </q-card-section>
 
         <q-card-actions align="right" class="q-ma-md">
@@ -269,7 +296,7 @@ import { LocalStorage } from "quasar";
 import SponsorshipMixin from "src/mixins/SponsorshipMixin.vue";
 
 export default {
-  mixins:[SponsorshipMixin],
+  mixins: [SponsorshipMixin],
   props: {
     columns: {
       type: Array,
@@ -291,56 +318,74 @@ export default {
       required: false,
       type: String,
     },
-    total:{
-      required:true,
-      type:Number,
-      default:0
-    }
+    total: {
+      required: true,
+      type: Number,
+      default: 0,
+    },
+    pagination: {
+      type: Object,
+      required: true,
+    },
+    table_loading: {
+      required: true,
+      type: Boolean,
+    },
   },
 
   data() {
     return {
-       loading: false,
+      loading: false,
       color: "positive",
       no_caps: true,
       filter: "",
-      pagination: {
-        rowsPerPage: 15, // current rows per page being displayed
-      },
       show_approve_dialog: false,
       dialog: false,
       deleted_row: null,
       chosen_state: null,
       approve_msg: null,
       approve_data: null,
-      supporter:null,
-      supporter_amount:0
+      supporter: null,
+      supporter_amount: 0,
     };
   },
-  computed: {},
+  computed: {
+    getPagination: {
+      get() {
+        return this.pagination;
+      },
+      set(pagination) {
+        return pagination;
+      },
+    },
+  },
   methods: {
+    onRequest(props) {
+      this.$emit("onRequest", props);
+    },
+
     onViewSupport(data) {
       let payload = {
         data: data,
-        tab: this.$t('app.viewSponsorship'),
+        tab: this.$t("app.viewSponsorship"),
       };
       this.$store.dispatch("setSelectedSponsorship", data);
       this.$emit("view-sponsorship", payload);
     },
 
-    onEditSupport(data){
+    onEditSupport(data) {
       let payload = {
         data: data,
-        tab: this.$t('app.sponsorshipMgt'),
+        tab: this.$t("app.sponsorshipMgt"),
       };
 
       this.$store.dispatch("setSelectedSponsorship", data);
 
-      this.$emit("edit-sponsorship", payload)
+      this.$emit("edit-sponsorship", payload);
     },
     onDeleteSupport(data) {
       this.dialog = true;
-      this.deleted_row = data
+      this.deleted_row = data;
     },
 
     onDeclineRecord(row, state) {
@@ -349,7 +394,8 @@ export default {
       this.chosen_state = state;
       this.supporter_amount = row.amount_deposited;
       this.supporter = row.supporter;
-      this.approve_msg =  this.$t('app.sponsorshipPart')+`${row.payment_item.name} ?`;
+      this.approve_msg =
+        this.$t("app.sponsorshipPart") + `${row.payment_item.name} ?`;
     },
 
     onApprovedRecord(row, state) {
@@ -358,7 +404,8 @@ export default {
       this.chosen_state = state;
       this.supporter_amount = row.amount_deposited;
       this.supporter = row.supporter;
-      this.approve_msg =  this.$t('app.sponsorshipPart')+`${row.payment_item.name} ?`;
+      this.approve_msg =
+        this.$t("app.sponsorshipPart") + `${row.payment_item.name} ?`;
     },
 
     checkTreasurerRole() {
@@ -371,13 +418,13 @@ export default {
     deleteRow(data) {
       let payload = {
         url: `/api/protected/sponsorships/${data.id}`,
-        msg: this.$t('app.sponsorDeletedSuccessMsg'),
+        msg: this.$t("app.sponsorDeletedSuccessMsg"),
         status: "success",
         color: "default",
         to_on_ok: "none",
         show_feedback: true,
         to_on_fail: "none",
-        error_msg: this.$t('app.defaultErrorMsg'),
+        error_msg: this.$t("app.defaultErrorMsg"),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -393,16 +440,22 @@ export default {
     },
 
     onChangeRecordState() {
-      let state = this.chosen_state == 'Approve' ? this.$t('app.approveLabel'):this.$t('app.declineLabel')
+      let state =
+        this.chosen_state == "Approve"
+          ? this.$t("app.approveLabel")
+          : this.$t("app.declineLabel");
       let payload = {
         url: `/api/protected/sponsorships/${this.approve_data.id}/approve?type=${state}`,
-        msg: this.$t('app.sponsorPart') + `${this.chosen_state}` + this.$t('app.successfull'),
+        msg:
+          this.$t("app.sponsorPart") +
+          `${this.chosen_state}` +
+          this.$t("app.successfull"),
         data: null,
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: this.$t('app.defaultErrorMsg'),
+        error_msg: this.$t("app.defaultErrorMsg"),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -413,11 +466,11 @@ export default {
       };
       this.$store.dispatch("putRequest", payload).then((res) => {
         if (res.success) {
-         if(this.approve_data.payment_item == null){
-          this.getAllSponsorships();
-         }else{
-          this.getSponsorships(this.approve_data.payment_item.id);
-         }
+          if (this.approve_data.payment_item == null) {
+            this.getAllSponsorships();
+          } else {
+            this.getSponsorships(this.approve_data.payment_item.id);
+          }
         }
       });
     },
@@ -440,9 +493,9 @@ export default {
 }
 
 .dialog_button {
-  font-size: .9rem;
+  font-size: 0.9rem;
   font-weight: 500;
-  margin-bottom: .5rem;
+  margin-bottom: 0.5rem;
 }
 
 .approve_btn {
@@ -481,7 +534,7 @@ export default {
 }
 
 .total {
-   font-size: 15px;
+  font-size: 15px;
 }
 .total_given {
   padding-left: 3rem;
@@ -504,7 +557,6 @@ export default {
   text-transform: capitalize;
   color: $primary;
   width: 5.5rem;
-
 }
 
 .not_registered {

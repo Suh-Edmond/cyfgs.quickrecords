@@ -1,16 +1,6 @@
 <template>
   <div class="q-pa-sm">
-    <!-- spinner when fetching data -->
-    <div class="flex justify-center">
-      <q-spinner-ios
-        color="primary"
-        size="2em"
-        class="q-mb-lg"
-        v-if="getLoadingState"
-      />
-    </div>
-
-    <!-- contributions available -->
+    <!------------------------------------------CONTRIBUTIONS VIEW FOR MEMBERS WITHOUT TREASURER ROLE----------------------------------- -->
     <div v-if="!checkTreasurerRole()">
       <div
         class="row q-ml-xs q-pt-md justify-between"
@@ -44,7 +34,7 @@
         </div>
       </div>
       <!-- table for contributions -->
-      <div class="row q-pt-sm">
+      <div class="row q-pt-sm" v-if="getTableData.length > 0">
         <div class="col-md-12 col-xs-12 col-sm-12">
           <TableVue
             :columns="columns"
@@ -58,16 +48,21 @@
             :show_contribution="true"
             :show_member_contribution="false"
             :total_contribution="computeTotalContributions"
+            :title="getTableTitleForSearchContributions"
+            :pagination="pagination"
+            :table_loading="table_loader"
             @view-contribution="viewContribution"
             @edit-contribution="editContribution"
-            :title="getTableTitleForSearchContributions"
+            @delete-row="deleteRow"
+            @onRequest="onRequest"
           >
           </TableVue>
         </div>
       </div>
     </div>
+    <!------------------------------------------END CONTRIBUTIONS VIEW FOR MEMBERS WITHOUT TREASURER ROLE----------------------------------- -->
 
-    <!-- table for filtered savings so they can be approve/decline-->
+    <!------------------------------------------CONTRIBUTIONS VIEW FOR MEMBERS WITH TREASURER ROLE----------------------------------- -->
     <div v-if="checkTreasurerRole()">
       <div
         class="row q-ml-xs q-pt-md justify-between"
@@ -116,12 +111,17 @@
             :show_contribution="true"
             :total_contribution="computeTotalContributionsForFilteredRecord"
             :title="getTableTitleForSearchContributions"
+            :pagination="pagination"
+            :table_loading="table_loader"
             @delete-row="deleteRow"
+            @search-contribution="onSearchContribution"
+            @onRequest="onRequest"
           >
           </TableVue>
         </div>
       </div>
     </div>
+    <!------------------------------------------CONTRIBUTIONS VIEW FOR MEMBERS WITH TREASURER ROLE----------------------------------- -->
   </div>
 </template>
 
@@ -194,6 +194,14 @@ export default {
       start_filter: false,
       filteredContributions: [],
       loading_filter: false,
+      pagination: {
+        sortBy: "name",
+        descending: false,
+        page: 1,
+        rowsPerPage: 4,
+        rowsNumber:0,
+      },
+      table_loader: false,
     };
   },
   computed: {
@@ -213,14 +221,14 @@ export default {
 
     computeTotalContributions() {
       let total = 0.0;
-      if (this.$store.getters.getMembersContributionsByPaymentItem != null) {
-        this.$store.getters.getMembersContributionsByPaymentItem.data
-          .filter((ele) => ele.approve == "APPROVED")
-          .map((ele) => ele.total_amount_deposited)
-          .forEach((amount) => {
-            total += amount;
-          });
-      }
+      // if (this.$store.getters.getMembersContributionsByPaymentItem != null) {
+      //   this.$store.getters.getMembersContributionsByPaymentItem.data
+      //     .filter((ele) => ele.approve == "APPROVED")
+      //     .map((ele) => ele.total_amount_deposited)
+      //     .forEach((amount) => {
+      //       total += amount;
+      //     });
+      // }
       return total;
     },
 
@@ -269,10 +277,11 @@ export default {
       let data = [];
 
       if (this.$store.getters.getFilteredContributions != null) {
-        this.$store.getters.getFilteredContributions.forEach((ele) => {
+        this.$store.getters.getFilteredContributions.data.forEach((ele) => {
           data.push({
             counter:
-              this.$store.getters.getFilteredContributions.indexOf(ele) + 1,
+              this.$store.getters.getFilteredContributions.data.indexOf(ele) +
+              1,
             amount_deposited: ele.amount_deposited,
             total_amount_deposited: ele.total_amount_deposited,
             id: ele.id,
@@ -302,7 +311,7 @@ export default {
     computeTotalContributionsForFilteredRecord() {
       let total = 0.0;
       if (this.$store.getters.getFilteredContributions != null) {
-        this.$store.getters.getFilteredContributions
+        this.$store.getters.getFilteredContributions.data
           .filter((ele) => ele.approve == "APPROVED")
           .map((ele) => ele.total_amount_deposited)
           .forEach((amount) => {
@@ -319,7 +328,13 @@ export default {
     getTableTitleForSearchContributions() {
       let title = "";
       const route_data = Object.assign({}, this.$route.query);
-      title = route_data.payment_item_id != undefined ? this.$t('app.contributionPartTitle') + `${route_data.payment_item_id}` + this.$t('app.amountPartTitle') + `${Number(route_data.payment_item_amount).toLocaleString()} XAF`: "";
+      title =
+        route_data.payment_item_id != undefined
+          ? this.$t("app.contributionPartTitle") +
+            `${route_data.payment_item_id}` +
+            this.$t("app.amountPartTitle") +
+            `${Number(route_data.payment_item_amount).toLocaleString()} XAF`
+          : "";
       return title;
     },
   },
@@ -327,6 +342,41 @@ export default {
   watch: {},
 
   methods: {
+    buildPaginatedObject(page, per_page, rowsNumber) {
+      let paginatedObject = {
+        sortBy: "name",
+        descending: false,
+        page: page !== null ? 1 : page,
+        rowsPerPage: per_page === null ? 4 : per_page,
+        rowsNumber:
+          rowsNumber === null
+            ? this.$store.getters.getFilteredContributions.total
+            : rowsNumber,
+      };
+      return paginatedObject;
+    },
+    onRequest(props) {
+      const { page, rowsPerPage, sortBy, descending } = props.pagination;
+      const fetch_count =
+        rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
+      this.$store.commit("SET_FILTERED_CONTRIBUTIONS", null);
+      const search_params = this.$store.getters.getSearchContributionParams;
+      this.filterContributions(
+        search_params.item.value,
+        search_params.month,
+        search_params.year,
+        search_params.status,
+        search_params.date,
+        search_params.range,
+        page,
+        fetch_count
+      );
+    },
+
+    onSearchContribution(data) {
+      console.log(data);
+    },
+
     checkTreasurerRole() {
       const treasurer_role = LocalStorage.getItem("data").user_data.roles.find(
         (role) => role.name == "TREASURER"
@@ -352,64 +402,47 @@ export default {
       this.$store.dispatch("setCurrentPaymentItem", item[0]); //set the state with the first element from the filtered array
     },
 
-    filterContributions() {
-      let session =
-        this.year == null
-          ? this.$store.getters.getCurrentYear.id
-          : this.year.value;
-      this.filteredContributions = [];
+    filterContributions(
+      payment_item_id,
+      month,
+      year,
+      status,
+      date,
+      date_range,
+      page,
+      per_page
+    ) {
       let payload = {
         status: "none",
-        url: `/api/protected/organisation/contributions/search?payment_item_id=${this.payment_item_id.value}&month=${this.month}&year=${session}&status=${this.status}`,
+        url: `/api/protected/organisations/contributions/search?payment_item_id=${payment_item_id}&month=${month}&year=${year}&status=${status}&date=${date}&range=${date_range}&page=${page}&per_page=${per_page}`,
         has_path_val: true,
         show_feedback: false,
-        show_spinner: true,
+        show_spinner: false,
         msg: "none",
         color: "default",
         error_msg: "default",
-        commit: "none",
-        has_commit: false,
+        commit: "SET_FILTERED_CONTRIBUTIONS",
+        has_commit: true,
         to_be_store_data: {
           required: true,
           has_value: false,
           data: null,
         },
       };
-      this.loading_filter = true;
+      this.table_loader = true;
       this.$store
         .dispatch("getRequest", payload)
-        .then((res) => {
-          this.start_filter = true;
-
-          res.data.data.forEach((ele) => {
-            this.filteredContributions.push({
-              counter: res.data.data.indexOf(ele) + 1,
-              amount_deposited: ele.amount_deposited,
-              total_amount_deposited: ele.total_amount_deposited,
-              id: ele.id,
-              approve: ele.approve,
-              balance: ele.balance,
-              payment_item_amount: ele.payment_item_amount,
-              payment_item_id: ele.payment_item_id,
-              payment_item_complusory: ele.payment_item_complusory,
-              payment_item_name: ele.payment_item_name,
-              comment: ele.comment,
-              code: ele.code,
-              type: "MEMBERS_CONTRIBUTIONS",
-              compulsory: ele.compulsory,
-              created_at: ele.created_at,
-              updated_by: ele.updated_by,
-              status: ele.status,
-              user_id: ele.user_id,
-              user_name: ele.user_name,
-              user_telephone: ele.user_telephone,
-              session_id: ele.session_id,
-            });
-          });
+        .then((response) => {
+          this.pagination.page = response.data.current_page,
+          this.pagination.page = response.data.per_page,
+          this.pagination.page = response.data.total
+          
         })
         .finally(() => {
-          this.loading_filter = false;
+          this.table_loader = false;
         });
+
+        return
     },
 
     openSearchBar() {

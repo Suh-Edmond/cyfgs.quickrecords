@@ -143,6 +143,7 @@
             mask="date"
             outlined
             :placeholder="$t('app.selectDateRange')"
+            range
           >
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
@@ -319,7 +320,9 @@ export default {
         payload.month,
         payload.date,
         payload.date_range,
-        payload.amount
+        payload.amount,
+        1,
+        4
       );
       this.param.payment_item_id = "";
     },

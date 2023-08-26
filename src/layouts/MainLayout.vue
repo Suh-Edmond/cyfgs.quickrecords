@@ -367,6 +367,7 @@
         :requires_add="requires_add"
         @show-right-drawer="updateRightDrawer"
         @show-left-drawer="updateLeftDrawer"
+        @search-contribution="searchContribution"
       >
         <router-view />
       </MainContent>
@@ -487,6 +488,7 @@
           v-if="current_tab == 'Search Members Contributions'"
           @close-right-drawer="closeRightDrawer"
           @set-heading="setHeading"
+          @search-contribution="searchContribution"
         >
         </SearchContribution>
         <EditMemberContribution
@@ -596,6 +598,10 @@ export default {
   },
   watch: {},
   methods: {
+    searchContribution(data){
+      console.log(data);
+      this.$emit("search-contribution", data);
+    },
     setItem(item, requires_add) {
       this.item.name = item.name;
 

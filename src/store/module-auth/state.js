@@ -52,6 +52,7 @@ export default function () {
     bar_chart_data:[],
     pie_chart_data:[],
     total_yearly_contribution:0,
-    total_yearly_expenditure:0
+    total_yearly_expenditure:0,
+    search_contribution_data:null
   };
 }

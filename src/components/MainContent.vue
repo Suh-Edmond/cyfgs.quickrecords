@@ -129,6 +129,7 @@
               @view-sponsorship="viewSponsorship"
               @edit-sponsorship="editSponsorship"
               @register-member="registerMember"
+              @search-contribution="searchContribution"
             />
           </q-card-section>
         </q-card>
@@ -201,6 +202,11 @@ export default {
   },
 
   methods: {
+    searchContribution(data){
+      console.log(data);
+      this.$emit("search-contribution", data);
+    },
+
     startLoading(data) {
       this.loading = data;
     },

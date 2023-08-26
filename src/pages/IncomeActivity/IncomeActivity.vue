@@ -227,7 +227,7 @@ export default {
         sortBy: "name",
         descending: false,
         page: 1,
-        rowsPerPage: 3,
+        rowsPerPage: 7,
         rowsNumber: 0,
       },
       table_loader: false,

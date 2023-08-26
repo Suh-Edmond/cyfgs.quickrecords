@@ -517,3 +517,7 @@ export function setCurrentMember({ commit }, data) {
 export function setCurrentYear({ commit }, data) {
   commit("SET_CURRENT_YEAR", data);
 }
+
+export function setSearchContributionParams({commit}, data) {
+  commit("SET_SEARCH_CONTRIBUTION_PARAMS", data);
+}

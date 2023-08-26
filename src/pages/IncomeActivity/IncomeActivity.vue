@@ -111,6 +111,7 @@
             :columns="columns"
             :data="getIncomeActivities"
             :label="label"
+            :title="getTableTitle"
             :message="message"
             :show_savings="false"
             :show_income_activity="true"
@@ -245,14 +246,9 @@ export default {
 
     getTableTitle() {
       let title = "";
-      if (this.filteredActivities.length > 0) {
-        if (this.payment_item_id != null) {
-          title =
-            this.$t("app.incomeTitlePart") +
-            `${this.filteredActivities[0].payment_item.name}`;
-        } else {
-          title = this.$t("app.incomeTitle") + `${this.month}`;
-        }
+      let month_name = this.month !== "" || null ? this.$t('app.forTheMonthOf') + this.month.label : ""
+      if (this.payment_item_id !== null) {
+          title = this.$t("app.incomeTitlePart") + `${this.payment_item_id.label}` + month_name;
       }
       return title;
     },

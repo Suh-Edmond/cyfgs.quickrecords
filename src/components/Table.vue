@@ -1109,7 +1109,6 @@ export default {
   data() {
     return {
       dialog: false,
-      current: 1,
       filter: "",
       deleted_row: null,
       show_invite: false,
@@ -1393,12 +1392,12 @@ export default {
           );
           break;
         case "MEMBERS":
-          // this.getOrganisationMembers(
-          //   this.$store.getters.getOrganisation.id,
-          //   true,
-          //   1,
-          //   10, "name"
-          // );
+          this.getOrganisationMembers(
+            this.$store.getters.getOrganisation.id,
+            true,
+            1,
+            10, "name"
+          );
           break;
       }
     },

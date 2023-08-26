@@ -11,7 +11,7 @@ export default function () {
 
 
     updated_member: null,
-    payment_categories:[],
+    payment_categories:null,
     updated_payment_category:null,
     payment_items: null,
     current_payment_catgeory:null,

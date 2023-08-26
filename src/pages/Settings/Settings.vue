@@ -519,8 +519,8 @@ export default {
         show_spinner: true,
         show_feedback: false,
         error_msg: "An Error occurred! Please try again",
-        has_commit: false,
-        commit: "none",
+        has_commit: true,
+        commit: "SET_SESSIONS",
         to_be_store_data: {
           required: false,
           has_value: false,

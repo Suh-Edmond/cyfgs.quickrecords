@@ -1,19 +1,9 @@
 <template>
   <q-page>
-    <!-- spinners -->
-    <div class="flex justify-center">
-      <q-spinner-ios
-        color="primary"
-        size="2em"
-        class="q-mb-md"
-        v-if="getLoadingState"
-      />
-    </div>
-
     <div>
       <!-------------------------------------------------HEADER FOR PAYMENT ITEMS-------------------------------->
       <div
-        class="row q-ml-xs q-pt-xs q-gutter-md"
+        class="row q-ml-xs"
         :class="$q.screen.lg ? 'q-pa-sm' : ''"
         :style="
           $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
@@ -26,40 +16,44 @@
             dense
             :options="statuses"
             :label="$t('app.selectStatusLabel')"
+            clearable
           />
         </div>
-        <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12">
+        <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12 q-pl-sm">
           <q-select
             v-model="type"
             outlined
             dense
             :options="payment_item_types"
             :label="$t('app.selectPaymentType')"
+            clearable
           />
         </div>
-        <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12">
+        <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12 q-pl-sm">
           <q-select
             v-model="frequency"
             outlined
             dense
             :options="frequencies"
             :label="$t('app.selectFrequency')"
+            clearable
           />
         </div>
-        <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12">
+        <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12 q-pl-sm">
           <q-select
             v-model="state"
             outlined
             dense
             :options="states"
+            clearable
             :label="$t('app.selectState')"
           />
         </div>
-        <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12">
+        <div class="col-md-4 col-lg-4 col-xs-12 col-sm-12 flex q-pl-sm">
           <div>
             <q-btn
               :label="$t('app.filter')"
-              :loading="loading_filter"
+              :loading="loading"
               color="primary"
               :disabled="validateFilter"
               @click="filterPaymentItems"
@@ -68,12 +62,11 @@
             >
             </q-btn>
           </div>
-        </div>
-        <div class="col-md-1 col-lg-1 col-xs-12 col-sm-12 flex justify-end">
-          <div class="q-pb-xs">
+          <q-space />
+          <div>
             <q-btn
               :label="$t('app.print')"
-              :loading="loading"
+              :loading="loading_download"
               color="positive"
               :disabled="validateDownload"
               no-caps
@@ -90,7 +83,7 @@
         <div class="col-md-12 col-xs-12 col-sm-12">
           <CategoryTable
             :columns="columns"
-            :data="getPaymentItems"
+            :data="getPaymentItemsFromState"
             :label="label"
             :message="message"
             :title="getPaymentCategoryName"
@@ -98,11 +91,15 @@
             :show_payment_item="true"
             :show_expenditure_category="false"
             :show_expenditure_item="false"
+            :pagination="pagination"
+            :table_loading="table_loader"
+            @fetch-payment-items="fetchPaymentItems"
             @update-payment-item="updatePaymentItems"
             @delete-row="deleteRow"
             @update-payment-category="updatePaymentCategory"
             @show-references="showReferences"
             @view-payment-item="viewPaymentItem"
+            @onRequest="onRequest"
           >
           </CategoryTable>
         </div>
@@ -159,7 +156,7 @@
               v-close-popup
               color="primary"
               size="md"
-              @click="fetchPaymentItems()"
+              @click="fetchPaymentItems(false, 1, 7, 'name')"
             />
           </q-card-actions>
         </q-card>
@@ -190,11 +187,10 @@ export default {
   mixins: [HelperMixinVue],
 
   mounted() {
-    this.getPaymentItemsFromState();
+    this.fetchPaymentItems(false, 1, 7, "name");
   },
   data() {
     return {
-      is_filtering: false,
       loading: false,
       columns: [
         {
@@ -264,7 +260,7 @@ export default {
           sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
         },
       ],
-      state: null,
+      state: "",
       data: [],
       label: this.$t("app.delete"),
       message: this.$t("app.deletePaymentItemWarningMsg"),
@@ -288,7 +284,6 @@ export default {
         },
       ],
       is_compulsory: "",
-      filteredPaymentItems: [],
       type: "",
       frequency: "",
       payment_item_types: [
@@ -300,132 +295,44 @@ export default {
         "ALL",
       ],
       frequencies: ["YEARLY", "MONTHLY", "ONE_TIME", "ALL"],
-      loading_filter: false,
       show_reference_dialog: false,
       references: [],
       deleted_row: null,
       delete_msg: "",
       show_delete_dialog: false,
       selected_payment_item: null,
+      pagination: {
+        sortBy: "name",
+        descending: false,
+        page: 1,
+        rowsPerPage: 7,
+        rowsNumber: 0,
+      },
+      table_loader: false,
+      loading_download: false,
     };
   },
   computed: {
-    getPaymentItems() {
-      let items = this.getPaymentItemsFromState();
-      return items;
-    },
-
     getPaymentCategoryName() {
       return this.$store.getters.getCurrentPaymentCategory.name;
     },
 
-    getLoadingState() {
-      return this.$store.getters.getFetchingState;
-    },
-
     validateFilter() {
-      return this.is_compulsory == null &&
-        this.frequency == null &&
-        this.type == null
-        ? true
-        : false;
+      return (
+        this.is_compulsory === "" && this.frequency === "" && this.type === ""
+      );
     },
 
     validateDownload() {
-      return this.getPaymentItems == 0;
+      return this.getPaymentItemsFromState.length == 0;
     },
-  },
 
-  methods: {
-    updatePaymentCategory(data) {
-      this.$emit("update-payment-category", data);
-    },
-    updatePaymentItems(data) {
-      this.$store.dispatch("setUpdatedPaymentItem", data.data);
-
-      this.$emit("update-payment-item", data);
-    },
-    viewPaymentItem(data) {
-      this.$store.dispatch("setUpdatedPaymentItem", data.data);
-
-      this.$emit("view-payment-item", data);
-    },
     getPaymentItemsFromState() {
       let items = [];
-      if (this.filteredPaymentItems.length == 0 && !this.is_filtering) {
-        if (this.$store.getters.getPaymentItems) {
-          this.$store.getters.getPaymentItems.data.forEach((ele) => {
-            items.push({
-              counter:
-                this.$store.getters.getPaymentItems.data.indexOf(ele) + 1,
-              name: ele.name,
-              amount: ele.amount,
-              id: ele.id,
-              compulsory: ele.compulsory,
-              payment_category_id: ele.payment_category_id,
-              description: ele.description,
-              payment_category_name: ele.payment_category_name,
-              type: "PAYMENT_ITEMS",
-              payment_item_type: ele.type,
-              frequency: ele.frequency,
-              references: ele.references,
-              created_at: ele.created_at,
-              updated_at: ele.updated_at,
-              updated_by: ele.updated_by,
-              deadline: ele.deadline,
-              deadline_state: ele.deadline_state,
-            });
-          });
-        }
-      } else {
-        items = this.filteredPaymentItems;
-      }
-      return items;
-    },
-
-    downloadItems() {
-      let id = this.$store.getters.getCurrentPaymentCategory.id;
-      let url = `/api/protected/download-payment-items?payment_category_id=${id}&is_compulsory=${this.is_compulsory.value}&frequency=${this.frequency}&type=${this.type}&state=${this.state.value}`;
-      let file_name = "Payment_Items.pdf";
-      this.loading = this.downloadPdf(url, file_name);
-    },
-
-    filterPaymentItems() {
-      let id = this.$store.getters.getCurrentPaymentCategory.id;
-      this.$router.push({
-        path: `/dashboard/payment-categories/${id}/items`,
-        query: {
-          status: this.is_compulsory,
-          type: this.type,
-          frequency: this.frequency,
-        },
-      });
-      let is_compulsory = this.is_compulsory !== null ? this.is_compulsory.value: ""
-      let state = this.state !== null ? this.state.value:""
-      this.filteredPaymentItems = [];
-      this.loading_filter = true;
-      let payload = {
-        url: `/api/protected/filter-payment-items?payment_category_id=${id}&is_compulsory=${is_compulsory}&type=${this.type}&frequency=${this.frequency}&state=${state}`,
-        msg: "none",
-        color: "default",
-        status: "none",
-        error_msg: this.$t("app.paymentItemErrorMsg"),
-        has_commit: false,
-        show_feedback: false,
-        show_spinner: true,
-        commit: "none",
-        to_be_store_data: {
-          required: false,
-          has_value: false,
-          data: [],
-        },
-      };
-      this.$store.dispatch("getRequest", payload).then((res) => {
-        this.is_filtering = true;
-        this.loading_filter = false;
-        res.data.data.forEach((ele) => {
-          this.filteredPaymentItems.push({
-            counter: res.data.data.indexOf(ele) + 1,
+      if (this.$store.getters.getPaymentItems !== null) {
+        this.$store.getters.getPaymentItems.data.forEach((ele) => {
+          items.push({
+            counter: this.$store.getters.getPaymentItems.data.indexOf(ele) + 1,
             name: ele.name,
             amount: ele.amount,
             id: ele.id,
@@ -444,16 +351,29 @@ export default {
             deadline_state: ele.deadline_state,
           });
         });
-      });
+      }
+      return items;
     },
+  },
 
-    getPaymentItemsByCategory(id) {
+  methods: {
+    fetchPaymentItems(is_filtering, page, per_page, sort_by) {
+      let payment_category_id = this.$route.params.id;
+      let is_compulsory_value =
+        this.is_compulsory !== null && this.is_compulsory !== ""
+          ? this.is_compulsory.value
+          : "";
+      let state_value =
+        this.state !== null && this.state !== "" ? this.state.value : "";
+      let type_value = this.type !== null && this.type !== "" ? this.type : "";
+      let frequency_value =
+        this.frequency !== null && this.frequency !== "" ? this.frequency : "";
       let payload = {
         status: "none",
-        url: `/api/protected/payment-categories/${id}/payment-items`,
+        url: `/api/protected/filter-payment-items?payment_category_id=${payment_category_id}&is_compulsory=${is_compulsory_value}&type=${type_value}&frequency=${frequency_value}&state=${state_value}&page=${page}&per_page=${per_page}&sort_by=${sort_by}`,
         has_path_val: true,
         show_feedback: false,
-        show_spinner: true,
+        show_spinner: false,
         msg: "none",
         color: "default",
         error_msg: "default",
@@ -465,7 +385,73 @@ export default {
           data: null,
         },
       };
-      this.$store.dispatch("getRequest", payload).then(() => {});
+      this.$store.commit("SET_PAYMENT_ITEMS", null);
+      this.table_loader = true;
+      this.loading = is_filtering;
+      this.$store
+        .dispatch("getRequest", payload)
+        .then((response) => {
+          this.pagination.page = response.data.current_page;
+          this.pagination.rowsPerPage = response.data.per_page;
+          this.pagination.rowsNumber = response.data.total;
+        })
+        .finally(() => {
+          this.table_loader = false;
+          this.loading = false;
+        });
+    },
+
+    onRequest(props) {
+      const { page, rowsPerPage, sortBy, descending } = props.pagination;
+      const fetch_count =
+        rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
+      this.fetchPaymentItems(false, page, fetch_count, sortBy);
+    },
+
+    updatePaymentCategory(data) {
+      this.$emit("update-payment-category", data);
+    },
+
+    updatePaymentItems(data) {
+      this.$store.dispatch("setUpdatedPaymentItem", data.data);
+
+      this.$emit("update-payment-item", data);
+    },
+
+    viewPaymentItem(data) {
+      this.$store.dispatch("setUpdatedPaymentItem", data.data);
+
+      this.$emit("view-payment-item", data);
+    },
+
+    downloadItems() {
+      let payment_category_id = this.$route.params.id;
+      let is_compulsory_value =
+        this.is_compulsory !== null && this.is_compulsory !== ""
+          ? this.is_compulsory.value
+          : "";
+      let state_value =
+        this.state !== null && this.state !== "" ? this.state.value : "";
+      let type_value = this.type !== null && this.type !== "" ? this.type : "";
+      let frequency_value =
+        this.frequency !== null && this.frequency !== "" ? this.frequency : "";
+      let url = `/api/protected/download-payment-items?payment_category_id=${payment_category_id}&is_compulsory=${is_compulsory_value}&frequency=${frequency_value}&type=${type_value}&state=${state_value}&page=&per_page`;
+      let file_name = "Payment_Items.pdf";
+      this.loadinloading_downloadg = this.downloadPdf(url, file_name);
+    },
+
+    filterPaymentItems() {
+      let id = this.$store.getters.getCurrentPaymentCategory.id;
+      this.$router.push({
+        path: `/dashboard/payment-categories/${id}/items`,
+        query: {
+          status: this.is_compulsory,
+          type: this.type,
+          frequency: this.frequency,
+          t: new Date().getTime(),
+        },
+      });
+      this.fetchPaymentItems(true, 1, 2, "name");
     },
 
     deleteRow(data) {
@@ -486,7 +472,7 @@ export default {
         },
       };
       this.$store.dispatch("deleteRequest", payload).then(() => {
-        this.getPaymentItemsByCategory(data.payment_category_id);
+        this.fetchPaymentItems(false, 1, 4, "name");
       });
     },
 
@@ -566,10 +552,6 @@ export default {
           this.references.push(ele);
         });
       });
-    },
-
-    fetchPaymentItems() {
-      this.getPaymentItemsByCategory(this.$route.params.id);
     },
   },
   components: {

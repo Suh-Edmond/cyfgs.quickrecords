@@ -1,15 +1,5 @@
 <template>
   <q-page>
-    <!-- spinners -->
-    <div class="flex justify-center">
-      <q-spinner-ios
-        color="primary"
-        size="2em"
-        class="q-mb-lg"
-        v-if="getLoadingState"
-      />
-    </div>
-
     <div v-if="!checkTreasurerRole()">
       <!--------------------------------------------------------START OF SAVINGS--------------------------------------->
       <div>
@@ -31,7 +21,11 @@
               input-debounce="0"
               clearable
               @filter="filterYears"
+              @input="stopSearch"
             >
+            <template v-slot:append v-if="start_year_filtering">
+              <q-spinner color="primary" size="1.2em" :thickness="3" />
+            </template>
               <template v-slot:no-option>
                 <q-item>
                   <q-item-section class="text-grey">
@@ -52,7 +46,11 @@
               input-debounce="0"
               clearable
               @filter="filterMonths"
+              @input="stopSearch"
             >
+            <template v-slot:append v-if="start_month_filtering">
+              <q-spinner color="primary" size="1.2em" :thickness="3" />
+            </template>
               <template v-slot:no-option>
                 <q-item>
                   <q-item-section class="text-grey">
@@ -314,7 +312,6 @@ export default {
       is_fetching: false,
       search_data: null,
       savings: [],
-      filtered_savings: [],
       table_loader: false,
       pagination: {
         sortBy: "name",
@@ -326,6 +323,8 @@ export default {
       organisation_id: this.$store.getters.getOrganisation.id,
       session_id: this.$store.getters.getCurrentYear.id,
       loading_download: false,
+      start_year_filtering:false,
+      start_month_filtering:false,
     };
   },
   computed: {
@@ -383,8 +382,7 @@ export default {
 
     getMembersSavings() {
       let data = [];
-      if (this.filtered_savings.length <= 0 && !this.is_filtering) {
-        if (this.$store.getters.getOrganisationMembersSavings != null) {
+      if (this.$store.getters.getOrganisationMembersSavings !== null) {
           this.$store.getters.getOrganisationMembersSavings.data.forEach(
             (ele) => {
               data.push({
@@ -409,9 +407,6 @@ export default {
             }
           );
         }
-      } else {
-        data = this.filtered_savings;
-      }
       return data;
     },
   },
@@ -431,42 +426,10 @@ export default {
     ) {
       const session = session_id === "" ? this.session_id : session_id;
       this.is_fetching = is_filtering;
+      this.table_loader = true;
       let payload = {
         url: `/api/protected/savings?organisation_id=${id}&session_id=${session}&page=${page}&per_page=${per_page}&month=${month}`,
         msg: "none",
-        color: "default",
-        status: "none",
-        error_msg: this.$t("app.defaultErrorMsg"),
-        has_commit: true,
-        show_feedback: false,
-        show_spinner: true,
-        commit: "SET_ORGANISATION_MEMBERS_SAVINGS",
-        to_be_store_data: {
-          required: false,
-          has_value: false,
-          data: [],
-        },
-      };
-      this.$store
-        .dispatch("getRequest", payload)
-        .then((response) => {
-          this.pagination.rowsNumber = response.data.total;
-        })
-        .finally(() => {
-          this.is_fetching = false;
-        });
-
-      return is_filtering;
-    },
-
-    onRequest(props) {
-      const { page, rowsPerPage } = props.pagination;
-      const fetch_count =
-        rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
-      this.table_loader = true;
-      let session = this.year === "" ? this.session_id : this.year.value;
-      let payload = {
-        url: `/api/protected/savings?organisation_id=${this.organisation_id}&session_id=${session}&page=${page}&per_page=${fetch_count}`,
         color: "default",
         status: "none",
         error_msg: this.$t("app.defaultErrorMsg"),
@@ -480,18 +443,38 @@ export default {
           data: [],
         },
       };
-      this.$store.commit("SET_ORGANISATION_MEMBERS_SAVINGS", null);
       this.$store
         .dispatch("getRequest", payload)
-        .then(() => {
-          const data = this.$store.getters.getOrganisationMembersSavings;
-          this.pagination.page = data.current_page;
-          this.pagination.rowsPerPage = data.per_page;
-          this.pagination.rowsNumber = data.total;
+        .then((response) => {
+          this.pagination.rowsNumber = response.data.total;
+          this.pagination.page = response.data.current_page;
+          this.pagination.rowsPerPage = response.data.per_page;
         })
         .finally(() => {
+          this.is_fetching = false;
           this.table_loader = false;
         });
+
+      return is_filtering;
+    },
+
+    onRequest(props) {
+      const { page, rowsPerPage } = props.pagination;
+      const fetch_count =
+        rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
+      this.table_loader = true;
+      if (this.year === "" || null) {
+        this.getPaginatedOrganisationMemberSavings(
+          this.organisation_id,
+          page,
+          fetch_count,
+          "",
+          this.session_id,
+          false
+        );
+      } else {
+        this.filterSavings();
+      }
     },
 
     checkTreasurerRole() {
@@ -503,6 +486,7 @@ export default {
 
     filterYears(val, update, abort) {
       if (val.length < 1) {
+        this.start_year_filtering = false;
         abort();
         return;
       }
@@ -510,6 +494,7 @@ export default {
         this.years = this.getSessionsFromState;
       }
       update(() => {
+        this.start_year_filtering = true;
         this.years = this.getSessionsFromState.filter((v) =>
           v.label.toLowerCase().includes(val.toLowerCase())
         );
@@ -518,6 +503,7 @@ export default {
 
     filterMonths(val, update, abort) {
       if (val.length < 1) {
+        this.start_month_filtering = false;
         abort();
         return;
       }
@@ -525,6 +511,7 @@ export default {
         this.monthsOptions = this.getMonths;
       }
       update(() => {
+        this.start_month_filtering = true;
         const needle = val.toLowerCase();
         this.monthsOptions = this.getMonths.filter(
           (v) => v.label.toLowerCase().indexOf(needle) > -1
@@ -538,7 +525,8 @@ export default {
 
     downloadMembersSavings() {
       let session = this.year !== "" ? this.year.value : this.session_id;
-      let month = this.month === "" || this.month === null ? "" : this.month.value;
+      let month =
+        this.month === "" || this.month === null ? "" : this.month.value;
 
       let url = `/api/protected/organisation-savings/download?organisation_id=${this.organisation_id}&session_id=${session}&month=${month}`;
 
@@ -557,12 +545,12 @@ export default {
     },
 
     filterSavings() {
-      let session = this.year !== "" ? this.year.value : "";
-      let month = this.month === "" || this.month === null ? "" : this.month.value;
+      let month = this.month !== "" && this.month !== null ? this.month.value : "";
+      let session = this.year !== "" && this.year !== null ? this.year.value : this.session_id;
       this.$router.push({
         path: `/dashboard/members-savings`,
         query: {
-          month: this.month.label,
+          month: month,
           year: this.year.label,
           t: new Date().getTime(),
         },
@@ -580,6 +568,15 @@ export default {
     ViewMemberSaving(data) {
       this.$emit("view-member-saving", data);
     },
+
+    stopSearch(){
+      if(this.year !== "" || this.year !== null){
+        this.start_year_filtering = false;
+      }
+      if(this.month !== "" || this.month !== null) {
+        this.start_month_filtering = false;
+      }
+    }
   },
   components: {
     TableVue,

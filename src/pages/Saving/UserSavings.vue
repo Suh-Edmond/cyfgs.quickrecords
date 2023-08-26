@@ -1,15 +1,5 @@
 <template>
   <q-page>
-    <!-- spinners -->
-    <div class="flex justify-center">
-      <q-spinner-ios
-        color="primary"
-        size="2em"
-        class="q-mb-lg"
-        v-if="getLoadingState"
-      />
-    </div>
-
     <div>
       <!----------------------------------------------------------------START OF USER SAVINGS-------------------------------------------------->
       <div
@@ -30,7 +20,11 @@
             input-debounce="0"
             clearable
             @filter="filterMonths"
+            @input="stopSearch"
           >
+            <template v-slot:append v-if="start_month_filtering">
+              <q-spinner color="primary" size="1.2em" :thickness="3" />
+            </template>
             <template v-slot:no-option>
               <q-item>
                 <q-item-section class="text-grey">
@@ -186,6 +180,7 @@ export default {
             : 0,
       },
       session_id: this.$store.getters.getCurrentYear.id,
+      start_month_filtering: false,
     };
   },
   computed: {
@@ -237,17 +232,20 @@ export default {
       const fetch_count =
         rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
       let id = this.$route.params.id;
-      this.getPaginatedData(id, page, fetch_count);
+      this.getPaginatedData(id, page, fetch_count, false);
     },
 
     fetchMemberSaving(data) {
-      this.getPaginatedData(this.$route.params.id, 1, 7);
+      this.getPaginatedData(this.$route.params.id, 1, 7, false);
     },
 
-    getPaginatedData(id, page, fetch_count) {
+    getPaginatedData(id, page, fetch_count, is_filtering) {
       this.table_loader = true;
-      const searched_month = this.month !== "" || null ? this.month.value : "";
-      const searched_status = this.status !== "" || null ? this.status : "";
+      this.is_fetching = is_filtering;
+      let searched_month =
+        this.month !== "" && this.status !== null ? this.month.value : "";
+      let searched_status =
+        this.status !== "" && this.status !== null ? this.status : "";
       let payload = {
         url: `/api/protected/user-savings/${id}?month=${searched_month}&status=${searched_status}&page=${page}&per_page=${fetch_count}`,
         color: "default",
@@ -274,7 +272,10 @@ export default {
         })
         .finally(() => {
           this.table_loader = false;
+          this.is_fetching = false;
         });
+
+      return this.is_fetching;
     },
 
     ViewMemberSaving(data) {
@@ -296,7 +297,7 @@ export default {
           t: new Date().getTime(),
         },
       });
-      this.getPaginatedData(this.$route.params.id, 1, 7);
+      this.getPaginatedData(this.$route.params.id, 1, 7, true);
     },
 
     downloadSavings() {
@@ -312,6 +313,7 @@ export default {
 
     filterMonths(val, update, abort) {
       if (val.length < 1) {
+        this.start_month_filtering = false;
         abort();
         return;
       }
@@ -319,11 +321,18 @@ export default {
         this.monthsOptions = this.getMonths;
       }
       update(() => {
+        this.start_month_filtering = true;
         const needle = val.toLowerCase();
         this.monthsOptions = this.getMonths.filter(
           (v) => v.label.toLowerCase().indexOf(needle) > -1
         );
       });
+    },
+
+    stopSearch() {
+      if (this.month !== "" || this.month !== null) {
+        this.start_month_filtering = false;
+      }
     },
   },
   components: {

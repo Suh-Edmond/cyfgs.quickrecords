@@ -1,15 +1,5 @@
 <template>
   <q-page>
-    <!-- spinners -->
-    <div class="flex justify-center">
-      <q-spinner-ios
-        color="primary"
-        size="2em"
-        class="q-mb-lg"
-        v-if="getLoadingState"
-      />
-    </div>
-
     <div>
       <!-- header for filter members -->
       <div
@@ -24,24 +14,48 @@
           :class="$q.screen.lg ? 'q-pr-md' : ''"
         >
           <q-select
-            v-model="has_register"
+            v-model="year"
             outlined
             dense
-            :options="registrationStatuses"
-            :label="$t('app.selectStatusLabel')"
-          />
+            :options="getSessions"
+            :label="$t('app.selectYearLabel')"
+            clearable
+          >
+            <template v-slot:append v-if="start_year_filtering">
+              <q-spinner color="primary" size="1.2em" :thickness="3" />
+            </template>
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey">
+                  {{ $t("app.noResults") }}
+                </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
         </div>
         <div
           class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
           :class="$q.screen.lg ? 'q-pr-md' : ''"
         >
           <q-select
-            v-model="year"
+            v-model="has_register"
             outlined
             dense
-            :options="getSessions"
-            :label="$t('app.selectYearLabel')"
-          />
+            :options="registrationStatuses"
+            :label="$t('app.selectStatusLabel')"
+            clearable
+          >
+            <template v-slot:append v-if="start_status_filtering">
+              <q-spinner color="primary" size="1.2em" :thickness="3" />
+            </template>
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey">
+                  {{ $t("app.noResults") }}
+                </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
         </div>
         <div
           class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
@@ -53,7 +67,19 @@
             dense
             :options="genders"
             :label="$t('app.selectGenderLabel')"
-          />
+            clearable
+          >
+            <template v-slot:append v-if="start_gender_filtering">
+              <q-spinner color="primary" size="1.2em" :thickness="3" />
+            </template>
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey">
+                  {{ $t("app.noResults") }}
+                </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
         </div>
         <div class="flex col-md-3 col-lg-3 col-xs-12 col-sm-12">
           <div :class="$q.screen.lg ? 'q-pr-md' : ''">
@@ -126,7 +152,8 @@ export default {
   mounted() {
     let id = this.getOrganisationId;
     const per_page = 7;
-    this.getPaginatedOrganisationMembers(id, true, 1, per_page, "name");
+    const page = 1;
+    this.getPaginatedOrganisationMembers(id, page, per_page, "name", false);
     this.getRegistrationAmount();
     this.fetchSessions();
   },
@@ -216,15 +243,20 @@ export default {
       },
       loading: false,
       organisation_id: this.$store.getters.getOrganisation.id,
-      loading_filter:false,
-      loading_download:false,
+      loading_filter: false,
+      loading_download: false,
+      start_gender_filtering: false,
+      start_status_filtering: false,
+      start_year_filtering: false,
     };
   },
   computed: {
     validateFilter() {
-      return this.has_register == null && this.year == "" && this.gender == ""
-        ? true
-        : false;
+      return (
+        (this.has_register === "" || this.has_register === null) &&
+        (this.year === "" || this.year === null) &&
+        (this.gender === "" || this.gender === null)
+      );
     },
 
     getMembers() {
@@ -297,10 +329,25 @@ export default {
       const { page, rowsPerPage, sortBy, descending } = props.pagination;
       const fetch_count =
         rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
-      this.loading = true;
-      let year_id = this.year !== "" ? this.year.value : "";
+      this.getPaginatedOrganisationMembers(
+        this.organisation_id,
+        page,
+        fetch_count,
+        sortBy,
+        false
+      );
+    },
+
+    getPaginatedOrganisationMembers(
+      id,
+      page,
+      rowsPerPage,
+      sort_by,
+      is_filtering
+    ) {
+      let year_id = this.year !== null ? this.year.value : "";
       let payload = {
-        url: `/api/protected/organisations/filter-users?organisation_id=${this.organisation_id}&has_register=${this.has_register}&gender=${this.gender}&year=${year_id}&page=${page}&per_page=${fetch_count}&sort_by=${sortBy}`,
+        url: `/api/protected/organisations/filter-users?organisation_id=${id}&has_register=${this.has_register}&gender=${this.gender}&year=${year_id}&page=${page}&per_page=${rowsPerPage}&sort_by=${sort_by}`,
         msg: "none",
         color: "default",
         status: "none",
@@ -315,50 +362,22 @@ export default {
           data: [],
         },
       };
+      this.loading = true;
+      this.loading_filter = is_filtering;
       this.$store.commit("SET_MEMBERS", null);
-      this.$store
-        .dispatch("getRequest", payload)
-        .then(() => {
-          const data = this.$store.getters.getMembers;
-          this.pagination.page = data.current_page;
-          this.pagination.rowsPerPage = data.per_page;
-          this.pagination.rowsNumber = data.total;
-        })
-        .finally(() => {
-          this.loading = false;
-        });
-    },
-
-    getPaginatedOrganisationMembers(
-      id,
-      show_spinner,
-      page,
-      rowsPerPage,
-      sort_by
-    ) {
-      let year_id = this.year !== null ? this.year.value : "";
-      let payload = {
-        url: `/api/protected/organisations/filter-users?organisation_id=${id}&has_register=${this.has_register}&gender=${this.gender}&year=${year_id}&page=${page}&per_page=${rowsPerPage}&sort_by=${sort_by}`,
-        msg: "none",
-        color: "default",
-        status: "none",
-        error_msg: this.$t("app.defaultErrorMsg"),
-        has_commit: true,
-        show_feedback: false,
-        show_spinner: show_spinner,
-        commit: "SET_MEMBERS",
-        to_be_store_data: {
-          required: false,
-          has_value: false,
-          data: [],
-        },
-      };
       this.$store
         .dispatch("getRequest", payload)
         .then((response) => {
           this.pagination.rowsNumber = response.data.total;
+          this.pagination.page = response.data.current_page;
+          this.pagination.rowsPerPage = response.data.per_page;
         })
-        .finally(() => {});
+        .finally(() => {
+          this.loading = false;
+          this.loading_filter = false;
+        });
+
+      return this.loading_filter;
     },
 
     registerMember(data) {
@@ -372,37 +391,19 @@ export default {
           has_register: this.has_register,
           year: this.year.label,
           gender: this.gender,
+          t: new Date().getTime(),
         },
       });
-      this.loading_filter = true;
       const page = 1;
       const per_page = 7;
       const sort_by = "name";
-      let payload = {
-        status: "none",
-        url: `/api/protected/organisations/filter-users?organisation_id=${this.organisation_id}&has_register=${this.has_register}&gender=${this.gender}&year=${this.year.value}&page=${page}&per_page=${per_page}&sort_by=${sort_by}`,
-        has_path_val: true,
-        show_feedback: false,
-        show_spinner: true,
-        msg: "none",
-        color: "default",
-        error_msg: "default",
-        commit: "SET_MEMBERS",
-        has_commit: true,
-        to_be_store_data: {
-          required: false,
-          has_value: false,
-          data: null,
-        },
-      };
-      this.$store
-        .dispatch("getRequest", payload)
-        .then((response) => {
-          this.pagination.rowsNumber = response.data.total;
-        })
-        .finally(() => {
-          this.loading_filter = false;
-        });
+      this.getPaginatedOrganisationMembers(
+        this.organisation_id,
+        page,
+        per_page,
+        sort_by,
+        true
+      );
     },
 
     downloadMembers() {
@@ -412,8 +413,13 @@ export default {
     },
 
     onFetchMembers() {
-      let id = this.$store.getters.getOrganisation.id;
-      // this.getOrganisationMembers(id, true);
+      this.getPaginatedOrganisationMembers(
+        this.organisation_id,
+        1,
+        7,
+        "name",
+        false
+      );
     },
 
     deleteRow(data) {
@@ -434,7 +440,16 @@ export default {
         },
       };
       this.$store.dispatch("deleteRequest", payload).then(() => {
-        // this.getOrganisationMembers(this.getOrganisationId);
+        let page = 1;
+        let per_page = 7;
+        let sort_by = "name";
+        this.getPaginatedOrganisationMembers(
+          this.organisation_id,
+          page,
+          per_page,
+          sort_by,
+          false
+        );
       });
     },
 
@@ -458,6 +473,35 @@ export default {
       };
       this.$store.dispatch("getRequest", payload).then(() => {});
     },
+
+    filterYears(val, update, abort) {
+      if (val.length < 1) {
+        this.start_year_filtering = false;
+        abort();
+        return;
+      }
+      if (this.year == "") {
+        this.years = this.getSessionsFromState;
+      }
+      update(() => {
+        this.start_year_filtering = true;
+        this.years = this.getSessionsFromState.filter((v) =>
+          v.label.toLowerCase().includes(val.toLowerCase())
+        );
+      });
+    },
+
+    stopSearch(){
+      if(this.year !== "" || this.year !== null){
+        this.start_year_filtering = false;
+      }
+      if(this.has_register !== "" || this.has_register !== null){
+        this.start_status_filtering = false;
+      }
+      if(this.gender !== "" || this.gender !== null) {
+        this.start_gender_filtering = false;
+      }
+    }
   },
 
   components: {

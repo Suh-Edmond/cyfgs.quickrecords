@@ -245,12 +245,8 @@ export default {
     },
 
     getTableTitle() {
-      let title = "";
       let month_name = this.month !== "" || null ? this.$t('app.forTheMonthOf') + this.month.label : ""
-      if (this.payment_item_id !== null) {
-          title = this.$t("app.incomeTitlePart") + `${this.payment_item_id.label}` + month_name;
-      }
-      return title;
+      return this.payment_item_id !== null || "" ? this.$t("app.incomeTitlePart") + `${this.payment_item_id.label}` + month_name : "";
     },
 
     getIncomeActivities() {
@@ -305,6 +301,7 @@ export default {
           data: [],
         },
       };
+      this.$store.commit("SET_INCOME_ACTIVITIES", null)
       this.$store
         .dispatch("getRequest", payload)
         .then((response) => {
@@ -410,7 +407,7 @@ export default {
         path: `/dashboard/income-activities?payment_item=${payment_item_name}&month=${month}&status=${this.status}`,
         query: {
           payment_item: payment_item_name,
-          month: this.month.label,
+          month: month,
           status: this.status,
           t: new Date().getTime(),
         },

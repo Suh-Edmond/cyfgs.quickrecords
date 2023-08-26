@@ -176,10 +176,10 @@ export default {
 
   methods: {
     onRequest(props) {
-      const { page, rowsPerPage, sortBy, descending } = props.pagination;
+      const { page, rowsPerPage, sortBy } = props.pagination;
       const fetch_count =
         rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
-      this.fetchOrganisationCategories(page, fetch_count, sortBy, false);
+      this.fetchOrganisationCategories(page, fetch_count, sortBy, false, "");
     },
 
     fetchOrganisationCategories(page, per_page, sort_by, is_filtering, year) {

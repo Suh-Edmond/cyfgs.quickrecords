@@ -88,7 +88,7 @@ export default {
     CurrentYearMixin,
   ],
   mounted() {
-    this.fetchOrganisationExpenditureCategories(1, 1, "name", false, "");
+    this.fetchOrganisationExpenditureCategories(1, 7, "name", false, "");
   },
 
   data() {
@@ -142,7 +142,7 @@ export default {
         sortBy: "name",
         descending: false,
         page: 1,
-        rowsPerPage: 1,
+        rowsPerPage: 7,
         rowsNumber: 0,
       },
       table_loader: false,
@@ -269,7 +269,7 @@ export default {
 
       this.fetchOrganisationExpenditureCategories(
         1,
-        1,
+        7,
         "name",
         true,
         year_value
@@ -301,7 +301,7 @@ export default {
         },
       };
       this.$store.dispatch("deleteRequest", payload).then(() => {
-        this.fetchOrganisationExpenditureCategories(1, 1, "name", false, "");
+        this.fetchOrganisationExpenditureCategories(1, 7, "name", false, "");
       });
     },
   },

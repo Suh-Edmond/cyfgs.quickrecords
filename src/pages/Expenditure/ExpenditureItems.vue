@@ -141,7 +141,7 @@ export default {
     CurrentYearMixin,
   ],
   mounted() {
-    this.fetchExpenditureItems(1, 2, false);
+    this.fetchExpenditureItems(1, 7, false);
     this.fetchPaymentActivities();
     this.getPaymentItemsFromStore();
   },
@@ -209,7 +209,7 @@ export default {
         sortBy: "name",
         descending: false,
         page: 1,
-        rowsPerPage: 2,
+        rowsPerPage: 7,
         rowsNumber: 0,
       },
       table_loader: false,
@@ -252,10 +252,10 @@ export default {
     getTableTitle() {
       let title = "";
       if (this.payment_item_id !== null && this.payment_item_id !== "") {
-        title = this.$t(
-          "app.expenditureItemTitlePartName"
-        )+`${this.payment_item_id.label}`;
-      }else {
+        title =
+          this.$t("app.expenditureItemTitlePartName") +
+          `${this.payment_item_id.label}`;
+      } else {
         title = this.$store.getters.getCurrentExpenditureCategory.name;
       }
       return title;
@@ -335,8 +335,6 @@ export default {
         name: data.expenditure_item.name,
       });
 
-      this.getExpenditureDetailsByItemId(data.expenditure_item.id);
-
       const intermediate_tabs = Array.from(
         this.$store.getters.getIntermediateTabs
       );
@@ -377,7 +375,7 @@ export default {
         },
       });
 
-      this.fetchExpenditureItems(1, 3, true);
+      this.fetchExpenditureItems(1, 7, true);
     },
 
     fetchPaymentActivities() {
@@ -433,7 +431,7 @@ export default {
         },
       };
       this.$store.dispatch("deleteRequest", payload).then(() => {
-        this.fetchExpenditureItems(1, 2, false);
+        this.fetchExpenditureItems(1, 7, false);
       });
     },
 

@@ -13,7 +13,7 @@ export default {
         msg: "none",
         color: "default",
         status: "none",
-        error_msg: this.$t('app.defaultErrorMsg'),
+        error_msg: this.$t("app.defaultErrorMsg"),
         has_commit: true,
         show_feedback: false,
         show_spinner: true,
@@ -28,12 +28,12 @@ export default {
     },
 
     getTotalYearlyExpenditures(id) {
-       let payload = {
+      let payload = {
         url: `/api/protected/expenditures_total?session_id=${id}`,
         msg: "none",
         color: "default",
         status: "none",
-        error_msg:this.$t('app.defaultErrorMsg'),
+        error_msg: this.$t("app.defaultErrorMsg"),
         has_commit: true,
         show_feedback: false,
         show_spinner: false,
@@ -44,8 +44,7 @@ export default {
           data: [],
         },
       };
-      this.$store.dispatch("getRequest", payload).then((res) => {
-      });
+      this.$store.dispatch("getRequest", payload).then((res) => {});
     },
   },
 };

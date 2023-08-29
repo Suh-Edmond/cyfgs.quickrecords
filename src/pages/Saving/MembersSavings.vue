@@ -23,9 +23,9 @@
               @filter="filterYears"
               @input="stopSearch"
             >
-            <template v-slot:append v-if="start_year_filtering">
-              <q-spinner color="primary" size="1.2em" :thickness="3" />
-            </template>
+              <template v-slot:append v-if="start_year_filtering">
+                <q-spinner color="primary" size="1.2em" :thickness="3" />
+              </template>
               <template v-slot:no-option>
                 <q-item>
                   <q-item-section class="text-grey">
@@ -48,9 +48,9 @@
               @filter="filterMonths"
               @input="stopSearch"
             >
-            <template v-slot:append v-if="start_month_filtering">
-              <q-spinner color="primary" size="1.2em" :thickness="3" />
-            </template>
+              <template v-slot:append v-if="start_month_filtering">
+                <q-spinner color="primary" size="1.2em" :thickness="3" />
+              </template>
               <template v-slot:no-option>
                 <q-item>
                   <q-item-section class="text-grey">
@@ -163,7 +163,7 @@
             :total_saving="computeTotalSavingsForFiltered"
             :show_contribution="false"
             :pagination="pagination"
-            :table_loading="table_loader"
+            :table_loading="getLoadingState"
             @view-member-saving="ViewMemberSaving"
             @onRequest="onRequest"
           >
@@ -196,8 +196,8 @@ export default {
         : "";
     this.getPaginatedOrganisationMemberSavings(
       organisation_id,
-      this.pagination.page,
-      this.pagination.rowsPerPage,
+      1,
+      2,
       "",
       "",
       false
@@ -323,8 +323,8 @@ export default {
       organisation_id: this.$store.getters.getOrganisation.id,
       session_id: this.$store.getters.getCurrentYear.id,
       loading_download: false,
-      start_year_filtering:false,
-      start_month_filtering:false,
+      start_year_filtering: false,
+      start_month_filtering: false,
     };
   },
   computed: {
@@ -333,9 +333,7 @@ export default {
     },
 
     getFetchingState() {
-      return (
-        typeof this.$store.getters.getOrganisationMemberSavings === undefined
-      );
+      return this.$store.getters.getFetchingState;
     },
 
     getTotalMembersSavings() {
@@ -346,34 +344,32 @@ export default {
 
     getFilteredSavings() {
       let data = [];
-      this.$store.getters.getSavings.forEach((ele) => {
-        data.push({
-          counter: this.$store.getters.getSavings.indexOf(ele) + 1,
-          user_name: ele.user_name,
-          email: ele.email,
-          telephone: ele.telephone,
-          total_amount: ele.total_amount,
-          id: ele.id,
-          approve: ele.approve,
-          comment: ele.comment,
-          type: "MEMBERS_SAVINGS",
-          user_id: ele.user_id,
-          created_at: ele.created_at,
-          updated_by: ele.updated_by,
-          sesion_id: ele.session_id,
-          amount_deposited: ele.amount_deposited,
-          amount_used: ele.amount_used,
+      if (this.$store.getters.getSavings !== null) {
+        this.$store.getters.getSavings.data.forEach((ele) => {
+          data.push({
+            counter: this.$store.getters.getSavings.data.indexOf(ele) + 1,
+            user_name: ele.user_name,
+            email: ele.email,
+            telephone: ele.telephone,
+            total_amount: ele.total_amount,
+            id: ele.id,
+            approve: ele.approve,
+            comment: ele.comment,
+            type: "MEMBERS_SAVINGS",
+            user_id: ele.user_id,
+            created_at: ele.created_at,
+            updated_by: ele.updated_by,
+            sesion_id: ele.session_id,
+            amount_deposited: ele.amount_deposited,
+            amount_used: ele.amount_used,
+          });
         });
-      });
+      }
       return data;
     },
 
     computeTotalSavingsForFiltered() {
-      let total = 0;
-      this.$store.getters.getSavings.forEach((ele) => {
-        total += ele.total_amount;
-      });
-      return total;
+      return 0;
     },
 
     getLoadingState() {
@@ -383,30 +379,30 @@ export default {
     getMembersSavings() {
       let data = [];
       if (this.$store.getters.getOrganisationMembersSavings !== null) {
-          this.$store.getters.getOrganisationMembersSavings.data.forEach(
-            (ele) => {
-              data.push({
-                counter:
-                  this.$store.getters.getOrganisationMembersSavings.data.indexOf(
-                    ele
-                  ) + 1,
-                user_name: ele.user_name,
-                email: ele.email,
-                telephone: ele.telephone,
-                total_amount: ele.total_amount,
-                id: ele.id,
-                approve: ele.approve,
-                comment: ele.comment,
-                type: "MEMBERS_SAVINGS",
-                user_id: ele.user_id,
-                created_at: ele.created_at,
-                updated_by: ele.updated_by,
-                amount_deposited: ele.amount_deposited,
-                amount_used: ele.amount_used,
-              });
-            }
-          );
-        }
+        this.$store.getters.getOrganisationMembersSavings.data.forEach(
+          (ele) => {
+            data.push({
+              counter:
+                this.$store.getters.getOrganisationMembersSavings.data.indexOf(
+                  ele
+                ) + 1,
+              user_name: ele.user_name,
+              email: ele.email,
+              telephone: ele.telephone,
+              total_amount: ele.total_amount,
+              id: ele.id,
+              approve: ele.approve,
+              comment: ele.comment,
+              type: "MEMBERS_SAVINGS",
+              user_id: ele.user_id,
+              created_at: ele.created_at,
+              updated_by: ele.updated_by,
+              amount_deposited: ele.amount_deposited,
+              amount_used: ele.amount_used,
+            });
+          }
+        );
+      }
       return data;
     },
   },
@@ -443,16 +439,18 @@ export default {
           data: [],
         },
       };
+      this.$store.commit("SET_IS_FETCHING", this.table_loader);
       this.$store
         .dispatch("getRequest", payload)
         .then((response) => {
-          this.pagination.rowsNumber = response.data.total;
+          this.pagination.rowsNumber = response.data !== undefined ? response.data.total : 0;
           this.pagination.page = response.data.current_page;
           this.pagination.rowsPerPage = response.data.per_page;
         })
         .finally(() => {
           this.is_fetching = false;
           this.table_loader = false;
+          this.$store.commit("SET_IS_FETCHING", this.table_loader);
         });
 
       return is_filtering;
@@ -545,8 +543,12 @@ export default {
     },
 
     filterSavings() {
-      let month = this.month !== "" && this.month !== null ? this.month.value : "";
-      let session = this.year !== "" && this.year !== null ? this.year.value : this.session_id;
+      let month =
+        this.month !== "" && this.month !== null ? this.month.value : "";
+      let session =
+        this.year !== "" && this.year !== null
+          ? this.year.value
+          : this.session_id;
       this.$router.push({
         path: `/dashboard/members-savings`,
         query: {
@@ -569,14 +571,14 @@ export default {
       this.$emit("view-member-saving", data);
     },
 
-    stopSearch(){
-      if(this.year !== "" || this.year !== null){
+    stopSearch() {
+      if (this.year !== "" || this.year !== null) {
         this.start_year_filtering = false;
       }
-      if(this.month !== "" || this.month !== null) {
+      if (this.month !== "" || this.month !== null) {
         this.start_month_filtering = false;
       }
-    }
+    },
   },
   components: {
     TableVue,

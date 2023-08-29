@@ -86,7 +86,7 @@ import ExpenditureItemDetailMixinVue from "src/mixins/ExpenditureItemDetailMixin
 export default {
   mixins: [HelperMixinVue, ExpenditureItemDetailMixinVue],
   mounted() {
-    this.getExpenditureDetailsByItemId(1, 1, false);
+    this.getExpenditureDetailsByItemId(1, 7, false);
   },
 
   data() {
@@ -280,7 +280,7 @@ export default {
         query: { status: this.status, t: new Date().getTime() },
       });
 
-      this.getExpenditureDetailsByItemId(1, 1, true);
+      this.getExpenditureDetailsByItemId(1, 7, true);
     },
 
     onDeleteRow(data) {
@@ -301,7 +301,7 @@ export default {
         },
       };
       this.$store.dispatch("deleteRequest", payload).then(() => {
-        this.getExpenditureDetailsByItemId(1, 1, false);
+        this.getExpenditureDetailsByItemId(1, 7, false);
       });
     },
   },

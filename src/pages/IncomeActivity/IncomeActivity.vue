@@ -216,10 +216,8 @@ export default {
       ],
       label: this.$t("app.delete"),
       message: this.$t("app.deleteIncomeActvityWarningMsg"),
-      filteredActivities: [],
       start_filter: false,
       loading: false,
-      total_income_amount: 0,
       payment_items: [],
       start_filtering: false,
       start_month_filtering: false,
@@ -318,7 +316,6 @@ export default {
       const { page, rowsPerPage, sortBy, descending } = props.pagination;
       const fetch_count =
         rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
-      this.$store.commit("SET_INCOME_ACTIVITIES", null);
       if (this.payment_item_id === null || "") {
         this.getOrganisationIncomeActivities(
           this.organisation_id,

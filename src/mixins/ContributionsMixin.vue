@@ -55,6 +55,7 @@ export default {
         date: date,
         range: range,
       };
+      this.$store.commit("SET_IS_FETCHING", true);
       this.$router.push({
         path: `/dashboard/contributions`,
         query: {
@@ -99,6 +100,8 @@ export default {
       this.$store.dispatch("setSearchContributionParams", search_payload);
       this.$store.dispatch("getRequest", payload).then(() => {
         this.loading = false;
+      }).finally(() => {
+        this.$store.commit("SET_IS_FETCHING", false);
       });
 
       return this.loading;

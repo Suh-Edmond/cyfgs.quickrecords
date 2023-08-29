@@ -1,15 +1,5 @@
 <template>
   <div class="q-pa-sm">
-    <!-- spinner when fetching data -->
-    <div class="flex justify-center">
-      <q-spinner-ios
-        color="primary"
-        size="2em"
-        class="q-mb-lg"
-        v-if="getLoadingState"
-      />
-    </div>
-
     <div>
       <!-- contributions available -->
       <div
@@ -47,9 +37,12 @@
             :total_contribution="getTotalMemberContribution"
             :total_balance="getTotalBalance"
             :show_member_contribution="true"
+            :pagination="pagination"
+            :table_loading="table_loader"
             @view-contribution="viewContribution"
             @edit-contribution="editContribution"
             @delete-row="deleteRow"
+            @onRequest="onRequest"
           >
           </TableVue>
         </div>
@@ -66,9 +59,13 @@ export default {
   mixins: [ContributionsMixin, HelperMixin],
 
   mounted() {
+    const page = 1;
+    const per_page = 1;
     this.getMemberContributionsByPaymentItem(
       this.$router.currentRoute.params.item_id,
-      this.$router.currentRoute.params.id
+      this.$router.currentRoute.params.id,
+      page,
+      per_page
     );
   },
   data() {
@@ -138,67 +135,63 @@ export default {
         },
       ],
       data: [],
+      pagination: {
+        sortBy: "name",
+        descending: false,
+        page: 1,
+        rowsPerPage: 1,
+        rowsNumber: 0,
+      },
+      table_loader: false,
     };
   },
   computed: {
-    getLoadingState() {
-      return this.$store.getters.getFetchingState;
-    },
-
     getTableTile() {
-      let title = "";
-      if (this.$store.getters.getMemberContributions.length > 0) {
-        title = this.$t("app.partContributionTitle") + ` ${this.$store.getters.getMemberContributions[0].payment_item_name}`;
-      }
-      return title;
+      return this.$t("app.partContributionTitle");
     },
 
-    //total by payment item
     getTotalMemberContribution() {
-      let total = 0.0;
-      this.$store.getters.getMemberContributions.forEach((ele) => {
-        total += ele.amount_deposited;
-      });
-      return total;
+      return this.$store.getters.getMemberContributions !== null
+        ? this.$store.getters.getMemberContributions.total_contribution
+        : 0;
     },
 
-    //balance by payment item
     getTotalBalance() {
-      let total = this.getTotalMemberContribution;
-      let payment_item_amount =
-        this.$store.getters.getMemberContributions.length > 0
-          ? this.$store.getters.getMemberContributions[0].payment_item_amount
-          : 0;
-      return payment_item_amount - total;
+      return this.$store.getters.getMemberContributions !== null
+        ? this.$store.getters.getMemberContributions.total_balance
+        : 0;
     },
 
     getMemberContributions() {
       let data = [];
-      this.$store.getters.getMemberContributions.forEach((ele) => {
-        data.push({
-          counter: this.$store.getters.getMemberContributions.indexOf(ele) + 1,
-          amount_deposited: ele.amount_deposited,
-          total_amount_deposited: ele.total_amount_deposited,
-          id: ele.id,
-          approve: ele.approve,
-          balance: ele.balance,
-          payment_item_amount: ele.payment_item_amount,
-          payment_item_id: ele.payment_item_id,
-          payment_item_complusory: ele.payment_item_compulsory,
-          payment_item_name: ele.payment_item_name,
-          payment_category: ele.payment_category,
-          comment: ele.comment,
-          code: ele.code,
-          type: "MEMBERS_CONTRIBUTIONS",
-          complusory: ele.complusory,
-          created_at: ele.created_at,
-          updated_by: ele.updated_by,
-          status: ele.status,
-          user_id: ele.user_id,
-          user_name: ele.user_name,
-          user_telephone: ele.user_telephone,
+      if (this.$store.getters.getMemberContributions !== null) {
+        this.$store.getters.getMemberContributions.data.forEach((ele) => {
+          data.push({
+            counter:
+              this.$store.getters.getMemberContributions.data.indexOf(ele) + 1,
+            amount_deposited: ele.amount_deposited,
+            total_amount_deposited: ele.total_amount_deposited,
+            id: ele.id,
+            approve: ele.approve,
+            balance: ele.balance,
+            payment_item_amount: ele.payment_item_amount,
+            payment_item_id: ele.payment_item_id,
+            payment_item_complusory: ele.payment_item_compulsory,
+            payment_item_name: ele.payment_item_name,
+            payment_category: ele.payment_category,
+            comment: ele.comment,
+            code: ele.code,
+            type: "MEMBERS_CONTRIBUTIONS",
+            complusory: ele.complusory,
+            created_at: ele.created_at,
+            updated_by: ele.updated_by,
+            status: ele.status,
+            user_id: ele.user_id,
+            user_name: ele.user_name,
+            user_telephone: ele.user_telephone,
+          });
         });
-      });
+      }
       return data;
     },
   },
@@ -230,12 +223,12 @@ export default {
     deleteRow(data) {
       let payload = {
         url: `/api/protected/contributions/${data.id}`,
-        msg: this.$t('app.deleteContributionSuccessMsg'),
+        msg: this.$t("app.deleteContributionSuccessMsg"),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: this.$t('app.defaultErrorMsg'),
+        error_msg: this.$t("app.defaultErrorMsg"),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -245,10 +238,63 @@ export default {
         },
       };
       this.$store.dispatch("deleteRequest", payload).then(() => {
-        this.getMemberContributionsByPaymentItem(data.payment_item_id, data.user_id);
-        let contributions = this.$store.getters.getFilteredContributions.filter((ele) => ele.id != data.id)
-        this.$store.dispatch("setFilteredContributions", contributions)
+        this.getMemberContributionsByPaymentItem(
+          data.payment_item_id,
+          data.user_id,
+          1,
+          1
+        );
       });
+    },
+
+    getMemberContributionsByPaymentItem(
+      payment_item_id,
+      user_id,
+      page,
+      per_page
+    ) {
+      let payload = {
+        status: "none",
+        url: `/api/protected/contributions/payment-items/${payment_item_id}/users/${user_id}?page=${page}&per_page=${per_page}`,
+        has_path_val: true,
+        show_feedback: false,
+        show_spinner: true,
+        msg: "none",
+        color: "default",
+        error_msg: "default",
+        commit: "SET_MEMBER_CONTRIBUTIONS",
+        has_commit: true,
+        to_be_store_data: {
+          required: true,
+          has_value: false,
+          data: null,
+        },
+      };
+      this.$store.commit("SET_MEMBER_CONTRIBUTIONS", null);
+      this.table_loader = true;
+      this.$store
+        .dispatch("getRequest", payload)
+        .then((response) => {
+          this.pagination.page = response.data.current_page;
+          this.pagination.rowsPerPage = response.data.per_page;
+          this.pagination.rowsNumber = response.data.total;
+        })
+        .finally(() => {
+          this.table_loader = false;
+        });
+    },
+
+    onRequest(props) {
+      const { page, rowsPerPage } = props.pagination;
+      const fetch_count =
+        rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
+      const params = this.$route.params;
+      this.getMemberContributionsByPaymentItem(
+        params.item_id,
+        params.id,
+        page,
+        fetch_count
+      );
     },
   },
   components: {

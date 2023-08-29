@@ -370,7 +370,7 @@ export default {
     removeRegFeeWarningMsg:'Are you sure you want delete this Registration Fee ?',
     saveRegFeeSuccessMsg:'Registration saved Successfully',
     organisationName:'Organisation Name',
-    filterMsg:'Filter by Payment Category, Item',
+    filterMsg:'Filter by Payment Item',
     filterStatus:'Filter by Status',
     filterDelay:'Filter by Delay',
     selectDate:'Select Date',

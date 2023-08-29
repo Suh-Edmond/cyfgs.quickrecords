@@ -34,7 +34,7 @@
         </div>
       </div>
       <!-- table for contributions -->
-      <div class="row q-pt-sm" v-if="getTableData.length > 0">
+      <div class="row q-pt-sm">
         <div class="col-md-12 col-xs-12 col-sm-12">
           <TableVue
             :columns="columns"
@@ -49,8 +49,8 @@
             :show_member_contribution="false"
             :total_contribution="computeTotalContributions"
             :title="getTableTitleForSearchContributions"
-            :pagination="pagination"
-            :table_loading="table_loader"
+            :pagination="buildPaginatedObject"
+            :table_loading="getFetchingState"
             @view-contribution="viewContribution"
             @edit-contribution="editContribution"
             @delete-row="deleteRow"
@@ -114,7 +114,6 @@
             :pagination="pagination"
             :table_loading="table_loader"
             @delete-row="deleteRow"
-            @search-contribution="onSearchContribution"
             @onRequest="onRequest"
           >
           </TableVue>
@@ -198,8 +197,8 @@ export default {
         sortBy: "name",
         descending: false,
         page: 1,
-        rowsPerPage: 4,
-        rowsNumber:0,
+        rowsPerPage: 1,
+        rowsNumber: 0,
       },
       table_loader: false,
     };
@@ -220,16 +219,7 @@ export default {
     },
 
     computeTotalContributions() {
-      let total = 0.0;
-      // if (this.$store.getters.getMembersContributionsByPaymentItem != null) {
-      //   this.$store.getters.getMembersContributionsByPaymentItem.data
-      //     .filter((ele) => ele.approve == "APPROVED")
-      //     .map((ele) => ele.total_amount_deposited)
-      //     .forEach((amount) => {
-      //       total += amount;
-      //     });
-      // }
-      return total;
+      return this.$store.getters.getFilteredContributions !== null ? this.$store.getters.getFilteredContributions.total_amount : 0
     },
 
     getMembersContributionsByPaymentItem() {
@@ -321,10 +311,6 @@ export default {
       return total;
     },
 
-    getLoadingState() {
-      return this.$store.getters.getFetchingState;
-    },
-
     getTableTitleForSearchContributions() {
       let title = "";
       const route_data = Object.assign({}, this.$route.query);
@@ -337,26 +323,37 @@ export default {
           : "";
       return title;
     },
+
+    buildPaginatedObject() {
+      let paginatedObject = {
+        sortBy: "name",
+        descending: false,
+        page:
+          this.$store.getters.getFilteredContributions !== null
+            ? this.$store.getters.getFilteredContributions.current_page
+            : 1,
+        rowsPerPage:
+          this.$store.getters.getFilteredContributions !== null
+            ? this.$store.getters.getFilteredContributions.per_page
+            : 2,
+        rowsNumber:
+          this.$store.getters.getFilteredContributions !== null
+            ? this.$store.getters.getFilteredContributions.total
+            : 0,
+      };
+      return paginatedObject;
+    },
+
+    getFetchingState() {
+      return this.$store.getters.getFetchingState;
+    },
   },
 
   watch: {},
 
   methods: {
-    buildPaginatedObject(page, per_page, rowsNumber) {
-      let paginatedObject = {
-        sortBy: "name",
-        descending: false,
-        page: page !== null ? 1 : page,
-        rowsPerPage: per_page === null ? 4 : per_page,
-        rowsNumber:
-          rowsNumber === null
-            ? this.$store.getters.getFilteredContributions.total
-            : rowsNumber,
-      };
-      return paginatedObject;
-    },
     onRequest(props) {
-      const { page, rowsPerPage, sortBy, descending } = props.pagination;
+      const { page, rowsPerPage } = props.pagination;
       const fetch_count =
         rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
       this.$store.commit("SET_FILTERED_CONTRIBUTIONS", null);
@@ -371,10 +368,6 @@ export default {
         page,
         fetch_count
       );
-    },
-
-    onSearchContribution(data) {
-      console.log(data);
     },
 
     checkTreasurerRole() {
@@ -430,19 +423,20 @@ export default {
         },
       };
       this.table_loader = true;
+      this.$store.commit("SET_IS_FETCHING", this.table_loader);
       this.$store
         .dispatch("getRequest", payload)
         .then((response) => {
-          this.pagination.page = response.data.current_page,
-          this.pagination.page = response.data.per_page,
-          this.pagination.page = response.data.total
-          
+          (this.pagination.page = response.data.current_page),
+            (this.pagination.page = response.data.per_page),
+            (this.pagination.page = response.data.total);
         })
         .finally(() => {
           this.table_loader = false;
+          this.$store.commit("SET_IS_FETCHING", this.table_loader);
         });
 
-        return
+      return;
     },
 
     openSearchBar() {

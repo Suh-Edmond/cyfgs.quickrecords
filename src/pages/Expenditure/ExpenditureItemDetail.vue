@@ -150,7 +150,6 @@ export default {
       message: this.$t("app.expenditureItemDetailDeleteMsg"),
       statuses: ["PENDING", "APPROVED", "DECLINED", "ALL"],
       status: "",
-      filtered_items: [],
       total_item_amount: 0,
       total_amount_given: 0,
       total_amount_spent: 0,
@@ -228,6 +227,7 @@ export default {
       };
       this.table_loader = true;
       this.is_fetching = is_filtering;
+      this.$store.commit("SET_EXPENDITURE_ITEM_DETAIL", null);
       this.$store
         .dispatch("getRequest", payload)
         .then((response) => {

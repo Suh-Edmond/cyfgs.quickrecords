@@ -370,7 +370,7 @@
               v-if="
                 checkTreasurerRole() &&
                 props.row.approve == 'PENDING' &&
-                checkIfExpendituredetailsStatus()
+               props.row.has_no_pending_details
               "
             />
             <!-- decline btn for expenditure items -->
@@ -384,7 +384,7 @@
               v-if="
                 checkTreasurerRole() &&
                 props.row.approve == 'PENDING' &&
-                checkIfExpendituredetailsStatus()
+               props.row.has_no_pending_details
               "
             />
 
@@ -1130,9 +1130,6 @@ export default {
 
     showDetails(data) {
       this.$store.dispatch("setExpenditureItemName", data.name);
-
-      this.getExpenditureDetailsByItemId(data.id);
-
       const intermediate_tabs = Array.from(
         this.$store.getters.getIntermediateTabs
       );

@@ -1,14 +1,5 @@
 <template>
   <q-page>
-    <!-- spinners -->
-    <div class="flex justify-center">
-      <q-spinner-ios
-        color="primary"
-        size="2em"
-        class="q-mb-lg"
-        v-if="getLoadingState"
-      />
-    </div>
     <!--------------------------------------------------TABLE FOR EXPENDITURE DETAILS---------------------------------------->
     <div>
       <!-- header for filter categories -->
@@ -26,8 +17,19 @@
             dense
             :options="statuses"
             :label="$t('app.selectStatusLabel')"
-            @input="filterItems"
           />
+        </div>
+        <div class="q-pl-lg col-md-3 col-lg-3 col-xs-12 col-sm-12">
+          <q-btn
+            :label="$t('app.filter')"
+            color="primary"
+            :disabled="validateFilter"
+            no-caps
+            icon-right="filter_list"
+            @click="filterItems"
+            :loading="is_fetching"
+          >
+          </q-btn>
         </div>
         <q-space />
         <div class="button q-pb-xs">
@@ -43,114 +45,32 @@
         </div>
       </div>
       <div class="q-px-sm q-pt-md">
-        <q-markup-table>
-          <thead class="bg-primary text-white">
-            <tr>
-              <th
-                class="text-left"
-                v-for="column in columns"
-                :key="column.name"
-              >
-                {{ column.label }}
-              </th>
-              <th class="text-left">
-                {{ $t("app.markAll")
-                }}<q-checkbox
-                  :color="check_all ? 'black' : ''"
-                  @input="checkAllExpenses"
-                  v-model="check_all"
-                />
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="(expenditure, index) in getExpenditureDetails"
-              :key="index"
+        <div class="col-md-12 col-xs-12 col-sm-12">
+            <CategoryTable
+              :columns="columns"
+              :data="getExpenditureItemDetails"
+              :label="label"
+              :message="message"
+              :title="getExpenditureItemName"
+              :show_payment_category="false"
+              :show_payment_item="false"
+              :show_expenditure_category="false"
+              :show_expenditure_item="false"
+              :show_expenditure_item_detail="true"
+              :expenditure_item_amount="total_item_amount"
+              :total_amount_given="total_amount_given"
+              :total_amount_spent="total_amount_spent"
+              :balance="total_balance"
+              :total_balance="total_balance"
+              :pagination="pagination"
+              :table_loading="table_loader"
+              @edit-expenditure-item-detail="editExpenditureItemDetail"
+              @view-expenditure-item-detail="viewExpenditureItemDetail"
+              @delete-row="onDeleteRow"
+              @onRequest="onRequest"
             >
-              <td class="text-left">{{ index + 1 }}</td>
-              <td class="text-left">{{ expenditure.name }}</td>
-              <td class="text-left">
-                {{ Number(expenditure.amount_given).toLocaleString() }}
-              </td>
-              <td class="text-left">
-                {{ Number(expenditure.amount_spent).toLocaleString() }}
-              </td>
-              <td class="text-left">
-                {{ Number(expenditure.balance).toLocaleString() }}
-              </td>
-              <q-td
-                key="approve"
-                v-if="expenditure.approve == 'PENDING'"
-                class="text-info"
-              >
-                {{ expenditure.approve }}
-              </q-td>
-              <q-td
-                key="approve"
-                v-if="expenditure.approve == 'DECLINED'"
-                class="text-orange"
-              >
-                {{ expenditure.approve }}
-              </q-td>
-              <q-td
-                key="approve"
-                v-if="expenditure.approve == 'APPROVED'"
-                class="text-positive"
-              >
-                {{ expenditure.approve }}
-              </q-td>
-              <td class="text-left">
-                <!-- approved btn for expenditure item details -->
-                <q-btn
-                  class="decline_btn"
-                  dense
-                  :label="$t('app.decline')"
-                  unelevated
-                  no-caps
-                  @click="onDeclineRecord(expenditure, 'Decline')"
-                  v-if="
-                    checkTreasurerRole() && expenditure.approve == 'PENDING'
-                  "
-                />
-                <!-- decline btn for expenditure item details -->
-                <q-btn
-                  class="approve_btn"
-                  dense
-                  :label="$t('app.approve')"
-                  no-caps
-                  unelevated
-                  @click="onApprovedRecord(expenditure, 'Approve')"
-                  v-if="
-                    checkTreasurerRole() && expenditure.approve == 'PENDING'
-                  "
-                />
-
-                <!-- view expenditure item details -->
-                <q-btn
-                  color="primary"
-                  :class="
-                    expenditure.approve == 'PENDING'
-                      ? 'viewExpenditureItem'
-                      : 'viewPending'
-                  "
-                  dense
-                  :label="$t('app.view')"
-                  no-caps
-                  unelevated
-                  @click="onViewExpenditureDetail(expenditure)"
-                  v-if="checkTreasurerRole()"
-                >
-                  <q-icon name="visibility" size="xs" class="q-pl-md"></q-icon>
-                </q-btn>
-              </td>
-              <td class="text-left" v-show="expenditure.approve == 'PENDING'">
-                <q-checkbox v-model="selected" color="black" @input="markSingleExpense(expenditure)"  />
-              </td>
-              <td v-show="expenditure.approve != 'PENDING'"></td>
-            </tr>
-          </tbody>
-        </q-markup-table>
+            </CategoryTable>
+          </div>
       </div>
     </div>
     <!--------------------------------------------------END OF TABLE FOR EXPENDITURE DETAILS--------------------------------->
@@ -160,18 +80,16 @@
 <script>
 import CategoryTable from "src/components/CategoryTable.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
-import TransactionStatusVue from "src/components/Constants/TransactionStatus.vue";
-import { LocalStorage } from "quasar";
 
 export default {
   mixins: [HelperMixinVue],
 
-  mounted() {},
+  mounted() {
+    this.getExpenditureDetailsByItemId(1, 2, false, this.$route.params.id);
+  },
 
   data() {
     return {
-      check_all: false,
-      val: false,
       start_filter: false,
       color: "primary",
       loading: false,
@@ -232,64 +150,39 @@ export default {
       label: this.$t("app.delete"),
       message: "",
       statuses: ["PENDING", "APPROVED", "DECLINED", "ALL"],
-      status: null,
+      status: "",
       filtered_items: [],
       show_spinner: false,
       selected:false,
       approve_state:false,
+      total_item_amount: 0,
+      total_amount_given: 0,
+      total_amount_spent: 0,
+      total_balance: 0,
+      is_fetching: false,
+      pagination: {
+        sortBy: "name",
+        descending: false,
+        page: 1,
+        rowsPerPage: 7,
+        rowsNumber: 0,
+      },
+      table_loader: false,
+      expenditure_item_id:this.$route.params.id
     };
   },
   computed: {
-    getLoadingState() {
-      return this.$store.getters.getFetchingState;
+    validateFilter() {
+      return this.status === "";
     },
-    getExpenditureItemName() {
-      return this.$store.getters.getExpenditureItemName;
-    },
-
-    getExpenditureItemAmount() {
-      return this.$store.getters.getExpenditureItemDetails != null &&
-        this.$store.getters.getExpenditureItemDetails.length > 0
-        ? this.$store.getters.getExpenditureItemDetails[2]
-            .expenditure_item_amount
-        : 0;
-    },
-
-    getTotalAmountGiven() {
-      return this.$store.getters.getExpenditureItemDetails != null &&
-        this.$store.getters.getExpenditureItemDetails.length > 0
-        ? this.$store.getters.getExpenditureItemDetails[3].total_amount_given
-        : 0;
-    },
-
-    getTotalAmountSpent() {
-      return this.$store.getters.getExpenditureItemDetails != null &&
-        this.$store.getters.getExpenditureItemDetails.length > 0
-        ? this.$store.getters.getExpenditureItemDetails[4].total_amount_spent
-        : 0;
-    },
-
-    getBalance() {
-      return this.getTotalAmountGiven - this.getTotalAmountSpent;
-    },
-
-    getTotalBalance() {
-      return this.$store.getters.getExpenditureItemDetails != null &&
-        this.$store.getters.getExpenditureItemDetails.length > 0
-        ? this.$store.getters.getExpenditureItemDetails[5].total_balance
-        : 0;
-    },
-
-    getExpenditureDetails() {
+    getExpenditureItemDetails() {
       let data = [];
-      if (
-        this.$store.getters.getExpenditureItemDetails != null &&
-        this.$store.getters.getExpenditureItemDetails.length > 0
-      ) {
-        this.$store.getters.getExpenditureItemDetails[0].forEach((ele) => {
+      if (this.$store.getters.getExpenditureItemDetails !== null) {
+        this.$store.getters.getExpenditureItemDetails.data.forEach((ele) => {
           data.push({
             counter:
-              this.$store.getters.getExpenditureItemDetails[0].indexOf(ele) + 1,
+              this.$store.getters.getExpenditureItemDetails.data.indexOf(ele) +
+              1,
             name: ele.name,
             amount_given: ele.amount_given,
             amount_spent: ele.amount_spent,
@@ -302,34 +195,67 @@ export default {
             created_at: ele.created_at,
             updated_at: ele.updated_at,
             updated_by: ele.updated_by,
-            approve_state:ele.approve === 'PENDING' ? false:true
           });
         });
       }
       return data;
     },
+
+    getExpenditureItemName() {
+      return this.$store.getters.getCurrentExpenditureItem != null
+        ? this.$store.getters.getCurrentExpenditureItem.name
+        : "";
+    },
+
+    validateDownload() {
+      return this.getExpenditureItemDetails.length == 0;
+    },
   },
   methods: {
-    checkAllExpenses(){
-      this.getExpenditureDetails.map(ele => ele.approve_state = this.check_all)
-      return this.getExpenditureDetails;
+    getExpenditureDetailsByItemId(page, per_page, is_filtering, expenditure_item_id) {
+      let payload = {
+        url: `/api/protected/expenditure-items/${expenditure_item_id}/details?page=${page}&per_page=${per_page}&status=${this.status}`,
+        msg: "none",
+        color: "default",
+        status: "none",
+        error_msg: this.$t("app.defaultErrorMsg"),
+        has_commit: true,
+        show_feedback: false,
+        show_spinner: false,
+        commit: "SET_EXPENDITURE_ITEM_DETAIL",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.table_loader = true;
+      this.is_fetching = is_filtering;
+      this.$store.commit("SET_EXPENDITURE_ITEM_DETAIL", null);
+      this.$store
+        .dispatch("getRequest", payload)
+        .then((response) => {
+          this.pagination.page = response.data.current_page;
+          this.pagination.rowsNumber = response.data.total;
+          this.pagination.rowsPerPage = response.data.per_page;
+          this.total_amount_given = response.data.total_amount_given;
+          this.total_amount_spent = response.data.total_amount_spent;
+          this.total_item_amount = response.data.total_item_amount;
+          this.total_balance = response.data.total_balance;
+        })
+        .finally(() => {
+          this.table_loader = false;
+          this.is_fetching = false;
+        });
     },
 
-    markSingleExpense(expense){
-      this.selected = true;
-      // console.log(expense);
-      // this.getExpenditureDetails.find(ele => ele.id === expense.id).approve_state = true;
-      // console.log(this.getExpenditureDetails);
-      // return this.getExpenditureDetails;
-      return this.selected;
+    onRequest(props) {
+      const { page, rowsPerPage } = props.pagination;
+      const fetch_count =
+        rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
+      this.getExpenditureDetailsByItemId(page, fetch_count, false, this.expenditure_item_id);
     },
 
-
-    evaluateAllRecord(expenses) {
-      return expenses.find((ele) => ele.approve == "PENDING") == undefined
-        ? (this.check_all = null)
-        : (this.check_all = false);
-    },
     downloadExpenditureItemDetails() {
       let expenditure_item_id = this.$router.currentRoute.params.id;
       let url = `/api/protected/expenditure-item-details/download?expenditure_item_id=${expenditure_item_id}&status=${this.status}`;
@@ -338,53 +264,48 @@ export default {
     },
 
     filterItems() {
-      this.start_filter = true;
-      this.show_spinner = true;
-      let expenditure_item_id = this.$router.currentRoute.params.id;
-
       this.$router.push({
-        path: `/dashboard/expenditures/${expenditure_item_id}/details`,
-        query: { status: this.status },
+        path: `/dashboard/expenditures/${this.expenditure_item_id}/details`,
+        query: { status: this.status, t: new Date().getTime() },
       });
 
-      if (this.status == "ALL") {
-        this.filtered_items = this.getExpenditureDetails;
-      } else {
-        const items = this.getExpenditureDetails.filter(
-          (item) => item.approve == this.status
-        );
-        this.filtered_items = items;
-      }
-      this.filtered_items = Array.from(this.filtered_items);
-      this.show_spinner = false;
-      return this.filtered_items;
+      this.getExpenditureDetailsByItemId(1, 2, true, this.expenditure_item_id);
+    },
+
+    editExpenditureItemDetail(data) {
+      this.$store.dispatch("setUpdatedExpenditureItemDetail", data.data);
+      this.$emit("edit-expenditure-item-detail", data);
     },
 
     viewExpenditureItemDetail(data) {
       this.$store.dispatch("setUpdatedExpenditureItemDetail", data.data);
       this.$emit("view-expenditure-item-detail", data);
     },
-    onDeclineRecord(data1, data) {},
 
-    checkTreasurerRole() {
-      const treasurer_role = LocalStorage.getItem("data").user_data.roles.find(
-        (role) => role.name == "TREASURER"
-      );
-      return treasurer_role != undefined;
-    },
-
-    onViewExpenditureDetail(data) {
+    onDeleteRow(data) {
       let payload = {
-        data: data,
-        tab: "Expenditure Item Detail Information",
+        url: `/api/protected/expenditure-item-details/${data.id}`,
+        msg: this.$t("app.expenditureItemDetailDeletedSuccessMsg"),
+        color: "default",
+        to_on_ok: "none",
+        to_on_fail: "none",
+        show_feedback: true,
+        error_msg: this.$t("app.defaultErrorMsg"),
+        has_commit: false,
+        commit: "none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
       };
-      this.$emit("view-expenditure-item-detail", payload);
+      this.$store.dispatch("deleteRequest", payload).then(() => {
+        this.getExpenditureDetailsByItemId(1, 2, false, this.expenditure_item_id);
+      });
     },
-
-    onApprovedRecord(data1, data) {},
   },
   components: {
-    // CategoryTable,
+    CategoryTable,
   },
 };
 </script>

@@ -2,112 +2,15 @@
   <q-page>
     <div>
       <!-- header for filter members -->
-      <div
-        class="row q-ml-xs"
-        :class="$q.screen.lg ? 'q-pa-sm' : ''"
-        :style="
-          $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-        "
+      <FilterComponentVue
+        :show_member_filters="true"
+        :loading_download="loading_download"
+        :disable_download_btn="validateDownloadBtn"
+        @filter-members="filterMembers"
+        @download-members="downloadMembers"
       >
-        <div
-          class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
-          :class="$q.screen.lg ? 'q-pr-md' : ''"
-        >
-          <q-select
-            v-model="year"
-            outlined
-            dense
-            :options="getSessions"
-            :label="$t('app.selectYearLabel')"
-            clearable
-          >
-            <template v-slot:append v-if="start_year_filtering">
-              <q-spinner color="primary" size="1.2em" :thickness="3" />
-            </template>
-            <template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey">
-                  {{ $t("app.noResults") }}
-                </q-item-section>
-              </q-item>
-            </template>
-          </q-select>
-        </div>
-        <div
-          class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
-          :class="$q.screen.lg ? 'q-pr-md' : ''"
-        >
-          <q-select
-            v-model="has_register"
-            outlined
-            dense
-            :options="registrationStatuses"
-            :label="$t('app.selectStatusLabel')"
-            clearable
-          >
-            <template v-slot:append v-if="start_status_filtering">
-              <q-spinner color="primary" size="1.2em" :thickness="3" />
-            </template>
-            <template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey">
-                  {{ $t("app.noResults") }}
-                </q-item-section>
-              </q-item>
-            </template>
-          </q-select>
-        </div>
-        <div
-          class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
-          :class="$q.screen.lg ? 'q-pr-md' : ''"
-        >
-          <q-select
-            v-model="gender"
-            outlined
-            dense
-            :options="genders"
-            :label="$t('app.selectGenderLabel')"
-            clearable
-          >
-            <template v-slot:append v-if="start_gender_filtering">
-              <q-spinner color="primary" size="1.2em" :thickness="3" />
-            </template>
-            <template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey">
-                  {{ $t("app.noResults") }}
-                </q-item-section>
-              </q-item>
-            </template>
-          </q-select>
-        </div>
-        <div class="flex col-md-3 col-lg-3 col-xs-12 col-sm-12">
-          <div :class="$q.screen.lg ? 'q-pr-md' : ''">
-            <q-btn
-              :label="$t('app.filter')"
-              :loading="loading_filter"
-              color="primary"
-              :disabled="validateFilter"
-              @click="filterMembers"
-              no-caps
-              icon-right="filter_list"
-            >
-            </q-btn>
-          </div>
-          <q-space />
-          <div>
-            <q-btn
-              :label="$t('app.print')"
-              :loading="loading_download"
-              color="positive"
-              :disabled="false"
-              no-caps
-              icon-right="print"
-              @click="downloadMembers"
-            ></q-btn>
-          </div>
-        </div>
-      </div>
+      </FilterComponentVue>
+
       <!-- table for members -->
       <div class="row q-pt-sm">
         <div class="col-md-12 col-xs-12 col-sm-12">
@@ -140,6 +43,7 @@ import memberMixin from "src/mixins/memberMixin.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
 import RegistrationAmountMixinVue from "src/mixins/RegistrationAmountMixin.vue";
+import FilterComponentVue from "src/components/FilterComponent.vue";
 
 export default {
   mixins: [
@@ -153,24 +57,14 @@ export default {
     let id = this.getOrganisationId;
     const per_page = 7;
     const page = 1;
-    this.getPaginatedOrganisationMembers(id, page, per_page, "name", false);
+    this.getPaginatedOrganisationMembers(id, page, per_page, "name");
     this.getRegistrationAmount();
-    this.fetchSessions();
   },
   data() {
     return {
       year: "",
       has_register: "",
-      start_filter: false,
       filter: "",
-      genders: ["MALE", "FEMALE", "ALL", "OTHER"],
-      registrationStatuses: [
-        "REGISTERED",
-        "NOT_REGISTERED",
-        "PENDING",
-        "DECLINED",
-        "ALL",
-      ],
       gender: "",
       message: this.$t("app.deleteMemberWarningMsg"),
       label: this.$t("app.delete"),
@@ -243,22 +137,10 @@ export default {
       },
       loading: false,
       organisation_id: this.$store.getters.getOrganisation.id,
-      loading_filter: false,
       loading_download: false,
-      start_gender_filtering: false,
-      start_status_filtering: false,
-      start_year_filtering: false,
     };
   },
   computed: {
-    validateFilter() {
-      return (
-        (this.has_register === "" || this.has_register === null) &&
-        (this.year === "" || this.year === null) &&
-        (this.gender === "" || this.gender === null)
-      );
-    },
-
     getMembers() {
       let data = [];
       if (this.$store.getters.getMembers !== null) {
@@ -303,51 +185,27 @@ export default {
       return this.$store.getters.getMembers.last_page;
     },
 
-    getSessions() {
-      let data = [];
-      let current_session = this.$store.getters.getCurrentYear;
-      this.$store.getters.getSessions.forEach((ele) => {
-        if (ele.year == current_session.year && ele.id == current_session.id) {
-          data.push({
-            value: ele.id,
-            label: ele.year + " Current Year",
-          });
-        } else {
-          data.push({
-            value: ele.id,
-            label: ele.year,
-          });
-        }
-      });
-
-      return data;
+    validateDownloadBtn() {
+      return this.getMembers < 0;
     },
   },
 
   methods: {
     onRequest(props) {
-      const { page, rowsPerPage, sortBy, descending } = props.pagination;
+      const { page, rowsPerPage, sortBy } = props.pagination;
       const fetch_count =
         rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
       this.getPaginatedOrganisationMembers(
         this.organisation_id,
         page,
         fetch_count,
-        sortBy,
-        false
+        sortBy
       );
     },
 
-    getPaginatedOrganisationMembers(
-      id,
-      page,
-      rowsPerPage,
-      sort_by,
-      is_filtering
-    ) {
-      let year_id = this.year !== null ? this.year.value : "";
+    getPaginatedOrganisationMembers(id, page, rowsPerPage, sort_by) {
       let payload = {
-        url: `/api/protected/organisations/filter-users?organisation_id=${id}&has_register=${this.has_register}&gender=${this.gender}&year=${year_id}&page=${page}&per_page=${rowsPerPage}&sort_by=${sort_by}`,
+        url: `/api/protected/organisations/filter-users?organisation_id=${id}&has_register=${this.has_register}&gender=${this.gender}&year=${this.year.value}&page=${page}&per_page=${rowsPerPage}&sort_by=${sort_by}`,
         msg: "none",
         color: "default",
         status: "none",
@@ -363,7 +221,6 @@ export default {
         },
       };
       this.loading = true;
-      this.loading_filter = is_filtering;
       this.$store.commit("SET_MEMBERS", null);
       this.$store
         .dispatch("getRequest", payload)
@@ -374,23 +231,21 @@ export default {
         })
         .finally(() => {
           this.loading = false;
-          this.loading_filter = false;
         });
-
-      return this.loading_filter;
     },
 
     registerMember(data) {
       this.$emit("register-member", data);
     },
 
-    filterMembers() {
+    filterMembers(data) {
+      this.setFilterVariables(data);
       this.$router.push({
         path: "/dashboard/members",
         query: {
-          has_register: this.has_register,
-          year: this.year.label,
-          gender: this.gender,
+          has_register: data.has_register,
+          year: data.year.label,
+          gender: data.gender,
           t: new Date().getTime(),
         },
       });
@@ -401,13 +256,13 @@ export default {
         this.organisation_id,
         page,
         per_page,
-        sort_by,
-        true
+        sort_by
       );
     },
 
-    downloadMembers() {
-      let url = `/api/protected/organisations/download-users?organisation_id=${this.organisation_id}&has_register=${this.has_register}&gender=${this.gender}&year=${this.year}`;
+    downloadMembers(data) {
+      this.setFilterVariables(data);
+      let url = `/api/protected/organisations/download-users?organisation_id=${this.organisation_id}&has_register=${this.has_register}&gender=${this.gender}&year=${this.year.value}`;
       let file_name = "Organisation_Members.pdf";
       this.loading_download = this.downloadPdf(url, file_name);
     },
@@ -453,59 +308,16 @@ export default {
       });
     },
 
-    fetchSessions() {
-      let payload = {
-        status: "none",
-        url: `/api/protected/sessions`,
-        has_path_val: true,
-        show_feedback: false,
-        show_spinner: false,
-        msg: "none",
-        color: "default",
-        error_msg: "default",
-        commit: "SET_SESSIONS",
-        has_commit: true,
-        to_be_store_data: {
-          required: false,
-          has_value: false,
-          data: null,
-        },
-      };
-      this.$store.dispatch("getRequest", payload).then(() => {});
+    setFilterVariables(data) {
+      this.has_register = data.has_register;
+      this.year = data.year;
+      this.gender = data.gender;
     },
-
-    filterYears(val, update, abort) {
-      if (val.length < 1) {
-        this.start_year_filtering = false;
-        abort();
-        return;
-      }
-      if (this.year == "") {
-        this.years = this.getSessionsFromState;
-      }
-      update(() => {
-        this.start_year_filtering = true;
-        this.years = this.getSessionsFromState.filter((v) =>
-          v.label.toLowerCase().includes(val.toLowerCase())
-        );
-      });
-    },
-
-    stopSearch(){
-      if(this.year !== "" || this.year !== null){
-        this.start_year_filtering = false;
-      }
-      if(this.has_register !== "" || this.has_register !== null){
-        this.start_status_filtering = false;
-      }
-      if(this.gender !== "" || this.gender !== null) {
-        this.start_gender_filtering = false;
-      }
-    }
   },
 
   components: {
     TableVue,
+    FilterComponentVue,
   },
 };
 </script>

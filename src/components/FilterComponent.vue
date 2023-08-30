@@ -7,7 +7,7 @@
       :style="
         $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
       "
-      v-show="show_member_filters"
+      v-if="show_member_filters"
     >
       <div
         class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
@@ -77,7 +77,7 @@
           <q-btn
             :label="$t('app.filter')"
             color="primary"
-            :disabled="validateFilter"
+            :disabled="validateFilterMembers"
             @click="filterMembers"
             no-caps
             icon-right="filter_list"
@@ -99,6 +99,51 @@
       </div>
     </div>
     <!---------------------------------------------END OF MEMBER MANAGEMENT FILTERS---------------------------------------->
+
+    <!---------------------------------------------PAYMENT AND EXPENDITURE CATEGORIES FILTERS------------------------------->
+    <div
+      class="row q-ml-xs q-pt-xs"
+      :class="$q.screen.lg ? 'q-pa-sm' : ''"
+      :style="
+        $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+      "
+      v-if="show_categories"
+    >
+      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
+        <q-select
+          v-model="year"
+          outlined
+          dense
+          :options="getSessionsFromState"
+          clearable
+          :label="$t('app.selectYearLabel')"
+        />
+      </div>
+      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-ml-md">
+        <q-btn
+          :label="$t('app.filter')"
+          color="primary"
+          :disabled="validateFilterCategories"
+          @click="filterCategories"
+          no-caps
+          icon-right="filter_list"
+        >
+        </q-btn>
+      </div>
+      <q-space />
+      <div class="button q-pb-xs">
+        <q-btn
+          :label="$t('app.print')"
+          :loading="getDownloadLoadingState"
+          color="positive"
+          :disabled="getDisableDownloadBtn"
+          no-caps
+          icon-right="print"
+          @click="downloadCategories"
+        ></q-btn>
+      </div>
+    </div>
+    <!---------------------------------------------END OF PAYMENT AND EXPENDITURE CATEGORIES FILTERS------------------------>
   </div>
 </template>
 
@@ -107,25 +152,30 @@ import CurrentYearMixin from "src/mixins/CurrentYearMixin.vue";
 export default {
   props: {
     show_member_filters: {
+      required: false,
+      type: Boolean,
+    },
+
+    show_categories: {
+      required: false,
+      type: Boolean,
+    },
+
+    loading_download: {
       required: true,
       type: Boolean,
     },
 
-    loading_download:{
+    disable_download_btn: {
       required: true,
       type: Boolean,
     },
-
-    disable_download_btn:{
-      required: true,
-      type: Boolean,
-    }
   },
 
   mixins: [CurrentYearMixin],
 
   mounted() {
-    if(this.getSessionsFromState.length == 0){
+    if (this.getSessionsFromState.length == 0) {
       this.getSessions();
     }
   },
@@ -147,7 +197,7 @@ export default {
   },
 
   computed: {
-    validateFilter() {
+    validateFilterMembers() {
       return (
         (this.has_register === "" || this.has_register === null) &&
         (this.year === "" || this.year === null) &&
@@ -155,29 +205,33 @@ export default {
       );
     },
 
-    getDownloadLoadingState:{
-      get(){
-        return this.loading_download;
-      },
-      set(loading_download){
-        return loading_download
-      }
+    validateFilterCategories() {
+      return this.year === null || this.year === "";
     },
 
-    getDisableDownloadBtn:{
-      get(){
+    getDownloadLoadingState: {
+      get() {
+        return this.loading_download;
+      },
+      set(loading_download) {
+        return loading_download;
+      },
+    },
+
+    getDisableDownloadBtn: {
+      get() {
         return this.disable_download_btn;
       },
-      set(disable_download_btn){
+      set(disable_download_btn) {
         return disable_download_btn;
-      }
-    }
+      },
+    },
   },
 
   methods: {
     filterMembers() {
       let payload = {
-        year: this.year !== null &&  this.year !== "" ?  this.year : "",
+        year: this.year !== null && this.year !== "" ? this.year : "",
         has_register: this.has_register,
         gender: this.gender,
       };
@@ -194,10 +248,23 @@ export default {
       this.$emit("download-members", payload);
     },
 
+    filterCategories() {
+      let payload = {
+        year: this.year !== null && this.year !== "" ? this.year : "",
+      };
 
-    stopFilterSelectInputFields(){
+      this.$emit("filter-categories", payload);
+    },
 
-    }
+    downloadCategories() {
+      let payload = {
+        year: this.year !== null && this.year !== "" ? this.year : "",
+      };
+
+      this.$emit("download-categories", payload);
+    },
+
+    stopFilterSelectInputFields() {},
   },
 };
 </script>

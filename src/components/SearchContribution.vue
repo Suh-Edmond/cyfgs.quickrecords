@@ -145,37 +145,6 @@
           </q-input>
         </div>
       </div>
-
-      <!-- filter by date range -->
-      <div class="q-mb-md row">
-        <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
-          <q-input
-            dense
-            :model-value="param.date_range"
-            mask="date"
-            outlined
-            :placeholder="$t('app.selectDateRange')"
-            range
-          >
-            <template v-slot:append>
-              <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy
-                  ref="qDateProxy"
-                  transition-show="scale"
-                  transition-hide="scale"
-                >
-                  <q-date v-model="param.date_range" range>
-                    <div class="row items-center justify-end">
-                      <q-btn v-close-popup label="Close" color="primary" flat />
-                    </div>
-                  </q-date>
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-          </q-input>
-        </div>
-      </div>
-
       <div class="flex justify-end q-mt-lg">
         <div class="q-mr-xl">
           <q-btn label="Reset" color="primary" no-caps outline @click="reset()">
@@ -346,7 +315,7 @@ export default {
         payload.date_range,
         payload.amount,
         1,
-        1
+        7
       );
     },
 
@@ -386,7 +355,7 @@ export default {
     },
 
     filterPaymentItems(val, update, abort) {
-      if (val < 2) {
+      if (val < 1) {
         abort();
         this.start_filter_payment_item = false;
         return;

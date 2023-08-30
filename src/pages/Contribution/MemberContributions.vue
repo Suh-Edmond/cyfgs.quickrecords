@@ -60,7 +60,7 @@ export default {
 
   mounted() {
     const page = 1;
-    const per_page = 1;
+    const per_page = 7;
     this.getMemberContributionsByPaymentItem(
       this.$router.currentRoute.params.item_id,
       this.$router.currentRoute.params.id,
@@ -139,7 +139,7 @@ export default {
         sortBy: "name",
         descending: false,
         page: 1,
-        rowsPerPage: 1,
+        rowsPerPage: 7,
         rowsNumber: 0,
       },
       table_loader: false,
@@ -242,7 +242,7 @@ export default {
           data.payment_item_id,
           data.user_id,
           1,
-          1
+          7
         );
       });
     },

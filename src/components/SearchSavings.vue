@@ -170,36 +170,6 @@
           </q-input>
         </div>
       </div>
-
-      <!-- filter by date range -->
-      <div class="q-mb-md row">
-        <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
-          <q-input
-            dense
-            v-model="param.date_range"
-            mask="date"
-            outlined
-            :placeholder="$t('app.selectDateRange')"
-          >
-            <template v-slot:append>
-              <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy
-                  ref="qDateProxy"
-                  transition-show="scale"
-                  transition-hide="scale"
-                >
-                  <q-date v-model="param.date_range" range>
-                    <div class="row items-center justify-end">
-                      <q-btn v-close-popup label="Close" color="primary" flat />
-                    </div>
-                  </q-date>
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-          </q-input>
-        </div>
-      </div>
-
       <div class="flex justify-end q-mb-lg">
         <div class="q-mr-xl">
           <q-btn
@@ -320,7 +290,7 @@ export default {
         },
       });
       let url = `/api/protected/user-savings?organisation_id=${this.organisation_id}&name=${this.param.name}&session_id=${this.session_id}&page=${1}&per_page=${1}`;
-      this.filterSaving(url);
+      this.loading_user_info = this.filterSaving(url);
     },
 
     filterByAmount() {
@@ -365,7 +335,7 @@ export default {
       });
 
       let url = `/api/protected/user-savings?organisation_id=${this.organisation_id}&session_id=${this.session_id}&month=${this.param.month}&date=${this.param.date}&range=${this.param.date_range}&page=${1}&per_page=${1}`;
-      this.filterSaving(url);
+      this.loading = this.filterSaving(url);
     },
 
     resetForm() {},

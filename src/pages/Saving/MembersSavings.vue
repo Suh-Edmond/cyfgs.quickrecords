@@ -141,7 +141,7 @@
             :label="$t('app.print')"
             :loading="loading_download"
             :color="'positive'"
-            :disabled="getFilteredSavings.length == 0"
+            :disabled="getMembersSavings.length == 0"
             no-caps
             icon-right="print"
             @click="downloadMembersSavings"
@@ -153,14 +153,14 @@
       <div class="row q-pt-sm">
         <div class="col-md-12 col-xs-12 col-sm-12">
           <TableVue
-            :columns="columns_tresurer"
-            :data="getFilteredSavings"
+            :columns="columns"
+            :data="getMembersSavings"
             :label="label"
             :message="message"
             :show_savings="true"
             :show_income_activity="false"
             :show_members="false"
-            :total_saving="computeTotalSavingsForFiltered"
+            :total_saving="getTotalMembersSavings"
             :show_contribution="false"
             :pagination="pagination"
             :table_loading="getLoadingState"
@@ -197,7 +197,7 @@ export default {
     this.getPaginatedOrganisationMemberSavings(
       organisation_id,
       1,
-      2,
+      7,
       "",
       "",
       false
@@ -253,60 +253,6 @@ export default {
           field: "action",
         },
       ],
-      columns_tresurer: [
-        {
-          name: "counter",
-          required: true,
-          label: "S/N",
-          align: "left",
-          field: "counter",
-        },
-        {
-          name: "user_name",
-          required: true,
-          label: "Name",
-          align: "left",
-          field: (row) => row.user_name,
-          format: (val) => `${val}`,
-          sortable: true,
-        },
-        {
-          name: "email",
-          align: "left",
-          label: "Email",
-          field: "email",
-        },
-        {
-          name: "telephone",
-          align: "left",
-          label: "Telephone Number",
-          field: "telephone",
-        },
-        {
-          name: "amount_deposited",
-          align: "left",
-          label: "Amount Deposited (XAF)",
-          field: "amount_deposited",
-        },
-        {
-          name: "amount_used",
-          align: "left",
-          label: "Amount Used (XAF)",
-          field: "amount_used",
-        },
-        {
-          name: "approve",
-          align: "left",
-          label: "Payment Status",
-          field: "approve",
-        },
-        {
-          name: "action",
-          label: "Action",
-          align: "left",
-          field: "action",
-        },
-      ],
       label: this.$t("app.delete"),
       message: this.$t("app.deleteSavingWarningMsg"),
       is_fetching: false,
@@ -317,7 +263,7 @@ export default {
         sortBy: "name",
         descending: false,
         page: 1,
-        rowsPerPage: 2,
+        rowsPerPage: 7,
         rowsNumber: 0,
       },
       organisation_id: this.$store.getters.getOrganisation.id,
@@ -340,36 +286,6 @@ export default {
       return this.$store.getters.getOrganisationMembersSavings != null
         ? this.$store.getters.getOrganisationMembersSavings.total_savings
         : 0;
-    },
-
-    getFilteredSavings() {
-      let data = [];
-      if (this.$store.getters.getSavings !== null) {
-        this.$store.getters.getSavings.data.forEach((ele) => {
-          data.push({
-            counter: this.$store.getters.getSavings.data.indexOf(ele) + 1,
-            user_name: ele.user_name,
-            email: ele.email,
-            telephone: ele.telephone,
-            total_amount: ele.total_amount,
-            id: ele.id,
-            approve: ele.approve,
-            comment: ele.comment,
-            type: "MEMBERS_SAVINGS",
-            user_id: ele.user_id,
-            created_at: ele.created_at,
-            updated_by: ele.updated_by,
-            sesion_id: ele.session_id,
-            amount_deposited: ele.amount_deposited,
-            amount_used: ele.amount_used,
-          });
-        });
-      }
-      return data;
-    },
-
-    computeTotalSavingsForFiltered() {
-      return 0;
     },
 
     getLoadingState() {
@@ -407,9 +323,6 @@ export default {
     },
   },
   watch: {
-    getSavings() {
-      return this.getMembersSavings;
-    },
   },
   methods: {
     getPaginatedOrganisationMemberSavings(
@@ -424,7 +337,7 @@ export default {
       this.is_fetching = is_filtering;
       this.table_loader = true;
       let payload = {
-        url: `/api/protected/savings?organisation_id=${id}&session_id=${session}&page=${page}&per_page=${per_page}&month=${month}`,
+        url: `/api/protected/user-savings?organisation_id=${id}&session_id=${session}&page=${page}&per_page=${per_page}&month=${month}`,
         msg: "none",
         color: "default",
         status: "none",
@@ -440,10 +353,11 @@ export default {
         },
       };
       this.$store.commit("SET_IS_FETCHING", this.table_loader);
+      this.$store.commit("SET_ORGANISATION_MEMBERS_SAVINGS", null);
       this.$store
         .dispatch("getRequest", payload)
         .then((response) => {
-          this.pagination.rowsNumber = response.data !== undefined ? response.data.total : 0;
+          this.pagination.rowsNumber = response.data.total;
           this.pagination.page = response.data.current_page;
           this.pagination.rowsPerPage = response.data.per_page;
         })

@@ -12,7 +12,7 @@ export default {
       let session_id =
         this.getCurrentYear != null ? this.getCurrentYear.id : "";
       let payload = {
-        url: `/api/protected/savings?organisation_id=${id}&session_id=${session_id}`,
+        url: `/api/protected/user-savings?organisation_id=${id}&session_id=${session_id}`,
         msg: "none",
         color: "default",
         status: "none",
@@ -60,7 +60,7 @@ export default {
         has_commit: true,
         show_feedback: false,
         show_spinner: true,
-        commit: "SET_SAVINGS",
+        commit: "SET_ORGANISATION_MEMBERS_SAVINGS",
         to_be_store_data: {
           required: false,
           has_value: false,
@@ -68,10 +68,12 @@ export default {
         },
       };
       this.$store.commit("SET_IS_FETCHING", true);
+      this.$store.commit("SET_ORGANISATION_MEMBERS_SAVINGS", null);
       this.loading = true;
       this.$store.dispatch("getRequest", payload).then(() => {
       }).finally(() => {
         this.$store.commit("SET_IS_FETCHING", false);
+        this.loading = false;
       });
     },
   },

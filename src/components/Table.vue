@@ -240,37 +240,15 @@
             {{ props.row.approve }}
           </q-td>
           <q-td key="action" :props="props">
-            <!-- buttons for approve and decline row data -->
-            <q-btn
-              class="decline_btn_saving"
-              :label="$t('app.decline')"
-              no-caps
-              unelevated
-              dense
-              @click="onDeclineRecord(props.row, 'Decline')"
-              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
-            />
-
-            <q-btn
-              class="approve_btn"
-              :label="$t('app.approve')"
-              no-caps
-              dense
-              unelevated
-              @click="onApprovedRecord(props.row, 'Approve')"
-              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
-            />
-            <!-- button to handle view all member saving -->
             <q-btn
               unelevated
               no-caps
               dense
               color="primary"
-              class="view_savings q-py-xs"
+              class="view_savings"
               :label="$t('app.allSavings')"
               @click="showMemberSavings(props.row)"
               :to="{ name: 'user_savings', params: { id: props.row.user_id } }"
-              v-if="show_savings && !checkTreasurerRole()"
             >
               <q-icon name="visibility" size="xs" class="q-pl-sm"></q-icon>
             </q-btn>
@@ -292,11 +270,11 @@
           <q-td key="telephone" :props="props">
             {{ props.row.telephone }}
           </q-td>
-          <q-td key="amount_deposited" :props="props">
-            {{ Number(props.row.amount_deposited).toLocaleString() }}
+          <q-td key="total_amount" :props="props">
+            {{ Number(props.row.total_amount).toLocaleString() }}
           </q-td>
-          <q-td key="amount_used" :props="props">
-            {{ Number(props.row.amount_used).toLocaleString() }}
+          <q-td key="date" :props="props">
+            {{ getDate(props.row.date) }}
           </q-td>
           <q-td
             key="approve"
@@ -306,54 +284,18 @@
           >
             {{ props.row.approve }}
           </q-td>
-          <q-td
-            key="approve"
-            :props="props"
-            v-if="props.row.approve == 'PENDING'"
-            class="text-info"
-          >
-            {{ props.row.approve }}
-          </q-td>
-          <q-td
-            key="approve"
-            :props="props"
-            v-if="props.row.approve == 'APPROVED'"
-            class="registered"
-          >
-            {{ props.row.approve }}
-          </q-td>
           <q-td key="action" :props="props">
-            <!-- buttons for approve and decline row data -->
-            <q-btn
-              class="decline_btn_saving"
-              :label="$t('app.decline')"
-              no-caps
-              unelevated
-              dense
-              @click="onDeclineRecord(props.row, 'Decline')"
-              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
-            />
-
-            <q-btn
-              class="approve_btn"
-              :label="$t('app.approve')"
-              no-caps
-              unelevated
-              dense
-              @click="onApprovedRecord(props.row, 'Approve')"
-              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
-            />
-            <!-- button to handle view all member saving -->
             <q-btn
               unelevated
               no-caps
               dense
               color="primary"
-              class="view_income q-px-sm q-mr-md"
-              :label="$t('app.view')"
-              @click="onViewMemberSaving(props.row)"
+              class="view_savings"
+              :label="$t('app.allSavings')"
+              @click="showMemberSavings(props.row)"
+              :to="{ name: 'user_savings', params: { id: props.row.user_id } }"
             >
-              <q-icon name="visibility" size="xs" class="q-pl-md"></q-icon>
+              <q-icon name="visibility" size="xs" class="q-pl-sm"></q-icon>
             </q-btn>
           </q-td>
         </q-tr>
@@ -386,7 +328,6 @@
           >
             {{ props.row.approve }}
           </q-td>
-
           <q-td
             key="approve"
             :props="props"
@@ -398,13 +339,9 @@
           <q-td key="date" :props="props">
             {{ getDate(props.row.date) }}
           </q-td>
-          <q-td key="action" :props="props">
+          <q-td key="action" :props="props" v-if="!checkTreasurerRole()">
             <!-- menu to handle edit and view details of a single saving -->
-            <q-btn
-              flat
-              round
-              v-if="show_member_savings && !checkTreasurerRole()"
-            >
+            <q-btn flat round>
               <q-icon
                 name="menu"
                 size="xs"
@@ -414,7 +351,6 @@
               >
                 <q-menu>
                   <q-list bordered separator style="width: 180px">
-                    <!-- edit and view savings -->
                     <q-item
                       clickable
                       v-close-popup
@@ -451,6 +387,40 @@
                   </q-list>
                 </q-menu>
               </q-icon>
+            </q-btn>
+          </q-td>
+
+          <q-td key="action" :props="props" v-if="checkTreasurerRole()">
+            <q-btn
+              class="approve_btn"
+              :label="$t('app.approve')"
+              no-caps
+              unelevated
+              dense
+              @click="onApprovedRecord(props.row, 'Approve')"
+              v-if="props.row.approve == 'PENDING'"
+            />
+
+            <q-btn
+              class="decline_btn_saving"
+              :label="$t('app.decline')"
+              no-caps
+              unelevated
+              dense
+              @click="onDeclineRecord(props.row, 'Decline')"
+              v-if="props.row.approve == 'PENDING'"
+            />
+
+            <q-btn
+              unelevated
+              no-caps
+              dense
+              color="primary"
+              class="view_income q-px-sm q-mr-md"
+              :label="$t('app.view')"
+              @click="onViewMemberSaving(props.row)"
+            >
+              <q-icon name="visibility" size="xs" class="q-pl-md"></q-icon>
             </q-btn>
           </q-td>
         </q-tr>
@@ -1396,7 +1366,8 @@ export default {
             this.$store.getters.getOrganisation.id,
             true,
             1,
-            10, "name"
+            10,
+            "name"
           );
           break;
       }
@@ -1567,6 +1538,8 @@ export default {
   align-items: center;
   text-transform: capitalize;
   width: 8rem;
+  padding-top: 0.1rem;
+  padding-bottom: 0.1rem;
 }
 
 .view_income {

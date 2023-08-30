@@ -98,6 +98,8 @@ export default {
         },
       };
       this.$store.dispatch("setSearchContributionParams", search_payload);
+      this.$store.commit("SET_IS_FETCHING", true);
+      this.$store.commit("SET_FILTERED_CONTRIBUTIONS", null);
       this.$store.dispatch("getRequest", payload).then(() => {
         this.loading = false;
       }).finally(() => {

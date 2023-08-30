@@ -112,7 +112,7 @@
             :total_contribution="computeTotalContributionsForFilteredRecord"
             :title="getTableTitleForSearchContributions"
             :pagination="pagination"
-            :table_loading="table_loader"
+            :table_loading="getFetchingState"
             @delete-row="deleteRow"
             @onRequest="onRequest"
           >
@@ -197,7 +197,7 @@ export default {
         sortBy: "name",
         descending: false,
         page: 1,
-        rowsPerPage: 1,
+        rowsPerPage: 7,
         rowsNumber: 0,
       },
       table_loader: false,
@@ -299,16 +299,7 @@ export default {
     },
 
     computeTotalContributionsForFilteredRecord() {
-      let total = 0.0;
-      if (this.$store.getters.getFilteredContributions != null) {
-        this.$store.getters.getFilteredContributions.data
-          .filter((ele) => ele.approve == "APPROVED")
-          .map((ele) => ele.total_amount_deposited)
-          .forEach((amount) => {
-            total += amount;
-          });
-      }
-      return total;
+      return this.$store.getters.getFilteredContributions !== null ? this.$store.getters.getFilteredContributions.total_amount : 0
     },
 
     getTableTitleForSearchContributions() {
@@ -356,7 +347,6 @@ export default {
       const { page, rowsPerPage } = props.pagination;
       const fetch_count =
         rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
-      this.$store.commit("SET_FILTERED_CONTRIBUTIONS", null);
       const search_params = this.$store.getters.getSearchContributionParams;
       this.filterContributions(
         search_params.item.value,
@@ -424,6 +414,7 @@ export default {
       };
       this.table_loader = true;
       this.$store.commit("SET_IS_FETCHING", this.table_loader);
+      this.$store.commit("SET_FILTERED_CONTRIBUTIONS", null);
       this.$store
         .dispatch("getRequest", payload)
         .then((response) => {

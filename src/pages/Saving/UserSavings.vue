@@ -235,7 +235,7 @@ export default {
       this.getPaginatedData(id, page, fetch_count, false);
     },
 
-    fetchMemberSaving(data) {
+    fetchMemberSaving() {
       this.getPaginatedData(this.$route.params.id, 1, 7, false);
     },
 

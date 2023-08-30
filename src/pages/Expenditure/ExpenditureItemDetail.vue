@@ -2,76 +2,43 @@
   <q-page>
     <div>
       <!-- header for filter categories -->
-      <div
-        class="row q-ml-xs q-pt-xs"
-        :class="$q.screen.lg ? 'q-pa-sm' : ''"
-        :style="
-          $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-        "
+      <FilterComponentVue
+        :show_member_filters="false"
+        :show_categories="false"
+        :show_filter_expenditure_items_details="true"
+        :loading_download="loading_download"
+        :disable_download_btn="validateDownload"
+        @filter-expenditure-item-details="filterItems"
+        @download-expenditure-item-details="downloadExpenditureItemDetails"
       >
-        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
-          <q-select
-            v-model="status"
-            outlined
-            dense
-            :options="statuses"
-            :label="$t('app.selectStatusLabel')"
-          />
-        </div>
-        <div class="q-pl-lg col-md-3 col-lg-3 col-xs-12 col-sm-12">
-          <q-btn
-            :label="$t('app.filter')"
-            color="primary"
-            :disabled="validateFilter"
-            no-caps
-            icon-right="filter_list"
-            @click="filterItems"
-            :loading="is_fetching"
-          >
-          </q-btn>
-        </div>
-        <q-space />
-        <div class="button q-pb-xs">
-          <q-btn
-            :label="$t('app.print')"
-            :loading="loading"
-            color="positive"
-            :disabled="validateDownload"
-            no-caps
-            icon-right="print"
-            @click="downloadExpenditureItemDetails"
-          ></q-btn>
-        </div>
-      </div>
+      </FilterComponentVue>
       <!-- table for categories -->
-      <div>
-        <div class="row q-pt-sm">
-          <div class="col-md-12 col-xs-12 col-sm-12">
-            <CategoryTable
-              :columns="columns"
-              :data="getExpenditureItemDetails"
-              :label="label"
-              :message="message"
-              :title="getExpenditureItemName"
-              :show_payment_category="false"
-              :show_payment_item="false"
-              :show_expenditure_category="false"
-              :show_expenditure_item="false"
-              :show_expenditure_item_detail="true"
-              :expenditure_item_amount="total_item_amount"
-              :total_amount_given="total_amount_given"
-              :total_amount_spent="total_amount_spent"
-              :balance="total_balance"
-              :total_balance="total_balance"
-              :pagination="pagination"
-              :table_loading="table_loader"
-              @edit-expenditure-item-detail="editExpenditureItemDetail"
-              @view-expenditure-item-detail="viewExpenditureItemDetail"
-              @delete-row="onDeleteRow"
-              @onRequest="onRequest"
-            >
-            </CategoryTable>
-          </div>
+      <div class="row q-pt-sm">
+        <div class="col-md-12 col-xs-12 col-sm-12">
+          <CategoryTable
+            :columns="columns"
+            :data="getExpenditureItemDetails"
+            :label="label"
+            :message="message"
+            :title="getExpenditureItemName"
+            :show_payment_category="false"
+            :show_payment_item="false"
+            :show_expenditure_category="false"
+            :show_expenditure_item="false"
+            :show_expenditure_item_detail="true"
+            :expenditure_item_amount="total_item_amount"
+            :total_amount_given="total_amount_given"
+            :total_amount_spent="total_amount_spent"
+            :balance="total_balance"
+            :total_balance="total_balance"
+            :pagination="pagination"
+            :table_loading="table_loader"
+            @edit-expenditure-item-detail="editExpenditureItemDetail"
+            @view-expenditure-item-detail="viewExpenditureItemDetail"
+            @delete-row="onDeleteRow"
+            @onRequest="onRequest"
+          >
+          </CategoryTable>
         </div>
       </div>
     </div>
@@ -82,6 +49,7 @@
 import CategoryTable from "src/components/CategoryTable.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
 import ExpenditureItemDetailMixinVue from "src/mixins/ExpenditureItemDetailMixin.vue";
+import FilterComponentVue from "src/components/FilterComponent.vue";
 
 export default {
   mixins: [HelperMixinVue, ExpenditureItemDetailMixinVue],
@@ -91,8 +59,7 @@ export default {
 
   data() {
     return {
-      start_filter: false,
-      loading: false,
+      loading_download: false,
       columns: [
         {
           name: "counter",
@@ -148,13 +115,11 @@ export default {
       ],
       label: this.$t("app.delete"),
       message: this.$t("app.expenditureItemDetailDeleteMsg"),
-      statuses: ["PENDING", "APPROVED", "DECLINED", "ALL"],
       status: "",
       total_item_amount: 0,
       total_amount_given: 0,
       total_amount_spent: 0,
       total_balance: 0,
-      is_fetching: false,
       pagination: {
         sortBy: "name",
         descending: false,
@@ -166,9 +131,6 @@ export default {
     };
   },
   computed: {
-    validateFilter() {
-      return this.status === "";
-    },
     getExpenditureItemDetails() {
       let data = [];
       if (this.$store.getters.getExpenditureItemDetails !== null) {
@@ -207,7 +169,7 @@ export default {
   },
 
   methods: {
-    getExpenditureDetailsByItemId(page, per_page, is_filtering) {
+    getExpenditureDetailsByItemId(page, per_page) {
       let expenditure_item = this.$store.getters.getCurrentExpenditureItem;
       let payload = {
         url: `/api/protected/expenditure-items/${expenditure_item.id}/details?page=${page}&per_page=${per_page}&status=${this.status}`,
@@ -226,7 +188,6 @@ export default {
         },
       };
       this.table_loader = true;
-      this.is_fetching = is_filtering;
       this.$store.commit("SET_EXPENDITURE_ITEM_DETAIL", null);
       this.$store
         .dispatch("getRequest", payload)
@@ -241,7 +202,6 @@ export default {
         })
         .finally(() => {
           this.table_loader = false;
-          this.is_fetching = false;
         });
     },
 
@@ -262,25 +222,25 @@ export default {
       this.$emit("view-expenditure-item-detail", data);
     },
 
-    downloadExpenditureItemDetails() {
+    downloadExpenditureItemDetails(data) {
       let expenditure_item_id =
         this.$store.getters.getCurrentExpenditureItem.id;
-      let url = `/api/protected/expenditure-item-details/download?expenditure_item_id=${expenditure_item_id}&status=${this.status}`;
+      let url = `/api/protected/expenditure-item-details/download?expenditure_item_id=${expenditure_item_id}&status=${data.payment_status}`;
       let file_name = "Expenditure_Item_Details.pdf";
-      this.loading = this.downloadPdf(url, file_name);
+      this.loading_download = this.downloadPdf(url, file_name);
     },
 
-    filterItems() {
+    filterItems(data) {
       let expenditure_category =
         this.$store.getters.getCurrentExpenditureCategory;
       let expenditure_item = this.$store.getters.getCurrentExpenditureItem;
-
+      this.status = data.payment_status;
       this.$router.push({
         path: `/dashboard/expenditure-categories/${expenditure_category.id}/items/${expenditure_item.id}/details`,
-        query: { status: this.status, t: new Date().getTime() },
+        query: { status: data.payment_status, t: new Date().getTime() },
       });
 
-      this.getExpenditureDetailsByItemId(1, 7, true);
+      this.getExpenditureDetailsByItemId(1, 7);
     },
 
     onDeleteRow(data) {
@@ -307,6 +267,7 @@ export default {
   },
   components: {
     CategoryTable,
+    FilterComponentVue
   },
 };
 </script>

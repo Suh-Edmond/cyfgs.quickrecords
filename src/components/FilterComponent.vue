@@ -320,6 +320,50 @@
       </div>
     </div>
     <!-----------------------------------------------END HEADER FILTER FOR EXPENDITURE ITEMS--------------------------------------->
+
+    <!----------------------------------------------HEADER FILTER FOR EXPENDITURE ITEM DETAILS-------------------------------------->
+    <div
+      class="row q-ml-xs q-pt-xs"
+      :class="$q.screen.lg ? 'q-pa-sm' : ''"
+      :style="
+        $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+      "
+      v-if="show_filter_expenditure_items_details"
+    >
+      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
+        <q-select
+          v-model="payment_status"
+          outlined
+          dense
+          :options="payment_statuses"
+          :label="$t('app.selectStatusLabel')"
+        />
+      </div>
+      <div class="q-pl-lg col-md-3 col-lg-3 col-xs-12 col-sm-12">
+        <q-btn
+          :label="$t('app.filter')"
+          color="primary"
+          :disabled="validateFilterExpenditureItem"
+          no-caps
+          icon-right="filter_list"
+          @click="filterItemDetails"
+        >
+        </q-btn>
+      </div>
+      <q-space />
+      <div class="button q-pb-xs">
+        <q-btn
+          :label="$t('app.print')"
+          :loading="getDownloadLoadingState"
+          color="positive"
+          :disabled="getDisableDownloadBtn"
+          no-caps
+          icon-right="print"
+          @click="downloadExpenditureItemDetails"
+        ></q-btn>
+      </div>
+    </div>
+    <!---------------------------------------------END OF FILTER FOR EXPENDITURE ITEM DETAILS--------------------------------------->
   </div>
 </template>
 
@@ -344,6 +388,11 @@ export default {
     },
 
     show_filter_expenditure_items: {
+      required: false,
+      type: Boolean,
+    },
+
+    show_filter_expenditure_items_details: {
       required: false,
       type: Boolean,
     },
@@ -467,6 +516,10 @@ export default {
     validateFilterExpenditureItems() {
       return this.payment_item_id === null || this.payment_item_id === "";
     },
+
+    validateFilterExpenditureItem() {
+      return this.payment_status === "";
+    },
   },
 
   methods: {
@@ -586,7 +639,7 @@ export default {
       });
     },
 
-    stopSelectInputSearch(){
+    stopSelectInputSearch() {
       if (this.payment_item_id !== null) {
         this.start_payment_item_select_filtering = false;
       }
@@ -606,6 +659,18 @@ export default {
       };
 
       this.$emit("filter-expenditure-items", payload);
+    },
+
+    filterItemDetails() {
+      this.$emit("filter-expenditure-item-details", {
+        payment_status: this.payment_status,
+      });
+    },
+
+    downloadExpenditureItemDetails() {
+      this.$emit("download-expenditure-item-details", {
+        payment_status: this.payment_status,
+      });
     },
   },
 };

@@ -580,7 +580,7 @@
           input-debounce="0"
           use-input
           clearable
-          @filter="filterPaymentItems"
+          @filter="searchPaymentItems"
           @input="stopSelectInputSearch"
         >
           <template v-slot:append v-if="start_payment_item_select_filtering">
@@ -665,6 +665,243 @@
       </div>
     </div>
     <!----------------------------------------------END OF FILTER HEADER FOR INCOME ACTIVITIES---------------------------------------------------->
+
+    <!--------------------------------------------FILTER HEADER FOR VIEW MEMBER CONTRIBUTIONS---------------------------------------------------->
+    <div
+      class="row justify-end"
+      :class="$q.screen.lg ? 'q-pa-sm' : ''"
+      :style="
+        $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+      "
+      v-if="show_member_contribution"
+    >
+      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
+        <q-select
+          v-model="transaction_status"
+          outlined
+          dense
+          :options="transaction_statuses"
+          :label="$t('app.searchTransactionStatus')"
+          use-input
+          input-debounce="0"
+          clearable
+        >
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey">
+                {{ $t("app.noResults") }}
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
+      </div>
+      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-pl-md">
+        <q-select
+          v-model="payment_status"
+          outlined
+          dense
+          :options="payment_statuses"
+          :label="$t('app.selectStatusLabel')"
+          clearable
+        >
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey">
+                {{ $t("app.noResults") }}</q-item-section
+              >
+            </q-item>
+          </template>
+        </q-select>
+      </div>
+      <div class="col-md-6 col-lg-6 col-xs-12 col-sm-12 flex q-pl-md">
+        <div>
+          <q-btn
+            :label="$t('app.filter')"
+            :color="'primary'"
+            :disabled="validateFilterMemberContribution"
+            no-caps
+            icon-right="filter_list"
+            @click="filterMemberContribution"
+          >
+          </q-btn>
+        </div>
+        <q-space />
+        <div class="button">
+          <q-btn
+            :label="$t('app.print')"
+            :loading="getDownloadLoadingState"
+            color="positive"
+            :disabled="getDisableDownloadBtn"
+            no-caps
+            icon-right="print"
+            @click="downloadMemberContribution"
+          ></q-btn>
+        </div>
+      </div>
+    </div>
+    <!--------------------------------------------END OF FILTER HEADER FOR VIEW MEMBER CONTTRIBUTION--------------------------------------------->
+
+    <!--------------------------------------------FILTER HEADER FOR SPONSORSHIP----------------------------------------------------------------->
+    <div
+      class="row q-ml-xs q-pt-xs"
+      :class="$q.screen.lg ? 'q-pa-sm' : ''"
+      :style="
+        $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+      "
+      v-if="show_sponsorship"
+    >
+      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
+        <q-select
+          v-model="payment_item_id"
+          outlined
+          dense
+          :options="filtered_payment_items"
+          :label="$t('app.searchPaymentItem')"
+          input-debounce="0"
+          use-input
+          clearable
+          @filter="searchPaymentItems"
+          @input="stopSelectInputSearch"
+        >
+          <template v-slot:append v-if="start_payment_item_select_filtering">
+            <q-spinner color="primary" size="1.2em" :thickness="3" />
+          </template>
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey">
+                {{ $t("app.noResults") }}
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
+      </div>
+      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-pl-md">
+        <q-select
+          v-model="payment_status"
+          outlined
+          dense
+          :options="payment_statuses"
+          :label="$t('app.selectStatusLabel')"
+          clearable
+        >
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey">
+                {{ $t("app.noResults") }}
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
+      </div>
+      <div class="col-md-6 col-lg-6 col-xs-12 col-sm-12 flex q-pl-md">
+        <div>
+          <q-btn
+            :label="$t('app.filter')"
+            color="primary"
+            :disabled="validateFilterSponsorship"
+            no-caps
+            icon-right="filter_list"
+            @click="filterSponsorship"
+          >
+          </q-btn>
+        </div>
+        <q-space />
+        <div class="button q-pb-xs">
+          <q-btn
+            :label="$t('app.print')"
+            :loading="getDownloadLoadingState"
+            color="positive"
+            :disabled="getDisableDownloadBtn"
+            no-caps
+            icon-right="print"
+            @click="downloadSponsorship"
+          ></q-btn>
+        </div>
+      </div>
+    </div>
+    <!--------------------------------------------END OF FILTER HEADER FOR SPONSORSHIP---------------------------------------------------------->
+
+    <!--------------------------------------------FILTER HEADER FOR REPORTS--------------------------------------------------------------------->
+    <div
+      class="row q-ml-xs justify-between"
+      :class="$q.screen.lg ? 'q-pa-sm' : ''"
+      :style="
+        $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+      "
+      v-if="show_report"
+    >
+      <div
+        class="col-md-4 col-lg-4 col-xs-12 col-sm-12"
+        :class="$q.screen.lg ? 'q-pr-md' : ''"
+      >
+        <q-select
+          v-model="report_option"
+          outlined
+          dense
+          :options="getReportGenerationOptions"
+          :label="$t('app.selectOptionGenerateReport')"
+          @input="selectedReportOption"
+          clearable
+        />
+      </div>
+      <div
+        class="col-md-4 col-lg-4 col-xs-12 col-sm-12"
+        :class="$q.screen.lg ? 'q-pr-md' : ''"
+      >
+        <q-select
+          v-model="group"
+          outlined
+          dense
+          :options="report_options"
+          :label="selected_option_label"
+          input-debounce="0"
+          use-input
+          clearable
+          @filter="filterReportOptions"
+          @input="stopSelectInputSearch"
+        >
+          <template v-slot:append v-if="start_filtering">
+            <q-spinner color="primary" size="1.2em" :thickness="3" />
+          </template>
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey">
+                {{ $t("app.noResults") }}
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
+      </div>
+      <div
+        class="col-md-2 col-lg-2 col-xs-12 col-sm-12"
+        :class="$q.screen.lg ? 'q-pr-md' : ''"
+      >
+        <q-btn
+          :label="$t('app.generateReport')"
+          color="primary"
+          @click="generateReport"
+          no-caps
+          class="full-width"
+          :disabled="validateGenerateReport"
+          :loading="getReport"
+        >
+        </q-btn>
+      </div>
+      <div
+        class="button q-pb-xs col-md-2 col-lg-2 col-xs-12 col-sm-12 flex justify-end"
+      >
+        <q-btn
+          :label="$t('app.print')"
+          :loading="loading"
+          color="positive"
+          :disabled="false"
+          no-caps
+          icon-right="print"
+          @click="downloadReport"
+        ></q-btn>
+      </div>
+    </div>
+    <!-------------------------------------------END OF FILTER HEADER FOR REPORTS--------------------------------------------------------------->
   </div>
 </template>
 
@@ -719,6 +956,11 @@ export default {
       type: Boolean,
     },
 
+    show_member_contribution: {
+      required: false,
+      type: Boolean,
+    },
+
     loading_download: {
       required: true,
       type: Boolean,
@@ -726,6 +968,16 @@ export default {
 
     disable_download_btn: {
       required: true,
+      type: Boolean,
+    },
+
+    show_sponsorship: {
+      required: false,
+      type: Boolean,
+    },
+
+    show_report: {
+      required: false,
       type: Boolean,
     },
   },
@@ -795,6 +1047,19 @@ export default {
       month: "",
       start_month_filtering: false,
       monthsOptions: [],
+      transaction_statuses: ["INCOMPLETE", "COMPLETED", "ALL"],
+      transaction_status: "",
+      report_option: "",
+      selected_option_label: "",
+      report_options:[],
+      quarters: [
+        { label: this.$t("app.firstQuarter"), value: "1" },
+        { label: this.$t("app.secondQuarter"), value: "2" },
+        { label: this.$t("app.thirdQuarter"), value: "3" },
+        { label: this.$t("app.fourthQuarter"), value: "4" },
+      ],
+      group:"",
+      start_filtering:false,
     };
   },
 
@@ -856,9 +1121,36 @@ export default {
         (this.payment_status === null || this.payment_status === "")
       );
     },
+
     validateFilterIncomeActivity() {
       return this.payment_item_id === null;
     },
+
+    validateFilterMemberContribution() {
+      return (
+        (this.payment_status === null || this.payment_status === "") &&
+        (this.transaction_status === null || this.transaction_status === "")
+      );
+    },
+
+    validateFilterSponsorship() {
+      return this.payment_item_id === null;
+    },
+
+    getReportGenerationOptions() {
+      let data = [];
+      data.push(
+        { label: this.$t("app.reportByPaymentItem"), value: 1 },
+        { label: this.$t("app.reportByQuarter"), value: 2 },
+        { label: this.$t("app.reportByYear"), value: 3 }
+      );
+
+      return data;
+    },
+
+    validateGenerateReport(){
+      return this.option == "" || this.group == ""
+    }
   },
 
   methods: {
@@ -1060,13 +1352,12 @@ export default {
     },
 
     filterIncomeActivity() {
-      let payload = {
+      let payload_data = {
         payment_item_id: this.payment_item_id,
         month: this.month,
         status: this.payment_status,
       };
-
-      this.$emit("filter-income-activity", payload);
+      this.$emit("filter-income-activity", payload_data);
     },
 
     downloadIncomeActivity() {
@@ -1077,6 +1368,95 @@ export default {
       };
 
       this.$emit("download-income-activity", payload);
+    },
+
+    filterMemberContribution() {
+      let payload = {
+        payment_status: this.payment_status,
+        transaction_status: this.transaction_status,
+      };
+
+      this.$emit("filter-member-contribution", payload);
+    },
+
+    downloadMemberContribution() {
+      let payload = {
+        payment_status: this.payment_status,
+        transaction_status: this.transaction_status,
+      };
+
+      this.$emit("download-member-contribution", payload);
+    },
+
+    filterSponsorship() {
+      let payload_data = {
+        payment_item_id: this.payment_item_id,
+        payment_status: this.payment_status,
+      };
+
+      this.$emit("filter-sponsorship", payload_data);
+    },
+
+    downloadSponsorship() {
+      let payload_data = {
+        payment_item_id: this.payment_item_id,
+        payment_status: this.payment_status,
+      };
+
+      this.$emit("download-sponsorship", payload_data);
+    },
+
+    selectedReportOption() {
+      if (this.report_option != null) {
+        switch (this.report_option.value) {
+          case 1:
+            if (this.$store.getters.getPaymentActivities.length == 0) {
+              this.fetchPaymentActivities();
+            }
+            this.getAllPaymentItemsFromStore();
+            this.selected_option_label = this.$t("app.searchPaymentItem");
+            break;
+          case 2:
+            this.selected_option_label = this.$t("app.selectQuarter");
+            break;
+          case 3:
+            this.selected_option_label = this.$t("app.selectYearLabel");
+            break;
+        }
+      }
+    },
+
+    filterQuarters(val, update, abort) {
+      this.report_options = [];
+      if (val < 1) {
+        abort();
+        this.start_filtering = false;
+        return;
+      }
+
+      update(() => {
+        this.start_filtering = true;
+        this.report_options = this.quarters.filter((item) =>
+          item.label.toLowerCase().includes(val.toLowerCase())
+        );
+        return this.report_options;
+      });
+    },
+
+
+    filterReportOptions(val, update, abort) {
+      switch (this.option.value) {
+        case 1:
+          this.searchPaymentItems(val, update, abort);
+          break;
+        case 2:
+          this.options = this.filterQuarters(val, update, abort);
+          break;
+        case 3:
+          this.options = this.getSessionsFromState;
+          break;
+      }
+      return this.options;
     },
   },
 };

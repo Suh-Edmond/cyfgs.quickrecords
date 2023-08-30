@@ -2,24 +2,14 @@
   <div class="q-pa-sm">
     <div>
       <!-- contributions available -->
-      <div
-        class="row justify-end"
-        :class="$q.screen.lg ? 'q-pa-sm' : ''"
-        :style="
-          $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-        "
+      <FilterComponentVue
+        :show_member_contribution="true"
+        :loading_download="loading_download"
+        :disable_download_btn="validateDownload"
+        @filter-member-contribution="filterMemberContribution"
+        @download-member-contribution="downloadContributions"
       >
-        <div>
-          <q-btn
-            :label="label_print"
-            :loading="loading"
-            :color="color_print"
-            no-caps
-            icon-right="print"
-            @click="downloadContributions"
-          ></q-btn>
-        </div>
-      </div>
+      </FilterComponentVue>
       <!-- table for contributions -->
       <div class="row q-pt-sm">
         <div class="col-md-12 col-xs-12 col-sm-12">
@@ -55,6 +45,7 @@
 import TableVue from "src/components/Table.vue";
 import ContributionsMixin from "src/mixins/ContributionsMixin.vue";
 import HelperMixin from "src/mixins/HelperMixin.vue";
+import FilterComponentVue from "src/components/FilterComponent.vue";
 export default {
   mixins: [ContributionsMixin, HelperMixin],
 
@@ -194,6 +185,10 @@ export default {
       }
       return data;
     },
+
+    validateDownload(){
+      return this.getMemberContributions.length == 0
+    }
   },
   methods: {
     viewContribution(data) {
@@ -296,9 +291,19 @@ export default {
         fetch_count
       );
     },
+
+    filterMemberContribution(data){
+      this.getMemberContributionsByPaymentItem(
+      this.$router.currentRoute.params.item_id,
+      this.$router.currentRoute.params.id,
+      1,
+      7
+    );
+    }
   },
   components: {
     TableVue,
+    FilterComponentVue
   },
 };
 </script>

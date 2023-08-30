@@ -251,6 +251,7 @@ export default {
     addSavingSuccessMsg:'Member Saving Save Successfully',
     amountDeposited:'Amount Deposited',
     transactionStatus:'Transaction Status',
+    searchTransactionStatus:'Search Transaction Status...',
     action:"Action",
     markAll:"Check all",
     all:"ALL",

@@ -43,15 +43,14 @@
 import TableVue from "src/components/Table.vue";
 import IncomeActivityMixinVue from "src/mixins/IncomeActivityMixin.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
-import FilterComponentVue from 'src/components/FilterComponent.vue';
-
+import FilterComponentVue from "src/components/FilterComponent.vue";
 
 export default {
   mixins: [IncomeActivityMixinVue, HelperMixinVue],
 
   mounted() {
     const page = 1;
-    const per_page = 3;
+    const per_page = 7;
     this.getOrganisationIncomeActivities(
       this.$store.getters.getOrganisation.id,
       page,
@@ -128,8 +127,6 @@ export default {
     };
   },
   computed: {
-
-
     getTotalIncome() {
       return this.$store.getters.getIncomeActivities !== null
         ? this.$store.getters.getIncomeActivities.total
@@ -137,8 +134,15 @@ export default {
     },
 
     getTableTitle() {
-      let month_name = this.month !== "" || null ? this.$t('app.forTheMonthOf') + this.month.label : ""
-      return this.payment_item_id !== null || "" ? this.$t("app.incomeTitlePart") + `${this.payment_item_id.label}` + month_name : "";
+      let month_name =
+        this.month !== "" || null
+          ? this.$t("app.forTheMonthOf") + this.month.label
+          : "";
+      return this.payment_item_id !== null || ""
+        ? this.$t("app.incomeTitlePart") +
+            `${this.payment_item_id.label}` +
+            month_name
+        : "";
     },
 
     getIncomeActivities() {
@@ -193,7 +197,7 @@ export default {
           data: [],
         },
       };
-      this.$store.commit("SET_INCOME_ACTIVITIES", null)
+      this.$store.commit("SET_INCOME_ACTIVITIES", null);
       this.$store
         .dispatch("getRequest", payload)
         .then((response) => {
@@ -207,7 +211,7 @@ export default {
     },
 
     onRequest(props) {
-      const { page, rowsPerPage, sortBy, descending } = props.pagination;
+      const { page, rowsPerPage } = props.pagination;
       const fetch_count =
         rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
       if (this.payment_item_id === null || "") {
@@ -217,7 +221,12 @@ export default {
           fetch_count
         );
       } else {
-        this.filterIncomeActivity(page, fetch_count);
+        let payload = {
+          payment_item_id: this.payment_item_id,
+          month: this.month,
+          status: this.payment_status,
+        };
+        this.filterIncomeActivity(payload, page, fetch_count);
       }
     },
 
@@ -229,28 +238,43 @@ export default {
       this.$emit("view-income-activity", data);
     },
 
-    filterIncomeActivity(page, per_page) {
-      let payment_item_name =
-        this.payment_item_id != null ? this.payment_item_id.label : "";
-      let payment_item_value =
-        this.payment_item_id != null ? this.payment_item_id.value : "";
-      let month =
-        this.month !== "" && this.month !== null ? this.month.value : "";
-      let page_num = this.payment_item_id !== null || "" ? 1 : page;
-      let num_rows = this.payment_item_id !== null || "" ? 3 : per_page;
+    filterIncomeActivity(payload_data, page, per_page) {
+      this.payment_item_id =
+        payload_data.payment_item_id !== null &&
+        payload_data.payment_item_id !== ""
+          ? payload_data.payment_item_id
+          : "";
+
+      this.month = payload_data.month;
+      let month_value = this.month !== "" ? this.month.value : "";
+      let month_label = this.month !== "" ? this.month.label : "";
+      this.status =
+        payload_data.status !== "" && payload_data.status !== null
+          ? payload_data.status
+          : "";
+      let page_num =
+        payload_data.payment_item_id !== null &&
+        payload_data.payment_item_id !== ""
+          ? 1
+          : page;
+      let num_rows =
+        payload_data.payment_item_id !== null &&
+        payload_data.payment_item_id !== ""
+          ? 7
+          : per_page;
 
       this.$router.push({
-        path: `/dashboard/income-activities?payment_item=${payment_item_name}&month=${month}&status=${this.status}`,
+        path: `/dashboard/income-activities?payment_item=${this.payment_item_id.value}&month=${month_label}&status=${this.status}`,
         query: {
-          payment_item: payment_item_name,
-          month: month,
+          payment_item: this.payment_item_id.label,
+          month: month_label,
           status: this.status,
           t: new Date().getTime(),
         },
       });
       let payload = {
         status: "none",
-        url: `/api/protected/organisations/income-activities/search?organisation_id=${this.organisation_id}&month=${month}&payment_item_id=${payment_item_value}&status=${this.status}&page=${page_num}&per_page=${num_rows}`,
+        url: `/api/protected/organisations/income-activities/search?organisation_id=${this.organisation_id}&month=${month_value}&payment_item_id=${this.payment_item_id.value}&status=${this.status}&page=${page_num}&per_page=${num_rows}`,
         has_path_val: true,
         show_feedback: false,
         show_spinner: false,
@@ -281,10 +305,13 @@ export default {
 
     downloadIncomeActivity(data) {
       let payment_item_id =
-        data.payment_item_id != null && data.payment_item_id != "" ? data.payment_item_id.value : "";
+        data.payment_item_id != null && data.payment_item_id != ""
+          ? data.payment_item_id.value
+          : "";
       let month =
         data.month != null && data.month != "" ? data.month.value : "";
-      let status = data.status !== null && data.status !== "" ? data.status : ""
+      let status =
+        data.status !== null && data.status !== "" ? data.status : "";
       let url = `/api/protected/organisations/income-activities/generate-pdf?organisation_id=${this.organisation_id}&month=${month}&payment_item_id=${payment_item_id}&status=${status}`;
 
       let file_name = "Organisation_Income_Activities.pdf";
@@ -316,7 +343,7 @@ export default {
   },
   components: {
     TableVue,
-    FilterComponentVue
+    FilterComponentVue,
   },
 };
 </script>

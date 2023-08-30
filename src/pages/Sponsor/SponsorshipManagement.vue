@@ -2,98 +2,16 @@
   <q-page>
     <div>
       <!-- header for filter sponsors -->
-      <div
-        class="row q-ml-xs q-pt-xs"
-        :class="$q.screen.lg ? 'q-pa-sm' : ''"
-        :style="
-          $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-        "
-      >
-        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
-          <q-select
-            v-model="payment_item_id"
-            outlined
-            dense
-            :options="payment_items"
-            :label="$t('app.searchPaymentItem')"
-            input-debounce="0"
-            use-input
-            clearable
-            @filter="filterPaymentItems"
-            @input="stopSearch"
-          >
-            <template v-slot:append v-if="start_filtering">
-              <q-spinner color="primary" size="1.2em" :thickness="3" />
-            </template>
-            <template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey">
-                  {{ $t("app.noResults") }}
-                </q-item-section>
-              </q-item>
-            </template>
-          </q-select>
-        </div>
-        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-pl-md">
-          <q-select
-            v-model="status"
-            outlined
-            dense
-            :options="statuses"
-            :label="$t('app.selectStatusLabel')"
-            clearable
-          >
-            <template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey">
-                  {{ $t("app.noResults") }}
-                </q-item-section>
-              </q-item>
-            </template>
-          </q-select>
-        </div>
-        <div class="col-md-6 col-lg-6 col-xs-12 col-sm-12 flex q-pl-md">
-          <div>
-            <q-btn
-              :label="$t('app.filter')"
-              color="primary"
-              :disabled="validateFilter"
-              no-caps
-              icon-right="filter_list"
-              @click="filterSponsorship"
-              :loading="is_fetching"
-            >
-            </q-btn>
-          </div>
-          <q-space />
-          <div class="button q-pb-xs">
-            <q-btn
-              :label="$t('app.print')"
-              :loading="loading_download"
-              color="positive"
-              :disabled="validateDownload"
-              no-caps
-              icon-right="print"
-              @click="downloadSponsorship"
-            ></q-btn>
-          </div>
-        </div>
-      </div>
+      <FilterComponentVue :show_sponsorship="true" :loading_download="loading_download"
+        :disable_download_btn="validateDownload" @filter-sponsorship="filterSponsorship"
+        @download-sponsorship="downloadSponsorship">
+      </FilterComponentVue>
       <!-- table for support activities -->
       <div class="row q-pt-sm">
         <div class="col-md-12 col-xs-12 col-sm-12">
-          <SponsorshipTable
-            :columns="columns"
-            :data="getData"
-            :title="setTableTitle"
-            :message="message"
-            :total="getTotalSponsorship"
-            :pagination="pagination"
-            :table_loading="table_loader"
-            @view-sponsorship="viewSponsorship"
-            @edit-sponsorship="editSponsorship"
-            @onRequest="onRequest"
-          >
+          <SponsorshipTable :columns="columns" :data="getData" :title="setTableTitle" :message="message"
+            :total="getTotalSponsorship" :pagination="pagination" :table_loading="table_loader"
+            @view-sponsorship="viewSponsorship" @edit-sponsorship="editSponsorship" @onRequest="onRequest">
           </SponsorshipTable>
         </div>
       </div>
@@ -106,6 +24,7 @@ import SponsorshipTable from "src/components/SponsorshipTable.vue";
 import PaymentItemMixin from "src/mixins/PaymentItemMixin.vue";
 import SponsorshipMixin from "src/mixins/SponsorshipMixin.vue";
 import HelperMixin from "src/mixins/HelperMixin.vue";
+import FilterComponentVue from "src/components/FilterComponent.vue";
 
 export default {
   mixins: [PaymentItemMixin, SponsorshipMixin, HelperMixin],
@@ -116,13 +35,10 @@ export default {
     let payment_item_id = "";
     let status = "";
     this.getAllSponsorships(page, per_page, payment_item_id, status);
-    this.fetchPaymentActivities();
-    this.getPaymentActivitiesFromStatus();
   },
 
   data() {
     return {
-      statuses: ["PENDING", "APPROVED", "DECLINED", "ALL"],
       status: "",
       columns: [
         {
@@ -163,9 +79,6 @@ export default {
       message: this.$t("app.deleteSponsorshipWarningMsg"),
       loading_download: false,
       payment_item_id: null,
-      payment_items: [],
-      start_filtering: false,
-      is_fetching: false,
       pagination: {
         sortBy: "name",
         descending: false,
@@ -177,10 +90,6 @@ export default {
     };
   },
   computed: {
-    validateFilter() {
-      return this.payment_item_id === null;
-    },
-
     validateDownload() {
       return this.getData.length == 0;
     },
@@ -225,8 +134,7 @@ export default {
   },
   methods: {
     getAllSponsorships(page, per_page, payment_item, status, is_filtering) {
-      let payment_item_id =
-        payment_item !== null && payment_item !== "" ? payment_item.value : "";
+      let payment_item_id = payment_item !== "" ? payment_item.value : "";
       let status_value = status !== "" && status !== "" ? status : "";
       let payload = {
         status: "none",
@@ -264,10 +172,9 @@ export default {
     },
 
     onRequest(props) {
-      const { page, rowsPerPage, sortBy, descending } = props.pagination;
+      const { page, rowsPerPage } = props.pagination;
       const fetch_count =
         rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
-      this.$store.commit("SET_SPONSORSHIPS", null);
 
       this.getAllSponsorships(
         page,
@@ -278,43 +185,43 @@ export default {
       );
     },
 
-    filterSponsorship() {
-      let payment_item =
-        this.payment_item_id !== "" && this.payment_item_id !== null
-          ? this.payment_item_id
-          : "";
-      let status_value =
-        this.status !== "" && this.status !== null ? this.status : "";
+    filterSponsorship(data) {
+      let payment_item_name = data.payment_item_id !== ""
+        ? data.payment_item_id.label
+        : "";
       this.$router.push({
-        path: `/dashboard/sponsorship?payment_item=${payment_item.label}&status=${status_value}`,
+        path: `/dashboard/sponsorship?payment_item=${payment_item_name}&status=${data.payment_status}`,
         query: {
-          payment_item: payment_item.label,
-          status: this.status,
+          payment_item: payment_item_name,
+          status: data.payment_status,
           t: new Date().getTime(),
         },
       });
+      this.setSearchVariables(data);
       let page = 1;
       let per_page = 7;
       this.getAllSponsorships(
         page,
         per_page,
-        this.payment_item_id,
-        this.status,
+        data.payment_item_id,
+        data.payment_status,
         true
       );
     },
 
-    downloadSponsorship() {
+    downloadSponsorship(data) {
       let payment_item_value =
-        this.payment_item_id !== null && this.payment_item_id !== ""
-          ? this.payment_item_id.value
+        data.payment_item_id !== null && data.payment_item_id !== ""
+          ? data.payment_item_id.value
           : "";
       let payment_item_name =
-        this.payment_item_id !== null && this.payment_item_id !== ""
-          ? this.payment_item_id.label
+        data.payment_item_id !== null && data.payment_item_id !== ""
+          ? data.payment_item_id.label
           : "";
       let status_value =
-        this.status !== null && this.status !== "" ? this.status : "";
+        data.payment_status !== null && data.payment_status !== ""
+          ? data.payment_status
+          : "";
       let url = `/api/protected/sponsorships/download?payment_item_id=${payment_item_value}&status=${status_value}&per_page=&payment_item_label=${payment_item_name}`;
       let file_name = "Sponsorships.pdf";
       this.loading_download = this.downloadPdf(url, file_name);
@@ -328,42 +235,14 @@ export default {
       this.$emit("edit-sponsorship", data);
     },
 
-    filterPaymentItems(val, update, abort) {
-      if (val < 2) {
-        this.start_filtering = false;
-        abort();
-        return;
-      }
-
-      update(() => {
-        this.start_filtering = true;
-        this.payment_items = this.getPaymentActivitiesFromStatus().filter(
-          (item) => item.label.toLowerCase().includes(val.toLowerCase())
-        );
-        return this.payment_items;
-      });
-    },
-
-    getPaymentActivitiesFromStatus() {
-      this.payment_items = [];
-      this.$store.getters.getPaymentActivities.forEach((ele) => {
-        this.payment_items.push({
-          label: ele.name,
-          value: ele.id,
-          amount: ele.amount,
-        });
-      });
-      return this.payment_items;
-    },
-
-    stopSearch() {
-      if (this.payment_item_id != null) {
-        this.start_filtering = false;
-      }
+    setSearchVariables(data) {
+      this.payment_item_id = data.payment_item_id;
+      this.status = data.payment_status;
     },
   },
   components: {
     SponsorshipTable,
+    FilterComponentVue
   },
 };
 </script>

@@ -3,90 +3,14 @@
     <div v-if="!checkTreasurerRole()">
       <!--------------------------------------------------------START OF SAVINGS--------------------------------------->
       <div>
-        <div
-          class="row q-ml-xs q-pt-xs"
-          :class="$q.screen.lg ? 'q-pa-sm' : ''"
-          :style="
-            $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-          "
-        >
-          <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
-            <q-select
-              v-model="year"
-              outlined
-              dense
-              :options="years"
-              :label="$t('app.searchYear')"
-              use-input
-              input-debounce="0"
-              clearable
-              @filter="filterYears"
-              @input="stopSearch"
-            >
-              <template v-slot:append v-if="start_year_filtering">
-                <q-spinner color="primary" size="1.2em" :thickness="3" />
-              </template>
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    {{ $t("app.noResults") }}
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
-          </div>
-          <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-pl-md">
-            <q-select
-              v-model="month"
-              outlined
-              dense
-              :options="monthsOptions"
-              :label="$t('app.searchMonth')"
-              use-input
-              input-debounce="0"
-              clearable
-              @filter="filterMonths"
-              @input="stopSearch"
-            >
-              <template v-slot:append v-if="start_month_filtering">
-                <q-spinner color="primary" size="1.2em" :thickness="3" />
-              </template>
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    {{ $t("app.noResults") }}
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
-          </div>
-          <div class="col-md-6 col-lg-6 col-xs-12 col-sm-12 flex q-pl-md">
-            <div>
-              <q-btn
-                :label="$t('app.filter')"
-                :loading="is_fetching"
-                :color="'primary'"
-                :disabled="validateFilter"
-                no-caps
-                icon-right="filter_list"
-                @click="filterSavings"
-              >
-              </q-btn>
-            </div>
-            <q-space />
-            <div class="button q-pb-xs">
-              <q-btn
-                :label="$t('app.print')"
-                :loading="loading_download"
-                :color="'positive'"
-                :disabled="false"
-                no-caps
-                icon-right="print"
-                @click="downloadMembersSavings"
-              ></q-btn>
-            </div>
-          </div>
-        </div>
+       <FilterComponentVue
+       :show_savings_non_treasurer="true"
+       :loading_download="loading_download"
+        :disable_download_btn="validateDownload"
+        @filter-savings="filterSavings"
+        @download-savings="downloadMembersSavings"
+       >
+        </FilterComponentVue>
 
         <!--------------------------------------------------------START OF TABLE TO DISPLAY SAVINGS-------------------------->
         <div class="row q-pt-sm">
@@ -116,39 +40,15 @@
 
     <!----------------------------------------------------------SAVINGS TO BE APPROVE/DECLINE------------------------->
     <div v-if="checkTreasurerRole()">
-      <div
-        class="row q-ml-xs q-pt-md justify-between"
-        :class="$q.screen.lg ? 'q-pa-md' : ''"
-        :style="
-          $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-        "
-      >
-        <div>
-          <q-btn
-            :label="$t('app.filter')"
-            :loading="is_fetching"
-            :color="'primary'"
-            :disabled="false"
-            no-caps
-            icon-right="filter_list"
-            @click="searchSavings()"
-          >
-          </q-btn>
-        </div>
-        <q-space />
-        <div class="button q-pb-xs">
-          <q-btn
-            :label="$t('app.print')"
-            :loading="loading_download"
-            :color="'positive'"
-            :disabled="getMembersSavings.length == 0"
-            no-caps
-            icon-right="print"
-            @click="downloadMembersSavings"
-          ></q-btn>
-        </div>
-      </div>
 
+      <FilterComponentVue
+       :show_savings_treasurer="true"
+       :loading_download="loading_download"
+        :disable_download_btn="validateDownload"
+        @search-savings="searchSavings"
+        @download-savings="downloadMembersSavings"
+       >
+        </FilterComponentVue>
       <!-- table for filtered savings -->
       <div class="row q-pt-sm">
         <div class="col-md-12 col-xs-12 col-sm-12">
@@ -182,6 +82,7 @@ import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
 import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
 import MonthsMixinVue from "src/mixins/MonthsMixin.vue";
+import FilterComponentVue from "src/components/FilterComponent.vue";
 export default {
   mixins: [
     UserSavingMixinVue,
@@ -200,7 +101,6 @@ export default {
       7,
       "",
       "",
-      false
     );
     this.getSessions();
   },
@@ -208,9 +108,6 @@ export default {
     return {
       year: "",
       month: "",
-      monthsOptions: [],
-      years: [],
-      loading: false,
       columns: [
         {
           name: "counter",
@@ -255,9 +152,6 @@ export default {
       ],
       label: this.$t("app.delete"),
       message: this.$t("app.deleteSavingWarningMsg"),
-      is_fetching: false,
-      search_data: null,
-      savings: [],
       table_loader: false,
       pagination: {
         sortBy: "name",
@@ -269,15 +163,9 @@ export default {
       organisation_id: this.$store.getters.getOrganisation.id,
       session_id: this.$store.getters.getCurrentYear.id,
       loading_download: false,
-      start_year_filtering: false,
-      start_month_filtering: false,
     };
   },
   computed: {
-    validateFilter() {
-      return this.year === "" || this.year === null;
-    },
-
     getFetchingState() {
       return this.$store.getters.getFetchingState;
     },
@@ -321,6 +209,10 @@ export default {
       }
       return data;
     },
+
+    validateDownload(){
+      return this.getMembersSavings.length == 0
+    }
   },
   watch: {
   },
@@ -331,10 +223,8 @@ export default {
       per_page,
       month,
       session_id,
-      is_filtering
     ) {
       const session = session_id === "" ? this.session_id : session_id;
-      this.is_fetching = is_filtering;
       this.table_loader = true;
       let payload = {
         url: `/api/protected/user-savings?organisation_id=${id}&session_id=${session}&page=${page}&per_page=${per_page}&month=${month}`,
@@ -362,12 +252,10 @@ export default {
           this.pagination.rowsPerPage = response.data.per_page;
         })
         .finally(() => {
-          this.is_fetching = false;
           this.table_loader = false;
           this.$store.commit("SET_IS_FETCHING", this.table_loader);
         });
 
-      return is_filtering;
     },
 
     onRequest(props) {
@@ -382,7 +270,6 @@ export default {
           fetch_count,
           "",
           this.session_id,
-          false
         );
       } else {
         this.filterSavings();
@@ -396,49 +283,14 @@ export default {
       return treasurer_role != undefined;
     },
 
-    filterYears(val, update, abort) {
-      if (val.length < 1) {
-        this.start_year_filtering = false;
-        abort();
-        return;
-      }
-      if (this.year == "") {
-        this.years = this.getSessionsFromState;
-      }
-      update(() => {
-        this.start_year_filtering = true;
-        this.years = this.getSessionsFromState.filter((v) =>
-          v.label.toLowerCase().includes(val.toLowerCase())
-        );
-      });
-    },
-
-    filterMonths(val, update, abort) {
-      if (val.length < 1) {
-        this.start_month_filtering = false;
-        abort();
-        return;
-      }
-      if (this.month == "") {
-        this.monthsOptions = this.getMonths;
-      }
-      update(() => {
-        this.start_month_filtering = true;
-        const needle = val.toLowerCase();
-        this.monthsOptions = this.getMonths.filter(
-          (v) => v.label.toLowerCase().indexOf(needle) > -1
-        );
-      });
-    },
-
     editMemberSaving(data) {
       this.$emit("edit-member-saving", data);
     },
 
-    downloadMembersSavings() {
-      let session = this.year !== "" ? this.year.value : this.session_id;
+    downloadMembersSavings(data) {
+      let session = data.year !== "" ? data.year.value : this.session_id;
       let month =
-        this.month === "" || this.month === null ? "" : this.month.value;
+        data.month === "" || data.month === null ? "" : data.month.value;
 
       let url = `/api/protected/organisation-savings/download?organisation_id=${this.organisation_id}&session_id=${session}&month=${month}`;
 
@@ -456,46 +308,37 @@ export default {
       this.$emit("search-member-saving", payload);
     },
 
-    filterSavings() {
+    filterSavings(data) {
       let month =
-        this.month !== "" && this.month !== null ? this.month.value : "";
+        data.month !== "" && data.month !== null ? data.month.value : "";
       let session =
-        this.year !== "" && this.year !== null
-          ? this.year.value
+        data.year !== "" && data.year !== null
+          ? data.year.value
           : this.session_id;
       this.$router.push({
         path: `/dashboard/members-savings`,
         query: {
           month: month,
-          year: this.year.label,
+          year: data.year.label,
           t: new Date().getTime(),
         },
       });
-      this.is_fetching = this.getPaginatedOrganisationMemberSavings(
+      this.getPaginatedOrganisationMemberSavings(
         this.organisation_id,
         this.pagination.page,
         this.pagination.rowsPerPage,
         month,
         session,
-        true
       );
     },
 
     ViewMemberSaving(data) {
       this.$emit("view-member-saving", data);
     },
-
-    stopSearch() {
-      if (this.year !== "" || this.year !== null) {
-        this.start_year_filtering = false;
-      }
-      if (this.month !== "" || this.month !== null) {
-        this.start_month_filtering = false;
-      }
-    },
   },
   components: {
     TableVue,
+    FilterComponentVue
   },
 };
 </script>

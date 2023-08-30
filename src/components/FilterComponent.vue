@@ -364,12 +364,209 @@
       </div>
     </div>
     <!---------------------------------------------END OF FILTER FOR EXPENDITURE ITEM DETAILS--------------------------------------->
+
+    <!--------------------------------------------FILTER HEADER FOR MEMBERS SAVINGS NON TREASURER------------------------------------------------->
+    <div
+      class="row q-ml-xs q-pt-xs"
+      :class="$q.screen.lg ? 'q-pa-sm' : ''"
+      :style="
+        $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+      "
+      v-if="show_savings_non_treasurer"
+    >
+      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
+        <q-select
+          v-model="year"
+          outlined
+          dense
+          :options="getSessionsFromState"
+          :label="$t('app.searchYear')"
+          use-input
+          input-debounce="0"
+          clearable
+        >
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey">
+                {{ $t("app.noResults") }}
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
+      </div>
+      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-pl-md">
+        <q-select
+          v-model="month"
+          outlined
+          dense
+          :options="monthsOptions"
+          :label="$t('app.searchMonth')"
+          use-input
+          input-debounce="0"
+          clearable
+          @filter="filterMonths"
+          @input="stopSelectInputSearch"
+        >
+          <template v-slot:append v-if="start_month_filtering">
+            <q-spinner color="primary" size="1.2em" :thickness="3" />
+          </template>
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey">
+                {{ $t("app.noResults") }}
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
+      </div>
+      <div class="col-md-6 col-lg-6 col-xs-12 col-sm-12 flex q-pl-md">
+        <div>
+          <q-btn
+            :label="$t('app.filter')"
+            :color="'primary'"
+            :disabled="validateFilterSavings"
+            no-caps
+            icon-right="filter_list"
+            @click="filterAllSavings"
+          >
+          </q-btn>
+        </div>
+        <q-space />
+        <div class="button q-pb-xs">
+          <q-btn
+            :label="$t('app.print')"
+            :loading="getDownloadLoadingState"
+            :color="'positive'"
+            :disabled="getDisableDownloadBtn"
+            no-caps
+            icon-right="print"
+            @click="downloadMembersSavings"
+          ></q-btn>
+        </div>
+      </div>
+    </div>
+    <!-------------------------------------------END OF FILTER FOR MEMBERS SAVINGS NON TREASURER-------------------------------------------------->
+
+    <!----------------------------------------------FILTER HEADER FOR MEMBERS SAVINGS TREASURER--------------------------------------------------->
+    <div
+      class="row q-ml-xs q-pt-md justify-between"
+      :class="$q.screen.lg ? 'q-pa-md' : ''"
+      :style="
+        $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+      "
+      v-if="show_savings_treasurer"
+    >
+      <div>
+        <q-btn
+          :label="$t('app.filter')"
+          :color="'primary'"
+          :disabled="false"
+          no-caps
+          icon-right="filter_list"
+          @click="searchSavings()"
+        >
+        </q-btn>
+      </div>
+      <q-space />
+      <div class="button q-pb-xs">
+        <q-btn
+          :label="$t('app.print')"
+          :loading="getDownloadLoadingState"
+          :color="'positive'"
+          :disabled="getDisableDownloadBtn"
+          no-caps
+          icon-right="print"
+          @click="downloadMembersSavings"
+        ></q-btn>
+      </div>
+    </div>
+    <!---------------------------------------------END OF FILTER FOR MEMBERS SAVINGS TREASURER---------------------------------------------------->
+    <!----------------------------------------------FILTER HEADER FOR MEMBER SAVINGS-------------------------------------------------------------->
+    <div
+      class="row q-ml-xs q-pt-xs"
+      :class="$q.screen.lg ? 'q-pa-sm' : ''"
+      :style="
+        $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+      "
+      v-if="show_filter_member_savings"
+    >
+      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
+        <q-select
+          v-model="month"
+          outlined
+          dense
+          :options="monthsOptions"
+          :label="$t('app.searchMonth')"
+          use-input
+          input-debounce="0"
+          clearable
+          @filter="filterMonths"
+          @input="stopSelectInputSearch"
+        >
+          <template v-slot:append v-if="start_month_filtering">
+            <q-spinner color="primary" size="1.2em" :thickness="3" />
+          </template>
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey">
+                {{ $t("app.noResults") }}
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
+      </div>
+      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-pl-md">
+        <q-select
+          v-model="payment_status"
+          outlined
+          dense
+          :options="payment_statuses"
+          :label="$t('app.selectStatusLabel')"
+          clearable
+        >
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey">
+                {{ $t("app.noResults") }}</q-item-section
+              >
+            </q-item>
+          </template>
+        </q-select>
+      </div>
+      <div class="col-md-6 col-lg-6 col-xs-12 col-sm-12 flex q-pl-md">
+        <div>
+          <q-btn
+            :label="$t('app.filter')"
+            :color="'primary'"
+            :disabled="validateFilterMemberSavings"
+            no-caps
+            icon-right="filter_list"
+            @click="filterMemberSavings"
+          >
+          </q-btn>
+        </div>
+        <q-space />
+        <div class="button">
+          <q-btn
+            :label="$t('app.print')"
+            :loading="getDownloadLoadingState"
+            color="positive"
+            :disabled="getDisableDownloadBtn"
+            no-caps
+            icon-right="print"
+            @click="downloadMemberSavings"
+          ></q-btn>
+        </div>
+      </div>
+    </div>
+    <!----------------------------------------------END OF FILTER HEADER FOR MEMBER SAVINGS------------------------------------------------------->
   </div>
 </template>
 
 <script>
 import CurrentYearMixin from "src/mixins/CurrentYearMixin.vue";
 import PaymentItemMixinVue from "src/mixins/PaymentItemMixin.vue";
+import MonthsMixinVue from "src/mixins/MonthsMixin.vue";
 export default {
   props: {
     show_member_filters: {
@@ -392,7 +589,22 @@ export default {
       type: Boolean,
     },
 
+    show_filter_member_savings: {
+      required: false,
+      type: Boolean,
+    },
+
     show_filter_expenditure_items_details: {
+      required: false,
+      type: Boolean,
+    },
+
+    show_savings_non_treasurer: {
+      required: false,
+      type: Boolean,
+    },
+
+    show_savings_treasurer: {
       required: false,
       type: Boolean,
     },
@@ -408,7 +620,7 @@ export default {
     },
   },
 
-  mixins: [CurrentYearMixin, PaymentItemMixinVue],
+  mixins: [CurrentYearMixin, PaymentItemMixinVue, MonthsMixinVue],
 
   mounted() {
     if (this.getSessionsFromState.length == 0) {
@@ -470,6 +682,9 @@ export default {
       payment_statuses: ["PENDING", "APPROVED", "DECLINED", "ALL"],
       payment_status: "",
       filtered_payment_items: [],
+      month: "",
+      start_month_filtering: false,
+      monthsOptions: [],
     };
   },
 
@@ -519,6 +734,17 @@ export default {
 
     validateFilterExpenditureItem() {
       return this.payment_status === "";
+    },
+
+    validateFilterSavings() {
+      return this.year === "" || this.year === null;
+    },
+
+    validateFilterMemberSavings() {
+      return (
+        (this.month === null || this.month === "") &&
+        (this.payment_status === null || this.payment_status === "")
+      );
     },
   },
 
@@ -643,6 +869,9 @@ export default {
       if (this.payment_item_id !== null) {
         this.start_payment_item_select_filtering = false;
       }
+      if (this.month !== null || this.month !== "") {
+        this.start_month_filtering = false;
+      }
     },
 
     filterExpenditureItems() {
@@ -669,6 +898,50 @@ export default {
 
     downloadExpenditureItemDetails() {
       this.$emit("download-expenditure-item-details", {
+        payment_status: this.payment_status,
+      });
+    },
+
+    filterMonths(val, update, abort) {
+      if (val.length < 1) {
+        this.start_month_filtering = false;
+        abort();
+        return;
+      }
+      if (this.month == "") {
+        this.monthsOptions = this.getMonths;
+      }
+      update(() => {
+        this.start_month_filtering = true;
+        const needle = val.toLowerCase();
+        this.monthsOptions = this.getMonths.filter(
+          (v) => v.label.toLowerCase().indexOf(needle) > -1
+        );
+      });
+    },
+
+    filterAllSavings() {
+      this.$emit("filter-savings", { year: this.year, month: this.month });
+    },
+
+    downloadMembersSavings() {
+      this.$emit("download-savings", { year: this.year, month: this.month });
+    },
+
+    searchSavings() {
+      this.$emit("search-savings");
+    },
+
+    filterMemberSavings() {
+      this.$emit("filter-member-savings", {
+        month: this.year,
+        payment_status: this.payment_status,
+      });
+    },
+
+    downloadMemberSavings() {
+      this.$emit("download-member-savings", {
+        month: this.year,
         payment_status: this.payment_status,
       });
     },

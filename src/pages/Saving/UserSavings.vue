@@ -2,83 +2,14 @@
   <q-page>
     <div>
       <!----------------------------------------------------------------START OF USER SAVINGS-------------------------------------------------->
-      <div
-        class="row q-ml-xs q-pt-xs"
-        :class="$q.screen.lg ? 'q-pa-sm' : ''"
-        :style="
-          $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-        "
-      >
-        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
-          <q-select
-            v-model="month"
-            outlined
-            dense
-            :options="monthsOptions"
-            :label="$t('app.searchMonth')"
-            use-input
-            input-debounce="0"
-            clearable
-            @filter="filterMonths"
-            @input="stopSearch"
-          >
-            <template v-slot:append v-if="start_month_filtering">
-              <q-spinner color="primary" size="1.2em" :thickness="3" />
-            </template>
-            <template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey">
-                  {{ $t("app.noResults") }}
-                </q-item-section>
-              </q-item>
-            </template>
-          </q-select>
-        </div>
-        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-pl-md">
-          <q-select
-            v-model="status"
-            outlined
-            dense
-            :options="statuses"
-            :label="$t('app.selectStatusLabel')"
-            clearable
-          >
-            <template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey">
-                  {{ $t("app.noResults") }}</q-item-section
-                >
-              </q-item>
-            </template>
-          </q-select>
-        </div>
-        <div class="col-md-6 col-lg-6 col-xs-12 col-sm-12 flex q-pl-md">
-          <div>
-            <q-btn
-              :label="$t('app.filter')"
-              :loading="is_fetching"
-              :color="'primary'"
-              :disabled="validateFilter"
-              no-caps
-              icon-right="filter_list"
-              @click="filterSavings"
-            >
-            </q-btn>
-          </div>
-          <q-space />
-          <div class="button">
-            <q-btn
-              :label="$t('app.print')"
-              :loading="loading_download"
-              color="positive"
-              :disabled="false"
-              no-caps
-              icon-right="print"
-              @click="downloadSavings"
-            ></q-btn>
-          </div>
-        </div>
-      </div>
+      <FilterComponentVue
+       :show_filter_member_savings="true"
+       :loading_download="loading_download"
+        :disable_download_btn="validateDownload"
+        @filter-member-savings="filterSavings"
+        @download-member-savings="downloadSavings"
+       >
+        </FilterComponentVue>
       <!-------------------------------------------------------TABLE FOR USER SAVINGS---------------------------------------->
       <div class="row q-pt-sm">
         <div class="col-md-12 col-xs-12 col-sm-12">
@@ -112,9 +43,9 @@
 <script>
 import TableVue from "src/components/Table.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
-import MonthsMixinVue from "src/mixins/MonthsMixin.vue";
+import FilterComponentVue from "src/components/FilterComponent.vue";
 export default {
-  mixins: [HelperMixinVue, MonthsMixinVue],
+  mixins: [HelperMixinVue],
 
   mounted() {
     this.fetchMemberSaving();
@@ -163,11 +94,8 @@ export default {
       ],
       label: this.$t("app.delete"),
       message: this.$t("app.deleteSavingWarningMsg"),
-      statuses: ["PENDING", "APPROVED", "DECLINED", "ALL"],
       status: "",
       month: "",
-      is_fetching: false,
-      monthsOptions: [],
       table_loader: false,
       pagination: {
         sortBy: "name",
@@ -180,16 +108,9 @@ export default {
             : 0,
       },
       session_id: this.$store.getters.getCurrentYear.id,
-      start_month_filtering: false,
     };
   },
   computed: {
-    validateFilter() {
-      return (
-        (this.month === null || this.month === "") &&
-        (this.status === null || this.status === "")
-      );
-    },
     getMemberSavings() {
       let data = [];
       if (this.$store.getters.getMemberSavings !== null) {
@@ -225,6 +146,10 @@ export default {
         ? this.$store.getters.getMemberSavings.total_savings
         : 0;
     },
+
+    validateDownload(){
+      return this.getMemberSavings.length == 0;
+    }
   },
   methods: {
     onRequest(props) {
@@ -232,16 +157,15 @@ export default {
       const fetch_count =
         rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
       let id = this.$route.params.id;
-      this.getPaginatedData(id, page, fetch_count, false);
+      this.getPaginatedData(id, page, fetch_count);
     },
 
     fetchMemberSaving() {
-      this.getPaginatedData(this.$route.params.id, 1, 7, false);
+      this.getPaginatedData(this.$route.params.id, 1, 7);
     },
 
-    getPaginatedData(id, page, fetch_count, is_filtering) {
+    getPaginatedData(id, page, fetch_count) {
       this.table_loader = true;
-      this.is_fetching = is_filtering;
       let searched_month =
         this.month !== "" && this.status !== null ? this.month.value : "";
       let searched_status =
@@ -272,7 +196,6 @@ export default {
         })
         .finally(() => {
           this.table_loader = false;
-          this.is_fetching = false;
         });
 
       return this.is_fetching;
@@ -288,55 +211,34 @@ export default {
       this.$emit("edit-member-saving", data);
     },
 
-    filterSavings() {
+    filterSavings(data) {
       this.$router.push({
         path: `/dashboard/members-savings/users/`,
         query: {
-          status: this.status,
-          month: this.month,
+          status: data.payment_status,
+          month: typeof(data.month.label) !== undefined ?data.month.label :"",
           t: new Date().getTime(),
         },
       });
-      this.getPaginatedData(this.$route.params.id, 1, 7, true);
+      this.status = data.payment_status;
+      this.month = data.month;
+      this.getPaginatedData(this.$route.params.id, 1, 7);
     },
 
-    downloadSavings() {
+    downloadSavings(data) {
       let user_id = this.$route.params.id;
-      let status = this.status !== "" || null ? this.status : "";
-      let month = this.month !== "" || null ? this.month : "";
-      let url = `/api/protected/savings/download?user_id=${user_id}&status=${status}&session_id=${this.session_id}&month=${month}`;
+      let status = data.payment_status !== "" || null ? data.payment_status : "";
+      let month = data.month !== "" || null ? data.month : "";
+      let url = `/api/protected/savings/download?user_id=${user_id}&status=${status}&session_id=${this.session_id}&month=${month.value}`;
 
       let file_name = "User_Savings.pdf";
 
       this.loading_download = this.downloadPdf(url, file_name);
     },
-
-    filterMonths(val, update, abort) {
-      if (val.length < 1) {
-        this.start_month_filtering = false;
-        abort();
-        return;
-      }
-      if (this.month == "") {
-        this.monthsOptions = this.getMonths;
-      }
-      update(() => {
-        this.start_month_filtering = true;
-        const needle = val.toLowerCase();
-        this.monthsOptions = this.getMonths.filter(
-          (v) => v.label.toLowerCase().indexOf(needle) > -1
-        );
-      });
-    },
-
-    stopSearch() {
-      if (this.month !== "" || this.month !== null) {
-        this.start_month_filtering = false;
-      }
-    },
   },
   components: {
     TableVue,
+    FilterComponentVue
   },
 };
 </script>

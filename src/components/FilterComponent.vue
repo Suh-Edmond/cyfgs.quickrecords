@@ -100,6 +100,7 @@
     </div>
     <!---------------------------------------------END OF MEMBER MANAGEMENT FILTERS---------------------------------------->
 
+
     <!---------------------------------------------PAYMENT AND EXPENDITURE CATEGORIES FILTERS------------------------------->
     <div
       class="row q-ml-xs q-pt-xs"
@@ -144,6 +145,84 @@
       </div>
     </div>
     <!---------------------------------------------END OF PAYMENT AND EXPENDITURE CATEGORIES FILTERS------------------------>
+
+
+    <!-------------------------------------------------HEADER FILTER FOR PAYMENT ITEMS------------------------------------->
+    <div
+      class="row q-ml-xs"
+      :class="$q.screen.lg ? 'q-pa-sm' : ''"
+      :style="
+        $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+      "
+      v-if="show_filter_payment_items"
+    >
+      <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12">
+        <q-select
+          v-model="is_compulsory"
+          outlined
+          dense
+          :options="statuses"
+          :label="$t('app.selectStatusLabel')"
+          clearable
+        />
+      </div>
+      <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12 q-pl-sm">
+        <q-select
+          v-model="type"
+          outlined
+          dense
+          :options="payment_item_types"
+          :label="$t('app.selectPaymentType')"
+          clearable
+        />
+      </div>
+      <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12 q-pl-sm">
+        <q-select
+          v-model="frequency"
+          outlined
+          dense
+          :options="frequencies"
+          :label="$t('app.selectFrequency')"
+          clearable
+        />
+      </div>
+      <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12 q-pl-sm">
+        <q-select
+          v-model="state"
+          outlined
+          dense
+          :options="states"
+          clearable
+          :label="$t('app.selectState')"
+        />
+      </div>
+      <div class="col-md-4 col-lg-4 col-xs-12 col-sm-12 flex q-pl-sm">
+        <div>
+          <q-btn
+            :label="$t('app.filter')"
+            color="primary"
+            :disabled="validateFilterPaymentItem"
+            @click="filterPaymentItems"
+            no-caps
+            icon-right="filter_list"
+          >
+          </q-btn>
+        </div>
+        <q-space />
+        <div>
+          <q-btn
+            :label="$t('app.print')"
+            :loading="getDownloadLoadingState"
+            color="positive"
+            :disabled="getDisableDownloadBtn"
+            no-caps
+            icon-right="print"
+            @click="downloadPaymentItems"
+          ></q-btn>
+        </div>
+      </div>
+    </div>
+    <!------------------------------------------------END OF FILTER HEADER PAYMENT  ITEM------------------------------------------>
   </div>
 </template>
 
@@ -157,6 +236,11 @@ export default {
     },
 
     show_categories: {
+      required: false,
+      type: Boolean,
+    },
+
+    show_filter_payment_items: {
       required: false,
       type: Boolean,
     },
@@ -193,6 +277,38 @@ export default {
         "DECLINED",
         "ALL",
       ],
+      is_compulsory: "",
+      type: "",
+      frequency: "",
+      state: "",
+      statuses: [
+        { label: this.$t("app.compulsory"), value: 1 },
+        { label: this.$t("app.notCompulsory"), value: 0 },
+        { label: this.$t("app.all"), value: "ALL" },
+      ],
+      states: [
+        {
+          label: this.$t("app.active"),
+          value: "active",
+        },
+        {
+          label: this.$t("app.expired"),
+          value: "expired",
+        },
+        {
+          label: this.$t("app.all"),
+          value: "ALL",
+        },
+      ],
+      payment_item_types: [
+        "ALL_MEMBERS",
+        "A_MEMBER",
+        "MEMBERS_WITH_ROLES",
+        "MEMBERS_WITHOUT_ROLES",
+        "GROUPED_MEMBERS",
+        "ALL",
+      ],
+      frequencies: ["YEARLY", "MONTHLY", "ONE_TIME", "ALL"],
     };
   },
 
@@ -225,6 +341,15 @@ export default {
       set(disable_download_btn) {
         return disable_download_btn;
       },
+    },
+
+    validateFilterPaymentItem() {
+      return (
+        this.is_compulsory === "" &&
+        this.frequency === "" &&
+        this.type === "" &&
+        this.state === ""
+      );
     },
   },
 
@@ -264,7 +389,39 @@ export default {
       this.$emit("download-categories", payload);
     },
 
-    stopFilterSelectInputFields() {},
+    filterPaymentItems() {
+      let payload = {
+        is_compulsory:
+          this.is_compulsory !== null && this.is_compulsory !== ""
+            ? this.is_compulsory
+            : "",
+        frequency:
+          this.frequency !== null && this.frequency !== ""
+            ? this.frequency
+            : "",
+        type: this.type !== null && this.type !== "" ? this.type : "",
+        state: this.state !== null && this.state !== "" ? this.state : "",
+      };
+
+      this.$emit("filter-payment-items", payload);
+    },
+
+    downloadPaymentItems() {
+      let payload = {
+        is_compulsory:
+          this.is_compulsory !== null && this.is_compulsory !== ""
+            ? this.is_compulsory
+            : "",
+        frequency:
+          this.frequency !== null && this.frequency !== ""
+            ? this.frequency
+            : "",
+        type: this.type !== null && this.type !== "" ? this.type : "",
+        state: this.state !== null && this.state !== "" ? this.state : "",
+      };
+
+      this.$emit("download-payment-items", payload);
+    },
   },
 };
 </script>

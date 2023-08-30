@@ -1,83 +1,16 @@
 <template>
   <q-page>
     <div>
-      <!-------------------------------------------------HEADER FOR PAYMENT ITEMS-------------------------------->
-      <div
-        class="row q-ml-xs"
-        :class="$q.screen.lg ? 'q-pa-sm' : ''"
-        :style="
-          $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-        "
+      <FilterComponentVue
+        :show_member_filters="false"
+        :show_categories="false"
+        :show_filter_payment_items="true"
+        :loading_download="loading_download"
+        :disable_download_btn="validateDownload"
+        @filter-payment-items="filterPaymentItems"
+        @download-categories="downloadPaymentItems"
       >
-        <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12">
-          <q-select
-            v-model="is_compulsory"
-            outlined
-            dense
-            :options="statuses"
-            :label="$t('app.selectStatusLabel')"
-            clearable
-          />
-        </div>
-        <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12 q-pl-sm">
-          <q-select
-            v-model="type"
-            outlined
-            dense
-            :options="payment_item_types"
-            :label="$t('app.selectPaymentType')"
-            clearable
-          />
-        </div>
-        <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12 q-pl-sm">
-          <q-select
-            v-model="frequency"
-            outlined
-            dense
-            :options="frequencies"
-            :label="$t('app.selectFrequency')"
-            clearable
-          />
-        </div>
-        <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12 q-pl-sm">
-          <q-select
-            v-model="state"
-            outlined
-            dense
-            :options="states"
-            clearable
-            :label="$t('app.selectState')"
-          />
-        </div>
-        <div class="col-md-4 col-lg-4 col-xs-12 col-sm-12 flex q-pl-sm">
-          <div>
-            <q-btn
-              :label="$t('app.filter')"
-              :loading="loading"
-              color="primary"
-              :disabled="validateFilter"
-              @click="filterPaymentItems"
-              no-caps
-              icon-right="filter_list"
-            >
-            </q-btn>
-          </div>
-          <q-space />
-          <div>
-            <q-btn
-              :label="$t('app.print')"
-              :loading="loading_download"
-              color="positive"
-              :disabled="validateDownload"
-              no-caps
-              icon-right="print"
-              @click="downloadItems"
-            ></q-btn>
-          </div>
-        </div>
-      </div>
-      <!------------------------------------------------END OF HEADER------------------------------------------->
-
+      </FilterComponentVue>
       <!-----------------------------------------------TABLE FOR PAYMENT ITEMS-->
       <div class="row q-pt-sm">
         <div class="col-md-12 col-xs-12 col-sm-12">
@@ -182,6 +115,7 @@
 import CategoryTable from "src/components/CategoryTable.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
 import ConfirmDialog from "src/components/ConfirmDialog.vue";
+import FilterComponentVue from "src/components/FilterComponent.vue";
 
 export default {
   mixins: [HelperMixinVue],
@@ -264,37 +198,9 @@ export default {
       data: [],
       label: this.$t("app.delete"),
       message: this.$t("app.deletePaymentItemWarningMsg"),
-      statuses: [
-        { label: this.$t("app.compulsory"), value: 1 },
-        { label: this.$t("app.notCompulsory"), value: 0 },
-        { label: this.$t("app.all"), value: "ALL" },
-      ],
-      states: [
-        {
-          label: this.$t("app.active"),
-          value: "active",
-        },
-        {
-          label: this.$t("app.expired"),
-          value: "expired",
-        },
-        {
-          label: this.$t("app.all"),
-          value: "ALL",
-        },
-      ],
       is_compulsory: "",
       type: "",
       frequency: "",
-      payment_item_types: [
-        "ALL_MEMBERS",
-        "A_MEMBER",
-        "MEMBERS_WITH_ROLES",
-        "MEMBERS_WITHOUT_ROLES",
-        "GROUPED_MEMBERS",
-        "ALL",
-      ],
-      frequencies: ["YEARLY", "MONTHLY", "ONE_TIME", "ALL"],
       show_reference_dialog: false,
       references: [],
       deleted_row: null,
@@ -315,12 +221,6 @@ export default {
   computed: {
     getPaymentCategoryName() {
       return this.$store.getters.getCurrentPaymentCategory.name;
-    },
-
-    validateFilter() {
-      return (
-        this.is_compulsory === "" && this.frequency === "" && this.type === ""
-      );
     },
 
     validateDownload() {
@@ -358,19 +258,16 @@ export default {
 
   methods: {
     fetchPaymentItems(is_filtering, page, per_page, sort_by) {
-      let payment_category_id = this.$route.params.id;
       let is_compulsory_value =
         this.is_compulsory !== null && this.is_compulsory !== ""
           ? this.is_compulsory.value
           : "";
       let state_value =
         this.state !== null && this.state !== "" ? this.state.value : "";
-      let type_value = this.type !== null && this.type !== "" ? this.type : "";
-      let frequency_value =
-        this.frequency !== null && this.frequency !== "" ? this.frequency : "";
+      let payment_category_id = this.$route.params.id;
       let payload = {
         status: "none",
-        url: `/api/protected/filter-payment-items?payment_category_id=${payment_category_id}&is_compulsory=${is_compulsory_value}&type=${type_value}&frequency=${frequency_value}&state=${state_value}&page=${page}&per_page=${per_page}&sort_by=${sort_by}`,
+        url: `/api/protected/filter-payment-items?payment_category_id=${payment_category_id}&is_compulsory=${is_compulsory_value}&type=${this.type}&frequency=${this.frequency}&state=${state_value}&page=${page}&per_page=${per_page}&sort_by=${sort_by}`,
         has_path_val: true,
         show_feedback: false,
         show_spinner: false,
@@ -402,7 +299,7 @@ export default {
     },
 
     onRequest(props) {
-      const { page, rowsPerPage, sortBy, descending } = props.pagination;
+      const { page, rowsPerPage, sortBy } = props.pagination;
       const fetch_count =
         rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
       this.fetchPaymentItems(false, page, fetch_count, sortBy);
@@ -424,34 +321,27 @@ export default {
       this.$emit("view-payment-item", data);
     },
 
-    downloadItems() {
+    downloadPaymentItems(data) {
       let payment_category_id = this.$route.params.id;
-      let is_compulsory_value =
-        this.is_compulsory !== null && this.is_compulsory !== ""
-          ? this.is_compulsory.value
-          : "";
-      let state_value =
-        this.state !== null && this.state !== "" ? this.state.value : "";
-      let type_value = this.type !== null && this.type !== "" ? this.type : "";
-      let frequency_value =
-        this.frequency !== null && this.frequency !== "" ? this.frequency : "";
-      let url = `/api/protected/download-payment-items?payment_category_id=${payment_category_id}&is_compulsory=${is_compulsory_value}&frequency=${frequency_value}&type=${type_value}&state=${state_value}&page=&per_page`;
+      let url = `/api/protected/download-payment-items?payment_category_id=${payment_category_id}&is_compulsory=${data.is_compulsory}&frequency=${data.frequency}&type=${data.type}&state=${data.state}&page=&per_page`;
       let file_name = "Payment_Items.pdf";
-      this.loadinloading_downloadg = this.downloadPdf(url, file_name);
+      this.loading_download = this.downloadPdf(url, file_name);
     },
 
-    filterPaymentItems() {
+    filterPaymentItems(data) {
       let id = this.$store.getters.getCurrentPaymentCategory.id;
+      this.setFilterVariables(data);
       this.$router.push({
         path: `/dashboard/payment-categories/${id}/items`,
         query: {
-          status: this.is_compulsory,
-          type: this.type,
-          frequency: this.frequency,
+          status: data.is_compulsory,
+          type: data.type,
+          frequency: data.frequency,
+          state: data.state,
           t: new Date().getTime(),
         },
       });
-      this.fetchPaymentItems(true, 1, 2, "name");
+      this.fetchPaymentItems(true, 1, 7, "name");
     },
 
     deleteRow(data) {
@@ -472,7 +362,7 @@ export default {
         },
       };
       this.$store.dispatch("deleteRequest", payload).then(() => {
-        this.fetchPaymentItems(false, 1, 4, "name");
+        this.fetchPaymentItems(false, 1, 7, "name");
       });
     },
 
@@ -553,10 +443,19 @@ export default {
         });
       });
     },
+
+    setFilterVariables(data) {
+      this.is_compulsory =
+        typeof data.is_compulsory === undefined ? "" : data.is_compulsory;
+      this.frequency = data.frequency;
+      this.type = data.type;
+      this.state = typeof data.state === undefined ? "" : data.state;
+    },
   },
   components: {
     CategoryTable,
     ConfirmDialog,
+    FilterComponentVue,
   },
 };
 </script>

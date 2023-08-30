@@ -93,7 +93,6 @@ export default {
       ],
       label: this.$t("app.delete"),
       message: this.$t("app.deletePaymentCategoryWarningMsg"),
-      filteredPaymentCategories: [],
       pagination: {
         sortBy: "name",
         descending: false,
@@ -211,8 +210,6 @@ export default {
         path: "/dashboard/payment-categories",
         query: { year: data.year.label, t: new Date().getTime() },
       });
-
-      this.filteredPaymentCategories = [];
 
       this.fetchOrganisationCategories(1, 7, "name", data.year.label);
     },

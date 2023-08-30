@@ -2,124 +2,39 @@
   <q-page>
     <div>
       <!-- header for filter categories -->
-      <div
-        class="row q-ml-xs q-pt-xs"
-        :class="$q.screen.lg ? 'q-pa-sm' : ''"
-        :style="
-          $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-        "
+      <FilterComponentVue
+        :show_member_filters="false"
+        :show_categories="false"
+        :show_filter_expenditure_items="true"
+        :loading_download="loading_download"
+        :disable_download_btn="validateDownload"
+        @filter-expenditure-items="filterItems"
+        @download-expenditure-itemss="downloadExpenditureItems"
       >
-        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
-          <q-select
-            v-model="payment_item_id"
-            outlined
-            dense
-            :options="filtered_payment_items"
-            :label="$t('app.searchPaymentItem')"
-            input-debounce="0"
-            use-input
-            clearable
-            @filter="filterPaymentItems"
-          >
-            <template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey"
-                  >{{ $t("app.notResults") }}
-                </q-item-section>
-              </q-item>
-            </template>
-          </q-select>
-        </div>
-        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-pl-md">
-          <q-select
-            v-model="session"
-            outlined
-            dense
-            :options="years"
-            :label="$t('app.searchYear')"
-            use-input
-            input-debounce="0"
-            clearable
-            @filter="filterYears"
-          >
-            <template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey"
-                  >{{ $t("app.notResults") }}
-                </q-item-section>
-              </q-item>
-            </template>
-          </q-select>
-        </div>
-        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-pl-md">
-          <q-select
-            v-model="status"
-            outlined
-            dense
-            :options="statuses"
-            :label="$t('app.selectStatusLabel')"
-          >
-            <template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey"
-                  >{{ $t("app.notResults") }}
-                </q-item-section>
-              </q-item>
-            </template>
-          </q-select>
-        </div>
-        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 flex q-pl-md">
-          <div>
-            <q-btn
-              :label="$t('app.filter')"
-              color="primary"
-              :disabled="validateFilter"
-              no-caps
-              icon-right="filter_list"
-              @click="filterItems"
-              :loading="is_fetching"
-            >
-            </q-btn>
-          </div>
-          <q-space />
-          <div class="button q-pb-xs">
-            <q-btn
-              :label="$t('app.print')"
-              :loading="loading"
-              color="positive"
-              :disabled="validateDownload"
-              no-caps
-              icon-right="print"
-              @click="downloadExpenditureItems"
-            ></q-btn>
-          </div>
-        </div>
-      </div>
+      </FilterComponentVue>
 
       <!-- table for categories -->
-      <div>
-        <div class="row q-pt-sm">
-          <div class="col-md-12 col-xs-12 col-sm-12">
-            <CategoryTable
-              :columns="columns"
-              :data="getExpenditureItems"
-              :label="label"
-              :message="message"
-              :title="getTableTitle"
-              :show_payment_category="false"
-              :show_payment_item="false"
-              :show_expenditure_category="false"
-              :show_expenditure_item="true"
-              :pagination="pagination"
-              :table_loading="table_loader"
-              @edit-expenditure-item="editExpenditureItem"
-              @view-expenditure-item="viewExpenditureItem"
-              @show-expenditure-item-details="showExpenditureItemDetails"
-              @delete-row="deleteRow"
-              @onRequest="onRequest"
-            >
-            </CategoryTable>
-          </div>
+      <div class="row q-pt-sm">
+        <div class="col-md-12 col-xs-12 col-sm-12">
+          <CategoryTable
+            :columns="columns"
+            :data="getExpenditureItems"
+            :label="label"
+            :message="message"
+            :title="getTableTitle"
+            :show_payment_category="false"
+            :show_payment_item="false"
+            :show_expenditure_category="false"
+            :show_expenditure_item="true"
+            :pagination="pagination"
+            :table_loading="table_loader"
+            @edit-expenditure-item="editExpenditureItem"
+            @view-expenditure-item="viewExpenditureItem"
+            @show-expenditure-item-details="showExpenditureItemDetails"
+            @delete-row="deleteRow"
+            @onRequest="onRequest"
+          >
+          </CategoryTable>
         </div>
       </div>
     </div>
@@ -132,6 +47,7 @@ import HelperMixinVue from "src/mixins/HelperMixin.vue";
 import ExpenditureItemDetailMixinVue from "src/mixins/ExpenditureItemDetailMixin.vue";
 import expenditureItemMixinVue from "src/mixins/expenditureItemMixin.vue";
 import CurrentYearMixin from "src/mixins/CurrentYearMixin.vue";
+import FilterComponentVue from "src/components/FilterComponent.vue";
 
 export default {
   mixins: [
@@ -141,14 +57,10 @@ export default {
     CurrentYearMixin,
   ],
   mounted() {
-    this.fetchExpenditureItems(1, 7, false);
-    this.fetchPaymentActivities();
-    this.getPaymentItemsFromStore();
+    this.fetchExpenditureItems(1, 7, "");
   },
   data() {
     return {
-      search: null,
-      loading: false,
       columns: [
         {
           name: "counter",
@@ -198,13 +110,8 @@ export default {
       data: [],
       label: this.$t("app.delete"),
       message: this.$t("app.deleteExpenditureItemWarningMsg"),
-      statuses: ["PENDING", "APPROVED", "DECLINED", "ALL"],
       status: "",
       payment_item_id: null,
-      session: "",
-      filtered_payment_items: [],
-      years: [],
-      is_fetching: false,
       pagination: {
         sortBy: "name",
         descending: false,
@@ -214,12 +121,10 @@ export default {
       },
       table_loader: false,
       session_id: this.$store.getters.getCurrentYear.id,
+      loading_download: false,
     };
   },
   computed: {
-    validateFilter() {
-      return this.payment_item_id == null;
-    },
     getExpenditureItems() {
       let data = [];
       if (this.$store.getters.getExpenditureItems !== null) {
@@ -270,25 +175,22 @@ export default {
       const { page, rowsPerPage } = props.pagination;
       const fetch_count =
         rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
-      this.fetchExpenditureItems(page, fetch_count, false);
+      this.fetchExpenditureItems(page, fetch_count, "");
     },
 
-    fetchExpenditureItems(page, per_page, is_filtering) {
+    fetchExpenditureItems(page, per_page, year_value) {
       let category = this.$store.getters.getCurrentExpenditureCategory;
-      let session_id =
-        this.session !== "" && this.session !== null
-          ? this.session.value
-          : this.session_id;
-      let status_value =
-        this.status !== "" && this.status !== null ? this.status : "";
-      let payment_item_id =
+      let payment_item_value =
         this.payment_item_id !== "" && this.payment_item_id !== null
           ? this.payment_item_id.value
           : "";
-
+      let session_value =
+        year_value == ""
+          ? this.$store.getters.getCurrentYear.id
+          : year_value.value;
       let payload = {
         status: "none",
-        url: `/api/protected/expenditure-categories/${category.id}/expenditure-items?status=${status_value}&session_id=${session_id}&payment_item_id=${payment_item_id}&page=${page}&per_page=${per_page}`,
+        url: `/api/protected/expenditure-categories/${category.id}/expenditure-items?status=${this.status}&session_id=${session_value}&payment_item_id=${payment_item_value}&page=${page}&per_page=${per_page}`,
         has_path_val: true,
         show_feedback: false,
         show_spinner: false,
@@ -304,7 +206,7 @@ export default {
         },
       };
       this.table_loader = true;
-      this.is_fetching = is_filtering;
+      this.$store.commit("SET_EXPENDITURE_ITEMS", null);
       this.$store
         .dispatch("getRequest", payload)
         .then((response) => {
@@ -314,7 +216,6 @@ export default {
         })
         .finally(() => {
           this.table_loader = false;
-          this.is_fetching = false;
         });
     },
 
@@ -349,68 +250,29 @@ export default {
       this.$emit("show-expenditure-item-details", data);
     },
 
-    downloadExpenditureItems() {
+    downloadExpenditureItems(data) {
       let expenditure_category_id =
         this.$store.getters.getCurrentExpenditureCategory.id;
-      let payment_item_id =
-        this.payment_item_id != null ? this.payment_item_id.value : "";
-      let session_id = this.session != "" ? this.session.value : "";
-      let url = `/api/protected/expenditure-categories/expenditure-items/download?expenditure_category_id=${expenditure_category_id}&status=${this.status}&payment_item_id=${payment_item_id}&session_id=${session_id}`;
+      let url = `/api/protected/expenditure-categories/expenditure-items/download?expenditure_category_id=${expenditure_category_id}&status=${data.payment_status}&payment_item_id=${data.payment_item_id.value}&session_id=${data.year.value}`;
       let file_name = "Expenditure_Items.pdf";
-      this.loading = this.downloadPdf(url, file_name);
+      this.loading_download = this.downloadPdf(url, file_name);
     },
 
-    filterItems() {
+    filterItems(data) {
       let expenditure_category =
         this.$store.getters.getCurrentExpenditureCategory;
-      let session_label =
-        this.session !== "" && this.session !== null ? this.session.label : "";
       this.$router.push({
         path: `/dashboard/expenditure-categories/${expenditure_category.id}/items`,
         query: {
-          payment_item_id: this.payment_item_id.label,
-          status: this.status,
-          session: session_label,
+          payment_item_id: data.payment_item_id.label,
+          status: data.payment_status,
+          session: data.year.label,
           t: new Date().getTime(),
         },
       });
 
-      this.fetchExpenditureItems(1, 7, true);
-    },
-
-    fetchPaymentActivities() {
-      let payload = {
-        status: "none",
-        url: `/api/protected/payment-items`,
-        has_path_val: true,
-        show_feedback: false,
-        show_spinner: false,
-        msg: "none",
-        color: "default",
-        error_msg: "default",
-        commit: "SET_PAYMENT_ACTIVITIES",
-        has_commit: true,
-        to_be_store_data: {
-          required: true,
-          has_value: false,
-          data: null,
-        },
-      };
-      this.$store.dispatch("getRequest", payload).then(() => {});
-    },
-
-    getPaymentItemsFromStore() {
-      this.filtered_payment_items = [];
-      if (this.$store.getters.getPaymentActivities !== null) {
-        this.$store.getters.getPaymentActivities.forEach((ele) => {
-          this.filtered_payment_items.push({
-            label: ele.name,
-            value: ele.id,
-            amount: ele.amount,
-          });
-        });
-      }
-      return this.filtered_payment_items;
+      this.setFilterVariables(data);
+      this.fetchExpenditureItems(1, 7, data.year);
     },
 
     deleteRow(data) {
@@ -431,41 +293,19 @@ export default {
         },
       };
       this.$store.dispatch("deleteRequest", payload).then(() => {
-        this.fetchExpenditureItems(1, 7, false);
+        this.fetchExpenditureItems(1, 7, "");
       });
     },
 
-    filterPaymentItems(val, update, abort) {
-      if (val < 1) {
-        abort();
-        return;
-      }
-
-      update(() => {
-        this.filtered_payment_items = this.getPaymentItemsFromStore().filter(
-          (item) => item.label.toLowerCase().includes(val.toLowerCase())
-        );
-        return this.filtered_payment_items;
-      });
-    },
-
-    filterYears(val, update, abort) {
-      if (val.length < 1) {
-        abort();
-        return;
-      }
-      if (this.year == "") {
-        this.years = this.getSessionsFromState;
-      }
-      update(() => {
-        this.years = this.getSessionsFromState.filter((v) =>
-          v.label.toLowerCase().includes(val.toLowerCase())
-        );
-      });
+    setFilterVariables(data) {
+      this.payment_item_id = data.payment_item_id;
+      this.status = data.payment_status;
+      this.session_id = data.year;
     },
   },
   components: {
     CategoryTable,
+    FilterComponentVue,
   },
 };
 </script>

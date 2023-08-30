@@ -2,48 +2,15 @@
   <q-page>
     <div>
       <!-- header for filter categories -->
-      <div
-        class="row q-ml-xs q-pt-xs"
-        :class="$q.screen.lg ? 'q-pa-sm' : ''"
-        :style="
-          $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-        "
+      <FilterComponentVue
+        :show_member_filters="false"
+        :show_categories="true"
+        :loading_download="loading_download"
+        :disable_download_btn="validateDownload"
+        @filter-categories="filterExpenditureCategories"
+        @download-categories="downloadExpenditureCategory"
       >
-        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
-          <q-select
-            v-model="year"
-            outlined
-            dense
-            :options="getSessionsFromState"
-            clearable
-            :label="$t('app.selectYearLabel')"
-          />
-        </div>
-        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-ml-md">
-          <q-btn
-            :label="$t('app.filter')"
-            :loading="is_fetching"
-            color="primary"
-            :disabled="validateFilter"
-            @click="filterExpenditureCategories"
-            no-caps
-            icon-right="filter_list"
-          >
-          </q-btn>
-        </div>
-        <q-space />
-        <div class="button q-pb-xs">
-          <q-btn
-            :label="$t('app.print')"
-            :loading="loading"
-            color="positive"
-            :disabled="validateDownload"
-            no-caps
-            icon-right="print"
-            @click="downloadExpenditureCategory"
-          ></q-btn>
-        </div>
-      </div>
+      </FilterComponentVue>
 
       <!-- table for categories -->
       <div class="row q-pt-sm">
@@ -78,6 +45,7 @@ import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import expenditureItemMixinVue from "src/mixins/expenditureItemMixin.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
 import CurrentYearMixin from "src/mixins/CurrentYearMixin.vue";
+import FilterComponentVue from "src/components/FilterComponent.vue";
 
 export default {
   mixins: [
@@ -88,13 +56,11 @@ export default {
     CurrentYearMixin,
   ],
   mounted() {
-    this.fetchOrganisationExpenditureCategories(1, 7, "name", false, "");
+    this.fetchOrganisationExpenditureCategories(1, 7, "name", "");
   },
 
   data() {
     return {
-      year: "",
-      loading: false,
       columns: [
         {
           name: "counter",
@@ -135,9 +101,6 @@ export default {
       ],
       label: this.$t("app.delete"),
       message: this.$t("app.deleteExpenditureCategoryWarningMsg"),
-      start_filter: false,
-      filteredExpenditureCategories: [],
-      is_fetching: false,
       pagination: {
         sortBy: "name",
         descending: false,
@@ -150,9 +113,6 @@ export default {
     };
   },
   computed: {
-    validateFilter() {
-      return this.year === null && this.year !== "";
-    },
     getData() {
       let data = [];
       if (this.$store.getters.getExpenditureCategories !== null) {
@@ -180,18 +140,11 @@ export default {
     },
   },
   methods: {
-    fetchOrganisationExpenditureCategories(
-      page,
-      per_page,
-      sort_by,
-      is_filtering,
-      year
-    ) {
+    fetchOrganisationExpenditureCategories(page, per_page, sort_by, year) {
       let year_value =
         this.$store.getters.getCurrentYear !== null
           ? this.$store.getters.getCurrentYear.year
           : year;
-      this.is_fetching = is_filtering;
       let payload = {
         url: `/api/protected/organisations/${this.organisation_id}/expenditure-categories?year=${year_value}&page=${page}&per_page=${per_page}&sort_by=${sort_by}`,
         msg: "none",
@@ -218,7 +171,6 @@ export default {
           this.pagination.rowsPerPage = response.data.per_page;
         })
         .finally(() => {
-          this.is_fetching = false;
           this.table_loader = false;
         });
     },
@@ -231,7 +183,6 @@ export default {
         page,
         fetch_count,
         sortBy,
-        false,
         ""
       );
     },
@@ -260,27 +211,24 @@ export default {
       this.$emit("update-expenditure-category", data);
     },
 
-    filterExpenditureCategories() {
-      let year_value = this.year !== null && this.year !== "" ? this.year : "";
+    filterExpenditureCategories(data) {
       this.$router.push({
         path: "/dashboard/expenditure-categories",
-        query: { year: year_value, t: new Date().getTime() },
+        query: { year: data.year.label, t: new Date().getTime() },
       });
 
       this.fetchOrganisationExpenditureCategories(
         1,
         7,
         "name",
-        true,
-        year_value
+        data.year.value
       );
     },
 
-    downloadExpenditureCategory() {
-      let id = this.getOrganisationId;
-      let url = `/api/protected/expenditure-categories/download?organisation_id=${id}&year=${this.year}`;
+    downloadExpenditureCategory(data) {
+      let url = `/api/protected/expenditure-categories/download?organisation_id=${this.organisation_id}&year=${data.year.value}`;
       let file_name = "Expenditure_Categories.pdf";
-      this.loading = this.downloadPdf(url, file_name);
+      this.loading_download = this.downloadPdf(url, file_name);
     },
 
     onDeleteRow(data) {
@@ -301,12 +249,13 @@ export default {
         },
       };
       this.$store.dispatch("deleteRequest", payload).then(() => {
-        this.fetchOrganisationExpenditureCategories(1, 7, "name", false, "");
+        this.fetchOrganisationExpenditureCategories(1, 7, "name", "");
       });
     },
   },
   components: {
     CategoryTable,
+    FilterComponentVue,
   },
 };
 </script>

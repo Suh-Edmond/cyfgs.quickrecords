@@ -2,108 +2,15 @@
   <q-page>
     <div>
       <!-- header for filter categories -->
-      <div
-        class="row q-ml-xs q-pt-xs"
-        :class="$q.screen.lg ? 'q-pa-sm' : ''"
-        :style="
-          $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-        "
+      <FilterComponentVue
+        :show_income_activity="true"
+        :loading_download="loading_download"
+        :disable_download_btn="validateDownload"
+        @filter-income-activity="filterIncomeActivity"
+        @download-income-activity="downloadIncomeActivity"
       >
-        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
-          <q-select
-            v-model="payment_item_id"
-            outlined
-            dense
-            :options="payment_items"
-            :label="$t('app.searchPaymentItem')"
-            input-debounce="0"
-            use-input
-            clearable
-            @filter="filterPaymentItems"
-            @input="stopSearch"
-          >
-            <template v-slot:append v-if="start_filtering">
-              <q-spinner color="primary" size="1.2em" :thickness="3" />
-            </template>
-            <template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey">
-                  {{ $t("app.noResults") }}
-                </q-item-section>
-              </q-item>
-            </template>
-          </q-select>
-        </div>
-        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-pl-sm">
-          <q-select
-            v-model="month"
-            outlined
-            dense
-            :options="monthsOptions"
-            :label="$t('app.searchMonth')"
-            input-debounce="0"
-            @filter="filterMonths"
-            @input="stopSearch"
-            use-input
-            clearable
-          >
-            <template v-slot:append v-if="start_month_filtering">
-              <q-spinner color="primary" size="1.2em" :thickness="3" />
-            </template>
-            <template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey">
-                  {{ $t("app.noResults") }}
-                </q-item-section>
-              </q-item>
-            </template>
-          </q-select>
-        </div>
-        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-pl-sm">
-          <q-select
-            v-model="status"
-            outlined
-            dense
-            :options="statuses"
-            clearable
-            :label="$t('app.selectStatusLabel')"
-          >
-            <template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey">
-                  {{ $t("app.noResults") }}
-                </q-item-section>
-              </q-item>
-            </template>
-          </q-select>
-        </div>
-        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 flex q-pl-sm">
-          <div>
-            <q-btn
-              :label="$t('app.filter')"
-              :loading="loading_filter"
-              color="primary"
-              :disabled="validateFilter"
-              no-caps
-              icon-right="filter_list"
-              @click="filterIncomeActivity"
-            >
-            </q-btn>
-          </div>
-          <q-space />
-          <div class="button q-pb-xs">
-            <q-btn
-              :label="$t('app.print')"
-              :loading="loading"
-              color="positive"
-              :disabled="validateDownload"
-              no-caps
-              icon-right="print"
-              @click="downloadIncomeActivity"
-            ></q-btn>
-          </div>
-        </div>
-      </div>
+      </FilterComponentVue>
+
       <!-- table for activities -->
       <div class="row q-pt-sm">
         <div class="col-md-12 col-xs-12 col-sm-12">
@@ -136,10 +43,11 @@
 import TableVue from "src/components/Table.vue";
 import IncomeActivityMixinVue from "src/mixins/IncomeActivityMixin.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
-import MonthsMixinVue from "src/mixins/MonthsMixin.vue";
+import FilterComponentVue from 'src/components/FilterComponent.vue';
+
 
 export default {
-  mixins: [IncomeActivityMixinVue, HelperMixinVue, MonthsMixinVue],
+  mixins: [IncomeActivityMixinVue, HelperMixinVue],
 
   mounted() {
     const page = 1;
@@ -149,11 +57,6 @@ export default {
       page,
       per_page
     );
-
-    if (this.$store.getters.getPaymentActivities.length == 0) {
-      this.fetchPaymentActivities(); //fetch from endpoint
-    }
-    this.getPaymentActivitiesFromStatus();
   },
 
   data() {
@@ -161,10 +64,7 @@ export default {
       organisation_id: this.$store.getters.getOrganisation.id,
       payment_item_id: null,
       month: "",
-      monthsOptions: [],
-      statuses: ["PENDING", "APPROVED", "DECLINED", "ALL"],
       status: "",
-      loading_filter: false,
       columns: [
         {
           name: "counter",
@@ -216,11 +116,7 @@ export default {
       ],
       label: this.$t("app.delete"),
       message: this.$t("app.deleteIncomeActvityWarningMsg"),
-      start_filter: false,
-      loading: false,
-      payment_items: [],
-      start_filtering: false,
-      start_month_filtering: false,
+      loading_download: false,
       pagination: {
         sortBy: "name",
         descending: false,
@@ -232,9 +128,7 @@ export default {
     };
   },
   computed: {
-    validateFilter() {
-      return this.payment_item_id == null;
-    },
+
 
     getTotalIncome() {
       return this.$store.getters.getIncomeActivities !== null
@@ -327,61 +221,6 @@ export default {
       }
     },
 
-    getPaymentActivitiesFromStatus() {
-      this.payment_items = [];
-      this.$store.getters.getPaymentActivities.forEach((ele) => {
-        this.payment_items.push({
-          label: ele.name,
-          value: ele.id,
-          amount: ele.amount,
-        });
-      });
-      return this.payment_items;
-    },
-
-    filterPaymentItems(val, update, abort) {
-      if (val < 1) {
-        this.start_filtering = false;
-        abort();
-        return;
-      }
-
-      update(() => {
-        this.start_filtering = true;
-        this.payment_items = this.getPaymentActivitiesFromStatus().filter(
-          (item) => item.label.toLowerCase().includes(val.toLowerCase())
-        );
-        return this.payment_items;
-      });
-    },
-
-    stopSearch() {
-      if (this.payment_item_id != null) {
-        this.start_filtering = false;
-      }
-      if (this.month != "") {
-        this.start_month_filtering = false;
-      }
-    },
-
-    filterMonths(val, update, abort) {
-      if (val.length < 1) {
-        this.start_month_filtering = false;
-        abort();
-        return;
-      }
-      if (this.month == "") {
-        this.monthsOptions = this.getMonths;
-      }
-      update(() => {
-        this.start_month_filtering = true;
-        const needle = val.toLowerCase();
-        this.monthsOptions = this.getMonths.filter(
-          (v) => v.label.toLowerCase().indexOf(needle) > -1
-        );
-      });
-    },
-
     editIncomeActivity(data) {
       this.$emit("edit-income-activity", data);
     },
@@ -427,7 +266,6 @@ export default {
         },
       };
       this.table_loader = true;
-      this.loading_filter = true;
       this.$store.commit("SET_INCOME_ACTIVITIES", null);
       this.$store
         .dispatch("getRequest", payload)
@@ -438,40 +276,20 @@ export default {
         })
         .finally(() => {
           this.table_loader = false;
-          this.loading_filter = false;
         });
     },
 
-    downloadIncomeActivity() {
+    downloadIncomeActivity(data) {
       let payment_item_id =
-        this.payment_item_id != null ? this.payment_item_id.value : "";
-
-      let url = `/api/protected/organisations/income-activities/generate-pdf?organisation_id=${this.organisation_id}&month=${this.month}&payment_item_id=${payment_item_id}&status=${this.status}`;
+        data.payment_item_id != null && data.payment_item_id != "" ? data.payment_item_id.value : "";
+      let month =
+        data.month != null && data.month != "" ? data.month.value : "";
+      let status = data.status !== null && data.status !== "" ? data.status : ""
+      let url = `/api/protected/organisations/income-activities/generate-pdf?organisation_id=${this.organisation_id}&month=${month}&payment_item_id=${payment_item_id}&status=${status}`;
 
       let file_name = "Organisation_Income_Activities.pdf";
 
-      this.loading = this.downloadPdf(url, file_name);
-    },
-
-    fetchPaymentActivities() {
-      let payload = {
-        status: "none",
-        url: `/api/protected/payment-items`,
-        has_path_val: true,
-        show_feedback: false,
-        show_spinner: false,
-        msg: "none",
-        color: "default",
-        error_msg: "default",
-        commit: "SET_PAYMENT_ACTIVITIES",
-        has_commit: true,
-        to_be_store_data: {
-          required: true,
-          has_value: false,
-          data: null,
-        },
-      };
-      this.$store.dispatch("getRequest", payload).then(() => {});
+      this.loading_download = this.downloadPdf(url, file_name);
     },
 
     deleteRow(data) {
@@ -498,6 +316,7 @@ export default {
   },
   components: {
     TableVue,
+    FilterComponentVue
   },
 };
 </script>

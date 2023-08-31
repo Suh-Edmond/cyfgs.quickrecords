@@ -1,15 +1,26 @@
 <template>
   <div class="q-px-sm">
+    <div class="row flex justify-between q-pa-sm q-mx-sm q-my-md" :style="$q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+      " v-if="show_hint">
+      <div class="hint_text_color q-pt-sm">{{ $t('app.generateReportHint') }}</div>
+      <div>
+        <q-btn flat round class="close_color" icon="close" @click="closeHint" />
+      </div>
+    </div>
     <!-- report details available -->
     <div>
-     
+      <!-- header for filter sponsors -->
+      <FilterComponentVue :show_report="true" :loading_download="loading_download"
+        :disable_download_btn="validateDownloadBtn" @generate-report="generateReport" @download-report="downloadReport">
+      </FilterComponentVue>
+
+      <div class="flex flex-center q-mt-lg" v-if="getLoadingState">
+        <q-spinner color="primary" size="3em" />
+      </div>
       <!-- table for report by activity -->
       <div class="row q-pt-sm" v-if="show_activity_report">
         <div class="col-md-12 col-xs-12 col-sm-12">
-          <ActivityReportTable
-            :heading="heading"
-            :activity_report_data="activity_report_data"
-          >
+          <ActivityReportTable :heading="heading" :activity_report_data="activity_report_data">
           </ActivityReportTable>
         </div>
       </div>
@@ -37,140 +48,79 @@ import HelperMixin from "src/mixins/HelperMixin.vue";
 import QuarterlyReportTable from "src/components/QuarterlyReportTable.vue";
 import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
 import YearlyReportTable from "src/components/YearlyReportTable.vue";
+import FilterComponentVue from "src/components/FilterComponent.vue";
 
 export default {
   mixins: [HelperMixin, CurrentYearMixinVue],
-  mounted() {
-    this.getSessions();
-  },
+  mounted() { },
 
   data() {
     return {
       show_quarterly_report: false,
       show_activity_report: false,
       show_yearly_report: false,
-      loading: false,
+      loading_download: false,
       group: null,
       options: [],
       label: this.$t("app.generateReport"),
-      year: null,
+      year: this.$store.getters.getCurrentYear.name,
       heading: null,
       is_fetching: false,
       option: null,
       selected_option_label: null,
       report_options: [],
-      quarters: [
-        { label: this.$t("app.firstQuarter"), value: "1" },
-        { label: this.$t("app.secondQuarter"), value: "2" },
-        { label: this.$t("app.thirdQuarter"), value: "3" },
-        { label: this.$t("app.fourthQuarter"), value: "4" },
-      ],
       incomes: [],
       activity_report_data: [],
-      start_filtering: false,
+      organisation_id: this.$store.getters.getOrganisation.id,
+      session_id: this.$store.getters.getCurrentYear,
+      show_hint: true,
     };
   },
   computed: {
-    validateGenerateReport() {
-      return this.option == null || this.group == null ? true : false;
+    validateDownloadBtn(data) {
+      return data.length < 0 ? true : false;
     },
 
-    getReportGenerationOptions() {
-      let data = [];
-      data.push(
-        { label: this.$t("app.reportByPaymentItem"), value: 1 },
-        { label: this.$t("app.reportByQuarter"), value: 2 },
-        { label: this.$t("app.reportByYear"), value: 3 }
-      );
-
-      return data;
+    getLoadingState() {
+      return this.$store.getters.getFetchingState;
     },
   },
 
   methods: {
-    selectedOption() {
-      if (this.option != null) {
-        switch (this.option.value) {
-          case 1:
-            this.getPaymentItems();
-            this.selected_option_label = this.$t("app.searchPaymentItem");
-            break;
-          case 2:
-            this.selected_option_label = this.$t("app.selectQuarter");
-            break;
-          case 3:
-            this.getSessionsFromState;
-            this.selected_option_label = this.$t("app.selectYearLabel");
-            break;
-        }
-      }
+    closeHint() {
+      return this.show_hint = false;
     },
 
-    getPaymentItems() {
-      let payload = {
-        status: "none",
-        url: `/api/protected/payment-items`,
-        has_path_val: true,
-        show_feedback: false,
-        show_spinner: false,
-        msg: "none",
-        color: "default",
-        error_msg: "default",
-        commit: "SET_PAYMENT_ACTIVITIES",
-        has_commit: true,
-        to_be_store_data: {
-          required: true,
-          has_value: false,
-          data: null,
-        },
-      };
-      this.$store.dispatch("getRequest", payload).then(() => {});
-    },
 
-    getPaymentActivitiesFromStatus() {
-      let activities = [];
-      this.$store.getters.getPaymentActivities.forEach((ele) => {
-        activities.push({
-          label: ele.name,
-          value: ele.id,
-          amount: ele.amount,
-        });
-      });
-      return activities;
-    },
-
-    generateReport() {
-      switch (this.option.value) {
+    generateReport(data) {
+      switch (data.report_option.value) {
         case 1:
           this.show_quarterly_report = false;
           this.show_yearly_report = false;
-          this.generateActivityReport();
+          this.generateActivityReport(data);
           break;
         case 2:
           this.show_activity_report = false;
           this.show_yearly_report = false;
-          this.generateQuarterlyReport();
+          this.generateQuarterlyReport(data);
           break;
         case 3:
           this.show_activity_report = false;
           this.show_quarterly_report = false;
-          this.generatYearlyReport();
+          this.generatYearlyReport(data);
           break;
       }
     },
 
-    generateActivityReport() {
-      this.is_fetching = true;
+    generateActivityReport(data) {
       this.heading =
-        this.$t("app.reportTitle") +
-        `${this.group.label} ${this.getCurrentYear.year}`;
-      let organisation_id = this.$store.getters.getOrganisation.id;
+        this.$t("app.reportTitle") + `${data.group.label} ${this.year}`;
       let payload = {
         status: "none",
-        url: `/api/protected/activity/${this.group.value}/generate-report?organisation_id=${organisation_id}`,
+        url: `/api/protected/activity/${data.group.value}/generate-report?organisation_id=${this.organisation_id}`,
         has_path_val: true,
         show_feedback: false,
-        show_spinner: true,
+        show_spinner: false,
         msg: "none",
         color: "default",
         error_msg: "default",
@@ -182,6 +132,7 @@ export default {
           data: null,
         },
       };
+      this.$store.commit("SET_IS_FETCHING", true);
       this.$store
         .dispatch("getRequest", payload)
         .then((res) => {
@@ -189,22 +140,19 @@ export default {
           this.show_activity_report = true;
         })
         .finally(() => {
-          this.is_fetching = false;
+          this.$store.commit("SET_IS_FETCHING", false);
         });
     },
 
-    generateQuarterlyReport() {
-      this.is_fetching = true;
-      let organisation_id = this.$store.getters.getOrganisation.id;
+    generateQuarterlyReport(data) {
       this.heading =
-        this.$t("app.quarterReportTitle") +
-        `${this.group.label} ${this.getCurrentYear.year}`;
+        this.$t("app.quarterReportTitle") + `${data.group.label} ${this.year}`;
       let payload = {
         status: "none",
-        url: `/api/protected/generate-quarterly-report?quarter=${this.group.value}&organisation_id=${organisation_id}`,
+        url: `/api/protected/generate-quarterly-report?quarter=${data.group.value}&organisation_id=${this.organisation_id}`,
         has_path_val: true,
         show_feedback: false,
-        show_spinner: true,
+        show_spinner: false,
         msg: "none",
         color: "default",
         error_msg: "default",
@@ -216,28 +164,26 @@ export default {
           data: null,
         },
       };
+      this.$store.commit("SET_IS_FETCHING", true);
       this.$store
         .dispatch("getRequest", payload)
         .then(() => {
           this.show_quarterly_report = true;
         })
         .finally(() => {
-          this.is_fetching = false;
+          this.$store.commit("SET_IS_FETCHING", false);
         });
       return this.data;
     },
 
-    generatYearlyReport() {
-      this.is_fetching = true;
-      this.heading =
-        this.$t("app.yearReportTitle") + `${this.getCurrentYear.year}`;
-      let organisation_id = this.$store.getters.getOrganisation.id;
+    generatYearlyReport(data) {
+      this.heading = this.$t("app.yearReportTitle") + `${this.year}`;
       let payload = {
         status: "none",
-        url: `/api/protected/report/yearly/generate?year_id=${this.group.value}&year_label=${this.group.label}&organisation_id=${organisation_id}`,
+        url: `/api/protected/report/yearly/generate?year_id=${data.group.value}&year_label=${data.group.label}&organisation_id=${this.organisation_id}`,
         has_path_val: true,
         show_feedback: false,
-        show_spinner: true,
+        show_spinner: false,
         msg: "none",
         color: "default",
         error_msg: "default",
@@ -249,144 +195,43 @@ export default {
           data: null,
         },
       };
+      this.$store.commit("SET_IS_FETCHING", true);
       this.$store
         .dispatch("getRequest", payload)
         .then(() => {
           this.show_yearly_report = true;
         })
         .finally(() => {
-          this.is_fetching = false;
+          this.$store.commit("SET_IS_FETCHING", false);
         });
     },
 
-    getActivityReportIncomeData(data) {
-      data.forEach((ele) => {
-        this.income_per_activity.push({
-          counter: data.indexOf(ele) + 1,
-          name: ele.name,
-          amount: ele.amount,
-        });
-      });
-      return this.income_per_activity;
-    },
-
-    getQuarterlyIncome(data) {
-      this.data = [];
-      return (this.data = data);
-    },
-
-    getActivityReportExpenditureData(data) {
-      data.forEach((ele) => {
-        this.expenditures_per_activity.push({
-          counter: data.indexOf(ele) + 1,
-          name: ele.name,
-          amount_given: ele.amount_given,
-          amount_spent: ele.amount_spent,
-          balance: ele.balance,
-        });
-      });
-      return this.expenditures_per_activity;
-    },
-
-    validateDownloadBtn(data) {
-      return data.length < 0 ? true : false;
-    },
-
-    downloadReport() {
-      let id = this.group != null ? this.group.value : "";
-      let label = this.group != null ? this.group.label : "";
+    downloadReport(data) {
+      let id = data.group != null && data.group != "" ? data.group.value : "";
+      let label =
+        data.group != null && data.group != "" ? data.group.label : "";
       this.loading = true;
       let url = "";
       let file_name = "";
-      if (this.option.value == 1) {
+      if (data.report_option.value == 1) {
         url = `/api/protected/activity/${id}/report/download?payment_actvity=${label}`;
         file_name = "Activity_Report.pdf";
-      } else if (this.option.value == 2) {
-        url = `/api/protected/report/quarter/download?quarter=${this.group.value}`;
+      } else if (data.report_option.value == 2) {
+        url = `/api/protected/report/quarter/download?quarter=${data.group.value}`;
         file_name = "Quarterly_Report.pdf";
       } else {
-        url = `/api/protected/report/yearly/download?year_id=${this.group.value}&year_label=${this.group.label}`;
+        url = `/api/protected/report/yearly/download?year_id=${data.group.value}&year_label=${data.group.label}`;
         file_name = "Yearly_Report.pdf";
       }
-      this.loading = this.downloadPdf(url, file_name);
-      return this.loading;
-    },
-
-    filterOptions(val, update, abort) {
-      switch (this.option.value) {
-        case 1:
-          this.filterPaymentItems(val, update, abort);
-          break;
-        case 2:
-          this.options = this.filterQuarters(val, update, abort);
-          break;
-        case 3:
-          this.options = this.filterYears(val, update, abort);
-          break;
-      }
-      return this.options;
-    },
-
-    filterPaymentItems(val, update, abort) {
-      if (val < 1) {
-        abort();
-        this.start_filtering = false;
-        return;
-      }
-      update(() => {
-        this.start_filtering = true;
-        this.report_options = this.getPaymentActivitiesFromStatus().filter(
-          (item) => item.label.toLowerCase().includes(val.toLowerCase())
-        );
-      });
-
-      return this.report_options;
-    },
-
-    filterQuarters(val, update, abort) {
-      this.report_options = [];
-      if (val < 1) {
-        abort();
-        this.start_filtering = false;
-        return;
-      }
-
-      update(() => {
-        this.start_filtering = true;
-        this.report_options = this.quarters.filter((item) =>
-          item.label.toLowerCase().includes(val.toLowerCase())
-        );
-        return this.report_options;
-      });
-    },
-
-    filterYears(val, update, abort) {
-      this.report_options = [];
-      if (val < 1) {
-        abort();
-        this.start_filtering = false;
-        return;
-      }
-
-      update(() => {
-        this.start_filtering = true;
-        this.report_options = this.getSessionsFromState.filter((item) =>
-          item.label.toLowerCase().includes(val.toLowerCase())
-        );
-        return this.report_options;
-      });
-    },
-
-    stopSearch() {
-      if (this.group != null) {
-        this.start_filtering = false;
-      }
+      this.loading_download = this.downloadPdf(url, file_name);
+      return this.loading_download;
     },
   },
   components: {
     ActivityReportTable,
     QuarterlyReportTable,
     YearlyReportTable,
+    FilterComponentVue,
   },
 };
 </script>
@@ -425,5 +270,13 @@ export default {
   letter-spacing: 0.1em;
   color: $grey5;
   margin-top: 1.3rem;
+}
+
+.hint_text_color {
+  color: $grey8;
+}
+
+.close_color {
+  color: $grey8;
 }
 </style>

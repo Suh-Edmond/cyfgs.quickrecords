@@ -2,16 +2,29 @@
   <q-page>
     <div>
       <!-- header for filter sponsors -->
-      <FilterComponentVue :show_sponsorship="true" :loading_download="loading_download"
-        :disable_download_btn="validateDownload" @filter-sponsorship="filterSponsorship"
-        @download-sponsorship="downloadSponsorship">
+      <FilterComponentVue
+        :show_sponsorship="true"
+        :loading_download="loading_download"
+        :disable_download_btn="validateDownload"
+        @filter-sponsorship="filterSponsorship"
+        @download-sponsorship="downloadSponsorship"
+      >
       </FilterComponentVue>
       <!-- table for support activities -->
       <div class="row q-pt-sm">
         <div class="col-md-12 col-xs-12 col-sm-12">
-          <SponsorshipTable :columns="columns" :data="getData" :title="setTableTitle" :message="message"
-            :total="getTotalSponsorship" :pagination="pagination" :table_loading="table_loader"
-            @view-sponsorship="viewSponsorship" @edit-sponsorship="editSponsorship" @onRequest="onRequest">
+          <SponsorshipTable
+            :columns="columns"
+            :data="getData"
+            :title="setTableTitle"
+            :message="message"
+            :total="getTotalSponsorship"
+            :pagination="pagination"
+            :table_loading="table_loader"
+            @view-sponsorship="viewSponsorship"
+            @edit-sponsorship="editSponsorship"
+            @onRequest="onRequest"
+          >
           </SponsorshipTable>
         </div>
       </div>
@@ -186,9 +199,8 @@ export default {
     },
 
     filterSponsorship(data) {
-      let payment_item_name = data.payment_item_id !== ""
-        ? data.payment_item_id.label
-        : "";
+      let payment_item_name =
+        data.payment_item_id !== "" ? data.payment_item_id.label : "";
       this.$router.push({
         path: `/dashboard/sponsorship?payment_item=${payment_item_name}&status=${data.payment_status}`,
         query: {
@@ -242,7 +254,7 @@ export default {
   },
   components: {
     SponsorshipTable,
-    FilterComponentVue
+    FilterComponentVue,
   },
 };
 </script>

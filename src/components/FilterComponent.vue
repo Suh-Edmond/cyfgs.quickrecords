@@ -883,7 +883,7 @@
           no-caps
           class="full-width"
           :disabled="validateGenerateReport"
-          :loading="getReport"
+          :loading="false"
         >
         </q-btn>
       </div>
@@ -892,9 +892,9 @@
       >
         <q-btn
           :label="$t('app.print')"
-          :loading="loading"
+          :loading="getDownloadLoadingState"
           color="positive"
-          :disabled="false"
+          :disabled="getDownloadLoadingState"
           no-caps
           icon-right="print"
           @click="downloadReport"
@@ -1051,15 +1051,15 @@ export default {
       transaction_status: "",
       report_option: "",
       selected_option_label: "",
-      report_options:[],
+      report_options: [],
       quarters: [
         { label: this.$t("app.firstQuarter"), value: "1" },
         { label: this.$t("app.secondQuarter"), value: "2" },
         { label: this.$t("app.thirdQuarter"), value: "3" },
         { label: this.$t("app.fourthQuarter"), value: "4" },
       ],
-      group:"",
-      start_filtering:false,
+      group: "",
+      start_filtering: false,
     };
   },
 
@@ -1148,9 +1148,9 @@ export default {
       return data;
     },
 
-    validateGenerateReport(){
-      return this.option == "" || this.group == ""
-    }
+    validateGenerateReport() {
+      return this.report_option == "" || this.group == "";
+    },
   },
 
   methods: {
@@ -1253,21 +1253,30 @@ export default {
       this.$emit("download-expenditure-items", payload);
     },
 
-    searchPaymentItems(val, update, abort) {
+    searchPaymentItems(val, update, abort, is_report_filtering) {
       const all_payment_items = this.getAllPaymentItemsFromStore();
       if (val < 1) {
         this.start_payment_item_select_filtering = false;
         abort();
         return;
       }
-
-      update(() => {
-        this.start_payment_item_select_filtering = true;
-        this.filtered_payment_items = all_payment_items.filter((item) =>
-          item.label.toLowerCase().includes(val.toLowerCase())
-        );
-        return this.filtered_payment_items;
-      });
+      if (!is_report_filtering) {
+        update(() => {
+          this.start_payment_item_select_filtering = true;
+          this.filtered_payment_items = all_payment_items.filter((item) =>
+            item.label.toLowerCase().includes(val.toLowerCase())
+          );
+          return this.filtered_payment_items;
+        });
+      } else {
+        update(() => {
+          this.start_filtering = true;
+          this.report_options = all_payment_items.filter((item) =>
+            item.label.toLowerCase().includes(val.toLowerCase())
+          );
+          return this.report_options;
+        });
+      }
     },
 
     stopSelectInputSearch() {
@@ -1276,6 +1285,9 @@ export default {
       }
       if (this.month !== null || this.month !== "") {
         this.start_month_filtering = false;
+      }
+      if (this.group !== null || this.group !== "") {
+        this.start_filtering = false;
       }
     },
 
@@ -1411,6 +1423,7 @@ export default {
         switch (this.report_option.value) {
           case 1:
             if (this.$store.getters.getPaymentActivities.length == 0) {
+              console.log(this.$store.getters.getPaymentActivities);
               this.fetchPaymentActivities();
             }
             this.getAllPaymentItemsFromStore();
@@ -1443,20 +1456,53 @@ export default {
       });
     },
 
+    filterYears(val, update, abort) {
+      this.report_options = [];
+      if (val < 1) {
+        abort();
+        this.start_filtering = false;
+        return;
+      }
+
+      update(() => {
+        this.start_filtering = true;
+        this.report_options = this.getSessionsFromState.filter((item) =>
+          item.label.toLowerCase().includes(val.toLowerCase())
+        );
+        return this.report_options;
+      });
+    },
 
     filterReportOptions(val, update, abort) {
-      switch (this.option.value) {
+      this.report_options = [];
+      switch (this.report_option.value) {
         case 1:
-          this.searchPaymentItems(val, update, abort);
+          this.searchPaymentItems(val, update, abort, true);
           break;
         case 2:
-          this.options = this.filterQuarters(val, update, abort);
+          this.filterQuarters(val, update, abort);
           break;
         case 3:
-          this.options = this.getSessionsFromState;
+          this.filterYears(val, update, abort);
           break;
       }
-      return this.options;
+      return this.report_options;
+    },
+
+    generateReport() {
+      let payload = {
+        group: this.group,
+        report_option: this.report_option,
+      };
+      this.$emit("generate-report", payload);
+    },
+
+    downloadReport() {
+      let payload = {
+        group: this.group,
+        report_option: this.report_option,
+      };
+      this.$emit("download-report", payload);
     },
   },
 };

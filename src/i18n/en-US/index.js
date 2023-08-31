@@ -468,6 +468,7 @@ export default {
     NonRoleUserEmailFailMsg:"Unauthorized! Please you don't the role to carry out this action",
     notSendEmailMsg:"Could not send  password email. Please check you connection",
     invalidDeadline:"Invalid deadline! Deadline must be greater or lesser than today's date",
-    forTheMonthOf:" for the month of "
+    forTheMonthOf:" for the month of ",
+    generateReportHint:"Please Select an Options to Generate Report for your Organisation"
    }
 };

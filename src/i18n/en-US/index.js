@@ -469,6 +469,6 @@ export default {
     notSendEmailMsg:"Could not send  password email. Please check you connection",
     invalidDeadline:"Invalid deadline! Deadline must be greater or lesser than today's date",
     forTheMonthOf:" for the month of ",
-    generateReportHint:"Please Select an Options to Generate Report for your Organisation"
+    generateReportHint:"Please Select an Option to Generate Report for your Organisation"
    }
 };

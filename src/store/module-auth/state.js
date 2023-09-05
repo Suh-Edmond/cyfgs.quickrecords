@@ -43,7 +43,7 @@ export default function () {
     intermediate_tabs:[],
     member_contributions:null,
     payment_activities:[],
-    sponsorships:[],
+    sponsorships:null,
     selected_sponsorship:null,
     member_to_register:null,
     current_member:null,

@@ -181,7 +181,6 @@ export default {
     paymentCategoryDeleteFeedbackMsg:'Payment Category deleted successfully',
     removeMember:'Are you sure you want to remove this Member ?',
     removeMemberSuccessMsg:'Member remove successfully',
-    compulsory:'Compulsory',
     yes:'YES',
     no:'NO',
     frequency:'Frequency',
@@ -252,8 +251,15 @@ export default {
     addSavingSuccessMsg:'Member Saving Save Successfully',
     amountDeposited:'Amount Deposited',
     transactionStatus:'Transaction Status',
+    searchTransactionStatus:'Search Transaction Status...',
     action:"Action",
     markAll:"Check all",
+    all:"ALL",
+    selectState:"Select State",
+    deadline:"Deadline",
+    active:"ACTIVE",
+    expired:"EXPIRED",
+    compulsoryLabel:"Compulsory",
     viewSavingHeading:'Member Saving Information',
     selectOptionGenerateReport:'Select an Option to Generate Report',
     selectQuarter:'Select Quarter',
@@ -365,7 +371,7 @@ export default {
     removeRegFeeWarningMsg:'Are you sure you want delete this Registration Fee ?',
     saveRegFeeSuccessMsg:'Registration saved Successfully',
     organisationName:'Organisation Name',
-    filterMsg:'Filter by Payment Category, Item',
+    filterMsg:'Filter by Payment Item',
     filterStatus:'Filter by Status',
     filterDelay:'Filter by Delay',
     selectDate:'Select Date',
@@ -460,6 +466,9 @@ export default {
     tokenExpireMsg:"Password Reset Token Expired",
     newPasswordResetTokenMsg:"Get New Password Reset Token",
     NonRoleUserEmailFailMsg:"Unauthorized! Please you don't the role to carry out this action",
-    notSendEmailMsg:"Could not send  password email. Please check you connection"
+    notSendEmailMsg:"Could not send  password email. Please check you connection",
+    invalidDeadline:"Invalid deadline! Deadline must be greater or lesser than today's date",
+    forTheMonthOf:" for the month of ",
+    generateReportHint:"Please Select an Options to Generate Report for your Organisation"
    }
 };

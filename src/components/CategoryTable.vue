@@ -8,8 +8,15 @@
       :table-header-style="{ backgroundColor: '#5384ae', color: '#FFFFFF' }"
       class="col-xs-12"
       :filter="filter"
-      :rows-per-page-options="[0]"
+      :loading="table_loading"
+      :pagination.sync="getPagination"
+      @request="onRequest"
+      binary-state-sort
     >
+      <template v-slot:loading>
+        <q-inner-loading showing color="primary" />
+      </template>
+
       <template v-slot:body="props">
         <!-- table body for payment category -->
         <q-tr :props="props" v-if="show_payment_category">
@@ -104,7 +111,7 @@
             {{ Number(props.row.amount).toLocaleString() }}
           </q-td>
           <q-td key="compulsory" :props="props">
-            {{ props.row.compulsory == 1 ? "YES" : "NO" }}
+            {{ props.row.compulsory === 1 ? "YES" : "NO" }}
           </q-td>
           <q-td key="frequency" :props="props">
             {{ props.row.frequency }}
@@ -363,7 +370,7 @@
               v-if="
                 checkTreasurerRole() &&
                 props.row.approve == 'PENDING' &&
-                checkIfExpendituredetailsStatus()
+               props.row.has_no_pending_details
               "
             />
             <!-- decline btn for expenditure items -->
@@ -377,7 +384,7 @@
               v-if="
                 checkTreasurerRole() &&
                 props.row.approve == 'PENDING' &&
-                checkIfExpendituredetailsStatus()
+               props.row.has_no_pending_details
               "
             />
 
@@ -599,7 +606,11 @@
             <!-- view expenditure item details -->
             <q-btn
               color="primary"
-              :class="props.row.approve == 'PENDING' ? 'viewExpenditureItem':'viewPending'"
+              :class="
+                props.row.approve == 'PENDING'
+                  ? 'viewExpenditureItem'
+                  : 'viewPending'
+              "
               dense
               :label="$t('app.view')"
               no-caps
@@ -654,38 +665,6 @@
             <q-icon name="search" />
           </template>
         </q-input>
-      </template>
-
-      <template v-slot:bottom>
-        <div v-if="show_expenditure_item_detail">
-          <div class="q-py-xs text-bold summary q-mt-sm">
-            <span>A:</span> &nbsp; {{ $t("app.estimatedExpenditure") }}:
-            <span class="expenditure_amount"
-              >{{ Number(expenditure_item_amount).toLocaleString() }} XAF</span
-            >
-          </div>
-          <div class="q-py-xs text-bold summary">
-            <span>B:</span> &nbsp;{{ $t("app.totalAmountGiven") }}:
-            <span class="expenditure_amount q-ml-lg"
-              >{{ Number(total_amount_given).toLocaleString() }} XAF</span
-            >
-          </div>
-          <div class="q-py-xs text-bold summary">
-            <span>C:</span> &nbsp;{{ $t("app.totalAmountSpent") }}:
-            <span class="expenditure_amount q-ml-lg"
-              >{{ Number(total_amount_spent).toLocaleString() }} XAF</span
-            >
-          </div>
-          <div class="q-py-xs text-bold summary q-mb-lg">
-            <span>D:</span> &nbsp;Net Balance:
-            <span class="expenditure_amount net_balance" v-show="total_balance != null"
-              >{{ Number(total_balance ).toLocaleString() }} XAF</span
-            >
-            <span class="expenditure_amount net_balance" v-show="total_balance == null"
-              >{{ Number(0 ).toLocaleString() }} XAF</span
-            >
-          </div>
-        </div>
       </template>
     </q-table>
     <!---------------------------------------------------END OF MAIN TABLE COMPONENT------------------------>
@@ -839,9 +818,15 @@ export default {
       type: Boolean,
       required: false,
     },
+    pagination: {
+      required: true,
+      type: Object,
+    },
+    table_loading: {
+      required: false,
+      type: Boolean,
+    },
   },
-
-
 
   data() {
     return {
@@ -852,17 +837,27 @@ export default {
       showTable: true,
       filter: "",
       approve_data: null,
-      pagination: {
-        rowsPerPage: 15, // current rows per page being displayed
-      },
       approve_msg: null,
       type: null,
       delete_msg: "",
       show_confirm_dialog_detail: false,
-     };
+    };
   },
-  computed: {},
+  computed: {
+    getPagination: {
+      get() {
+        return this.pagination;
+      },
+      set(pagination) {
+        return pagination;
+      },
+    },
+  },
   methods: {
+    onRequest(props) {
+      this.$emit("onRequest", props);
+    },
+
     getFormatedDate(date) {
       return moment(date).format("MMMM Do YYYY");
     },
@@ -882,7 +877,7 @@ export default {
     },
 
     showPaymentItems(data) {
-      this.$emit("show-payment-items", { data });
+      this.$emit("show-payment-items",  data);
     },
 
     onViewPaymentCategory(categories) {
@@ -1127,7 +1122,7 @@ export default {
         },
       };
       this.$store.dispatch("putRequest", payload).then((res) => {
-         if (res.success) {
+        if (res.success) {
           this.callFetchDataAfterApproveAction(this.approve_data);
         }
       });
@@ -1135,9 +1130,6 @@ export default {
 
     showDetails(data) {
       this.$store.dispatch("setExpenditureItemName", data.name);
-
-      this.getExpenditureDetailsByItemId(data.id);
-
       const intermediate_tabs = Array.from(
         this.$store.getters.getIntermediateTabs
       );
@@ -1151,9 +1143,12 @@ export default {
     },
 
     checkIfExpendituredetailsStatus() {
-      return this.$store.getters.getExpenditures.length > 0  ? this.$store.getters.getExpenditures[0].expenditure_details.filter((ele) => ele.approve == "PENDING").length == 0: false;
+      return this.$store.getters.getExpenditures.length > 0
+        ? this.$store.getters.getExpenditures[0].expenditure_details.filter(
+            (ele) => ele.approve == "PENDING"
+          ).length == 0
+        : false;
     },
-
   },
   components: {
     ConfirmDialog,
@@ -1238,7 +1233,7 @@ export default {
   width: 5.5rem;
   margin-left: 5rem;
 }
-.viewPending{
+.viewPending {
   width: 5.5rem;
 }
 .approve {

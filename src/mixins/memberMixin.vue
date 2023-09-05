@@ -2,15 +2,15 @@
 export default {
   data() {
     return {
-
-    }
+     }
   },
   computed: {
     getMembers() {
       let data = [];
-      this.$store.getters.getMembers.forEach((member) => {
+      if(this.$store.getters.getMembers != null){
+        this.$store.getters.getMembers.data.forEach((member) => {
         data.push({
-          counter: this.$store.getters.getMembers.indexOf(member) + 1,
+          counter: this.$store.getters.getMembers.data.indexOf(member) + 1,
           name: member.name,
           telephone: member.telephone,
           gender: member.gender,
@@ -30,13 +30,14 @@ export default {
           picture: member.picture,
         });
       });
+      }
       return data;
     }
   },
   methods: {
-    getOrganisationMembers(id, show_spinner) {
-      let payload = {
-        url: `/api/protected/organisations/${id}/users`,
+    getOrganisationMembers(id, show_spinner, page, rowsPerPage, sort_by) {
+       let payload = {
+        url: `/api/protected/organisations/users-paginate?organisation_id=${id}&page=${page}&per_page=${rowsPerPage}&sort_by=${sort_by}`,
         msg: "none",
         color: "default",
         status: "none",
@@ -53,7 +54,7 @@ export default {
       };
       this.$store.dispatch("getRequest", payload).then(() => {
       }).finally(() => {
-      })
+      });
     },
 
     getMemberProfile(id) {

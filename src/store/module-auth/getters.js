@@ -198,3 +198,7 @@ export function getTotalYearlyContribution(state) {
 export function getTotalYearlyExpenditure(state) {
   return state.total_yearly_expenditure;
 }
+
+export function getSearchContributionParams(state){
+  return state.search_contribution_data
+}

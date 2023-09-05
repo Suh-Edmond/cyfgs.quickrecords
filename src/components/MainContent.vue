@@ -129,24 +129,12 @@
               @view-sponsorship="viewSponsorship"
               @edit-sponsorship="editSponsorship"
               @register-member="registerMember"
+              @search-contribution="searchContribution"
             />
           </q-card-section>
         </q-card>
       </q-scroll-area>
     </div>
-    <q-footer class="text-black text-center footer">
-      <q-toolbar>
-        <q-toolbar-title>
-          <p class="footer_text">
-            <span class="material-icons copy_right"> copyright </span
-            >{{ $t("app.copyright") }} {{ year }}
-            <span class="appName"
-              >{{ $t("app.nameOne") }}{{ $t("app.nameTwo") }}</span
-            >. {{ $t("app.allRightsReserved") }}
-          </p>
-        </q-toolbar-title>
-      </q-toolbar>
-    </q-footer>
   </q-page>
 </template>
 
@@ -214,6 +202,11 @@ export default {
   },
 
   methods: {
+    searchContribution(data){
+      console.log(data);
+      this.$emit("search-contribution", data);
+    },
+
     startLoading(data) {
       this.loading = data;
     },
@@ -443,25 +436,6 @@ export default {
   height: 8vh;
 }
 
-.footer_text {
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 400;
-  font-size: 13px;
-  align-items: center;
-  text-align: center;
-  letter-spacing: 0.005em;
-}
-
-.copy_right {
-  font-size: large;
-}
-
-.footer {
-  height: 2rem;
-  background-color: $white1;
-  margin-left: 1rem;
-}
 
 .title {
   font-family: "Roboto";

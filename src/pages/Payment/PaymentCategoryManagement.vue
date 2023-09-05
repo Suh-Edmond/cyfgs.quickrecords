@@ -1,58 +1,16 @@
 <template>
   <q-page>
-    <!-- spinners -->
-    <div class="flex justify-center">
-      <q-spinner-ios
-        color="primary"
-        size="2em"
-        class="q-mb-md"
-        v-if="getLoadingState"
-      />
-    </div>
-
     <!-- header for filter categories -->
     <div>
-      <div
-        class="row q-ml-xs q-pt-xs"
-        :class="$q.screen.lg ? 'q-pa-sm' : ''"
-        :style="
-          $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-        "
+      <FilterComponentVue
+        :show_member_filters="false"
+        :show_categories="true"
+        :loading_download="loading_download"
+        :disable_download_btn="validateDownload"
+        @filter-categories="filterPaymentCategories"
+        @download-categories="downloadPaymentCategory"
       >
-        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
-          <q-select
-            v-model="year"
-            outlined
-            dense
-            :options="getSessionsFromState"
-            :label="$t('app.selectYearLabel')"
-          />
-        </div>
-        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-ml-md">
-          <q-btn
-            :label="$t('app.filter')"
-            :loading="is_fetching"
-            color="primary"
-            :disabled="validateFilter"
-            @click="filterPaymentCategories"
-            no-caps
-            icon-right="filter_list"
-          >
-          </q-btn>
-        </div>
-        <q-space />
-        <div class="button q-pb-xs">
-          <q-btn
-            :label="$t('app.print')"
-            :loading="loading"
-            color="positive"
-            :disabled="validateDownload"
-            no-caps
-            icon-right="print"
-            @click="downloadPaymentCategory"
-          ></q-btn>
-        </div>
-      </div>
+      </FilterComponentVue>
       <!-- table for categories -->
       <div class="row q-pt-sm">
         <div class="col-md-12 col-xs-12 col-sm-12">
@@ -65,9 +23,12 @@
             :show_payment_item="false"
             :show_expenditure_category="false"
             :show_expenditure_item="false"
+            :pagination="pagination"
+            :table_loading="table_loader"
             @delete-row="deleteRow"
             @show-payment-items="showPaymentItems"
             @update-payment-category="updatePaymentCategory"
+            @onRequest="onRequest"
           >
           </CategoryTable>
         </div>
@@ -81,18 +42,16 @@ import CategoryTable from "src/components/CategoryTable.vue";
 import PaymentCategoryMixinVue from "src/mixins/PaymentCategoryMixin.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
 import CurrentYearMixin from "src/mixins/CurrentYearMixin.vue";
+import FilterComponentVue from "src/components/FilterComponent.vue";
 
 export default {
   mixins: [PaymentCategoryMixinVue, HelperMixinVue, CurrentYearMixin],
   mounted() {
-    let id = this.$store.getters.getOrganisation.id;
-    this.fetchCategories(id, true);
-    this.getSessions();
+    this.fetchOrganisationCategories(1, 7, "name");
   },
   data() {
     return {
       year: null,
-      is_fetching: false,
       loading: false,
       columns: [
         {
@@ -134,39 +93,37 @@ export default {
       ],
       label: this.$t("app.delete"),
       message: this.$t("app.deletePaymentCategoryWarningMsg"),
-      filteredPaymentCategories: [],
-      is_filtering: false,
+      pagination: {
+        sortBy: "name",
+        descending: false,
+        page: 1,
+        rowsPerPage: 7,
+        rowsNumber: 0,
+      },
+      table_loader: false,
+      organisation_id: this.$store.getters.getOrganisation.id,
     };
   },
   computed: {
     getData() {
       let data = [];
-      if (this.filteredPaymentCategories.length == 0 && !this.is_filtering) {
-        this.$store.getters.getPaymentCategories.forEach((element) => {
+      if (this.$store.getters.getPaymentCategories !== null) {
+        this.$store.getters.getPaymentCategories.data.forEach((element) => {
           data.push({
             counter:
-              this.$store.getters.getPaymentCategories.indexOf(element) + 1,
+              this.$store.getters.getPaymentCategories.data.indexOf(element) +
+              1,
             name: element.name,
             item: this.$t("app.viewPaymentItems"),
             id: element.id,
             description: element.description,
             type: "PAYMENT_CATEGORY",
             organisation_id: element.organisation_id,
-            code:element.code,
+            code: element.code,
           });
         });
-      } else {
-        data = this.filteredPaymentCategories;
       }
       return data;
-    },
-
-    getLoadingState() {
-      return this.$store.getters.getFetchingState;
-    },
-
-    validateFilter() {
-      return this.year == null;
     },
 
     validateDownload() {
@@ -181,6 +138,48 @@ export default {
   },
 
   methods: {
+    onRequest(props) {
+      const { page, rowsPerPage, sortBy } = props.pagination;
+      const fetch_count =
+        rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
+      this.fetchOrganisationCategories(page, fetch_count, sortBy, false, "");
+    },
+
+    fetchOrganisationCategories(page, per_page, sort_by, year) {
+      let year_value =
+        this.$store.getters.getCurrentYear !== null
+          ? this.$store.getters.getCurrentYear.year
+          : year;
+      let payload = {
+        url: `/api/protected/organisation/payment-categories?organisation_id=${this.organisation_id}&year=${year_value}&page=${page}&per_page=${per_page}&sort_by=${sort_by}`,
+        msg: "none",
+        color: "default",
+        status: "none",
+        error_msg: this.$t("app.defaultErrorMsg"),
+        has_commit: true,
+        show_feedback: false,
+        show_spinner: false,
+        commit: "SET_PAYMENT_CATEGORIES",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.$store.commit("SET_PAYMENT_CATEGORIES", null);
+      this.table_loader = true;
+      this.$store
+        .dispatch("getRequest", payload)
+        .then((response) => {
+          this.pagination.page = response.data.current_page;
+          this.pagination.rowsNumber = response.data.total;
+          this.pagination.rowsPerPage = response.data.per_page;
+        })
+        .finally(() => {
+          this.table_loader = false;
+        });
+    },
+
     updatePaymentCategory(data) {
       this.$store.dispatch("setUpdatedPayCategories", data.data);
 
@@ -188,7 +187,7 @@ export default {
     },
 
     showPaymentItems(data) {
-      this.getPaymentItemsByCategory(data.data.id);
+      this.$emit("fetch-payment-items", data);
 
       let intermediate_tabs = [];
 
@@ -199,86 +198,26 @@ export default {
 
       this.$store.dispatch("setIntermediateTabs", intermediate_tabs);
 
-      this.$store.dispatch("setCurrentPaymentCategory", data.data);
+      this.$store.dispatch("setCurrentPaymentCategory", data);
     },
 
     updatePaymentItems(data) {
       this.$emit("update-payment-item", data);
     },
 
-    filterPaymentCategories() {
+    filterPaymentCategories(data) {
       this.$router.push({
         path: "/dashboard/payment-categories",
-        query: { year: this.year.label },
+        query: { year: data.year.label, t: new Date().getTime() },
       });
 
-      this.filteredPaymentCategories = [];
-      let year = this.year.label.substring(0, 4);
-
-      let organisationId = this.$store.getters.getOrganisation.id;
-      this.is_fetching = true;
-      let payload = {
-        url: `/api/protected/filter-payment-categories?organisation_id=${organisationId}&year=${year}`,
-        msg: "none",
-        color: "default",
-        status: "none",
-        error_msg: this.$t("app.paymentCategoryErrorMsg"),
-        has_commit: false,
-        show_feedback: false,
-        show_spinner: true,
-        commit: "none",
-        to_be_store_data: {
-          required: false,
-          has_value: false,
-          data: [],
-        },
-      };
-      this.is_filtering = true;
-      this.$store.dispatch("getRequest", payload).then((res) => {
-        this.is_fetching = false;
-        res.data.forEach((element) => {
-          this.filteredPaymentCategories.push({
-            counter: res.data.indexOf(element) + 1,
-            name: element.name,
-            item: this.$t("app.viewPaymentItems"),
-            id: element.id,
-            description: element.description,
-            type: "PAYMENT_CATEGORY",
-            organisation_id: element.organisation_id,
-            code:element.code
-          });
-        });
-      });
+      this.fetchOrganisationCategories(1, 7, "name", data.year.label);
     },
 
-    downloadPaymentCategory() {
-      let year = this.year != null ? this.year.label.substring(0, 4) : null;
-
-      let organisationId = this.$store.getters.getOrganisation.id;
-      let url = `/api/protected/download-payment-categories?organisation_id=${organisationId}&year=${year}`;
+    downloadPaymentCategory(data) {
+      let url = `/api/protected/download-payment-categories?organisation_id=${this.organisation_id}&year=${data.year.label}`;
       let file_name = "Organisation_Payment_Categories.pdf";
       this.loading = this.downloadPdf(url, file_name);
-    },
-
-    getPaymentItemsByCategory(id) {
-      let payload = {
-        status: "none",
-        url: `/api/protected/payment-categories/${id}/payment-items`,
-        has_path_val: true,
-        show_feedback: false,
-        show_spinner: true,
-        msg: "none",
-        color: "default",
-        error_msg: "default",
-        commit: "SET_PAYMENT_ITEMS",
-        has_commit: true,
-        to_be_store_data: {
-          required: true,
-          has_value: false,
-          data: null,
-        },
-      };
-      this.$store.dispatch("getRequest", payload).then(() => {});
     },
 
     deleteRow(data) {
@@ -299,12 +238,13 @@ export default {
         },
       };
       this.$store.dispatch("deleteRequest", payload).then(() => {
-        this.fetchCategories(data.organisation_id, true);
+        this.fetchOrganisationCategories(1, 1, "name", null);
       });
     },
   },
   components: {
     CategoryTable,
+    FilterComponentVue,
   },
 };
 </script>

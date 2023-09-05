@@ -2,9 +2,7 @@
   <div class="q-px-lg">
     <div>
       <div class="q-my-md">
-        <label for="heading" class="text"
-          >{{$t('app.filterMsg')}}
-        </label>
+        <label for="heading" class="text">{{ $t("app.filterMsg") }} </label>
       </div>
       <div class="q-mb-lg row">
         <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 q-mt-sm">
@@ -20,12 +18,14 @@
             @filter="filterPaymentItems"
             @input="stopSearch"
           >
-          <template v-slot:append v-if="start_filtering">
+            <template v-slot:append v-if="start_filter_payment_item">
               <q-spinner color="primary" size="1.2em" :thickness="3" />
             </template>
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey"> {{$t('app.noResults')}} </q-item-section>
+                <q-item-section class="text-grey">
+                  {{ $t("app.noResults") }}
+                </q-item-section>
               </q-item>
             </template>
           </q-select>
@@ -34,7 +34,7 @@
 
       <!-- filter by status of contributions -->
       <div class="q-my-md">
-        <label for="heading" class="text">{{$t('app.filterStatus')}}</label>
+        <label for="heading" class="text">{{ $t("app.filterStatus") }}</label>
       </div>
       <div class="q-mb-lg row">
         <div
@@ -58,7 +58,7 @@
       <!-- filter by duration -->
       <hr class="separator" />
       <div class="q-my-md">
-        <label for="heading" class="text">{{$t('app.filterDelay')}}</label>
+        <label for="heading" class="text">{{ $t("app.filterDelay") }}</label>
       </div>
       <!-- by year -->
       <div class="q-mb-md row">
@@ -73,10 +73,16 @@
             use-input
             clearable
             @filter="filterYears"
+            @input="stopSearch"
           >
+            <template v-slot:append v-if="start_filter_year">
+              <q-spinner color="primary" size="1.2em" :thickness="3" />
+            </template>
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey">  {{$t('app.noResults')}} </q-item-section>
+                <q-item-section class="text-grey">
+                  {{ $t("app.noResults") }}
+                </q-item-section>
               </q-item>
             </template>
           </q-select>
@@ -89,16 +95,22 @@
             v-model="param.month"
             outlined
             dense
-            :options="months"
+            :options="monthsOptions"
             :label="$t('app.searchMonth')"
             input-debounce="0"
             use-input
             clearable
             @filter="filterMonths"
+            @input="stopSearch"
           >
+            <template v-slot:append v-if="start_filter_month">
+              <q-spinner color="primary" size="1.2em" :thickness="3" />
+            </template>
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey">{{$t('app.noResults')}} </q-item-section>
+                <q-item-section class="text-grey"
+                  >{{ $t("app.noResults") }}
+                </q-item-section>
               </q-item>
             </template>
           </q-select>
@@ -133,36 +145,6 @@
           </q-input>
         </div>
       </div>
-
-      <!-- filter by date range -->
-      <div class="q-mb-md row">
-        <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
-          <q-input
-            dense
-            v-model="param.date_range"
-            mask="date"
-            outlined
-            :placeholder="$t('app.selectDateRange')"
-          >
-            <template v-slot:append>
-              <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy
-                  ref="qDateProxy"
-                  transition-show="scale"
-                  transition-hide="scale"
-                >
-                  <q-date v-model="param.date_range" range>
-                    <div class="row items-center justify-end">
-                      <q-btn v-close-popup label="Close" color="primary" flat />
-                    </div>
-                  </q-date>
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-          </q-input>
-        </div>
-      </div>
-
       <div class="flex justify-end q-mt-lg">
         <div class="q-mr-xl">
           <q-btn label="Reset" color="primary" no-caps outline @click="reset()">
@@ -190,7 +172,7 @@ import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
 import ContributionsMixinVue from "src/mixins/ContributionsMixin.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
 import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
-import MonthsMixinVue from 'src/mixins/MonthsMixin.vue';
+import MonthsMixinVue from "src/mixins/MonthsMixin.vue";
 
 export default {
   mixins: [
@@ -199,22 +181,24 @@ export default {
     ContributionsMixinVue,
     HelperMixinVue,
     CurrentYearMixinVue,
-    MonthsMixinVue
+    MonthsMixinVue,
   ],
 
   mounted() {
-    let heading = this.$t('app.searchContributionlabel');
+    let heading = this.$t("app.searchContributionlabel");
 
     this.$emit("set-heading", heading);
 
     this.getPaymentItems();
+
+    this.getSessions();
   },
 
   data() {
     return {
       loading: false,
       years: [],
-      months: [],
+      monthsOptions: [],
       statuses: [
         {
           name: "PENDING",
@@ -242,8 +226,7 @@ export default {
         },
       ],
       param: {
-        payment_category_id: null,
-        payment_item_id: null,
+        payment_item_id: "",
         month: "",
         year: "",
         range: "",
@@ -253,13 +236,16 @@ export default {
       payment_items_by_category: [],
       payment_categories: [],
       filtered_payment_items: [],
-      start_filter_payment_item:false,
-      start_filtering:false,
+      start_filter_payment_item: false,
+      start_filter_month: false,
+      start_filter_year: false,
     };
   },
   computed: {
     validateForm() {
-      return this.param.payment_item_id == null;
+      return (
+        this.param.payment_item_id === "" || this.param.payment_item_id == null
+      );
     },
   },
   methods: {
@@ -300,16 +286,24 @@ export default {
     filterByDuration(status) {
       let payload = {
         organisation_id: this.getOrganisationId,
-        status: status == null ? "" : status,
-        payment_category_id: this.param.payment_category_id,
+        status: status !== null && status !== "" ? status : "",
         payment_item_id: this.param.payment_item_id,
         year:
           this.param.year == ""
             ? this.$store.getters.getCurrentYear.id
             : this.param.year.value,
-        month: this.param.month,
-        date: this.param.date,
-        date_range: this.param.date_range,
+        month:
+          this.param.month !== null && this.param.month !== ""
+            ? this.param.month.value
+            : this.param.month,
+        date:
+          this.param.date !== null && this.param.date !== ""
+            ? this.param.date
+            : "",
+        date_range:
+          this.param.date_range !== null && this.param.date_range !== ""
+            ? this.param.date_range
+            : "",
         amount: this.param.payment_item_id.amount,
       };
       this.loading = this.filterMembersContributions(
@@ -319,13 +313,13 @@ export default {
         payload.month,
         payload.date,
         payload.date_range,
-        payload.amount
+        payload.amount,
+        1,
+        7
       );
-      this.param.payment_item_id = "";
     },
 
     reset() {
-      this.param.payment_category_id = null;
       this.param.payment_item_id = null;
       this.param.month = "";
       this.param.year = "";
@@ -361,14 +355,14 @@ export default {
     },
 
     filterPaymentItems(val, update, abort) {
-      if (val < 2) {
+      if (val < 1) {
         abort();
-        this.start_filter_payment_item = false
+        this.start_filter_payment_item = false;
         return;
       }
 
       update(() => {
-        this.start_filter_payment_item = true
+        this.start_filter_payment_item = true;
         this.filtered_payment_items = this.payment_items_by_category.filter(
           (item) => item.label.toLowerCase().includes(val.toLowerCase())
         );
@@ -377,26 +371,30 @@ export default {
     },
 
     filterMonths(val, update, abort) {
-      if (val < 2) {
+      if (val.length < 1) {
         abort();
         return;
       }
-
+      if (this.month == "") {
+        this.monthsOptions = this.getMonths;
+      }
       update(() => {
-        this.months = this.getMonths.filter((item) =>
-          item.toLowerCase().includes(val.toLowerCase())
+        const needle = val.toLowerCase();
+        this.monthsOptions = this.getMonths.filter(
+          (v) => v.label.toLowerCase().indexOf(needle) > -1
         );
-        return this.months;
       });
     },
 
     filterYears(val, update, abort) {
       if (val < 2) {
         abort();
+        this.start_filter_year = false;
         return;
       }
 
       update(() => {
+        this.start_filter_year = true;
         this.years = this.getSessionsFromState.filter((item) =>
           item.label.toLowerCase().includes(val.toLowerCase())
         );
@@ -404,11 +402,20 @@ export default {
       });
     },
 
-    stopSearch(){
-      if(this.param.payment_item_id != null){
+    stopSearch() {
+      if (
+        this.param.payment_item_id != null &&
+        this.param.payment_item_id != ""
+      ) {
         this.start_filter_payment_item = false;
       }
-    }
+      if (this.param.year != null && this.param.year != "") {
+        this.start_filter_year = false;
+      }
+      if (this.param.month != null && this.param.month != "") {
+        this.start_filter_month = false;
+      }
+    },
   },
   components: {},
 };

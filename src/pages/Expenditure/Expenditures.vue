@@ -1,15 +1,5 @@
 <template>
   <q-page>
-    <!-- spinners -->
-    <div class="flex justify-center">
-      <q-spinner-ios
-        color="primary"
-        size="2em"
-        class="q-mb-lg"
-        v-if="getLoadingState && expenditure_category_id != null"
-      />
-    </div>
-
     <div>
       <!-- header for filter categories -->
       <div
@@ -32,12 +22,14 @@
             @filter="filterCategories"
             @input="stopSearch"
           >
-          <template v-slot:append v-if="start_filtering_expenditure_category">
+            <template v-slot:append v-if="start_filtering_expenditure_category">
               <q-spinner color="primary" size="1.2em" :thickness="3" />
             </template>
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey"> {{$t('app.noResults')}} </q-item-section>
+                <q-item-section class="text-grey">
+                  {{ $t("app.noResults") }}
+                </q-item-section>
               </q-item>
             </template>
           </q-select>
@@ -55,12 +47,14 @@
             @filter="filterPaymentItems"
             @input="stopSearch"
           >
-          <template v-slot:append v-if="start_filtering_payment_item">
+            <template v-slot:append v-if="start_filtering_payment_item">
               <q-spinner color="primary" size="1.2em" :thickness="3" />
             </template>
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey">{{$t('app.noResults')}} </q-item-section>
+                <q-item-section class="text-grey"
+                  >{{ $t("app.noResults") }}
+                </q-item-section>
               </q-item>
             </template>
           </q-select>
@@ -78,12 +72,14 @@
             @filter="filterYear"
             @input="stopSearch"
           >
-          <template v-slot:append v-if="start_filtering_year">
+            <template v-slot:append v-if="start_filtering_year">
               <q-spinner color="primary" size="1.2em" :thickness="3" />
             </template>
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey"> {{$t('app.noResults')}} </q-item-section>
+                <q-item-section class="text-grey">
+                  {{ $t("app.noResults") }}
+                </q-item-section>
               </q-item>
             </template>
           </q-select>
@@ -97,7 +93,7 @@
               no-caps
               :loading="loading_filter"
               icon-right="filter_list"
-              @click="filterExpenditureItems"
+              @click="filterExpenditureItems(1, 7)"
             >
             </q-btn>
           </div>
@@ -129,7 +125,9 @@
               :show_payment_item="false"
               :show_expenditure_category="false"
               :show_expenditure_item="true"
-
+              :pagination="pagination"
+              :table_loading="table_loader"
+              @onRequest="onRequest"
             >
             </CategoryTable>
           </div>
@@ -161,13 +159,9 @@ export default {
   mounted() {
     this.fetchExpenditureCategories();
     this.getExpenditureCategoriesFromStore();
-    if (this.getPaymentActivities.length == 0) {
-      this.fetchPaymentActivities();
-    }
+    this.fetchPaymentActivities();
     this.getPaymentActivitiesFromStore();
-    if (this.getSessionsFromState.length == 0) {
-      this.getSessions();
-    }
+    this.getSessions();
   },
   data() {
     return {
@@ -227,8 +221,8 @@ export default {
         },
       ],
       data: [],
-      label: this.$t('app.delete'),
-      message: this.$t('app.deleteExpenditureItemWarningMsg'),
+      label: this.$t("app.delete"),
+      message: this.$t("app.deleteExpenditureItemWarningMsg"),
       expenditure_category_id: null,
       start_filter: false,
       filtered_items: [],
@@ -238,34 +232,37 @@ export default {
       year: null,
       payment_item_id: null,
       loading_filter: false,
-      start_filtering_expenditure_category:false,
-      start_filtering_payment_item:false,
-      start_filtering_year:false,
-      table_title:"Expenditures",
+      start_filtering_expenditure_category: false,
+      start_filtering_payment_item: false,
+      start_filtering_year: false,
+      table_title: "Expenditures",
+      pagination: {
+        sortBy: "name",
+        descending: false,
+        page: 1,
+        rowsPerPage: 7,
+        rowsNumber: 0,
+      },
+      table_loader: false,
     };
   },
   computed: {
     validateFilter() {
       return (
-        this.expenditure_category_id == null &&
-        this.payment_item_id == null &&
-        this.year == null
+        this.expenditure_category_id === null || this.expenditure_category_id === ""
       );
     },
 
-    validateDownload(){
-      return this.getExpenditures.length == 0
-    },
-    getLoadingState() {
-      return this.$store.getters.getFetchingState;
+    validateDownload() {
+      return this.getExpenditures.length == 0;
     },
 
     getExpenditures() {
       let data = [];
       if (this.$store.getters.getExpenditures != null) {
-        this.$store.getters.getExpenditures.forEach((ele) => {
+        this.$store.getters.getExpenditures.data.forEach((ele) => {
           data.push({
-            counter: this.$store.getters.getExpenditures.indexOf(ele) + 1,
+            counter: this.$store.getters.getExpenditures.data.indexOf(ele) + 1,
             name: ele.name,
             id: ele.id,
             amount: ele.amount,
@@ -282,7 +279,7 @@ export default {
             total_amount_spent: ele.total_amount_spent,
             total_balance: ele.total_balance,
             type: "EXPENDITURE_ITEMS",
-            show_state_action: this.checkIfExpendituredetailsStatus(ele.expenditure_details),
+            has_no_pending_details: ele.has_no_pending_details,
           });
         });
       }
@@ -290,19 +287,14 @@ export default {
     },
   },
   methods: {
-    //this check to ensure if an expenditure item can be approve/decline
-    //so the negation will be used
-    checkIfExpendituredetailsStatus(data) {
-      return data.filter((ele) => ele.approve == "PENDING").length == 0;
-    },
     fetchExpenditureCategories() {
       let organisationId = this.getOrganisationId;
       let payload = {
-        url: `/api/protected/organisations/${organisationId}/expenditure-categories`,
+        url: `/api/protected/expenditure-categories-all?organisation_id=${organisationId}`,
         msg: "none",
         color: "default",
         status: "none",
-        error_msg: this.$t('app.expenditureErrorMsg'),
+        error_msg: this.$t("app.expenditureErrorMsg"),
         has_commit: true,
         show_feedback: false,
         show_spinner: true,
@@ -313,26 +305,31 @@ export default {
           data: [],
         },
       };
+      this.$store.commit("SET_EXPENDITURE_CATEGORIES", null);
       this.$store.dispatch("getRequest", payload).then(() => {});
     },
 
     showExpenditureItem(data) {
-      SessionStorage.set("intermediate_tab", this.$t('app.expenditureItemLabel'));
+      SessionStorage.set(
+        "intermediate_tab",
+        this.$t("app.expenditureItemLabel")
+      );
 
       SessionStorage.set("has_intermediate_tab", true);
 
       this.$emit("show-expenditure-items", data);
     },
 
-
     getExpenditureCategoriesFromStore() {
       this.expenditure_categories = [];
-      this.$store.getters.getExpenditureCategories.forEach((element) => {
-        this.expenditure_categories.push({
-          label: element.name,
-          value: element.id,
+      if (this.$store.getters.getExpenditureCategories !== null) {
+        this.$store.getters.getExpenditureCategories.forEach((element) => {
+          this.expenditure_categories.push({
+            label: element.name,
+            value: element.id,
+          });
         });
-      });
+      }
 
       return this.expenditure_categories;
     },
@@ -345,7 +342,7 @@ export default {
       }
 
       update(() => {
-        this.start_filtering_expenditure_category  = true;
+        this.start_filtering_expenditure_category = true;
         this.expenditure_categories =
           this.getExpenditureCategoriesFromStore().filter((item) =>
             item.label.toLowerCase().includes(val.toLowerCase())
@@ -354,14 +351,38 @@ export default {
       });
     },
 
+    fetchPaymentActivities() {
+      let payload = {
+        status: "none",
+        url: `/api/protected/payment-items`,
+        has_path_val: true,
+        show_feedback: false,
+        show_spinner: false,
+        msg: "none",
+        color: "default",
+        error_msg: "default",
+        commit: "SET_PAYMENT_ACTIVITIES",
+        has_commit: true,
+        to_be_store_data: {
+          required: true,
+          has_value: false,
+          data: null,
+        },
+      };
+      this.$store.commit("SET_PAYMENT_ACTIVITIES", null);
+      this.$store.dispatch("getRequest", payload).then(() => {});
+    },
+
     getPaymentActivitiesFromStore() {
       this.filtered_items = [];
-      this.$store.getters.getPaymentActivities.forEach((element) => {
-        this.filtered_items.push({
-          label: element.name,
-          value: element.id,
+      if (this.$store.getters.getPaymentActivities !== null) {
+        this.$store.getters.getPaymentActivities.forEach((element) => {
+          this.filtered_items.push({
+            label: element.name,
+            value: element.id,
+          });
         });
-      });
+      }
 
       return this.filtered_items;
     },
@@ -398,22 +419,20 @@ export default {
       });
     },
 
-
-    filterExpenditureItems() {
+    filterExpenditureItems(page, fetch_count) {
       let selected_expenditure_cat =
         this.expenditure_category_id != null
           ? this.expenditure_category_id.value
           : "";
-      let selected_payment_item =
-        this.payment_item_id != null ? this.payment_item_id.value : "";
-      let session = this.year != null ? this.year.value : "";
+      let selected_payment_item = this.payment_item_id !== null && this.payment_item_id !== "" ? this.payment_item_id.value : "";
+      let session = this.year !== null && this.year !== "" ? this.year.value : this.$store.getters.getCurrentYear.id;
 
       let payload = {
         status: "none",
-        url: `/api/protected/expenditure_categories/expenditure_items/filter?expenditure_category_id=${selected_expenditure_cat}&payment_item_id=${selected_payment_item}&session_id=${session}`,
+        url: `/api/protected/expenditure_categories/expenditure_items/filter?expenditure_category_id=${selected_expenditure_cat}&payment_item_id=${selected_payment_item}&session_id=${session}&page=${page}&per_page=${fetch_count}`,
         has_path_val: true,
         show_feedback: false,
-        show_spinner: true,
+        show_spinner: false,
         msg: "none",
         color: "default",
         error_msg: "default",
@@ -426,9 +445,19 @@ export default {
         },
       };
       this.loading_filter = true;
-      this.$store.dispatch("getRequest", payload).then((res) => {
-        this.loading_filter = false;
-      });
+      this.table_loader = true;
+      this.$store.commit("SET_EXPENDITURES", null);
+      this.$store
+        .dispatch("getRequest", payload)
+        .then((response) => {
+          this.pagination.page = response.data.current_page;
+          this.pagination.rowsPerPage = response.data.per_page;
+          this.pagination.rowsNumber = response.data.total;
+        })
+        .finally(() => {
+          this.loading_filter = false;
+          this.table_loader = false;
+        });
     },
 
     downloadExpenditureItems() {
@@ -439,24 +468,29 @@ export default {
       let selected_payment_item =
         this.payment_item_id != null ? this.payment_item_id.value : "";
       let session = this.year != null ? this.year.value : "";
-      let  url =`/api/protected/expenditure_categories/expenditure_items/download?expenditure_category_id=${selected_expenditure_cat}&payment_item_id=${selected_payment_item}&session_id=${session}&status=`;
+      let url = `/api/protected/expenditure_categories/expenditure_items/download?expenditure_category_id=${selected_expenditure_cat}&payment_item_id=${selected_payment_item}&session_id=${session}&status=`;
       let file_name = "Expenditure_Items.pdf";
       this.loading = this.downloadPdf(url, file_name);
     },
 
-    stopSearch(){
-      if(this.expenditure_category_id != null){
+    stopSearch() {
+      if (this.expenditure_category_id != null) {
         this.start_filtering_expenditure_category = false;
       }
-      if(this.year != null){
+      if (this.year != null) {
         this.start_filtering_year = false;
       }
-      if(this.payment_item_id != null){
-        this.start_filtering_payment_item = false
+      if (this.payment_item_id != null) {
+        this.start_filtering_payment_item = false;
       }
     },
 
-
+    onRequest(props) {
+      const { page, rowsPerPage } = props.pagination;
+      const fetch_count =
+        rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
+      this.filterExpenditureItems(page, fetch_count);
+    },
   },
   components: {
     CategoryTable,

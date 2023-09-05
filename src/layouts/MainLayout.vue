@@ -367,6 +367,7 @@
         :requires_add="requires_add"
         @show-right-drawer="updateRightDrawer"
         @show-left-drawer="updateLeftDrawer"
+        @search-contribution="searchContribution"
       >
         <router-view />
       </MainContent>
@@ -487,6 +488,7 @@
           v-if="current_tab == 'Search Members Contributions'"
           @close-right-drawer="closeRightDrawer"
           @set-heading="setHeading"
+          @search-contribution="searchContribution"
         >
         </SearchContribution>
         <EditMemberContribution
@@ -596,6 +598,10 @@ export default {
   },
   watch: {},
   methods: {
+    searchContribution(data){
+      console.log(data);
+      this.$emit("search-contribution", data);
+    },
     setItem(item, requires_add) {
       this.item.name = item.name;
 
@@ -766,5 +772,34 @@ export default {
 
 .expand {
   color: red;
+}
+
+.footer_text {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 13px;
+  align-items: center;
+  text-align: center;
+  letter-spacing: 0.005em;
+}
+
+.copy_right {
+  font-size: large;
+}
+
+.footer {
+  height: 2rem;
+  background-color: $white1;
+  margin-left: 1rem;
+}
+
+.appName {
+  font-family: "Roboto";
+  font-style: normal;
+  text-transform: capitalize;
+  color: $dark;
+  font-weight: 700;
+  font-size: medium;
 }
 </style>

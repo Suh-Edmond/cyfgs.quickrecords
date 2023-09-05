@@ -122,7 +122,7 @@ export default {
     },
 
     computeTotalAmountContributed() {
-      return this.computeTotal(this.$store.getters.getMemberContributions);
+      return this.$store.getters.getMemberContributions !== null ? this.$store.getters.getMemberContributions.total_contribution : 0;
     }
   },
   methods: {

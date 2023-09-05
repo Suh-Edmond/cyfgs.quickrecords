@@ -4,7 +4,7 @@
       <div class="flex q-mb-md">
         <label for="expenditure_item" class="label"
           ><span> <q-icon name="category" size="xs" class="q-pr-sm" /> </span
-          >{{$t('app.category')}}:
+          >{{ $t("app.category") }}:
           <span class="value category">{{
             getUpdatedExpenditureFromState.payment_category_name
           }}</span></label
@@ -13,7 +13,7 @@
       <div class="flex q-mb-md">
         <label for="expenditure_item" class="label"
           ><span> <q-icon name="category" size="xs" class="q-pr-sm" /> </span
-          >{{$t('app.paymentItem')}}:
+          >{{ $t("app.paymentItem") }}:
           <span class="value payment_activity">{{
             getUpdatedExpenditureFromState.name
           }}</span></label
@@ -21,18 +21,22 @@
       </div>
       <div class="q-mb-md">
         <label for="date" class="label"
-          ><span> <q-icon name="priority_high" size="xs" class="q-pr-sm" /> </span
-          >{{$t('app.compulsory')}}:
-          <span class="value value_com" v-if="getUpdatedExpenditureFromState.compulsory == '1'">{{$t('app.yes')}}</span>
-          <span class="value value_com" v-else>{{$t('app.no')}}</span>
+          ><span>
+            <q-icon name="priority_high" size="xs" class="q-pr-sm" /> </span
+          >{{ $t("app.compulsory") }}:
+          <span
+            class="value value_com"
+            v-if="getUpdatedExpenditureFromState.compulsory == '1'"
+            >{{ $t("app.yes") }}</span
+          >
+          <span class="value value_com" v-else>{{ $t("app.no") }}</span>
         </label>
-
       </div>
       <div class="q-mb-md">
         <label for="amount" class="label"
           ><span>
             <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
-          >{{$t('app.amount')}}:
+          >{{ $t("app.amount") }}:
           <span class="value value_amount">
             {{ Number(getUpdatedExpenditureFromState.amount).toLocaleString() }}
             XAF</span
@@ -41,29 +45,53 @@
       </div>
       <div class="q-mb-md">
         <label for="amount" class="label"
-          ><span>
-            <q-icon name="schedule" size="xs" class="q-pr-sm" /> </span
-          >{{$t('app.frequency')}}:
+          ><span> <q-icon name="schedule" size="xs" class="q-pr-sm" /> </span
+          >{{ $t("app.frequency") }}:
           <span class="value frequency">
-            {{ getUpdatedExpenditureFromState.frequency }} {{this.$t('app.payment')}}
+            {{ getUpdatedExpenditureFromState.frequency }}
+            {{ this.$t("app.payment") }}
           </span></label
         >
       </div>
       <div class="q-mb-md">
         <label for="amount" class="label"
-          ><span>
-            <q-icon name="title" size="xs" class="q-pr-sm" /> </span
-          >{{$t('app.type')}}:
+          ><span> <q-icon name="title" size="xs" class="q-pr-sm" /> </span
+          >{{ $t("app.type") }}:
           <span class="value type">
             {{ getUpdatedExpenditureFromState.payment_item_type }}
           </span></label
         >
       </div>
-      <div class="q-mb-md" v-if="getUpdatedExpenditureFromState.payment_item_type !== 'ALL_MEMBERS'">
-        <label for="amount" class="label"
+      <div class="q-mb-md">
+        <label for="deadline" class="label"
           ><span>
-            <q-icon name="people" size="xs" class="q-pr-sm" /> </span
-          >{{$t('app.members')}}:
+            <q-icon name="hourglass_top" size="xs" class="q-pr-sm" /> </span
+          >{{ $t("app.deadline") }}:
+          <span class="value deadline">
+            {{ getFormatedDeadline }}
+          </span>
+          </label
+        >
+      </div>
+      <div class="q-mb-md">
+        <label for="deadline" class="label"
+          ><span>
+            <q-icon name="hourglass_top" size="xs" class="q-pr-sm" /> </span
+          >{{ $t("app.status") }}:
+          <span v-show="getUpdatedExpenditureFromState.deadline_state === 'ACTIVE'" class="text-secondary text-bold deadline_state">{{ getUpdatedExpenditureFromState.deadline_state }}</span>
+          <span v-show="getUpdatedExpenditureFromState.deadline_state === 'EXPIRED'" class="text-red text-bold deadline_state">{{ getUpdatedExpenditureFromState.deadline_state }}</span>
+          </label
+        >
+      </div>
+      <div
+        class="q-mb-md"
+        v-if="
+          getUpdatedExpenditureFromState.payment_item_type !== 'ALL_MEMBERS'
+        "
+      >
+        <label for="amount" class="label"
+          ><span> <q-icon name="people" size="xs" class="q-pr-sm" /> </span
+          >{{ $t("app.members") }}:
         </label>
         <div v-if="getReferences.length > 0">
           <div class="q-gutter-sm q-mt-sm q-ml-md">
@@ -78,13 +106,14 @@
           </div>
         </div>
         <div v-else>
-          <label  class="no_member ">{{$t('app.noMember')}}</label>
+          <label class="no_member">{{ $t("app.noMember") }}</label>
         </div>
       </div>
+
       <div class="q-mb-md">
         <label for="amount" class="label"
           ><span> <q-icon name="person" size="xs" class="q-pr-sm" /> </span
-          >{{$t('app.createdAt')}}:
+          >{{ $t("app.createdAt") }}:
           <span class="value created_at">
             {{ getFormatedCreatedDate }}</span
           ></label
@@ -93,7 +122,7 @@
       <div class="q-mb-md">
         <label for="amount" class="label"
           ><span> <q-icon name="person" size="xs" class="q-pr-sm" /> </span
-          >{{$t('app.updatedBy')}}:
+          >{{ $t("app.updatedBy") }}:
           <span class="value value_created_by">
             {{ getUpdatedExpenditureFromState.updated_by }}</span
           ></label
@@ -102,7 +131,7 @@
       <div class="q-mb-md">
         <label for="comment" class="label"
           ><span> <q-icon name="description" size="xs" class="q-pr-sm" /> </span
-          >{{$t('app.comment')}}:</label
+          >{{ $t("app.comment") }}:</label
         >
         <p class="value q-pl-lg">
           {{ getUpdatedExpenditureFromState.description }}
@@ -119,7 +148,7 @@ export default {
   mixins: [expenditureItemMixinVue],
 
   created() {
-    let heading = this.$t('app.paymentItemHeading');
+    let heading = this.$t("app.paymentItemHeading");
     this.$emit("set-heading", heading);
   },
   data() {
@@ -132,6 +161,11 @@ export default {
 
     getFormatedCreatedDate() {
       return moment(this.getUpdatedExpenditureFromState.created_at).format(
+        "MMMM Do YYYY"
+      );
+    },
+    getFormatedDeadline() {
+      return moment(this.getUpdatedExpenditureFromState.deadline).format(
         "MMMM Do YYYY"
       );
     },
@@ -149,7 +183,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-
 .label {
   font-family: "Roboto";
   font-style: normal;
@@ -185,6 +218,14 @@ export default {
 }
 .type {
   padding-left: 5.7rem;
+}
+
+.deadline {
+  padding-left: 4rem;
+}
+
+.deadline_state{
+  padding-left: 4.8rem;
 }
 
 .category {

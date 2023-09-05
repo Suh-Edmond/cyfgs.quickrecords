@@ -3,7 +3,7 @@ export default {
   data() {
     return {
       loading: false,
-      percentage_contributions:[],
+      percentage_contributions: [],
     };
   },
 
@@ -38,7 +38,9 @@ export default {
       con_month,
       con_date,
       date_range,
-      amount
+      amount,
+      page,
+      per_page
     ) {
       let status = data.status != undefined ? data.status : state;
       let year = data.year != undefined ? data.year : session_id;
@@ -53,6 +55,7 @@ export default {
         date: date,
         range: range,
       };
+      this.$store.commit("SET_IS_FETCHING", true);
       this.$router.push({
         path: `/dashboard/contributions`,
         query: {
@@ -69,6 +72,7 @@ export default {
             data.payment_item_id != undefined
               ? data.payment_item_id.amount
               : amount,
+          t: new Date().getTime(),
         },
       });
       this.loading = true;
@@ -76,13 +80,13 @@ export default {
         data.payment_item_id.value != undefined
           ? data.payment_item_id.value
           : data.payment_item_id;
-      let url = `/api/protected/organisations/contributions/search?payment_item_id=${id}&year=${year}&month=${month}&date=${date}&range=${range}&status=${status}`;
+      let url = `/api/protected/organisations/contributions/search?payment_item_id=${id}&year=${year}&month=${month}&date=${date}&range=${range}&status=${status}&page=${page}&per_page=${per_page}`;
       let payload = {
         url: url,
         msg: "none",
         color: "default",
         status: "none",
-        error_msg: this.$t('app.defaultErrorMsg'),
+        error_msg: this.$t("app.defaultErrorMsg"),
         has_commit: true,
         show_feedback: false,
         show_spinner: true,
@@ -93,9 +97,13 @@ export default {
           data: [],
         },
       };
-      this.$store.dispatch("setSearchSavingsParams", search_payload);
+      this.$store.dispatch("setSearchContributionParams", search_payload);
+      this.$store.commit("SET_IS_FETCHING", true);
+      this.$store.commit("SET_FILTERED_CONTRIBUTIONS", null);
       this.$store.dispatch("getRequest", payload).then(() => {
         this.loading = false;
+      }).finally(() => {
+        this.$store.commit("SET_IS_FETCHING", false);
       });
 
       return this.loading;
@@ -122,7 +130,7 @@ export default {
       this.$store.dispatch("getRequest", payload).then(() => {});
     },
 
-    getTotalContributionByYear(session_id){
+    getTotalContributionByYear(session_id) {
       this.total_contributions = 0;
       let payload = {
         status: "none",
@@ -142,7 +150,7 @@ export default {
         },
       };
       this.$store.dispatch("getRequest", payload).then((res) => {
-          this.total_contributions = res.data
+        this.total_contributions = res.data;
       });
 
       return this.total_contributions;

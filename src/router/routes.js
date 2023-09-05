@@ -233,7 +233,7 @@ const routes = [
       },
       {
         name: "members_contributions",
-        path: "/dashboard/contributions",
+        path: "/dashboard/contributions/payment-item",
         component: () => import("src/pages/Contribution/Contributions.vue"),
         meta: {
           middleware: "auth",

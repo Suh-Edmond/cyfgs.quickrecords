@@ -1,87 +1,16 @@
 <template>
   <q-page>
-    <!-- spinners -->
-    <div class="flex justify-center">
-      <q-spinner-ios
-        color="primary"
-        size="2em"
-        class="q-mb-lg"
-        v-if="getLoadingState"
-      />
-    </div>
-
     <div>
       <!-- header for filter members -->
-      <div
-        class="row q-ml-xs"
-        :class="$q.screen.lg ? 'q-pa-sm' : ''"
-        :style="
-          $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-        "
+      <FilterComponentVue
+        :show_member_filters="true"
+        :loading_download="loading_download"
+        :disable_download_btn="validateDownloadBtn"
+        @filter-members="filterMembers"
+        @download-members="downloadMembers"
       >
-        <div
-          class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
-          :class="$q.screen.lg ? 'q-pr-md' : ''"
-        >
-          <q-select
-            v-model="has_register"
-            outlined
-            dense
-            :options="registrationStatuses"
-            :label="$t('app.selectStatusLabel')"
-          />
-        </div>
-        <div
-          class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
-          :class="$q.screen.lg ? 'q-pr-md' : ''"
-        >
-          <q-select
-            v-model="year"
-            outlined
-            dense
-            :options="getSessions"
-            :label="$t('app.selectYearLabel')"
-          />
-        </div>
-        <div
-          class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
-          :class="$q.screen.lg ? 'q-pr-md' : ''"
-        >
-          <q-select
-            v-model="gender"
-            outlined
-            dense
-            :options="genders"
-            :label="$t('app.selectGenderLabel')"
-          />
-        </div>
-        <div class="flex col-md-3 col-lg-3 col-xs-12 col-sm-12">
-          <div :class="$q.screen.lg ? 'q-pr-md' : ''">
-            <q-btn
-              :label="$t('app.filter')"
-              :loading="loading_filter"
-              color="primary"
-              :disabled="validateFilter"
-              @click="filterMembers"
-              no-caps
-              icon-right="filter_list"
-            >
-            </q-btn>
-          </div>
-          <q-space />
-          <div>
-            <q-btn
-              :label="$t('app.print')"
-              :loading="loading"
-              color="positive"
-              :disabled="false"
-              no-caps
-              icon-right="print"
-              @click="downloadMembers"
-            ></q-btn>
-          </div>
-        </div>
-      </div>
+      </FilterComponentVue>
+
       <!-- table for members -->
       <div class="row q-pt-sm">
         <div class="col-md-12 col-xs-12 col-sm-12">
@@ -94,10 +23,13 @@
             :show_income_activity="false"
             :show_members="true"
             :show_contribution="false"
+            :pagination="pagination"
             :total_members="computeTotalMembership"
+            :table_loading="loading"
             @fetch-members="onFetchMembers"
             @register-member="registerMember"
             @delete-row="deleteRow"
+            @onRequest="onRequest"
           >
           </TableVue>
         </div>
@@ -110,27 +42,32 @@ import TableVue from "src/components/Table.vue";
 import memberMixin from "src/mixins/memberMixin.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
-import RegistrationAmountMixinVue from 'src/mixins/RegistrationAmountMixin.vue';
+import RegistrationAmountMixinVue from "src/mixins/RegistrationAmountMixin.vue";
+import FilterComponentVue from "src/components/FilterComponent.vue";
 
 export default {
-  mixins: [memberMixin, organisationMixinVue, HelperMixinVue, RegistrationAmountMixinVue],
+  mixins: [
+    memberMixin,
+    organisationMixinVue,
+    HelperMixinVue,
+    RegistrationAmountMixinVue,
+  ],
 
   mounted() {
     let id = this.getOrganisationId;
-    this.getOrganisationMembers(id, true);
+    const per_page = 7;
+    const page = 1;
+    this.getPaginatedOrganisationMembers(id, page, per_page, "name");
     this.getRegistrationAmount();
   },
   data() {
     return {
       year: "",
-      has_register: null,
-      loading: false,
-      start_filter: false,
-      genders: ["MALE", "FEMALE", "ALL", "OTHER"],
-      registrationStatuses: ["REGISTERED", "NOT_REGISTERED"],
+      has_register: "",
+      filter: "",
       gender: "",
-      message: this.$t('app.deleteMemberWarningMsg'),
-      label: this.$t('app.delete'),
+      message: this.$t("app.deleteMemberWarningMsg"),
+      label: this.$t("app.delete"),
       columns: [
         {
           name: "counter",
@@ -191,132 +128,164 @@ export default {
           sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
         },
       ],
-      loading_filter: false,
+      pagination: {
+        sortBy: "name",
+        descending: false,
+        page: 1,
+        rowsPerPage: 7,
+        rowsNumber: 0,
+      },
+      loading: false,
+      organisation_id: this.$store.getters.getOrganisation.id,
+      loading_download: false,
     };
   },
   computed: {
-    validateFilter() {
-      return this.has_register == null && this.year == "" && this.gender == ""
-        ? true
-        : false;
-    },
     getMembers() {
       let data = [];
-      this.$store.getters.getMembers.forEach((member) => {
-        data.push({
-          counter: this.$store.getters.getMembers.indexOf(member) + 1,
-          name: member.name,
-          telephone: member.telephone,
-          gender: member.gender,
-          address: member.address,
-          occupation: member.occupation,
-          id: member.id,
-          email: member.email,
-          organisation_id: member.organisation_id,
-          has_register: member.has_register,
-          has_paid: member.has_paid,
-          type: "MEMBERS",
-          approve: member.approve,
-          year: member.year,
-          roles: member.roles,
-          created_at: member.created_at,
-          updated_at: member.updated_at,
-          picture: member.picture,
-          session_id: member.session_id,
+      if (this.$store.getters.getMembers !== null) {
+        this.$store.getters.getMembers.data.forEach((member) => {
+          data.push({
+            counter: this.$store.getters.getMembers.data.indexOf(member) + 1,
+            name: member.name,
+            telephone: member.telephone,
+            gender: member.gender,
+            address: member.address,
+            occupation: member.occupation,
+            id: member.id,
+            email: member.email,
+            organisation_id: member.organisation_id,
+            has_register: member.has_register,
+            has_paid: member.has_paid,
+            type: "MEMBERS",
+            approve: member.approve,
+            year: member.year,
+            roles: member.roles,
+            created_at: member.created_at,
+            updated_at: member.updated_at,
+            picture: member.picture,
+            session_id: member.session_id,
+          });
         });
-      });
+      }
       return data;
     },
 
     computeTotalMembership() {
-      return this.getMembers.length;
+      return this.$store.getters.getMembers !== null
+        ? this.$store.getters.getMembers.total
+        : 0;
     },
 
     getLoadingState() {
       return this.$store.getters.getFetchingState;
     },
 
-    getSessions() {
-      let data = [];
-      let current_session = this.$store.getters.getCurrentYear;
-      this.$store.getters.getSessions.forEach((ele) => {
-        if (ele.year == current_session.year && ele.id == current_session.id) {
-          data.push({
-            value: ele.id,
-            label: ele.year + " Current Year",
-          });
-        } else {
-          data.push({
-            value: ele.id,
-            label: ele.year,
-          });
-        }
-      });
+    getTotalPages() {
+      return this.$store.getters.getMembers.last_page;
+    },
 
-      return data;
+    validateDownloadBtn() {
+      return this.getMembers < 0;
     },
   },
 
   methods: {
+    onRequest(props) {
+      const { page, rowsPerPage, sortBy } = props.pagination;
+      const fetch_count =
+        rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
+      this.getPaginatedOrganisationMembers(
+        this.organisation_id,
+        page,
+        fetch_count,
+        sortBy
+      );
+    },
+
+    getPaginatedOrganisationMembers(id, page, rowsPerPage, sort_by) {
+      let payload = {
+        url: `/api/protected/organisations/filter-users?organisation_id=${id}&has_register=${this.has_register}&gender=${this.gender}&year=${this.year.value}&page=${page}&per_page=${rowsPerPage}&sort_by=${sort_by}`,
+        msg: "none",
+        color: "default",
+        status: "none",
+        error_msg: this.$t("app.defaultErrorMsg"),
+        has_commit: true,
+        show_feedback: false,
+        show_spinner: false,
+        commit: "SET_MEMBERS",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.loading = true;
+      this.$store.commit("SET_MEMBERS", null);
+      this.$store
+        .dispatch("getRequest", payload)
+        .then((response) => {
+          this.pagination.rowsNumber = response.data.total;
+          this.pagination.page = response.data.current_page;
+          this.pagination.rowsPerPage = response.data.per_page;
+        })
+        .finally(() => {
+          this.loading = false;
+        });
+    },
+
     registerMember(data) {
       this.$emit("register-member", data);
     },
 
-    filterMembers() {
+    filterMembers(data) {
+      this.setFilterVariables(data);
       this.$router.push({
         path: "/dashboard/members",
         query: {
-          has_register: this.has_register,
-          year: this.year,
-          gender: this.gender,
+          has_register: data.has_register,
+          year: data.year.label,
+          gender: data.gender,
+          t: new Date().getTime(),
         },
       });
-      let payload = {
-        status: "none",
-        url: `/api/protected/organisations/filter-users?has_register=${this.has_register}&gender=${this.gender}&year=${this.year}`,
-        has_path_val: true,
-        show_feedback: false,
-        show_spinner: true,
-        msg: "none",
-        color: "default",
-        error_msg: "default",
-        commit: "SET_MEMBERS",
-        has_commit: true,
-        to_be_store_data: {
-          required: false,
-          has_value: false,
-          data: null,
-        },
-      };
-      this.loading_filter = true;
-      this.$store
-        .dispatch("getRequest", payload)
-        .then(() => {})
-        .finally(() => {
-          this.loading_filter = false;
-        });
+      const page = 1;
+      const per_page = 7;
+      const sort_by = "name";
+      this.getPaginatedOrganisationMembers(
+        this.organisation_id,
+        page,
+        per_page,
+        sort_by
+      );
     },
 
-    downloadMembers() {
-      let url = `/api/protected/organisations/download-users?has_register=${this.has_register}&gender=${this.gender}&year=${this.year}`;
+    downloadMembers(data) {
+      this.setFilterVariables(data);
+      let url = `/api/protected/organisations/download-users?organisation_id=${this.organisation_id}&has_register=${this.has_register}&gender=${this.gender}&year=${this.year.value}`;
       let file_name = "Organisation_Members.pdf";
-      this.loading = this.downloadPdf(url, file_name);
+      this.loading_download = this.downloadPdf(url, file_name);
     },
 
     onFetchMembers() {
-      let id = this.$store.getters.getOrganisation.id;
-      this.getOrganisationMembers(id, true);
+      this.getPaginatedOrganisationMembers(
+        this.organisation_id,
+        1,
+        7,
+        "name",
+        false
+      );
     },
 
     deleteRow(data) {
       let payload = {
         url: `/api/protected/users/${data.id}`,
-        msg: this.$t('app.deleteMemberFeedbackMsg'),
+        msg: this.$t("app.deleteMemberFeedbackMsg"),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: this.$t('app.defaultErrorMsg'),
+        error_msg: this.$t("app.defaultErrorMsg"),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -326,13 +295,29 @@ export default {
         },
       };
       this.$store.dispatch("deleteRequest", payload).then(() => {
-        this.getOrganisationMembers(this.getOrganisationId);
+        let page = 1;
+        let per_page = 7;
+        let sort_by = "name";
+        this.getPaginatedOrganisationMembers(
+          this.organisation_id,
+          page,
+          per_page,
+          sort_by,
+          false
+        );
       });
+    },
+
+    setFilterVariables(data) {
+      this.has_register = data.has_register;
+      this.year = data.year;
+      this.gender = data.gender;
     },
   },
 
   components: {
     TableVue,
+    FilterComponentVue,
   },
 };
 </script>

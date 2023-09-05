@@ -148,7 +148,7 @@ export default {
 
     getSelectedSponsorship() {
       const id = this.$store.getters.getSelectedSponsorship.id;
-      return this.$store.getters.getSponsorships.filter(
+      return this.$store.getters.getSponsorships.data.filter(
         (ele) => ele.id == id
       )[0];
     },

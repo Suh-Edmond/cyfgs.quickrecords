@@ -193,3 +193,7 @@ export function SET_TOTAL_YEARLY_CONTRIBUTION(state, data){
 export function SET_TOTAL_YEARLY_EXPENDITURE(state, data) {
   state.total_yearly_expenditure = data
 }
+
+export function SET_SEARCH_CONTRIBUTION_PARAMS(state, data) {
+  state.search_contribution_data = data;
+}

@@ -2,7 +2,9 @@
   <div class="q-pa-md">
     <div>
       <div class="q-mb-md">
-        <label for="heading" class="text">{{$t('app.filterUserSaving')}}</label>
+        <label for="heading" class="text">{{
+          $t("app.filterUserSaving")
+        }}</label>
       </div>
       <!-- search by name of member -->
       <div class="q-mb-lg row q-gutter-md">
@@ -30,7 +32,7 @@
       </div>
       <hr class="separator" />
       <div class="q-my-md">
-        <label for="heading" class="text">{{$t('app.filterAmount')}} </label>
+        <label for="heading" class="text">{{ $t("app.filterAmount") }} </label>
       </div>
       <!-- search by amount deposited -->
       <div class="q-mb-lg row q-gutter-md">
@@ -58,7 +60,7 @@
       </div>
       <hr class="separator" />
       <div class="q-my-md">
-        <label for="heading" class="text">{{$t('app.filterStatus')}}</label>
+        <label for="heading" class="text">{{ $t("app.filterStatus") }}</label>
       </div>
       <!-- filter by status of savings -->
       <div class="q-mb-lg row q-gutter-xs">
@@ -81,7 +83,7 @@
 
       <hr class="separator" />
       <div class="q-my-md">
-        <label for="heading" class="text">{{$t('app.filterDelay')}}</label>
+        <label for="heading" class="text">{{ $t("app.filterDelay") }}</label>
       </div>
       <!-- search by year -->
       <div class="q-mb-md row">
@@ -95,11 +97,17 @@
             input-debounce="0"
             use-input
             clearable
+            @input="stopSearch"
             @filter="filterYears"
           >
+            <template v-slot:append v-if="start_filter_year">
+              <q-spinner color="primary" size="1.2em" :thickness="3" />
+            </template>
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey"> {{$t('app.noResults')}}</q-item-section>
+                <q-item-section class="text-grey">
+                  {{ $t("app.noResults") }}</q-item-section
+                >
               </q-item>
             </template>
           </q-select>
@@ -118,10 +126,16 @@
             use-input
             clearable
             @filter="filterMonths"
+            @input="stopSearch"
           >
+            <template v-slot:append v-if="start_filter_month">
+              <q-spinner color="primary" size="1.2em" :thickness="3" />
+            </template>
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey">{{$t('app.noResults')}} </q-item-section>
+                <q-item-section class="text-grey"
+                  >{{ $t("app.noResults") }}
+                </q-item-section>
               </q-item>
             </template>
           </q-select>
@@ -156,36 +170,6 @@
           </q-input>
         </div>
       </div>
-
-      <!-- filter by date range -->
-      <div class="q-mb-md row">
-        <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
-          <q-input
-            dense
-            v-model="param.date_range"
-            mask="date"
-            outlined
-            :placeholder="$t('app.selectDateRange')"
-          >
-            <template v-slot:append>
-              <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy
-                  ref="qDateProxy"
-                  transition-show="scale"
-                  transition-hide="scale"
-                >
-                  <q-date v-model="param.date_range" range>
-                    <div class="row items-center justify-end">
-                      <q-btn v-close-popup label="Close" color="primary" flat />
-                    </div>
-                  </q-date>
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-          </q-input>
-        </div>
-      </div>
-
       <div class="flex justify-end q-mb-lg">
         <div class="q-mr-xl">
           <q-btn
@@ -218,26 +202,18 @@
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
 import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
+import MonthsMixin from "src/mixins/MonthsMixin.vue";
 
-const monthOptions = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
 export default {
-  mixins: [organisationMixinVue, UserSavingMixinVue, CurrentYearMixinVue],
+  mixins: [
+    organisationMixinVue,
+    UserSavingMixinVue,
+    CurrentYearMixinVue,
+    MonthsMixin,
+  ],
 
   mounted() {
-    let heading = this.$t('app.searchSaving');
+    let heading = this.$t("app.searchSaving");
 
     this.$emit("set-heading", heading);
   },
@@ -278,124 +254,131 @@ export default {
       dialog: false,
       loading_user_info: false,
       loading_save_amount: false,
+      organisation_id: this.$store.getters.getOrganisation.id,
+      session_id: this.$store.getters.getCurrentYear.id,
+      start_filter_month: false,
+      start_filter_year: false,
     };
   },
   computed: {
     validateForm() {
-      return this.param.year == "" &&
-        this.param.month == "" &&
-        this.param.date == "" &&
-        this.param.date_range == ""
-        ? true
-        : false;
+      return (
+        this.param.year === "" &&
+        this.param.month === "" &&
+        this.param.date === "" &&
+        this.param.date_range === ""
+      );
     },
 
     validateFilterByUserInfo() {
-      return this.param.name == "" ? true : false;
+      return this.param.name === "";
     },
 
     validateAmount() {
-      return this.param.amount_deposited == 0 ? true : false;
+      return this.param.amount_deposited === 0;
     },
   },
   methods: {
     filterByUserInfo() {
-      let organisation = this.$store.getters.getOrganisation;
-      let session_id = this.getCurrentYear.id;
       this.$router.push({
         path: `/dashboard/members-savings`,
         query: {
-          organisation_id: organisation.name,
+          organisation_id: this.organisation_id,
           name: this.param.name,
-          session_id: session_id,
+          session_id: this.session_id,
+          t: new Date().getTime(),
         },
       });
-      let url = `/api/protected/user-savings?organisation_id=${organisation.id}&name=${this.param.name}&session_id=${session_id}`;
-      this.filterSaving(url);
-      this.param.name = "";
+      let url = `/api/protected/user-savings?organisation_id=${this.organisation_id}&name=${this.param.name}&session_id=${this.session_id}&page=${1}&per_page=${1}`;
+      this.loading_user_info = this.filterSaving(url);
     },
 
     filterByAmount() {
-      let session_id = this.getCurrentYear.id;
-      let organisation = this.$store.getters.getOrganisation;
       this.$router.push({
         path: `/dashboard/members-savings`,
         query: {
-          organisation_id: organisation.id,
+          organisation_id: this.organisation_id,
           amount_deposited: this.param.amount_deposited,
-          session_id: session_id,
+          session_id: this.session_id,
+          t: new Date().getTime(),
         },
       });
-      let url = `/api/protected/user-savings?organisation_id=${organisation.id}&amount_deposited=${this.param.amount_deposited}&session_id=${session_id}`;
+      let url = `/api/protected/user-savings?organisation_id=${this.organisation_id}&amount_deposited=${this.param.amount_deposited}&session_id=${this.session_id}&page=${1}&per_page=${1}`;
       this.loading_save_amount = this.filterSaving(url);
-      this.param.amount_deposited = 0;
     },
 
     filterByStatus(status) {
-      let organisation = this.$store.getters.getOrganisation;
-      let session_id = this.getCurrentYear.id;
       this.$router.push({
         path: `/dashboard/members-savings`,
         query: {
-          organisation_id: organisation.id,
+          organisation_id: this.organisation_id,
           status: status,
-          session_id: session_id,
+          session_id: this.session_id,
+          t: new Date().getTime(),
         },
       });
-      let url = `/api/protected/user-savings?organisation_id=${organisation.id}&status=${status}&session_id=${session_id}`;
+      let url = `/api/protected/user-savings?organisation_id=${this.organisation_id}&status=${status}&session_id=${this.session_id}&page=${1}&per_page=${1}`;
       this.filterSaving(url);
     },
 
     filterByDuration() {
-      let organisation = this.$store.getters.getOrganisation;
-      let session_id = this.getCurrentYear.id;
       this.$router.push({
         path: `/dashboard/members-savings`,
         query: {
-          organisation_id: organisation.id,
-          session_id: session_id,
+          organisation_id: this.organisation_id,
+          session_id: this.session_id,
           month: this.param.month,
           date: this.param.date,
           range: this.param.date_range,
+          t: new Date().getTime(),
         },
       });
 
-      let url = `/api/protected/user-savings?organisation_id=${organisation.id}&session_id=${session_id}&month=${this.param.month}&date=${this.param.date}&range=${this.param.date_range}`;
-      this.filterSaving(url);
-      this.param.year = "";
-      this.param.month = "";
-      this.param.date = "";
-      this.param.date_range = "";
+      let url = `/api/protected/user-savings?organisation_id=${this.organisation_id}&session_id=${this.session_id}&month=${this.param.month}&date=${this.param.date}&range=${this.param.date_range}&page=${1}&per_page=${1}`;
+      this.loading = this.filterSaving(url);
     },
 
     resetForm() {},
 
     filterMonths(val, update, abort) {
-      if (val < 2) {
+      if (val < 1) {
+        this.start_filter_month = false;
         abort();
         return;
       }
 
       update(() => {
-        this.months = monthOptions.filter((item) =>
-          item.toLowerCase().includes(val.toLowerCase())
+        this.start_filter_month = true;
+        this.months = this.getMonths.filter((item) =>
+          item.label.toLowerCase().includes(val.toLowerCase())
         );
         return this.months;
       });
     },
 
     filterYears(val, update, abort) {
-      if (val < 2) {
+      if (val < 1) {
+        this.start_filter_year = false;
         abort();
         return;
       }
 
       update(() => {
+        this.start_filter_year = true;
         this.years = this.getSessionsFromState.filter((item) =>
           item.label.toLowerCase().includes(val.toLowerCase())
         );
         return this.years;
       });
+    },
+
+    stopSearch() {
+      if (this.param.year != null && this.param.year != "") {
+        this.start_filter_year = false;
+      }
+      if (this.param.month != null && this.param.month != "") {
+        this.start_filter_month = false;
+      }
     },
   },
   components: {},

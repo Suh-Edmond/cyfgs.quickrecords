@@ -105,7 +105,7 @@ export default {
         credential: null,
       },
       isPwd: true,
-      label_sigin: this.$t("app.loginBtnLabel"),
+      label_sigin: this.$t("app.signIn"),
       loading: false,
       color: "primary",
       no_caps: true,

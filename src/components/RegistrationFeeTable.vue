@@ -20,16 +20,9 @@
       </div>
       <!-- end of fee button -->
 
-      <!-- not session has been set -->
-      <div class="col-12 q-mt-lg" v-if="data.length == 0 && !loading">
-        <NotFound
-          :message="'Opps! Member Registration Fee has not been set. Please click the add button to set fee'"
-        ></NotFound>
-      </div>
-      <!-- end of not found component -->
 
       <!-- table for registration fees -->
-      <div class="col-md-12 col-xs-12 col-sm-12" v-if="data.length > 0">
+      <div class="col-md-12 col-xs-12 col-sm-12">
         <q-table
           :data="data"
           :columns="columns"
@@ -38,6 +31,7 @@
             backgroundColor: '#5384ae',
             color: '#FFFFFF',
           }"
+           :loading="loading"
         >
           <template v-slot:top-left>
             <div>
@@ -100,6 +94,9 @@
                 </q-icon>
               </q-td>
             </q-tr>
+          </template>
+          <template v-slot:loading>
+            <q-inner-loading showing color="primary" />
           </template>
         </q-table>
       </div>
@@ -304,7 +301,6 @@ export default {
   },
   components: {
     ButtonVue,
-    NotFound,
     ConfirmDialog,
   },
 };

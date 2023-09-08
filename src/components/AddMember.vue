@@ -56,9 +56,10 @@
                 />
               </div>
               <div>
-                <label for="credential" class="form_field">{{
-                  $t("app.emailLabel")
-                }} <span class="text-red">*</span></label>
+                <label for="credential" class="form_field"
+                  >{{ $t("app.emailLabel") }}
+                  <span class="text-red">*</span></label
+                >
                 <q-input v-model="user.email" outlined dense type="email" />
               </div>
               <div>
@@ -238,17 +239,18 @@ export default {
       dialog: false,
       no_caps: true,
       tab: this.$t("app.addMember"),
+      organisation_id: this.$store.getters.getOrganisation.id,
     };
   },
   computed: {
     validateForm() {
-      return this.user.name === null ||
-        this.user.telephone == null ||
-        this.user.gender == null ||
-        this.user.address == null ||
-        this.user.occupation == null
-        ? true
-        : false;
+      return (
+        this.user.name === null ||
+        this.user.telephone === null ||
+        this.user.gender === null ||
+        this.user.address === null ||
+        this.user.occupation === null
+      );
     },
     validateFormUpload() {
       return this.file == null ? true : false;
@@ -256,10 +258,9 @@ export default {
   },
   methods: {
     onAddMember() {
-      let id = this.getOrganisationId;
       this.loading = true;
       let payload = {
-        url: `/api/protected/organisations/${id}/add-users`,
+        url: `/api/protected/organisations/${this.organisation_id}/add-users`,
         data: {
           name: this.user.name,
           telephone: this.user.telephone.replace(/\s+/g, ""),
@@ -268,12 +269,12 @@ export default {
           occupation: this.user.occupation,
           email: this.user.email,
         },
-        msg: "Member added Successfully",
+        msg: this.$t("app.addMemberSuccessMsg"),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: "An Error occurred! Please try again",
+        error_msg: this.$t("app.defaultErrorMsg"),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -282,10 +283,16 @@ export default {
           data: [],
         },
       };
-       this.$store
+      this.$store
         .dispatch("postRequest", payload)
         .then(() => {
-          this.getOrganisationMembers(id, true);
+          this.getOrganisationMembers(
+            this.organisation_id,
+            false,
+            1,
+            7,
+            "name"
+          );
         })
         .finally(() => {
           this.loading = false;
@@ -300,17 +307,16 @@ export default {
     uploadFile(event) {
       const formData = new FormData();
       formData.append("file", this.file);
-      let id = this.getOrganisationId;
       let payload = {
-        url: `/api/protected/organisations/${id}/import-users`,
-        msg: "Members uploaded successfully",
+        url: `/api/protected/organisations/${this.organisation_id}/import-users`,
+        msg: this.$t("app.uploadMemberSuccessMsg"),
         data: formData,
         color: "default",
         show_feedback: true,
         status: "success",
         to_on_ok: "none",
         to_on_fail: "none",
-        error_msg: "An Error occurred! Please try again",
+        error_msg: this.$t("app.defaultErrorMsg"),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -323,7 +329,13 @@ export default {
       this.$store
         .dispatch("uploadFileRequest", payload)
         .then(() => {
-          this.getOrganisationMembers(id, true);
+          this.getOrganisationMembers(
+            this.organisation_id,
+            false,
+            1,
+            7,
+            "name"
+          );
         })
         .finally(() => {
           this.loading = false;

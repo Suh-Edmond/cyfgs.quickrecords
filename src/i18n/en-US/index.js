@@ -472,6 +472,8 @@ export default {
     generateReportHint:"Please Select an Option to Generate Report for your Organisation",
     regFeeLabel:"Member's Registration Fee",
     sessionLabel:"Sessions",
-    appTranslationLabel:"Please wait! Translating Application's Language."
+    appTranslationLabel:"Please wait! Translating Application's Language.",
+    uploadMemberSuccessMsg:"Members uploaded successfully",
+    addMemberSuccessMsg:"Member added Successfully"
    }
 };

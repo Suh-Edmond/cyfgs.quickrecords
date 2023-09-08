@@ -1079,7 +1079,7 @@ export default {
   data() {
     return {
       dialog: false,
-      filter: "",
+      filter: '',
       deleted_row: null,
       show_invite: false,
       member_to_be_invited: null,

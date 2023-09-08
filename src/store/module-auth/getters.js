@@ -202,3 +202,7 @@ export function getTotalYearlyExpenditure(state) {
 export function getSearchContributionParams(state){
   return state.search_contribution_data
 }
+
+export function getPagination(state){
+  return state.pagination;
+}

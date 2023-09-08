@@ -23,9 +23,9 @@
             :show_income_activity="false"
             :show_members="true"
             :show_contribution="false"
-            :pagination="pagination"
+            :pagination="getPagination"
             :total_members="computeTotalMembership"
-            :table_loading="loading"
+            :table_loading="getLoadingState"
             @fetch-members="onFetchMembers"
             @register-member="registerMember"
             @delete-row="deleteRow"
@@ -55,10 +55,15 @@ export default {
 
   mounted() {
     let id = this.getOrganisationId;
-    const per_page = 7;
-    const page = 1;
-    this.getPaginatedOrganisationMembers(id, page, per_page, "name");
+    this.getPaginatedOrganisationMembers(id, 1, 7, "name", "");
     this.getRegistrationAmount();
+    this.$store.commit("SET_PAGINATION", {
+      sortBy: "name",
+      descending: false,
+      page: 1,
+      rowsPerPage: 7,
+      rowsNumber: 0,
+    });
   },
   data() {
     return {
@@ -128,14 +133,6 @@ export default {
           sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
         },
       ],
-      pagination: {
-        sortBy: "name",
-        descending: false,
-        page: 1,
-        rowsPerPage: 7,
-        rowsNumber: 0,
-      },
-      loading: false,
       organisation_id: this.$store.getters.getOrganisation.id,
       loading_download: false,
     };
@@ -188,6 +185,18 @@ export default {
     validateDownloadBtn() {
       return this.getMembers < 0;
     },
+
+    getPagination() {
+      let paginate_object = {
+        sortBy: this.$store.getters.getPagination.sortBy,
+        descending: this.$store.getters.getPagination.descending,
+        page: this.$store.getters.getPagination.page,
+        rowsPerPage: this.$store.getters.getPagination.rowsPerPage,
+        rowsNumber: this.$store.getters.getPagination.rowsNumber,
+      };
+
+      return paginate_object;
+    },
   },
 
   methods: {
@@ -195,17 +204,20 @@ export default {
       const { page, rowsPerPage, sortBy } = props.pagination;
       const fetch_count =
         rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
+      const filter = props.filter;
       this.getPaginatedOrganisationMembers(
         this.organisation_id,
         page,
         fetch_count,
-        sortBy
+        sortBy,
+        filter
       );
     },
 
-    getPaginatedOrganisationMembers(id, page, rowsPerPage, sort_by) {
+    getPaginatedOrganisationMembers(id, page, rowsPerPage, sort_by, filter) {
+      let year_value = this.year !== null && this.year !== "" ? this.year.value :""
       let payload = {
-        url: `/api/protected/organisations/filter-users?organisation_id=${id}&has_register=${this.has_register}&gender=${this.gender}&year=${this.year.value}&page=${page}&per_page=${rowsPerPage}&sort_by=${sort_by}`,
+        url: `/api/protected/organisations/filter-users?organisation_id=${id}&has_register=${this.has_register}&gender=${this.gender}&year=${year_value}&page=${page}&per_page=${rowsPerPage}&sort_by=${sort_by}&filter=${filter}`,
         msg: "none",
         color: "default",
         status: "none",
@@ -220,17 +232,21 @@ export default {
           data: [],
         },
       };
-      this.loading = true;
       this.$store.commit("SET_MEMBERS", null);
+      this.$store.commit("SET_IS_FETCHING", true);
       this.$store
         .dispatch("getRequest", payload)
         .then((response) => {
-          this.pagination.rowsNumber = response.data.total;
-          this.pagination.page = response.data.current_page;
-          this.pagination.rowsPerPage = response.data.per_page;
+          this.$store.commit("SET_PAGINATION", {
+            sortBy: "name",
+            descending: false,
+            page: response.data.current_page,
+            rowsPerPage: response.data.per_page,
+            rowsNumber: response.data.total,
+          });
         })
         .finally(() => {
-          this.loading = false;
+          this.$store.commit("SET_IS_FETCHING", false);
         });
     },
 
@@ -249,14 +265,12 @@ export default {
           t: new Date().getTime(),
         },
       });
-      const page = 1;
-      const per_page = 7;
-      const sort_by = "name";
       this.getPaginatedOrganisationMembers(
         this.organisation_id,
-        page,
-        per_page,
-        sort_by
+        1,
+        7,
+        "name",
+        ""
       );
     },
 
@@ -273,7 +287,8 @@ export default {
         1,
         7,
         "name",
-        false
+        false,
+        ""
       );
     },
 
@@ -295,15 +310,13 @@ export default {
         },
       };
       this.$store.dispatch("deleteRequest", payload).then(() => {
-        let page = 1;
-        let per_page = 7;
-        let sort_by = "name";
         this.getPaginatedOrganisationMembers(
           this.organisation_id,
-          page,
-          per_page,
-          sort_by,
-          false
+          1,
+          7,
+          "name",
+          false,
+          ""
         );
       });
     },

@@ -23,8 +23,8 @@
             :show_payment_item="false"
             :show_expenditure_category="false"
             :show_expenditure_item="false"
-            :pagination="pagination"
-            :table_loading="table_loader"
+            :pagination="getPagination"
+            :table_loading="getLoadingState"
             @delete-row="deleteRow"
             @show-payment-items="showPaymentItems"
             @update-payment-category="updatePaymentCategory"
@@ -47,11 +47,18 @@ import FilterComponentVue from "src/components/FilterComponent.vue";
 export default {
   mixins: [PaymentCategoryMixinVue, HelperMixinVue, CurrentYearMixin],
   mounted() {
-    this.fetchOrganisationCategories(1, 7, "name");
+    this.fetchOrganisationCategories(this.organisation_id, 1, 7, "name", "");
+    this.$store.commit("SET_PAGINATION", {
+      sortBy: "name",
+      descending: false,
+      page: 1,
+      rowsPerPage: 7,
+      rowsNumber: 0,
+    });
   },
   data() {
     return {
-      year: null,
+      year: "",
       loading: false,
       columns: [
         {
@@ -93,14 +100,6 @@ export default {
       ],
       label: this.$t("app.delete"),
       message: this.$t("app.deletePaymentCategoryWarningMsg"),
-      pagination: {
-        sortBy: "name",
-        descending: false,
-        page: 1,
-        rowsPerPage: 7,
-        rowsNumber: 0,
-      },
-      table_loader: false,
       organisation_id: this.$store.getters.getOrganisation.id,
     };
   },
@@ -129,55 +128,38 @@ export default {
     validateDownload() {
       return this.getData.length == 0;
     },
-  },
 
-  watch: {
+    getPagination() {
+      let paginate_object = {
+        sortBy: this.$store.getters.getPagination.sortBy,
+        descending: this.$store.getters.getPagination.descending,
+        page: this.$store.getters.getPagination.page,
+        rowsPerPage: this.$store.getters.getPagination.rowsPerPage,
+        rowsNumber: this.$store.getters.getPagination.rowsNumber,
+      };
+
+      return paginate_object;
+    },
+
     getLoadingState() {
       return this.$store.getters.getFetchingState;
     },
   },
+
+  watch: {},
 
   methods: {
     onRequest(props) {
       const { page, rowsPerPage, sortBy } = props.pagination;
       const fetch_count =
         rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
-      this.fetchOrganisationCategories(page, fetch_count, sortBy, false, "");
-    },
-
-    fetchOrganisationCategories(page, per_page, sort_by, year) {
-      let year_value =
-        this.$store.getters.getCurrentYear !== null
-          ? this.$store.getters.getCurrentYear.year
-          : year;
-      let payload = {
-        url: `/api/protected/organisation/payment-categories?organisation_id=${this.organisation_id}&year=${year_value}&page=${page}&per_page=${per_page}&sort_by=${sort_by}`,
-        msg: "none",
-        color: "default",
-        status: "none",
-        error_msg: this.$t("app.defaultErrorMsg"),
-        has_commit: true,
-        show_feedback: false,
-        show_spinner: false,
-        commit: "SET_PAYMENT_CATEGORIES",
-        to_be_store_data: {
-          required: false,
-          has_value: false,
-          data: [],
-        },
-      };
-      this.$store.commit("SET_PAYMENT_CATEGORIES", null);
-      this.table_loader = true;
-      this.$store
-        .dispatch("getRequest", payload)
-        .then((response) => {
-          this.pagination.page = response.data.current_page;
-          this.pagination.rowsNumber = response.data.total;
-          this.pagination.rowsPerPage = response.data.per_page;
-        })
-        .finally(() => {
-          this.table_loader = false;
-        });
+      this.fetchOrganisationCategories(
+        this.organisation_id,
+        page,
+        fetch_count,
+        sortBy,
+        ""
+      );
     },
 
     updatePaymentCategory(data) {
@@ -211,7 +193,13 @@ export default {
         query: { year: data.year.label, t: new Date().getTime() },
       });
 
-      this.fetchOrganisationCategories(1, 7, "name", data.year.label);
+      this.fetchOrganisationCategories(
+        this.organisation_id,
+        1,
+        7,
+        "name",
+        data.year.label
+      );
     },
 
     downloadPaymentCategory(data) {
@@ -238,7 +226,13 @@ export default {
         },
       };
       this.$store.dispatch("deleteRequest", payload).then(() => {
-        this.fetchOrganisationCategories(1, 1, "name", null);
+        this.fetchOrganisationCategories(
+          this.organisation_id,
+          1,
+          7,
+          "name",
+          ""
+        );
       });
     },
   },

@@ -253,7 +253,7 @@ export default {
       );
     },
     validateFormUpload() {
-      return this.file == null ? true : false;
+      return this.file === null;
     },
   },
   methods: {
@@ -291,7 +291,9 @@ export default {
             false,
             1,
             7,
-            "name"
+            "name",
+            "",
+            ""
           );
         })
         .finally(() => {
@@ -334,7 +336,9 @@ export default {
             false,
             1,
             7,
-            "name"
+            "name",
+            "",
+            ""
           );
         })
         .finally(() => {

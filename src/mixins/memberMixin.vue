@@ -34,9 +34,9 @@ export default {
     },
   },
   methods: {
-    getOrganisationMembers(id, show_spinner, page, rowsPerPage, sort_by) {
+    getOrganisationMembers(id, show_spinner, page, rowsPerPage, sort_by, year, filter) {
       let payload = {
-        url: `/api/protected/organisations/filter-users?organisation_id=${id}&has_register=&gender=&year=&page=${page}&per_page=${rowsPerPage}&sort_by=${sort_by}&filter=`,
+        url: `/api/protected/organisations/filter-users?organisation_id=${id}&has_register=&gender=&year=${year}=&page=${page}&per_page=${rowsPerPage}&sort_by=${sort_by}&filter=${filter}`,
         msg: "none",
         color: "default",
         status: "none",
@@ -51,7 +51,6 @@ export default {
           data: [],
         },
       };
-      this.$store.commit("SET_MEMBERS", null);
       this.$store.commit("SET_IS_FETCHING", true);
       this.$store
         .dispatch("getRequest", payload)

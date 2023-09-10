@@ -54,8 +54,7 @@ export default {
   ],
 
   mounted() {
-    let id = this.getOrganisationId;
-    this.getPaginatedOrganisationMembers(id, 1, 7, "name", "");
+    this.getPaginatedOrganisationMembers(this.organisation_id, 1, 7, "name", "");
     this.getRegistrationAmount();
     this.$store.commit("SET_PAGINATION", {
       sortBy: "name",
@@ -215,39 +214,9 @@ export default {
     },
 
     getPaginatedOrganisationMembers(id, page, rowsPerPage, sort_by, filter) {
-      let year_value = this.year !== null && this.year !== "" ? this.year.value :""
-      let payload = {
-        url: `/api/protected/organisations/filter-users?organisation_id=${id}&has_register=${this.has_register}&gender=${this.gender}&year=${year_value}&page=${page}&per_page=${rowsPerPage}&sort_by=${sort_by}&filter=${filter}`,
-        msg: "none",
-        color: "default",
-        status: "none",
-        error_msg: this.$t("app.defaultErrorMsg"),
-        has_commit: true,
-        show_feedback: false,
-        show_spinner: false,
-        commit: "SET_MEMBERS",
-        to_be_store_data: {
-          required: false,
-          has_value: false,
-          data: [],
-        },
-      };
-      this.$store.commit("SET_MEMBERS", null);
-      this.$store.commit("SET_IS_FETCHING", true);
-      this.$store
-        .dispatch("getRequest", payload)
-        .then((response) => {
-          this.$store.commit("SET_PAGINATION", {
-            sortBy: "name",
-            descending: false,
-            page: response.data.current_page,
-            rowsPerPage: response.data.per_page,
-            rowsNumber: response.data.total,
-          });
-        })
-        .finally(() => {
-          this.$store.commit("SET_IS_FETCHING", false);
-        });
+      let year_value =
+        this.year !== null && this.year !== "" ? this.year.value : "";
+      this.getOrganisationMembers(id, false, page, rowsPerPage, sort_by, year_value, filter);
     },
 
     registerMember(data) {

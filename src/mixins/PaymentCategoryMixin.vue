@@ -1,13 +1,12 @@
 <script>
-import CurrentYearMixinVue from './CurrentYearMixin.vue';
+import CurrentYearMixinVue from "./CurrentYearMixin.vue";
 export default {
-  mixins:[CurrentYearMixinVue],
-  mounted(){
+  mixins: [CurrentYearMixinVue],
+  mounted() {
     this.fetchCurrentYear();
   },
   data() {
-    return {
-    };
+    return {};
   },
 
   computed: {
@@ -18,27 +17,27 @@ export default {
           label: ele.name,
           value: ele.id,
         });
-      })
+      });
 
       return data;
     },
-
   },
-
-
 
   methods: {
     fetchCategories(organisation_id, show_spinner) {
-      let year = this.$store.getters.getCurrentYear != null ? this.$store.getters.getCurrentYear.year: null;
+      let year =
+        this.$store.getters.getCurrentYear != null
+          ? this.$store.getters.getCurrentYear.year
+          : null;
       let payload = {
         url: `/api/protected/organisation/payment-categories?organisation_id=${organisation_id}&year=${year}`,
         msg: "none",
         color: "default",
         status: "none",
-        error_msg: this.$t('app.defaultErrorMsg'),
+        error_msg: this.$t("app.defaultErrorMsg"),
         has_commit: true,
         show_feedback: false,
-        show_spinner:show_spinner,
+        show_spinner: show_spinner,
         commit: "SET_PAYMENT_CATEGORIES",
         to_be_store_data: {
           required: false,
@@ -46,9 +45,52 @@ export default {
           data: [],
         },
       };
-      this.$store.dispatch("getRequest", payload).then(() => {
+      this.$store.dispatch("getRequest", payload).then(() => {});
+    },
 
-      });
+    fetchOrganisationCategories(
+      organisation_id,
+      page,
+      per_page,
+      sort_by,
+      year
+    ) {
+      let year_value =
+        this.$store.getters.getCurrentYear !== null
+          ? this.$store.getters.getCurrentYear.year
+          : year;
+
+      let payload = {
+        url: `/api/protected/organisation/payment-categories?organisation_id=${organisation_id}&year=${year_value}&page=${page}&per_page=${per_page}&sort_by=${sort_by}`,
+        msg: "none",
+        color: "default",
+        status: "none",
+        error_msg: this.$t("app.defaultErrorMsg"),
+        has_commit: true,
+        show_feedback: false,
+        show_spinner: false,
+        commit: "SET_PAYMENT_CATEGORIES",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.$store.commit("SET_IS_FETCHING", true);
+      this.$store
+        .dispatch("getRequest", payload)
+        .then((response) => {
+          this.$store.commit("SET_PAGINATION", {
+            sortBy: "name",
+            descending: false,
+            page: response.data.current_page,
+            rowsPerPage: response.data.per_page,
+            rowsNumber: response.data.total,
+          });
+        })
+        .finally(() => {
+          this.$store.commit("SET_IS_FETCHING", false);
+        });
     },
   },
 };

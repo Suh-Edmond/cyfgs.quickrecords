@@ -54,8 +54,6 @@ export default {
   ],
 
   mounted() {
-    this.getPaginatedOrganisationMembers(this.organisation_id, 1, 7, "name", "");
-    this.getRegistrationAmount();
     this.$store.commit("SET_PAGINATION", {
       sortBy: "name",
       descending: false,
@@ -63,6 +61,8 @@ export default {
       rowsPerPage: 7,
       rowsNumber: 0,
     });
+    this.getPaginatedOrganisationMembers(this.organisation_id, 1, 7, "name", "");
+    this.getRegistrationAmount();
   },
   data() {
     return {
@@ -118,10 +118,10 @@ export default {
           sortable: true,
         },
         {
-          name: "year",
+          name: "status",
           align: "left",
-          label: "Year",
-          field: "year",
+          label: "Status",
+          field: "status",
           sortable: true,
         },
         {
@@ -161,6 +161,7 @@ export default {
             updated_at: member.updated_at,
             picture: member.picture,
             session_id: member.session_id,
+            status:member.status
           });
         });
       }
@@ -216,7 +217,7 @@ export default {
     getPaginatedOrganisationMembers(id, page, rowsPerPage, sort_by, filter) {
       let year_value =
         this.year !== null && this.year !== "" ? this.year.value : "";
-      this.getOrganisationMembers(id, false, page, rowsPerPage, sort_by, year_value, filter);
+      this.filterOrganisationMembers(id, false, page, rowsPerPage, sort_by, year_value, filter);
     },
 
     registerMember(data) {

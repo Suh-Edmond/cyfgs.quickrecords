@@ -47,7 +47,6 @@ import FilterComponentVue from "src/components/FilterComponent.vue";
 export default {
   mixins: [PaymentCategoryMixinVue, HelperMixinVue, CurrentYearMixin],
   mounted() {
-    this.fetchOrganisationCategories(this.organisation_id, 1, 7, "name", "");
     this.$store.commit("SET_PAGINATION", {
       sortBy: "name",
       descending: false,
@@ -55,6 +54,7 @@ export default {
       rowsPerPage: 7,
       rowsNumber: 0,
     });
+    this.fetchOrganisationCategories(this.organisation_id, 1, 7, "name", "");
   },
   data() {
     return {

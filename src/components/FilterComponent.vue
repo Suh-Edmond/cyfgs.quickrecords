@@ -1006,6 +1006,8 @@ export default {
         "PENDING",
         "DECLINED",
         "ALL",
+        "ACTIVE",
+        "IN_ACTIVE"
       ],
       is_compulsory: "",
       type: "",

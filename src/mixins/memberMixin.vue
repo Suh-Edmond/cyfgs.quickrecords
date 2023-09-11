@@ -34,7 +34,7 @@ export default {
     },
   },
   methods: {
-    getOrganisationMembers(id, show_spinner, page, rowsPerPage, sort_by, year, filter) {
+    filterOrganisationMembers(id, show_spinner, page, rowsPerPage, sort_by, year, filter) {
       let payload = {
         url: `/api/protected/organisations/filter-users?organisation_id=${id}&has_register=&gender=&year=${year}=&page=${page}&per_page=${rowsPerPage}&sort_by=${sort_by}&filter=${filter}`,
         msg: "none",
@@ -133,6 +133,32 @@ export default {
       };
       this.$store.dispatch("getRequest", payload).then((res) => {});
     },
+
+    getOrganisationMembers(organisation_id){
+      let payload = {
+        url: `/api/protected/organisations/${organisation_id}/users`,
+        msg: "none",
+        color: "default",
+        status: "none",
+        error_msg: this.$t("app.defaultErrorMsg"),
+        has_commit: true,
+        show_feedback: false,
+        show_spinner: false,
+        commit: "SET_MEMBERS",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.$store
+        .dispatch("getRequest", payload)
+        .then(() => {
+
+        })
+        .finally(() => {
+        });
+    }
   },
 };
 </script>

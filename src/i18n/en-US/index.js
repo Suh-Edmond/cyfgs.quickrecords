@@ -467,13 +467,14 @@ export default {
     newPasswordResetTokenMsg:"Get New Password Reset Token",
     NonRoleUserEmailFailMsg:"Unauthorized! Please you don't the role to carry out this action",
     notSendEmailMsg:"Could not send  password email. Please check you connection",
-    invalidDeadline:"Invalid deadline! Deadline must be greater or lesser than today's date",
+    invalidDeadline:"Invalid deadline! Deadline must be greater than today's date",
     forTheMonthOf:" for the month of ",
     generateReportHint:"Please Select an Option to Generate Report for your Organisation",
     regFeeLabel:"Member's Registration Fee",
     sessionLabel:"Sessions",
     appTranslationLabel:"Please wait! Translating Application's Language.",
     uploadMemberSuccessMsg:"Members uploaded successfully",
-    addMemberSuccessMsg:"Member added Successfully"
+    addMemberSuccessMsg:"Member added Successfully",
+    member:"Member"
    }
 };

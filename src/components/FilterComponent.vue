@@ -1353,7 +1353,7 @@ export default {
 
     filterMemberSavings() {
       this.$emit("filter-member-savings", {
-        month: this.year,
+        month: this.month,
         payment_status: this.payment_status,
       });
     },

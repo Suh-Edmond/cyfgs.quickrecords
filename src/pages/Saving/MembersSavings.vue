@@ -25,8 +25,8 @@
               :show_members="false"
               :total_saving="getTotalMembersSavings"
               :show_contribution="false"
-              :pagination="pagination"
-              :table_loading="table_loader"
+              :pagination="getPagination"
+              :table_loading="getLoadingState"
               @edit-member-saving="editMemberSaving"
               @onRequest="onRequest"
             >
@@ -62,7 +62,7 @@
             :show_members="false"
             :total_saving="getTotalMembersSavings"
             :show_contribution="false"
-            :pagination="pagination"
+            :pagination="getPagination"
             :table_loading="getLoadingState"
             @view-member-saving="ViewMemberSaving"
             @onRequest="onRequest"
@@ -90,17 +90,23 @@ export default {
     CurrentYearMixinVue,
     MonthsMixinVue,
   ],
+  beforeMount(){
+    this.$store.commit("SET_PAGINATION", {
+      sortBy: "name",
+      descending: false,
+      page: 1,
+      rowsPerPage: 7,
+      rowsNumber: 0,
+    });
+  },
+
   mounted() {
-    let organisation_id =
-      this.$store.getters.getOrganisation != null
-        ? this.$store.getters.getOrganisation.id
-        : "";
     this.getPaginatedOrganisationMemberSavings(
-      organisation_id,
+      this.organisation_id,
       1,
       7,
       "",
-      "",
+      this.session_id,
     );
     this.getSessions();
   },
@@ -152,24 +158,12 @@ export default {
       ],
       label: this.$t("app.delete"),
       message: this.$t("app.deleteSavingWarningMsg"),
-      table_loader: false,
-      pagination: {
-        sortBy: "name",
-        descending: false,
-        page: 1,
-        rowsPerPage: 7,
-        rowsNumber: 0,
-      },
       organisation_id: this.$store.getters.getOrganisation.id,
       session_id: this.$store.getters.getCurrentYear.id,
       loading_download: false,
     };
   },
   computed: {
-    getFetchingState() {
-      return this.$store.getters.getFetchingState;
-    },
-
     getTotalMembersSavings() {
       return this.$store.getters.getOrganisationMembersSavings != null
         ? this.$store.getters.getOrganisationMembersSavings.total_savings
@@ -212,52 +206,23 @@ export default {
 
     validateDownload(){
       return this.getMembersSavings.length == 0
-    }
+    },
+
+    getPagination() {
+      let paginate_object = {
+        sortBy: this.$store.getters.getPagination.sortBy,
+        descending: this.$store.getters.getPagination.descending,
+        page: this.$store.getters.getPagination.page,
+        rowsPerPage: this.$store.getters.getPagination.rowsPerPage,
+        rowsNumber: this.$store.getters.getPagination.rowsNumber,
+      };
+
+      return paginate_object;
+    },
   },
   watch: {
   },
   methods: {
-    getPaginatedOrganisationMemberSavings(
-      id,
-      page,
-      per_page,
-      month,
-      session_id,
-    ) {
-      const session = session_id === "" ? this.session_id : session_id;
-      this.table_loader = true;
-      let payload = {
-        url: `/api/protected/user-savings?organisation_id=${id}&session_id=${session}&page=${page}&per_page=${per_page}&month=${month}`,
-        msg: "none",
-        color: "default",
-        status: "none",
-        error_msg: this.$t("app.defaultErrorMsg"),
-        has_commit: true,
-        show_feedback: false,
-        show_spinner: false,
-        commit: "SET_ORGANISATION_MEMBERS_SAVINGS",
-        to_be_store_data: {
-          required: false,
-          has_value: false,
-          data: [],
-        },
-      };
-      this.$store.commit("SET_IS_FETCHING", this.table_loader);
-      this.$store.commit("SET_ORGANISATION_MEMBERS_SAVINGS", null);
-      this.$store
-        .dispatch("getRequest", payload)
-        .then((response) => {
-          this.pagination.rowsNumber = response.data.total;
-          this.pagination.page = response.data.current_page;
-          this.pagination.rowsPerPage = response.data.per_page;
-        })
-        .finally(() => {
-          this.table_loader = false;
-          this.$store.commit("SET_IS_FETCHING", this.table_loader);
-        });
-
-    },
-
     onRequest(props) {
       const { page, rowsPerPage } = props.pagination;
       const fetch_count =

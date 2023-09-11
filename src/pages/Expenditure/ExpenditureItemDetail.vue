@@ -41,6 +41,18 @@
           </CategoryTable>
         </div>
       </div>
+
+      <div class="q-px-xs q-mt-md">
+        <q-card>
+          <q-card-section>
+            <p>Summary</p>
+            <p>Estimated Amount</p>
+            <p>Total Amount Given</p>
+            <p>Total Amount Spent</p>
+            <p>Total Balance</p>
+          </q-card-section>
+        </q-card>
+      </div>
     </div>
   </q-page>
 </template>

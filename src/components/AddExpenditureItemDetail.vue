@@ -2,14 +2,15 @@
   <div class="q-pa-md">
     <div class="q-ml-sm q-mb-md">
       <label class="text-muted q-ml-sm info"
-        >{{$t('app.warningField')}}<span class="text-red">*</span>{{ $t('app.fields') }}</label
+        >{{ $t("app.warningField") }}<span class="text-red">*</span
+        >{{ $t("app.fields") }}</label
       >
     </div>
     <div class="q-mt-md q-mx-md">
       <q-form @submit="onAddExpenditureItemDetail" class="q-gutter-sm">
         <div class="q-mb-md">
           <label for="credential" class="form_field"
-            >{{$t('app.nameLabel')}} <span class="text-red">*</span></label
+            >{{ $t("app.nameLabel") }} <span class="text-red">*</span></label
           >
           <q-input
             v-model="expenditure_item_detail.name"
@@ -20,7 +21,8 @@
         </div>
         <div class="q-mb-md">
           <label for="credential" class="form_field"
-            >{{$t('app.amountGivenLabel')}}<span class="text-red">*</span></label
+            >{{ $t("app.amountGivenLabel")
+            }}<span class="text-red">*</span></label
           >
           <q-input
             v-model="expenditure_item_detail.amount_given"
@@ -30,12 +32,12 @@
             @input="validateExpenditureAmountGiven"
           />
           <small v-if="is_valid_amount_given" class="text-red">
-                <b>{{$t('app.amountGivenWarningMsg')}}</b>
-              </small>
+            <b>{{ $t("app.amountGivenWarningMsg") }}</b>
+          </small>
         </div>
         <div class="q-mb-md">
           <label for="credential" class="form_field"
-            >{{ $t('app.amountSpent') }}<span class="text-red">*</span></label
+            >{{ $t("app.amountSpent") }}<span class="text-red">*</span></label
           >
           <q-input
             v-model="expenditure_item_detail.amount_spent"
@@ -46,7 +48,9 @@
           </q-input>
         </div>
         <div class="q-mb-md">
-          <label for="credential" class="form_field">{{$t('app.comment')}}</label>
+          <label for="credential" class="form_field">{{
+            $t("app.comment")
+          }}</label>
           <q-input
             v-model="expenditure_item_detail.comment"
             dense
@@ -81,7 +85,7 @@ import moment from "moment";
 export default {
   mixins: [ExpenditureItemDetailMixinVue],
   created() {
-    let heading = this.$t('app.detailHeading');
+    let heading = this.$t("app.detailHeading");
     this.$emit("set-heading", heading);
   },
   data() {
@@ -96,7 +100,7 @@ export default {
         picture: null,
         id: null,
       },
-      is_valid_amount_given:false
+      is_valid_amount_given: false,
     };
   },
 
@@ -120,14 +124,18 @@ export default {
       ).format("MMMM Do YYYY");
     },
 
-    setFormUpdateDetail(){
-      return this.setFormFields(this.$store.getters.getUpdatedExpenditureItemDetail);
-    }
+    setFormUpdateDetail() {
+      return this.setFormFields(
+        this.$store.getters.getUpdatedExpenditureItemDetail
+      );
+    },
   },
-  watch:{
-    setFormUpdateDetail(){
-      return this.setFormFields(this.$store.getters.getUpdatedExpenditureItemDetail);
-    }
+  watch: {
+    setFormUpdateDetail() {
+      return this.setFormFields(
+        this.$store.getters.getUpdatedExpenditureItemDetail
+      );
+    },
   },
   methods: {
     onAddExpenditureItemDetail() {
@@ -135,12 +143,12 @@ export default {
       let payload = {
         url: this.setActionUrl(this.expenditure_item_detail.id, item),
         data: this.expenditure_item_detail,
-        msg: this.$t('app.saveDetailSuccessMsg'),
+        msg: this.$t("app.saveDetailSuccessMsg"),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: this.$t('app.defaultErrorMsg'),
+        error_msg: this.$t("app.defaultErrorMsg"),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -151,7 +159,6 @@ export default {
       };
       this.setDispatchAction(this.expenditure_item_detail.id, payload);
     },
-
 
     resetForm() {
       this.expenditure_item_detail.name = null;
@@ -165,18 +172,16 @@ export default {
       return this.expenditure_item_detail;
     },
 
-
-
     setFormFields(data) {
-     if(data != null){
-      this.expenditure_item_detail.expenditure_item_id =
-        data.expenditure_item_id;
-      this.expenditure_item_detail.name = data.name;
-      this.expenditure_item_detail.comment = data.comment;
-      this.expenditure_item_detail.amount_given = data.amount_given;
-      this.expenditure_item_detail.amount_spent = data.amount_spent;
-      this.expenditure_item_detail.id = data.id;
-     }
+      if (data != null) {
+        this.expenditure_item_detail.expenditure_item_id =
+          data.expenditure_item_id;
+        this.expenditure_item_detail.name = data.name;
+        this.expenditure_item_detail.comment = data.comment;
+        this.expenditure_item_detail.amount_given = data.amount_given;
+        this.expenditure_item_detail.amount_spent = data.amount_spent;
+        this.expenditure_item_detail.id = data.id;
+      }
 
       return this.expenditure_item_detail;
     },
@@ -198,7 +203,9 @@ export default {
           .dispatch("postRequest", payload)
           .then(() => {
             this.getExpenditureDetailsByItemId(
-              payload.data.expenditure_item_id
+              payload.data.expenditure_item_id,
+              1,
+              7
             );
           })
           .finally(() => {
@@ -211,7 +218,9 @@ export default {
           .dispatch("putRequest", payload)
           .then(() => {
             this.getExpenditureDetailsByItemId(
-              payload.data.expenditure_item_id
+              payload.data.expenditure_item_id,
+              1,
+              7
             );
           })
           .finally(() => {
@@ -223,8 +232,11 @@ export default {
       }
     },
 
-    validateExpenditureAmountGiven(){
-      if (this.$store.getters.getCurrentExpenditureItem.amount > this.expenditure_item_detail.amount_given) {
+    validateExpenditureAmountGiven() {
+      if (
+        this.$store.getters.getCurrentExpenditureItem.amount >
+        this.expenditure_item_detail.amount_given
+      ) {
         this.is_valid_amount_given = true;
       }
     },

@@ -127,7 +127,7 @@ export default {
       this.$store
         .dispatch("postRequest", payload)
         .then(() => {
-          this.fetchExpenditureCategories();
+          this.fetchOrganisationExpenditureCategories(this.$store.getters.getOrganisation.id, 1, 7, "name", null);
         })
         .finally(() => {
           this.loading = false;

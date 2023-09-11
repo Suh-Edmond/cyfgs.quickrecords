@@ -122,8 +122,7 @@ import FilterComponentVue from "src/components/FilterComponent.vue";
 
 export default {
   mixins: [HelperMixinVue],
-
-  mounted() {
+  beforeMount(){
     this.$store.commit("SET_PAGINATION", {
       sortBy: "name",
       descending: false,
@@ -131,6 +130,10 @@ export default {
       rowsPerPage: 7,
       rowsNumber: 0,
     });
+  },
+
+
+  mounted() {
     this.fetchPaymentItems(false, 1, 7, "name");
   },
   data() {

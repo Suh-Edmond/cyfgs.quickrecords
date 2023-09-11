@@ -257,13 +257,13 @@ import memberMixin from "src/mixins/memberMixin.vue";
 export default {
   mixins: [PaymentItemMixin, PaymentItemMixinVue, memberMixin],
 
-  created() {
+  mounted() {
     let heading = this.$t("app.paymentItemHeading");
     this.$emit("set-heading", heading);
     this.resetForm();
   },
 
-  afterCreated(){
+  beforeMount(){
     this.resetForm();
   },
 

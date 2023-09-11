@@ -26,8 +26,8 @@
             :show_payment_item="false"
             :show_expenditure_category="false"
             :show_expenditure_item="true"
-            :pagination="pagination"
-            :table_loading="table_loader"
+            :pagination="getPagination"
+            :table_loading="getLoadingState"
             @edit-expenditure-item="editExpenditureItem"
             @view-expenditure-item="viewExpenditureItem"
             @show-expenditure-item-details="showExpenditureItemDetails"
@@ -46,7 +46,6 @@ import CategoryTable from "src/components/CategoryTable.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
 import ExpenditureItemDetailMixinVue from "src/mixins/ExpenditureItemDetailMixin.vue";
 import expenditureItemMixinVue from "src/mixins/expenditureItemMixin.vue";
-import CurrentYearMixin from "src/mixins/CurrentYearMixin.vue";
 import FilterComponentVue from "src/components/FilterComponent.vue";
 
 export default {
@@ -54,10 +53,21 @@ export default {
     HelperMixinVue,
     ExpenditureItemDetailMixinVue,
     expenditureItemMixinVue,
-    CurrentYearMixin,
   ],
+
+  beforeMount(){
+    this.$store.commit("SET_PAGINATION", {
+      sortBy: "name",
+      descending: false,
+      page: 1,
+      rowsPerPage: 7,
+      rowsNumber: 0,
+    });
+  },
+
+
   mounted() {
-    this.fetchExpenditureItems(1, 7, "");
+    this.fetchExpenditureItems(1, 7, "", this.status, "");
   },
   data() {
     return {
@@ -112,14 +122,6 @@ export default {
       message: this.$t("app.deleteExpenditureItemWarningMsg"),
       status: "",
       payment_item_id: null,
-      pagination: {
-        sortBy: "name",
-        descending: false,
-        page: 1,
-        rowsPerPage: 7,
-        rowsNumber: 0,
-      },
-      table_loader: false,
       session_id: this.$store.getters.getCurrentYear.id,
       loading_download: false,
     };
@@ -169,54 +171,33 @@ export default {
     validateDownload() {
       return this.getExpenditureItems.length == 0;
     },
+
+    getPagination() {
+      let paginate_object = {
+        sortBy: this.$store.getters.getPagination.sortBy,
+        descending: this.$store.getters.getPagination.descending,
+        page: this.$store.getters.getPagination.page,
+        rowsPerPage: this.$store.getters.getPagination.rowsPerPage,
+        rowsNumber: this.$store.getters.getPagination.rowsNumber,
+      };
+
+      return paginate_object;
+    },
+
+    getLoadingState() {
+      return this.$store.getters.getFetchingState;
+    },
   },
   methods: {
     onRequest(props) {
       const { page, rowsPerPage } = props.pagination;
       const fetch_count =
         rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
-      this.fetchExpenditureItems(page, fetch_count, "");
-    },
-
-    fetchExpenditureItems(page, per_page, year_value) {
-      let category = this.$store.getters.getCurrentExpenditureCategory;
-      let payment_item_value =
+        let payment_item_value =
         this.payment_item_id !== "" && this.payment_item_id !== null
           ? this.payment_item_id.value
           : "";
-      let session_value =
-        year_value == ""
-          ? this.$store.getters.getCurrentYear.id
-          : year_value.value;
-      let payload = {
-        status: "none",
-        url: `/api/protected/expenditure-categories/${category.id}/expenditure-items?status=${this.status}&session_id=${session_value}&payment_item_id=${payment_item_value}&page=${page}&per_page=${per_page}`,
-        has_path_val: true,
-        show_feedback: false,
-        show_spinner: false,
-        msg: "none",
-        color: "default",
-        error_msg: "default",
-        commit: "SET_EXPENDITURE_ITEMS",
-        has_commit: true,
-        to_be_store_data: {
-          required: true,
-          has_value: false,
-          data: null,
-        },
-      };
-      this.table_loader = true;
-      this.$store.commit("SET_EXPENDITURE_ITEMS", null);
-      this.$store
-        .dispatch("getRequest", payload)
-        .then((response) => {
-          this.pagination.page = response.data.current_page;
-          this.pagination.rowsNumber = response.data.total;
-          this.pagination.rowsPerPage = response.data.per_page;
-        })
-        .finally(() => {
-          this.table_loader = false;
-        });
+      this.fetchExpenditureItems(page, fetch_count, "", this.status, payment_item_value);
     },
 
     editExpenditureItem(data) {
@@ -272,7 +253,11 @@ export default {
       });
 
       this.setFilterVariables(data);
-      this.fetchExpenditureItems(1, 7, data.year);
+      let payment_item_value =
+        this.payment_item_id !== "" && this.payment_item_id !== null
+          ? this.payment_item_id.value
+          : "";
+      this.fetchExpenditureItems(1, 7, data.year, this.status, payment_item_value);
     },
 
     deleteRow(data) {
@@ -293,7 +278,11 @@ export default {
         },
       };
       this.$store.dispatch("deleteRequest", payload).then(() => {
-        this.fetchExpenditureItems(1, 7, "");
+        let payment_item_value =
+        this.payment_item_id !== "" && this.payment_item_id !== null
+          ? this.payment_item_id.value
+          : "";
+        this.fetchExpenditureItems(1, 7, "", this.status, payment_item_value);
       });
     },
 

@@ -42,16 +42,10 @@ import TableVue from "src/components/Table.vue";
 import memberMixin from "src/mixins/memberMixin.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
-import RegistrationAmountMixinVue from "src/mixins/RegistrationAmountMixin.vue";
 import FilterComponentVue from "src/components/FilterComponent.vue";
 
 export default {
-  mixins: [
-    memberMixin,
-    organisationMixinVue,
-    HelperMixinVue,
-    RegistrationAmountMixinVue,
-  ],
+  mixins: [memberMixin, organisationMixinVue, HelperMixinVue],
 
   mounted() {
     this.$store.commit("SET_PAGINATION", {
@@ -61,7 +55,13 @@ export default {
       rowsPerPage: 7,
       rowsNumber: 0,
     });
-    this.getPaginatedOrganisationMembers(this.organisation_id, 1, 7, "name", "");
+    this.getPaginatedOrganisationMembers(
+      this.organisation_id,
+      1,
+      7,
+      "name",
+      ""
+    );
     this.getRegistrationAmount();
   },
   data() {
@@ -139,7 +139,10 @@ export default {
   computed: {
     getMembers() {
       let data = [];
-      if (this.$store.getters.getMembers !== null && this.$store.getters.getMembers !== undefined) {
+      if (
+        this.$store.getters.getMembers !== null &&
+        this.$store.getters.getMembers.data !== undefined
+      ) {
         this.$store.getters.getMembers.data.forEach((member) => {
           data.push({
             counter: this.$store.getters.getMembers.data.indexOf(member) + 1,
@@ -161,7 +164,7 @@ export default {
             updated_at: member.updated_at,
             picture: member.picture,
             session_id: member.session_id,
-            status:member.status
+            status: member.status,
           });
         });
       }
@@ -217,7 +220,15 @@ export default {
     getPaginatedOrganisationMembers(id, page, rowsPerPage, sort_by, filter) {
       let year_value =
         this.year !== null && this.year !== "" ? this.year.value : "";
-      this.filterOrganisationMembers(id, false, page, rowsPerPage, sort_by, year_value, filter);
+      this.filterOrganisationMembers(
+        id,
+        false,
+        page,
+        rowsPerPage,
+        sort_by,
+        year_value,
+        filter
+      );
     },
 
     registerMember(data) {
@@ -295,6 +306,30 @@ export default {
       this.has_register = data.has_register;
       this.year = data.year;
       this.gender = data.gender;
+    },
+
+    getRegistrationAmount() {
+      let payload = {
+        status: "none",
+        url: `/api/protected/registration_fees/current`,
+        has_path_val: true,
+        show_feedback: false,
+        show_spinner: false,
+        msg: "none",
+        color: "default",
+        error_msg: "default",
+        commit: "SET_REG_AMOUNT",
+        has_commit: true,
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: null,
+        },
+      };
+      this.$store
+        .dispatch("getRequest", payload)
+        .then(() => {})
+        .finally(() => {});
     },
   },
 

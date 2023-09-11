@@ -6,7 +6,7 @@ export default {
   computed: {
     getMembers() {
       let data = [];
-      if (this.$store.getters.getMembers !== null && this.$store.getters.getMembers !== undefined) {
+      if (this.$store.getters.getMembers !== null && this.$store.getters.getMembers.data !== undefined) {
         this.$store.getters.getMembers.data.forEach((member) => {
           data.push({
             counter: this.$store.getters.getMembers.data.indexOf(member) + 1,

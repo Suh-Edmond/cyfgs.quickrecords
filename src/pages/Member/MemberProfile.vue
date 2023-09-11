@@ -522,7 +522,7 @@
                     backgroundColor: '#5384ae',
                     color: '#FFFFFF',
                   }"
-                  flat
+
                 >
                   <template v-slot:top-left>
                     <div class="text-h6 contribution_item_header">
@@ -625,7 +625,7 @@
                     backgroundColor: '#5384ae',
                     color: '#FFFFFF',
                   }"
-                  flat
+                  
                 >
                   <template v-slot:top-left>
                     <div class="text-h6 contribution_item_header">
@@ -1047,7 +1047,7 @@ export default {
       user_roles: [],
       show_remove_role_dialog: false,
       is_fetching: false,
-      current_year: this.getCurrentYear != null ? this.getCurrentYear.id : "",
+      current_year: this.$store.getters.getCurrentYear !== null ? this.this.$store.getters.getCurrentYear.id : "",
       due_amount: 0.0,
       amount_paid: 0.0,
       available_roles: [],
@@ -1429,7 +1429,7 @@ export default {
             amount_deposited: parseInt(ele.balance),
             is_compulsory: ele.is_compulsory,
             code: ele.code,
-            year: this.getCurrentYear.id,
+            year: this.current_year,
             comment: "BULK PAYMENT",
             quarterly_name: ele.quarterly_name,
             month_name: ele.month_name,
@@ -1457,10 +1457,9 @@ export default {
     getMembersDebts(show_spinner) {
       this.due_amount = 0.0;
       let id = this.$route.params.id;
-      let current_year = this.getCurrentYear.id;
       let payload = {
         data: "none",
-        url: `/api/protected/contributions/members/debts?user_id=${id}&session_id=${current_year}`,
+        url: `/api/protected/contributions/members/debts?user_id=${id}&session_id=${this.current_year}`,
         msg: "none",
         color: "default",
         to_on_ok: "none",
@@ -1504,10 +1503,9 @@ export default {
     getMembersContributions(show_spinner) {
       this.amount_paid = 0.0;
       let id = this.$route.params.id;
-      let current_year = this.getCurrentYear.id;
       let payload = {
         data: "none",
-        url: `/api/protected/contributions/members/paid?user_id=${id}&session_id=${current_year}`,
+        url: `/api/protected/contributions/members/paid?user_id=${id}&session_id=${this.current_year}`,
         msg: "none",
         color: "default",
         to_on_ok: "none",

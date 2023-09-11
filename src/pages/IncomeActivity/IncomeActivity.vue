@@ -25,8 +25,8 @@
             :show_contribution="false"
             :total_income="getTotalIncome"
             :show_members="false"
-            :pagination="pagination"
-            :table_loading="table_loader"
+            :pagination="getPagination"
+            :table_loading="getLoadingState"
             @edit-income-activity="editIncomeActivity"
             @view-income-activity="viewIncomeActivity"
             @delete-row="deleteRow"
@@ -47,6 +47,15 @@ import FilterComponentVue from "src/components/FilterComponent.vue";
 
 export default {
   mixins: [IncomeActivityMixinVue, HelperMixinVue],
+  beforeMount(){
+    this.$store.commit("SET_PAGINATION", {
+      sortBy: "name",
+      descending: false,
+      page: 1,
+      rowsPerPage: 7,
+      rowsNumber: 0,
+    });
+  },
 
   mounted() {
     const page = 1;
@@ -116,14 +125,6 @@ export default {
       label: this.$t("app.delete"),
       message: this.$t("app.deleteIncomeActvityWarningMsg"),
       loading_download: false,
-      pagination: {
-        sortBy: "name",
-        descending: false,
-        page: 1,
-        rowsPerPage: 7,
-        rowsNumber: 0,
-      },
-      table_loader: false,
     };
   },
   computed: {
@@ -170,6 +171,18 @@ export default {
       return data;
     },
 
+    getPagination() {
+      let paginate_object = {
+        sortBy: this.$store.getters.getPagination.sortBy,
+        descending: this.$store.getters.getPagination.descending,
+        page: this.$store.getters.getPagination.page,
+        rowsPerPage: this.$store.getters.getPagination.rowsPerPage,
+        rowsNumber: this.$store.getters.getPagination.rowsNumber,
+      };
+
+      return paginate_object;
+    },
+
     getLoadingState() {
       return this.$store.getters.getFetchingState;
     },
@@ -179,37 +192,6 @@ export default {
     },
   },
   methods: {
-    getOrganisationIncomeActivities(organisation_id, page, per_page) {
-      this.table_loader = true;
-      let payload = {
-        url: `/api/protected/organisations/${organisation_id}/income-activities?page=${page}&per_page=${per_page}`,
-        msg: "none",
-        color: "default",
-        status: "none",
-        error_msg: this.$t("app.defaultErrorMsg"),
-        has_commit: true,
-        show_feedback: false,
-        show_spinner: false,
-        commit: "SET_INCOME_ACTIVITIES",
-        to_be_store_data: {
-          required: false,
-          has_value: false,
-          data: [],
-        },
-      };
-      this.$store.commit("SET_INCOME_ACTIVITIES", null);
-      this.$store
-        .dispatch("getRequest", payload)
-        .then((response) => {
-          this.pagination.rowsNumber = response.data.total;
-          this.pagination.page = response.data.current_page;
-          this.pagination.rowsPerPage = response.data.per_page;
-        })
-        .finally(() => {
-          this.table_loader = false;
-        });
-    },
-
     onRequest(props) {
       const { page, rowsPerPage } = props.pagination;
       const fetch_count =
@@ -289,17 +271,20 @@ export default {
           data: null,
         },
       };
-      this.table_loader = true;
-      this.$store.commit("SET_INCOME_ACTIVITIES", null);
+      this.$store.commit("SET_IS_FETCHING", true);
       this.$store
         .dispatch("getRequest", payload)
         .then((response) => {
-          this.pagination.rowsNumber = response.data.total;
-          this.pagination.page = response.data.current_page;
-          this.pagination.rowsPerPage = response.data.per_page;
+          this.$store.commit("SET_PAGINATION", {
+            sortBy: "name",
+            descending: false,
+            page: response.data.current_page,
+            rowsPerPage: response.data.per_page,
+            rowsNumber: response.data.total,
+          });
         })
         .finally(() => {
-          this.table_loader = false;
+          this.$store.commit("SET_IS_FETCHING", false);
         });
     },
 

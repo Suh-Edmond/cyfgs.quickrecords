@@ -475,6 +475,7 @@ export default {
     appTranslationLabel:"Please wait! Translating Application's Language.",
     uploadMemberSuccessMsg:"Members uploaded successfully",
     addMemberSuccessMsg:"Member added Successfully",
-    member:"Member"
+    member:"Member",
+    contributionsFor:"Contributions For "
    }
 };

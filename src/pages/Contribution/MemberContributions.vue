@@ -138,7 +138,14 @@ export default {
   },
   computed: {
     getTableTile() {
-      return this.$t("app.partContributionTitle");
+      let title = "";
+      const payment_item = this.$store.getters.getSearchContributionParams;
+      title =
+      payment_item !== null ? this.$t("app.contributionsFor") +
+            `${payment_item.item.label}` +
+            this.$t("app.amountPartTitle") +
+            `${Number(payment_item.item.amount).toLocaleString()} XAF` :"";
+      return title;
     },
 
     getTotalMemberContribution() {

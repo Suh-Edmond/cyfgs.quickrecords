@@ -19,8 +19,8 @@
             :title="setTableTitle"
             :message="message"
             :total="getTotalSponsorship"
-            :pagination="pagination"
-            :table_loading="table_loader"
+            :pagination="getPagination"
+            :table_loading="getLoadingState"
             @view-sponsorship="viewSponsorship"
             @edit-sponsorship="editSponsorship"
             @onRequest="onRequest"
@@ -41,6 +41,16 @@ import FilterComponentVue from "src/components/FilterComponent.vue";
 
 export default {
   mixins: [PaymentItemMixin, SponsorshipMixin, HelperMixin],
+  beforeMount(){
+    this.$store.commit("SET_PAGINATION", {
+      sortBy: "name",
+      descending: false,
+      page: 1,
+      rowsPerPage: 7,
+      rowsNumber: 0,
+    });
+  },
+
 
   mounted() {
     let page = 1;
@@ -92,14 +102,6 @@ export default {
       message: this.$t("app.deleteSponsorshipWarningMsg"),
       loading_download: false,
       payment_item_id: null,
-      pagination: {
-        sortBy: "name",
-        descending: false,
-        page: 1,
-        rowsPerPage: 7,
-        rowsNumber: 0,
-      },
-      table_loader: false,
     };
   },
   computed: {
@@ -117,6 +119,18 @@ export default {
       return this.payment_item_id !== null && this.payment_item_id !== " "
         ? this.$t("app.partSponsorshipTitle") + this.payment_item_id.label
         : "";
+    },
+
+    getPagination() {
+      let paginate_object = {
+        sortBy: this.$store.getters.getPagination.sortBy,
+        descending: this.$store.getters.getPagination.descending,
+        page: this.$store.getters.getPagination.page,
+        rowsPerPage: this.$store.getters.getPagination.rowsPerPage,
+        rowsNumber: this.$store.getters.getPagination.rowsNumber,
+      };
+
+      return paginate_object;
     },
 
     getLoadingState() {
@@ -166,19 +180,22 @@ export default {
           data: null,
         },
       };
-      this.$store.commit("SET_SPONSORSHIPS", null);
-      this.table_loader = true;
+      this.$store.commit("SET_IS_FETCHING", true);
       this.is_fetching = is_filtering;
       this.$store
         .dispatch("getRequest", payload)
         .then((response) => {
-          this.pagination.rowsNumber = response.data.total;
-          this.pagination.page = response.data.current_page;
-          this.pagination.rowsPerPage = response.data.per_page;
+          this.$store.commit("SET_PAGINATION", {
+            sortBy: "name",
+            descending: false,
+            page: response.data.current_page,
+            rowsPerPage: response.data.per_page,
+            rowsNumber: response.data.total,
+          });
         })
         .finally(() => {
           this.is_fetching = false;
-          this.table_loader = false;
+          this.$store.commit("SET_IS_FETCHING", false);
         });
 
       return this.is_fetching;

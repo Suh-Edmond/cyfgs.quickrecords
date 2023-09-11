@@ -103,7 +103,9 @@
                       ></q-btn>
                     </div>
                   </div>
-                  <div v-show="has_selected_payment_item && !is_fetching_members">
+                  <div
+                    v-show="has_selected_payment_item && !is_fetching_members"
+                  >
                     <div class="q-mb-md">
                       <label for="name" class="form_field"
                         >{{ $t("app.memberName") }}
@@ -886,7 +888,7 @@ export default {
             status: "",
             date_range: "",
           };
-          this.filterMembersContributions(data);
+          this.filterMembersContributions(data, data.year, data.status, data.month, data.date, data.date_range, 0, 1, 7);
           this.resetForm();
         })
         .finally(() => {
@@ -931,6 +933,7 @@ export default {
           data: null,
         },
       };
+      this.payment_item_members = [];
       this.$store
         .dispatch("getRequest", payload)
         .then((res) => {

@@ -1,47 +1,46 @@
 <script>
 export default {
   data() {
-    return {
-     }
+    return {};
   },
   computed: {
     getMembers() {
       let data = [];
-      if(this.$store.getters.getMembers != null){
+      if (this.$store.getters.getMembers !== null && this.$store.getters.getMembers.data !== undefined) {
         this.$store.getters.getMembers.data.forEach((member) => {
-        data.push({
-          counter: this.$store.getters.getMembers.data.indexOf(member) + 1,
-          name: member.name,
-          telephone: member.telephone,
-          gender: member.gender,
-          address: member.address,
-          occupation: member.occupation,
-          id: member.id,
-          email: member.email,
-          organisation_id: member.organisation_id,
-          has_register: member.has_register,
-          has_paid: member.has_paid,
-          type: "MEMBERS",
-          approve: member.approve,
-          year: member.year,
-          roles: member.roles,
-          created_at: member.created_at,
-          updated_at: member.updated_at,
-          picture: member.picture,
+          data.push({
+            counter: this.$store.getters.getMembers.data.indexOf(member) + 1,
+            name: member.name,
+            telephone: member.telephone,
+            gender: member.gender,
+            address: member.address,
+            occupation: member.occupation,
+            id: member.id,
+            email: member.email,
+            organisation_id: member.organisation_id,
+            has_register: member.has_register,
+            has_paid: member.has_paid,
+            type: "MEMBERS",
+            approve: member.approve,
+            year: member.year,
+            roles: member.roles,
+            created_at: member.created_at,
+            updated_at: member.updated_at,
+            picture: member.picture,
+          });
         });
-      });
       }
       return data;
-    }
+    },
   },
   methods: {
-    getOrganisationMembers(id, show_spinner, page, rowsPerPage, sort_by) {
-       let payload = {
-        url: `/api/protected/organisations/users-paginate?organisation_id=${id}&page=${page}&per_page=${rowsPerPage}&sort_by=${sort_by}`,
+    filterOrganisationMembers(id, show_spinner, page, rowsPerPage, sort_by, year, filter) {
+      let payload = {
+        url: `/api/protected/organisations/filter-users?organisation_id=${id}&has_register=&gender=&year=${year}=&page=${page}&per_page=${rowsPerPage}&sort_by=${sort_by}&filter=${filter}`,
         msg: "none",
         color: "default",
         status: "none",
-        error_msg: this.$t('app.defaultErrorMsg'),
+        error_msg: this.$t("app.defaultErrorMsg"),
         has_commit: true,
         show_feedback: false,
         show_spinner: show_spinner,
@@ -52,9 +51,23 @@ export default {
           data: [],
         },
       };
-      this.$store.dispatch("getRequest", payload).then(() => {
-      }).finally(() => {
-      });
+      this.$store.commit("SET_IS_FETCHING", true);
+      this.$store
+        .dispatch("getRequest", payload)
+        .then((response) => {
+          if (response.success) {
+            this.$store.commit("SET_PAGINATION", {
+              sortBy: "name",
+              descending: false,
+              page: response.data.current_page,
+              rowsPerPage: response.data.per_page,
+              rowsNumber: response.data.total,
+            });
+          }
+        })
+        .finally(() => {
+          this.$store.commit("SET_IS_FETCHING", false);
+        });
     },
 
     getMemberProfile(id) {
@@ -77,8 +90,8 @@ export default {
       };
       this.$store
         .dispatch("getRequest", payload)
-        .then(() => { })
-        .catch((e) => { });
+        .then(() => {})
+        .catch((e) => {});
     },
 
     getUserByRegistrationStatus(organisation_id) {
@@ -98,11 +111,10 @@ export default {
           data: null,
         },
       };
-      this.$store.dispatch("getRequest", payload).then(() => {
-      });
+      this.$store.dispatch("getRequest", payload).then(() => {});
     },
 
-    getUserByRegistration(organisation_id){
+    getUserByRegistration(organisation_id) {
       let payload = {
         status: "none",
         url: `/api/protected/organisations/users?organisation_id=${organisation_id}`,
@@ -119,10 +131,34 @@ export default {
           data: null,
         },
       };
-      this.$store.dispatch("getRequest", payload).then((res) => {
+      this.$store.dispatch("getRequest", payload).then((res) => {});
+    },
 
-      });
+    getOrganisationMembers(organisation_id){
+      let payload = {
+        url: `/api/protected/organisations/${organisation_id}/users`,
+        msg: "none",
+        color: "default",
+        status: "none",
+        error_msg: this.$t("app.defaultErrorMsg"),
+        has_commit: true,
+        show_feedback: false,
+        show_spinner: false,
+        commit: "SET_MEMBERS",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.$store
+        .dispatch("getRequest", payload)
+        .then(() => {
+
+        })
+        .finally(() => {
+        });
     }
-  }
-}
+  },
+};
 </script>

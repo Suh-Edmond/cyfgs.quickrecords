@@ -213,7 +213,7 @@ export default {
 
     filterSavings(data) {
       this.$router.push({
-        path: `/dashboard/members-savings/users/`,
+        path: `/dashboard/members-savings/users/${this.$route.params.id}`,
         query: {
           status: data.payment_status,
           month: typeof(data.month.label) !== undefined ?data.month.label :"",

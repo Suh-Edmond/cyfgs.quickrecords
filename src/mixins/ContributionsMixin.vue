@@ -42,45 +42,16 @@ export default {
       page,
       per_page
     ) {
-      let status = data.status != undefined ? data.status : state;
-      let year = data.year != undefined ? data.year : session_id;
-      let month = data.month != undefined ? data.month : con_month;
-      let date = data.date != undefined ? data.date : con_date;
-      let range = data.date_range != undefined ? data.date_range : date_range;
-      let search_payload = {
-        item: data.payment_item_id,
-        status: status,
-        year: year,
-        month: month,
-        date: date,
-        range: range,
-      };
+
+      let validate_data = this.validateSearchData(data, state, session_id, con_month, con_date, date_range);
       this.$store.commit("SET_IS_FETCHING", true);
-      this.$router.push({
-        path: `/dashboard/contributions`,
-        query: {
-          payment_item_id:
-            data.payment_item_id != undefined
-              ? data.payment_item_id.label
-              : data.payment_item_id,
-          status: status,
-          year: year,
-          month: month,
-          date: date,
-          range: range,
-          payment_item_amount:
-            data.payment_item_id != undefined
-              ? data.payment_item_id.amount
-              : amount,
-          t: new Date().getTime(),
-        },
-      });
+      this.setSearchRoute(data, validate_data.status, validate_data.year, validate_data.month, validate_data.date, validate_data.range, amount);
       this.loading = true;
       let id =
         data.payment_item_id.value != undefined
           ? data.payment_item_id.value
           : data.payment_item_id;
-      let url = `/api/protected/organisations/contributions/search?payment_item_id=${id}&year=${year}&month=${month}&date=${date}&range=${range}&status=${status}&page=${page}&per_page=${per_page}`;
+      let url = `/api/protected/organisations/contributions/search?payment_item_id=${id}&year=${validate_data.year}&month=${validate_data.month}&date=${validate_data.date}&range=${validate_data.range}&status=${validate_data.status}&page=${page}&per_page=${per_page}`;
       let payload = {
         url: url,
         msg: "none",
@@ -97,14 +68,23 @@ export default {
           data: [],
         },
       };
-      this.$store.dispatch("setSearchContributionParams", search_payload);
+      this.$store.dispatch("setSearchContributionParams", this.setSearchedPayload(data));
       this.$store.commit("SET_IS_FETCHING", true);
-      this.$store.commit("SET_FILTERED_CONTRIBUTIONS", null);
-      this.$store.dispatch("getRequest", payload).then(() => {
-        this.loading = false;
-      }).finally(() => {
-        this.$store.commit("SET_IS_FETCHING", false);
-      });
+      this.$store
+        .dispatch("getRequest", payload)
+        .then((response) => {
+          this.loading = false;
+          this.$store.commit("SET_PAGINATION", {
+            sortBy: "name",
+            descending: false,
+            page: response.data.current_page,
+            rowsPerPage: response.data.per_page,
+            rowsNumber: response.data.total,
+          });
+        })
+        .finally(() => {
+          this.$store.commit("SET_IS_FETCHING", false);
+        });
 
       return this.loading;
     },
@@ -155,6 +135,53 @@ export default {
 
       return this.total_contributions;
     },
+
+    setSearchedPayload(data){
+      let search_payload = {
+        item: data.payment_item_id,
+        status: data.status,
+        year: data.year,
+        month: data.month,
+        date: data.date,
+        range: data.range,
+      };
+
+      return search_payload;
+    },
+
+    validateSearchData(data, state, session_id, month, date, range){
+      let validate_data = {
+        status : data.status != undefined ? data.status : state,
+       year : data.year != undefined ? data.year : session_id,
+       month : data.month != undefined ? data.month : month,
+       date : data.date != undefined ? data.date : date,
+       range : data.date_range != undefined ? data.date_range : range,
+      }
+
+      return validate_data;
+    },
+
+    setSearchRoute(data, status, year, month, date, range, amount){
+      this.$router.push({
+        path: `/dashboard/contributions`,
+        query: {
+          payment_item_id:
+            data.payment_item_id != undefined
+              ? data.payment_item_id.label
+              : data.payment_item_id,
+          status: status,
+          year: year,
+          month: month,
+          date: date,
+          range: range,
+          payment_item_amount:
+            data.payment_item_id != undefined
+              ? data.payment_item_id.amount
+              : amount,
+          t: new Date().getTime(),
+        },
+      });
+    }
   },
 };
 </script>

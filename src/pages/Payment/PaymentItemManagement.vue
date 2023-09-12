@@ -24,8 +24,8 @@
             :show_payment_item="true"
             :show_expenditure_category="false"
             :show_expenditure_item="false"
-            :pagination="pagination"
-            :table_loading="table_loader"
+            :pagination="getPagination"
+            :table_loading="getLoadingState"
             @fetch-payment-items="fetchPaymentItems"
             @update-payment-item="updatePaymentItems"
             @delete-row="deleteRow"
@@ -45,17 +45,20 @@
       <q-dialog v-model="show_reference_dialog">
         <q-card>
           <q-card-section class="bg-primary">
-            <label class="text-white toolbar_title">
-              {{ $t("app.memberLabel") }}
+            <label class="text-white toolbar_title" v-if="selected_payment_item.type !== 'A_MEMBER' ">
+              {{ $t("app.memberLabel") }} ({{ references.length }})
+            </label>
+            <label class="text-white toolbar_title" v-if="selected_payment_item.type === 'A_MEMBER'">
+              {{ $t("app.member") }} ({{ references.length }})
             </label>
           </q-card-section>
+           <q-linear-progress indeterminate v-show="is_fetching_members" />
           <q-card-section>
             <div>
               <q-list style="width: 400px">
                 <q-item
                   v-for="reference in references"
                   :key="reference.id"
-                  clickable
                   v-ripple
                 >
                   <q-item-section avatar>
@@ -77,6 +80,7 @@
                       color="red"
                       size="xs"
                       @click="removeReference(reference)"
+                      class="remove_reference_icon"
                     />
                   </q-item-section>
                 </q-item>
@@ -89,7 +93,6 @@
               v-close-popup
               color="primary"
               size="md"
-              @click="fetchPaymentItems(false, 1, 7, 'name')"
             />
           </q-card-actions>
         </q-card>
@@ -119,6 +122,16 @@ import FilterComponentVue from "src/components/FilterComponent.vue";
 
 export default {
   mixins: [HelperMixinVue],
+  beforeMount(){
+    this.$store.commit("SET_PAGINATION", {
+      sortBy: "name",
+      descending: false,
+      page: 1,
+      rowsPerPage: 7,
+      rowsNumber: 0,
+    });
+  },
+
 
   mounted() {
     this.fetchPaymentItems(false, 1, 7, "name");
@@ -207,15 +220,8 @@ export default {
       delete_msg: "",
       show_delete_dialog: false,
       selected_payment_item: null,
-      pagination: {
-        sortBy: "name",
-        descending: false,
-        page: 1,
-        rowsPerPage: 7,
-        rowsNumber: 0,
-      },
-      table_loader: false,
       loading_download: false,
+      is_fetching_members:false
     };
   },
   computed: {
@@ -254,6 +260,22 @@ export default {
       }
       return items;
     },
+
+    getPagination() {
+      let paginate_object = {
+        sortBy: this.$store.getters.getPagination.sortBy,
+        descending: this.$store.getters.getPagination.descending,
+        page: this.$store.getters.getPagination.page,
+        rowsPerPage: this.$store.getters.getPagination.rowsPerPage,
+        rowsNumber: this.$store.getters.getPagination.rowsNumber,
+      };
+
+      return paginate_object;
+    },
+
+    getLoadingState() {
+      return this.$store.getters.getFetchingState;
+    },
   },
 
   methods: {
@@ -265,9 +287,10 @@ export default {
       let state_value =
         this.state !== null && this.state !== "" ? this.state.value : "";
       let payment_category_id = this.$route.params.id;
+      let type_value = this.type !== null && this.type !== "" ? this.type : "";
       let payload = {
         status: "none",
-        url: `/api/protected/filter-payment-items?payment_category_id=${payment_category_id}&is_compulsory=${is_compulsory_value}&type=${this.type}&frequency=${this.frequency}&state=${state_value}&page=${page}&per_page=${per_page}&sort_by=${sort_by}`,
+        url: `/api/protected/filter-payment-items?payment_category_id=${payment_category_id}&is_compulsory=${is_compulsory_value}&type=${type_value}&frequency=${this.frequency}&state=${state_value}&page=${page}&per_page=${per_page}&sort_by=${sort_by}`,
         has_path_val: true,
         show_feedback: false,
         show_spinner: false,
@@ -282,18 +305,23 @@ export default {
           data: null,
         },
       };
-      this.$store.commit("SET_PAYMENT_ITEMS", null);
-      this.table_loader = true;
+      this.$store.commit("SET_IS_FETCHING", true);
       this.loading = is_filtering;
       this.$store
         .dispatch("getRequest", payload)
         .then((response) => {
-          this.pagination.page = response.data.current_page;
-          this.pagination.rowsPerPage = response.data.per_page;
-          this.pagination.rowsNumber = response.data.total;
+          if (response.success) {
+            this.$store.commit("SET_PAGINATION", {
+              sortBy: "name",
+              descending: false,
+              page: response.data.current_page,
+              rowsPerPage: response.data.per_page,
+              rowsNumber: response.data.total,
+            });
+          }
         })
         .finally(() => {
-          this.table_loader = false;
+          this.$store.commit("SET_IS_FETCHING", false);
           this.loading = false;
         });
     },
@@ -367,7 +395,7 @@ export default {
     },
 
     showReferences(data) {
-      this.selected_payment_item = data.id;
+      this.selected_payment_item = data;
       let references = data.references.filter((ele) => ele != null);
       this.references = JSON.parse(JSON.stringify(references));
       this.show_reference_dialog = true;
@@ -388,7 +416,7 @@ export default {
       let payload = {
         url: `/api/protected/payment-items/update/reference`,
         data: {
-          id: this.selected_payment_item,
+          id: this.selected_payment_item.id,
           reference_id: this.deleted_row.id,
         },
         msg: this.$t("app.removeMemberSuccessMsg"),
@@ -405,10 +433,23 @@ export default {
           data: [],
         },
       };
-      this.$store.dispatch("putRequest", payload).then(() => {
-        this.getPaymentItemsReferences(this.selected_payment_item);
-        this.show_delete_dialog = false;
-      });
+      this.is_fetching_members = true;
+      this.$store
+        .dispatch("putRequest", payload)
+        .then(() => {
+          this.fetchPaymentItem(
+            this.$route.params.id,
+            this.selected_payment_item.id
+          );
+          this.show_delete_dialog = false;
+        })
+        .finally(() => {
+          this.references = this.references.filter(
+            (ele) => ele.id !== this.deleted_row.id
+          );
+          this.is_fetching_members = false;
+        });
+      return this.references;
     },
 
     cancelDialog() {
@@ -418,17 +459,25 @@ export default {
       this.show_delete_dialog = false;
     },
 
-    getPaymentItemsReferences(id) {
+    setFilterVariables(data) {
+      this.is_compulsory =
+        typeof data.is_compulsory === undefined ? "" : data.is_compulsory;
+      this.frequency = data.frequency;
+      this.type = data.type;
+      this.state = typeof data.state === undefined ? "" : data.state;
+    },
+
+    fetchPaymentItem(payment_category_id, payment_item_id) {
       let payload = {
         status: "none",
-        url: `/api/protected/payment-items/${id}/references`,
-        has_path_val: true,
+        url: `/api/protected/payment-categories/${payment_category_id}/payment-items/${payment_item_id}`,
+        has_path_val: false,
         show_feedback: false,
         show_spinner: false,
         msg: "none",
         color: "default",
         error_msg: "default",
-        commit: "none",
+        commit: "",
         has_commit: false,
         to_be_store_data: {
           required: true,
@@ -436,20 +485,18 @@ export default {
           data: null,
         },
       };
-      this.references = [];
-      this.$store.dispatch("getRequest", payload).then((res) => {
-        res.data.forEach((ele) => {
-          this.references.push(ele);
-        });
-      });
-    },
-
-    setFilterVariables(data) {
-      this.is_compulsory =
-        typeof data.is_compulsory === undefined ? "" : data.is_compulsory;
-      this.frequency = data.frequency;
-      this.type = data.type;
-      this.state = typeof data.state === undefined ? "" : data.state;
+      this.$store
+        .dispatch("getRequest", payload)
+        .then((response) => {
+          if (response.success) {
+            this.$store.getters.getPaymentItems.data =
+              this.$store.getters.getPaymentItems.data.filter(
+                (payment_item) => payment_item.id !== payment_item_id
+              );
+            this.$store.getters.getPaymentItems.data.push(response.data);
+          }
+        })
+        .finally(() => {});
     },
   },
   components: {
@@ -467,5 +514,9 @@ export default {
   font-weight: 400;
   font-size: large;
   letter-spacing: 0.01em;
+}
+
+.remove_reference_icon {
+  cursor: pointer;
 }
 </style>

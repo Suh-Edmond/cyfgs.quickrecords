@@ -157,9 +157,7 @@ export default {
       return this.expenditure_item.amount === 0 ||
         this.expenditure_item.name === null ||
         this.expenditure_item.date === null ||
-        this.expenditure_item.payment_item_id === null
-        ? true
-        : false;
+        this.expenditure_item.payment_item_id === null;
     },
 
     getCurrentExpenditureCategory() {
@@ -256,7 +254,7 @@ export default {
         this.$store
           .dispatch("postRequest", payload)
           .then(() => {
-            this.getExpenditureItemsByCategory();
+            this.fetchExpenditureItems(1, 7, "", "", "");
           })
           .finally(() => {
             this.$emit("close-right-drawer");
@@ -267,7 +265,7 @@ export default {
         this.$store
           .dispatch("putRequest", payload)
           .then(() => {
-            this.getExpenditureItemsByCategory();
+            this.fetchExpenditureItems(1, 7, "", "", "");
           })
           .finally(() => {
             this.$emit("close-right-drawer");

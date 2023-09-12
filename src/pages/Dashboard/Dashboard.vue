@@ -381,7 +381,7 @@ export default {
       return this.$store.getters.getFetchingState;
     },
     getTotalMembers() {
-      return this.getMembers.length;
+      return this.$store.getters.getMembers.total;
     },
 
     getTotalMembersSavings() {
@@ -493,10 +493,10 @@ export default {
           this.statistics_type = "MEMBERSHIP";
           this.getUserByRegistrationStatus(organisation_id);
           this.getUserByRegistration(organisation_id);
-          this.getOrganisationMemberSavings(organisation_id);
+          this.getOrganisationMemberSavings(organisation_id, 1, 5);
           this.getTotalContributionByYear(current_session_id);
           this.getTotalYearlyExpenditures(current_session_id);
-          this.getOrganisationMembers(organisation_id);
+          this.filterOrganisationMembers(organisation_id, false, 1, 10, "name", this.$store.getters.getCurrentYear.id, "");
           break;
         case "SAVINGS":
           this.statistics_type = "SAVINGS";

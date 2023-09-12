@@ -24,8 +24,8 @@
             :show_payment_item="false"
             :show_expenditure_category="true"
             :show_expenditure_item="false"
-            :pagination="pagination"
-            :table_loading="table_loader"
+            :pagination="getPagination"
+            :table_loading="getLoadingState"
             @show-expenditure-items="showExpenditureItems"
             @update-expenditure-category="updateExpenditureCategory"
             @delete-row="onDeleteRow"
@@ -42,21 +42,29 @@
 import CategoryTable from "src/components/CategoryTable.vue";
 import ExpenditureCategoryMixinVue from "src/mixins/ExpenditureCategoryMixin.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
-import expenditureItemMixinVue from "src/mixins/expenditureItemMixin.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
-import CurrentYearMixin from "src/mixins/CurrentYearMixin.vue";
 import FilterComponentVue from "src/components/FilterComponent.vue";
 
 export default {
-  mixins: [
-    ExpenditureCategoryMixinVue,
-    organisationMixinVue,
-    expenditureItemMixinVue,
-    HelperMixinVue,
-    CurrentYearMixin,
-  ],
+  mixins: [ExpenditureCategoryMixinVue, organisationMixinVue, HelperMixinVue],
+  beforeMount() {
+    this.$store.commit("SET_PAGINATION", {
+      sortBy: "name",
+      descending: false,
+      page: 1,
+      rowsPerPage: 7,
+      rowsNumber: 0,
+    });
+  },
+
   mounted() {
-    this.fetchOrganisationExpenditureCategories(1, 7, "name", "");
+    this.fetchOrganisationExpenditureCategories(
+      this.organisation_id,
+      1,
+      7,
+      "name",
+      ""
+    );
   },
 
   data() {
@@ -101,14 +109,6 @@ export default {
       ],
       label: this.$t("app.delete"),
       message: this.$t("app.deleteExpenditureCategoryWarningMsg"),
-      pagination: {
-        sortBy: "name",
-        descending: false,
-        page: 1,
-        rowsPerPage: 7,
-        rowsNumber: 0,
-      },
-      table_loader: false,
       organisation_id: this.$store.getters.getOrganisation.id,
     };
   },
@@ -138,48 +138,30 @@ export default {
     validateDownload() {
       return this.getData.length == 0;
     },
-  },
-  methods: {
-    fetchOrganisationExpenditureCategories(page, per_page, sort_by, year) {
-      let year_value =
-        this.$store.getters.getCurrentYear !== null
-          ? this.$store.getters.getCurrentYear.year
-          : year;
-      let payload = {
-        url: `/api/protected/organisations/${this.organisation_id}/expenditure-categories?year=${year_value}&page=${page}&per_page=${per_page}&sort_by=${sort_by}`,
-        msg: "none",
-        color: "default",
-        status: "none",
-        error_msg: this.$t("app.defaultErrorMsg"),
-        has_commit: true,
-        show_feedback: false,
-        show_spinner: false,
-        commit: "SET_EXPENDITURE_CATEGORIES",
-        to_be_store_data: {
-          required: false,
-          has_value: false,
-          data: [],
-        },
+
+    getPagination() {
+      let paginate_object = {
+        sortBy: this.$store.getters.getPagination.sortBy,
+        descending: this.$store.getters.getPagination.descending,
+        page: this.$store.getters.getPagination.page,
+        rowsPerPage: this.$store.getters.getPagination.rowsPerPage,
+        rowsNumber: this.$store.getters.getPagination.rowsNumber,
       };
-      this.$store.commit("SET_EXPENDITURE_CATEGORIES", null);
-      this.table_loader = true;
-      this.$store
-        .dispatch("getRequest", payload)
-        .then((response) => {
-          this.pagination.page = response.data.current_page;
-          this.pagination.rowsNumber = response.data.total;
-          this.pagination.rowsPerPage = response.data.per_page;
-        })
-        .finally(() => {
-          this.table_loader = false;
-        });
+
+      return paginate_object;
     },
 
+    getLoadingState() {
+      return this.$store.getters.getFetchingState;
+    },
+  },
+  methods: {
     onRequest(props) {
       const { page, rowsPerPage, sortBy } = props.pagination;
       const fetch_count =
         rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
       this.fetchOrganisationExpenditureCategories(
+        this.organisation_id,
         page,
         fetch_count,
         sortBy,
@@ -218,6 +200,7 @@ export default {
       });
 
       this.fetchOrganisationExpenditureCategories(
+        this.organisation_id,
         1,
         7,
         "name",
@@ -249,7 +232,13 @@ export default {
         },
       };
       this.$store.dispatch("deleteRequest", payload).then(() => {
-        this.fetchOrganisationExpenditureCategories(1, 7, "name", "");
+        this.fetchOrganisationExpenditureCategories(
+          this.organisation_id,
+          1,
+          7,
+          "name",
+          ""
+        );
       });
     },
   },

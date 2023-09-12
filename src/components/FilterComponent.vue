@@ -1006,6 +1006,8 @@ export default {
         "PENDING",
         "DECLINED",
         "ALL",
+        "ACTIVE",
+        "IN_ACTIVE"
       ],
       is_compulsory: "",
       type: "",
@@ -1351,7 +1353,7 @@ export default {
 
     filterMemberSavings() {
       this.$emit("filter-member-savings", {
-        month: this.year,
+        month: this.month,
         payment_status: this.payment_status,
       });
     },

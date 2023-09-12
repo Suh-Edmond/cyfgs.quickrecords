@@ -31,8 +31,8 @@
             :total_amount_spent="total_amount_spent"
             :balance="total_balance"
             :total_balance="total_balance"
-            :pagination="pagination"
-            :table_loading="table_loader"
+            :pagination="getPagination"
+            :table_loading="getLoadingState"
             @edit-expenditure-item-detail="editExpenditureItemDetail"
             @view-expenditure-item-detail="viewExpenditureItemDetail"
             @delete-row="onDeleteRow"
@@ -40,6 +40,18 @@
           >
           </CategoryTable>
         </div>
+      </div>
+
+      <div class="q-px-xs q-mt-md">
+        <q-card>
+          <q-card-section>
+            <p>Summary</p>
+            <p>Estimated Amount</p>
+            <p>Total Amount Given</p>
+            <p>Total Amount Spent</p>
+            <p>Total Balance</p>
+          </q-card-section>
+        </q-card>
       </div>
     </div>
   </q-page>
@@ -53,6 +65,16 @@ import FilterComponentVue from "src/components/FilterComponent.vue";
 
 export default {
   mixins: [HelperMixinVue, ExpenditureItemDetailMixinVue],
+  beforeMount() {
+    this.$store.commit("SET_PAGINATION", {
+      sortBy: "name",
+      descending: false,
+      page: 1,
+      rowsPerPage: 7,
+      rowsNumber: 0,
+    });
+  },
+
   mounted() {
     this.getExpenditureDetailsByItemId(1, 7, false);
   },
@@ -120,14 +142,6 @@ export default {
       total_amount_given: 0,
       total_amount_spent: 0,
       total_balance: 0,
-      pagination: {
-        sortBy: "name",
-        descending: false,
-        page: 1,
-        rowsPerPage: 7,
-        rowsNumber: 0,
-      },
-      table_loader: false,
     };
   },
   computed: {
@@ -166,6 +180,22 @@ export default {
     validateDownload() {
       return this.getExpenditureItemDetails.length == 0;
     },
+
+    getPagination() {
+      let paginate_object = {
+        sortBy: this.$store.getters.getPagination.sortBy,
+        descending: this.$store.getters.getPagination.descending,
+        page: this.$store.getters.getPagination.page,
+        rowsPerPage: this.$store.getters.getPagination.rowsPerPage,
+        rowsNumber: this.$store.getters.getPagination.rowsNumber,
+      };
+
+      return paginate_object;
+    },
+
+    getLoadingState() {
+      return this.$store.getters.getFetchingState;
+    },
   },
 
   methods: {
@@ -187,21 +217,26 @@ export default {
           data: [],
         },
       };
-      this.table_loader = true;
-      this.$store.commit("SET_EXPENDITURE_ITEM_DETAIL", null);
+      this.$store.commit("SET_IS_FETCHING", true);
       this.$store
         .dispatch("getRequest", payload)
         .then((response) => {
-          this.pagination.page = response.data.current_page;
-          this.pagination.rowsNumber = response.data.total;
-          this.pagination.rowsPerPage = response.data.per_page;
-          this.total_amount_given = response.data.total_amount_given;
-          this.total_amount_spent = response.data.total_amount_spent;
-          this.total_item_amount = response.data.total_item_amount;
-          this.total_balance = response.data.total_balance;
+          if (response.success) {
+            this.$store.commit("SET_PAGINATION", {
+              sortBy: "name",
+              descending: false,
+              page: response.data.current_page,
+              rowsPerPage: response.data.per_page,
+              rowsNumber: response.data.total,
+            });
+            this.total_amount_given = response.data.total_amount_given;
+            this.total_amount_spent = response.data.total_amount_spent;
+            this.total_item_amount = response.data.total_item_amount;
+            this.total_balance = response.data.total_balance;
+          }
         })
         .finally(() => {
-          this.table_loader = false;
+          this.$store.commit("SET_IS_FETCHING", false);
         });
     },
 
@@ -267,7 +302,7 @@ export default {
   },
   components: {
     CategoryTable,
-    FilterComponentVue
+    FilterComponentVue,
   },
 };
 </script>

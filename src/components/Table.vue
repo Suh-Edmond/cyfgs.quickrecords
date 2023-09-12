@@ -31,7 +31,7 @@
         </div>
       </template>
       <template v-slot:body="props">
-        <!-- body for members -->
+        <!---------------------------------------------BODY FOR MEMBERS------------------------------------------------------>
         <q-tr :props="props" v-if="show_members">
           <q-td key="counter" :props="props">
             {{ props.row.counter }}
@@ -91,8 +91,12 @@
           <q-td key="approve" :props="props" v-if="props.row.approve == ''">
           </q-td>
 
-          <q-td key="year" :props="props">
-            {{ props.row.year != null ? props.row.year : getCurrentYear.year }}
+          <q-td key="status" :props="props"  v-if="props.row.status == 'ACTIVE'" class="registered">
+            {{ props.row.status }}
+          </q-td>
+
+          <q-td key="status" :props="props"  v-if="props.row.status == 'IN_ACTIVE'" class="not_registered">
+            {{ props.row.status }}
           </q-td>
 
           <q-td key="action" :props="props">
@@ -209,7 +213,7 @@
             </q-btn>
           </q-td>
         </q-tr>
-        <!-- end of body for members -->
+        <!---------------------------------------------END BODE FOR MEMBERS-->
 
         <!---------------------------------------------------START OF SAVINGS FOR ALL MEMBER TO BE VIEW BY USER WITH UNTREASUERER ROLE------------------------->
         <q-tr :props="props" v-if="show_savings && !checkTreasurerRole()">
@@ -1079,7 +1083,7 @@ export default {
   data() {
     return {
       dialog: false,
-      filter: "",
+      filter: '',
       deleted_row: null,
       show_invite: false,
       member_to_be_invited: null,

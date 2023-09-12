@@ -111,7 +111,7 @@
             :show_contribution="true"
             :total_contribution="computeTotalContributionsForFilteredRecord"
             :title="getTableTitleForSearchContributions"
-            :pagination="pagination"
+            :pagination="getPagination"
             :table_loading="getFetchingState"
             @delete-row="deleteRow"
             @onRequest="onRequest"
@@ -139,6 +139,15 @@ export default {
     organisationMixinVue,
     HelperMixinVue,
   ],
+  beforeMount() {
+    this.$store.commit("SET_PAGINATION", {
+      sortBy: "name",
+      descending: false,
+      page: 1,
+      rowsPerPage: 7,
+      rowsNumber: 0,
+    });
+  },
 
   mounted() {},
 
@@ -193,14 +202,6 @@ export default {
       start_filter: false,
       filteredContributions: [],
       loading_filter: false,
-      pagination: {
-        sortBy: "name",
-        descending: false,
-        page: 1,
-        rowsPerPage: 7,
-        rowsNumber: 0,
-      },
-      table_loader: false,
     };
   },
   computed: {
@@ -219,7 +220,9 @@ export default {
     },
 
     computeTotalContributions() {
-      return this.$store.getters.getFilteredContributions !== null ? this.$store.getters.getFilteredContributions.total_amount : 0
+      return this.$store.getters.getFilteredContributions !== null
+        ? this.$store.getters.getFilteredContributions.total_amount
+        : 0;
     },
 
     getMembersContributionsByPaymentItem() {
@@ -299,19 +302,19 @@ export default {
     },
 
     computeTotalContributionsForFilteredRecord() {
-      return this.$store.getters.getFilteredContributions !== null ? this.$store.getters.getFilteredContributions.total_amount : 0
+      return this.$store.getters.getFilteredContributions !== null
+        ? this.$store.getters.getFilteredContributions.total_amount
+        : 0;
     },
 
     getTableTitleForSearchContributions() {
       let title = "";
-      const route_data = Object.assign({}, this.$route.query);
+      const payment_item = this.$store.getters.getSearchContributionParams;
       title =
-        route_data.payment_item_id != undefined
-          ? this.$t("app.contributionPartTitle") +
-            `${route_data.payment_item_id}` +
+      payment_item !== null ? this.$t("app.contributionPartTitle") +
+            `${payment_item.item.label}` +
             this.$t("app.amountPartTitle") +
-            `${Number(route_data.payment_item_amount).toLocaleString()} XAF`
-          : "";
+            `${Number(payment_item.item.amount).toLocaleString()} XAF`: "";
       return title;
     },
 
@@ -326,7 +329,7 @@ export default {
         rowsPerPage:
           this.$store.getters.getFilteredContributions !== null
             ? this.$store.getters.getFilteredContributions.per_page
-            : 2,
+            : 7,
         rowsNumber:
           this.$store.getters.getFilteredContributions !== null
             ? this.$store.getters.getFilteredContributions.total
@@ -337,6 +340,18 @@ export default {
 
     getFetchingState() {
       return this.$store.getters.getFetchingState;
+    },
+
+    getPagination() {
+      let paginate_object = {
+        sortBy: this.$store.getters.getPagination.sortBy,
+        descending: this.$store.getters.getPagination.descending,
+        page: this.$store.getters.getPagination.page,
+        rowsPerPage: this.$store.getters.getPagination.rowsPerPage,
+        rowsNumber: this.$store.getters.getPagination.rowsNumber,
+      };
+
+      return paginate_object;
     },
   },
 
@@ -412,19 +427,20 @@ export default {
           data: null,
         },
       };
-      this.table_loader = true;
-      this.$store.commit("SET_IS_FETCHING", this.table_loader);
-      this.$store.commit("SET_FILTERED_CONTRIBUTIONS", null);
+      this.$store.commit("SET_IS_FETCHING", true);
       this.$store
         .dispatch("getRequest", payload)
         .then((response) => {
-          (this.pagination.page = response.data.current_page),
-            (this.pagination.page = response.data.per_page),
-            (this.pagination.page = response.data.total);
+          this.$store.commit("SET_PAGINATION", {
+            sortBy: "name",
+            descending: false,
+            page: response.data.current_page,
+            rowsPerPage: response.data.per_page,
+            rowsNumber: response.data.total,
+          });
         })
         .finally(() => {
-          this.table_loader = false;
-          this.$store.commit("SET_IS_FETCHING", this.table_loader);
+          this.$store.commit("SET_IS_FETCHING", false);
         });
 
       return;

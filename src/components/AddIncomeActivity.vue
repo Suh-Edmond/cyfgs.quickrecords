@@ -112,11 +112,10 @@
 <script>
 import ButtonVue from "src/components/Button.vue";
 import IncomeActivityMixinVue from "src/mixins/IncomeActivityMixin.vue";
-import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import moment from 'moment';
 
 export default {
-  mixins: [IncomeActivityMixinVue, organisationMixinVue],
+  mixins: [IncomeActivityMixinVue],
 
   mounted() {
     let heading = this.$t('app.addIncomeActivityHeading');
@@ -144,6 +143,7 @@ export default {
       dialog: false,
       payment_items: [],
       start_filtering: false,
+      organisation_id:this.$store.getters.getOrganisation.id,
     };
   },
   computed: {
@@ -151,18 +151,12 @@ export default {
       return this.income_activity.amount == 0 ||
         this.income_activity.name == null ||
         this.income_activity.date == null ||
-        this.income_activity.venue == null
-        ? true
-        : false;
+        this.income_activity.venue == null;
     },
 
     validateDisablePaymentItem()
     {
       return this,this.income_activity.payment_item_id != null;
-    },
-
-    getEditState() {
-      return this.$store.getters.getEditState;
     },
 
     getIncomeActivity() {
@@ -206,9 +200,8 @@ export default {
     },
 
     onAddIncomeActivity() {
-      let organisation_id = this.getOrganisationId;
       let payload = {
-        url: this.setActionUrl(this.income_activity.id, organisation_id),
+        url: this.setActionUrl(this.income_activity.id, this.organisation_id),
         data: {
           venue: this.income_activity.venue,
           date: this.income_activity.date,
@@ -235,7 +228,7 @@ export default {
           data: [],
         },
       };
-      this.setDispatchAction(this.income_activity.id, payload, organisation_id);
+      this.setDispatchAction(this.income_activity.id, payload, this.organisation_id);
     },
 
     resetForm() {
@@ -267,7 +260,7 @@ export default {
         this.$store
           .dispatch("postRequest", payload)
           .then(() => {
-            this.getOrganisationIncomeActivities(organisation_id);
+            this.getOrganisationIncomeActivities(organisation_id,1 , 7);
           })
           .finally(() => {
             this.$emit("close-right-drawer");
@@ -278,7 +271,7 @@ export default {
         this.$store
           .dispatch("putRequest", payload)
           .then(() => {
-            this.getOrganisationIncomeActivities(organisation_id);
+            this.getOrganisationIncomeActivities(organisation_id, 1, 7);
             this.resetForm();
           })
           .finally(() => {

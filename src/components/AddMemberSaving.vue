@@ -87,7 +87,7 @@ export default {
     let heading = this.$t('app.addSavingHeading');
     this.$emit("set-heading", heading);
 
-    this.getOrganisationMembers(this.getOrganisationId, false);
+    this.getOrganisationMembers(this.organisation_id, false);
 
     this.getMembersFromState();
   },
@@ -105,20 +105,17 @@ export default {
       dialog: false,
       members: [],
       start_filtering:false,
+      organisation_id:this.$store.getters.getOrganisation.id,
     };
   },
   computed: {
     validateForm() {
-      return this.saving.user_id == null || this.saving.amount_deposited == 0
-        ? true
-        : false;
+      return this.saving.user_id == null || this.saving.amount_deposited == 0;
     },
     isMemberExist() {
       return this.saving.user_id !== null &&
         this.saving.amount_deposited != 0 &&
-        this.saving.id != null
-        ? true
-        : false;
+        this.saving.id != null;
     },
     startSearch() {
       return this.saving.user_id === null ? false : true;
@@ -203,13 +200,12 @@ export default {
     },
 
     setDispatchAction(id, payload) {
-      let organisation_id = this.getOrganisationId;
       this.loading = true;
       if (id === null || id === undefined) {
         this.$store
           .dispatch("postRequest", payload)
           .then(() => {
-            this.getOrganisationMemberSavings(organisation_id);
+            this.getPaginatedOrganisationMemberSavings(this.organisation_id, 1, 7, "", this.$store.getters.getCurrentYear.id);
           })
           .finally(() => {
             this.$emit("close-right-drawer");
@@ -220,8 +216,7 @@ export default {
         this.$store
           .dispatch("putRequest", payload)
           .then(() => {
-            this.getOrganisationMemberSavings(organisation_id);
-            this.resetForm();
+            this.getPaginatedOrganisationMemberSavings(this.organisation_id, 1, 7, "", this.$store.getters.getCurrentYear.id);
           })
           .finally(() => {
             this.$emit("close-right-drawer");

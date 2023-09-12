@@ -197,3 +197,8 @@ export function SET_TOTAL_YEARLY_EXPENDITURE(state, data) {
 export function SET_SEARCH_CONTRIBUTION_PARAMS(state, data) {
   state.search_contribution_data = data;
 }
+
+
+export function SET_PAGINATION(state, data) {
+  state.pagination = data;
+}

@@ -1,6 +1,7 @@
 <template>
-  <div class="q-pa-md">
-    <div class="q-ml-sm q-mb-lg">
+  <div class="q-mb-md">
+    <q-linear-progress indeterminate v-show="is_fetching_members" />
+    <div class="q-ml-sm q-mb-lg q-mt-md">
       <label class="text-muted q-pl-sm info"
         >{{ $t("app.warningField") }}<span class="text-red">*</span
         >{{ $t("app.fields") }}</label
@@ -202,7 +203,7 @@
             clearable
           >
             <template v-slot:append v-if="start_filtering">
-              <q-spinner color="primary" size="1.2em" :thickness="5" />
+              <q-spinner color="primary" size="1.2em" :thickness="3" />
             </template>
 
             <!-- no member found message -->
@@ -256,9 +257,14 @@ import memberMixin from "src/mixins/memberMixin.vue";
 export default {
   mixins: [PaymentItemMixin, PaymentItemMixinVue, memberMixin],
 
-  created() {
+  mounted() {
     let heading = this.$t("app.paymentItemHeading");
     this.$emit("set-heading", heading);
+    this.resetForm();
+  },
+
+  beforeMount(){
+    this.resetForm();
   },
 
   data() {
@@ -291,20 +297,25 @@ export default {
       ],
       frequencies: ["YEARLY", "MONTHLY", "ONE_TIME", "QUARTERLY"],
       members: [],
+      active_members:[],
       references: [],
       start_filtering: false,
       invalid_deadline: false,
+      is_fetching_members:false,
+
     };
   },
   computed: {
     validateForm() {
-      return this.payment_item.name == null ||
-        this.payment_item.type == null ||
-        this.payment_item.frequency == null ||
-        this.payment_item.deadline == null ||
-        this.payment_item.amount == 0.0
-        ? true
-        : false;
+      return (
+        this.payment_item.name === null ||
+        this.payment_item.type === null ||
+        this.payment_item.frequency === null ||
+        this.payment_item.deadline === null ||
+        this.payment_item.amount === 0.0 ||
+        (this.payment_item.type === "GROUPED_MEMBERS" && this.references.length == 0) ||
+        (this.payment_item.type === "A_MEMBER" && this.references.length == 0)
+      );
     },
 
     getUpdatedPaymentItem() {
@@ -331,12 +342,15 @@ export default {
   methods: {
     validateDeadline() {
       let date = new Date();
-      let month = date.getMonth() + 1 > 10 ? 0+date.getMonth() + 1: date.getMonth() + 1;
+      let month =
+        date.getMonth() + 1 > 10
+          ? 0 + date.getMonth() + 1
+          : date.getMonth() + 1;
       let current_date =
-        date.getFullYear() + "/" + 0+month + "/" + date.getDate();
-      return this.invalid_deadline =
+        date.getFullYear() + "/" + 0 + month + "/" + date.getDate();
+      return (this.invalid_deadline =
         this.payment_item.deadline !== null &&
-        this.payment_item.deadline < current_date;
+        this.payment_item.deadline < current_date);
     },
     onAddPaymentItem() {
       let category = this.$store.getters.getCurrentPaymentCategory;
@@ -381,7 +395,7 @@ export default {
         (this.payment_item.compulsory = true);
       this.payment_item.id = null;
       this.payment_item.payment_category_id = null;
-
+      this.references = [];
       return this.payment_item;
     },
 
@@ -441,30 +455,53 @@ export default {
         this.references = this.setReferences(data.references);
         this.payment_item.deadline = data.deadline;
       }
+      this.handlePaymentItemType()
       return this.payment_item;
     },
 
     handlePaymentItemType() {
-      this.references = [];
       this.payment_item.reference = null;
-      if (this.$store.getters.getMembers.length == 0) {
-        let organisation_id = this.$store.getters.getOrganisation.id;
-        this.getOrganisationMembers(organisation_id, false);
-        this.getReferences();
-      } else {
-        this.getReferences();
+      if (this.payment_item.type == "A_MEMBER" || "GROUPED_MEMBERS" && this.active_members.length == 0) {
+        this.getOrganisationMembers();
       }
     },
 
-    getReferences() {
-      this.members = [];
-      this.$store.getters.getMembers.forEach((member) => {
-        this.members.push({
-          label: member.name,
-          value: member.id,
+    getOrganisationMembers() {
+      let organisation_id = this.$store.getters.getOrganisation.id;
+      let payload = {
+        url: `/api/protected/organisations/${organisation_id}/users`,
+        msg: "none",
+        color: "default",
+        status: "none",
+        error_msg: this.$t("app.defaultErrorMsg"),
+        has_commit: false,
+        show_feedback: false,
+        show_spinner: false,
+        commit: "",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.is_fetching_members = true;
+      this.active_members = [];
+      this.$store
+        .dispatch("getRequest", payload)
+        .then((response) => {
+          if (response.success) {
+            response.data.forEach((member) => {
+              this.members.push({
+                label: member.name,
+                value: member.id,
+              });
+            });
+            this.active_members = this.members
+          }
+        })
+        .finally(() => {
+          this.is_fetching_members = false;
         });
-      });
-      return this.members;
     },
 
     selectMember() {
@@ -519,15 +556,12 @@ export default {
 
     filterFn(val, update, abort) {
       if (val.length < 1) {
-        this.start_filtering = false;
         abort();
         return;
       }
 
       update(() => {
-        this.start_filtering = true;
-        this.members = this.getReferences();
-        this.members = this.members.filter((v) =>
+        this.members = this.active_members.filter((v) =>
           v.label.toLowerCase().includes(val.toLowerCase())
         );
         return this.members;
@@ -568,9 +602,12 @@ export default {
     },
 
     setReferences(data) {
-      let refs = "";
+      let refs = [];
       data.forEach((ele) => {
-        refs += ele.id+"/";
+        refs.push({
+          label:ele.name,
+          value:ele.id
+        });
       });
       return refs;
     },

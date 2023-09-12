@@ -1,32 +1,57 @@
 <template>
   <div class="q-pa-md">
     <div class="q-ml-sm q-mb-lg">
-      <label class="text-muted info">{{ $t('app.warningField') }}<span class="text-red">*</span>{{ $t('app.fields')
-      }}</label>
+      <label class="text-muted info"
+        >{{ $t("app.warningField") }}<span class="text-red">*</span
+        >{{ $t("app.fields") }}</label
+      >
     </div>
     <div class="q-mt-lg q-mx-sm">
       <q-form @submit="onAddPaymentCategory" class="q-gutter-md">
         <div>
-          <label for="credential" class="form_field">{{ $t('app.nameLabel') }} <span class="text-red">*</span></label>
+          <label for="credential" class="form_field"
+            >{{ $t("app.nameLabel") }} <span class="text-red">*</span></label
+          >
           <q-input v-model="payment_category.name" outlined dense type="text" />
         </div>
         <div>
-          <label for="credential" class="form_field">{{ $t('app.codeLabel') }} <span class="text-red">*</span></label>
-          <q-input v-model="payment_category.code" bottom-slots outlined dense type="text">
+          <label for="credential" class="form_field"
+            >{{ $t("app.codeLabel") }} <span class="text-red">*</span></label
+          >
+          <q-input
+            v-model="payment_category.code"
+            bottom-slots
+            outlined
+            dense
+            type="text"
+          >
             <template v-slot:hint>
-              {{ $t('app.codeHintCategory') }}
+              {{ $t("app.codeHintCategory") }}
             </template>
           </q-input>
         </div>
         <div>
-          <label for="credential" class="form_field">{{ $t('app.description') }} <span class="text-red">*</span></label>
-          <q-input v-model="payment_category.description" outlined dense type="textarea"
-            placeholder="Please provide a description about the category" />
+          <label for="credential" class="form_field"
+            >{{ $t("app.description") }} <span class="text-red">*</span></label
+          >
+          <q-input
+            v-model="payment_category.description"
+            outlined
+            dense
+            type="textarea"
+            placeholder="Please provide a description about the category"
+          />
         </div>
         <div class="flex q-mt-lg justify-end">
           <div>
-            <ButtonVue class="form_button" :label="label_save" :loading="loading" :color="color" :disabled="validateForm"
-              :no_caps="no_caps">
+            <ButtonVue
+              class="form_button"
+              :label="label_save"
+              :loading="loading"
+              :color="'primary'"
+              :disabled="validateForm"
+              :no_caps="no_caps"
+            >
             </ButtonVue>
           </div>
         </div>
@@ -36,34 +61,36 @@
 </template>
 <script>
 import ButtonVue from "src/components/Button.vue";
-import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import PaymentCategoryMixinVue from "src/mixins/PaymentCategoryMixin.vue";
 
 export default {
-  mixins: [organisationMixinVue, PaymentCategoryMixinVue],
+  mixins: [PaymentCategoryMixinVue],
   created() {
-    let heading = this.$t('app.paymentCategoryHeading');
+    let heading = this.$t("app.paymentCategoryHeading");
     this.$emit("set-heading", heading);
   },
   data() {
     return {
-      label_save: this.$t('app.saveBtnLabel'),
+      label_save: this.$t("app.saveBtnLabel"),
       loading: false,
-      color: "primary",
       payment_category: {
         name: null,
         description: null,
         id: null,
-        code: null
+        code: null,
       },
       position: "right",
       dialog: false,
       no_caps: true,
+      organisation_id: this.$store.getters.getOrganisation.id,
     };
   },
   computed: {
     validateForm() {
-      return this.payment_category.name === null ? true : false;
+      return (
+        this.payment_category.name === null ||
+        this.payment_category.code === null
+      );
     },
     getUpdatedCategory() {
       return this.setFormField(this.getUpdatedPaymentCategoryFromState());
@@ -76,21 +103,23 @@ export default {
   },
   methods: {
     onAddPaymentCategory() {
-      let id = this.getOrganisationId;
       let payload = {
-        url: `/api/protected/organisations/${id}/payment-categories`,
+        url: `/api/protected/organisations/${this.organisation_id}/payment-categories`,
         data: {
           name: this.payment_category.name,
           description: this.payment_category.description,
-          id: this.getUpdatedPaymentCategoryFromState() != null ? this.getUpdatedPaymentCategoryFromState().id : null,
-          code: this.payment_category.code
+          id:
+            this.getUpdatedPaymentCategoryFromState() != null
+              ? this.getUpdatedPaymentCategoryFromState().id
+              : null,
+          code: this.payment_category.code,
         },
-        msg: this.$t('app.paymentCategorySuccessMsg'),
+        msg: this.$t("app.paymentCategorySuccessMsg"),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: this.$t('app.defaultErrorMsg'),
+        error_msg: this.$t("app.defaultErrorMsg"),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -103,7 +132,13 @@ export default {
       this.$store
         .dispatch("postRequest", payload)
         .then(() => {
-          this.fetchCategories(id, true);
+          this.fetchOrganisationCategories(
+            this.organisation_id,
+            1,
+            7,
+            "name",
+            ""
+          );
         })
         .finally(() => {
           this.loading = false;
@@ -115,7 +150,7 @@ export default {
     resetForm() {
       this.payment_category.description = null;
       this.payment_category.name = null;
-      this.payment_category.id = null
+      this.payment_category.id = null;
       this.payment_category.code = null;
       return this.payment_category;
     },

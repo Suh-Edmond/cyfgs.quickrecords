@@ -1,15 +1,5 @@
 <template>
   <div>
-    <!-- spinners -->
-    <div class="flex justify-center">
-      <q-spinner-ios
-        color="primary"
-        size="2em"
-        class="q-mb-lg"
-        v-if="getLoadingState"
-      />
-    </div>
-
     <div class="row q-px-sm">
       <div class="col-md-4 col-sm-12 col-xs-12">
         <div class="items">
@@ -248,7 +238,7 @@
           <SessionsTable
             :data="data"
             :columns="columns"
-            :loading="getLoadingState"
+            :table_loading="loading_session"
             :table_header="session_table_header"
             @fetch-sessions="getSessions"
           ></SessionsTable>
@@ -260,7 +250,7 @@
             :columns="reg_table_columns"
             :data="reg_table_data"
             :table_header="table_header"
-            :loading="getLoadingState"
+            :loading="loading_reg_fees"
             @fetch-registration-fee="getRegFee"
           ></RegistrationFeeTable>
         </div>
@@ -354,10 +344,10 @@ export default {
   mounted() {
     this.getSessions();
     this.getRegistrationAmount();
+    this.getRegFee();
   },
   data() {
     return {
-      mode: false,
       saveBtnLabel:this.$t('app.saveBtnLabel'),
       yearLabel:this.$t('app.selectYearLabel'),
       new_role_member: true,
@@ -445,8 +435,10 @@ export default {
         { name: "action", label: "Action", field: "action", align: "left" },
       ],
       reg_table_data: [],
-      table_header: "Member's Registration Fee",
-      session_table_header: "Sessions",
+      table_header: this.$t('app.regFeeLabel'),
+      session_table_header: this.$t('app.sessionLabel'),
+      loading_session: false,
+      loading_reg_fees:false,
     };
   },
   computed: {
@@ -462,6 +454,7 @@ export default {
   },
 
   methods: {
+
     formDateTime(date) {
       return moment(date).format("MMMM Do YYYY");
     },
@@ -502,11 +495,12 @@ export default {
       this.$store
         .dispatch("postRequest", payload)
         .then(() => {
-          this.is_fetching = false;
           this.getSessions();
           this.show_add_year = false;
         })
-        .finally(() => {});
+        .finally(() => {
+          this.is_fetching = false;
+        });
     },
 
     getSessions() {
@@ -527,22 +521,25 @@ export default {
           data: [],
         },
       };
+      this.loading_session = true;
+      this.data = [];
       this.$store.dispatch("getRequest", payload).then((res) => {
-        if (res) {
-          this.data = [];
-          res.data.forEach((ele) => {
+        if (res.success) {
+          res.data.forEach((session) => {
             this.data.push({
-              counter: res.data.indexOf(ele) + 1,
-              id: ele.id,
-              year: ele.year,
-              status: ele.status,
-              created_at: ele.created_at,
-              updated_at: ele.updated_at,
-              updated_by: ele.updated_by,
-            });
+              id:session.id,
+              year:session.year,
+              status:session.status,
+              created_at:session.created_at,
+              updated_at:session.updated_at,
+              counter:res.data.indexOf(session) + 1,
+              updated_by:session.updated_by
+            })
           });
         }
         return this.data;
+      }).finally(() => {
+        this.loading_session = false;
       });
     },
 
@@ -589,7 +586,7 @@ export default {
         to_on_fail: "none",
         show_spinner: true,
         show_feedback: false,
-        error_msg: "An Error occurred! Please try again",
+        error_msg: this.$t('app.defaultErrorMsg'),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -598,9 +595,10 @@ export default {
           data: [],
         },
       };
+      this.loading_reg_fees = true;
+      this.reg_table_data = [];
       this.$store.dispatch("getRequest", payload).then((res) => {
-        this.reg_table_data = [];
-        if (res) {
+        if (res.success) {
           res.data.forEach((ele) => {
             this.reg_table_data.push({
               counter: res.data.indexOf(ele) + 1,
@@ -616,17 +614,42 @@ export default {
           });
         }
         return this.reg_table_data;
+      }).finally(() => {
+        this.loading_reg_fees = false;
       });
     },
 
     onItemClick(lang) {
       if (lang == "fr") {
         this.$i18n.locale = 'fr'
+        this.showAppTranslateLoading();
       }
       if (lang == "en-US") {
-        this.$i18n.locale = 'en-US'
+        this.$i18n.locale = 'en-US';
+        this.showAppTranslateLoading();
       }
     },
+
+    showAppTranslateLoading(){
+      this.$q.loading.show({
+        message: this.$t('app.appTranslationLabel'),
+        backgroundColor:'primary',
+        sanitize:true
+      })
+
+      // hiding in 3s
+      this.timer = setTimeout(() => {
+        this.$q.loading.hide()
+        this.timer = void 0
+      }, 5000)
+    },
+
+    beforeDestroy () {
+    if (this.timer !== void 0) {
+      clearTimeout(this.timer)
+      this.$q.loading.hide()
+    }
+  }
   },
 
   components: {

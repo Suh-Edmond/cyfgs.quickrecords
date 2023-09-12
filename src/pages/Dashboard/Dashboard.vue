@@ -381,11 +381,11 @@ export default {
       return this.$store.getters.getFetchingState;
     },
     getTotalMembers() {
-      return this.$store.getters.getMembers.total;
+      return this.$store.getters.getMembers !== null ? this.$store.getters.getMembers.total : 0;
     },
 
     getTotalMembersSavings() {
-      return this.$store.getters.getOrganisationMembersSavings != null
+      return this.$store.getters.getOrganisationMembersSavings !== null
         ? this.$store.getters.getOrganisationMembersSavings.total_savings
         : 0;
     },

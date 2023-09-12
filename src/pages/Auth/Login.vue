@@ -211,16 +211,23 @@ export default {
               .then(async (res) => {
                 if (res.success) {
                   this.getOrganisationMemberSavings(
-                    this.$store.getters.getOrganisation.id
+                    this.$store.getters.getOrganisation.id,
+                    1,
+                    5
                   );
                 }
                 return res;
               })
               .then(async (res) => {
                 if (res.success) {
-                  this.getOrganisationMembers(
+                  this.filterOrganisationMembers(
                     this.$store.getters.getOrganisation.id,
-                    false
+                    false,
+                    1,
+                    10,
+                    "name",
+                    this.$store.getters.getCurrentYear.id,
+                    ""
                   );
                 }
                 return res;

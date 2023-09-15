@@ -2,15 +2,11 @@
   <div>
     <div class="row">
       <div class="col-md-12 col-xs-12 col-sm-12 col-lg-12">
-        <!-- spinners -->
-        <div class="flex justify-center">
-          <q-spinner-ios
-            color="primary"
-            size="2em"
-            class="q-mb-md"
-            v-if="getLoadingState"
-          />
+        <!-------------------------------------------LOADING INDICATOR------------------------------------------------->
+        <div class="flex justify-center q-mb-md" v-if="is_fetching">
+          <q-spinner color="primary" size="2.5em" />
         </div>
+        <!-------------------------------------------END OF LOADING INDICATOR------------------------------------------>
         <q-tabs
           v-model="tab"
           dense
@@ -40,7 +36,7 @@
         <q-tab-panels v-model="tab" animated>
           <!-------------------------------------------MEMBER PROFILE TAB PENEL----------------------------------------->
           <q-tab-panel name="profile">
-            <div class="q-pt-md" v-if="!getLoadingState">
+            <div class="q-pt-md" v-if="!is_fetching">
               <q-card class="my-card" flat>
                 <div class="row">
                   <div class="col-md-4 col-sm-12 col-xs-12">
@@ -247,7 +243,7 @@
                               ></q-icon
                             ></span>
                             {{ $t("app.nameLabel") }}:
-                            <span class="value q-pl-xl value_code">{{
+                            <span class="value q-pl-xl ">{{
                               getCurrentMember.name
                             }}</span></label
                           >
@@ -270,11 +266,11 @@
                             ></span>
                             <span class="q-pr-xs"></span>
                             {{ $t("app.gender") }}:
-                            <span class="value value_code gender">{{
+                            <span class="value  gender">{{
                               getCurrentMember.gender
                             }}</span>
                             <span
-                              class="value value_code q-pl-lg"
+                              class="value  q-pl-lg"
                               v-if="getCurrentMember.gender == null"
                               >{{ $t("app.notSet") }}</span
                             >
@@ -289,7 +285,7 @@
                                 class="q-pr-sm"
                               ></q-icon></span
                             >{{ $t("app.emailLabel") }}:
-                            <span class="value value_code email">{{
+                            <span class="value  email">{{
                               getCurrentMember.email
                             }}</span></label
                           >
@@ -303,7 +299,7 @@
                                 class="q-pr-xs"
                               ></q-icon></span
                             >{{ $t("app.telephoneLabel") }}:
-                            <span class="value phone value_code">{{
+                            <span class="value phone ">{{
                               getCurrentMember.telephone
                             }}</span></label
                           >
@@ -318,7 +314,7 @@
                               ></q-icon
                             ></span>
                             {{ $t("app.addressLabel") }}:
-                            <span class="value address value_code">{{
+                            <span class="value address ">{{
                               getCurrentMember.address
                             }}</span></label
                           >
@@ -333,7 +329,7 @@
                               ></q-icon
                             ></span>
                             {{ $t("app.occupation") }}:
-                            <span class="value occupation value_code">{{
+                            <span class="value occupation ">{{
                               getCurrentMember.occupation
                             }}</span></label
                           >
@@ -347,7 +343,7 @@
                                 class="q-pr-xs"
                               ></q-icon></span
                             >{{ $t("app.createdDate") }}:
-                            <span class="value date value_code">{{
+                            <span class="value date ">{{
                               getFormatedCreatedDate
                             }}</span></label
                           >
@@ -361,8 +357,22 @@
                                 class="q-pr-xs"
                               ></q-icon></span
                             >{{ $t("app.updatedDate") }}:
-                            <span class="value date value_code">{{
+                            <span class="value date ">{{
                               getFormatedUpdatedDate
+                            }}</span></label
+                          >
+                        </div>
+                        <div class="flex q-pb-lg">
+                          <label for="name" class="label"
+                            ><span
+                              ><q-icon
+                                name="hourglass_top"
+                                size="xs"
+                                class="q-pr-xs"
+                              ></q-icon></span
+                            >{{ $t("app.status") }}:
+                            <span class="status " :class="getCurrentMember.status == 'ACTIVE' ? 'active_text_color':'in_active_text_color'">{{
+                              getCurrentMember.status
                             }}</span></label
                           >
                         </div>
@@ -439,6 +449,19 @@
                               type="text"
                             />
                           </div>
+                          <div>
+                            <label for="credential" class="form_field"
+                              >{{ $t("app.status") }}
+                              <span class="text-red">*</span></label
+                            >
+                            <q-select
+                              v-model="user.status"
+                              outlined
+                              dense
+                              type="text"
+                              :option="status_options"
+                            />
+                          </div>
                           <div class="row justify-end">
                             <q-btn
                               class="q-mr-lg"
@@ -465,14 +488,23 @@
                       <!---------------------------------------------START OF ALERT OF MEMBER'S REGISTRATION STATUS------------------>
                       <div>
                         <div
-                          class=" q-ml-sm"
+                          class="q-ml-sm"
                           v-if="
                             getCurrentMember.has_register == 'NOT_REGISTERED' &&
                             !getCurrentMember.has_paid
                           "
                         >
-                          <span> <q-icon name="info" color="warning" size="sm" class="q-pr-md"></q-icon> </span>
-                          <label for="not_register" class="text-bold text-warning"
+                          <span>
+                            <q-icon
+                              name="info"
+                              color="warning"
+                              size="sm"
+                              class="q-pr-md"
+                            ></q-icon>
+                          </span>
+                          <label
+                            for="not_register"
+                            class="text-bold text-warning"
                             >{{ $t("app.notCompletedRegistration") }}:
                             {{ getCurrentYear.year }}</label
                           >
@@ -481,7 +513,14 @@
                           class="q-ml-sm"
                           v-if="getCurrentMember.has_register == 'REGISTERED'"
                         >
-                        <span> <q-icon name="info" color="secondary" size="sm" class="q-pr-md" ></q-icon> </span>
+                          <span>
+                            <q-icon
+                              name="info"
+                              color="secondary"
+                              size="sm"
+                              class="q-pr-md"
+                            ></q-icon>
+                          </span>
                           <label for="register" class="text-bold text-secondary"
                             >{{ $t("app.hasCompletedRegistration") }}:
                             {{ getCurrentYear.year }}</label
@@ -494,7 +533,14 @@
                             getCurrentMember.approve == 'PENDING'
                           "
                         >
-                        <span> <q-icon name="info" color="info" size="sm" class="q-pr-md"></q-icon> </span>
+                          <span>
+                            <q-icon
+                              name="info"
+                              color="info"
+                              size="sm"
+                              class="q-pr-md"
+                            ></q-icon>
+                          </span>
                           <label for="pending" class="text-bold text-info">{{
                             $t("app.registrationPending")
                           }}</label>
@@ -522,7 +568,6 @@
                     backgroundColor: '#5384ae',
                     color: '#FFFFFF',
                   }"
-
                 >
                   <template v-slot:top-left>
                     <div class="text-h6 contribution_item_header">
@@ -625,7 +670,6 @@
                     backgroundColor: '#5384ae',
                     color: '#FFFFFF',
                   }"
-
                 >
                   <template v-slot:top-left>
                     <div class="text-h6 contribution_item_header">
@@ -886,7 +930,6 @@ export default {
     this.getUserRoles(this.$route.params.id);
     this.getMembersDebts(false);
     this.getMembersContributions(false);
-    // console.log((LocalStorage.getItem("data"));
   },
 
   data() {
@@ -899,6 +942,7 @@ export default {
         address: "",
         occupation: "",
         user_id: "",
+        status:""
       },
       loading: false,
       edit_profile: false,
@@ -1047,11 +1091,12 @@ export default {
       gender_options: ["MALE", "FEMALE", "OTHER"],
       user_roles: [],
       show_remove_role_dialog: false,
-      is_fetching: false,
-      current_year: "",
+      is_fetching: true,
+      current_year: LocalStorage.getItem("data").current_session,
       due_amount: 0.0,
       amount_paid: 0.0,
       available_roles: [],
+      status_options:["ACTIVE", "IN_ACTIVE"],
     };
   },
   computed: {
@@ -1110,9 +1155,9 @@ export default {
     },
 
     canEditUserRole() {
-      let has_president_role = LocalStorage.getItem("data").user_data.roles.find(
-        (role) => role.name === "PRESIDENT"
-      );
+      let has_president_role = LocalStorage.getItem(
+        "data"
+      ).user_data.roles.find((role) => role.name === "PRESIDENT");
       return has_president_role != undefined;
     },
 
@@ -1169,6 +1214,7 @@ export default {
         this.user.address = data.address;
         this.user.occupation = data.occupation;
         this.user.user_id = data.id;
+        this.user.status = data.status
       }
 
       return this.user;
@@ -1359,7 +1405,13 @@ export default {
           data: [],
         },
       };
-      this.$store.dispatch("getRequest", payload).then(() => {});
+      this.is_fetching = true;
+      this.$store
+        .dispatch("getRequest", payload)
+        .then(() => {})
+        .finally(() => {
+          this.is_fetching = false;
+        });
     },
 
     removeUserRole() {
@@ -1430,7 +1482,7 @@ export default {
             amount_deposited: parseInt(ele.balance),
             is_compulsory: ele.is_compulsory,
             code: ele.code,
-            year: this.current_year,
+            year: this.current_year.id,
             comment: "BULK PAYMENT",
             quarterly_name: ele.quarterly_name,
             month_name: ele.month_name,
@@ -1460,7 +1512,7 @@ export default {
       let id = this.$route.params.id;
       let payload = {
         data: "none",
-        url: `/api/protected/contributions/members/debts?user_id=${id}&session_id=${this.current_year}`,
+        url: `/api/protected/contributions/members/debts?user_id=${id}&session_id=${this.current_year.id}`,
         msg: "none",
         color: "default",
         to_on_ok: "none",
@@ -1477,28 +1529,34 @@ export default {
           data: [],
         },
       };
-      this.$store.dispatch("getRequest", payload).then((res) => {
-        if (res != undefined && res.data.length > 0) {
-          res.data.forEach((ele) => {
-            this.due_amount += ele.balance;
-            this.data.push({
-              counter: res.data.indexOf(ele) + 1,
-              name: ele.name,
-              is_compulsory: ele.is_compulsory,
-              balance: ele.balance,
-              type: ele.type,
-              has_pay: ele.has_pay,
-              id: ele.id,
-              code: ele.code,
-              frequency: ele.frequency,
-              item_amount: ele.item_amount,
-              month_name: ele.month_name,
-              quarterly_name: ele.quarterly_name,
-              session: ele.session,
+      this.is_fetching = true;
+      this.$store
+        .dispatch("getRequest", payload)
+        .then((res) => {
+          if (res != undefined && res.data.length > 0) {
+            res.data.forEach((ele) => {
+              this.due_amount += ele.balance;
+              this.data.push({
+                counter: res.data.indexOf(ele) + 1,
+                name: ele.name,
+                is_compulsory: ele.is_compulsory,
+                balance: ele.balance,
+                type: ele.type,
+                has_pay: ele.has_pay,
+                id: ele.id,
+                code: ele.code,
+                frequency: ele.frequency,
+                item_amount: ele.item_amount,
+                month_name: ele.month_name,
+                quarterly_name: ele.quarterly_name,
+                session: ele.session,
+              });
             });
-          });
-        }
-      });
+          }
+        })
+        .finally(() => {
+          this.is_fetching = false;
+        });
     },
 
     getMembersContributions(show_spinner) {
@@ -1506,7 +1564,7 @@ export default {
       let id = this.$route.params.id;
       let payload = {
         data: "none",
-        url: `/api/protected/contributions/members/paid?user_id=${id}&session_id=${this.current_year}`,
+        url: `/api/protected/contributions/members/paid?user_id=${id}&session_id=${this.current_year.id}`,
         msg: "none",
         color: "default",
         to_on_ok: "none",
@@ -1523,29 +1581,35 @@ export default {
           data: [],
         },
       };
-      this.$store.dispatch("getRequest", payload).then((res) => {
-        if (res != undefined) {
-          res.data.forEach((ele) => {
-            this.amount_paid += ele.amount;
-            this.data1.push({
-              counter: res.data.indexOf(ele) + 1,
-              payment_item_id: ele.payment_item_id,
-              payment_item_amount: ele.payment_item_amount,
-              name: ele.name,
-              amount: ele.amount,
-              balance: ele.balance,
-              payment_status: ele.payment_status,
-              approve: ele.approve,
-              created_at: this.getFormatedDate(ele.created_at),
-              id: ele.id,
-              year: ele.year,
-              frequency: ele.frequency,
-              month_name: ele.month_name,
-              quarterly_name: ele.quarterly_name,
+      this.is_fetching = true;
+      this.$store
+        .dispatch("getRequest", payload)
+        .then((res) => {
+          if (res != undefined) {
+            res.data.forEach((ele) => {
+              this.amount_paid += ele.amount;
+              this.data1.push({
+                counter: res.data.indexOf(ele) + 1,
+                payment_item_id: ele.payment_item_id,
+                payment_item_amount: ele.payment_item_amount,
+                name: ele.name,
+                amount: ele.amount,
+                balance: ele.balance,
+                payment_status: ele.payment_status,
+                approve: ele.approve,
+                created_at: this.getFormatedDate(ele.created_at),
+                id: ele.id,
+                year: ele.year,
+                frequency: ele.frequency,
+                month_name: ele.month_name,
+                quarterly_name: ele.quarterly_name,
+              });
             });
-          });
-        }
-      });
+          }
+        })
+        .finally(() => {
+          this.is_fetching = false;
+        });
     },
   },
   components: {
@@ -1636,6 +1700,30 @@ export default {
 
 .date {
   padding-left: 1rem;
+}
+
+.status{
+  padding-left: 4rem;
+}
+
+.active_text_color {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 27px;
+  letter-spacing: 0.005em;
+  color: $secondary;
+}
+
+.in_active_text_color {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 27px;
+  letter-spacing: 0.005em;
+  color:$orange;
 }
 
 .label {

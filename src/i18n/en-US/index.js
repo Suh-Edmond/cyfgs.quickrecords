@@ -140,7 +140,7 @@ export default {
     totalAmountPayable:'Total Amount Payable',
     makePaymentBtnLabel:'Make Payment',
     paidItem:'Paid Items',
-    selectRole:'Select role',
+    selectRole:'Select Role',
     addLabel:'Add',
     removeRoleWarningMsg:'Are you sure you want to remove this role ?',
     role:'Role',
@@ -405,7 +405,7 @@ export default {
     totalMember:'Total Members',
     totalAmountSaved:'Total Amount Saved',
     totalMembersSavings:'Total Members Savings',
-    inviteMsg:'Invite your Team Members to use Quick Records',
+    inviteMsg:'Invite Team Member to use Quick Records',
     inviteVia:'Invite via email',
     inviteWhatsapp:'Invite via Whatsapp',
     contributor:'Contributor',
@@ -476,6 +476,8 @@ export default {
     uploadMemberSuccessMsg:"Members uploaded successfully",
     addMemberSuccessMsg:"Member added Successfully",
     member:"Member",
-    contributionsFor:"Contributions For "
+    contributionsFor:"Contributions For ",
+    memberInviteSuccess:"Member's invitation sent successfully",
+    memberInviteFail:"An error occurred! Could not send invitation"
    }
 };

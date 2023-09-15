@@ -625,7 +625,7 @@
                     backgroundColor: '#5384ae',
                     color: '#FFFFFF',
                   }"
-                  
+
                 >
                   <template v-slot:top-left>
                     <div class="text-h6 contribution_item_header">
@@ -886,6 +886,7 @@ export default {
     this.getUserRoles(this.$route.params.id);
     this.getMembersDebts(false);
     this.getMembersContributions(false);
+    // console.log((LocalStorage.getItem("data"));
   },
 
   data() {
@@ -1047,7 +1048,7 @@ export default {
       user_roles: [],
       show_remove_role_dialog: false,
       is_fetching: false,
-      current_year: this.$store.getters.getCurrentYear !== null ? this.this.$store.getters.getCurrentYear.id : "",
+      current_year: "",
       due_amount: 0.0,
       amount_paid: 0.0,
       available_roles: [],

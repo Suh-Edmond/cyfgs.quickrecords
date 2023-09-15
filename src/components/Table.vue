@@ -68,7 +68,7 @@
             key="approve"
             :props="props"
             v-if="props.row.approve == 'PENDING'"
-            class="text-info"
+            class="text-negative"
           >
             {{ props.row.approve }}
           </q-td>
@@ -91,11 +91,21 @@
           <q-td key="approve" :props="props" v-if="props.row.approve == ''">
           </q-td>
 
-          <q-td key="status" :props="props"  v-if="props.row.status == 'ACTIVE'" class="registered">
+          <q-td
+            key="status"
+            :props="props"
+            v-if="props.row.status == 'ACTIVE'"
+            class="registered"
+          >
             {{ props.row.status }}
           </q-td>
 
-          <q-td key="status" :props="props"  v-if="props.row.status == 'IN_ACTIVE'" class="not_registered">
+          <q-td
+            key="status"
+            :props="props"
+            v-if="props.row.status == 'IN_ACTIVE'"
+            class="not_registered"
+          >
             {{ props.row.status }}
           </q-td>
 
@@ -156,7 +166,7 @@
                       clickable
                       v-close-popup
                       @click="onInviteMember(props.row)"
-                      v-if="checkPresidentRole()"
+                      v-if="checkPresidentRole() && props.row.status == 'ACTIVE'"
                     >
                       <q-item-section avatar>
                         <span>
@@ -838,44 +848,51 @@
     </div>
 
     <!-- dialog for invite members. -->
-    <q-dialog v-model="show_invite" position="top">
-      <q-card>
+    <q-dialog v-model="show_invite">
+      <q-card class="invite_card">
         <q-card-section>
-          <div class="text-h6 q-pa-sm heading">
+          <div class="text-h6 q-px-md q-py-md heading text-center">
             {{ $t("app.inviteMsg") }}
           </div>
-        </q-card-section>
-
-        <q-card-section class="q-pt-none" v-if="show_invite">
-          <div class="row q-gutter-xl justify-center">
-            <div v-if="member_to_be_invited.email != null">
-              <q-btn
-                flat
-                icon="email"
-                size="lg"
-                :href="
-                  'mailto:' +
-                  member_to_be_invited.email +
-                  '?subject=' +
-                  invite_msg_subject +
-                  '&cc=&bcc=&body=' +
-                  invite_msg
-                "
-              >
-                <q-tooltip>{{ $t("app.inviteVia") }}</q-tooltip></q-btn
-              >
-            </div>
-            <div>
-              <q-btn flat color="secondary" size="sm" @click="whatsappInvite()"
-                ><img src="../../src/assets/whatsapp.png" class="whatsapp_icon"
-              /></q-btn>
-              <q-tooltip>{{ $t("app.inviteWhatsapp") }}</q-tooltip>
-            </div>
+          <div v-if="show_invite" class="q-px-md justify-center">
+            <label for="name" class="form_field">{{
+              $t("app.membersName")
+            }}</label>
+            <q-input v-model="member_invite_name" outlined dense disable />
+          </div>
+          <div class="q-px-md justify-center q-pt-md">
+            <label for="credential" class="form_field"
+              >{{ $t("app.selectRole") }} <span class="text-red">*</span></label
+            >
+            <q-select v-model="selected_role" outlined dense :options="roles" />
           </div>
         </q-card-section>
 
-        <q-card-actions align="right">
-          <q-btn flat label="Close" color="primary" v-close-popup />
+        <q-card-section>
+          <div class="row q-px-md justify-center">
+            <q-btn
+              icon-right="send"
+              label="Send Invitation"
+              no-caps
+              color="primary"
+              class="full-width"
+              @click="onSendInvitation()"
+              :loading="loading_invitation"
+              :disable="validateMemberInvite"
+            >
+              <q-tooltip>{{ $t("app.inviteVia") }}</q-tooltip></q-btn
+            >
+          </div>
+        </q-card-section>
+
+        <q-card-actions class="justify-end q-mb-md">
+          <q-btn
+            flat
+            label="Close"
+            class="q-mr-lg"
+            color="primary"
+            v-close-popup
+          />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -978,12 +995,11 @@
 <script>
 import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
 import IncomeActivityMixin from "src/mixins/IncomeActivityMixin.vue";
-import { LocalStorage } from "quasar";
+import { LocalStorage, Notify, Platform } from "quasar";
 import moment from "moment";
 import ContributionsMixinVue from "src/mixins/ContributionsMixin.vue";
 import memberMixin from "src/mixins/memberMixin.vue";
 import ConfirmDialogVue from "./ConfirmDialog.vue";
-import CurrentYearMixin from "src/mixins/CurrentYearMixin.vue";
 
 export default {
   mixins: [
@@ -992,8 +1008,9 @@ export default {
     UserSavingMixinVue,
     ContributionsMixinVue,
     memberMixin,
-    CurrentYearMixin,
   ],
+
+  mounted() {},
 
   props: {
     columns: {
@@ -1083,16 +1100,11 @@ export default {
   data() {
     return {
       dialog: false,
-      filter: '',
+      filter: "",
       deleted_row: null,
       show_invite: false,
       member_to_be_invited: null,
       redirect_url: process.env.REDIRECT_URL,
-      invite_msg_subject: this.$t("app.join"),
-      invite_msg:
-        this.$t("app.joinPartOne") +
-        process.env.REDIRECT_URL +
-        this.$t("app.joinPartTwo"),
       show_approve_dialog: false,
       chosen_state: null,
       approve_msg: null,
@@ -1104,6 +1116,10 @@ export default {
       registration_amount: null,
       income_amount: 0,
       contributor: null,
+      roles: ["TREASURER", "FINANCIAL_SECRETARY", "AUDITOR"],
+      member_invite_name: "",
+      selected_role: "",
+      loading_invitation: false,
     };
   },
 
@@ -1116,6 +1132,10 @@ export default {
         return pagination;
       },
     },
+
+    validateMemberInvite(){
+      return this.selected_role === "";
+    }
   },
 
   methods: {
@@ -1129,14 +1149,62 @@ export default {
     onInviteMember(data) {
       this.show_invite = true;
       this.member_to_be_invited = data;
+      this.member_invite_name = this.member_to_be_invited.name;
     },
 
-    whatsappInvite() {
-      let msg = this.invite_msg_subject + "\n\n" + this.invite_msg;
-      let whatsapp_url = `https://api.whatsapp.com/send?phone=${
-        this.member_to_be_invited.telephone
-      }&text=${encodeURIComponent(msg)}`;
-      window.open(whatsapp_url);
+    onSendInvitation() {
+      let payload = {
+        data: {
+          user_id: this.member_to_be_invited.id,
+          role: this.selected_role,
+          user_name: this.member_to_be_invited.name,
+          user_email: this.member_to_be_invited.email,
+        },
+        url: `/api/protected/organisations/members/send_invitation`,
+        msg: "none",
+        color: "default",
+        to_on_ok: "none",
+        status: "success",
+        to_on_fail: "none",
+        show_feedback: false,
+        error_msg: "none",
+        has_commit: false,
+        commit: "none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.loading_invitation = true;
+      this.$store.dispatch("postRequest", payload).then((response) => {
+        if (response.status == 200) {
+          Notify.create({
+            type: "positive",
+            color: "positive",
+            message: this.$t("app.memberInviteSuccess"),
+            position: Platform.is.mobile ? "bottom" : "top-right",
+          });
+        }else if(response.status == 403){
+          Notify.create({
+            type: "info",
+            color: "info",
+            message: this.$t("app.oneMemberRoleWarningMsg"),
+            position: Platform.is.mobile ? "bottom" : "top-right",
+          });
+        }
+        else {
+          Notify.create({
+            type: "negative",
+            color: "negative",
+            message: this.$t("app.memberInviteFail"),
+            position: Platform.is.mobile ? "bottom" : "top-right",
+          });
+        }
+      }).finally(() => {
+        this.show_invite = false;
+        this.loading_invitation = false;
+      });
     },
 
     checkPresidentRole() {
@@ -1506,6 +1574,10 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.invite_card {
+  width: 100%;
+  max-width: 460px;
+}
 .view_items {
   font-family: "Roboto";
   font-style: normal;
@@ -1570,7 +1642,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 15px;
+  font-size: 17px;
   line-height: 25px;
   align-items: left;
   letter-spacing: 0.01em;
@@ -1688,7 +1760,8 @@ export default {
 }
 
 .whatsapp_icon {
-  width: 2.7rem;
+  width: 2rem;
+  padding-right: 0.5rem;
 }
 
 .not_registered {
@@ -1711,5 +1784,15 @@ export default {
 
 .paginate {
   float: right;
+}
+
+.form_field {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 13px;
+  align-items: center;
+  letter-spacing: 0.01em;
+  color: $grey8;
 }
 </style>

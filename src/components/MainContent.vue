@@ -130,6 +130,7 @@
               @edit-sponsorship="editSponsorship"
               @register-member="registerMember"
               @search-contribution="searchContribution"
+              @view-payment-details="onViewPaymentDetails"
             />
           </q-card-section>
         </q-card>
@@ -255,6 +256,8 @@ export default {
     registerMember(data) {
       this.updateDrawer(data);
     },
+
+
 
     updatePaymentCategory(data) {
       this.updateDrawer(data);
@@ -386,6 +389,10 @@ export default {
     verifyRequiredAdd() {
       return this.$route.name !== "member_account";
     },
+
+    onViewPaymentDetails(data){
+      this.updateDrawer(data);
+    }
   },
 };
 </script>

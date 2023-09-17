@@ -533,6 +533,12 @@
           @set-heading="setHeading"
         >
         </ViewPaymentItem>
+        <PaymentDetails
+          v-if="current_tab == 'Payment Details'"
+          :payment-details="data"
+          @close-right-drawer="closeRightDrawer"
+          @set-heading="setHeading"
+        ></PaymentDetails>
       </q-page>
     </q-drawer>
   </q-layout>
@@ -563,6 +569,7 @@ import ViewExpenditureItemVue from "src/components/ViewExpenditureItem.vue";
 import ViewExpenditureItemDetail from "src/components/ViewExpenditureItemDetail.vue";
 import MemberRegistration from "src/components/MemberRegistration.vue";
 import ViewPaymentItem from "src/components/ViewPaymentItem.vue";
+import PaymentDetails from "src/components/PaymentDetails.vue";
 
 export default {
   mixins: [organisationMixinVue],
@@ -598,7 +605,7 @@ export default {
   },
   watch: {},
   methods: {
-    searchContribution(data){
+    searchContribution(data) {
       console.log(data);
       this.$emit("search-contribution", data);
     },
@@ -692,6 +699,7 @@ export default {
     ViewExpenditureItemDetail,
     MemberRegistration,
     ViewPaymentItem,
+    PaymentDetails,
   },
 };
 </script>

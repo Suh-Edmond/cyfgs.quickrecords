@@ -243,7 +243,7 @@
                               ></q-icon
                             ></span>
                             {{ $t("app.nameLabel") }}:
-                            <span class="value q-pl-xl ">{{
+                            <span class="value q-pl-xl">{{
                               getCurrentMember.name
                             }}</span></label
                           >
@@ -266,11 +266,11 @@
                             ></span>
                             <span class="q-pr-xs"></span>
                             {{ $t("app.gender") }}:
-                            <span class="value  gender">{{
+                            <span class="value gender">{{
                               getCurrentMember.gender
                             }}</span>
                             <span
-                              class="value  q-pl-lg"
+                              class="value q-pl-lg"
                               v-if="getCurrentMember.gender == null"
                               >{{ $t("app.notSet") }}</span
                             >
@@ -285,7 +285,7 @@
                                 class="q-pr-sm"
                               ></q-icon></span
                             >{{ $t("app.emailLabel") }}:
-                            <span class="value  email">{{
+                            <span class="value email">{{
                               getCurrentMember.email
                             }}</span></label
                           >
@@ -299,7 +299,7 @@
                                 class="q-pr-xs"
                               ></q-icon></span
                             >{{ $t("app.telephoneLabel") }}:
-                            <span class="value phone ">{{
+                            <span class="value phone">{{
                               getCurrentMember.telephone
                             }}</span></label
                           >
@@ -314,7 +314,7 @@
                               ></q-icon
                             ></span>
                             {{ $t("app.addressLabel") }}:
-                            <span class="value address ">{{
+                            <span class="value address">{{
                               getCurrentMember.address
                             }}</span></label
                           >
@@ -329,7 +329,7 @@
                               ></q-icon
                             ></span>
                             {{ $t("app.occupation") }}:
-                            <span class="value occupation ">{{
+                            <span class="value occupation">{{
                               getCurrentMember.occupation
                             }}</span></label
                           >
@@ -343,7 +343,7 @@
                                 class="q-pr-xs"
                               ></q-icon></span
                             >{{ $t("app.createdDate") }}:
-                            <span class="value date ">{{
+                            <span class="value date">{{
                               getFormatedCreatedDate
                             }}</span></label
                           >
@@ -357,7 +357,7 @@
                                 class="q-pr-xs"
                               ></q-icon></span
                             >{{ $t("app.updatedDate") }}:
-                            <span class="value date ">{{
+                            <span class="value date">{{
                               getFormatedUpdatedDate
                             }}</span></label
                           >
@@ -371,9 +371,15 @@
                                 class="q-pr-xs"
                               ></q-icon></span
                             >{{ $t("app.status") }}:
-                            <span class="status " :class="getCurrentMember.status == 'ACTIVE' ? 'active_text_color':'in_active_text_color'">{{
-                              getCurrentMember.status
-                            }}</span></label
+                            <span
+                              class="status"
+                              :class="
+                                getCurrentMember.status == 'ACTIVE'
+                                  ? 'active_text_color'
+                                  : 'in_active_text_color'
+                              "
+                              >{{ getCurrentMember.status }}</span
+                            ></label
                           >
                         </div>
                       </div>
@@ -558,7 +564,7 @@
           <!-------------------------------------------MEMBER CONTRIBUTIONS TAB PANEL----------------------------------->
           <q-tab-panel name="contributions">
             <!-----------------------------------------PAYMENT ITEMS--------------------------------------------------->
-            <div class="row q-mx-xs">
+            <div class="row">
               <div class="col-12 col-md-12 col-sm-12 col-xs-12">
                 <q-table
                   :data="data"
@@ -568,6 +574,7 @@
                     backgroundColor: '#5384ae',
                     color: '#FFFFFF',
                   }"
+                  :loading="getLoadingState"
                 >
                   <template v-slot:top-left>
                     <div class="text-h6 contribution_item_header">
@@ -607,7 +614,7 @@
                         {{
                           props.row.frequency == "YEARLY"
                             ? props.row.session.year
-                            : "N/A"
+                            : current_year.year
                         }}
                       </q-td>
                       <q-td key="has_pay" :props="props">
@@ -619,6 +626,9 @@
                         />
                       </q-td>
                     </q-tr>
+                  </template>
+                  <template v-slot:loading>
+                    <q-inner-loading showing color="primary" />
                   </template>
                 </q-table>
               </div>
@@ -660,16 +670,18 @@
             <!----------------------------------------END OF TOTAL AMOUNT PAYABLE------------------------------------>
 
             <!-----------------------------------------PAID ITEM LIST------------------------------------------------>
-            <div class="row q-mt-lg q-mx-md">
-              <div class="col-12">
+            <div class="row q-mt-lg">
+              <div class="col-12 col-md-12 col-sm-12 col-xs-12">
                 <q-table
                   :data="data1"
                   :columns="columns1"
-                  row-key="index"
+                  row-key="counter"
+                  ref="table"
                   :table-header-style="{
                     backgroundColor: '#5384ae',
                     color: '#FFFFFF',
                   }"
+                  :loading="getLoadingState"
                 >
                   <template v-slot:top-left>
                     <div class="text-h6 contribution_item_header">
@@ -679,9 +691,6 @@
                   </template>
                   <template v-slot:body="props">
                     <q-tr :props="props">
-                      <q-td key="counter" :props="props">
-                        {{ props.row.counter }}
-                      </q-td>
                       <q-td key="name" :props="props">
                         {{ props.row.name }}
                       </q-td>
@@ -697,13 +706,10 @@
                       </q-td>
                       <q-td key="quarterly_name" :props="props">
                         {{
-                          props.row.quarterly_name == null || " "
+                          props.row.quarterly_name == null
                             ? "N/A"
                             : props.row.quarterly_name
                         }}
-                      </q-td>
-                      <q-td key="year" :props="props">
-                        {{ props.row.year == null ? "N/A" : props.row.year }}
                       </q-td>
                       <q-td key="amount" :props="props">
                         {{ Number(props.row.amount).toLocaleString() }}
@@ -754,7 +760,27 @@
                       <q-td key="created_at" :props="props">
                         {{ props.row.created_at }}
                       </q-td>
+                      <q-td key="action" :props="props">
+                        <q-btn
+                          unelevated
+                          no-caps
+                          dense
+                          color="primary"
+                          class="view_details"
+                          :label="$t('app.view')"
+                          @click="viewDetails(props.row)"
+                        >
+                          <q-icon
+                            name="visibility"
+                            size="xs"
+                            class="q-pl-sm"
+                          ></q-icon>
+                        </q-btn>
+                      </q-td>
                     </q-tr>
+                  </template>
+                  <template v-slot:loading>
+                    <q-inner-loading showing color="primary" />
                   </template>
                 </q-table>
               </div>
@@ -942,7 +968,7 @@ export default {
         address: "",
         occupation: "",
         user_id: "",
-        status:""
+        status: "",
       },
       loading: false,
       edit_profile: false,
@@ -953,13 +979,6 @@ export default {
       selected_items: [],
       loading_payment: false,
       columns: [
-        {
-          name: "counter",
-          required: true,
-          label: "S/N",
-          align: "left",
-          field: "counter",
-        },
         {
           name: "name",
           required: true,
@@ -1009,13 +1028,6 @@ export default {
       data: [],
       columns1: [
         {
-          name: "counter",
-          required: true,
-          label: "S/N",
-          align: "left",
-          field: "counter",
-        },
-        {
           name: "name",
           required: true,
           label: "Name",
@@ -1041,15 +1053,8 @@ export default {
         {
           name: "quarterly_name",
           align: "left",
-          label: "Quarter Name",
+          label: "Quarter",
           field: "quarterly_name",
-          sortable: true,
-        },
-        {
-          name: "year",
-          align: "left",
-          label: "Year",
-          field: "year",
           sortable: true,
         },
         {
@@ -1084,6 +1089,12 @@ export default {
           field: "created_at",
           align: "left",
         },
+        {
+          name: "action",
+          label: "Action",
+          field: "action",
+          align: "left",
+        },
       ],
       data1: [],
       total_amount_payable: 0,
@@ -1096,7 +1107,7 @@ export default {
       due_amount: 0.0,
       amount_paid: 0.0,
       available_roles: [],
-      status_options:["ACTIVE", "IN_ACTIVE"],
+      status_options: ["ACTIVE", "IN_ACTIVE"],
     };
   },
   computed: {
@@ -1119,7 +1130,7 @@ export default {
     },
 
     validatePayment() {
-      return this.total_amount_payable > 0 ? false : true;
+      return this.total_amount_payable < 0;
     },
 
     validateAddRole() {
@@ -1188,6 +1199,19 @@ export default {
     },
   },
   methods: {
+    viewDetails(data) {
+      let payload = {
+        data: {
+          details:data,
+          user:this.$store.getters.getCurrentMember
+        },
+        tab: "Payment Details",
+      };
+      this.$store.dispatch("setSelectedContribution", data);
+
+      this.$emit("view-payment-details", payload);
+    },
+
     getFormatedDate(created_at) {
       return moment(created_at).format("MMMM Do YYYY");
     },
@@ -1214,7 +1238,7 @@ export default {
         this.user.address = data.address;
         this.user.occupation = data.occupation;
         this.user.user_id = data.id;
-        this.user.status = data.status
+        this.user.status = data.status;
       }
 
       return this.user;
@@ -1530,6 +1554,7 @@ export default {
         },
       };
       this.is_fetching = true;
+      this.$store.commit("SET_IS_FETCHING", true);
       this.$store
         .dispatch("getRequest", payload)
         .then((res) => {
@@ -1556,6 +1581,7 @@ export default {
         })
         .finally(() => {
           this.is_fetching = false;
+          this.$store.commit("SET_IS_FETCHING", false);
         });
     },
 
@@ -1582,10 +1608,12 @@ export default {
         },
       };
       this.is_fetching = true;
+      this.$store.commit("SET_IS_FETCHING", true);
       this.$store
         .dispatch("getRequest", payload)
         .then((res) => {
-          if (res != undefined) {
+          console.log(res);
+          if (res.success) {
             res.data.forEach((ele) => {
               this.amount_paid += ele.amount;
               this.data1.push({
@@ -1603,12 +1631,17 @@ export default {
                 frequency: ele.frequency,
                 month_name: ele.month_name,
                 quarterly_name: ele.quarterly_name,
+                code:ele.code,
+                created_by:ele.created_by,
+                comment:ele.comment,
+                is_compulsory:ele.is_compulsory
               });
             });
           }
         })
         .finally(() => {
           this.is_fetching = false;
+          this.$store.commit("SET_IS_FETCHING", false);
         });
     },
   },
@@ -1702,7 +1735,7 @@ export default {
   padding-left: 1rem;
 }
 
-.status{
+.status {
   padding-left: 4rem;
 }
 
@@ -1723,7 +1756,7 @@ export default {
   font-size: 15px;
   line-height: 27px;
   letter-spacing: 0.005em;
-  color:$orange;
+  color: $orange;
 }
 
 .label {
@@ -1885,5 +1918,17 @@ export default {
   align-items: center;
   text-align: center;
   letter-spacing: 0.005em;
+}
+
+.view_details {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  align-items: center;
+  text-transform: capitalize;
+  width: 5rem;
+  padding-top: 0.1rem;
+  padding-bottom: 0.1rem;
 }
 </style>

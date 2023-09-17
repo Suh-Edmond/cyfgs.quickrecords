@@ -292,7 +292,7 @@ export default {
     selectMonth:'Month ',
     searchMonth:'Search Month...',
     totalAmountDeposited:'Total Amount Deposited (XAF)',
-    balance:'Balance (XAF)',
+    balance:'Balance',
     depositedAmount:'Deposite Amount (XAF)',
     excessAmountLabel:"Amount deposited can not be more than Amount Payable",
     hasCompletedAmountLabel:'Member has already completed payment for ',
@@ -424,7 +424,7 @@ export default {
     paymentStatus:'Payment Status',
     viewContributionInformation:'Member Contribution Detail',
     category:'Category',
-    payment:'PAYMENT',
+    payment:'Payment',
     members:'Member(s)',
     noMember:'No Member has been Selected',
     createdAt:'Created At',
@@ -478,6 +478,9 @@ export default {
     member:"Member",
     contributionsFor:"Contributions For ",
     memberInviteSuccess:"Member's invitation sent successfully",
-    memberInviteFail:"An error occurred! Could not send invitation"
+    memberInviteFail:"An error occurred! Could not send invitation",
+    paymentDetails: "Payment Details",
+    quarterLabel:"Quarter",
+    monthLabel:"Month"
    }
 };

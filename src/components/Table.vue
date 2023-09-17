@@ -68,7 +68,7 @@
             key="approve"
             :props="props"
             v-if="props.row.approve == 'PENDING'"
-            class="text-negative"
+            class="text-info"
           >
             {{ props.row.approve }}
           </q-td>

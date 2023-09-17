@@ -481,6 +481,7 @@ export default {
     memberInviteFail:"An error occurred! Could not send invitation",
     paymentDetails: "Payment Details",
     quarterLabel:"Quarter",
-    monthLabel:"Month"
+    monthLabel:"Month",
+    bulkSuccessMsg:"Payments completed successfully"
    }
 };

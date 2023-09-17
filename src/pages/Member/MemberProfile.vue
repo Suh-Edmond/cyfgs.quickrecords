@@ -627,9 +627,6 @@
                       </q-td>
                     </q-tr>
                   </template>
-                  <template v-slot:loading>
-                    <q-inner-loading showing color="primary" />
-                  </template>
                 </q-table>
               </div>
             </div>
@@ -779,9 +776,6 @@
                       </q-td>
                     </q-tr>
                   </template>
-                  <template v-slot:loading>
-                    <q-inner-loading showing color="primary" />
-                  </template>
                 </q-table>
               </div>
             </div>
@@ -901,7 +895,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(item, index) in selected_items" :key="item.id">
+                <tr v-for="(item, index) in selected_items" :key="index">
                   <td class="text-left">{{ index + 1 }}</td>
                   <td class="text-left">{{ item.name }}</td>
                   <td class="text-left">{{ item.balance }}</td>
@@ -954,8 +948,8 @@ export default {
 
   mounted() {
     this.getUserRoles(this.$route.params.id);
-    this.getMembersDebts(false);
-    this.getMembersContributions(false);
+    this.getMembersDebts(true);
+    this.getMembersContributions(true);
   },
 
   data() {
@@ -1130,7 +1124,7 @@ export default {
     },
 
     validatePayment() {
-      return this.total_amount_payable < 0;
+      return this.total_amount_payable == 0;
     },
 
     validateAddRole() {
@@ -1442,13 +1436,13 @@ export default {
       let id = this.$route.params.id;
       let payload = {
         url: `/api/protected/roles/users/${id}?role=${this.role_deleted.name}`,
-        msg: "Role removed successfully",
+        msg: this.$t("app.roleRemoveSuccessMsg"),
         color: "default",
         to_on_ok: "none",
         status: "success",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: "An Error occurred! Please try again",
+        error_msg: this.$t("app.defaultErrorMsg"),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -1465,16 +1459,17 @@ export default {
 
     onConfirmPayment() {
       this.loading_payment = true;
+      let user_id = this.$store.getters.getCurrentMember.id;
       let payload = {
         data: this.buildPayloadData(),
-        url: `/api/protected/contributions/bulk-payments`,
-        msg: "Payment made successfully",
+        url: `/api/protected/contributions/bulk-payments?user_id=${user_id}&current_session_id=${this.current_year.id}`,
+        msg: this.$t('app.bulkSuccessMsg'),
         color: "default",
         to_on_ok: "none",
         status: "success",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: "An Error occurred! Please try again",
+        error_msg: this.$t('app.defaultErrorMsg'),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -1544,7 +1539,7 @@ export default {
         to_on_fail: "none",
         show_feedback: false,
         show_spinner: show_spinner,
-        error_msg: "An Error occurred! Please try again",
+        error_msg: this.$t('app.defaultErrorMsg'),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -1553,7 +1548,7 @@ export default {
           data: [],
         },
       };
-      this.is_fetching = true;
+      this.is_fetching = show_spinner;
       this.$store.commit("SET_IS_FETCHING", true);
       this.$store
         .dispatch("getRequest", payload)
@@ -1598,7 +1593,7 @@ export default {
         to_on_fail: "none",
         show_feedback: false,
         show_spinner: show_spinner,
-        error_msg: "An Error occurred! Please try again",
+        error_msg: this.$t('app.defaultErrorMsg'),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -1607,7 +1602,7 @@ export default {
           data: [],
         },
       };
-      this.is_fetching = true;
+      this.is_fetching = show_spinner;
       this.$store.commit("SET_IS_FETCHING", true);
       this.$store
         .dispatch("getRequest", payload)

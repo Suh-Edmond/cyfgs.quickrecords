@@ -96,7 +96,7 @@
               dense
               no-caps
               v-show="
-                requires_add && !checkTreasurerRole() && verifyRequiredAdd()
+                requires_add && !checkTreasurerRole() && verifyRequiredAdd() && this.$route.name !== 'member_profile'
               "
               @click="showRightDrawer"
               class="q-pa-xs"
@@ -387,8 +387,10 @@ export default {
     },
 
     verifyRequiredAdd() {
-      return this.$route.name !== "member_account";
+      return this.$route.name !== "member_account" ;
     },
+
+
 
     onViewPaymentDetails(data){
       this.updateDrawer(data);

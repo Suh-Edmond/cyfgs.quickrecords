@@ -1,72 +1,229 @@
 <template>
   <div class="q-pa-md">
     <div class="q-px-md">
-      <div class="flex q-pb-md">
-        <label for="name" class="label"><span> <q-icon name="category" size="xs" class="q-pr-sm" /> </span>{{$t('app.paymentItem')}}:
-          <span class="value value_item">{{ getSelectedContribution.payment_item_name }}</span></label>
-      </div>
-      <div class="flex q-pb-md">
-        <label for="name" class="label"><span> <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span>{{$t('app.totalAmountPayable')}}:
-          <span class="value value_amount">{{ Number(getSelectedContribution.payment_item_amount).toLocaleString() }}
-            XAF</span></label>
-      </div>
-      <div class="flex q-pb-md">
-        <label for="name" class="label"><span> <q-icon name="check" size="xs" class="q-pr-sm" /> </span>{{$t('app.compulsory')}}:
-          <span class="value value_complusory" v-if="getSelectedContribution.payment_item_complusory">{{$t('app.yes')}}</span>
-          <span class="value value_complusory" v-if="!getSelectedContribution.payment_item_complusory">{{$t('app.no')}}</span></label>
+      <div class="flex justify-between q-pb-md">
+        <div>
+          <label for="name" class="label"
+            ><span> <q-icon name="category" size="xs" class="q-pr-sm" /> </span
+            >{{ $t("app.paymentItem") }}:
+          </label>
+        </div>
 
+        <div class="detail-value wrap">
+          <label class="value">
+            {{ getSelectedContribution.payment_item_name }}
+          </label>
+        </div>
       </div>
-      <div class="flex q-pb-md">
-        <label for="name" class="label"><span> <q-icon name="person" size="xs" class="q-pr-sm"/> </span>{{$t('app.membersName')}}:
-          <span class="value value_name">{{ getSelectedContribution.user_name }}</span></label>
+      <div class="flex justify-between q-pb-md">
+        <div>
+          <label for="name" class="label"
+            ><span>
+              <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
+            >{{ $t("app.totalAmountPayable") }}:
+          </label>
+        </div>
+        <div class="detail-value wrap">
+          <label class="value">
+            {{
+              Number(
+                getSelectedContribution.payment_item_amount
+              ).toLocaleString()
+            }}
+            XAF
+          </label>
+        </div>
       </div>
-      <div class="flex q-pb-md">
-        <label for="name" class="label"> <span> <q-icon name="monetization_on" size="xs" class="q-pr-sm"/> </span>{{$t('app.amount')}}:
-          <span class="value value_amount_paid">{{ Number(getSelectedContribution.amount_deposited).toLocaleString() }}
-            XAF</span></label>
-      </div>
-      <div class="flex q-pb-md">
-        <label for="name" class="label"><span> <q-icon name="monetization_on" size="xs" class="q-pr-sm"/> </span>{{$t('app.totalAmountPaid')}}:
-          <span class="value value_amount_total">{{ Number(computeTotalAmountContributed).toLocaleString() }}
-            XAF</span></label>
-      </div>
-      <div class="flex q-pb-md">
-        <label for="name" class="label"> <span> <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span>{{$t('app.balance')}}: <span
-            class="value value_balance">{{ Number(getSelectedContribution.balance).toLocaleString() }} XAF</span></label>
-      </div>
-      <div class="flex q-pb-md">
-        <label for="name" class="label"><span> <q-icon name="schedule" size="xs" class="q-pr-sm"/> </span>{{$t('app.paymentDate')}}:
-          <span class="value value_date">{{ getFormatedCreatedDate }}</span></label>
-      </div>
-      <div class="flex q-pb-md">
-        <label for="status" class="label" v-show="getSelectedContribution.approve == 'DECLINED'"><span> <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span>{{$t('app.transactionStatus')}}:
-          <span class=" value_trxn unapproved_color">{{getSelectedContribution.approve}}</span></label>
-        <label for="status" class="label" v-show="getSelectedContribution.approve == 'APPROVED'"><span> <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span>{{$t('app.transactionStatus')}}:
-          <span class=" value_trxn approved_color"> {{getSelectedContribution.approve}}</span></label>
-          <label for="status" class="label" v-show="getSelectedContribution.approve == 'PENDING'"><span> <q-icon name="check_circle" size="xs" class="q-pr-sm"/> </span>{{$t('app.transactionStatus')}}:
-          <span class=" value_trxn pending_color"> {{getSelectedContribution.approve}}</span></label>
-      </div>
-      <div class="flex q-pb-md">
-        <label for="name" class="label" v-show="getSelectedContribution.status == 'INCOMPLETE'"><span> <q-icon name="check_circle" size="xs" class="q-pr-sm"/> </span>{{$t('app.paymentStatus')}}:
-          <span class="unapproved_color q-pl-md value_status">{{ getSelectedContribution.status }}</span></label>
+      <div class="flex justify-between q-pb-md">
+        <div>
+          <label for="name" class="label"
+            ><span> <q-icon name="check" size="xs" class="q-pr-sm" /> </span
+            >{{ $t("app.compulsoryLabel") }}:
+          </label>
+        </div>
 
-        <label for="name" class="label" v-show="getSelectedContribution.status == 'COMPLETE'"><span> <q-icon name="check_circle" size="xs" class="q-pr-sm"/> </span>{{$t('app.paymentStatus')}}:
-          <span class="value text-secondary q-pl-md value_status">{{ getSelectedContribution.status }}</span></label>
+        <div class="detail-value wrap">
+          <label
+            class="value"
+            v-if="getSelectedContribution.payment_item_complusory"
+          >
+            {{ $t("app.yes") }}
+          </label>
+          <label
+            class="value"
+            v-if="!getSelectedContribution.payment_item_complusory"
+          >
+            {{ $t("app.no") }}
+          </label>
+        </div>
       </div>
-      <div class="flex q-pb-lg">
-        <label for="name" class="label"><span> <q-icon name="badge" size="xs" class="q-pr-sm"/> </span>{{$t('app.transactionCode')}}:
-          <span class="value  q-pl-md value_code">{{ getSelectedContribution.code }}</span></label>
+      <div class="flex justify-between q-pb-md">
+        <div>
+          <label for="name" class="label"
+            ><span> <q-icon name="person" size="xs" class="q-pr-sm" /> </span
+            >{{ $t("app.membersName") }}:
+          </label>
+        </div>
+
+        <div class="detail-value wrap">
+          <label class="value">
+            {{ getSelectedContribution.user_name }}
+          </label>
+        </div>
       </div>
-      <div class="flex q-pb-lg">
-        <label for="name" class="label"><span> <q-icon name="person" size="xs" class="q-pr-sm"/> </span>{{$t('app.createdBy')}}:
-          <span class="value  q-pl-md value_created_by">{{ getSelectedContribution.updated_by }}</span></label>
+      <div class="flex justify-between q-pb-md">
+        <div>
+          <label for="name" class="label">
+            <span>
+              <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
+            >{{ $t("app.amount") }}:
+          </label>
+        </div>
+
+        <div class="detail-value wrap">
+          <label class="value">
+            {{
+              Number(getSelectedContribution.amount_deposited).toLocaleString()
+            }}
+            XAF
+          </label>
+        </div>
       </div>
-      <div class="flex q-pb-md">
-        <label for="name" class="label"><span> <q-icon name="description" size="xs" class="q-pr-sm"/> </span>{{$t('app.comment')}}: </label>
+      <div class="flex justify-between q-pb-md">
+        <div>
+          <label for="name" class="label"
+            ><span>
+              <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
+            >{{ $t("app.totalAmountPaid") }}:
+          </label>
+        </div>
+        <div class="detail-value wrap">
+          <label class="value">
+            {{ Number(computeTotalAmountContributed).toLocaleString() }}
+            XAF
+          </label>
+        </div>
       </div>
-      <p class="value_comment">
-          {{ getSelectedContribution.comment }}
-        </p>
+      <div class="flex justify-between q-pb-md">
+        <div>
+          <label for="name" class="label">
+            <span>
+              <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
+            >{{ $t("app.balance") }}:
+          </label>
+        </div>
+
+        <div class="detail-value wrap">
+          <label class="value">
+            {{ Number(getSelectedContribution.balance).toLocaleString() }}
+            XAF
+          </label>
+        </div>
+      </div>
+      <div class="flex justify-between q-pb-md">
+        <div>
+          <label for="name" class="label"
+            ><span> <q-icon name="schedule" size="xs" class="q-pr-sm" /> </span
+            >{{ $t("app.paymentDate") }}:
+          </label>
+        </div>
+        <div class="detail-value wrap">
+          <label class="value">
+            {{ getFormatedCreatedDate }}
+          </label>
+        </div>
+      </div>
+      <div class="flex justify-between q-pb-md">
+        <div>
+          <label for="status" class="label"
+            ><span>
+              <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span
+            >{{ $t("app.transactionStatus") }}:
+          </label>
+        </div>
+
+        <div class="detail-value wrap">
+          <label
+            class="value pending_color"
+            v-show="getSelectedContribution.approve == 'PENDING'"
+          >
+            {{ getSelectedContribution.approve }}
+          </label>
+          <label
+            class="value approved_color"
+            v-show="getSelectedContribution.approve == 'APPROVED'"
+          >
+            {{ getSelectedContribution.approve }}
+          </label>
+          <label
+            class="value unapproved_color"
+            v-show="getSelectedContribution.approve == 'DECLINED'"
+          >
+            {{ getSelectedContribution.approve }}
+          </label>
+        </div>
+      </div>
+      <div class="flex justify-between q-pb-md">
+        <div>
+          <label for="name" class="label"
+            ><span>
+              <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span
+            >{{ $t("app.paymentStatus") }}:
+          </label>
+        </div>
+
+        <div class="detail-value wrap">
+          <label
+            class="value unapproved_color"
+            v-show="getSelectedContribution.status == 'INCOMPLETE'"
+          >
+            {{ getSelectedContribution.approve }}
+          </label>
+          <label
+            class="value text-secondary"
+            v-show="getSelectedContribution.status == 'COMPLETE'"
+          >
+            {{ getSelectedContribution.approve }}
+          </label>
+        </div>
+      </div>
+      <div class="flex justify-between q-pb-md">
+        <div>
+          <label for="name" class="label"
+            ><span> <q-icon name="badge" size="xs" class="q-pr-sm" /> </span
+            >{{ $t("app.transactionCode") }}:
+          </label>
+        </div>
+
+        <div class="detail-value wrap">
+          <label class="value">
+            {{ getSelectedContribution.code }}
+          </label>
+        </div>
+      </div>
+      <div class="flex justify-between q-pb-md">
+        <div>
+          <label for="name" class="label"
+            ><span> <q-icon name="person" size="xs" class="q-pr-sm" /> </span
+            >{{ $t("app.createdBy") }}:
+          </label>
+        </div>
+        <div class="detail-value wrap">
+          <label class="value">
+            {{ getSelectedContribution.updated_by }}
+          </label>
+        </div>
+      </div>
+      <div class="flex justify-start q-pb-md">
+        <div>
+          <label for="name" class="label"
+            ><span>
+              <q-icon name="description" size="xs" class="q-pr-sm" /> </span
+            >{{ $t("app.comment") }}:
+          </label>
+        </div>
+      </div>
+      <div class="value_comment">{{ getSelectedContribution.comment }}</div>
     </div>
   </div>
 </template>
@@ -77,11 +234,10 @@ import organisationMixin from "src/mixins/organisationMixin.vue";
 import memberMixin from "src/mixins/memberMixin.vue";
 import HelperMixin from "src/mixins/HelperMixin.vue";
 
-
 export default {
-  mixins:[organisationMixin, memberMixin, HelperMixin],
+  mixins: [organisationMixin, memberMixin, HelperMixin],
   mounted() {
-    let heading = this.$t('app.viewContributionInformation');
+    let heading = this.$t("app.viewContributionInformation");
     this.$emit("set-heading", heading);
   },
 
@@ -112,9 +268,9 @@ export default {
   },
   computed: {
     getFormatedCreatedDate() {
-      return moment(this.$store.getters.getSelectedContribution.created_at).format(
-        "MMMM Do YYYY"
-      );
+      return moment(
+        this.$store.getters.getSelectedContribution.created_at
+      ).format("MMMM Do YYYY");
     },
 
     getSelectedContribution() {
@@ -122,8 +278,10 @@ export default {
     },
 
     computeTotalAmountContributed() {
-      return this.$store.getters.getMemberContributions !== null ? this.$store.getters.getMemberContributions.total_contribution : 0;
-    }
+      return this.$store.getters.getMemberContributions !== null
+        ? this.$store.getters.getMemberContributions.total_contribution
+        : 0;
+    },
   },
   methods: {
     editContribution(data) {
@@ -135,13 +293,12 @@ export default {
 
       let id = this.getOrganisationId;
 
-      if(this.$store.getters.getMembers.length == 0) {
+      if (this.$store.getters.getMembers.length == 0) {
         this.getOrganisationMembers(id, false);
       }
 
       this.$emit("edit-contribution", payload);
-    }
-
+    },
   },
 };
 </script>
@@ -167,7 +324,6 @@ export default {
   letter-spacing: 0.005em;
 }
 
-
 .label {
   font-family: "Roboto";
   font-style: normal;
@@ -182,10 +338,9 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 15px;
-  line-height: 27px;
-  letter-spacing: 0.005em;
-  color: $dark;
+  font-size: 14px;
+  letter-spacing: 0.01em;
+  color: $grey8;
 }
 
 .value_comment {
@@ -193,74 +348,18 @@ export default {
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
-  line-height: 27px;
-  text-align: start;
-  letter-spacing: 0.005em;
+  letter-spacing: 0.01em;
   color: $dark;
+  margin-left: 1.8rem;
+}
+
+.detail-value {
+  max-width: 250px;
 }
 
 .image {
   height: 100px;
   width: 100px;
-}
-
-.image_card {
-  width: 100%;
-  max-width: 150px;
-  cursor: pointer;
-}
-
-.card {
-  width: 100%;
-}
-
-.value_name {
-  padding-left: 3.9rem;
-}
-
-.value_item {
-  padding-left: 4.5rem;
-}
-
-.value_amount {
-  padding-left: 1.5rem;
-}
-
-.value_date {
-  padding-left: 4.9rem;
-}
-
-.value_trxn {
-  padding-left: 3.1rem;
-}
-
-.value_status {
-  padding-left: 4.4rem;
-}
-
-.value_code {
-  padding-left: 4rem;
-}
-
-.value_amount_paid {
-  padding-left: 7.2rem;
-}
-
-.value_amount_total {
-  padding-left: 3rem;
-}
-
-.value_balance {
-  padding-left: 4.8rem;
-}
-
-
-.value_complusory {
-  padding-left: 5.5rem;
-}
-
-.value_created_by {
-  padding-left: 6.5rem;
 }
 
 .pending_color {

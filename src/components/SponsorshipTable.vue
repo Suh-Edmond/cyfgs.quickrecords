@@ -158,8 +158,11 @@
 
       <!-- slot for table headings -->
       <template v-slot:top-left>
-        <div class="text-h6 title">
+        <!-- <div class="text-h6 title">
           {{ title }}
+        </div> -->
+        <div class="text-h6 title">
+          {{ $t('app.total') }} : {{ Number(total).toLocaleString() }} XAF
         </div>
       </template>
 
@@ -481,7 +484,9 @@ export default {
 
 <style lang="scss" scoped>
 .title {
-  font-size: small;
+  font-size: 15px;
+  font-weight: 500;
+  color:$grey8
 }
 
 .menu_icon {

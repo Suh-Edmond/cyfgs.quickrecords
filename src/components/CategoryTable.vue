@@ -1199,8 +1199,9 @@ export default {
 
 .title {
   // font-size: small;
-  font-size: medium;
+  font-size: 15px;
   font-weight: 500;
+  color:$grey8
 }
 
 .dialog_button {

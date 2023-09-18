@@ -130,7 +130,7 @@ export default {
   computed: {
     getTotalIncome() {
       return this.$store.getters.getIncomeActivities !== null
-        ? this.$store.getters.getIncomeActivities.total
+        ? this.$store.getters.getIncomeActivities.total_income
         : 0;
     },
 

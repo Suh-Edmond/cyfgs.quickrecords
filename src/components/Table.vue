@@ -31,13 +31,16 @@
             show_income_activity
           "
         >
-          {{ title }}
+        {{ $t('app.total') }}: {{ Number(total_income).toLocaleString() }} XAF
         </div>
         <div class="text-h6 title" v-show="show_members">
           {{ $t("app.organisationMembers") }}
         </div>
         <div class="text-h6 title" v-show="show_savings">
-          {{ $t("app.memberSaving") }}
+          {{ $t('app.totalSaving') }} : {{ Number(total_saving).toLocaleString() }} XAF
+        </div>
+        <div class="text-h6 title" v-show="show_member_savings">
+          {{ $t('app.totalSaving') }} : {{ Number(total_saving).toLocaleString() }} XAF
         </div>
       </template>
       <template v-slot:body="props">
@@ -1090,6 +1093,10 @@ export default {
       required: false,
       type: Number,
     },
+    total_member_saving: {
+      required: false,
+      type: Number,
+    },
     total_contribution: {
       required: false,
       type: Number,
@@ -1725,8 +1732,9 @@ export default {
 }
 
 .title {
-  font-size: 14px;
-  font-weight: bold;
+  font-size: 15px;
+  font-weight: 500;
+  color:$grey8
 }
 
 .message {

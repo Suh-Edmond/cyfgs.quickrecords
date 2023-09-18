@@ -59,6 +59,52 @@
           </TableVue>
         </div>
       </div>
+
+      <div class="q-mt-md">
+        <q-card>
+          <q-card-section>
+            <div class=" row q-ml-md ">
+              <label class="q-py-lg text-bold summary text-capitalize">{{$t('app.expenditureSummaryLabel')}}</label>
+            </div>
+            <div class="row q-ml-md q-mb-lg">
+              <div class="col-2 col-md-2 col-lg-2 col-xs-12 col-sm-2">
+                <div class="q-mb-xs">
+                  <label class="text-bold q-py-md detail_name"
+                    >{{$t('app.paymentItem')}}:</label
+                  >
+                </div>
+                <div class="q-mb-xs">
+                  <label class="text-bold q-py-md detail_name"
+                    >{{ $t('app.amountContributed') }}:</label
+                  >
+                </div>
+                <div class="q-mb-xs">
+                  <label class="text-bold q-py-md detail_name"
+                    >{{$t('app.balance')}}:</label
+                  >
+                </div>
+              </div>
+              <div class="col-2 col-md-2 col-lg-2 col-xs-12 col-sm-2">
+                <div class="q-mb-xs">
+                  <label class="text-bold q-py-md detail_name"
+                    >{{getPaymentItemName}} </label
+                  >
+                </div>
+                <div class="q-mb-xs">
+                  <label class="text-bold q-py-md detail_name"
+                    >{{Number(computeTotalContributions).toLocaleString()}} XAF</label
+                  >
+                </div>
+                <div class="q-mb-xs">
+                  <label class="text-bold q-py-md detail_name"
+                    >{{Number(9).toLocaleString()}} XAF</label
+                  >
+                </div>
+              </div>
+            </div>
+          </q-card-section>
+        </q-card>
+      </div>
     </div>
     <!------------------------------------------END CONTRIBUTIONS VIEW FOR MEMBERS WITHOUT TREASURER ROLE----------------------------------- -->
 
@@ -309,14 +355,19 @@ export default {
 
     getTableTitleForSearchContributions() {
       let title = "";
-      const payment_item = this.$store.getters.getSearchContributionParams;
-      title =
-      payment_item !== null ? this.$t("app.contributionPartTitle") +
-            `${payment_item.item.label}` +
-             ` (`+
-            this.$t("app.amountPartTitle") + ` : `+
-            `${Number(payment_item.item.amount).toLocaleString()} XAF` + ` ,   `+this.$t('app.frequency')+` : `+`${payment_item.item.frequency})`: "";
+      // const payment_item = this.$store.getters.getSearchContributionParams;
+      // title =
+      // payment_item !== null ? this.$t("app.contributionPartTitle") +
+      //       `${payment_item.item.label}` +
+      //        ` (`+
+      //       this.$t("app.amountPartTitle") + ` : `+
+      //       `${Number(payment_item.item.amount).toLocaleString()} XAF` + ` ,   `+this.$t('app.frequency')+` : `+`${payment_item.item.frequency})`: "";
       return title;
+    },
+
+    getPaymentItemName(){
+      const payment_item = this.$store.getters.getSearchContributionParams;
+      return payment_item.item.label
     },
 
     buildPaginatedObject() {
@@ -483,4 +534,24 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.detail_name {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 11px;
+  letter-spacing: 0.01em;
+  color: $grey8;
+}
+
+.summary {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 11px;
+  letter-spacing: 0.01em;
+  color: $grey8;
+}
+</style>

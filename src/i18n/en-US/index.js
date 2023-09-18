@@ -298,7 +298,7 @@ export default {
     hasCompletedAmountLabel:'Member has already completed payment for ',
     commentContribution:'Provide any comment about this Contribution',
     reset:'Reset',
-    totalSaving:'Total Saving (XAF)',
+    totalSaving:'Total Savings',
     insuffientSaving:'Insufficient Saved Amount! Please Enter the Contribution or add more Savings',
     contributionComment:'Provide any comment about this contribution',
     contributionHeading:'Contribution Information',
@@ -483,6 +483,10 @@ export default {
     quarterLabel:"Quarter",
     monthLabel:"Month",
     bulkSuccessMsg:"Payments completed successfully",
-    amountUsed:"Amount Used"
+    amountUsed:"Amount Used",
+    netBalance:"Net Balance",
+    expenditureItemSummary:"Expenditure Item",
+    expenditureSummaryLabel:"Summary",
+    formular:"Estimated Amount + Total Amount Spent - Total Balance"
    }
 };

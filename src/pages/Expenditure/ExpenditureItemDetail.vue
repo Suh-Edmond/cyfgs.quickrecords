@@ -42,14 +42,80 @@
         </div>
       </div>
 
-      <div class="q-px-xs q-mt-md">
+      <div class="q-mt-md">
         <q-card>
           <q-card-section>
-            <p>Summary</p>
-            <p>Estimated Amount</p>
-            <p>Total Amount Given</p>
-            <p>Total Amount Spent</p>
-            <p>Total Balance</p>
+            <div class=" row q-ml-md ">
+              <label class="q-py-lg text-bold summary text-capitalize">{{$t('app.expenditureSummaryLabel')}}</label>
+            </div>
+            <div class="row q-ml-md q-mb-lg">
+              <div class="col-4 col-md-4 col-lg-4 col-xs-12 col-sm-4">
+                <div class="q-mb-xs">
+                  <label class="text-bold q-py-md detail_name"
+                    >{{$t('app.expenditureItemSummary')}}:</label
+                  >
+                </div>
+                <div class="q-mb-xs">
+                  <label class="text-bold q-py-md detail_name"
+                    >{{ $t('app.estimatedAmount') }}:</label
+                  >
+                </div>
+                <div class="q-mb-xs">
+                  <label class="text-bold q-py-md detail_name"
+                    >{{$t('app.totalAmountGiven')}}:</label
+                  >
+                </div>
+                <div class="q-mb-xs">
+                  <label class="text-bold q-py-md detail_name"
+                    >{{$t('app.totalAmountSpent')}}:</label
+                  >
+                </div>
+                <div class="q-mb-xs">
+                  <label class="text-bold q-py-md detail_name"
+                    >{{$t('app.totalBalance')}}:</label
+                  >
+                </div>
+                <div class="q-mb-xs">
+                  <label class="text-bold q-py-md detail_name"
+                    >{{$t('app.netBalance')}}:<br>
+                    <small class="text-italic">[ {{$t('app.netBalance')}} =  {{ $t('app.formular') }} ]</small>
+                    </label
+                  >
+                </div>
+              </div>
+              <div class="col-4 col-md-4 col-lg-4 col-xs-12 col-sm-4">
+                <div class="q-mb-xs">
+                  <label class="text-bold q-py-md detail_name"
+                    >{{getExpenditureItemName}} </label
+                  >
+                </div>
+                <div class="q-mb-xs">
+                  <label class="text-bold q-py-md detail_name"
+                    >{{Number(total_item_amount).toLocaleString()}} XAF</label
+                  >
+                </div>
+                <div class="q-mb-xs">
+                  <label class="text-bold q-py-md detail_name"
+                    >{{Number(total_amount_given).toLocaleString()}} XAF</label
+                  >
+                </div>
+                <div class="q-mb-xs">
+                  <label class="text-bold q-py-md detail_name"
+                    >{{Number(total_amount_spent).toLocaleString()}} XAF</label
+                  >
+                </div>
+                <div class="q-mb-xs">
+                  <label class="text-bold q-py-md detail_name"
+                    >{{Number(getBalance).toLocaleString()}} XAF</label
+                  >
+                </div>
+                <div class="q-mb-xs">
+                  <label class="text-bold q-py-md detail_name"
+                    >{{Number(total_balance).toLocaleString()}} XAF</label
+                  >
+                </div>
+              </div>
+            </div>
           </q-card-section>
         </q-card>
       </div>
@@ -196,6 +262,10 @@ export default {
     getLoadingState() {
       return this.$store.getters.getFetchingState;
     },
+
+    getBalance(){
+      return this.total_amount_given - this.total_amount_spent
+    }
   },
 
   methods: {
@@ -307,4 +377,24 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.detail_name {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 11px;
+  letter-spacing: 0.01em;
+  color: $grey8;
+}
+
+.summary {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 11px;
+  letter-spacing: 0.01em;
+  color: $grey8;
+}
+</style>

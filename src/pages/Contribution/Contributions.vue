@@ -313,8 +313,9 @@ export default {
       title =
       payment_item !== null ? this.$t("app.contributionPartTitle") +
             `${payment_item.item.label}` +
-            this.$t("app.amountPartTitle") +
-            `${Number(payment_item.item.amount).toLocaleString()} XAF`: "";
+             ` (`+
+            this.$t("app.amountPartTitle") + ` : `+
+            `${Number(payment_item.item.amount).toLocaleString()} XAF` + ` ,   `+this.$t('app.frequency')+` : `+`${payment_item.item.frequency})`: "";
       return title;
     },
 

@@ -17,7 +17,17 @@
           class="text-h6 title"
           v-show="
             show_contribution ||
-            show_member_contribution ||
+            show_member_contribution
+          "
+        >
+        <label for="title">
+          {{ title }}
+        </label>
+
+        </div>
+        <div
+          class="text-h6 title"
+          v-show="
             show_income_activity
           "
         >
@@ -671,8 +681,11 @@
           <q-td key="counter" :props="props">
             {{ props.row.counter }}
           </q-td>
-          <q-td key="user_name" :props="props">
-            {{ props.row.user_name }}
+          <q-td key="quarterly_name" :props="props" v-if="props.row.payment_item_frequency == 'QUARTERLY'">
+            {{ props.row.quarterly_name }}
+          </q-td>
+          <q-td key="quarterly_name" :props="props" v-if="props.row.payment_item_frequency == 'MONTHLY'">
+            {{ props.row.month_name }}
           </q-td>
           <q-td key="amount_deposited" :props="props">
             {{ Number(props.row.amount_deposited).toLocaleString() }}
@@ -1520,7 +1533,7 @@ export default {
       );
 
       intermediate_tabs.push({
-        name: data.user_name,
+        name: data.user_name + " Contributions",
         has_intermediate_tab: true,
       });
 
@@ -1712,7 +1725,7 @@ export default {
 }
 
 .title {
-  font-size: small;
+  font-size: 14px;
   font-weight: bold;
 }
 

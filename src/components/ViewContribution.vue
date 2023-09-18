@@ -37,7 +37,7 @@
       <div class="flex justify-between q-pb-md">
         <div>
           <label for="name" class="label"
-            ><span> <q-icon name="check" size="xs" class="q-pr-sm" /> </span
+            ><span> <q-icon name="priority_high" size="xs" class="q-pr-sm" /> </span
             >{{ $t("app.compulsoryLabel") }}:
           </label>
         </div>
@@ -60,6 +60,20 @@
       <div class="flex justify-between q-pb-md">
         <div>
           <label for="name" class="label"
+            ><span>
+              <q-icon name="trending_flat" size="xs" class="q-pr-sm" /> </span
+            >{{ $t("app.frequency") }}:
+          </label>
+        </div>
+        <div class="detail-value wrap">
+          <label class="value">
+            {{ getSelectedContribution.payment_item_frequency}}
+          </label>
+        </div>
+      </div>
+      <div class="flex justify-between q-pb-md">
+        <div>
+          <label for="name" class="label"
             ><span> <q-icon name="person" size="xs" class="q-pr-sm" /> </span
             >{{ $t("app.membersName") }}:
           </label>
@@ -76,7 +90,7 @@
           <label for="name" class="label">
             <span>
               <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
-            >{{ $t("app.amount") }}:
+            >{{ $t("app.amountDeposited") }}:
           </label>
         </div>
 
@@ -85,21 +99,6 @@
             {{
               Number(getSelectedContribution.amount_deposited).toLocaleString()
             }}
-            XAF
-          </label>
-        </div>
-      </div>
-      <div class="flex justify-between q-pb-md">
-        <div>
-          <label for="name" class="label"
-            ><span>
-              <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
-            >{{ $t("app.totalAmountPaid") }}:
-          </label>
-        </div>
-        <div class="detail-value wrap">
-          <label class="value">
-            {{ Number(computeTotalAmountContributed).toLocaleString() }}
             XAF
           </label>
         </div>
@@ -117,6 +116,21 @@
           <label class="value">
             {{ Number(getSelectedContribution.balance).toLocaleString() }}
             XAF
+          </label>
+        </div>
+      </div>
+      <div class="flex justify-between q-pb-md">
+        <div>
+          <label for="name" class="label"
+            ><span>
+              <q-icon name="schedule" size="xs" class="q-pr-sm" /> </span
+            >{{ $t("app.quarterLabel") }}:
+          </label>
+        </div>
+        <div class="detail-value wrap">
+          <label class="value">
+            {{ getSelectedContribution.quarterly_name }}
+
           </label>
         </div>
       </div>
@@ -177,13 +191,13 @@
             class="value unapproved_color"
             v-show="getSelectedContribution.status == 'INCOMPLETE'"
           >
-            {{ getSelectedContribution.approve }}
+            {{ getSelectedContribution.status }}
           </label>
           <label
             class="value text-secondary"
             v-show="getSelectedContribution.status == 'COMPLETE'"
           >
-            {{ getSelectedContribution.approve }}
+            {{ getSelectedContribution.status }}
           </label>
         </div>
       </div>
@@ -223,7 +237,8 @@
           </label>
         </div>
       </div>
-      <div class="value_comment">{{ getSelectedContribution.comment }}</div>
+      <div class="value_comment" v-show="getSelectedContribution.comment !== null">{{ getSelectedContribution.comment }}</div>
+      <div class="value_comment" v-show="getSelectedContribution.comment === null">{{ $t('app.none') }}</div>
     </div>
   </div>
 </template>
@@ -274,6 +289,7 @@ export default {
     },
 
     getSelectedContribution() {
+      console.log(this.$store.getters.getSelectedContribution);
       return this.$store.getters.getSelectedContribution;
     },
 
@@ -308,22 +324,20 @@ export default {
   color: #f2994a;
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 500;
-  font-size: 15px;
-  line-height: 27px;
-  letter-spacing: 0.005em;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 11px;
+  letter-spacing: 0.01em;
 }
-
 .approved_color {
   color: #27ae60;
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 500;
-  font-size: 15px;
-  line-height: 27px;
-  letter-spacing: 0.005em;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 11;
+  letter-spacing: 0.01em;
 }
-
 .label {
   font-family: "Roboto";
   font-style: normal;
@@ -333,16 +347,16 @@ export default {
   letter-spacing: 0.01em;
   color: $grey5;
 }
-
 .value {
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 500;
+  font-weight: 600;
   font-size: 14px;
   letter-spacing: 0.01em;
-  color: $grey8;
+  color: $grey8;}
+.detail-value {
+  max-width: 250px;
 }
-
 .value_comment {
   font-family: "Roboto";
   font-style: normal;
@@ -352,23 +366,13 @@ export default {
   color: $dark;
   margin-left: 1.8rem;
 }
-
-.detail-value {
-  max-width: 250px;
-}
-
-.image {
-  height: 100px;
-  width: 100px;
-}
-
 .pending_color {
   color: $info;
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 500;
-  font-size: 15px;
-  line-height: 27px;
-  letter-spacing: 0.005em;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 11px;
+  letter-spacing: 0.01em;
 }
 </style>

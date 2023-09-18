@@ -23,7 +23,6 @@
             :show_members="false"
             :show_contribution="false"
             :show_delete_contribution="true"
-            :title="getTableTile"
             :total_contribution="getTotalMemberContribution"
             :total_balance="getTotalBalance"
             :show_member_contribution="true"
@@ -79,13 +78,11 @@ export default {
           field: "counter",
         },
         {
-          name: "user_name",
+          name: "quarterly_name",
           required: true,
-          label: "Member's Name",
+          label: "Quarter/Month",
           align: "left",
-          field: (row) => row.user_name,
-          format: (val) => `${val}`,
-          sortable: true,
+          field: 'quarterly_name',
         },
         {
           name: "amount_deposited",
@@ -108,7 +105,7 @@ export default {
         {
           name: "date",
           align: "left",
-          label: "Date",
+          label: "Payment Date",
           field: "date",
         },
         {
@@ -137,17 +134,6 @@ export default {
     };
   },
   computed: {
-    getTableTile() {
-      let title = "";
-      const payment_item = this.$store.getters.getSearchContributionParams;
-      title =
-      payment_item !== null ? this.$t("app.contributionsFor") +
-            `${payment_item.item.label}` +
-            this.$t("app.amountPartTitle") +
-            `${Number(payment_item.item.amount).toLocaleString()} XAF` :"";
-      return title;
-    },
-
     getTotalMemberContribution() {
       return this.$store.getters.getMemberContributions !== null
         ? this.$store.getters.getMemberContributions.total_contribution
@@ -187,15 +173,18 @@ export default {
             user_id: ele.user_id,
             user_name: ele.user_name,
             user_telephone: ele.user_telephone,
+            quarterly_name: ele.quarterly_name,
+            month_name: ele.month_name,
+            payment_item_frequency: ele.payment_item_frequency,
           });
         });
       }
       return data;
     },
 
-    validateDownload(){
-      return this.getMemberContributions.length == 0
-    }
+    validateDownload() {
+      return this.getMemberContributions.length == 0;
+    },
   },
   methods: {
     viewContribution(data) {
@@ -299,18 +288,18 @@ export default {
       );
     },
 
-    filterMemberContribution(data){
+    filterMemberContribution(data) {
       this.getMemberContributionsByPaymentItem(
-      this.$router.currentRoute.params.item_id,
-      this.$router.currentRoute.params.id,
-      1,
-      7
-    );
-    }
+        this.$router.currentRoute.params.item_id,
+        this.$router.currentRoute.params.id,
+        1,
+        7
+      );
+    },
   },
   components: {
     TableVue,
-    FilterComponentVue
+    FilterComponentVue,
   },
 };
 </script>

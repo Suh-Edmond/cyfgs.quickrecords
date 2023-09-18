@@ -181,9 +181,8 @@
           >{{ $t("app.comment") }}:</label
         >
       </div>
-      <div class="value_comment">
-        {{ getUpdatedExpenditureFromState.comment }}
-      </div>
+      <div class="value_comment" v-show="getUpdatedExpenditureFromState.comment !== null">{{ getUpdatedExpenditureFromState.comment }}</div>
+      <div class="value_comment" v-show="getUpdatedExpenditureFromState.comment === null">{{ $t('app.none') }}</div>
     </div>
   </div>
 </template>
@@ -222,22 +221,20 @@ export default {
   color: #f2994a;
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 400;
+  font-weight: 600;
   font-size: 14px;
   line-height: 11px;
   letter-spacing: 0.01em;
 }
-
 .approved_color {
   color: #27ae60;
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 400;
+  font-weight: 600;
   font-size: 14px;
   line-height: 11;
   letter-spacing: 0.01em;
 }
-
 .label {
   font-family: "Roboto";
   font-style: normal;
@@ -251,7 +248,7 @@ export default {
 .value {
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 500;
+  font-weight: 600;
   font-size: 14px;
   letter-spacing: 0.01em;
   color: $grey8;
@@ -274,7 +271,7 @@ export default {
   color: $info;
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 400;
+  font-weight: 600;
   font-size: 14px;
   line-height: 11px;
   letter-spacing: 0.01em;

@@ -26,14 +26,14 @@
       </div>
 
       <!-- quarterly report table -->
-      <div class="row q-pt-sm" v-if="show_quarterly_report">
+      <div class="row q-pt-sm" v-if="show_quarterly_report && !getLoadingState">
         <div class="col-md-12 col-xs-12 col-sm-12">
           <QuarterlyReportTable :heading="heading"> </QuarterlyReportTable>
         </div>
       </div>
 
       <!---------yearly reports table-->
-      <div class="row q-pt-sm" v-if="show_yearly_report">
+      <div class="row q-pt-sm" v-if="show_yearly_report && !getLoadingState">
         <div class="col-md-12 col-xs-12 col-sm-12">
           <YearlyReportTable :heading="heading"> </YearlyReportTable>
         </div>

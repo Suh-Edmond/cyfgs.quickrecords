@@ -19,7 +19,7 @@
       <div class="col-1 col-md-1 col-sm-12 col-xs-12"></div>
       <div class="col-10 col-md-10 col-sm-12 col-xs-12">
         <div class="text-center q-pt-md">
-          <label for="income" class="income_heading">{{$t('app.income')}} (F CFA)</label>
+          <label for="income" class="income_heading">{{$t('app.income')}} (XAF)</label>
         </div>
         <div class="q-mt-md">
           <!-------------------------------------------------------------------TABLE TITLE------------------------------------------------------------------>
@@ -73,7 +73,7 @@
       <div class="col-10 col-md-10 col-sm-12 col-xs-12">
         <div class="text-center q-pt-md">
           <label for="income" class="income_heading"
-            >{{$t('app.expenditures')}} (F CFA)</label
+            >{{$t('app.expenditures')}} (XAF)</label
           >
         </div>
         <div class="q-mt-md">
@@ -109,7 +109,7 @@
             <div class="col-md-2 column_details text-medium text-center">
               {{ Number(expenditure.amount_spent).toLocaleString() }}
             </div>
-            <div class="col-md-2 column_details_end">
+            <div class="col-md-2 column_details_end text-center">
               {{ Number(expenditure.balance).toLocaleString() }}
             </div>
           </div>
@@ -146,7 +146,7 @@
       <div class="col-1 col-md-1 col-sm-12 col-xs-12"></div>
       <div class="col-10 col-md-10 col-sm-12 col-xs-12">
         <div class="text-center q-pt-md">
-          <label for="income" class="income_heading">{{$t('app.summary')}} (F CFA)</label>
+          <label for="income" class="income_heading">{{$t('app.summary')}} (XAF)</label>
         </div>
         <div class="q-mt-md">
           <!-------------------------------------------------------------------TABLE TITLE------------------------------------------------------------------>

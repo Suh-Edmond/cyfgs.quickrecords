@@ -64,19 +64,19 @@
 
       <div class="detail-value wrap">
         <label
-          class="value pending_color"
-          v-show="getSelectedSponsorship.approve == 'PENDING'"
-        >
-          {{ getSelectedSponsorship.approve }}
-        </label>
-        <label
-          class="value approved_color"
+          class="value text-secondary"
           v-show="getSelectedSponsorship.approve == 'APPROVED'"
         >
           {{ getSelectedSponsorship.approve }}
         </label>
         <label
-          class="value unapproved_color"
+          class="value text-orange"
+          v-show="getSelectedSponsorship.approve == 'DECLINED'"
+        >
+          {{ getSelectedSponsorship.approve }}
+        </label>
+        <label
+          class="value text-info"
           v-show="getSelectedSponsorship.approve == 'DECLINED'"
         >
           {{ getSelectedSponsorship.approve }}

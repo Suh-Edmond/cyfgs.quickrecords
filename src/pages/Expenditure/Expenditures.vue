@@ -74,6 +74,78 @@
             </CategoryTable>
           </div>
         </div>
+
+        <div class="q-mt-md">
+          <q-card>
+            <q-card-section>
+              <div class="row q-ml-md">
+                <label class="q-py-lg text-bold summary text-capitalize">{{
+                  $t("app.expenditureSummaryLabel")
+                }}</label>
+              </div>
+              <div class="row q-ml-md q-mb-lg">
+                <div class="col-4 col-md-4 col-lg-4 col-xs-12 col-sm-4">
+                  <div class="q-mb-xs">
+                    <label class="text-bold q-py-md detail_name">{{ $t("app.expenditureItemSummary") }}:</label>
+                  </div>
+                  <div class="q-mb-xs">
+                    <label class="text-bold q-py-md detail_name">{{ $t("app.estimatedAmount") }}:</label>
+                  </div>
+                  <div class="q-mb-xs">
+                    <label class="text-bold q-py-md detail_name">{{ $t("app.totalAmountGiven") }}:</label>
+                  </div>
+                  <div class="q-mb-xs">
+                    <label class="text-bold q-py-md detail_name">{{ $t("app.totalAmountSpent") }}:</label>
+                  </div>
+                  <div class="q-mb-xs">
+                    <label class="text-bold q-py-md detail_name">{{ $t("app.totalBalance") }}:</label>
+                  </div>
+                  <div class="q-mb-xs">
+                    <label class="text-bold q-py-md detail_name">{{ $t("app.netBalance") }}:<br />
+                      <small class="text-italic">[ {{ $t("app.netBalance") }} =
+                        {{ $t("app.formular") }} ]</small>
+                      <br />
+                    </label>
+                  </div>
+                  <div class="q-mt-md" v-if="getBalance < 0">
+                    <q-icon name="info" color="orange" size="sm" class="q-pr-md"></q-icon>
+                    <label class="text-orange text-subtitle2">
+                      A Net Balance Less than 0 XAF indicates a debt for this
+                      Expenditure Item</label>
+                  </div>
+                </div>
+                <div class="col-4 col-md-4 col-lg-4 col-xs-12 col-sm-4">
+                  <div class="q-mb-xs">
+                    <label class="text-bold q-py-md detail_name">{{ getExpenditureItemName }}
+                    </label>
+                  </div>
+                  <div class="q-mb-xs">
+                    <label class="text-bold q-py-md detail_name">{{ Number(total_item_amount).toLocaleString() }}
+                      XAF</label>
+                  </div>
+                  <div class="q-mb-xs">
+                    <label class="text-bold q-py-md detail_name">{{
+                      Number(total_amount_given).toLocaleString()
+                    }}
+                      XAF</label>
+                  </div>
+                  <div class="q-mb-xs">
+                    <label class="text-bold q-py-md detail_name">{{
+                      Number(total_amount_spent).toLocaleString()
+                    }}
+                      XAF</label>
+                  </div>
+                  <div class="q-mb-xs">
+                    <label class="text-bold q-py-md detail_name">{{ Number(getBalance).toLocaleString() }} XAF</label>
+                  </div>
+                  <div class="q-mb-xs">
+                    <label class="text-bold q-py-md detail_name">{{ Number(total_balance).toLocaleString() }} XAF</label>
+                  </div>
+                </div>
+              </div>
+            </q-card-section>
+          </q-card>
+        </div>
       </div>
     </div>
   </q-page>
@@ -466,5 +538,30 @@ export default {
 <style lang="scss" scoped>
 .search {
   cursor: pointer;
+}
+
+
+.detail_name {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 11px;
+  letter-spacing: 0.01em;
+  color: $grey8;
+}
+
+.summary {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 11px;
+  letter-spacing: 0.01em;
+  color: $grey8;
+}
+
+.text-subtitle2 {
+  font-size: small;
 }
 </style>

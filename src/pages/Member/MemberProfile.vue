@@ -1607,7 +1607,6 @@ export default {
       this.$store
         .dispatch("getRequest", payload)
         .then((res) => {
-          console.log(res);
           if (res.success) {
             res.data.forEach((ele) => {
               this.amount_paid += ele.amount;

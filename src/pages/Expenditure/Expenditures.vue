@@ -2,26 +2,12 @@
   <q-page>
     <div>
       <!-- header for filter categories -->
-      <div
-        class="row q-ml-xs q-pt-xs"
-        :class="$q.screen.lg ? 'q-pa-sm' : ''"
-        :style="
-          $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-        "
-      >
+      <div class="row q-ml-xs q-pt-xs" :class="$q.screen.lg ? 'q-pa-sm' : ''" :style="$q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+        ">
         <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
-          <q-select
-            v-model="expenditure_category_id"
-            outlined
-            dense
-            :options="expenditure_categories"
-            :label="$t('app.searchExpenditureCategory')"
-            use-input
-            input-debounce="0"
-            clearable
-            @filter="filterCategories"
-            @input="stopSearch"
-          >
+          <q-select v-model="expenditure_category_id" outlined dense :options="expenditure_categories"
+            :label="$t('app.searchExpenditureCategory')" use-input input-debounce="0" clearable @filter="filterCategories"
+            @input="stopSearch">
             <template v-slot:append v-if="start_filtering_expenditure_category">
               <q-spinner color="primary" size="1.2em" :thickness="3" />
             </template>
@@ -35,43 +21,23 @@
           </q-select>
         </div>
         <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-pl-md">
-          <q-select
-            v-model="payment_item_id"
-            outlined
-            dense
-            :options="filtered_items"
-            :label="$t('app.searchPaymentItem')"
-            use-input
-            input-debounce="0"
-            clearable
-            @filter="filterPaymentItems"
-            @input="stopSearch"
-          >
+          <q-select v-model="payment_item_id" outlined dense :options="filtered_items"
+            :label="$t('app.searchPaymentItem')" use-input input-debounce="0" clearable @filter="filterPaymentItems"
+            @input="stopSearch">
             <template v-slot:append v-if="start_filtering_payment_item">
               <q-spinner color="primary" size="1.2em" :thickness="3" />
             </template>
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey"
-                  >{{ $t("app.noResults") }}
+                <q-item-section class="text-grey">{{ $t("app.noResults") }}
                 </q-item-section>
               </q-item>
             </template>
           </q-select>
         </div>
         <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-pl-md">
-          <q-select
-            v-model="year"
-            outlined
-            dense
-            :options="years"
-            :label="$t('app.searchYear')"
-            use-input
-            input-debounce="0"
-            clearable
-            @filter="filterYear"
-            @input="stopSearch"
-          >
+          <q-select v-model="year" outlined dense :options="years" :label="$t('app.searchYear')" use-input
+            input-debounce="0" clearable @filter="filterYear" @input="stopSearch">
             <template v-slot:append v-if="start_filtering_year">
               <q-spinner color="primary" size="1.2em" :thickness="3" />
             </template>
@@ -86,28 +52,14 @@
         </div>
         <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 flex q-pl-md">
           <div>
-            <q-btn
-              :label="$t('app.filter')"
-              color="primary"
-              :disabled="validateFilter"
-              no-caps
-              :loading="loading_filter"
-              icon-right="filter_list"
-              @click="filterExpenditureItems(1, 7)"
-            >
+            <q-btn :label="$t('app.filter')" color="primary" :disabled="validateFilter" no-caps :loading="loading_filter"
+              icon-right="filter_list" @click="filterExpenditureItems(1, 7)">
             </q-btn>
           </div>
           <q-space />
           <div class="button q-pb-xs">
-            <q-btn
-              :label="$t('app.print')"
-              :loading="loading"
-              :color="'positive'"
-              :disabled="validateDownload"
-              no-caps
-              icon-right="print"
-              @click="downloadExpenditureItems"
-            ></q-btn>
+            <q-btn :label="$t('app.print')" :loading="loading" :color="'positive'" :disabled="validateDownload" no-caps
+              icon-right="print" @click="downloadExpenditureItems"></q-btn>
           </div>
         </div>
       </div>
@@ -115,20 +67,10 @@
       <div>
         <div class="row q-pt-sm">
           <div class="col-md-12 col-xs-12 col-sm-12">
-            <CategoryTable
-              :columns="columns"
-              :data="getExpenditures"
-              :label="label"
-              :message="message"
-              :title="table_title"
-              :show_payment_category="false"
-              :show_payment_item="false"
-              :show_expenditure_category="false"
-              :show_expenditure_item="true"
-              :pagination="pagination"
-              :table_loading="table_loader"
-              @onRequest="onRequest"
-            >
+            <CategoryTable :columns="columns" :data="getExpenditures" :label="label" :message="message"
+              :title="table_title" :show_payment_category="false" :show_payment_item="false"
+              :show_expenditure_category="false" :show_expenditure_item="true" :pagination="getPagination"
+              :table_loading="getLoadingState" @onRequest="onRequest">
             </CategoryTable>
           </div>
         </div>
@@ -285,6 +227,22 @@ export default {
       }
       return data;
     },
+
+    getLoadingState() {
+      return this.$store.getters.getFetchingState;
+    },
+
+    getPagination() {
+      let paginate_object = {
+        sortBy: this.$store.getters.getPagination.sortBy,
+        descending: this.$store.getters.getPagination.descending,
+        page: this.$store.getters.getPagination.page,
+        rowsPerPage: this.$store.getters.getPagination.rowsPerPage,
+        rowsNumber: this.$store.getters.getPagination.rowsNumber,
+      };
+
+      return paginate_object;
+    },
   },
   methods: {
     fetchExpenditureCategories() {
@@ -305,8 +263,10 @@ export default {
           data: [],
         },
       };
-      this.$store.commit("SET_EXPENDITURE_CATEGORIES", null);
-      this.$store.dispatch("getRequest", payload).then(() => {});
+      this.$store.dispatch("getRequest", payload).then(() => {
+
+      }).finally(() => {
+      });
     },
 
     showExpenditureItem(data) {
@@ -369,8 +329,10 @@ export default {
           data: null,
         },
       };
-      this.$store.commit("SET_PAYMENT_ACTIVITIES", null);
-      this.$store.dispatch("getRequest", payload).then(() => {});
+      this.$store.dispatch("getRequest", payload).then(() => {
+
+      }).finally(() => {
+      });
     },
 
     getPaymentActivitiesFromStore() {
@@ -445,18 +407,21 @@ export default {
         },
       };
       this.loading_filter = true;
-      this.table_loader = true;
-      this.$store.commit("SET_EXPENDITURES", null);
+      this.$store.commit("SET_IS_FETCHING", true);
       this.$store
         .dispatch("getRequest", payload)
         .then((response) => {
-          this.pagination.page = response.data.current_page;
-          this.pagination.rowsPerPage = response.data.per_page;
-          this.pagination.rowsNumber = response.data.total;
+          this.$store.commit("SET_PAGINATION", {
+            sortBy: "name",
+            descending: false,
+            page: response.data.current_page,
+            rowsPerPage: response.data.per_page,
+            rowsNumber: response.data.total,
+          });
         })
         .finally(() => {
           this.loading_filter = false;
-          this.table_loader = false;
+          this.$store.commit("SET_IS_FETCHING", false);
         });
     },
 

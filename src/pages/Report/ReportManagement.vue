@@ -49,6 +49,7 @@ import QuarterlyReportTable from "src/components/QuarterlyReportTable.vue";
 import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
 import YearlyReportTable from "src/components/YearlyReportTable.vue";
 import FilterComponentVue from "src/components/FilterComponent.vue";
+import { LocalStorage } from "quasar";
 
 export default {
   mixins: [HelperMixin, CurrentYearMixinVue],
@@ -63,7 +64,7 @@ export default {
       group: null,
       options: [],
       label: this.$t("app.generateReport"),
-      year: this.$store.getters.getCurrentYear.name,
+      year: LocalStorage.getItem("data").current_session.year,
       heading: null,
       is_fetching: false,
       option: null,

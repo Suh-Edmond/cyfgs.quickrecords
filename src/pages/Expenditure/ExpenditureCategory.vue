@@ -115,7 +115,7 @@ export default {
   computed: {
     getData() {
       let data = [];
-      if (this.$store.getters.getExpenditureCategories !== null) {
+      if (this.$store.getters.getExpenditureCategories !== null && this.$store.getters.getExpenditureCategories !== undefined) {
         this.$store.getters.getExpenditureCategories.data.forEach((element) => {
           data.push({
             counter:

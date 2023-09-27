@@ -353,7 +353,9 @@ export default {
     downloadExpenditureItemDetails(data) {
       let expenditure_item_id =
         this.$store.getters.getCurrentExpenditureItem.id;
-      let url = `/api/protected/expenditure-item-details/download?expenditure_item_id=${expenditure_item_id}&status=${data.payment_status}`;
+      let expenditure_item_name = this.$store.getters.getCurrentExpenditureItem.name
+
+      let url = `/api/protected/expenditure-item-details/download?expenditure_item_id=${expenditure_item_id}&status=${data.payment_status}&expenditure_item_name=${expenditure_item_name}`;
       let file_name = "Expenditure_Item_Details.pdf";
       this.loading_download = this.downloadPdf(url, file_name);
     },

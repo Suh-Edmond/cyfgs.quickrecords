@@ -44,10 +44,11 @@ import TableVue from "src/components/Table.vue";
 import IncomeActivityMixinVue from "src/mixins/IncomeActivityMixin.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
 import FilterComponentVue from "src/components/FilterComponent.vue";
+import { LocalStorage } from "quasar";
 
 export default {
   mixins: [IncomeActivityMixinVue, HelperMixinVue],
-  beforeMount(){
+  beforeMount() {
     this.$store.commit("SET_PAGINATION", {
       sortBy: "name",
       descending: false,
@@ -289,15 +290,20 @@ export default {
     },
 
     downloadIncomeActivity(data) {
-      let payment_item_id =
+      let payment_item_value =
         data.payment_item_id != null && data.payment_item_id != ""
           ? data.payment_item_id.value
+          : "";
+      let payment_item_label =
+        data.payment_item_id != null && data.payment_item_id != ""
+          ? data.payment_item_id.label
           : "";
       let month =
         data.month != null && data.month != "" ? data.month.value : "";
       let status =
         data.status !== null && data.status !== "" ? data.status : "";
-      let url = `/api/protected/organisations/income-activities/generate-pdf?organisation_id=${this.organisation_id}&month=${month}&payment_item_id=${payment_item_id}&status=${status}`;
+      let year = LocalStorage.getItem('data').current_session.year
+      let url = `/api/protected/organisations/income-activities/generate-pdf?organisation_id=${this.organisation_id}&month=${month}&payment_item_id=${payment_item_value}&status=${status}&payment_item_name=${payment_item_label}&year=${year}`;
 
       let file_name = "Organisation_Income_Activities.pdf";
 

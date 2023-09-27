@@ -227,9 +227,10 @@ export default {
 
     downloadSavings(data) {
       let user_id = this.$route.params.id;
-      let status = data.payment_status !== "" || null ? data.payment_status : "";
-      let month = data.month !== "" || null ? data.month : "";
-      let url = `/api/protected/savings/download?user_id=${user_id}&status=${status}&session_id=${this.session_id}&month=${month.value}`;
+      let user_name = this.$store.getters.getMemberSavings !== undefined && this.$store.getters.getMemberSavings !== null ? this.$store.getters.getMemberSavings.data[0].user_name: ""
+      let status = data.payment_status !== "" && data.payment_status !== null ? data.payment_status : "";
+      let month = data.month !== null && data.month !== "" || null ? data.month.value : "";
+      let url = `/api/protected/savings/download?user_id=${user_id}&status=${status}&session_id=${this.session_id}&month=${month}&name=${user_name}`;
 
       let file_name = "User_Savings.pdf";
 

@@ -24,7 +24,7 @@
         <div class="button q-pb-xs">
           <q-btn
             :label="$t('app.print')"
-            :loading="loading"
+            :loading="loading_download"
             :color="'positive'"
             :disabled="getTableData == 0"
             no-caps
@@ -60,46 +60,51 @@
         </div>
       </div>
 
-      <div class="q-mt-md">
+      <div class="q-mt-md" v-if="getTableData.length > 0">
         <q-card>
           <q-card-section>
-            <div class=" row q-ml-md ">
-              <label class="q-py-lg text-bold summary text-capitalize">{{$t('app.expenditureSummaryLabel')}}</label>
+            <div class="row q-ml-md">
+              <label class="q-py-lg text-bold summary text-capitalize">{{
+                $t("app.expenditureSummaryLabel")
+              }}</label>
             </div>
             <div class="row q-ml-md q-mb-lg">
               <div class="col-2 col-md-2 col-lg-2 col-xs-12 col-sm-2">
                 <div class="q-mb-xs">
                   <label class="text-bold q-py-md detail_name"
-                    >{{$t('app.paymentItem')}}:</label
+                    >{{ $t("app.paymentItem") }}:</label
                   >
                 </div>
                 <div class="q-mb-xs">
                   <label class="text-bold q-py-md detail_name"
-                    >{{ $t('app.amountContributed') }}:</label
+                    >{{ $t("app.amountContributed") }}:</label
                   >
                 </div>
-                <div class="q-mb-xs">
+                <!-- <div class="q-mb-xs">
                   <label class="text-bold q-py-md detail_name"
                     >{{$t('app.balance')}}:</label
                   >
-                </div>
+                </div> -->
               </div>
               <div class="col-2 col-md-2 col-lg-2 col-xs-12 col-sm-2">
                 <div class="q-mb-xs">
                   <label class="text-bold q-py-md detail_name"
-                    >{{getPaymentItemName}} </label
-                  >
+                    >{{ getPaymentItemName }}
+                  </label>
                 </div>
                 <div class="q-mb-xs">
                   <label class="text-bold q-py-md detail_name"
-                    >{{Number(computeTotalContributions).toLocaleString()}} XAF</label
+                    >{{
+                      Number(computeTotalContributions).toLocaleString()
+                    }}
+                    XAF</label
                   >
                 </div>
-                <div class="q-mb-xs">
+                <!-- <div class="q-mb-xs">
                   <label class="text-bold q-py-md detail_name"
                     >{{Number(9).toLocaleString()}} XAF</label
                   >
-                </div>
+                </div> -->
               </div>
             </div>
           </q-card-section>
@@ -132,7 +137,7 @@
         <div class="button q-pb-xs">
           <q-btn
             :label="$t('app.print')"
-            :loading="loading"
+            :loading="loading_download"
             :color="'positive'"
             :disabled="getFilteredContributions.length == 0"
             no-caps
@@ -248,11 +253,12 @@ export default {
       start_filter: false,
       filteredContributions: [],
       loading_filter: false,
+      loading_download: false,
     };
   },
   computed: {
     validateFilter() {
-      return this.payment_item_id !== null ? false : true;
+      return this.payment_item_id === null;
     },
 
     getTableData() {
@@ -365,9 +371,12 @@ export default {
       return title;
     },
 
-    getPaymentItemName(){
+    getPaymentItemName() {
       const payment_item = this.$store.getters.getSearchContributionParams;
-      return payment_item.item.label
+      console.log(payment_item);
+      return payment_item !== undefined && payment_item !== null
+        ? payment_item.item.label
+        : "";
     },
 
     buildPaginatedObject() {
@@ -508,20 +517,39 @@ export default {
     },
 
     downloadContributions() {
-      let payment_item_id =
-        this.$store.getters.getSearchSavingParams.item.value;
-      let payment_item_name =
-        this.$store.getters.getSearchSavingParams.item.label;
-      let month = this.$store.getters.getSearchSavingParams.month;
-      let year = this.$store.getters.getSearchSavingParams.year;
-      let status = this.$store.getters.getSearchSavingParams.status;
+      console.log(this.$store.getters.getSearchContributionParams);
+      const payment_item_id =
+        this.$store.getters.getSearchContributionParams !== null &&
+        this.$store.getters.getSearchContributionParams !== undefined
+          ? this.$store.getters.getSearchContributionParams.item.value
+          : "";
+      const payment_item_name =
+        this.$store.getters.getSearchContributionParams != null &&
+        this.$store.getters.getSearchContributionParams !== undefined
+          ? this.$store.getters.getSearchContributionParams.item.label
+          : "";
+      let month =
+        this.$store.getters.getSearchContributionParams !== null &&
+        this.$store.getters.getSearchContributionParams !== undefined
+          ? this.$store.getters.getSearchContributionParams.month
+          : "";
+      let year =
+        this.$store.getters.getSearchContributionParams !== null &&
+        this.$store.getters.getSearchContributionParams !== undefined
+          ? this.$store.getters.getSearchContributionParams.year
+          : "";
+      let status =
+        this.$store.getters.getSearchContributionParams !== null &&
+        this.$store.getters.getSearchContributionParams !== undefined
+          ? this.$store.getters.getSearchContributionParams.status
+          : "";
       let url = `/api/protected/download-contributions?payment_item_id=${payment_item_id}&month=${month}&year=${year}&status=${status}&payment_item_name=${payment_item_name}`;
 
       let file_name =
         this.$t("app.memberContributionDownloadLabel") +
-        this.$store.getters.getSearchSavingParams.item.label +
+        payment_item_name +
         ".pdf";
-      this.loading = this.downloadPdf(url, file_name);
+      this.loading_download = this.downloadPdf(url, file_name);
     },
 
     deleteRow(data) {

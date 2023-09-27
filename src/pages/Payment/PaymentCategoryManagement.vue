@@ -206,7 +206,8 @@ export default {
     },
 
     downloadPaymentCategory(data) {
-      let url = `/api/protected/download-payment-categories?organisation_id=${this.organisation_id}&year=${data.year.label}`;
+      let year_label = data.year !== "" && data.year !== "" ? data.year.label: ""
+      let url = `/api/protected/download-payment-categories?organisation_id=${this.organisation_id}&year=${year_label}&sort_by=name`;
       let file_name = "Organisation_Payment_Categories.pdf";
       this.loading = this.downloadPdf(url, file_name);
     },

@@ -34,9 +34,9 @@ export default {
     },
   },
   methods: {
-    filterOrganisationMembers(id, show_spinner, page, rowsPerPage, sort_by, year, filter) {
+    filterOrganisationMembers(id, show_spinner, page, rowsPerPage, sort_by, year, filter, has_register, gender) {
       let payload = {
-        url: `/api/protected/organisations/filter-users?organisation_id=${id}&has_register=&gender=&year=${year}=&page=${page}&per_page=${rowsPerPage}&sort_by=${sort_by}&filter=${filter}`,
+        url: `/api/protected/organisations/filter-users?organisation_id=${id}&has_register=${has_register}&gender=${gender}&year=${year}=&page=${page}&per_page=${rowsPerPage}&sort_by=${sort_by}&filter=${filter}`,
         msg: "none",
         color: "default",
         status: "none",

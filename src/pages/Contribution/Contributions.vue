@@ -2,60 +2,28 @@
   <div class="q-pa-sm">
     <!------------------------------------------CONTRIBUTIONS VIEW FOR MEMBERS WITHOUT TREASURER ROLE----------------------------------- -->
     <div v-if="!checkTreasurerRole()">
-      <div
-        class="row q-ml-xs q-pt-md justify-between"
-        :class="$q.screen.lg ? 'q-pa-md' : ''"
-        :style="
-          $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-        "
-      >
+      <div class="row q-ml-xs q-pt-md justify-between" :class="$q.screen.lg ? 'q-pa-md' : ''" :style="$q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+        ">
         <div>
-          <q-btn
-            :label="$t('app.filter')"
-            :color="'primary'"
-            :disabled="false"
-            no-caps
-            icon-right="filter_list"
-            @click="openSearchBar()"
-          >
+          <q-btn :label="$t('app.filter')" :color="'primary'" :disabled="false" no-caps icon-right="filter_list"
+            @click="openSearchBar()">
           </q-btn>
         </div>
         <q-space />
         <div class="button q-pb-xs">
-          <q-btn
-            :label="$t('app.print')"
-            :loading="loading_download"
-            :color="'positive'"
-            :disabled="getTableData == 0"
-            no-caps
-            icon-right="print"
-            @click="downloadContributions()"
-          ></q-btn>
+          <q-btn :label="$t('app.print')" :loading="loading_download" :color="'positive'" :disabled="getTableData == 0"
+            no-caps icon-right="print" @click="downloadContributions()"></q-btn>
         </div>
       </div>
       <!-- table for contributions -->
       <div class="row q-pt-sm">
         <div class="col-md-12 col-xs-12 col-sm-12">
-          <TableVue
-            :columns="columns"
-            :data="getTableData"
-            :label="label"
-            :message="message"
-            :show_savings="false"
-            :show_income_activity="false"
-            :show_members="false"
-            :show_member_savings="false"
-            :show_contribution="true"
-            :show_member_contribution="false"
-            :total_contribution="computeTotalContributions"
-            :title="getTableTitleForSearchContributions"
-            :pagination="buildPaginatedObject"
-            :table_loading="getFetchingState"
-            @view-contribution="viewContribution"
-            @edit-contribution="editContribution"
-            @delete-row="deleteRow"
-            @onRequest="onRequest"
-          >
+          <TableVue :columns="columns" :data="getTableData" :label="label" :message="message" :show_savings="false"
+            :show_income_activity="false" :show_members="false" :show_member_savings="false" :show_contribution="true"
+            :show_member_contribution="false" :total_contribution="computeTotalContributions"
+            :title="getTableTitleForSearchContributions" :pagination="buildPaginatedObject"
+            :table_loading="getFetchingState" @view-contribution="viewContribution" @edit-contribution="editContribution"
+            @delete-row="deleteRow" @onRequest="onRequest">
           </TableVue>
         </div>
       </div>
@@ -71,14 +39,10 @@
             <div class="row q-ml-md q-mb-lg">
               <div class="col-2 col-md-2 col-lg-2 col-xs-12 col-sm-2">
                 <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_name"
-                    >{{ $t("app.paymentItem") }}:</label
-                  >
+                  <label class="text-bold q-py-md detail_name">{{ $t("app.paymentItem") }}:</label>
                 </div>
                 <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_name"
-                    >{{ $t("app.amountContributed") }}:</label
-                  >
+                  <label class="text-bold q-py-md detail_name">{{ $t("app.amountContributed") }}:</label>
                 </div>
                 <!-- <div class="q-mb-xs">
                   <label class="text-bold q-py-md detail_name"
@@ -88,17 +52,14 @@
               </div>
               <div class="col-2 col-md-2 col-lg-2 col-xs-12 col-sm-2">
                 <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_name"
-                    >{{ getPaymentItemName }}
+                  <label class="text-bold q-py-md detail_name">{{ getPaymentItemName }}
                   </label>
                 </div>
                 <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_name"
-                    >{{
-                      Number(computeTotalContributions).toLocaleString()
-                    }}
-                    XAF</label
-                  >
+                  <label class="text-bold q-py-md detail_name">{{
+                    Number(computeTotalContributions).toLocaleString()
+                  }}
+                    XAF</label>
                 </div>
                 <!-- <div class="q-mb-xs">
                   <label class="text-bold q-py-md detail_name"
@@ -115,58 +76,29 @@
 
     <!------------------------------------------CONTRIBUTIONS VIEW FOR MEMBERS WITH TREASURER ROLE----------------------------------- -->
     <div v-if="checkTreasurerRole()">
-      <div
-        class="row q-ml-xs q-pt-md justify-between"
-        :class="$q.screen.lg ? 'q-pa-md' : ''"
-        :style="
-          $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-        "
-      >
+      <div class="row q-ml-xs q-pt-md justify-between" :class="$q.screen.lg ? 'q-pa-md' : ''" :style="$q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+        ">
         <div>
-          <q-btn
-            :label="$t('app.filter')"
-            :color="'primary'"
-            :disabled="false"
-            no-caps
-            icon-right="filter_list"
-            @click="openSearchBar()"
-          >
+          <q-btn :label="$t('app.filter')" :color="'primary'" :disabled="false" no-caps icon-right="filter_list"
+            @click="openSearchBar()">
           </q-btn>
         </div>
         <q-space />
         <div class="button q-pb-xs">
-          <q-btn
-            :label="$t('app.print')"
-            :loading="loading_download"
-            :color="'positive'"
-            :disabled="getFilteredContributions.length == 0"
-            no-caps
-            icon-right="print"
-            @click="downloadContributions()"
-          ></q-btn>
+          <q-btn :label="$t('app.print')" :loading="loading_download" :color="'positive'"
+            :disabled="getFilteredContributions.length == 0" no-caps icon-right="print"
+            @click="downloadContributions()"></q-btn>
         </div>
       </div>
 
       <!-- table for filtered savings -->
       <div class="row q-pt-sm">
         <div class="col-md-12 col-xs-12 col-sm-12">
-          <TableVue
-            :columns="columns"
-            :data="getFilteredContributions"
-            :label="label"
-            :message="message"
-            :show_savings="false"
-            :show_income_activity="false"
-            :show_members="false"
-            :show_member_contribution="false"
-            :show_contribution="true"
-            :total_contribution="computeTotalContributionsForFilteredRecord"
-            :title="getTableTitleForSearchContributions"
-            :pagination="getPagination"
-            :table_loading="getFetchingState"
-            @delete-row="deleteRow"
-            @onRequest="onRequest"
-          >
+          <TableVue :columns="columns" :data="getFilteredContributions" :label="label" :message="message"
+            :show_savings="false" :show_income_activity="false" :show_members="false" :show_member_contribution="false"
+            :show_contribution="true" :total_contribution="computeTotalContributionsForFilteredRecord"
+            :title="getTableTitleForSearchContributions" :pagination="getPagination" :table_loading="getFetchingState"
+            @delete-row="deleteRow" @onRequest="onRequest">
           </TableVue>
         </div>
       </div>
@@ -200,7 +132,7 @@ export default {
     });
   },
 
-  mounted() {},
+  mounted() { },
 
   data() {
     return {
@@ -361,19 +293,16 @@ export default {
 
     getTableTitleForSearchContributions() {
       let title = "";
-      // const payment_item = this.$store.getters.getSearchContributionParams;
-      // title =
-      // payment_item !== null ? this.$t("app.contributionPartTitle") +
-      //       `${payment_item.item.label}` +
-      //        ` (`+
-      //       this.$t("app.amountPartTitle") + ` : `+
-      //       `${Number(payment_item.item.amount).toLocaleString()} XAF` + ` ,   `+this.$t('app.frequency')+` : `+`${payment_item.item.frequency})`: "";
+      const payment_item = this.$store.getters.getSearchContributionParams;
+      title =
+        payment_item !== null
+          ? this.$t("app.contributionPartTitle") + `${payment_item.item.label}`
+          : "";
       return title;
     },
 
     getPaymentItemName() {
       const payment_item = this.$store.getters.getSearchContributionParams;
-      console.log(payment_item);
       return payment_item !== undefined && payment_item !== null
         ? payment_item.item.label
         : "";
@@ -517,30 +446,29 @@ export default {
     },
 
     downloadContributions() {
-      console.log(this.$store.getters.getSearchContributionParams);
       const payment_item_id =
         this.$store.getters.getSearchContributionParams !== null &&
-        this.$store.getters.getSearchContributionParams !== undefined
+          this.$store.getters.getSearchContributionParams !== undefined
           ? this.$store.getters.getSearchContributionParams.item.value
           : "";
       const payment_item_name =
         this.$store.getters.getSearchContributionParams != null &&
-        this.$store.getters.getSearchContributionParams !== undefined
+          this.$store.getters.getSearchContributionParams !== undefined
           ? this.$store.getters.getSearchContributionParams.item.label
           : "";
       let month =
         this.$store.getters.getSearchContributionParams !== null &&
-        this.$store.getters.getSearchContributionParams !== undefined
+          this.$store.getters.getSearchContributionParams !== undefined
           ? this.$store.getters.getSearchContributionParams.month
           : "";
       let year =
         this.$store.getters.getSearchContributionParams !== null &&
-        this.$store.getters.getSearchContributionParams !== undefined
+          this.$store.getters.getSearchContributionParams !== undefined
           ? this.$store.getters.getSearchContributionParams.year
           : "";
       let status =
         this.$store.getters.getSearchContributionParams !== null &&
-        this.$store.getters.getSearchContributionParams !== undefined
+          this.$store.getters.getSearchContributionParams !== undefined
           ? this.$store.getters.getSearchContributionParams.status
           : "";
       let url = `/api/protected/download-contributions?payment_item_id=${payment_item_id}&month=${month}&year=${year}&status=${status}&payment_item_name=${payment_item_name}`;

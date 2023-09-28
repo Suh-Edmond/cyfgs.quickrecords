@@ -487,6 +487,12 @@ export default {
     netBalance:"Net Balance",
     expenditureItemSummary:"Expenditure Item",
     expenditureSummaryLabel:"Summary",
-    formular:"Estimated Amount + Total Amount Spent - Total Balance"
+    formular:"Estimated Amount + Total Amount Spent - Total Balance",
+    paymentItemFrequency:'Payment Item Frequency',
+    unpaidQuarters:"Unpaid Quarters",
+    unpaidMonths:"Unpaid Months",
+    totalAmountContributed:'Total Amount Contributed',
+    howToComputeTotalAmountPaymentForQuarterlyPayment:"NB: For Quarterly Contributions, Total Amount Payable equals the Payment Item Amount multiply by the SUM of the number of Quarters from when the Payment Item was created.",
+    howToComputeTotalAmountPaymentForMonthlyPayment:"NB: For Monthly Contributions, Total Amount Payable equals the Payment Item Amount multiply by the SUM of the number of Months from when the Payment Item was created."
    }
 };

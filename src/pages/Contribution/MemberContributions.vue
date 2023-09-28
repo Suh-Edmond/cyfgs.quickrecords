@@ -28,6 +28,7 @@
             :show_member_contribution="true"
             :pagination="pagination"
             :table_loading="table_loader"
+            :title="getTableTitle"
             @view-contribution="viewContribution"
             @edit-contribution="editContribution"
             @delete-row="deleteRow"
@@ -35,6 +36,137 @@
           >
           </TableVue>
         </div>
+      </div>
+
+      <div class="q-mt-md" v-if="getMemberContributions.length > 0">
+        <q-card>
+          <q-card-section>
+            <div class="row q-ml-md">
+              <label
+                class="q-py-lg text-bold summary text-capitalize text-h6 text-underline"
+                >{{ $t("app.expenditureSummaryLabel") }}</label
+              >
+            </div>
+            <div class="row q-ml-md q-mb-lg">
+              <div
+                class="col-3 col-md-3 col-lg-3 col-xs-12 col-sm-3 summary_label"
+              >
+                <div class="q-mb-sm">
+                  <label class="text-bold q-py-md detail_name"
+                    >{{ $t("app.paymentItem") }}:</label
+                  >
+                </div>
+                <div class="q-mb-sm">
+                  <label class="text-bold q-py-md detail_name"
+                    >{{ $t("app.totalAmountPayable") }}:</label
+                  >
+                </div>
+                <div class="q-mb-sm">
+                  <label class="text-bold q-py-md detail_name"
+                    >{{ $t("app.paymentItemFrequency") }}:</label
+                  >
+                </div>
+                <div class="q-mb-sm">
+                  <label class="text-bold q-py-md detail_name"
+                    >{{ $t("app.totalAmountContributed") }}:</label
+                  >
+                </div>
+                <div class="q-mb-sm">
+                  <label class="text-bold q-py-md detail_name"
+                    >{{ $t("app.balance") }}:</label
+                  >
+                </div>
+                <div
+                  class="q-mb-sm"
+                  v-if="getPaymentItemFrequency == 'QUARTERLY'"
+                >
+                  <label class="text-bold q-py-md detail_name"
+                    >{{ $t("app.unpaidQuarters") }}:</label
+                  >
+                </div>
+                <div
+                  class="q-mb-sm"
+                  v-if="getPaymentItemFrequency == 'MONTHLY'"
+                >
+                  <label class="text-bold q-py-md detail_name"
+                    >{{ $t("app.unpaidMonths") }}:</label
+                  >
+                </div>
+              </div>
+              <div
+                class="col-3 col-md-3 col-lg-3 col-xs-12 col-sm-3 summary_value"
+              >
+                <div class="q-mb-sm">
+                  <label class="text-bold q-py-md detail_name"
+                    >{{ getPaymentItemName }}
+                  </label>
+                </div>
+                <div class="q-mb-sm">
+                  <label class="text-bold q-py-md detail_name"
+                    >{{
+                      Number(getPaymentItemAmount).toLocaleString()
+                    }}
+                    XAF</label
+                  >
+                </div>
+                <div class="q-mb-sm">
+                  <label class="text-bold q-py-md detail_name"
+                    >{{ getPaymentItemFrequency }}
+                  </label>
+                </div>
+                <div class="q-mb-sm">
+                  <label class="text-bold q-py-md detail_name"
+                    >{{
+                      Number(getTotalMemberContribution).toLocaleString()
+                    }}
+                    XAF</label
+                  >
+                </div>
+                <div class="q-mb-sm">
+                  <label class="text-bold q-py-md detail_name"
+                    >{{ Number(getTotalBalance).toLocaleString() }} XAF</label
+                  >
+                </div>
+                <div class="q-mb-sm">
+                  <q-chip
+                    color="primary"
+                    text-color="white"
+                    v-for="duration in getUnPaidDurations"
+                    :key="duration"
+                    size="md"
+                    >{{ duration }}</q-chip
+                  >
+                </div>
+              </div>
+            </div>
+            <div class="row q-ml-md q-mb-lg">
+              <span>
+                <q-icon
+                  name="info"
+                  color="info"
+                  size="sm"
+                  class="q-pr-md"
+                ></q-icon>
+              </span>
+              <label
+                for="not_register"
+                class="text-bold text-info text-italic text-sm"
+                v-if="getPaymentItemFrequency == 'QUARTERLY'"
+                >{{
+                  $t("app.howToComputeTotalAmountPaymentForQuarterlyPayment")
+                }}</label
+              >
+              <label
+                for="not_register"
+                class="text-bold text-info text-italic"
+                v-if="getPaymentItemFrequency == 'MONTHLY'"
+                >{{
+                  $t("app.howToComputeTotalAmountPaymentForMonthlyPayment")
+                }}</label
+              >
+            </div>
+          </q-card-section>
+        </q-card>
       </div>
     </div>
   </div>
@@ -82,7 +214,7 @@ export default {
           required: true,
           label: "Quarter/Month",
           align: "left",
-          field: 'quarterly_name',
+          field: "quarterly_name",
         },
         {
           name: "amount_deposited",
@@ -136,7 +268,7 @@ export default {
   computed: {
     getTotalMemberContribution() {
       return this.$store.getters.getMemberContributions !== null
-        ? this.$store.getters.getMemberContributions.total_contribution
+        ? this.$store.getters.getMemberContributions.total_amount
         : 0;
     },
 
@@ -144,6 +276,23 @@ export default {
       return this.$store.getters.getMemberContributions !== null
         ? this.$store.getters.getMemberContributions.total_balance
         : 0;
+    },
+
+    getTableTitle() {
+      let title = "";
+      let user_name =
+        this.$store.getters.getMemberContributions !== null
+          ? this.$store.getters.getMemberContributions.data[0].user_name
+          : "";
+      let payment_item_name =
+        this.$store.getters.getSearchContributionParams !== null
+          ? this.$store.getters.getSearchContributionParams.item.label
+          : "";
+      return (title =
+        user_name +
+        ` ` +
+        this.$t("app.partContributionTitle") +
+        ` ${payment_item_name}`);
     },
 
     getMemberContributions() {
@@ -185,11 +334,37 @@ export default {
     validateDownload() {
       return this.getMemberContributions.length == 0;
     },
+
+    getPaymentItemName() {
+      return this.$store.getters.getMemberContributions !== null
+        ? this.$store.getters.getMemberContributions.data[0].payment_item_name
+        : "";
+    },
+
+    getPaymentItemFrequency() {
+      return this.$store.getters.getMemberContributions !== null
+        ? this.$store.getters.getMemberContributions.data[0]
+            .payment_item_frequency
+        : "";
+    },
+
+    getPaymentItemAmount() {
+      return this.$store.getters.getMemberContributions !== null
+        ? this.$store.getters.getMemberContributions.data[0].payment_item_amount
+        : "";
+    },
+
+    getUnPaidDurations() {
+      return this.$store.getters.getMemberContributions !== null
+        ? this.$store.getters.getMemberContributions.unpaid_durations
+        : "";
+    },
   },
   methods: {
     viewContribution(data) {
       this.$emit("view-contribution", data);
     },
+
     editContribution(data) {
       this.$emit("edit-contribution", data);
     },
@@ -197,15 +372,34 @@ export default {
     downloadContributions() {
       let payment_item_id = this.$router.currentRoute.params.item_id;
       let user_id = this.$router.currentRoute.params.id;
-      let payment_item_name = "";
-      let user_name = "";
-      if (this.$store.getters.getMemberContributions.length > 0) {
-        user_name = this.$store.getters.getMemberContributions[0].user_name;
-        payment_item_name =
-          this.$store.getters.getMemberContributions[0].payment_item_name;
-      }
+      let payment_item_name =
+        this.$store.getters.getSearchContributionParams !== undefined &&
+        this.$store.getters.getSearchContributionParams !== null
+          ? this.$store.getters.getSearchContributionParams.item.label
+          : "";
+      let payment_item_frequency =
+        this.$store.getters.getSearchContributionParams !== undefined &&
+        this.$store.getters.getSearchContributionParams !== null
+          ? this.$store.getters.getSearchContributionParams.item.frequency
+          : "";
+      let payment_item_amount =
+        this.$store.getters.getSearchContributionParams !== undefined &&
+        this.$store.getters.getSearchContributionParams !== null
+          ? this.$store.getters.getSearchContributionParams.item.amount
+          : "";
+      let payment_item_created_at =
+        this.$store.getters.getSearchContributionParams !== undefined &&
+        this.$store.getters.getSearchContributionParams !== null
+          ? this.$store.getters.getSearchContributionParams.item.created_at
+          : "";
+      let user_name =
+        this.$store.getters.getMemberContributions !== undefined &&
+        this.$store.getters.getMemberContributions !== null
+          ? this.$store.getters.getMemberContributions.data[0].user_name
+          : "";
 
-      let url = `/api/protected/users/contributions/download?payment_item_id=${payment_item_id}&user_id=${user_id}&user_name=${user_name}&payment_item_name=${payment_item_name}`;
+      let url = `/api/protected/users/contributions/download?payment_item_id=${payment_item_id}
+      &user_id=${user_id}&user_name=${user_name}&payment_item_name=${payment_item_name}&payment_item_amount=${payment_item_amount}&payment_item_frequency=${payment_item_frequency}&payment_item_created_at=${payment_item_created_at}`;
 
       let file_name = "Contributions Details.pdf";
       this.loading = this.downloadPdf(url, file_name);
@@ -297,6 +491,7 @@ export default {
       );
     },
   },
+
   components: {
     TableVue,
     FilterComponentVue,
@@ -304,4 +499,16 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.summary_label {
+  color: $grey5;
+}
+
+.summary_value {
+  color: $grey8;
+}
+
+.summary {
+  text-decoration: underline;
+}
+</style>

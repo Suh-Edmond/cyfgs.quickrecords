@@ -275,7 +275,8 @@ export default {
               label: ele.name,
               value: ele.id,
               amount: ele.amount,
-              frequency:ele.frequency
+              frequency:ele.frequency,
+              created_at:ele.created_at
             });
           });
         }

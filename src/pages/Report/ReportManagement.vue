@@ -215,13 +215,13 @@ export default {
       let url = "";
       let file_name = "";
       if (data.report_option.value == 1) {
-        url = `/api/protected/activity/${id}/report/download?payment_actvity=${label}`;
+        url = `/api/protected/activity/${id}/report/download?payment_activity=${label}&year=${this.year}`;
         file_name = "Activity_Report.pdf";
       } else if (data.report_option.value == 2) {
-        url = `/api/protected/report/quarter/download?quarter=${data.group.value}`;
+        url = `/api/protected/report/quarter/download?quarter=${data.group.value}&year=${this.year}&organisation_id=${this.organisation_id}`;
         file_name = "Quarterly_Report.pdf";
       } else {
-        url = `/api/protected/report/yearly/download?year_id=${data.group.value}&year_label=${data.group.label}`;
+        url = `/api/protected/report/yearly/download?year_id=${data.group.value}&year_label=${data.group.label}&year=${this.year}&organisation_id=${this.organisation_id}`;
         file_name = "Yearly_Report.pdf";
       }
       this.loading_download = this.downloadPdf(url, file_name);

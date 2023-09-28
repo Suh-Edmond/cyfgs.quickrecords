@@ -398,7 +398,7 @@
           <div class="col-md-6 text-bold text-center text-uppercase admin_details">
             <div>
               <label for="name">{{$t('app.finSec')}} </label><br/>
-              <span class="admin_name">{{getFinancialSecretary.name}}</span>
+              <span class="admin_name" v-if="getFinancialSecretary !== null">{{getFinancialSecretary.name}}</span>
             </div>
             <br/>
             <div>
@@ -409,7 +409,7 @@
           <div class="col-md-6 text-bold text-center text-uppercase admin_details">
             <div>
               <label for="name">{{$t('app.treasurer')}}</label><br/>
-              <span class="admin_name">{{getTreasurer.name}}</span>
+              <span class="admin_name" v-if="getTreasurer !== null">{{getTreasurer.name}}</span>
             </div>
             <br/>
             <div>
@@ -423,7 +423,7 @@
           <div class="col-md-12 text-bold text-center text-uppercase admin_details">
             <div>
               <label for="name">{{$t('app.president')}}</label><br/>
-              <span class="admin_name">{{getPresident.name}}</span>
+              <span class="admin_name" v-if="getPresident !== null">{{getPresident.name}}</span>
             </div>
             <br/>
             <div>

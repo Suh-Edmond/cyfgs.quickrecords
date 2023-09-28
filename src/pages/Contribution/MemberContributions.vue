@@ -58,6 +58,11 @@
                 </div>
                 <div class="q-mb-sm">
                   <label class="text-bold q-py-md detail_name"
+                    >{{ $t("app.paymentItemAmount") }}:</label
+                  >
+                </div>
+                <div class="q-mb-sm">
+                  <label class="text-bold q-py-md detail_name"
                     >{{ $t("app.totalAmountPayable") }}:</label
                   >
                 </div>
@@ -105,6 +110,14 @@
                   <label class="text-bold q-py-md detail_name"
                     >{{
                       Number(getPaymentItemAmount).toLocaleString()
+                    }}
+                    XAF</label
+                  >
+                </div>
+                <div class="q-mb-sm">
+                  <label class="text-bold q-py-md detail_name"
+                    >{{
+                      Number(getTotalAmountPayable).toLocaleString()
                     }}
                     XAF</label
                   >
@@ -275,6 +288,12 @@ export default {
     getTotalBalance() {
       return this.$store.getters.getMemberContributions !== null
         ? this.$store.getters.getMemberContributions.total_balance
+        : 0;
+    },
+
+    getTotalAmountPayable (){
+      return this.$store.getters.getMemberContributions !== null
+        ? this.$store.getters.getMemberContributions.total_amount_payable
         : 0;
     },
 
@@ -482,7 +501,7 @@ export default {
       );
     },
 
-    filterMemberContribution(data) {
+    filterMemberContribution() {
       this.getMemberContributionsByPaymentItem(
         this.$router.currentRoute.params.item_id,
         this.$router.currentRoute.params.id,

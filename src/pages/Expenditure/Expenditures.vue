@@ -2,26 +2,12 @@
   <q-page>
     <div>
       <!-- header for filter categories -->
-      <div
-        class="row q-ml-xs q-pt-xs"
-        :class="$q.screen.lg ? 'q-pa-sm' : ''"
-        :style="
-          $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-        "
-      >
+      <div class="row q-ml-xs q-pt-xs" :class="$q.screen.lg ? 'q-pa-sm' : ''" :style="$q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+        ">
         <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
-          <q-select
-            v-model="expenditure_category_id"
-            outlined
-            dense
-            :options="expenditure_categories"
-            :label="$t('app.searchExpenditureCategory')"
-            use-input
-            input-debounce="0"
-            clearable
-            @filter="filterCategories"
-            @input="stopSearch"
-          >
+          <q-select v-model="expenditure_category_id" outlined dense :options="expenditure_categories"
+            :label="$t('app.searchExpenditureCategory')" use-input input-debounce="0" clearable @filter="filterCategories"
+            @input="stopSearch">
             <template v-slot:append v-if="start_filtering_expenditure_category">
               <q-spinner color="primary" size="1.2em" :thickness="3" />
             </template>
@@ -35,43 +21,23 @@
           </q-select>
         </div>
         <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-pl-md">
-          <q-select
-            v-model="payment_item_id"
-            outlined
-            dense
-            :options="filtered_items"
-            :label="$t('app.searchPaymentItem')"
-            use-input
-            input-debounce="0"
-            clearable
-            @filter="filterPaymentItems"
-            @input="stopSearch"
-          >
+          <q-select v-model="payment_item_id" outlined dense :options="filtered_items"
+            :label="$t('app.searchPaymentItem')" use-input input-debounce="0" clearable @filter="filterPaymentItems"
+            @input="stopSearch">
             <template v-slot:append v-if="start_filtering_payment_item">
               <q-spinner color="primary" size="1.2em" :thickness="3" />
             </template>
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey"
-                  >{{ $t("app.noResults") }}
+                <q-item-section class="text-grey">{{ $t("app.noResults") }}
                 </q-item-section>
               </q-item>
             </template>
           </q-select>
         </div>
         <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-pl-md">
-          <q-select
-            v-model="year"
-            outlined
-            dense
-            :options="years"
-            :label="$t('app.searchYear')"
-            use-input
-            input-debounce="0"
-            clearable
-            @filter="filterYear"
-            @input="stopSearch"
-          >
+          <q-select v-model="year" outlined dense :options="years" :label="$t('app.searchYear')" use-input
+            input-debounce="0" clearable @filter="filterYear" @input="stopSearch">
             <template v-slot:append v-if="start_filtering_year">
               <q-spinner color="primary" size="1.2em" :thickness="3" />
             </template>
@@ -86,28 +52,14 @@
         </div>
         <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 flex q-pl-md">
           <div>
-            <q-btn
-              :label="$t('app.filter')"
-              color="primary"
-              :disabled="validateFilter"
-              no-caps
-              :loading="loading_filter"
-              icon-right="filter_list"
-              @click="filterExpenditureItems(1, 7)"
-            >
+            <q-btn :label="$t('app.filter')" color="primary" :disabled="validateFilter" no-caps :loading="loading_filter"
+              icon-right="filter_list" @click="filterExpenditureItems(1, 7)">
             </q-btn>
           </div>
           <q-space />
           <div class="button q-pb-xs">
-            <q-btn
-              :label="$t('app.print')"
-              :loading="loading"
-              :color="'positive'"
-              :disabled="validateDownload"
-              no-caps
-              icon-right="print"
-              @click="downloadExpenditureItems"
-            ></q-btn>
+            <q-btn :label="$t('app.print')" :loading="loading" :color="'positive'" :disabled="validateDownload" no-caps
+              icon-right="print" @click="downloadExpenditureItems"></q-btn>
           </div>
         </div>
       </div>
@@ -115,22 +67,84 @@
       <div>
         <div class="row q-pt-sm">
           <div class="col-md-12 col-xs-12 col-sm-12">
-            <CategoryTable
-              :columns="columns"
-              :data="getExpenditures"
-              :label="label"
-              :message="message"
-              :title="table_title"
-              :show_payment_category="false"
-              :show_payment_item="false"
-              :show_expenditure_category="false"
-              :show_expenditure_item="true"
-              :pagination="pagination"
-              :table_loading="table_loader"
-              @onRequest="onRequest"
-            >
+            <CategoryTable :columns="columns" :data="getExpenditures" :label="label" :message="message"
+              :title="table_title" :show_payment_category="false" :show_payment_item="false"
+              :show_expenditure_category="false" :show_expenditure_item="true" :pagination="getPagination"
+              :table_loading="getLoadingState" @onRequest="onRequest">
             </CategoryTable>
           </div>
+        </div>
+
+        <div class="q-mt-md">
+          <q-card>
+            <q-card-section>
+              <div class="row q-ml-md">
+                <label class="q-py-lg text-bold summary text-capitalize">{{
+                  $t("app.expenditureSummaryLabel")
+                }}</label>
+              </div>
+              <div class="row q-ml-md q-mb-lg">
+                <div class="col-4 col-md-4 col-lg-4 col-xs-12 col-sm-4">
+                  <div class="q-mb-xs">
+                    <label class="text-bold q-py-md detail_name">{{ $t("app.expenditureItemSummary") }}:</label>
+                  </div>
+                  <div class="q-mb-xs">
+                    <label class="text-bold q-py-md detail_name">{{ $t("app.estimatedAmount") }}:</label>
+                  </div>
+                  <div class="q-mb-xs">
+                    <label class="text-bold q-py-md detail_name">{{ $t("app.totalAmountGiven") }}:</label>
+                  </div>
+                  <div class="q-mb-xs">
+                    <label class="text-bold q-py-md detail_name">{{ $t("app.totalAmountSpent") }}:</label>
+                  </div>
+                  <div class="q-mb-xs">
+                    <label class="text-bold q-py-md detail_name">{{ $t("app.totalBalance") }}:</label>
+                  </div>
+                  <div class="q-mb-xs">
+                    <label class="text-bold q-py-md detail_name">{{ $t("app.netBalance") }}:<br />
+                      <small class="text-italic">[ {{ $t("app.netBalance") }} =
+                        {{ $t("app.formular") }} ]</small>
+                      <br />
+                    </label>
+                  </div>
+                  <div class="q-mt-md" v-if="getBalance < 0">
+                    <q-icon name="info" color="orange" size="sm" class="q-pr-md"></q-icon>
+                    <label class="text-orange text-subtitle2">
+                      A Net Balance Less than 0 XAF indicates a debt for this
+                      Expenditure Item</label>
+                  </div>
+                </div>
+                <div class="col-4 col-md-4 col-lg-4 col-xs-12 col-sm-4">
+                  <div class="q-mb-xs">
+                    <label class="text-bold q-py-md detail_name">{{ getExpenditureItemName }}
+                    </label>
+                  </div>
+                  <div class="q-mb-xs">
+                    <label class="text-bold q-py-md detail_name">{{ Number(total_item_amount).toLocaleString() }}
+                      XAF</label>
+                  </div>
+                  <div class="q-mb-xs">
+                    <label class="text-bold q-py-md detail_name">{{
+                      Number(total_amount_given).toLocaleString()
+                    }}
+                      XAF</label>
+                  </div>
+                  <div class="q-mb-xs">
+                    <label class="text-bold q-py-md detail_name">{{
+                      Number(total_amount_spent).toLocaleString()
+                    }}
+                      XAF</label>
+                  </div>
+                  <div class="q-mb-xs">
+                    <label class="text-bold q-py-md detail_name">{{ Number(getBalance).toLocaleString() }} XAF</label>
+                  </div>
+                  <div class="q-mb-xs">
+                    <label class="text-bold q-py-md detail_name">{{ Number(total_balance).toLocaleString() }} XAF</label>
+                  </div>
+                </div>
+              </div>
+            </q-card-section>
+          </q-card>
         </div>
       </div>
     </div>
@@ -285,6 +299,22 @@ export default {
       }
       return data;
     },
+
+    getLoadingState() {
+      return this.$store.getters.getFetchingState;
+    },
+
+    getPagination() {
+      let paginate_object = {
+        sortBy: this.$store.getters.getPagination.sortBy,
+        descending: this.$store.getters.getPagination.descending,
+        page: this.$store.getters.getPagination.page,
+        rowsPerPage: this.$store.getters.getPagination.rowsPerPage,
+        rowsNumber: this.$store.getters.getPagination.rowsNumber,
+      };
+
+      return paginate_object;
+    },
   },
   methods: {
     fetchExpenditureCategories() {
@@ -305,8 +335,10 @@ export default {
           data: [],
         },
       };
-      this.$store.commit("SET_EXPENDITURE_CATEGORIES", null);
-      this.$store.dispatch("getRequest", payload).then(() => {});
+      this.$store.dispatch("getRequest", payload).then(() => {
+
+      }).finally(() => {
+      });
     },
 
     showExpenditureItem(data) {
@@ -369,8 +401,10 @@ export default {
           data: null,
         },
       };
-      this.$store.commit("SET_PAYMENT_ACTIVITIES", null);
-      this.$store.dispatch("getRequest", payload).then(() => {});
+      this.$store.dispatch("getRequest", payload).then(() => {
+
+      }).finally(() => {
+      });
     },
 
     getPaymentActivitiesFromStore() {
@@ -445,18 +479,21 @@ export default {
         },
       };
       this.loading_filter = true;
-      this.table_loader = true;
-      this.$store.commit("SET_EXPENDITURES", null);
+      this.$store.commit("SET_IS_FETCHING", true);
       this.$store
         .dispatch("getRequest", payload)
         .then((response) => {
-          this.pagination.page = response.data.current_page;
-          this.pagination.rowsPerPage = response.data.per_page;
-          this.pagination.rowsNumber = response.data.total;
+          this.$store.commit("SET_PAGINATION", {
+            sortBy: "name",
+            descending: false,
+            page: response.data.current_page,
+            rowsPerPage: response.data.per_page,
+            rowsNumber: response.data.total,
+          });
         })
         .finally(() => {
           this.loading_filter = false;
-          this.table_loader = false;
+          this.$store.commit("SET_IS_FETCHING", false);
         });
     },
 
@@ -501,5 +538,30 @@ export default {
 <style lang="scss" scoped>
 .search {
   cursor: pointer;
+}
+
+
+.detail_name {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 11px;
+  letter-spacing: 0.01em;
+  color: $grey8;
+}
+
+.summary {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 11px;
+  letter-spacing: 0.01em;
+  color: $grey8;
+}
+
+.text-subtitle2 {
+  font-size: small;
 }
 </style>

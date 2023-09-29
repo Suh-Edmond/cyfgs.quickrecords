@@ -96,7 +96,7 @@
               dense
               no-caps
               v-show="
-                requires_add && !checkTreasurerRole() && verifyRequiredAdd()
+                requires_add && !checkTreasurerRole() && verifyRequiredAdd() && this.$route.name !== 'member_profile'
               "
               @click="showRightDrawer"
               class="q-pa-xs"
@@ -130,6 +130,7 @@
               @edit-sponsorship="editSponsorship"
               @register-member="registerMember"
               @search-contribution="searchContribution"
+              @view-payment-details="onViewPaymentDetails"
             />
           </q-card-section>
         </q-card>
@@ -255,6 +256,8 @@ export default {
     registerMember(data) {
       this.updateDrawer(data);
     },
+
+
 
     updatePaymentCategory(data) {
       this.updateDrawer(data);
@@ -384,8 +387,14 @@ export default {
     },
 
     verifyRequiredAdd() {
-      return this.$route.name !== "member_account";
+      return this.$route.name !== "member_account" ;
     },
+
+
+
+    onViewPaymentDetails(data){
+      this.updateDrawer(data);
+    }
   },
 };
 </script>

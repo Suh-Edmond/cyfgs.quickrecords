@@ -19,7 +19,7 @@
       <div class="col-1 col-md-1 col-sm-12 col-xs-12"></div>
       <div class="col-10 col-md-10 col-sm-12 col-xs-12">
         <div class="text-center q-pt-md">
-          <label for="income" class="income_heading">{{$t('app.income')}} (F CFA)</label>
+          <label for="income" class="income_heading">{{$t('app.income')}} (XAF)</label>
         </div>
         <div class="q-mt-md">
           <!-------------------------------------------------------------------TABLE TITLE------------------------------------------------------------------>
@@ -73,7 +73,7 @@
       <div class="col-10 col-md-10 col-sm-12 col-xs-12">
         <div class="text-center q-pt-md">
           <label for="income" class="income_heading"
-            >{{$t('app.expenditures')}} (F CFA)</label
+            >{{$t('app.expenditures')}} (XAF)</label
           >
         </div>
         <div class="q-mt-md">
@@ -109,7 +109,7 @@
             <div class="col-md-2 column_details text-medium text-center">
               {{ Number(expenditure.amount_spent).toLocaleString() }}
             </div>
-            <div class="col-md-2 column_details_end">
+            <div class="col-md-2 column_details_end text-center">
               {{ Number(expenditure.balance).toLocaleString() }}
             </div>
           </div>
@@ -146,7 +146,7 @@
       <div class="col-1 col-md-1 col-sm-12 col-xs-12"></div>
       <div class="col-10 col-md-10 col-sm-12 col-xs-12">
         <div class="text-center q-pt-md">
-          <label for="income" class="income_heading">{{$t('app.summary')}} (F CFA)</label>
+          <label for="income" class="income_heading">{{$t('app.summary')}} (XAF)</label>
         </div>
         <div class="q-mt-md">
           <!-------------------------------------------------------------------TABLE TITLE------------------------------------------------------------------>
@@ -211,7 +211,7 @@
           <div class="col-md-6 text-bold text-center text-uppercase admin_details">
             <div>
               <label for="name">{{$t('app.finSec')}} </label><br/>
-              <span class="admin_name">{{getFinancialSecretary.name}}</span>
+              <span class="admin_name" v-if="getFinancialSecretary !== null">{{getFinancialSecretary.name}}</span>
             </div>
             <br/>
             <div>
@@ -222,7 +222,7 @@
           <div class="col-md-6 text-bold text-center text-uppercase admin_details">
             <div>
               <label for="name">{{$t('app.treasurer')}}</label><br/>
-              <span class="admin_name">{{getTreasurer.name}}</span>
+              <span class="admin_name" v-if="getTreasurer !== null">{{getTreasurer.name}}</span>
             </div>
             <br/>
             <div>
@@ -236,7 +236,7 @@
           <div class="col-md-12 text-bold text-center text-uppercase admin_details">
             <div>
               <label for="name">{{$t('app.president')}}</label><br/>
-              <span class="admin_name">{{getPresident.name}}</span>
+              <span class="admin_name" v-if="getPresident !== null">{{getPresident.name}}</span>
             </div>
             <br/>
             <div>

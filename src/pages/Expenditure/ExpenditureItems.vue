@@ -9,7 +9,7 @@
         :loading_download="loading_download"
         :disable_download_btn="validateDownload"
         @filter-expenditure-items="filterItems"
-        @download-expenditure-itemss="downloadExpenditureItems"
+        @download-expenditure-items="downloadExpenditureItems"
       >
       </FilterComponentVue>
 
@@ -234,7 +234,10 @@ export default {
     downloadExpenditureItems(data) {
       let expenditure_category_id =
         this.$store.getters.getCurrentExpenditureCategory.id;
-      let url = `/api/protected/expenditure-categories/expenditure-items/download?expenditure_category_id=${expenditure_category_id}&status=${data.payment_status}&payment_item_id=${data.payment_item_id.value}&session_id=${data.year.value}`;
+      let category_name = this.$store.getters.getCurrentExpenditureCategory.name;
+      let payment_item_id_value = data.payment_item_id !== null && data.payment_item_id !== "" ? data.payment_item_id.value: "";
+      let year_value = data.year !== null && data.year !== "" ? data.year.value : this.session_id
+      let url = `/api/protected/expenditure-categories/expenditure-items/download?expenditure_category_id=${expenditure_category_id}&status=${data.payment_status}&payment_item_id=${payment_item_id_value}&session_id=${year_value}&category_name=${category_name}`;
       let file_name = "Expenditure_Items.pdf";
       this.loading_download = this.downloadPdf(url, file_name);
     },

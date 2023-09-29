@@ -286,12 +286,14 @@ export default {
       this.$store
         .dispatch("postRequest", payload)
         .then(() => {
-          this.getOrganisationMembers(
+          this.filterOrganisationMembers(
             this.organisation_id,
             false,
             1,
             7,
             "name",
+            "",
+            "",
             "",
             ""
           );
@@ -331,12 +333,14 @@ export default {
       this.$store
         .dispatch("uploadFileRequest", payload)
         .then(() => {
-          this.getOrganisationMembers(
+          this.filterOrganisationMembers(
             this.organisation_id,
             false,
             1,
             7,
             "name",
+            "",
+            "",
             "",
             ""
           );

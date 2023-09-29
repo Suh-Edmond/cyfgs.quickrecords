@@ -115,7 +115,7 @@ export default {
   computed: {
     getData() {
       let data = [];
-      if (this.$store.getters.getExpenditureCategories !== null) {
+      if (this.$store.getters.getExpenditureCategories !== null && this.$store.getters.getExpenditureCategories !== undefined) {
         this.$store.getters.getExpenditureCategories.data.forEach((element) => {
           data.push({
             counter:
@@ -209,7 +209,8 @@ export default {
     },
 
     downloadExpenditureCategory(data) {
-      let url = `/api/protected/expenditure-categories/download?organisation_id=${this.organisation_id}&year=${data.year.value}`;
+      let year_value = data.year !== "" && data.year !== "" ? data.year.value: ""
+      let url = `/api/protected/expenditure-categories/download?organisation_id=${this.organisation_id}&year=${year_value}&sort_by=name`;
       let file_name = "Expenditure_Categories.pdf";
       this.loading_download = this.downloadPdf(url, file_name);
     },

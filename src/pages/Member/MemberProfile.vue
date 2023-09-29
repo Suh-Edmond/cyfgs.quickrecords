@@ -2,15 +2,11 @@
   <div>
     <div class="row">
       <div class="col-md-12 col-xs-12 col-sm-12 col-lg-12">
-        <!-- spinners -->
-        <div class="flex justify-center">
-          <q-spinner-ios
-            color="primary"
-            size="2em"
-            class="q-mb-md"
-            v-if="getLoadingState"
-          />
+        <!-------------------------------------------LOADING INDICATOR------------------------------------------------->
+        <div class="flex justify-center q-mb-md" v-if="is_fetching">
+          <q-spinner color="primary" size="2.5em" />
         </div>
+        <!-------------------------------------------END OF LOADING INDICATOR------------------------------------------>
         <q-tabs
           v-model="tab"
           dense
@@ -40,7 +36,7 @@
         <q-tab-panels v-model="tab" animated>
           <!-------------------------------------------MEMBER PROFILE TAB PENEL----------------------------------------->
           <q-tab-panel name="profile">
-            <div class="q-pt-md" v-if="!getLoadingState">
+            <div class="q-pt-md" v-if="!is_fetching">
               <q-card class="my-card" flat>
                 <div class="row">
                   <div class="col-md-4 col-sm-12 col-xs-12">
@@ -247,7 +243,7 @@
                               ></q-icon
                             ></span>
                             {{ $t("app.nameLabel") }}:
-                            <span class="value q-pl-xl value_code">{{
+                            <span class="value q-pl-xl">{{
                               getCurrentMember.name
                             }}</span></label
                           >
@@ -270,11 +266,11 @@
                             ></span>
                             <span class="q-pr-xs"></span>
                             {{ $t("app.gender") }}:
-                            <span class="value value_code gender">{{
+                            <span class="value gender">{{
                               getCurrentMember.gender
                             }}</span>
                             <span
-                              class="value value_code q-pl-lg"
+                              class="value q-pl-lg"
                               v-if="getCurrentMember.gender == null"
                               >{{ $t("app.notSet") }}</span
                             >
@@ -289,7 +285,7 @@
                                 class="q-pr-sm"
                               ></q-icon></span
                             >{{ $t("app.emailLabel") }}:
-                            <span class="value value_code email">{{
+                            <span class="value email">{{
                               getCurrentMember.email
                             }}</span></label
                           >
@@ -303,7 +299,7 @@
                                 class="q-pr-xs"
                               ></q-icon></span
                             >{{ $t("app.telephoneLabel") }}:
-                            <span class="value phone value_code">{{
+                            <span class="value phone">{{
                               getCurrentMember.telephone
                             }}</span></label
                           >
@@ -318,7 +314,7 @@
                               ></q-icon
                             ></span>
                             {{ $t("app.addressLabel") }}:
-                            <span class="value address value_code">{{
+                            <span class="value address">{{
                               getCurrentMember.address
                             }}</span></label
                           >
@@ -333,7 +329,7 @@
                               ></q-icon
                             ></span>
                             {{ $t("app.occupation") }}:
-                            <span class="value occupation value_code">{{
+                            <span class="value occupation">{{
                               getCurrentMember.occupation
                             }}</span></label
                           >
@@ -347,7 +343,7 @@
                                 class="q-pr-xs"
                               ></q-icon></span
                             >{{ $t("app.createdDate") }}:
-                            <span class="value date value_code">{{
+                            <span class="value date">{{
                               getFormatedCreatedDate
                             }}</span></label
                           >
@@ -361,9 +357,29 @@
                                 class="q-pr-xs"
                               ></q-icon></span
                             >{{ $t("app.updatedDate") }}:
-                            <span class="value date value_code">{{
+                            <span class="value date">{{
                               getFormatedUpdatedDate
                             }}</span></label
+                          >
+                        </div>
+                        <div class="flex q-pb-lg">
+                          <label for="name" class="label"
+                            ><span
+                              ><q-icon
+                                name="hourglass_top"
+                                size="xs"
+                                class="q-pr-xs"
+                              ></q-icon></span
+                            >{{ $t("app.status") }}:
+                            <span
+                              class="status"
+                              :class="
+                                getCurrentMember.status == 'ACTIVE'
+                                  ? 'active_text_color'
+                                  : 'in_active_text_color'
+                              "
+                              >{{ getCurrentMember.status }}</span
+                            ></label
                           >
                         </div>
                       </div>
@@ -439,6 +455,19 @@
                               type="text"
                             />
                           </div>
+                          <div>
+                            <label for="credential" class="form_field"
+                              >{{ $t("app.status") }}
+                              <span class="text-red">*</span></label
+                            >
+                            <q-select
+                              v-model="user.status"
+                              outlined
+                              dense
+                              type="text"
+                              :option="status_options"
+                            />
+                          </div>
                           <div class="row justify-end">
                             <q-btn
                               class="q-mr-lg"
@@ -465,14 +494,23 @@
                       <!---------------------------------------------START OF ALERT OF MEMBER'S REGISTRATION STATUS------------------>
                       <div>
                         <div
-                          class=" q-ml-sm"
+                          class="q-ml-sm"
                           v-if="
                             getCurrentMember.has_register == 'NOT_REGISTERED' &&
                             !getCurrentMember.has_paid
                           "
                         >
-                          <span> <q-icon name="info" color="warning" size="sm" class="q-pr-md"></q-icon> </span>
-                          <label for="not_register" class="text-bold text-warning"
+                          <span>
+                            <q-icon
+                              name="info"
+                              color="warning"
+                              size="sm"
+                              class="q-pr-md"
+                            ></q-icon>
+                          </span>
+                          <label
+                            for="not_register"
+                            class="text-bold text-warning"
                             >{{ $t("app.notCompletedRegistration") }}:
                             {{ getCurrentYear.year }}</label
                           >
@@ -481,7 +519,14 @@
                           class="q-ml-sm"
                           v-if="getCurrentMember.has_register == 'REGISTERED'"
                         >
-                        <span> <q-icon name="info" color="secondary" size="sm" class="q-pr-md" ></q-icon> </span>
+                          <span>
+                            <q-icon
+                              name="info"
+                              color="secondary"
+                              size="sm"
+                              class="q-pr-md"
+                            ></q-icon>
+                          </span>
                           <label for="register" class="text-bold text-secondary"
                             >{{ $t("app.hasCompletedRegistration") }}:
                             {{ getCurrentYear.year }}</label
@@ -494,7 +539,14 @@
                             getCurrentMember.approve == 'PENDING'
                           "
                         >
-                        <span> <q-icon name="info" color="info" size="sm" class="q-pr-md"></q-icon> </span>
+                          <span>
+                            <q-icon
+                              name="info"
+                              color="info"
+                              size="sm"
+                              class="q-pr-md"
+                            ></q-icon>
+                          </span>
                           <label for="pending" class="text-bold text-info">{{
                             $t("app.registrationPending")
                           }}</label>
@@ -512,7 +564,7 @@
           <!-------------------------------------------MEMBER CONTRIBUTIONS TAB PANEL----------------------------------->
           <q-tab-panel name="contributions">
             <!-----------------------------------------PAYMENT ITEMS--------------------------------------------------->
-            <div class="row q-mx-xs">
+            <div class="row">
               <div class="col-12 col-md-12 col-sm-12 col-xs-12">
                 <q-table
                   :data="data"
@@ -522,7 +574,7 @@
                     backgroundColor: '#5384ae',
                     color: '#FFFFFF',
                   }"
-
+                  :loading="getLoadingState"
                 >
                   <template v-slot:top-left>
                     <div class="text-h6 contribution_item_header">
@@ -562,7 +614,7 @@
                         {{
                           props.row.frequency == "YEARLY"
                             ? props.row.session.year
-                            : "N/A"
+                            : current_year.year
                         }}
                       </q-td>
                       <q-td key="has_pay" :props="props">
@@ -615,17 +667,18 @@
             <!----------------------------------------END OF TOTAL AMOUNT PAYABLE------------------------------------>
 
             <!-----------------------------------------PAID ITEM LIST------------------------------------------------>
-            <div class="row q-mt-lg q-mx-md">
-              <div class="col-12">
+            <div class="row q-mt-lg">
+              <div class="col-12 col-md-12 col-sm-12 col-xs-12">
                 <q-table
                   :data="data1"
                   :columns="columns1"
-                  row-key="index"
+                  row-key="counter"
+                  ref="table"
                   :table-header-style="{
                     backgroundColor: '#5384ae',
                     color: '#FFFFFF',
                   }"
-
+                  :loading="getLoadingState"
                 >
                   <template v-slot:top-left>
                     <div class="text-h6 contribution_item_header">
@@ -635,9 +688,6 @@
                   </template>
                   <template v-slot:body="props">
                     <q-tr :props="props">
-                      <q-td key="counter" :props="props">
-                        {{ props.row.counter }}
-                      </q-td>
                       <q-td key="name" :props="props">
                         {{ props.row.name }}
                       </q-td>
@@ -653,13 +703,10 @@
                       </q-td>
                       <q-td key="quarterly_name" :props="props">
                         {{
-                          props.row.quarterly_name == null || " "
+                          props.row.quarterly_name == null
                             ? "N/A"
                             : props.row.quarterly_name
                         }}
-                      </q-td>
-                      <q-td key="year" :props="props">
-                        {{ props.row.year == null ? "N/A" : props.row.year }}
                       </q-td>
                       <q-td key="amount" :props="props">
                         {{ Number(props.row.amount).toLocaleString() }}
@@ -709,6 +756,23 @@
                       </q-td>
                       <q-td key="created_at" :props="props">
                         {{ props.row.created_at }}
+                      </q-td>
+                      <q-td key="action" :props="props">
+                        <q-btn
+                          unelevated
+                          no-caps
+                          dense
+                          color="primary"
+                          class="view_details"
+                          :label="$t('app.view')"
+                          @click="viewDetails(props.row)"
+                        >
+                          <q-icon
+                            name="visibility"
+                            size="xs"
+                            class="q-pl-sm"
+                          ></q-icon>
+                        </q-btn>
                       </q-td>
                     </q-tr>
                   </template>
@@ -831,7 +895,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(item, index) in selected_items" :key="item.id">
+                <tr v-for="(item, index) in selected_items" :key="index">
                   <td class="text-left">{{ index + 1 }}</td>
                   <td class="text-left">{{ item.name }}</td>
                   <td class="text-left">{{ item.balance }}</td>
@@ -884,9 +948,8 @@ export default {
 
   mounted() {
     this.getUserRoles(this.$route.params.id);
-    this.getMembersDebts(false);
-    this.getMembersContributions(false);
-    // console.log((LocalStorage.getItem("data"));
+    this.getMembersDebts(true);
+    this.getMembersContributions(true);
   },
 
   data() {
@@ -899,6 +962,7 @@ export default {
         address: "",
         occupation: "",
         user_id: "",
+        status: "",
       },
       loading: false,
       edit_profile: false,
@@ -909,13 +973,6 @@ export default {
       selected_items: [],
       loading_payment: false,
       columns: [
-        {
-          name: "counter",
-          required: true,
-          label: "S/N",
-          align: "left",
-          field: "counter",
-        },
         {
           name: "name",
           required: true,
@@ -965,13 +1022,6 @@ export default {
       data: [],
       columns1: [
         {
-          name: "counter",
-          required: true,
-          label: "S/N",
-          align: "left",
-          field: "counter",
-        },
-        {
           name: "name",
           required: true,
           label: "Name",
@@ -997,15 +1047,8 @@ export default {
         {
           name: "quarterly_name",
           align: "left",
-          label: "Quarter Name",
+          label: "Quarter",
           field: "quarterly_name",
-          sortable: true,
-        },
-        {
-          name: "year",
-          align: "left",
-          label: "Year",
-          field: "year",
           sortable: true,
         },
         {
@@ -1040,6 +1083,12 @@ export default {
           field: "created_at",
           align: "left",
         },
+        {
+          name: "action",
+          label: "Action",
+          field: "action",
+          align: "left",
+        },
       ],
       data1: [],
       total_amount_payable: 0,
@@ -1047,11 +1096,12 @@ export default {
       gender_options: ["MALE", "FEMALE", "OTHER"],
       user_roles: [],
       show_remove_role_dialog: false,
-      is_fetching: false,
-      current_year: "",
+      is_fetching: true,
+      current_year: LocalStorage.getItem("data").current_session,
       due_amount: 0.0,
       amount_paid: 0.0,
       available_roles: [],
+      status_options: ["ACTIVE", "IN_ACTIVE"],
     };
   },
   computed: {
@@ -1074,7 +1124,7 @@ export default {
     },
 
     validatePayment() {
-      return this.total_amount_payable > 0 ? false : true;
+      return this.total_amount_payable == 0;
     },
 
     validateAddRole() {
@@ -1110,9 +1160,9 @@ export default {
     },
 
     canEditUserRole() {
-      let has_president_role = LocalStorage.getItem("data").user_data.roles.find(
-        (role) => role.name === "PRESIDENT"
-      );
+      let has_president_role = LocalStorage.getItem(
+        "data"
+      ).user_data.roles.find((role) => role.name === "PRESIDENT");
       return has_president_role != undefined;
     },
 
@@ -1143,6 +1193,19 @@ export default {
     },
   },
   methods: {
+    viewDetails(data) {
+      let payload = {
+        data: {
+          details:data,
+          user:this.$store.getters.getCurrentMember
+        },
+        tab: "Payment Details",
+      };
+      this.$store.dispatch("setSelectedContribution", data);
+
+      this.$emit("view-payment-details", payload);
+    },
+
     getFormatedDate(created_at) {
       return moment(created_at).format("MMMM Do YYYY");
     },
@@ -1169,6 +1232,7 @@ export default {
         this.user.address = data.address;
         this.user.occupation = data.occupation;
         this.user.user_id = data.id;
+        this.user.status = data.status;
       }
 
       return this.user;
@@ -1359,20 +1423,26 @@ export default {
           data: [],
         },
       };
-      this.$store.dispatch("getRequest", payload).then(() => {});
+      this.is_fetching = true;
+      this.$store
+        .dispatch("getRequest", payload)
+        .then(() => {})
+        .finally(() => {
+          this.is_fetching = false;
+        });
     },
 
     removeUserRole() {
       let id = this.$route.params.id;
       let payload = {
         url: `/api/protected/roles/users/${id}?role=${this.role_deleted.name}`,
-        msg: "Role removed successfully",
+        msg: this.$t("app.roleRemoveSuccessMsg"),
         color: "default",
         to_on_ok: "none",
         status: "success",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: "An Error occurred! Please try again",
+        error_msg: this.$t("app.defaultErrorMsg"),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -1389,16 +1459,17 @@ export default {
 
     onConfirmPayment() {
       this.loading_payment = true;
+      let user_id = this.$store.getters.getCurrentMember.id;
       let payload = {
         data: this.buildPayloadData(),
-        url: `/api/protected/contributions/bulk-payments`,
-        msg: "Payment made successfully",
+        url: `/api/protected/contributions/bulk-payments?user_id=${user_id}&current_session_id=${this.current_year.id}`,
+        msg: this.$t('app.bulkSuccessMsg'),
         color: "default",
         to_on_ok: "none",
         status: "success",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: "An Error occurred! Please try again",
+        error_msg: this.$t('app.defaultErrorMsg'),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -1430,7 +1501,7 @@ export default {
             amount_deposited: parseInt(ele.balance),
             is_compulsory: ele.is_compulsory,
             code: ele.code,
-            year: this.current_year,
+            year: this.current_year.id,
             comment: "BULK PAYMENT",
             quarterly_name: ele.quarterly_name,
             month_name: ele.month_name,
@@ -1460,7 +1531,7 @@ export default {
       let id = this.$route.params.id;
       let payload = {
         data: "none",
-        url: `/api/protected/contributions/members/debts?user_id=${id}&session_id=${this.current_year}`,
+        url: `/api/protected/contributions/members/debts?user_id=${id}&session_id=${this.current_year.id}`,
         msg: "none",
         color: "default",
         to_on_ok: "none",
@@ -1468,7 +1539,7 @@ export default {
         to_on_fail: "none",
         show_feedback: false,
         show_spinner: show_spinner,
-        error_msg: "An Error occurred! Please try again",
+        error_msg: this.$t('app.defaultErrorMsg'),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -1477,28 +1548,36 @@ export default {
           data: [],
         },
       };
-      this.$store.dispatch("getRequest", payload).then((res) => {
-        if (res != undefined && res.data.length > 0) {
-          res.data.forEach((ele) => {
-            this.due_amount += ele.balance;
-            this.data.push({
-              counter: res.data.indexOf(ele) + 1,
-              name: ele.name,
-              is_compulsory: ele.is_compulsory,
-              balance: ele.balance,
-              type: ele.type,
-              has_pay: ele.has_pay,
-              id: ele.id,
-              code: ele.code,
-              frequency: ele.frequency,
-              item_amount: ele.item_amount,
-              month_name: ele.month_name,
-              quarterly_name: ele.quarterly_name,
-              session: ele.session,
+      this.is_fetching = show_spinner;
+      this.$store.commit("SET_IS_FETCHING", true);
+      this.$store
+        .dispatch("getRequest", payload)
+        .then((res) => {
+          if (res != undefined && res.data.length > 0) {
+            res.data.forEach((ele) => {
+              this.due_amount += ele.balance;
+              this.data.push({
+                counter: res.data.indexOf(ele) + 1,
+                name: ele.name,
+                is_compulsory: ele.is_compulsory,
+                balance: ele.balance,
+                type: ele.type,
+                has_pay: ele.has_pay,
+                id: ele.id,
+                code: ele.code,
+                frequency: ele.frequency,
+                item_amount: ele.item_amount,
+                month_name: ele.month_name,
+                quarterly_name: ele.quarterly_name,
+                session: ele.session,
+              });
             });
-          });
-        }
-      });
+          }
+        })
+        .finally(() => {
+          this.is_fetching = false;
+          this.$store.commit("SET_IS_FETCHING", false);
+        });
     },
 
     getMembersContributions(show_spinner) {
@@ -1506,7 +1585,7 @@ export default {
       let id = this.$route.params.id;
       let payload = {
         data: "none",
-        url: `/api/protected/contributions/members/paid?user_id=${id}&session_id=${this.current_year}`,
+        url: `/api/protected/contributions/members/paid?user_id=${id}&session_id=${this.current_year.id}`,
         msg: "none",
         color: "default",
         to_on_ok: "none",
@@ -1514,7 +1593,7 @@ export default {
         to_on_fail: "none",
         show_feedback: false,
         show_spinner: show_spinner,
-        error_msg: "An Error occurred! Please try again",
+        error_msg: this.$t('app.defaultErrorMsg'),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -1523,29 +1602,41 @@ export default {
           data: [],
         },
       };
-      this.$store.dispatch("getRequest", payload).then((res) => {
-        if (res != undefined) {
-          res.data.forEach((ele) => {
-            this.amount_paid += ele.amount;
-            this.data1.push({
-              counter: res.data.indexOf(ele) + 1,
-              payment_item_id: ele.payment_item_id,
-              payment_item_amount: ele.payment_item_amount,
-              name: ele.name,
-              amount: ele.amount,
-              balance: ele.balance,
-              payment_status: ele.payment_status,
-              approve: ele.approve,
-              created_at: this.getFormatedDate(ele.created_at),
-              id: ele.id,
-              year: ele.year,
-              frequency: ele.frequency,
-              month_name: ele.month_name,
-              quarterly_name: ele.quarterly_name,
+      this.is_fetching = show_spinner;
+      this.$store.commit("SET_IS_FETCHING", true);
+      this.$store
+        .dispatch("getRequest", payload)
+        .then((res) => {
+          if (res.success) {
+            res.data.forEach((ele) => {
+              this.amount_paid += ele.amount;
+              this.data1.push({
+                counter: res.data.indexOf(ele) + 1,
+                payment_item_id: ele.payment_item_id,
+                payment_item_amount: ele.payment_item_amount,
+                name: ele.name,
+                amount: ele.amount,
+                balance: ele.balance,
+                payment_status: ele.payment_status,
+                approve: ele.approve,
+                created_at: this.getFormatedDate(ele.created_at),
+                id: ele.id,
+                year: ele.year,
+                frequency: ele.frequency,
+                month_name: ele.month_name,
+                quarterly_name: ele.quarterly_name,
+                code:ele.code,
+                created_by:ele.created_by,
+                comment:ele.comment,
+                is_compulsory:ele.is_compulsory
+              });
             });
-          });
-        }
-      });
+          }
+        })
+        .finally(() => {
+          this.is_fetching = false;
+          this.$store.commit("SET_IS_FETCHING", false);
+        });
     },
   },
   components: {
@@ -1636,6 +1727,30 @@ export default {
 
 .date {
   padding-left: 1rem;
+}
+
+.status {
+  padding-left: 4rem;
+}
+
+.active_text_color {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 27px;
+  letter-spacing: 0.005em;
+  color: $secondary;
+}
+
+.in_active_text_color {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 27px;
+  letter-spacing: 0.005em;
+  color: $orange;
 }
 
 .label {
@@ -1797,5 +1912,17 @@ export default {
   align-items: center;
   text-align: center;
   letter-spacing: 0.005em;
+}
+
+.view_details {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  align-items: center;
+  text-transform: capitalize;
+  width: 5rem;
+  padding-top: 0.1rem;
+  padding-bottom: 0.1rem;
 }
 </style>

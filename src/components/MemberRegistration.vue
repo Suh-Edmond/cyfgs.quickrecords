@@ -136,7 +136,7 @@ export default {
         .dispatch("postRequest", payload)
         .then(() => {
           let id = this.$store.getters.getOrganisation.id;
-          this.filterOrganisationMembers(id,false, 1, 7, "name", this.$store.getters.getCurrentYear.id, "");
+          this.filterOrganisationMembers(id,false, 1, 7, "name", this.$store.getters.getCurrentYear.id, "", "", "");
         })
         .finally(() => {
           this.loading = false;

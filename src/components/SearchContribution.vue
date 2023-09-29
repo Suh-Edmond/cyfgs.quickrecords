@@ -275,6 +275,8 @@ export default {
               label: ele.name,
               value: ele.id,
               amount: ele.amount,
+              frequency:ele.frequency,
+              created_at:ele.created_at
             });
           });
         }
@@ -305,6 +307,7 @@ export default {
             ? this.param.date_range
             : "",
         amount: this.param.payment_item_id.amount,
+        frequency: this.param.payment_item_id.frequency
       };
       this.loading = this.filterMembersContributions(
         payload,

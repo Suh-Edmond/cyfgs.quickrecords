@@ -675,13 +675,14 @@
       "
       v-if="show_member_contribution"
     >
+
       <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
         <q-select
           v-model="transaction_status"
           outlined
           dense
           :options="transaction_statuses"
-          :label="$t('app.searchTransactionStatus')"
+          :label="$t('app.selectStatusLabel')"
           use-input
           input-debounce="0"
           clearable
@@ -701,7 +702,7 @@
           outlined
           dense
           :options="payment_statuses"
-          :label="$t('app.selectStatusLabel')"
+          :label="$t('app.searchTransactionStatus')"
           clearable
         >
           <template v-slot:no-option>
@@ -1425,7 +1426,6 @@ export default {
         switch (this.report_option.value) {
           case 1:
             if (this.$store.getters.getPaymentActivities.length == 0) {
-              console.log(this.$store.getters.getPaymentActivities);
               this.fetchPaymentActivities();
             }
             this.getAllPaymentItemsFromStore();

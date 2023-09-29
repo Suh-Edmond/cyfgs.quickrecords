@@ -3,13 +3,13 @@
     <div v-if="!checkTreasurerRole()">
       <!--------------------------------------------------------START OF SAVINGS--------------------------------------->
       <div>
-       <FilterComponentVue
-       :show_savings_non_treasurer="true"
-       :loading_download="loading_download"
-        :disable_download_btn="validateDownload"
-        @filter-savings="filterSavings"
-        @download-savings="downloadMembersSavings"
-       >
+        <FilterComponentVue
+          :show_savings_non_treasurer="true"
+          :loading_download="loading_download"
+          :disable_download_btn="validateDownload"
+          @filter-savings="filterSavings"
+          @download-savings="downloadMembersSavings"
+        >
         </FilterComponentVue>
 
         <!--------------------------------------------------------START OF TABLE TO DISPLAY SAVINGS-------------------------->
@@ -40,15 +40,14 @@
 
     <!----------------------------------------------------------SAVINGS TO BE APPROVE/DECLINE------------------------->
     <div v-if="checkTreasurerRole()">
-
       <FilterComponentVue
-       :show_savings_treasurer="true"
-       :loading_download="loading_download"
+        :show_savings_treasurer="true"
+        :loading_download="loading_download"
         :disable_download_btn="validateDownload"
         @search-savings="searchSavings"
         @download-savings="downloadMembersSavings"
-       >
-        </FilterComponentVue>
+      >
+      </FilterComponentVue>
       <!-- table for filtered savings -->
       <div class="row q-pt-sm">
         <div class="col-md-12 col-xs-12 col-sm-12">
@@ -90,7 +89,7 @@ export default {
     CurrentYearMixinVue,
     MonthsMixinVue,
   ],
-  beforeMount(){
+  beforeMount() {
     this.$store.commit("SET_PAGINATION", {
       sortBy: "name",
       descending: false,
@@ -106,7 +105,7 @@ export default {
       1,
       7,
       "",
-      this.session_id,
+      this.session_id
     );
     this.getSessions();
   },
@@ -204,8 +203,8 @@ export default {
       return data;
     },
 
-    validateDownload(){
-      return this.getMembersSavings.length == 0
+    validateDownload() {
+      return this.getMembersSavings.length == 0;
     },
 
     getPagination() {
@@ -220,8 +219,7 @@ export default {
       return paginate_object;
     },
   },
-  watch: {
-  },
+  watch: {},
   methods: {
     onRequest(props) {
       const { page, rowsPerPage } = props.pagination;
@@ -234,7 +232,7 @@ export default {
           page,
           fetch_count,
           "",
-          this.session_id,
+          this.session_id
         );
       } else {
         this.filterSavings();
@@ -293,7 +291,7 @@ export default {
         this.pagination.page,
         this.pagination.rowsPerPage,
         month,
-        session,
+        session
       );
     },
 
@@ -303,9 +301,11 @@ export default {
   },
   components: {
     TableVue,
-    FilterComponentVue
+    FilterComponentVue,
   },
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+
+</style>

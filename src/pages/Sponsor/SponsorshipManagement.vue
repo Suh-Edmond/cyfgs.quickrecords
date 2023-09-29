@@ -111,7 +111,7 @@ export default {
 
     getTotalSponsorship() {
       return this.$store.getters.getSponsorships !== null
-        ? this.$store.getters.getSponsorships.total
+        ? this.$store.getters.getSponsorships.total_amount
         : 0;
     },
 

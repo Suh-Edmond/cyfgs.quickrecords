@@ -8,7 +8,7 @@
         :loading_download="loading_download"
         :disable_download_btn="validateDownload"
         @filter-payment-items="filterPaymentItems"
-        @download-categories="downloadPaymentItems"
+        @download-payment-items="downloadPaymentItems"
       >
       </FilterComponentVue>
       <!-----------------------------------------------TABLE FOR PAYMENT ITEMS-->
@@ -351,7 +351,8 @@ export default {
 
     downloadPaymentItems(data) {
       let payment_category_id = this.$route.params.id;
-      let url = `/api/protected/download-payment-items?payment_category_id=${payment_category_id}&is_compulsory=${data.is_compulsory}&frequency=${data.frequency}&type=${data.type}&state=${data.state}&page=&per_page`;
+      let category_name = this.$store.getters.getCurrentPaymentCategory.name;
+      let url = `/api/protected/download-payment-items?payment_category_id=${payment_category_id}&is_compulsory=${data.is_compulsory}&frequency=${data.frequency}&type=${data.type}&state=${data.state}&page=&per_page&category_name=${category_name}`;
       let file_name = "Payment_Items.pdf";
       this.loading_download = this.downloadPdf(url, file_name);
     },

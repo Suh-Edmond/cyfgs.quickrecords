@@ -60,7 +60,9 @@ export default {
       1,
       7,
       "name",
-      ""
+      "",
+      this.has_register,
+      this.gender
     );
     this.getRegistrationAmount();
   },
@@ -213,11 +215,13 @@ export default {
         page,
         fetch_count,
         sortBy,
-        filter
+        filter,
+        this.gender,
+        this.has_register
       );
     },
 
-    getPaginatedOrganisationMembers(id, page, rowsPerPage, sort_by, filter) {
+    getPaginatedOrganisationMembers(id, page, rowsPerPage, sort_by, filter, has_register, gender) {
       let year_value =
         this.year !== null && this.year !== "" ? this.year.value : "";
       this.filterOrganisationMembers(
@@ -227,7 +231,9 @@ export default {
         rowsPerPage,
         sort_by,
         year_value,
-        filter
+        filter,
+        has_register,
+        gender
       );
     },
 
@@ -251,13 +257,16 @@ export default {
         1,
         7,
         "name",
-        ""
+        "",
+        this.has_register,
+        this.gender
       );
     },
 
     downloadMembers(data) {
       this.setFilterVariables(data);
-      let url = `/api/protected/organisations/download-users?organisation_id=${this.organisation_id}&has_register=${this.has_register}&gender=${this.gender}&year=${this.year.value}`;
+      let year_value = this.year !== null && this.year !== "" ? this.year.value : "";
+      let url = `/api/protected/organisations/download-users?organisation_id=${this.organisation_id}&has_register=${this.has_register}&gender=${this.gender}&year=${year_value}?page=&per_page=`;
       let file_name = "Organisation_Members.pdf";
       this.loading_download = this.downloadPdf(url, file_name);
     },
@@ -269,7 +278,9 @@ export default {
         7,
         "name",
         false,
-        ""
+        "",
+        this.has_register,
+        this.gender
       );
     },
 
@@ -297,7 +308,9 @@ export default {
           7,
           "name",
           false,
-          ""
+          "",
+          this.has_register,
+          this.gender
         );
       });
     },

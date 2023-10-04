@@ -10,8 +10,6 @@
       :filter="filter"
       :loading="table_loading"
       :pagination.sync="getPagination"
-      selection="multiple"
-      :selected.sync="selected"
       @request="onRequest"
     >
       <template v-slot:loading>

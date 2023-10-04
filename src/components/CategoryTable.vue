@@ -476,6 +476,14 @@
 
         <!-- table body for expenditure item details -->
         <q-tr :props="props" v-if="show_expenditure_item_detail">
+          <q-td key="is_selected" :props="props">
+            <q-checkbox
+              v-model="props.row.is_selected"
+              dense
+              size="sm"
+              @input="computeTotal(props.row, $event)"
+            />
+          </q-td>
           <q-td key="name" :props="props">
             {{ props.row.name }}
           </q-td>
@@ -1151,6 +1159,11 @@ export default {
             (ele) => ele.approve == "PENDING"
           ).length == 0
         : false;
+    },
+
+    computeTotal(data, event) {
+      console.log(event);
+      console.log(data);
     },
   },
   components: {

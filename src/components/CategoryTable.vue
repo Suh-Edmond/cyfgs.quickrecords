@@ -1,7 +1,7 @@
 <template>
   <div class="q-pa-xs">
     <!---------------------------------------------------MAIN TABLE COMPONENT------------------------------>
-    <q-table :data="data" :columns="columns" row-key="counter"
+    <q-table :data="data" :columns="columns" row-key="name"
       :table-header-style="{ backgroundColor: '#5384ae', color: '#FFFFFF' }" class="col-xs-12" :filter="filter"
       :loading="table_loading" :pagination.sync="getPagination" @request="onRequest" binary-state-sort>
       <template v-slot:loading>
@@ -324,9 +324,6 @@
 
         <!-- table body for expenditure item details -->
         <q-tr :props="props" v-if="show_expenditure_item_detail">
-          <!-- <q-td key="counter" :props="props">
-            {{ props.row.counter }}
-          </q-td> -->
           <q-td key="name" :props="props">
             {{ props.row.name }}
           </q-td>
@@ -881,13 +878,16 @@ export default {
         },
       };
       this.$store.commit("SET_IS_FETCHING", true);
-      this.$store.dispatch("putRequest", payload).then((res) => {
-        if (res.success) {
-          this.callFetchDataAfterApproveAction(this.approve_data);
-        }
-      }).finally(() => {
-        this.$store.commit("SET_IS_FETCHING", false);
-      });
+      this.$store
+        .dispatch("putRequest", payload)
+        .then((res) => {
+          if (res.success) {
+            this.callFetchDataAfterApproveAction(this.approve_data);
+          }
+        })
+        .finally(() => {
+          this.$store.commit("SET_IS_FETCHING", false);
+        });
     },
 
     showDetails(data) {
@@ -963,7 +963,7 @@ export default {
   // font-size: small;
   font-size: 15px;
   font-weight: 500;
-  color: $grey8
+  color: $grey8;
 }
 
 .dialog_button {

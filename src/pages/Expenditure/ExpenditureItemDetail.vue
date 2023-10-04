@@ -42,7 +42,7 @@
         </div>
       </div>
 
-      <div class="q-mt-md">
+      <div class="q-mt-md" v-if="getExpenditureItemDetails.length > 0">
         <q-card>
           <q-card-section>
             <div class="row q-ml-md">
@@ -170,6 +170,7 @@ export default {
 
   data() {
     return {
+      selected:[],
       loading_download: false,
       columns: [
         {

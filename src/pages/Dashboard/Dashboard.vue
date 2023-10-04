@@ -496,7 +496,6 @@ export default {
           this.getOrganisationMemberSavings(organisation_id, 1, 5);
           this.getTotalContributionByYear(current_session_id);
           this.getTotalYearlyExpenditures(current_session_id);
-          this.filterOrganisationMembers(organisation_id, false, 1, 10, "name", this.$store.getters.getCurrentYear.id, "");
           break;
         case "SAVINGS":
           this.statistics_type = "SAVINGS";

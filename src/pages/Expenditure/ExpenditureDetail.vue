@@ -3,83 +3,157 @@
     <!--------------------------------------------------TABLE FOR EXPENDITURE DETAILS---------------------------------------->
     <div>
       <!-- header for filter categories -->
-      <div class="row q-ml-xs q-pt-xs" :class="$q.screen.lg ? 'q-pa-sm' : ''" :style="$q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-        ">
+      <div
+        class="row q-ml-xs q-pt-xs"
+        :class="$q.screen.lg ? 'q-pa-sm' : ''"
+        :style="
+          $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+        "
+      >
         <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
-          <q-select v-model="status" outlined dense :options="statuses" :label="$t('app.selectStatusLabel')" />
+          <q-select
+            v-model="status"
+            outlined
+            dense
+            :options="statuses"
+            :label="$t('app.selectStatusLabel')"
+          />
         </div>
         <div class="q-pl-lg col-md-3 col-lg-3 col-xs-12 col-sm-12">
-          <q-btn :label="$t('app.filter')" color="primary" :disabled="validateFilter" no-caps icon-right="filter_list"
-            @click="filterItems" :loading="is_fetching">
+          <q-btn
+            :label="$t('app.filter')"
+            color="primary"
+            :disabled="validateFilter"
+            no-caps
+            icon-right="filter_list"
+            @click="filterItems"
+            :loading="is_fetching"
+          >
           </q-btn>
         </div>
         <q-space />
         <div class="button q-pb-xs">
-          <q-btn :label="$t('app.print')" :loading="loading" :color="'positive'" :disabled="false" no-caps
-            icon-left="print" @click="downloadExpenditureItemDetails"></q-btn>
+          <q-btn
+            :label="$t('app.print')"
+            :loading="loading"
+            :color="'positive'"
+            :disabled="false"
+            no-caps
+            icon-left="print"
+            @click="downloadExpenditureItemDetails"
+          ></q-btn>
         </div>
       </div>
       <div class="q-px-sm q-pt-md">
         <div class="col-md-12 col-xs-12 col-sm-12">
-          <CategoryTable :columns="columns" :data="getExpenditureItemDetails" :label="label" :message="message"
-            :title="getExpenditureItemName" :show_payment_category="false" :show_payment_item="false"
-            :show_expenditure_category="false" :show_expenditure_item="false" :show_expenditure_item_detail="true"
-            :expenditure_item_amount="total_item_amount" :total_amount_given="total_amount_given"
-            :total_amount_spent="total_amount_spent" :balance="total_balance" :total_balance="total_balance"
-            :pagination="getPagination" :table_loading="getLoadingState"
+          <CategoryTable
+            :columns="columns"
+            :data="getExpenditureItemDetails"
+            :label="label"
+            :message="message"
+            :title="getExpenditureItemName"
+            :show_payment_category="false"
+            :show_payment_item="false"
+            :show_expenditure_category="false"
+            :show_expenditure_item="false"
+            :show_expenditure_item_detail="true"
+            :expenditure_item_amount="total_item_amount"
+            :total_amount_given="total_amount_given"
+            :total_amount_spent="total_amount_spent"
+            :balance="total_balance"
+            :total_balance="total_balance"
+            :pagination="getPagination"
+            :table_loading="getLoadingState"
             @edit-expenditure-item-detail="editExpenditureItemDetail"
-            @view-expenditure-item-detail="viewExpenditureItemDetail" @delete-row="onDeleteRow" @onRequest="onRequest">
+            @view-expenditure-item-detail="viewExpenditureItemDetail"
+            @delete-row="onDeleteRow"
+            @onRequest="onRequest"
+          >
           </CategoryTable>
         </div>
       </div>
 
-      <div class="q-mt-md">
+      <div class="q-mt-md q-mx-md">
         <q-card>
           <q-card-section>
-            <div class=" row q-ml-md ">
-              <label class="q-py-lg text-bold summary text-capitalize">{{ $t('app.expenditureSummaryLabel') }}</label>
+            <div class="row q-ml-md">
+              <label class="q-py-lg text-bold summary text-capitalize">{{
+                $t("app.expenditureSummaryLabel")
+              }}</label>
             </div>
             <div class="row q-ml-md q-mb-lg">
               <div class="col-3 col-md-3 col-lg-3 col-xs-12 col-sm-3">
                 <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_name">{{ $t('app.expenditureItemSummary') }}:</label>
+                  <label class="text-bold q-py-md detail_name"
+                    >{{ $t("app.expenditureItemSummary") }}:</label
+                  >
                 </div>
                 <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_name">{{ $t('app.estimatedAmount') }}:</label>
+                  <label class="text-bold q-py-md detail_name"
+                    >{{ $t("app.estimatedAmount") }}:</label
+                  >
                 </div>
                 <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_name">{{ $t('app.totalAmountGiven') }}:</label>
+                  <label class="text-bold q-py-md detail_name"
+                    >{{ $t("app.totalAmountGiven") }}:</label
+                  >
                 </div>
                 <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_name">{{ $t('app.totalAmountSpent') }}:</label>
+                  <label class="text-bold q-py-md detail_name"
+                    >{{ $t("app.totalAmountSpent") }}:</label
+                  >
                 </div>
                 <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_name">{{ $t('app.totalBalance') }}:</label>
+                  <label class="text-bold q-py-md detail_name"
+                    >{{ $t("app.totalBalance") }}:</label
+                  >
                 </div>
                 <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_name">{{ $t('app.netBalance') }}:<br>
-                    <small class="text-italic">[ {{ $t('app.netBalance') }} = {{ $t('app.formular') }} ]</small>
+                  <label class="text-bold q-py-md detail_name"
+                    >{{ $t("app.netBalance") }}:<br />
+                    <small class="text-italic"
+                      >[ {{ $t("app.netBalance") }} =
+                      {{ $t("app.formular") }} ]</small
+                    >
                   </label>
                 </div>
               </div>
               <div class="col-3 col-md-3 col-lg-3 col-xs-12 col-sm-3">
                 <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_name">{{ getExpenditureItemName }} </label>
+                  <label class="text-bold q-py-md detail_name"
+                    >{{ getExpenditureItemName }}
+                  </label>
                 </div>
                 <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_name">{{ Number(total_item_amount).toLocaleString() }} XAF</label>
+                  <label class="text-bold q-py-md detail_name"
+                    >{{ Number(total_item_amount).toLocaleString() }} XAF</label
+                  >
                 </div>
                 <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_name">{{ Number(total_amount_given).toLocaleString() }} XAF</label>
+                  <label class="text-bold q-py-md detail_name"
+                    >{{
+                      Number(total_amount_given).toLocaleString()
+                    }}
+                    XAF</label
+                  >
                 </div>
                 <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_name">{{ Number(total_amount_spent).toLocaleString() }} XAF</label>
+                  <label class="text-bold q-py-md detail_name"
+                    >{{
+                      Number(total_amount_spent).toLocaleString()
+                    }}
+                    XAF</label
+                  >
                 </div>
                 <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_name">{{ Number(getBalance).toLocaleString() }} XAF</label>
+                  <label class="text-bold q-py-md detail_name"
+                    >{{ Number(getBalance).toLocaleString() }} XAF</label
+                  >
                 </div>
                 <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_name">{{ Number(total_balance).toLocaleString() }} XAF</label>
+                  <label class="text-bold q-py-md detail_name"
+                    >{{ Number(total_balance).toLocaleString() }} XAF</label
+                  >
                 </div>
               </div>
             </div>
@@ -108,13 +182,6 @@ export default {
       color: "primary",
       loading: false,
       columns: [
-        {
-          name: "counter",
-          required: true,
-          label: "S/N",
-          align: "left",
-          field: "counter",
-        },
         {
           name: "name",
           required: true,
@@ -308,7 +375,7 @@ export default {
         query: { status: this.status, t: new Date().getTime() },
       });
 
-      this.getExpenditureDetailsByItemId(1, 2, true, this.expenditure_item_id);
+      this.getExpenditureDetailsByItemId(1, 7, true, this.expenditure_item_id);
     },
 
     editExpenditureItemDetail(data) {
@@ -341,7 +408,7 @@ export default {
       this.$store.dispatch("deleteRequest", payload).then(() => {
         this.getExpenditureDetailsByItemId(
           1,
-          2,
+          7,
           false,
           this.expenditure_item_id
         );

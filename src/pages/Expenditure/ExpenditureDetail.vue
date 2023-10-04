@@ -46,17 +46,12 @@
       </div>
       <div class="q-px-sm q-pt-md">
         <div class="col-md-12 col-xs-12 col-sm-12">
-          <CategoryTable
+          <ExpensesTables
             :columns="columns"
             :data="getExpenditureItemDetails"
             :label="label"
             :message="message"
             :title="getExpenditureItemName"
-            :show_payment_category="false"
-            :show_payment_item="false"
-            :show_expenditure_category="false"
-            :show_expenditure_item="false"
-            :show_expenditure_item_detail="true"
             :expenditure_item_amount="total_item_amount"
             :total_amount_given="total_amount_given"
             :total_amount_spent="total_amount_spent"
@@ -64,12 +59,10 @@
             :total_balance="total_balance"
             :pagination="getPagination"
             :table_loading="getLoadingState"
-            @edit-expenditure-item-detail="editExpenditureItemDetail"
             @view-expenditure-item-detail="viewExpenditureItemDetail"
-            @delete-row="onDeleteRow"
             @onRequest="onRequest"
           >
-          </CategoryTable>
+          </ExpensesTables>
         </div>
       </div>
 
@@ -168,6 +161,7 @@
 <script>
 import CategoryTable from "src/components/CategoryTable.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
+import ExpensesTables from "src/components/ExpensesTables.vue";
 
 export default {
   mixins: [HelperMixinVue],
@@ -416,7 +410,7 @@ export default {
     },
   },
   components: {
-    CategoryTable,
+    ExpensesTables,
   },
 };
 </script>

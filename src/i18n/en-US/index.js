@@ -494,6 +494,8 @@ export default {
     totalAmountContributed:'Total Amount Contributed',
     howToComputeTotalAmountPaymentForQuarterlyPayment:"NB: For Quarterly Contributions, Total Amount Payable equals the Payment Item Amount multiply by the SUM of the number of Quarters from when the Payment Item was created.",
     howToComputeTotalAmountPaymentForMonthlyPayment:"NB: For Monthly Contributions, Total Amount Payable equals the Payment Item Amount multiply by the SUM of the number of Months from when the Payment Item was created.",
-    paymentItemAmount:'Payment Item Amount'
+    paymentItemAmount:'Payment Item Amount',
+    approveAll:"Approve All",
+    declineAll:"Decline All"
    }
 };

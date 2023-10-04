@@ -48,7 +48,7 @@
         <div class="col-md-12 col-xs-12 col-sm-12">
           <CategoryTable
             :columns="columns"
-            :data="getExpenditureItemDetails"
+            :data="expenditure_item_details"
             :label="label"
             :message="message"
             :title="getExpenditureItemName"
@@ -68,11 +68,29 @@
             @view-expenditure-item-detail="viewExpenditureItemDetail"
             @delete-row="onDeleteRow"
             @onRequest="onRequest"
+            @showSelectedRecords="showSelectedRecords"
           >
           </CategoryTable>
         </div>
       </div>
 
+      <div class="q-my-lg flex justify-end q-mr-xl" v-if="selectedRecords.size > 0">
+        <q-btn
+          class="approve_btn q-mx-md q-pa-xs"
+          dense
+          :label="$t('app.approveAll')"
+          no-caps
+          @click="onApprovedMultipleRecords(props.row)"
+        />
+
+        <q-btn
+          class="decline_btn q-pa-xs q-mr-xl"
+          dense
+          :label="$t('app.declineAll')"
+          no-caps
+          @click="onDeclineMultipleRecords(props.row)"
+        />
+      </div>
       <div class="q-mt-md q-mx-md">
         <q-card>
           <q-card-section>
@@ -188,7 +206,6 @@ export default {
           field: "is_selected",
           sortable: true,
           align: "left",
-          sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
         },
         {
           name: "name",
@@ -250,6 +267,8 @@ export default {
       total_balance: 0,
       is_fetching: false,
       expenditure_item_id: this.$route.params.id,
+      expenditure_item_details: [],
+      selectedRecords:new Set()
     };
   },
   computed: {
@@ -341,17 +360,37 @@ export default {
       this.$store
         .dispatch("getRequest", payload)
         .then((response) => {
-          this.$store.commit("SET_PAGINATION", {
-            sortBy: "name",
-            descending: false,
-            page: response.data.current_page,
-            rowsPerPage: response.data.per_page,
-            rowsNumber: response.data.total,
-          });
-          this.total_amount_given = response.data.total_amount_given;
-          this.total_amount_spent = response.data.total_amount_spent;
-          this.total_item_amount = response.data.total_item_amount;
-          this.total_balance = response.data.total_balance;
+          if (response.success) {
+            response.data.data.forEach((ele) => {
+              this.expenditure_item_details.push({
+                counter: response.data.data.indexOf(ele) + 1,
+                name: ele.name,
+                amount_given: ele.amount_given,
+                amount_spent: ele.amount_spent,
+                balance: ele.balance,
+                type: "EXPENDITURE_DETAILS",
+                id: ele.id,
+                expenditure_item_id: ele.expenditure_item_id,
+                comment: ele.comment,
+                approve: ele.approve,
+                created_at: ele.created_at,
+                updated_at: ele.updated_at,
+                updated_by: ele.updated_by,
+                is_selected: ele.is_selected,
+              });
+            });
+            this.$store.commit("SET_PAGINATION", {
+              sortBy: "name",
+              descending: false,
+              page: response.data.current_page,
+              rowsPerPage: response.data.per_page,
+              rowsNumber: response.data.total,
+            });
+            this.total_amount_given = response.data.total_amount_given;
+            this.total_amount_spent = response.data.total_amount_spent;
+            this.total_item_amount = response.data.total_item_amount;
+            this.total_balance = response.data.total_balance;
+          }
         })
         .finally(() => {
           this.$store.commit("SET_IS_FETCHING", false);
@@ -423,6 +462,14 @@ export default {
         );
       });
     },
+
+    showSelectedRecords(records){
+      return this.selectedRecords = records;
+    },
+
+    onApprovedMultipleRecords(records) {},
+
+    onDeclineMultipleRecords(records) {},
   },
   components: {
     CategoryTable,
@@ -448,14 +495,13 @@ export default {
 .approve_btn {
   background-color: $secondary;
   color: white;
-  width: 5.5rem;
-  margin-left: 1rem;
+  width: 6rem;
 }
 
 .decline_btn {
   background-color: $orange;
   color: white;
-  width: 5.5rem;
+  width: 6.5rem;
 }
 
 .detail_name {

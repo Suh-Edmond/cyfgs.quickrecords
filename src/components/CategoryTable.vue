@@ -479,8 +479,9 @@
           <q-td key="is_selected" :props="props">
             <q-checkbox
               v-model="props.row.is_selected"
+              v-if="props.row.approve == 'PENDING'"
               dense
-              size="sm"
+              size="md"
               @input="computeTotal(props.row, $event)"
             />
           </q-td>
@@ -587,6 +588,31 @@
               </q-icon>
             </q-btn>
 
+            <!-- view expenditure item details -->
+            <q-btn
+              color="primary"
+              class="viewPending"
+              dense
+              :label="$t('app.view')"
+              no-caps
+              unelevated
+              @click="onViewExpenditureDetail(props.row)"
+              v-if="checkTreasurerRole()"
+            >
+              <q-icon name="visibility" size="xs" class="q-pl-md"></q-icon>
+            </q-btn>
+
+            <!-- decline btn for expenditure item details -->
+            <q-btn
+              class="approve_btn q-mx-md"
+              dense
+              :label="$t('app.approve')"
+              no-caps
+              unelevated
+              @click="onApprovedRecord(props.row, 'Approve')"
+              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
+            />
+
             <!-- approved btn for expenditure item details -->
             <q-btn
               class="decline_btn"
@@ -597,34 +623,6 @@
               @click="onDeclineRecord(props.row, 'Decline')"
               v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
             />
-            <!-- decline btn for expenditure item details -->
-            <q-btn
-              class="approve_btn"
-              dense
-              :label="$t('app.approve')"
-              no-caps
-              unelevated
-              @click="onApprovedRecord(props.row, 'Approve')"
-              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
-            />
-
-            <!-- view expenditure item details -->
-            <q-btn
-              color="primary"
-              :class="
-                props.row.approve == 'PENDING'
-                  ? 'viewExpenditureItem'
-                  : 'viewPending'
-              "
-              dense
-              :label="$t('app.view')"
-              no-caps
-              unelevated
-              @click="onViewExpenditureDetail(props.row)"
-              v-if="checkTreasurerRole()"
-            >
-              <q-icon name="visibility" size="xs" class="q-pl-md"></q-icon>
-            </q-btn>
           </q-td>
         </q-tr>
         <!-- end of table body for expenditure item details -->
@@ -846,6 +844,7 @@ export default {
       type: null,
       delete_msg: "",
       show_confirm_dialog_detail: false,
+      selectedRecords: [],
     };
   },
   computed: {
@@ -1162,8 +1161,13 @@ export default {
     },
 
     computeTotal(data, event) {
-      console.log(event);
-      console.log(data);
+      const expensesSet = new Set();
+      if(event){
+        expensesSet.add(data);
+      }else {
+        expensesSet.delete(data)
+      }
+      this.$emit("showSelectedRecords", expensesSet);
     },
   },
   components: {
@@ -1214,7 +1218,6 @@ export default {
 }
 
 .title {
-  // font-size: small;
   font-size: 15px;
   font-weight: 500;
   color: $grey8;
@@ -1234,13 +1237,11 @@ export default {
 
 .approve_card {
   width: 25rem;
-  // padding: 0.7rem;
 }
 
 .decline_btn {
   background-color: $orange;
   color: white;
-  margin-right: 4.5rem;
   width: 5.5rem;
 }
 

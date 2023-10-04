@@ -11,9 +11,9 @@
       <template v-slot:body="props">
         <!-- table body for payment category -->
         <q-tr :props="props" v-if="show_payment_category">
-          <q-td key="counter" :props="props">
+          <!-- <q-td key="counter" :props="props">
             {{ props.row.counter }}
-          </q-td>
+          </q-td> -->
           <q-td key="name" :props="props">
             {{ props.row.name }}
           </q-td>
@@ -70,9 +70,9 @@
 
         <!-- table body for payment items -->
         <q-tr :props="props" v-if="show_payment_item">
-          <q-td key="counter" :props="props">
+          <!-- <q-td key="counter" :props="props">
             {{ props.row.counter }}
-          </q-td>
+          </q-td> -->
           <q-td key="name" :props="props">
             {{ props.row.name }}
           </q-td>
@@ -158,9 +158,9 @@
 
         <!-- table body for expenditure category -->
         <q-tr :props="props" v-if="show_expenditure_category">
-          <q-td key="counter" :props="props">
+          <!-- <q-td key="counter" :props="props">
             {{ props.row.counter }}
-          </q-td>
+          </q-td> -->
           <q-td key="name" :props="props">
             {{ props.row.name }}
           </q-td>
@@ -215,9 +215,9 @@
 
         <!-- table body for expenditure items -->
         <q-tr :props="props" v-if="show_expenditure_item">
-          <q-td key="counter" :props="props">
+          <!-- <q-td key="counter" :props="props">
             {{ props.row.counter }}
-          </q-td>
+          </q-td> -->
           <q-td key="name" :props="props">
             {{ props.row.name }}
           </q-td>
@@ -324,9 +324,9 @@
 
         <!-- table body for expenditure item details -->
         <q-tr :props="props" v-if="show_expenditure_item_detail">
-          <q-td key="counter" :props="props">
+          <!-- <q-td key="counter" :props="props">
             {{ props.row.counter }}
-          </q-td>
+          </q-td> -->
           <q-td key="name" :props="props">
             {{ props.row.name }}
           </q-td>

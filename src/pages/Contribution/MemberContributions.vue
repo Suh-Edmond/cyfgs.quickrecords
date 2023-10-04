@@ -216,13 +216,6 @@ export default {
       title: "",
       columns: [
         {
-          name: "counter",
-          required: true,
-          label: "S/N",
-          align: "left",
-          field: "counter",
-        },
-        {
           name: "quarterly_name",
           required: true,
           label: "Quarter/Month",

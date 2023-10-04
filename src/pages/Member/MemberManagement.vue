@@ -75,13 +75,13 @@ export default {
       message: this.$t("app.deleteMemberWarningMsg"),
       label: this.$t("app.delete"),
       columns: [
-        {
-          name: "counter",
-          required: true,
-          label: "S/N",
-          align: "left",
-          field: "counter",
-        },
+        // {
+        //   name: "counter",
+        //   required: true,
+        //   label: "S/N",
+        //   align: "left",
+        //   field: "counter",
+        // },
         {
           name: "name",
           required: true,

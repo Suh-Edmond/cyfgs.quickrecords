@@ -142,13 +142,6 @@ export default {
       label: this.$t("app.delete"),
       columns: [
         {
-          name: "counter",
-          required: true,
-          label: "S/N",
-          align: "left",
-          field: "counter",
-        },
-        {
           name: "user_name",
           required: true,
           label: "Member's Name",

@@ -353,13 +353,6 @@ export default {
       new_role_member: true,
       columns: [
         {
-          name: "counter",
-          required: true,
-          label: "S/N",
-          align: "left",
-          field: "counter",
-        },
-        {
           name: "year",
           required: true,
           label: "Year",
@@ -397,13 +390,6 @@ export default {
       },
       year_statuses: ["ACTIVE", "IN_ACTIVE"],
       reg_table_columns: [
-        {
-          name: "counter",
-          required: true,
-          label: "S/N",
-          align: "left",
-          field: "counter",
-        },
         {
           name: "amount",
           align: "left",

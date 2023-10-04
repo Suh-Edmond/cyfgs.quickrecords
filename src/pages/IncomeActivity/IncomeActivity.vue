@@ -76,13 +76,6 @@ export default {
       status: "",
       columns: [
         {
-          name: "counter",
-          required: true,
-          label: "S/N",
-          align: "left",
-          field: "counter",
-        },
-        {
           name: "name",
           required: true,
           label: "Name",

@@ -282,15 +282,6 @@ export default {
   color: $dark;
   margin-left: 1.8rem;
 }
-.pending_color {
-  color: $info;
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 600;
-  font-size: 14px;
-  line-height: 11px;
-  letter-spacing: 0.01em;
-}
 
 .unapproved_color {
   color: #f2994a;

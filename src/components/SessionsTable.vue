@@ -39,9 +39,6 @@
           </template>
           <template v-slot:body="props">
             <q-tr :props="props" class="text-bold">
-              <q-td key="counter" :props="props">
-                {{ props.row.counter }}
-              </q-td>
               <q-td key="year" :props="props">
                 {{ props.row.year }}
               </q-td>

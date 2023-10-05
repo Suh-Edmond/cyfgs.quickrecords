@@ -8,7 +8,7 @@
             >{{ $t("app.nameLabel") }}:
           </label>
         </div>
-        <div class="detail-value wrap">
+        <div class="detail-value">
           <label class="value">
             {{ getUpdatedExpenditureItemDetailFromState.name }}
           </label>
@@ -22,7 +22,7 @@
             >{{ $t("app.amountGivenLabel") }}:
           </label>
         </div>
-        <div class="detail-value wrap">
+        <div class="detail-value">
           <label class="value">
             {{
               Number(
@@ -41,7 +41,7 @@
             >{{ $t("app.amountSpent") }}:</label
           >
         </div>
-        <div class="detail-value wrap">
+        <div class="detail-value">
           <label class="value">
             {{
               Number(
@@ -60,7 +60,7 @@
             >{{ $t("app.balance") }}:
           </label>
         </div>
-        <div class="detail-value wrap">
+        <div class="detail-value">
           <label class="value">
             {{
               Number(
@@ -79,9 +79,9 @@
             >{{ $t("app.transactionStatus") }}:
           </label>
         </div>
-        <div class="detail-value wrap">
+        <div class="detail-value">
           <label
-            class="value pending_color"
+            class="value text-info"
             v-show="
               getUpdatedExpenditureItemDetailFromState.approve == 'PENDING'
             "
@@ -89,7 +89,7 @@
             {{ getUpdatedExpenditureItemDetailFromState.approve }}
           </label>
           <label
-            class="value approved_color"
+            class="value text-secondary"
             v-show="
               getUpdatedExpenditureItemDetailFromState.approve == 'APPROVED'
             "
@@ -97,7 +97,7 @@
             {{ getUpdatedExpenditureItemDetailFromState.approve }}
           </label>
           <label
-            class="value unapproved_color"
+            class="value text-warning"
             v-show="
               getUpdatedExpenditureItemDetailFromState.approve == 'DECLINED'
             "
@@ -115,13 +115,12 @@
           </label>
         </div>
 
-        <div class="detail-value wrap">
+        <div class="detail-value">
           <label class="value">
             {{ getFormatDetailCreatedDate }}
           </label>
         </div>
       </div>
-
       <div class="flex justify-between q-mb-md">
         <div>
           <label for="amount" class="label"
@@ -129,7 +128,7 @@
             >{{ $t("app.createdBy") }}:
           </label>
         </div>
-        <div class="detail-value wrap">
+        <div class="detail-value">
           <label class="value">
             {{ getUpdatedExpenditureItemDetailFromState.updated_by }}
           </label>
@@ -141,8 +140,18 @@
           >{{ $t("app.comment") }}:</label
         >
       </div>
-      <div class="value_comment" v-show="getUpdatedExpenditureItemDetailFromState.comment !== null">{{ getUpdatedExpenditureItemDetailFromState.comment }}</div>
-      <div class="value_comment" v-show="getUpdatedExpenditureItemDetailFromState.comment === null">{{ $t('app.none') }}</div>
+      <div
+        class="value_comment"
+        v-show="getUpdatedExpenditureItemDetailFromState.comment !== null"
+      >
+        {{ getUpdatedExpenditureItemDetailFromState.comment }}
+      </div>
+      <div
+        class="value_comment"
+        v-show="getUpdatedExpenditureItemDetailFromState.comment === null"
+      >
+        {{ $t("app.none") }}
+      </div>
     </div>
   </div>
 </template>
@@ -177,25 +186,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.unapproved_color {
-  color: #f2994a;
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 600;
-  font-size: 14px;
-  line-height: 11px;
-  letter-spacing: 0.01em;
-}
-
-.approved_color {
-  color: #27ae60;
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 600;
-  font-size: 14px;
-  line-height: 11;
-  letter-spacing: 0.01em;
-}
 
 .label {
   font-family: "Roboto";
@@ -227,14 +217,5 @@ export default {
   letter-spacing: 0.01em;
   color: $dark;
   margin-left: 1.8rem;
-}
-.pending_color {
-  color: $info;
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 600;
-  font-size: 14px;
-  line-height: 11px;
-  letter-spacing: 0.01em;
 }
 </style>

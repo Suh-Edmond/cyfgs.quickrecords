@@ -115,13 +115,6 @@ export default {
       month: "",
       columns: [
         {
-          name: "counter",
-          required: true,
-          label: "S/N",
-          align: "left",
-          field: "counter",
-        },
-        {
           name: "user_name",
           required: true,
           label: "Name",

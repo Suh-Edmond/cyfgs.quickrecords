@@ -30,9 +30,9 @@
       <template v-slot:body="props">
         <!---------------------------------------------BODY FOR MEMBERS------------------------------------------------------>
         <q-tr :props="props" v-if="show_members">
-          <q-td key="counter" :props="props">
+          <!-- <q-td key="counter" :props="props">
             {{ props.row.counter }}
-          </q-td>
+          </q-td> -->
 
           <q-td key="name" :props="props">
             {{ props.row.name }}
@@ -152,9 +152,9 @@
 
         <!---------------------------------------------------START OF SAVINGS FOR ALL MEMBER TO BE VIEW BY USER WITH UNTREASUERER ROLE------------------------->
         <q-tr :props="props" v-if="show_savings && !checkTreasurerRole()">
-          <q-td key="counter" :props="props">
+          <!-- <q-td key="counter" :props="props">
             {{ props.row.counter }}
-          </q-td>
+          </q-td> -->
           <q-td key="user_name" :props="props">
             {{ props.row.user_name }}
           </q-td>
@@ -184,9 +184,9 @@
 
         <!----------------------------------------------------END OF MEMBER SAVINGS TO BE VIEW BY THE TREASUERER--------------------------------------------->
         <q-tr :props="props" v-if="show_savings && checkTreasurerRole()">
-          <q-td key="counter" :props="props">
+          <!-- <q-td key="counter" :props="props">
             {{ props.row.counter }}
-          </q-td>
+          </q-td> -->
           <q-td key="user_name" :props="props">
             {{ props.row.user_name }}
           </q-td>
@@ -216,9 +216,9 @@
 
         <!---------------------------------------------------------------------------MEMBER SAVINGS--------------------------------------------------->
         <q-tr :props="props" v-if="show_member_savings">
-          <q-td key="counter" :props="props">
+          <!-- <q-td key="counter" :props="props">
             {{ props.row.counter }}
-          </q-td>
+          </q-td> -->
           <q-td key="amount_deposited" :props="props">
             {{ Number(props.row.amount_deposited).toLocaleString() }}
           </q-td>
@@ -291,9 +291,6 @@
 
         <!----------------------------------------------------------------------INCOME ACTIVITIES----------------------------------------------------------->
         <q-tr :props="props" v-if="show_income_activity">
-          <q-td key="counter" :props="props">
-            {{ props.row.counter }}
-          </q-td>
           <q-td key="name" :props="props">
             {{ props.row.name }}
           </q-td>
@@ -386,9 +383,6 @@
 
         <!--------------------------------------------------------------------CONTRIBUTION-------------------------------------->
         <q-tr :props="props" v-if="show_contribution">
-          <q-td key="counter" :props="props">
-            {{ props.row.counter }}
-          </q-td>
           <q-td key="user_name" :props="props">
             {{ props.row.user_name }}
           </q-td>
@@ -433,9 +427,6 @@
 
         <!------------------------------------------------------------MEMBER CONTRIBUTIONS------------------------------------------>
         <q-tr :props="props" v-if="show_member_contribution">
-          <q-td key="counter" :props="props">
-            {{ props.row.counter }}
-          </q-td>
           <q-td key="quarterly_name" :props="props" v-if="props.row.payment_item_frequency == 'QUARTERLY'">
             {{ props.row.quarterly_name }}
           </q-td>

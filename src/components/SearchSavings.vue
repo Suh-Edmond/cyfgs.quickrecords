@@ -289,7 +289,7 @@ export default {
           t: new Date().getTime(),
         },
       });
-      let url = `/api/protected/user-savings?organisation_id=${this.organisation_id}&name=${this.param.name}&session_id=${this.session_id}&page=${1}&per_page=${1}`;
+      let url = `/api/protected/user-savings?organisation_id=${this.organisation_id}&name=${this.param.name}&session_id=${this.session_id}&page=${1}&per_page=${7}`;
       this.loading_user_info = this.filterSaving(url);
     },
 
@@ -303,7 +303,7 @@ export default {
           t: new Date().getTime(),
         },
       });
-      let url = `/api/protected/user-savings?organisation_id=${this.organisation_id}&amount_deposited=${this.param.amount_deposited}&session_id=${this.session_id}&page=${1}&per_page=${1}`;
+      let url = `/api/protected/user-savings?organisation_id=${this.organisation_id}&amount_deposited=${this.param.amount_deposited}&session_id=${this.session_id}&page=${1}&per_page=${7}`;
       this.loading_save_amount = this.filterSaving(url);
     },
 
@@ -317,7 +317,7 @@ export default {
           t: new Date().getTime(),
         },
       });
-      let url = `/api/protected/user-savings?organisation_id=${this.organisation_id}&status=${status}&session_id=${this.session_id}&page=${1}&per_page=${1}`;
+      let url = `/api/protected/user-savings?organisation_id=${this.organisation_id}&status=${status}&session_id=${this.session_id}&page=${1}&per_page=${7}`;
       this.filterSaving(url);
     },
 
@@ -334,7 +334,7 @@ export default {
         },
       });
 
-      let url = `/api/protected/user-savings?organisation_id=${this.organisation_id}&session_id=${this.session_id}&month=${this.param.month}&date=${this.param.date}&range=${this.param.date_range}&page=${1}&per_page=${1}`;
+      let url = `/api/protected/user-savings?organisation_id=${this.organisation_id}&session_id=${this.session_id}&month=${this.param.month}&date=${this.param.date}&range=${this.param.date_range}&page=${1}&per_page=${7}`;
       this.loading = this.filterSaving(url);
     },
 

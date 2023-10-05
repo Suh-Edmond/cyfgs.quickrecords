@@ -158,19 +158,19 @@
 
         <div class="detail-value wrap">
           <label
-            class="value pending_color"
+            class="value text-info"
             v-show="getSelectedContribution.approve == 'PENDING'"
           >
             {{ getSelectedContribution.approve }}
           </label>
           <label
-            class="value approved_color"
+            class="value text-secondary"
             v-show="getSelectedContribution.approve == 'APPROVED'"
           >
             {{ getSelectedContribution.approve }}
           </label>
           <label
-            class="value unapproved_color"
+            class="value text-warning"
             v-show="getSelectedContribution.approve == 'DECLINED'"
           >
             {{ getSelectedContribution.approve }}
@@ -188,7 +188,7 @@
 
         <div class="detail-value wrap">
           <label
-            class="value unapproved_color"
+            class="value text-warning"
             v-show="getSelectedContribution.status == 'INCOMPLETE'"
           >
             {{ getSelectedContribution.status }}
@@ -320,24 +320,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.unapproved_color {
-  color: #f2994a;
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 600;
-  font-size: 14px;
-  line-height: 11px;
-  letter-spacing: 0.01em;
-}
-.approved_color {
-  color: #27ae60;
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 600;
-  font-size: 14px;
-  line-height: 11;
-  letter-spacing: 0.01em;
-}
 .label {
   font-family: "Roboto";
   font-style: normal;
@@ -365,14 +347,5 @@ export default {
   letter-spacing: 0.01em;
   color: $dark;
   margin-left: 1.8rem;
-}
-.pending_color {
-  color: $info;
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 600;
-  font-size: 14px;
-  line-height: 11px;
-  letter-spacing: 0.01em;
 }
 </style>

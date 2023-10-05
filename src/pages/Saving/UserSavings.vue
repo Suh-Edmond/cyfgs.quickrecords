@@ -55,13 +55,6 @@ export default {
     return {
       columns: [
         {
-          name: "counter",
-          required: true,
-          label: "S/N",
-          align: "left",
-          field: "counter",
-        },
-        {
           name: "amount_deposited",
           align: "left",
           label: "Amount Deposited (XAF)",

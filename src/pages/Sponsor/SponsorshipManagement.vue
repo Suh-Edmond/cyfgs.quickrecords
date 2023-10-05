@@ -65,13 +65,6 @@ export default {
       status: "",
       columns: [
         {
-          name: "counter",
-          required: true,
-          label: "S/N",
-          align: "left",
-          field: "counter",
-        },
-        {
           name: "supporter",
           required: true,
           label: "Sponsor",

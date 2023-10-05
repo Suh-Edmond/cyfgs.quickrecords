@@ -496,6 +496,7 @@ export default {
     howToComputeTotalAmountPaymentForMonthlyPayment:"NB: For Monthly Contributions, Total Amount Payable equals the Payment Item Amount multiply by the SUM of the number of Months from when the Payment Item was created.",
     paymentItemAmount:'Payment Item Amount',
     approveAll:"Approve All",
-    declineAll:"Decline All"
+    declineAll:"Decline All",
+    partConfirmationMsg:" the following Expenses"
    }
 };

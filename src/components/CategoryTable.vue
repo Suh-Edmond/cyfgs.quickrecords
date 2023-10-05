@@ -845,6 +845,7 @@ export default {
       delete_msg: "",
       show_confirm_dialog_detail: false,
       selectedRecords: [],
+      expensesSet : new Set(),
     };
   },
   computed: {
@@ -1161,13 +1162,12 @@ export default {
     },
 
     computeTotal(data, event) {
-      const expensesSet = new Set();
       if(event){
-        expensesSet.add(data);
+        this.expensesSet.add(data);
       }else {
-        expensesSet.delete(data)
+        this.expensesSet.delete(data)
       }
-      this.$emit("showSelectedRecords", expensesSet);
+      this.$emit("showSelectedRecords", this.expensesSet);
     },
   },
   components: {

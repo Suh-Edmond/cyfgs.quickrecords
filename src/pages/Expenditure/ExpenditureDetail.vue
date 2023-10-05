@@ -2,7 +2,6 @@
   <q-page>
     <!--------------------------------------------------TABLE FOR EXPENDITURE DETAILS---------------------------------------->
     <div>
-      <!-- header for filter categories -->
       <div
         class="row q-ml-xs q-pt-xs"
         :class="$q.screen.lg ? 'q-pa-sm' : ''"
@@ -44,6 +43,7 @@
           ></q-btn>
         </div>
       </div>
+
       <div class="q-px-sm q-pt-md">
         <div class="col-md-12 col-xs-12 col-sm-12">
           <CategoryTable
@@ -74,24 +74,32 @@
         </div>
       </div>
 
-      <div class="q-my-lg flex justify-end q-mr-xl" v-if="selectedRecords.size > 0">
-        <q-btn
-          class="approve_btn q-mx-md q-pa-xs"
-          dense
-          :label="$t('app.approveAll')"
-          no-caps
-          @click="onApprovedMultipleRecords(props.row)"
-        />
+      <!----------------------------------------------MULTIPLE APPROVAL/DECLINE OF RECORDS------------------------------->
+      <q-card v-if="canShowBulkApproval" class="q-my-md q-mx-md">
+        <q-card-section>
+          <div class="flex justify-end">
+            <q-btn
+              class="approve_btn q-mx-md q-pa-xs"
+              dense
+              :label="$t('app.approveAll')"
+              no-caps
+              @click="onShowSelectedRecordsDialog('Approve')"
+            />
 
-        <q-btn
-          class="decline_btn q-pa-xs q-mr-xl"
-          dense
-          :label="$t('app.declineAll')"
-          no-caps
-          @click="onDeclineMultipleRecords(props.row)"
-        />
-      </div>
-      <div class="q-mt-md q-mx-md">
+            <q-btn
+              class="decline_btn q-pa-xs q-mr-xl"
+              dense
+              :label="$t('app.declineAll')"
+              no-caps
+              @click="onShowSelectedRecordsDialog('Decline')"
+            />
+          </div>
+        </q-card-section>
+      </q-card>
+      <!----------------------------------------------END OF MULTIPLE APPROVAL/DECLINE OF RECORDS----------------------->
+
+      <!-----------------------------------------------SUMMARY FOR EXPENDITURE DETAILS ------------------------------------->
+      <div class="q-mt-md q-mx-md" v-if="expenditure_item_details.length > 0">
         <q-card>
           <q-card-section>
             <div class="row q-ml-md">
@@ -178,8 +186,100 @@
           </q-card-section>
         </q-card>
       </div>
+      <!-----------------------------------------------END OF SUMMARY OF EXPENDITURE DETAILS-------------------------------->
     </div>
     <!--------------------------------------------------END OF TABLE FOR EXPENDITURE DETAILS--------------------------------->
+
+    <!-------------------------------------------DIALOG TO APPROVE/DECLINE PAYMENT------------------->
+    <q-dialog v-model="show_payment_dialog">
+      <q-card style="min-width: 600px" class="q-pa-xs">
+        <q-card-section class="row items-center q-pb-sm">
+          <div
+            class="text-h6 confirm_payment_title"
+            :class="type == 'Approve' ? 'text-secondary' : 'text-orange'"
+          >
+            {{ type }} {{ $t("app.partConfirmationMsg") }}
+          </div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+        <q-card-section>
+          <div>
+            <q-markup-table flat>
+              <thead>
+                <tr class="text-weight-bold">
+                  <th class="text-left text-weight-bold">{{ $t("app.sn") }}</th>
+                  <th class="text-left text-weight-bold">
+                    {{ $t("app.nameLabel") }}
+                  </th>
+                  <th class="text-left text-weight-bold">
+                    {{ $t("app.amountGivenLabel") }}
+                  </th>
+                  <th class="text-left text-weight-bold">
+                    {{ $t("app.amountSpent") }}
+                  </th>
+                  <th class="text-left text-weight-bold">
+                    {{ $t("app.balance") }}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(item, index) in selectedRecords" :key="index">
+                  <td class="text-left">{{ index + 1 }}</td>
+                  <td class="text-left">{{ item.name }}</td>
+                  <td class="text-left">
+                    {{ Number(item.amount_given).toLocaleString() }}
+                  </td>
+                  <td class="text-left">
+                    {{ Number(item.amount_spent).toLocaleString() }}
+                  </td>
+                  <td class="text-left">
+                    {{ Number(item.balance).toLocaleString() }}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="text-left text-weight-bold">
+                    {{ $t("app.total") }}
+                  </td>
+                  <td class="text-left"></td>
+                  <td class="text-left text-weight-bold">
+                    {{
+                      Number(computeRunningAmountGiven()).toLocaleString()
+                    }}
+                    XAF
+                  </td>
+                  <td class="text-left text-weight-bold">
+                    {{
+                      Number(computeRunningAmountSpent()).toLocaleString()
+                    }}
+                    XAF
+                  </td>
+                  <td class="text-left text-weight-bold">
+                    {{ Number(computeRunningBalance()).toLocaleString() }} XAF
+                  </td>
+                </tr>
+              </tbody>
+            </q-markup-table>
+          </div>
+        </q-card-section>
+
+        <q-card-section class="q-mb-md">
+          <div class="flex justify-end">
+            <q-btn
+              class="form_button"
+              :label="type == 'Approve' ? $t('app.approve') : $t('app.decline')"
+              :loading="loading_payment"
+              :color="type == 'Approve' ? 'secondary' : 'orange'"
+              :disabled="false"
+              no-caps
+              @click="onConfirmPayment"
+            >
+            </q-btn>
+          </div>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
+    <!-------------------------------------------END OF DIALOG TO APPROVE/DECLINE PAYMENT------------>
   </q-page>
 </template>
 
@@ -268,38 +368,15 @@ export default {
       is_fetching: false,
       expenditure_item_id: this.$route.params.id,
       expenditure_item_details: [],
-      selectedRecords:new Set()
+      selectedRecords: new Set(),
+      loading_payment: false,
+      show_payment_dialog: false,
+      type: "",
     };
   },
   computed: {
     validateFilter() {
       return this.status === "";
-    },
-    getExpenditureItemDetails() {
-      let data = [];
-      if (this.$store.getters.getExpenditureItemDetails !== null) {
-        this.$store.getters.getExpenditureItemDetails.data.forEach((ele) => {
-          data.push({
-            counter:
-              this.$store.getters.getExpenditureItemDetails.data.indexOf(ele) +
-              1,
-            name: ele.name,
-            amount_given: ele.amount_given,
-            amount_spent: ele.amount_spent,
-            balance: ele.balance,
-            type: "EXPENDITURE_DETAILS",
-            id: ele.id,
-            expenditure_item_id: ele.expenditure_item_id,
-            comment: ele.comment,
-            approve: ele.approve,
-            created_at: ele.created_at,
-            updated_at: ele.updated_at,
-            updated_by: ele.updated_by,
-            is_selected: ele.is_selected,
-          });
-        });
-      }
-      return data;
     },
 
     getExpenditureItemName() {
@@ -309,7 +386,7 @@ export default {
     },
 
     validateDownload() {
-      return this.getExpenditureItemDetails.length == 0;
+      return this.expenditure_item_details.length == 0;
     },
 
     getBalance() {
@@ -331,6 +408,10 @@ export default {
     getLoadingState() {
       return this.$store.getters.getFetchingState;
     },
+
+    canShowBulkApproval(){
+      return this.selectedRecords.size > 0
+    }
   },
   methods: {
     getExpenditureDetailsByItemId(
@@ -356,6 +437,7 @@ export default {
         },
       };
       this.is_fetching = is_filtering;
+      this.expenditure_item_details = [];
       this.$store.commit("SET_IS_FETCHING", true);
       this.$store
         .dispatch("getRequest", payload)
@@ -463,13 +545,94 @@ export default {
       });
     },
 
-    showSelectedRecords(records){
-      return this.selectedRecords = records;
+    showSelectedRecords(records) {
+      return (this.selectedRecords = records);
     },
 
-    onApprovedMultipleRecords(records) {},
+    computeRunningAmountGiven() {
+      let total = 0;
+      this.selectedRecords.forEach((ele) => {
+        total += ele.amount_given;
+      });
+      return total;
+    },
 
-    onDeclineMultipleRecords(records) {},
+    computeRunningAmountSpent() {
+      let total = 0;
+      this.selectedRecords.forEach((ele) => {
+        total += ele.amount_spent;
+      });
+      return total;
+    },
+
+    computeRunningBalance() {
+      let total = 0;
+      this.selectedRecords.forEach((ele) => {
+        total += ele.balance;
+      });
+      return total;
+    },
+
+    onShowSelectedRecordsDialog(type) {
+      this.show_payment_dialog = true;
+      return (this.type = type);
+    },
+
+    setApproveFeedbackMsg() {
+      let msg =
+        this.$t("app.recordWas") + `${this.type}` + this.$t("app.successfull");
+      return msg;
+    },
+
+    setRequestData() {
+      let data = [];
+      this.selectedRecords.forEach((ele) => {
+        data.push({
+          id: ele.id,
+          type: this.type === "Approve" ? "APPROVED" : "DECLINED",
+        });
+      });
+
+      return data;
+    },
+
+    onConfirmPayment() {
+      let payload = {
+        url: `/api/protected/expenditure-details/bulk_approve`,
+        msg: this.setApproveFeedbackMsg(),
+        data: this.setRequestData(),
+        color: "default",
+        to_on_ok: "none",
+        to_on_fail: "none",
+        show_feedback: true,
+        error_msg: this.$t("app.defaultErrorMsg"),
+        has_commit: false,
+        commit: "none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.loading_payment = true;
+      this.$store
+        .dispatch("putRequest", payload)
+        .then((res) => {
+          if (res.success) {
+            this.getExpenditureDetailsByItemId(
+              1,
+              7,
+              false,
+              this.$route.params.id
+            );
+          }
+        })
+        .finally(() => {
+          this.show_payment_dialog = false;
+          this.loading_payment = false;
+          this.selectedRecords = new Set();
+        });
+    },
   },
   components: {
     CategoryTable,
@@ -522,5 +685,17 @@ export default {
   line-height: 11px;
   letter-spacing: 0.01em;
   color: $grey8;
+}
+
+.confirm_payment_title {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 17px;
+  line-height: 24px;
+  align-items: center;
+  text-align: center;
+  letter-spacing: 0.005em;
+  // color: $primary;
 }
 </style>

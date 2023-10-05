@@ -34,11 +34,11 @@
         <div class="button q-pb-xs">
           <q-btn
             :label="$t('app.print')"
-            :loading="loading"
+            :loading="loading_download"
             :color="'positive'"
             :disabled="false"
             no-caps
-            icon-left="print"
+            icon-right="print"
             @click="downloadExpenditureItemDetails"
           ></q-btn>
         </div>
@@ -51,7 +51,7 @@
             :data="expenditure_item_details"
             :label="label"
             :message="message"
-            :title="getExpenditureItemName"
+            :title="getTableTitle"
             :show_payment_category="false"
             :show_payment_item="false"
             :show_expenditure_category="false"
@@ -107,8 +107,8 @@
                 $t("app.expenditureSummaryLabel")
               }}</label>
             </div>
-            <div class="row q-ml-md q-mb-lg">
-              <div class="col-3 col-md-3 col-lg-3 col-xs-12 col-sm-3">
+            <div class="row q-ml-md q-mb-sm">
+              <div class="col-4 col-md-4 col-lg-4 col-xs-12 col-sm-4">
                 <div class="q-mb-xs">
                   <label class="text-bold q-py-md detail_name"
                     >{{ $t("app.expenditureItemSummary") }}:</label
@@ -146,17 +146,17 @@
               </div>
               <div class="col-3 col-md-3 col-lg-3 col-xs-12 col-sm-3">
                 <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_name"
-                    >{{ getExpenditureItemName }}
+                  <label class="text-bold q-py-md detail_value"
+                    >{{ expenditure_item_name }}
                   </label>
                 </div>
                 <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_name"
+                  <label class="text-bold q-py-md detail_value"
                     >{{ Number(total_item_amount).toLocaleString() }} XAF</label
                   >
                 </div>
                 <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_name"
+                  <label class="text-bold q-py-md detail_value"
                     >{{
                       Number(total_amount_given).toLocaleString()
                     }}
@@ -164,7 +164,7 @@
                   >
                 </div>
                 <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_name"
+                  <label class="text-bold q-py-md detail_value"
                     >{{
                       Number(total_amount_spent).toLocaleString()
                     }}
@@ -172,17 +172,28 @@
                   >
                 </div>
                 <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_name"
+                  <label class="text-bold q-py-md detail_value"
                     >{{ Number(getBalance).toLocaleString() }} XAF</label
                   >
                 </div>
                 <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_name"
+                  <label class="text-bold q-py-md detail_value"
                     >{{ Number(total_balance).toLocaleString() }} XAF</label
                   >
                 </div>
               </div>
             </div>
+            <div class="row q-mt-md q-ml-md q-mb-lg">
+                  <q-icon
+                    name="info"
+                    color="warning"
+                    size="sm"
+                    class="q-pr-md"
+                  ></q-icon>
+                  <label class="text-orange text-subtitle2">
+                    {{ $t("app.negativeExpenditureBalanceMsg") }}</label
+                  >
+                </div>
           </q-card-section>
         </q-card>
       </div>
@@ -243,15 +254,11 @@
                   </td>
                   <td class="text-left"></td>
                   <td class="text-left text-weight-bold">
-                    {{
-                      Number(computeRunningAmountGiven()).toLocaleString()
-                    }}
+                    {{ Number(computeRunningAmountGiven()).toLocaleString() }}
                     XAF
                   </td>
                   <td class="text-left text-weight-bold">
-                    {{
-                      Number(computeRunningAmountSpent()).toLocaleString()
-                    }}
+                    {{ Number(computeRunningAmountSpent()).toLocaleString() }}
                     XAF
                   </td>
                   <td class="text-left text-weight-bold">
@@ -298,7 +305,7 @@ export default {
     return {
       start_filter: false,
       color: "primary",
-      loading: false,
+      loading_download: false,
       columns: [
         {
           name: "is_selected",
@@ -372,17 +379,12 @@ export default {
       loading_payment: false,
       show_payment_dialog: false,
       type: "",
+      expenditure_item_name:""
     };
   },
   computed: {
     validateFilter() {
       return this.status === "";
-    },
-
-    getExpenditureItemName() {
-      return this.$store.getters.getCurrentExpenditureItem != null
-        ? this.$store.getters.getCurrentExpenditureItem.name
-        : "";
     },
 
     validateDownload() {
@@ -409,8 +411,12 @@ export default {
       return this.$store.getters.getFetchingState;
     },
 
-    canShowBulkApproval(){
-      return this.selectedRecords.size > 0
+    canShowBulkApproval() {
+      return this.selectedRecords.size > 0;
+    },
+
+    getTableTitle(){
+      return this.expenditure_item_details.length > 0 ? this.$t('app.expensesFor') + this.expenditure_item_name : ""
     }
   },
   methods: {
@@ -426,10 +432,10 @@ export default {
         color: "default",
         status: "none",
         error_msg: this.$t("app.defaultErrorMsg"),
-        has_commit: true,
+        has_commit: false,
         show_feedback: false,
         show_spinner: false,
-        commit: "SET_EXPENDITURE_ITEM_DETAIL",
+        commit: "none",
         to_be_store_data: {
           required: false,
           has_value: false,
@@ -443,6 +449,7 @@ export default {
         .dispatch("getRequest", payload)
         .then((response) => {
           if (response.success) {
+            console.log(response.data);
             response.data.data.forEach((ele) => {
               this.expenditure_item_details.push({
                 counter: response.data.data.indexOf(ele) + 1,
@@ -472,6 +479,7 @@ export default {
             this.total_amount_spent = response.data.total_amount_spent;
             this.total_item_amount = response.data.total_item_amount;
             this.total_balance = response.data.total_balance;
+            this.expenditure_item_name = response.data.expenditure_item_name
           }
         })
         .finally(() => {
@@ -496,7 +504,7 @@ export default {
       let expenditure_item_id = this.$router.currentRoute.params.id;
       let url = `/api/protected/expenditure-item-details/download?expenditure_item_id=${expenditure_item_id}&status=${this.status}`;
       let file_name = "Expenditure_Item_Details.pdf";
-      this.loading = this.downloadPdf(url, file_name);
+      this.loading_download = this.downloadPdf(url, file_name);
     },
 
     filterItems() {
@@ -671,8 +679,16 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 13px;
-  line-height: 11px;
+  font-size: 14px;
+  letter-spacing: 0.01em;
+  color: $grey5;
+}
+
+.detail_value {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
   letter-spacing: 0.01em;
   color: $grey8;
 }

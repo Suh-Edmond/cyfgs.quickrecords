@@ -95,24 +95,23 @@
                     class="q-pr-md"
                   ></q-icon>
                   <label class="text-orange text-subtitle2">
-                    A Net Balance Less than 0 XAF indicates a debt for this
-                    Expenditure Item</label
+                    {{$t('app.negativeExpenditureBalanceMsg')}}</label
                   >
                 </div>
               </div>
               <div class="col-4 col-md-4 col-lg-4 col-xs-12 col-sm-4">
                 <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_name"
+                  <label class="text-bold q-py-md detail_value"
                     >{{ getExpenditureItemName }}
                   </label>
                 </div>
                 <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_name"
+                  <label class="text-bold q-py-md detail_value"
                     >{{ Number(total_item_amount).toLocaleString() }} XAF</label
                   >
                 </div>
                 <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_name"
+                  <label class="text-bold q-py-md detail_value"
                     >{{
                       Number(total_amount_given).toLocaleString()
                     }}
@@ -120,7 +119,7 @@
                   >
                 </div>
                 <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_name"
+                  <label class="text-bold q-py-md detail_value"
                     >{{
                       Number(total_amount_spent).toLocaleString()
                     }}
@@ -128,12 +127,12 @@
                   >
                 </div>
                 <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_name"
+                  <label class="text-bold q-py-md detail_value"
                     >{{ Number(getBalance).toLocaleString() }} XAF</label
                   >
                 </div>
                 <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_name"
+                  <label class="text-bold q-py-md detail_value"
                     >{{ Number(total_balance).toLocaleString() }} XAF</label
                   >
                 </div>
@@ -401,19 +400,21 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 13px;
-  line-height: 11px;
-  letter-spacing: 0.01em;
+  font-size: 14px;
+  color: $grey5;
+}
+.detail_value {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
   color: $grey8;
 }
-
 .summary {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 600;
   font-size: 18px;
-  line-height: 11px;
-  letter-spacing: 0.01em;
   color: $grey8;
 }
 

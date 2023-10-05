@@ -497,6 +497,8 @@ export default {
     paymentItemAmount:'Payment Item Amount',
     approveAll:"Approve All",
     declineAll:"Decline All",
-    partConfirmationMsg:" the following Expenses"
+    partConfirmationMsg:" the following Expenses",
+    negativeExpenditureBalanceMsg:"A Net Balance Less than 0 XAF indicates a debt for this Expenditure Item",
+    expensesFor:"Expenses for ",
    }
 };

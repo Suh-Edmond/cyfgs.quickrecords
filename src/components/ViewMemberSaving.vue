@@ -74,19 +74,19 @@
       </div>
       <div class="detail-value wrap">
         <label
-          class="value pending_color"
+          class="value text-info"
           v-show="getCurrentMemberSaving.approve == 'PENDING'"
         >
           {{ getCurrentMemberSaving.approve }}
         </label>
         <label
-          class="value approved_color"
+          class="value text-secondary"
           v-show="getCurrentMemberSaving.approve == 'APPROVED'"
         >
           {{ getCurrentMemberSaving.approve }}
         </label>
         <label
-          class="value unapproved_color"
+          class="value text-warning"
           v-show="getCurrentMemberSaving.approve == 'DECLINED'"
         >
           {{ getCurrentMemberSaving.approve }}
@@ -125,8 +125,12 @@
         ><span> <q-icon name="description" size="xs" class="q-pr-sm" /> </span
         >{{ $t("app.comment") }}:</label
       >
-      <div class="value_comment" v-show="getCurrentMemberSaving.comment !== null">{{ getCurrentMemberSaving.comment }}</div>
-      <div class="value_comment" v-show="getCurrentMemberSaving.comment === null">{{ $t('app.none') }}</div>
+    </div>
+    <div class="value_comment" v-show="getCurrentMemberSaving.comment !== null">
+      {{ getCurrentMemberSaving.comment }}
+    </div>
+    <div class="value_comment" v-show="getCurrentMemberSaving.comment === null">
+      {{ $t("app.none") }}
     </div>
   </div>
 </template>
@@ -164,24 +168,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.unapproved_color {
-  color: #f2994a;
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 600;
-  font-size: 14px;
-  line-height: 11px;
-  letter-spacing: 0.01em;
-}
-.approved_color {
-  color: #27ae60;
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 600;
-  font-size: 14px;
-  line-height: 11;
-  letter-spacing: 0.01em;
-}
 .label {
   font-family: "Roboto";
   font-style: normal;
@@ -210,14 +196,5 @@ export default {
   letter-spacing: 0.01em;
   color: $dark;
   margin-left: 1.8rem;
-}
-.pending_color {
-  color: $info;
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 600;
-  font-size: 14px;
-  line-height: 11px;
-  letter-spacing: 0.01em;
 }
 </style>

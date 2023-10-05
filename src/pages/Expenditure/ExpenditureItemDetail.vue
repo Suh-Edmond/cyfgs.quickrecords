@@ -416,6 +416,7 @@ export default {
   font-weight: 600;
   font-size: 18px;
   color: $grey8;
+  text-decoration: underline;
 }
 
 .text-subtitle2 {

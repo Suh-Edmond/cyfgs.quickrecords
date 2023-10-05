@@ -680,7 +680,6 @@ export default {
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
-  letter-spacing: 0.01em;
   color: $grey5;
 }
 
@@ -689,7 +688,6 @@ export default {
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
-  letter-spacing: 0.01em;
   color: $grey8;
 }
 
@@ -699,8 +697,8 @@ export default {
   font-weight: 600;
   font-size: 18px;
   line-height: 11px;
-  letter-spacing: 0.01em;
   color: $grey8;
+  text-decoration: underline;
 }
 
 .confirm_payment_title {

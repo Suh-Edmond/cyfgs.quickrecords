@@ -320,7 +320,6 @@ export default {
       this.$store
         .dispatch("postRequest", payload)
         .then((res) => {
-          this.fetchCurrentYear();
           return res;
         })
         .then(async (res) => {

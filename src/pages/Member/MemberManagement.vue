@@ -186,7 +186,7 @@ export default {
 
     getPagination() {
       let paginate_object = {
-        sortBy: this.$store.getters.getPagination.sortBy,
+        sortBy: "name",
         descending: this.$store.getters.getPagination.descending,
         page: this.$store.getters.getPagination.page,
         rowsPerPage: this.$store.getters.getPagination.rowsPerPage,

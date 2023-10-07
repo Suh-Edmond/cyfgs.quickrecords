@@ -26,334 +26,29 @@
         <div class="nav">
           <q-list padding>
             <q-item
-              :active="item.name == 'Dashboard'"
+              v-for="tab in getUserSideTabs()"
+              :key="tab.to"
+              :active="item.name == tab.name"
               clickable
               v-ripple
-              :active-class="item.name == 'Dashboard' ? 'item' : 'item_text'"
-              @click="setItem({ name: 'Dashboard', selected: true }, false)"
-              to="/dashboard"
+              :active-class="item.name == tab.name ? 'item' : 'item_text'"
+              @click="setItem({ name: tab.name, selected: true }, false)"
+            :to="{name:tab.to}"
             >
               <q-item-section
                 avatar
-                :class="item.name == 'Dashboard' ? 'item_icon' : 'item_text'"
+                :class="item.name == tab.name ? 'item_icon' : 'item_text'"
               >
-                <q-icon name="grid_view" size="xs" />
-              </q-item-section>
-
-              <q-item-section class="item_name">
-                {{ $t("app.dashboardLabel") }}
-              </q-item-section>
-            </q-item>
-            <q-item
-              clickable
-              v-ripple
-              :active-class="
-                item.name == 'Organisation Management' ? 'item' : 'item_text'
-              "
-              :active="item.name == 'Organisation Management'"
-              @click="
-                setItem(
-                  { name: 'Organisation Management', selected: true },
-                  false
-                )
-              "
-              v-if="checkRole(['PRESIDENT', null, null])"
-              :to="{ name: 'organisation' }"
-            >
-              <q-item-section
-                avatar
-                :class="
-                  item.name == 'Organisation Management'
-                    ? 'item_icon'
-                    : 'item_text'
-                "
-              >
-                <q-icon name="diversity_3" size="xs" />
-              </q-item-section>
-              <q-item-section class="item_name">
-                {{ $t("app.organisationLabel") }}
-              </q-item-section>
-            </q-item>
-
-            <q-item
-              clickable
-              v-ripple
-              :active-class="item.name == 'Settings' ? 'item' : 'item_text'"
-              :active="item.name == 'Settings'"
-              @click="setItem({ name: 'Settings', selected: true }, false)"
-              v-if="checkRole(['PRESIDENT', 'FINANCIAL_SECRETARY', null])"
-              :disable="getOrganisation == null"
-              :to="{ name: 'settings' }"
-            >
-              <q-item-section
-                avatar
-                :class="item.name == 'Settings' ? 'item_icon' : 'item_text'"
-              >
-                <q-icon name="settings" size="xs" />
-              </q-item-section>
-              <q-item-section class="item_name">{{
-                $t("app.settingsLabel")
-              }}</q-item-section>
-            </q-item>
-
-            <q-item
-              clickable
-              v-ripple
-              :active-class="
-                item.name == 'Member Management' ? 'item' : 'item_text'
-              "
-              :active="item.name == 'Member Management'"
-              @click="
-                setItem({ name: 'Member Management', selected: true }, true)
-              "
-              v-if="
-                checkRole(['PRESIDENT', 'FINANCIAL_SECRETARY', 'TREASURER'])
-              "
-              :to="{ name: 'members' }"
-              :disable="getOrganisation == null"
-            >
-              <q-item-section
-                avatar
-                :class="
-                  item.name == 'Member Management' ? 'item_icon' : 'item_text'
-                "
-              >
-                <q-icon name="manage_accounts" size="xs" />
-              </q-item-section>
-              <q-item-section class="item_name">
-                {{ $t("app.memberMgtLabel") }}
-              </q-item-section>
-            </q-item>
-            <q-item
-              clickable
-              v-ripple
-              :active-class="
-                item.name == 'Payment Categories' ? 'item' : 'item_text'
-              "
-              :active="item.name == 'Payment Categories'"
-              @click="
-                setItem({ name: 'Payment Categories', selected: true }, true)
-              "
-              v-if="
-                checkRole(['FINANCIAL_SECRETARY', 'TREASURER', 'PRESIDENT'])
-              "
-              :to="{ name: 'payment_category' }"
-              :disable="getOrganisation == null"
-            >
-              <q-item-section
-                avatar
-                :class="
-                  item.name == 'Payment Categories' ? 'item_icon' : 'item_text'
-                "
-              >
-                <q-icon name="monetization_on" size="xs" />
-              </q-item-section>
-              <q-item-section class="item_name">
-                {{ $t("app.paymentCategoryLabel") }}
-              </q-item-section>
-            </q-item>
-
-            <q-item
-              clickable
-              v-ripple
-              :active-class="
-                item.name == 'Expenditure Categories' ? 'item' : 'item_text'
-              "
-              :active="item.name == 'Expenditure Categories'"
-              @click="
-                setItem(
-                  { name: 'Expenditure Categories', selected: true },
-                  true
-                )
-              "
-              v-if="checkRole(['FINANCIAL_SECRETARY', null, 'PRESIDENT'])"
-              :to="{ name: 'expenditure_category' }"
-              :disable="getOrganisation == null"
-            >
-              <q-item-section
-                avatar
-                :class="
-                  item.name == 'Expenditure Categories'
-                    ? 'item_icon'
-                    : 'item_text'
-                "
-              >
-                <q-icon name="monetization_on" size="xs" />
-              </q-item-section>
-              <q-item-section class="item_name">
-                {{ $t("app.expenditureCategoryLabel") }}
-              </q-item-section>
-            </q-item>
-
-            <q-item
-              clickable
-              v-ripple
-              :active-class="item.name == 'Expenditures' ? 'item' : 'item_text'"
-              :active="item.name == 'Expenditures'"
-              @click="setItem({ name: 'Expenditures', selected: true }, true)"
-              v-if="checkRole([null, 'TREASURER', null])"
-              :to="{ name: 'expenditures' }"
-              :disable="getOrganisation == null"
-            >
-              <q-item-section
-                avatar
-                :class="item.name == 'Expenditures' ? 'item_icon' : 'item_text'"
-              >
-                <q-icon name="monetization_on" size="xs" />
-              </q-item-section>
-              <q-item-section class="item_name">
-                {{ $t("app.expenditureLabel") }}
-              </q-item-section>
-            </q-item>
-
-            <q-item
-              clickable
-              v-ripple
-              :active-class="
-                item.name == 'Member Savings' ? 'item' : 'item_text'
-              "
-              :active="item.name == 'Member Savings'"
-              @click="setItem({ name: 'Member Savings', selected: true }, true)"
-              v-if="
-                checkRole(['FINANCIAL_SECRETARY', 'TREASURER', 'PRESIDENT'])
-              "
-              :to="{ name: 'savings' }"
-              :disable="getOrganisation == null"
-            >
-              <q-item-section
-                avatar
-                :class="
-                  item.name == 'Member Savings' ? 'item_icon' : 'item_text'
-                "
-              >
-                <q-icon name="savings" size="xs" />
-              </q-item-section>
-              <q-item-section class="item_name">
-                {{ $t("app.savingLabel") }}
-              </q-item-section>
-            </q-item>
-
-            <q-item
-              clickable
-              v-ripple
-              :active-class="
-                item.name == 'Income Activities' ? 'item' : 'item_text'
-              "
-              :active="item.name == 'Income Activities'"
-              @click="
-                setItem({ name: 'Income Activities', selected: true }, true)
-              "
-              v-if="
-                checkRole(['FINANCIAL_SECRETARY', 'TREASURER', 'PRESIDENT'])
-              "
-              :to="{ name: 'income_activity' }"
-              :disable="getOrganisation == null"
-            >
-              <q-item-section
-                avatar
-                :class="
-                  item.name == 'Income Activities' ? 'item_icon' : 'item_text'
-                "
-              >
-                <q-icon name="local_activity" size="xs" />
-              </q-item-section>
-              <q-item-section class="item_name">
-                {{ $t("app.incomeActivityLabel") }}
-              </q-item-section>
-            </q-item>
-
-            <q-item
-              clickable
-              v-ripple
-              :active-class="
-                item.name == 'Members Contributions' ? 'item' : 'item_text'
-              "
-              :active="item.name == 'Members Contributions'"
-              @click="
-                setItem({ name: 'Members Contributions', selected: true }, true)
-              "
-              v-if="
-                checkRole(['FINANCIAL_SECRETARY', 'TREASURER', 'PRESIDENT'])
-              "
-              :to="{ name: 'members_contributions' }"
-              :disable="getOrganisation == null"
-            >
-              <q-item-section
-                avatar
-                :class="
-                  item.name == 'Members Contributions'
-                    ? 'item_icon'
-                    : 'item_text'
-                "
-              >
-                <q-icon name="payments" size="xs" />
-              </q-item-section>
-              <q-item-section class="item_name"
-                >{{ $t("app.contributionLabel") }}
-              </q-item-section>
-            </q-item>
-
-            <q-item
-              clickable
-              v-ripple
-              :active-class="
-                item.name == 'Sponsorship Management' ? 'item' : 'item_text'
-              "
-              :active="item.name == 'Sponsorship Management'"
-              @click="
-                setItem(
-                  { name: 'Sponsorship Management', selected: true },
-                  true
-                )
-              "
-              v-if="
-                checkRole(['FINANCIAL_SECRETARY', 'TREASURER', 'PRESIDENT'])
-              "
-              :to="{ name: 'sponsorship' }"
-              :disable="getOrganisation == null"
-            >
-              <q-item-section
-                avatar
-                :class="
-                  item.name == 'Sponsorship Management'
-                    ? 'item_icon'
-                    : 'item_text'
-                "
-              >
+                <q-icon :name="tab.icon" size="xs" v-if="!tab.has_image" />
                 <img
-                  src="../../src/assets/sponsorship.png"
+                  v-if="tab.has_image"
+                  :src="tab.image_src"
                   class="sponsorship_icon"
                 />
               </q-item-section>
-              <q-item-section class="item_name"
-                >{{ $t("app.sponsorshipLabel") }}
-              </q-item-section>
-            </q-item>
 
-            <q-item
-              clickable
-              v-ripple
-              :active-class="
-                item.name == 'Reports Generation' ? 'item' : 'item_text'
-              "
-              :active="item.name == 'Reports Generation'"
-              @click="
-                setItem({ name: 'Reports Generation', selected: true }, false)
-              "
-              v-if="checkRole(['FINANCIAL_SECRETARY', 'PRESIDENT', null])"
-              :to="{ name: 'report_generation' }"
-              :disable="getOrganisation == null"
-            >
-              <q-item-section
-                avatar
-                :class="
-                  item.name == 'Reports Generation' ? 'item_icon' : 'item_text'
-                "
-              >
-                <q-icon name="summarize" size="xs" />
-              </q-item-section>
               <q-item-section class="item_name">
-                {{ $t("app.reportGenerationLabel") }}
+                {{ tab.label }}
               </q-item-section>
             </q-item>
           </q-list>
@@ -526,7 +221,6 @@
           @set-heading="setHeading"
         >
         </MemberRegistration>
-
         <ViewPaymentItem
           v-if="current_tab == 'View Payment Item'"
           @close-right-drawer="closeRightDrawer"
@@ -636,15 +330,12 @@ export default {
     },
 
     checkRole(tab_roles) {
+      console.log(tab_roles);
       let user_roles = [];
       LocalStorage.getItem("data").user_data.roles.forEach((role) => {
         user_roles.push(role.name);
       });
-      return user_roles.includes(tab_roles[0]) ||
-        user_roles.includes(tab_roles[1]) ||
-        user_roles.includes(tab_roles[2])
-        ? true
-        : false;
+      return user_roles.includes(...tab_roles) ? true : false;
     },
 
     logoutUser() {
@@ -674,6 +365,142 @@ export default {
 
     setHeading(data) {
       this.heading = data;
+    },
+
+    getSidebarTabs() {
+      const menu_tabs = [];
+      menu_tabs.push({
+        to: "dashboard",
+        name: "Dashboard",
+        label: this.$t("app.dashboardLabel"),
+        icon: "grid_view",
+        roles: ["PRESIDENT", "FINANCIAL_SECRETARY", "TREASURER", "ADMIN"],
+        disable: false,
+        has_image: false,
+      });
+      menu_tabs.push({
+        to: "organisation",
+        roles: ["ADMIN", "PRESIDENT"],
+        name: "Organisation Management",
+        icon: "diversity_3",
+        label: this.$t("app.organisationLabel"),
+        disable: false,
+        has_image: false,
+      });
+      menu_tabs.push({
+        to: "settings",
+        name: "Settings",
+        roles: ["ADMIN", "PRESIDENT"],
+        icon: "settings",
+        label: this.$t("app.settingsLabel"),
+        disable: this.getOrganisation == null,
+        has_image: false,
+      });
+      menu_tabs.push({
+        to: "members",
+        roles: ["ADMIN", "PRESIDENT", "FINANCIAL_SECRETARY", "TREASURER"],
+        name: "Member Management",
+        label: this.$t("app.memberMgtLabel"),
+        icon: "manage_accounts",
+        disable: this.getOrganisation == null,
+        has_image: false,
+      });
+      menu_tabs.push({
+        to: "payment_category",
+        roles: ["AMDIN", "PRESIDENT", "FINANCIAL_SECRETARY", "TREASURER"],
+        label: this.$t("app.paymentCategoryLabel"),
+        icon: "monetization_on",
+        name: "Payment Categories",
+        disable: this.getOrganisation == null,
+        has_image: false,
+      });
+      menu_tabs.push({
+        to: "expenditure_category",
+        roles: ["ADMIN", "PRESIDENT", "FINANCIAL_SECRETARY"],
+        name: "Expenditure Categories",
+        icon: "monetization_on",
+        label: this.$t("app.expenditureCategoryLabel"),
+        disable: this.getOrganisation == null,
+        has_image: false,
+      });
+      menu_tabs.push({
+        to: "expenditures",
+        roles: ["TREASURER"],
+        name: "Expenditures",
+        icon: "monetization_on",
+        label: this.$t("app.expenditureLabel"),
+        disable: this.getOrganisation == null,
+        has_image: false,
+      });
+      menu_tabs.push({
+        to: "income_activity",
+        roles: ["ADMIN", "PRESIDENT", "FINANCIAL_SECRETARY", "TREASURER"],
+        icon: "local_activity",
+        label: this.$t("app.incomeActivityLabel"),
+        name: "Income Activities",
+        disable: this.getOrganisation == null,
+        has_image: false,
+      });
+      menu_tabs.push({
+        to: "savings",
+        roles: ["ADMIN", "PRESIDENT", "FINANCIAL_SECRETARY", "TREASURER"],
+        name: "Savings",
+        label: this.$t("app.savingLabel"),
+        icon: "savings",
+        disable: this.getOrganisation == null,
+        has_image: false,
+      });
+      menu_tabs.push({
+        to: "members_contributions",
+        roles: ["ADMIN", "PRESIDENT", "FINANCIAL_SECRETARY", "TREASURER"],
+        name: "Contributions",
+        icon: "payments",
+        label: this.$t("app.contributionName"),
+        disable: this.getOrganisation == null,
+        has_image: false,
+      });
+      menu_tabs.push({
+        to: "sponsorship",
+        roles: ["ADMIN", "PRESIDENT", "FINANCIAL_SECRETARY", "TREASURER"],
+        name: "Sponsorship Management",
+        label: this.$t("app.sponsorshipLabel"),
+        icon: "none",
+        disable: this.getOrganisation == null,
+        image_src: "images/sponsorship.png",
+        has_image: true,
+      });
+      menu_tabs.push({
+        to: "report_generation",
+        roles: ["ADMIN", "PRESIDENT", "FINANCIAL_SECRETARY", "TREASURER"],
+        name: "Reports Generation",
+        icon: "summarize",
+        label: this.$t("app.reportGenerationLabel"),
+        disable: this.getOrganisation == null,
+        has_image: false,
+      });
+
+      return menu_tabs;
+    },
+
+    getRoleGroups() {
+      const storage_data =
+        LocalStorage.getItem("data") !== undefined
+          ? LocalStorage.getItem("data").user_data
+          : "";
+      const roles = storage_data.roles.map((ele) => ele.name);
+      return roles;
+    },
+
+    getUserSideTabs() {
+      const tabs = [];
+      this.getSidebarTabs().forEach((tab) => {
+        this.getRoleGroups().forEach((role) => {
+          if (tab.roles.includes(role)) {
+            tabs.push(tab);
+          }
+        });
+      });
+      return tabs;
     },
   },
   components: {

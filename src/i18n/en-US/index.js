@@ -62,7 +62,7 @@ export default {
     paymentCategoryLabel:'Payment Categories',
     expenditureCategoryLabel:'Expenditure Categories',
     expenditureLabel:'Expenditures',
-    savingLabel:'Member Savings',
+    savingLabel:'Savings',
     incomeActivityLabel:'Income Activities',
     contributionLabel:'Members Contributions',
     sponsorshipLabel:'Sponsorship Management',

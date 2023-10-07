@@ -776,7 +776,7 @@ export default {
       registration_amount: null,
       income_amount: 0,
       contributor: null,
-      roles: ["TREASURER", "FINANCIAL_SECRETARY", "AUDITOR"],
+      roles: ["TREASURER", "FINANCIAL_SECRETARY", "ADMIN", "PRESIDENT"],
       member_invite_name: "",
       selected_role: "",
       loading_invitation: false,

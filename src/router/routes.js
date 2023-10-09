@@ -296,6 +296,16 @@ const routes = [
           has_intermediate_tab: false,
         },
       },
+      {
+        name: "role_privilge",
+        path: "/dashboard/roles/managment",
+        component: () => import("src/pages/Roles/Roles.vue"),
+        meta: {
+          middleware: "auth",
+          role: "MEMBER",
+          has_intermediate_tab: false,
+        },
+      },
     ],
   },
 

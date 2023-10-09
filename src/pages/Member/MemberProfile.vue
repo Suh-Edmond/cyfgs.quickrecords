@@ -1160,10 +1160,10 @@ export default {
     },
 
     canEditUserRole() {
-      let has_president_role = LocalStorage.getItem(
+      const auth_user = LocalStorage.getItem(
         "data"
-      ).user_data.roles.find((role) => role.name === "PRESIDENT");
-      return has_president_role != undefined;
+      ).user_data.roles.find((role) => role.name === "PRESIDENT" || role.name === "ADMIN");
+      return auth_user != undefined;
     },
 
     fetchUserRoles() {
@@ -1684,10 +1684,8 @@ export default {
   font-style: normal;
   font-weight: 600;
   font-size: 18px;
-  line-height: 24px;
   align-items: center;
   text-align: center;
-  letter-spacing: 0.005em;
 }
 
 .person_icon {
@@ -1739,7 +1737,6 @@ export default {
   font-weight: 500;
   font-size: 15px;
   line-height: 27px;
-  letter-spacing: 0.005em;
   color: $secondary;
 }
 
@@ -1749,7 +1746,6 @@ export default {
   font-weight: 500;
   font-size: 15px;
   line-height: 27px;
-  letter-spacing: 0.005em;
   color: $orange;
 }
 
@@ -1778,7 +1774,6 @@ export default {
   font-weight: 500;
   font-size: 15px;
   line-height: 27px;
-  letter-spacing: 0.005em;
   color: $dark;
 }
 
@@ -1826,10 +1821,8 @@ export default {
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
-  line-height: 24px;
   align-items: center;
   text-align: center;
-  letter-spacing: 0.005em;
 }
 
 .not_register {
@@ -1838,10 +1831,8 @@ export default {
   font-style: normal;
   font-weight: 400;
   font-size: 15px;
-  line-height: 24px;
   align-items: center;
   text-align: center;
-  letter-spacing: 0.005em;
   background-color: $warning;
 }
 .has_register {
@@ -1850,10 +1841,8 @@ export default {
   font-style: normal;
   font-weight: 400;
   font-size: 15px;
-  line-height: 24px;
   align-items: center;
   text-align: center;
-  letter-spacing: 0.005em;
   background-color: $secondary;
 }
 
@@ -1863,10 +1852,8 @@ export default {
   font-style: normal;
   font-weight: 400;
   font-size: 15px;
-  line-height: 24px;
   align-items: center;
   text-align: center;
-  letter-spacing: 0.005em;
   background-color: $info;
 }
 
@@ -1876,8 +1863,6 @@ export default {
   font-style: normal;
   font-weight: 500;
   font-size: 16px;
-  line-height: 24px;
-  letter-spacing: 0.005em;
 }
 
 .status_decline_not_completed {
@@ -1898,8 +1883,6 @@ export default {
   font-style: normal;
   font-weight: 500;
   font-size: 15px;
-  line-height: 24px;
-  letter-spacing: 0.005em;
 }
 
 .confirm_payment_title {
@@ -1908,10 +1891,8 @@ export default {
   font-style: normal;
   font-weight: 500;
   font-size: 18px;
-  line-height: 24px;
   align-items: center;
   text-align: center;
-  letter-spacing: 0.005em;
 }
 
 .view_details {

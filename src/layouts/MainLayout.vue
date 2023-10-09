@@ -387,6 +387,16 @@ export default {
         disable: false,
         has_image: false,
       });
+      menu_tabs.push(
+        {
+        to: "role_privilge",
+        roles:["ADMIN", "PRESIDENT"],
+        name:"Roles Managment",
+        icon:"engineering",
+        label:this.$t('app.role_privilage'),
+        disable:this.getOrganisation == null,
+        has_image:false
+      }),
       menu_tabs.push({
         to: "settings",
         name: "Settings",

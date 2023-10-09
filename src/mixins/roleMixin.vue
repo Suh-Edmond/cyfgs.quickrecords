@@ -2,30 +2,22 @@
 export default {
   methods: {
     getAllRoles() {
-      let roles = [];
-      let payload = {
+       let payload = {
         url: `/api/protected/roles`,
         msg: "none",
         color: "default",
         status:"none",
         error_msg: this.$t('app.defaultErrorMsg'),
-        has_commit: false,
+        has_commit: true,
         show_spinner:true,
-        commit: "none",
+        commit: "SET_ROLES",
         to_be_store_data: {
           required: false,
           has_value: false,
           data: [],
         },
       };
-      this.$store.dispatch("getRequest", payload).then((res) => {
-        res.data.forEach(element => {
-            roles.push({
-              name : element.name,
-              id: element.id
-            })
-        });
-        this.$store.dispatch("setRoles", roles);
+      this.$store.dispatch("getRequest", payload).then(() => {
       }).finally(() => {
       })
     }

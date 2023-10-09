@@ -52,13 +52,13 @@ export default {
       sortBy: "name",
       descending: false,
       page: 1,
-      rowsPerPage: 7,
+      rowsPerPage: 10,
       rowsNumber: 0,
     });
     this.getPaginatedOrganisationMembers(
       this.organisation_id,
       1,
-      7,
+      10,
       "name",
       "",
       this.has_register,
@@ -124,7 +124,7 @@ export default {
           label: "Action",
           field: "action",
           sortable: true,
-          align:"left"
+          align: "left",
         },
       ],
       organisation_id: this.$store.getters.getOrganisation.id,
@@ -214,7 +214,15 @@ export default {
       );
     },
 
-    getPaginatedOrganisationMembers(id, page, rowsPerPage, sort_by, filter, has_register, gender) {
+    getPaginatedOrganisationMembers(
+      id,
+      page,
+      rowsPerPage,
+      sort_by,
+      filter,
+      has_register,
+      gender
+    ) {
       let year_value =
         this.year !== null && this.year !== "" ? this.year.value : "";
       this.filterOrganisationMembers(
@@ -248,7 +256,7 @@ export default {
       this.getPaginatedOrganisationMembers(
         this.organisation_id,
         1,
-        7,
+        10,
         "name",
         "",
         this.has_register,
@@ -258,7 +266,8 @@ export default {
 
     downloadMembers(data) {
       this.setFilterVariables(data);
-      let year_value = this.year !== null && this.year !== "" ? this.year.value : "";
+      let year_value =
+        this.year !== null && this.year !== "" ? this.year.value : "";
       let url = `/api/protected/organisations/download-users?organisation_id=${this.organisation_id}&has_register=${this.has_register}&gender=${this.gender}&year=${year_value}?page=&per_page=`;
       let file_name = "Organisation_Members.pdf";
       this.loading_download = this.downloadPdf(url, file_name);
@@ -268,7 +277,7 @@ export default {
       this.getPaginatedOrganisationMembers(
         this.organisation_id,
         1,
-        7,
+        10,
         "name",
         false,
         "",
@@ -298,7 +307,7 @@ export default {
         this.getPaginatedOrganisationMembers(
           this.organisation_id,
           1,
-          7,
+          10,
           "name",
           false,
           "",

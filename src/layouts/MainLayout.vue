@@ -390,7 +390,7 @@ export default {
       menu_tabs.push(
         {
         to: "role_privilge",
-        roles:["ADMIN", "PRESIDENT"],
+        roles:["ADMIN"],
         name:"Roles Managment",
         icon:"engineering",
         label:this.$t('app.role_privilage'),

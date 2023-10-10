@@ -107,7 +107,7 @@
                       <div class="q-mt-md">
                         <q-list>
                           <q-item
-                            v-for="(role, index) in fetchUserRoles"
+                            v-for="(role, index) in user_roles"
                             :key="index"
                             class="q-mb-md"
                           >
@@ -119,6 +119,18 @@
                               >
                                 M</q-avatar
                               >
+                            </q-item-section>
+                            <q-item-section
+                              avatar
+                              v-if="role.name == 'ADMIN'"
+                            >
+                              <q-avatar
+                                color="primary"
+                                text-color="white"
+                                size="35px"
+                              >
+                                AD
+                              </q-avatar>
                             </q-item-section>
                             <q-item-section
                               avatar
@@ -936,7 +948,7 @@
 </template>
 
 <script>
-import { LocalStorage } from "quasar";
+import { LocalStorage, Platform, Notify } from "quasar";
 import ButtonVue from "src/components/Button.vue";
 import moment from "moment";
 import organisationMixin from "src/mixins/organisationMixin.vue";
@@ -947,6 +959,7 @@ export default {
   mixins: [organisationMixin, memberMixin, CurrentYearMixinVue],
 
   mounted() {
+    // this.$store.get
     this.getUserRoles(this.$route.params.id);
     this.getMembersDebts(true);
     this.getMembersContributions(true);
@@ -1146,7 +1159,9 @@ export default {
           (role) =>
             role.name == "TREASURER" ||
             role.name == "FINANCIAL_SECRETARY" ||
-            role.name == "AUDITOR"
+            role.name == "AUDITOR" ||
+            role.name == "ADMIN" ||
+            role.name == "PRESIDENT"
         )
         .forEach((role) => {
           roles.push({
@@ -1160,19 +1175,10 @@ export default {
     },
 
     canEditUserRole() {
-      const auth_user = LocalStorage.getItem(
-        "data"
-      ).user_data.roles.find((role) => role.name === "PRESIDENT" || role.name === "ADMIN");
-      return auth_user != undefined;
-    },
-
-    fetchUserRoles() {
-      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-      this.user_roles = [];
-      this.$store.getters.getRoles.forEach((ele) => {
-        this.user_roles.push(ele);
-      });
-      return this.user_roles;
+      const auth_user = LocalStorage.getItem("data").user_data.roles.find(
+        (role) => role.name === "ADMIN" || role.name === "PRESIDENT"
+      );
+      return auth_user !== undefined;
     },
 
     getFormField() {
@@ -1196,8 +1202,8 @@ export default {
     viewDetails(data) {
       let payload = {
         data: {
-          details:data,
-          user:this.$store.getters.getCurrentMember
+          details: data,
+          user: this.$store.getters.getCurrentMember,
         },
         tab: "Payment Details",
       };
@@ -1384,8 +1390,7 @@ export default {
         show_feedback: true,
         status: "none",
         to_on_fail: "none",
-        error_msg:
-          "Only one member of your organisation is allowed to have this Role",
+        error_msg: "",
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -1395,12 +1400,30 @@ export default {
         },
       };
       this.loading = true;
-      this.$store.dispatch("postRequest", payload).then(() => {
-        this.loading = false;
-        this.role = null;
-        this.show_add_role_dialog = false;
-        this.getUserRoles(user_id);
-      });
+      this.$store
+        .dispatch("postRequest", payload)
+        .then((response) => {
+          if (response.status == 200) {
+            this.loading = false;
+            this.role = null;
+            this.getUserRoles(user_id);
+          } else if (response.status == 427) {
+            Notify.create({
+              type: "info",
+              message: this.$t("app.termNotExpired"),
+              position: Platform.is.mobile ? "bottom" : "top-right",
+            });
+          } else if (response.status == 403) {
+            Notify.create({
+              type: "negative",
+              message: this.$t("app.oneMemberRoleWarningMsg"),
+              position: Platform.is.mobile ? "bottom" : "top-right",
+            });
+          }
+        })
+        .finally(() => {
+          this.show_add_role_dialog = false;
+        });
     },
 
     getUserRoles(id) {
@@ -1426,7 +1449,12 @@ export default {
       this.is_fetching = true;
       this.$store
         .dispatch("getRequest", payload)
-        .then(() => {})
+        .then((response) => {
+          if (response.success) {
+            this.user_roles = [];
+            this.user_roles.push(...response.data);
+          }
+        })
         .finally(() => {
           this.is_fetching = false;
         });
@@ -1441,7 +1469,7 @@ export default {
         to_on_ok: "none",
         status: "success",
         to_on_fail: "none",
-        show_feedback: true,
+        show_feedback: false,
         error_msg: this.$t("app.defaultErrorMsg"),
         has_commit: false,
         commit: "none",
@@ -1451,9 +1479,17 @@ export default {
           data: [],
         },
       };
-      this.$store.dispatch("deleteRequest", payload).then(() => {
-        this.user_roles = [];
-        this.getUserRoles(id);
+      this.$store.dispatch("deleteRequest", payload).then((response) => {
+        if (response.status == 200) {
+          this.user_roles = [];
+          this.getUserRoles(id);
+        } else if (response.status == 427) {
+          Notify.create({
+            type: "info",
+            message: this.$t("app.termNotExpired"),
+            position: Platform.is.mobile ? "bottom" : "top-right",
+          });
+        }
       });
     },
 
@@ -1463,13 +1499,13 @@ export default {
       let payload = {
         data: this.buildPayloadData(),
         url: `/api/protected/contributions/bulk-payments?user_id=${user_id}&current_session_id=${this.current_year.id}`,
-        msg: this.$t('app.bulkSuccessMsg'),
+        msg: this.$t("app.bulkSuccessMsg"),
         color: "default",
         to_on_ok: "none",
         status: "success",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: this.$t('app.defaultErrorMsg'),
+        error_msg: this.$t("app.defaultErrorMsg"),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -1539,7 +1575,7 @@ export default {
         to_on_fail: "none",
         show_feedback: false,
         show_spinner: show_spinner,
-        error_msg: this.$t('app.defaultErrorMsg'),
+        error_msg: this.$t("app.defaultErrorMsg"),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -1593,7 +1629,7 @@ export default {
         to_on_fail: "none",
         show_feedback: false,
         show_spinner: show_spinner,
-        error_msg: this.$t('app.defaultErrorMsg'),
+        error_msg: this.$t("app.defaultErrorMsg"),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -1625,10 +1661,10 @@ export default {
                 frequency: ele.frequency,
                 month_name: ele.month_name,
                 quarterly_name: ele.quarterly_name,
-                code:ele.code,
-                created_by:ele.created_by,
-                comment:ele.comment,
-                is_compulsory:ele.is_compulsory
+                code: ele.code,
+                created_by: ele.created_by,
+                comment: ele.comment,
+                is_compulsory: ele.is_compulsory,
               });
             });
           }

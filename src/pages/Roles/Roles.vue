@@ -1,8 +1,8 @@
 <template>
   <div class="q-pa-sm">
     <div class="flex justify-center q-mb-md" v-if="getLoadingState">
-          <q-spinner color="primary" size="2.5em" />
-        </div>
+      <q-spinner color="primary" size="2.5em" />
+    </div>
     <div class="row" v-if="!getLoadingState">
       <label for="title" class="q-pb-md title">Available Roles:</label>
     </div>
@@ -62,16 +62,18 @@
             ><span class="label text-weight-meduim"
               >{{ $t("app.nameLabel") }}:</span
             >
-            &nbsp;&nbsp;
           </label>
-          <label class="value text-weight-bold">{{ selected_role.name }}</label>
+          <label class="value text-weight-bold" v-if="getSelectedRole !== undefined">{{ getSelectedRole.name }}</label>
         </div>
         <div class="flex justify-between q-mt-md">
           <label for=""
             ><span class="label text-weight-meduim">{{ $t("app.term") }}:</span>
-            &nbsp;&nbsp;
           </label>
-          <label class="value text-weight-bold" v-if="selected_role.name !== 'MEMBER'">{{ selected_role.term }}</label>
+          <label
+            class="value text-weight-bold"
+            v-if="getSelectedRole.name !== 'MEMBER'"
+            >{{ getSelectedRole.term }}</label
+          >
           <label class="value text-weight-bold" v-else> 0</label>
         </div>
         <div class="flex justify-between q-mt-md">
@@ -79,13 +81,14 @@
             ><span class="label text-weight-meduim"
               >{{ $t("app.memberCountLabel") }}:</span
             >
-            &nbsp;&nbsp;
           </label>
-          <label class="value text-weight-bold" v-if="selected_role.name !== 'MEMBER'">{{
-            selected_role.number_of_members
-          }}</label>
+          <label
+            class="value text-weight-bold"
+            v-if="getSelectedRole.name !== 'MEMBER'"
+            >{{ getSelectedRole.number_of_members }}</label
+          >
           <label class="value text-weight-bold" v-else>{{
-            $t('app.all')
+            $t("app.all")
           }}</label>
         </div>
         <div class="flex justify-between q-mt-md">
@@ -93,10 +96,9 @@
             ><span class="label text-weight-meduim"
               >{{ $t("app.createdDate") }}:</span
             >
-            &nbsp;&nbsp;
           </label>
           <label class="value text-weight-bold">{{
-            getFormatedDate(selected_role.created_at)
+            getFormatedDate(getSelectedRole.created_at)
           }}</label>
         </div>
         <div class="flex justify-between q-mt-md">
@@ -104,10 +106,9 @@
             ><span class="label text-weight-meduim"
               >{{ $t("app.updatedDate") }}:</span
             >
-            &nbsp;&nbsp;
           </label>
           <label class="value text-weight-bold">{{
-            getFormatedDate(selected_role.updated_at)
+            getFormatedDate(getSelectedRole.updated_at)
           }}</label>
         </div>
         <div class="flex justify-between q-mt-md">
@@ -115,10 +116,9 @@
             ><span class="label text-weight-meduim"
               >{{ $t("app.updatedBy") }}:</span
             >
-            &nbsp;&nbsp;
           </label>
           <label class="value text-weight-bold">{{
-            selected_role.updated_by
+            getSelectedRole.updated_by
           }}</label>
         </div>
         <div class="flex justify-between q-mt-md">
@@ -126,20 +126,26 @@
             ><span class="label text-weight-meduim"
               >{{ $t("app.defaultRole") }}:</span
             >
-            &nbsp;&nbsp;
           </label>
-          <label class="value text-weight-bold" v-if="selected_role.name !== 'MEMBER'">{{
-           $t('app.no')
-          }}</label>
+          <label
+            class="value text-weight-bold"
+            v-if="getSelectedRole.name !== 'MEMBER'"
+            >{{ $t("app.no") }}</label
+          >
           <label class="value text-weight-bold" v-else>{{
-           $t('app.yes')
+            $t("app.yes")
           }}</label>
         </div>
         <div class="q-mt-lg">
           <label class="title">Privileges</label>
         </div>
         <div class="q-gutter-xs q-mt-md">
-          <q-chip color="teal" text-color="white" v-for="permission in selected_role.permissions" :key="permission.name">
+          <q-chip
+            color="teal"
+            text-color="white"
+            v-for="permission in getSelectedRole.permissions"
+            :key="permission.name"
+          >
             {{ permission.name }}
           </q-chip>
         </div>
@@ -208,13 +214,14 @@ import ButtonVue from "src/components/Button.vue";
 import moment from "moment";
 export default {
   mixins: [roleMixin],
+
   mounted() {
     this.getAllRoles();
   },
   data() {
     return {
       current_tag: "TREASURER",
-      selected_role: this.$store.getters.getRoles[0],
+      selected_role: null,
       show_dialog: false,
       role: {
         name: null,
@@ -226,7 +233,9 @@ export default {
   },
   computed: {
     getRoles() {
-      return this.$store.getters.getRoles.filter((role) => role.name !== "SYSTEM_ADMIN");
+      return this.$store.getters.getRoles.filter(
+        (role) => role.name !== "SYSTEM_ADMIN"
+      );
     },
 
     validateForm() {
@@ -239,6 +248,17 @@ export default {
 
     getLoadingState() {
       return this.$store.getters.getFetchingState;
+    },
+
+    getSelectedRole() {
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+      let selected_role =
+        this.$store.getters.getRoles != undefined &&
+        this.$store.getters.getRoles !== null &&
+        this.selected_role == null
+          ? this.$store.getters.getRoles[0]
+          : this.selected_role;
+      return selected_role;
     },
   },
 
@@ -290,6 +310,9 @@ export default {
             this.selected_role = res.data;
             this.getAllRoles();
           }
+          return this.selected_role;
+        }).then(async (role) => {
+          this.selected_role = role;
         })
         .finally(() => {
           this.loading = false;

@@ -505,6 +505,7 @@ export default {
     memberCountLabel:"Administrators Allowed",
     editRole:"Edit Role",
     updateRoleSuccessMsg:"Role updated successfully",
-    defaultRole:"Default role"
+    defaultRole:"Default role",
+    termNotExpired:"Adminstrator has not completed the Term of office. Please check the Term of office"
    }
 };

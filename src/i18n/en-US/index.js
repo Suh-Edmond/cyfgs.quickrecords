@@ -62,7 +62,7 @@ export default {
     paymentCategoryLabel:'Payment Categories',
     expenditureCategoryLabel:'Expenditure Categories',
     expenditureLabel:'Expenditures',
-    savingLabel:'Member Savings',
+    savingLabel:'Savings',
     incomeActivityLabel:'Income Activities',
     contributionLabel:'Members Contributions',
     sponsorshipLabel:'Sponsorship Management',
@@ -500,5 +500,12 @@ export default {
     partConfirmationMsg:" the following Expenses",
     negativeExpenditureBalanceMsg:"A Net Balance Less than 0 XAF indicates a debt for this Expenditure Item",
     expensesFor:"Expenses for ",
+    role_privilage:"Role Management",
+    term:"Term of Office (in years)",
+    memberCountLabel:"Administrators Allowed",
+    editRole:"Edit Role",
+    updateRoleSuccessMsg:"Role updated successfully",
+    defaultRole:"Default role",
+    termNotExpired:"Adminstrator has not completed the Term of office. Please check the Term of office"
    }
 };

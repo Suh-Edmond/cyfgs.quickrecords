@@ -274,8 +274,14 @@ export function deleteRequest({ dispatch }, payload) {
             ? error.response.data.message
             : "An error occured",
         status_code: 404,
+        to_be_store_data: {
+          has_value: payload.to_be_store_data.has_value,
+          required: payload.to_be_store_data.required,
+          data:{},
+        },
       };
       dispatch("handleRequestResponse", handle_fail_res_payload);
+      return error.response;
     });
 }
 

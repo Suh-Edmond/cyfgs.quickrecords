@@ -225,7 +225,6 @@
   </q-page>
 </template>
 <script>
-import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
 import organisationMixin from "src/mixins/organisationMixin.vue";
 import memberMixinVue from "src/mixins/memberMixin.vue";
 import UserSavingMixin from "src/mixins/UserSavingMixin.vue";
@@ -234,10 +233,10 @@ import BarChartVue from "src/components/charts/BarChart.vue";
 import LineChart from "src/components/charts/LineChart.vue";
 import ContributionsMixin from "src/mixins/ContributionsMixin.vue";
 import ExpenditureItemDetailMixinVue from "src/mixins/ExpenditureItemDetailMixin.vue";
+import { LocalStorage } from "quasar";
 
 export default {
   mixins: [
-    CurrentYearMixinVue,
     organisationMixin,
     memberMixinVue,
     UserSavingMixin,
@@ -245,12 +244,15 @@ export default {
     ExpenditureItemDetailMixinVue,
   ],
   mounted() {
-     if (this.$store.getters.getOrganisation === null) {
-       this.getOrganisationInfo();
+    if (this.$store.getters.getOrganisation === null) {
+      this.getOrganisationInfo();
     }
-    if(this.$store.getters.getCurrentYear === null){
-      this.fetchCurrentYear();
-    }
+    const current_session =
+      LocalStorage.getItem("data") !== undefined &&
+      LocalStorage.getItem("data") !== null
+        ? LocalStorage.getItem("data").current_session
+        : {};
+    this.$store.commit("SET_CURRENT_YEAR", current_session);
   },
   data() {
     return {
@@ -381,7 +383,9 @@ export default {
       return this.$store.getters.getFetchingState;
     },
     getTotalMembers() {
-      return this.$store.getters.getMembers !== null ? this.$store.getters.getMembers.total : 0;
+      return this.$store.getters.getMembers !== null
+        ? this.$store.getters.getMembers.total
+        : 0;
     },
 
     getTotalMembersSavings() {
@@ -507,7 +511,9 @@ export default {
           break;
         case "EXPENDITURES":
           this.statistics_type = "EXPENDITURES";
-          this.getYearlyExpenditureStatistics(this.$store.getters.getCurrentYear.id);
+          this.getYearlyExpenditureStatistics(
+            this.$store.getters.getCurrentYear.id
+          );
           break;
       }
     },
@@ -536,10 +542,9 @@ export default {
       this.lineChartData2.datasets[0].label = this.$t("app.yearlySavingMsg");
       this.lineChartData2.datasets[0].backgroundColor = "#ff80ab";
       yearly_savings.forEach((saving) => {
-         this.lineChartData2.datasets[0].data.push(saving.amount);
+        this.lineChartData2.datasets[0].data.push(saving.amount);
         this.lineChartData2.labels.push(saving.year);
-      })
-
+      });
 
       this.pieChartData.labels = ["PENDING", "APPROVED", "DECLINED"];
       this.pieChartData.datasets[0].backgroundColor = [
@@ -551,7 +556,7 @@ export default {
     },
 
     getSavingsStatistics() {
-      let session_id = this.getCurrentYear.id;
+      let session_id = this.$store.getters.getCurrentYear.id;
       let payload = {
         url: `/api/protected/savings/statistics?session_id=${session_id}`,
         msg: "none",

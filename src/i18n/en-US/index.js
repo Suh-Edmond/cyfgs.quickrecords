@@ -122,7 +122,7 @@ export default {
     profileLabel:'Profile',
     profilePicAlt:'User Picture',
     uploadPicture:'Upload Picture',
-    rolesName:'My Roles:',
+    rolesName:'My Roles',
     addRoleLabel:'Add Role',
     updatedBy:'Updated by',
     removeRole:'Remove Role',

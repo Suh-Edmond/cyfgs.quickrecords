@@ -187,10 +187,10 @@ export default {
     getPagination() {
       let paginate_object = {
         sortBy: "name",
-        descending: this.$store.getters.getPagination.descending,
-        page: this.$store.getters.getPagination.page,
-        rowsPerPage: this.$store.getters.getPagination.rowsPerPage,
-        rowsNumber: this.$store.getters.getPagination.rowsNumber,
+        descending: this.$store.getters.getPagination != null ? this.$store.getters.getPagination.descending : true,
+        page: this.$store.getters.getPagination !== null ? this.$store.getters.getPagination.page : 1,
+        rowsPerPage: this.$store.getters.getPagination !== null ? this.$store.getters.getPagination.rowsPerPage : 10,
+        rowsNumber: this.$store.getters.getPagination !== null ? this.$store.getters.getPagination.rowsNumber : 1,
       };
 
       return paginate_object;

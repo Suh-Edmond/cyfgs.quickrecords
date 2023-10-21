@@ -277,7 +277,7 @@ export default {
         name: SessionStorage.getItem("from_tab"),
         selected: true,
       },
-      requires_add: false,
+      requires_add: true,
       right_drawer_width: 480,
       current_tab: "",
       right_drawer_tab: "",

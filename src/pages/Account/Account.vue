@@ -1,6 +1,11 @@
 <template>
   <div class="q-pa-sm">
-    <q-linear-progress rounded indeterminate color="primary" v-show="is_fetch_picture"/>
+    <q-linear-progress
+      rounded
+      indeterminate
+      color="primary"
+      v-show="is_fetch_picture"
+    />
     <q-card class="my-card" flat>
       <div class="row">
         <div class="col col-md-4 col-sm-12 col-xs-12">
@@ -283,10 +288,23 @@
                   />
                 </div>
                 <div>
-                  <label for="credential" class="form_field">{{
-                    $t("app.emailLabel")
-                  }}</label>
+                  <label for="credential" class="form_field"
+                    >{{ $t("app.emailLabel") }}
+                    <span class="text-red">*</span></label
+                  >
                   <q-input v-model="user.email" outlined dense type="email" />
+                </div>
+                <div>
+                  <label for="credential" class="form_field">{{
+                    $t("app.telephoneLabel")
+                  }}</label>
+                  <q-input
+                    v-model="user.telephone"
+                    outlined
+                    dense
+                    type="text"
+                    disable
+                  />
                 </div>
                 <div>
                   <label for="credential" class="form_field"
@@ -472,12 +490,14 @@ export default {
   mixins: [organisationMixin],
 
   mounted() {
-    this.getOrganisationInfo();
+
   },
 
   data() {
     return {
+
       user: {
+
         name: LocalStorage.getItem("data").user_data.name,
         email: LocalStorage.getItem("data").user_data.email,
         gender: LocalStorage.getItem("data").user_data.gender,
@@ -487,7 +507,7 @@ export default {
         roles: LocalStorage.getItem("data").user_data.roles,
         picture: LocalStorage.getItem("data").user_data.picture,
         telephone: LocalStorage.getItem("data").user_data.telephone,
-        status:LocalStorage.getItem("data").status,
+        status: LocalStorage.getItem("data").user_data.status,
       },
       security: {
         old_password: null,
@@ -503,7 +523,7 @@ export default {
       is_old_pwd: true,
       no_caps: true,
       gender_options: ["MALE", "FEMALE", "OTHER"],
-      is_fetch_picture:false,
+      is_fetch_picture: false,
     };
   },
   computed: {
@@ -520,9 +540,11 @@ export default {
     },
 
     validateForm() {
-      return this.user.name == null ||
+      return (
+        this.user.name == null ||
         this.user.address == null ||
         this.user.occupation == null
+      );
     },
 
     validatePasswordMatch() {
@@ -533,9 +555,11 @@ export default {
     },
 
     validatePassword() {
-      return this.security.old_password == null ||
+      return (
+        this.security.old_password == null ||
         this.security.password == null ||
         this.security.password_confirmation == null
+      );
     },
 
     getProfilePicture() {
@@ -573,9 +597,11 @@ export default {
       this.$store
         .dispatch("putRequest", payload)
         .then((res) => {
+          if (res.success) {
+            LocalStorage.remove("data");
+            LocalStorage.set("data", res.data)
+          }
           this.edit_profile = false;
-          LocalStorage.remove("data");
-          LocalStorage.set("data", res.data);
         })
         .finally(() => {
           this.loading = false;
@@ -656,30 +682,31 @@ export default {
         has_commit: false,
       };
 
-      this.$store.dispatch("uploadImageRequest", payload).then((response) => {
-        if (response.status == 200) {
-          this.user.picture = response.data.fileDownloadUri.split(
-            process.env.FILE_SEPARATOR_KEY
-          )[1];
-          let update_user = {
-            url: `/api/protected/users/${user.id}`,
-            data: {
-              picture: this.user.picture,
-            },
-            status: "none",
-            show_feedback: false,
-          };
-          this.$store.dispatch("putRequest", update_user).then(() => {
+      this.$store
+        .dispatch("uploadImageRequest", payload)
+        .then((response) => {
+          if (response.status == 200) {
             this.user.picture = response.data.fileDownloadUri.split(
               process.env.FILE_SEPARATOR_KEY
             )[1];
-            LocalStorage.remove("data");
-            LocalStorage.set("data.user_data", user);
-          });
-        }
-      }).finally(() => {
-        this.is_fetch_picture = false;
-      });
+            let update_user = {
+              url: `/api/protected/users/${user.id}`,
+              data: {
+                picture: this.user.picture,
+              },
+              status: "none",
+              show_feedback: false,
+            };
+            this.$store.dispatch("putRequest", update_user).then(() => {
+              this.user.picture = response.data.fileDownloadUri.split(
+                process.env.FILE_SEPARATOR_KEY
+              )[1];
+            });
+          }
+        })
+        .finally(() => {
+          this.is_fetch_picture = false;
+        });
     },
   },
   components: {

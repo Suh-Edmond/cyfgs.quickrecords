@@ -86,7 +86,7 @@ import memberMixinVue from "src/mixins/memberMixin.vue";
 import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
 import ContributionsMixinVue from "src/mixins/ContributionsMixin.vue";
 import { VueTelInput } from "vue-tel-input";
-import { SessionStorage } from "quasar";
+import { Notify, Platform, SessionStorage } from "quasar";
 
 export default {
   name: "PageIndex",
@@ -181,6 +181,11 @@ export default {
                   this.$router.push({
                     name: "create_organisation",
                   });
+                  Notify.create({
+                    type:"info",
+                    message:this.$t('app.createOrganisationCaption'),
+                    position:Platform.is.mobile ? "bottom" : "top-right",
+                  })
                 }
                 return res;
               })

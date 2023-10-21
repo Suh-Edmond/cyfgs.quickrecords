@@ -83,9 +83,9 @@
                       TR
                     </q-avatar>
                   </q-item-section>
-                  <q-item-section avatar v-if="role.name == 'AUDITOR'">
+                  <q-item-section avatar v-if="role.name == 'ADMIN'">
                     <q-avatar color="primary" text-color="white" size="35px">
-                      AU
+                      A
                     </q-avatar>
                   </q-item-section>
                   <q-item-section>
@@ -487,6 +487,7 @@ export default {
         roles: LocalStorage.getItem("data").user_data.roles,
         picture: LocalStorage.getItem("data").user_data.picture,
         telephone: LocalStorage.getItem("data").user_data.telephone,
+        status:LocalStorage.getItem("data").status,
       },
       security: {
         old_password: null,
@@ -522,8 +523,6 @@ export default {
       return this.user.name == null ||
         this.user.address == null ||
         this.user.occupation == null
-        ? true
-        : false;
     },
 
     validatePasswordMatch() {
@@ -537,8 +536,6 @@ export default {
       return this.security.old_password == null ||
         this.security.password == null ||
         this.security.password_confirmation == null
-        ? true
-        : false;
     },
 
     getProfilePicture() {

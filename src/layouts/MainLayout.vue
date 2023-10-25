@@ -309,7 +309,6 @@ export default {
       this.$emit("search-contribution", data);
     },
     setItem(item, requires_add) {
-      console.log(item);
       this.item.name = item.name;
 
       this.requires_add = requires_add;
@@ -326,9 +325,6 @@ export default {
     },
 
     updateRightDrawer({ right, current_tab, data }) {
-      console.log(right);
-      console.log(data);
-      console.log(current_tab);
       this.current_tab = current_tab;
       this.right = right;
       this.data = data;
@@ -513,12 +509,8 @@ export default {
     },
 
     getRoleGroups() {
-      const storage_data =
-        LocalStorage.getItem("data") !== undefined
-          ? LocalStorage.getItem("data").user_data
-          : "";
-      const roles = storage_data.roles.map((ele) => ele.name);
-      return roles;
+      const storage_data = LocalStorage.getItem("data").user_data;
+      return storage_data !== undefined ? storage_data.roles.map((ele) => ele.name) : [];
     },
 
     getUserSideTabs() {

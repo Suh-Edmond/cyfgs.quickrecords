@@ -1,6 +1,5 @@
 <template>
   <div class="q-mb-md">
-    <q-linear-progress indeterminate v-show="is_fetching_members" />
     <div class="q-ml-sm q-mb-lg q-mt-md">
       <label class="text-muted q-pl-sm info"
         >{{ $t("app.warningField") }}<span class="text-red">*</span
@@ -261,9 +260,10 @@ export default {
     let heading = this.$t("app.paymentItemHeading");
     this.$emit("set-heading", heading);
     this.resetForm();
+    this.$store.commit("SET_MEMBERS", []);
   },
 
-  beforeMount(){
+  beforeMount() {
     this.resetForm();
   },
 
@@ -297,12 +297,9 @@ export default {
       ],
       frequencies: ["YEARLY", "MONTHLY", "ONE_TIME", "QUARTERLY"],
       members: [],
-      active_members:[],
       references: [],
       start_filtering: false,
       invalid_deadline: false,
-      is_fetching_members:false,
-
     };
   },
   computed: {
@@ -313,7 +310,8 @@ export default {
         this.payment_item.frequency === null ||
         this.payment_item.deadline === null ||
         this.payment_item.amount === 0.0 ||
-        (this.payment_item.type === "GROUPED_MEMBERS" && this.references.length == 0) ||
+        (this.payment_item.type === "GROUPED_MEMBERS" &&
+          this.references.length == 0) ||
         (this.payment_item.type === "A_MEMBER" && this.references.length == 0)
       );
     },
@@ -331,10 +329,25 @@ export default {
     validateDisableType() {
       return this.payment_item.id != null && this.payment_item.type != null;
     },
+
+    getMembersFromStore() {
+      let data = [];
+      this.$store.getters.getMembers.forEach((member) => {
+        data.push({
+          label: member.name,
+          value: member.id,
+        });
+      });
+
+      return data;
+    },
   },
 
   watch: {
     getUpdatedPaymentItem() {
+      if (this.$store.getters.getUpdatedPaymentItem !== null) {
+        this.handlePaymentItemType();
+      }
       return this.setFormFields(this.$store.getters.getUpdatedPaymentItem);
     },
   },
@@ -443,7 +456,7 @@ export default {
     },
 
     setFormFields(data) {
-      if (data != null) {
+      if (data !== null) {
         (this.payment_item.name = data.name),
           (this.payment_item.payment_category_id = data.payment_category_id);
         this.payment_item.frequency = data.frequency;
@@ -455,13 +468,16 @@ export default {
         this.references = this.setReferences(data.references);
         this.payment_item.deadline = data.deadline;
       }
-      this.handlePaymentItemType()
       return this.payment_item;
     },
 
     handlePaymentItemType() {
       this.payment_item.reference = null;
-      if (this.payment_item.type == "A_MEMBER" || "GROUPED_MEMBERS" && this.active_members.length == 0) {
+      if (
+        this.payment_item.type == "A_MEMBER" ||
+        (this.payment_item.type == "GROUPED_MEMBERS" &&
+          this.getMembersFromStore.length == 0)
+      ) {
         this.getOrganisationMembers();
       }
     },
@@ -474,33 +490,21 @@ export default {
         color: "default",
         status: "none",
         error_msg: this.$t("app.defaultErrorMsg"),
-        has_commit: false,
+        has_commit: true,
         show_feedback: false,
         show_spinner: false,
-        commit: "",
+        commit: "SET_MEMBERS",
         to_be_store_data: {
           required: false,
           has_value: false,
           data: [],
         },
       };
-      this.is_fetching_members = true;
-      this.active_members = [];
       this.$store
         .dispatch("getRequest", payload)
-        .then((response) => {
-          if (response.success) {
-            response.data.forEach((member) => {
-              this.members.push({
-                label: member.name,
-                value: member.id,
-              });
-            });
-            this.active_members = this.members
-          }
+        .then(() => {
         })
         .finally(() => {
-          this.is_fetching_members = false;
         });
     },
 
@@ -559,9 +563,8 @@ export default {
         abort();
         return;
       }
-
       update(() => {
-        this.members = this.active_members.filter((v) =>
+        this.members = this.getMembersFromStore.filter((v) =>
           v.label.toLowerCase().includes(val.toLowerCase())
         );
         return this.members;
@@ -605,8 +608,8 @@ export default {
       let refs = [];
       data.forEach((ele) => {
         refs.push({
-          label:ele.name,
-          value:ele.id
+          label: ele.name,
+          value: ele.id,
         });
       });
       return refs;

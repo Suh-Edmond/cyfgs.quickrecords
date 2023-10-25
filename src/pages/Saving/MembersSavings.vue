@@ -150,8 +150,8 @@ export default {
       ],
       label: this.$t("app.delete"),
       message: this.$t("app.deleteSavingWarningMsg"),
-      organisation_id: this.$store.getters.getOrganisation.id,
-      session_id: this.$store.getters.getCurrentYear.id,
+      organisation_id: LocalStorage.getItem("data").user_data.organisation_id,
+      session_id: LocalStorage.getItem("data").current_session.id,
       loading_download: false,
     };
   },

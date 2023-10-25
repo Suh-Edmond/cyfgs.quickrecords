@@ -102,7 +102,7 @@
                     </q-item>
                     <!-- invite members to the app -->
                     <q-item clickable v-close-popup @click="onInviteMember(props.row)"
-                      v-if="checkPresidentRole() && props.row.status == 'ACTIVE'">
+                      v-if="checkAdminPresidentRole() && props.row.status == 'ACTIVE'">
                       <q-item-section avatar>
                         <span>
                           <q-icon name="share" size="xs" class="edit" />
@@ -130,7 +130,7 @@
                     </q-item>
 
                     <!-- deleted specify row -->
-                    <q-item clickable v-close-popup @click="onDeleteMember(props.row)" v-if="checkPresidentRole()">
+                    <q-item clickable v-close-popup @click="onDeleteMember(props.row)" v-if="checkAdminPresidentRole()">
                       <q-item-section avatar>
                         <span>
                           <q-icon name="delete" size="xs" color="red" />
@@ -434,6 +434,9 @@
             {{ props.row.month_name }}
           </q-td>
           <q-td key="quarterly_name" :props="props" v-if="props.row.payment_item_frequency == 'ONE_TIME'">
+            {{ props.row.payment_item_frequency }}
+          </q-td>
+          <q-td key="quarterly_name" :props="props" v-if="props.row.payment_item_frequency == 'YEARLY'">
             {{ props.row.payment_item_frequency }}
           </q-td>
           <q-td key="amount_deposited" :props="props">
@@ -853,6 +856,14 @@ export default {
             position: Platform.is.mobile ? "bottom" : "top-right",
           });
         }
+        else if (response.status == 427) {
+          Notify.create({
+            type: "info",
+            color: "info",
+            message: this.$t("app.expirationTermNotCompletedMsg"),
+            position: Platform.is.mobile ? "bottom" : "top-right",
+          });
+        }
         else {
           Notify.create({
             type: "negative",
@@ -867,16 +878,16 @@ export default {
       });
     },
 
-    checkPresidentRole() {
+    checkAdminPresidentRole() {
       const president_role = LocalStorage.getItem("data").user_data.roles.find(
-        (role) => role.name == "PRESIDENT"
+        (role) => role.name === "PRESIDENT" || role.name === "ADMIN"
       );
       return president_role != undefined;
     },
 
     checkRole() {
       const president_role = LocalStorage.getItem("data").user_data.roles.find(
-        (role) => role.name == "PRESIDENT" || role.name == "FINANCIAL_SECRETARY"
+        (role) => role.name === "PRESIDENT" || role.name === "FINANCIAL_SECRETARY" || role.name === "ADMIN"
       );
       return president_role != undefined;
     },

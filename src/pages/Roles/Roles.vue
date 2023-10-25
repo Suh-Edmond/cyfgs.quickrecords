@@ -220,7 +220,7 @@ export default {
   },
   data() {
     return {
-      current_tag: "TREASURER",
+      current_tag: "ADMIN",
       selected_role: null,
       show_dialog: false,
       role: {
@@ -233,9 +233,7 @@ export default {
   },
   computed: {
     getRoles() {
-      return this.$store.getters.getRoles.filter(
-        (role) => role.name !== "SYSTEM_ADMIN"
-      );
+      return this.$store.getters.getRoles;
     },
 
     validateForm() {
@@ -264,7 +262,26 @@ export default {
 
   methods: {
     getFirstLetter(role) {
-      return role.substring(0, 1);
+      let avatar_letter = ""
+      switch (role) {
+        case "ADMIN":
+          avatar_letter = "A";
+        break;
+        case "PRESIDENT":
+          avatar_letter = "PP";
+        break;
+        case "FINANCIAL_SECRETARY":
+          avatar_letter ="FS";
+        break;
+        case "TREASURER":
+          avatar_letter = "TR";
+        break;
+        case "MEMBER":
+          avatar_letter = "M";
+        break;
+      }
+
+      return avatar_letter;
     },
 
     getFormatedDate(date) {

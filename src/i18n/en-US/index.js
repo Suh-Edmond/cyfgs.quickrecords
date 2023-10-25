@@ -122,7 +122,7 @@ export default {
     profileLabel:'Profile',
     profilePicAlt:'User Picture',
     uploadPicture:'Upload Picture',
-    rolesName:'My Roles:',
+    rolesName:'My Roles',
     addRoleLabel:'Add Role',
     updatedBy:'Updated by',
     removeRole:'Remove Role',
@@ -506,6 +506,8 @@ export default {
     editRole:"Edit Role",
     updateRoleSuccessMsg:"Role updated successfully",
     defaultRole:"Default role",
-    termNotExpired:"Adminstrator has not completed the Term of office. Please check the Term of office"
+    termNotExpired:"Adminstrator has not completed the Term of office. Please check the Term of office",
+    memberHasRegister: "Member has already Register for this Year",
+    expirationTermNotCompletedMsg:"Administrator has not completed the Term of Office for this role"
    }
 };

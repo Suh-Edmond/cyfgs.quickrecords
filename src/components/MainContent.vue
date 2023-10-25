@@ -145,11 +145,9 @@ import { LocalStorage, SessionStorage } from "quasar";
 export default {
   mounted() {
     this.auth_user = LocalStorage.getItem("data").user_data;
-    this.auth_user_role = this.formatUserRole(
-      LocalStorage.getItem("data").user_data.roles.find(
-        (role) => role.name !== "MEMBER"
-      ).name
-    );
+    const welcome_title = this.auth_user.roles.find((role) => role.name !== "MEMBER").name
+    this.auth_user_role = this.formatUserRole(welcome_title)
+
   },
   props: {
     item: {
@@ -345,6 +343,9 @@ export default {
       }
       if (role === "AUDITOR") {
         user_role = "Auditor";
+      }
+      if (role === "ADMIN") {
+        user_role = "Admin";
       }
       return user_role;
     },

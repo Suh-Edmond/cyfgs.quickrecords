@@ -50,7 +50,7 @@
                 $t("app.expenditureSummaryLabel")
               }}</label>
             </div>
-            <div class="row q-ml-md q-mb-lg">
+            <div class="row q-ml-md">
               <div class="col-4 col-md-4 col-lg-4 col-xs-12 col-sm-4">
                 <div class="q-mb-xs">
                   <label class="text-bold q-py-md detail_name"
@@ -87,17 +87,6 @@
                     <br />
                   </label>
                 </div>
-                <div class="q-mt-md">
-                  <q-icon
-                    name="info"
-                    color="warning"
-                    size="sm"
-                    class="q-pr-md"
-                  ></q-icon>
-                  <label class="text-orange text-subtitle2">
-                    {{$t('app.negativeExpenditureBalanceMsg')}}</label
-                  >
-                </div>
               </div>
               <div class="col-4 col-md-4 col-lg-4 col-xs-12 col-sm-4">
                 <div class="q-mb-xs">
@@ -113,7 +102,7 @@
                 <div class="q-mb-xs">
                   <label class="text-bold q-py-md detail_value"
                     >{{
-                      Number(total_amount_given).toLocaleString()
+                      Number(getTotalAmountGiven).toLocaleString()
                     }}
                     XAF</label
                   >
@@ -121,7 +110,7 @@
                 <div class="q-mb-xs">
                   <label class="text-bold q-py-md detail_value"
                     >{{
-                      Number(total_amount_spent).toLocaleString()
+                      Number(getTotalAmountSpent).toLocaleString()
                     }}
                     XAF</label
                   >
@@ -133,10 +122,22 @@
                 </div>
                 <div class="q-mb-xs">
                   <label class="text-bold q-py-md detail_value"
-                    >{{ Number(total_balance).toLocaleString() }} XAF</label
+                    >{{ Number(getNetBalance).toLocaleString() }} XAF</label
                   >
                 </div>
               </div>
+            </div>
+            <div class="row q-mt-md q-mb-lg" v-if="total_balance < 0">
+              <q-icon
+                name="info"
+                color="warning"
+                size="sm"
+                class="q-pr-md"
+              ></q-icon>
+              <label class="text-orange text-subtitle2">
+                {{ $t("app.negativeExpenditureBalanceMsg") }}
+                </label
+              >
             </div>
           </q-card-section>
         </q-card>
@@ -169,7 +170,7 @@ export default {
 
   data() {
     return {
-      selected:[],
+      selected: [],
       loading_download: false,
       columns: [
         {
@@ -280,8 +281,20 @@ export default {
     },
 
     getBalance() {
-      return this.total_amount_given - this.total_amount_spent;
+      return this.getTotalAmountGiven - this.getTotalAmountSpent;
     },
+
+    getTotalAmountGiven() {
+      return this.$store.getters.getExpenditureItemDetails.total_amount_given
+    },
+
+    getTotalAmountSpent() {
+      return this.$store.getters.getExpenditureItemDetails.total_amount_spent
+    },
+
+    getNetBalance() {
+      return this.$store.getters.getExpenditureItemDetails.total_balance
+    }
   },
 
   methods: {
@@ -346,7 +359,8 @@ export default {
     downloadExpenditureItemDetails(data) {
       let expenditure_item_id =
         this.$store.getters.getCurrentExpenditureItem.id;
-      let expenditure_item_name = this.$store.getters.getCurrentExpenditureItem.name
+      let expenditure_item_name =
+        this.$store.getters.getCurrentExpenditureItem.name;
 
       let url = `/api/protected/expenditure-item-details/download?expenditure_item_id=${expenditure_item_id}&status=${data.payment_status}&expenditure_item_name=${expenditure_item_name}`;
       let file_name = "Expenditure_Item_Details.pdf";

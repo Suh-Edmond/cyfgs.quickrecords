@@ -102,7 +102,7 @@
                 <div class="q-mb-xs">
                   <label class="text-bold q-py-md detail_value"
                     >{{
-                      Number(total_amount_given).toLocaleString()
+                      Number(getTotalAmountGiven).toLocaleString()
                     }}
                     XAF</label
                   >
@@ -110,7 +110,7 @@
                 <div class="q-mb-xs">
                   <label class="text-bold q-py-md detail_value"
                     >{{
-                      Number(total_amount_spent).toLocaleString()
+                      Number(getTotalAmountSpent).toLocaleString()
                     }}
                     XAF</label
                   >
@@ -122,7 +122,7 @@
                 </div>
                 <div class="q-mb-xs">
                   <label class="text-bold q-py-md detail_value"
-                    >{{ Number(total_balance).toLocaleString() }} XAF</label
+                    >{{ Number(getNetBalance).toLocaleString() }} XAF</label
                   >
                 </div>
               </div>
@@ -135,7 +135,8 @@
                 class="q-pr-md"
               ></q-icon>
               <label class="text-orange text-subtitle2">
-                {{ $t("app.negativeExpenditureBalanceMsg") }}</label
+                {{ $t("app.negativeExpenditureBalanceMsg") }}
+                </label
               >
             </div>
           </q-card-section>
@@ -280,8 +281,20 @@ export default {
     },
 
     getBalance() {
-      return this.total_amount_given - this.total_amount_spent;
+      return this.getTotalAmountGiven - this.getTotalAmountSpent;
     },
+
+    getTotalAmountGiven() {
+      return this.$store.getters.getExpenditureItemDetails.total_amount_given
+    },
+
+    getTotalAmountSpent() {
+      return this.$store.getters.getExpenditureItemDetails.total_amount_spent
+    },
+
+    getNetBalance() {
+      return this.$store.getters.getExpenditureItemDetails.total_balance
+    }
   },
 
   methods: {
@@ -315,7 +328,6 @@ export default {
               rowsPerPage: response.data.per_page,
               rowsNumber: response.data.total,
             });
-            console.log(response);
             this.total_amount_given = response.data.total_amount_given;
             this.total_amount_spent = response.data.total_amount_spent;
             this.total_item_amount = response.data.total_item_amount;

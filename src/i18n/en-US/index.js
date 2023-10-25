@@ -507,6 +507,7 @@ export default {
     updateRoleSuccessMsg:"Role updated successfully",
     defaultRole:"Default role",
     termNotExpired:"Adminstrator has not completed the Term of office. Please check the Term of office",
-    memberHasRegister: "Member has already Register for this Year"
+    memberHasRegister: "Member has already Register for this Year",
+    expirationTermNotCompletedMsg:"Administrator has not completed the Term of Office for this role"
    }
 };

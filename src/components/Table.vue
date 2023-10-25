@@ -853,6 +853,14 @@ export default {
             position: Platform.is.mobile ? "bottom" : "top-right",
           });
         }
+        else if (response.status == 427) {
+          Notify.create({
+            type: "info",
+            color: "info",
+            message: this.$t("app.expirationTermNotCompletedMsg"),
+            position: Platform.is.mobile ? "bottom" : "top-right",
+          });
+        }
         else {
           Notify.create({
             type: "negative",

@@ -342,7 +342,7 @@ export default {
         })
         .then(async (response) => {
           if (response.status == 200) {
-            this.getOrganisationMemberSavings(organisation_id);
+            this.getOrganisationMemberSavings(organisation_id, 1, 10);
           }
           return response;
         })

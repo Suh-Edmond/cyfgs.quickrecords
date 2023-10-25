@@ -144,7 +144,7 @@
           @set-heading="setHeading"
         ></AddExpenditureItemDetail>
         <AddMemberSavingVue
-          v-if="current_tab == 'Member Savings'"
+          v-if="current_tab == 'Savings'"
           @close-right-drawer="closeRightDrawer"
           @set-heading="setHeading"
         ></AddMemberSavingVue>
@@ -171,7 +171,7 @@
         >
         </ViewContribution>
         <AddContribution
-          v-if="current_tab == 'Members Contributions'"
+          v-if="current_tab == 'Contributions'"
           @close-right-drawer="closeRightDrawer"
           @set-heading="setHeading"
         ></AddContribution>
@@ -270,6 +270,9 @@ import CurrentYearMixin from "src/mixins/CurrentYearMixin.vue";
 
 export default {
   mixins: [organisationMixinVue, CurrentYearMixin],
+  created() {
+    this.getOrganisationInfo();
+  },
   mounted() {},
   data() {
     return {
@@ -306,6 +309,7 @@ export default {
       this.$emit("search-contribution", data);
     },
     setItem(item, requires_add) {
+      console.log(item);
       this.item.name = item.name;
 
       this.requires_add = requires_add;
@@ -322,6 +326,9 @@ export default {
     },
 
     updateRightDrawer({ right, current_tab, data }) {
+      console.log(right);
+      console.log(data);
+      console.log(current_tab);
       this.current_tab = current_tab;
       this.right = right;
       this.data = data;

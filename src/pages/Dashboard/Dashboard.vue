@@ -2,163 +2,96 @@
   <q-page>
     <div class="row">
       <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12 q-px-xs">
-        <q-card
-          :class="statistics_type == 'MEMBERSHIP' ? 'members_card' : 'card'"
-          bordered
-          @click="showStatistics('MEMBERSHIP')"
-        >
+        <q-card :class="statistics_type == 'MEMBERSHIP' ? 'members_card' : 'card'" bordered
+          @click="showStatistics('MEMBERSHIP')">
           <q-card-section>
-            <div
-              :class="
-                statistics_type == 'MEMBERSHIP' ? 'text-h6-active' : 'text-h6'
-              "
-            >
+            <div :class="statistics_type == 'MEMBERSHIP' ? 'text-h6-active' : 'text-h6'
+              ">
               {{ $t("app.memberLabel") }}
             </div>
           </q-card-section>
 
           <q-card-actions align="around" class="q-pb-sm">
             <div>
-              <q-avatar
-                color="positive"
-                icon="groups"
-                size="xl"
-                text-color="white"
-              >
+              <q-avatar color="positive" icon="groups" size="xl" text-color="white">
               </q-avatar>
             </div>
             <div>
-              <label
-                for="total"
-                :class="
-                  statistics_type == 'MEMBERSHIP' ? 'total-active' : 'total'
-                "
-                >{{ getTotalMembers }}</label
-              >
+              <label for="total" :class="statistics_type == 'MEMBERSHIP' ? 'total-active' : 'total'
+                ">{{ getTotalMembers }}</label>
             </div>
           </q-card-actions>
         </q-card>
       </div>
       <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12 q-px-xs">
-        <q-card
-          :class="statistics_type == 'SAVINGS' ? 'saving_card' : 'card'"
-          bordered
-          @click="showStatistics('SAVINGS')"
-        >
+        <q-card :class="statistics_type == 'SAVINGS' ? 'saving_card' : 'card'" bordered
+          @click="showStatistics('SAVINGS')">
           <q-card-section>
-            <div
-              :class="
-                statistics_type == 'SAVINGS' ? 'text-h6-active' : 'text-h6'
-              "
-            >
+            <div :class="statistics_type == 'SAVINGS' ? 'text-h6-active' : 'text-h6'
+              ">
               {{ $t("app.savingtitle") }}
             </div>
           </q-card-section>
 
           <q-card-actions align="around" class="q-pb-sm">
             <div>
-              <q-avatar
-                color="pink-11"
-                icon="savings"
-                size="xl"
-                text-color="white"
-              ></q-avatar>
+              <q-avatar color="pink-11" icon="savings" size="xl" text-color="white"></q-avatar>
             </div>
             <div>
-              <label
-                for="total"
-                :class="statistics_type == 'SAVINGS' ? 'total-active' : 'total'"
-                >{{
-                  Number(getTotalMembersSavings).toLocaleString()
-                }}
-                XAF</label
-              >
+              <label for="total" :class="statistics_type == 'SAVINGS' ? 'total-active' : 'total'">{{
+                Number(getTotalMembersSavings).toLocaleString()
+              }}
+                XAF</label>
             </div>
           </q-card-actions>
         </q-card>
       </div>
       <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12 q-px-xs">
-        <q-card
-          :class="
-            statistics_type == 'CONTRIBUTIONS' ? 'contribution_card' : 'card'
-          "
-          bordered
-          @click="showStatistics('CONTRIBUTIONS')"
-        >
+        <q-card :class="statistics_type == 'CONTRIBUTIONS' ? 'contribution_card' : 'card'
+            " bordered @click="showStatistics('CONTRIBUTIONS')">
           <q-card-section>
-            <div
-              :class="
-                statistics_type == 'CONTRIBUTIONS'
-                  ? 'text-h6-active'
-                  : 'text-h6'
-              "
-            >
+            <div :class="statistics_type == 'CONTRIBUTIONS'
+                ? 'text-h6-active'
+                : 'text-h6'
+              ">
               {{ $t("app.contributionName") }}
             </div>
           </q-card-section>
 
           <q-card-actions align="around" class="q-pb-sm">
             <div>
-              <q-avatar
-                color="indigo-11"
-                icon="payments"
-                size="xl"
-                text-color="white"
-              ></q-avatar>
+              <q-avatar color="indigo-11" icon="payments" size="xl" text-color="white"></q-avatar>
             </div>
             <div>
-              <label
-                for="total"
-                :class="
-                  statistics_type == 'CONTRIBUTIONS' ? 'total-active' : 'total'
-                "
-                >{{
-                  Number(getTotalYearlyContribution).toLocaleString()
-                }}
-                XAF</label
-              >
+              <label for="total" :class="statistics_type == 'CONTRIBUTIONS' ? 'total-active' : 'total'
+                ">{{
+    Number(getTotalYearlyContribution).toLocaleString()
+  }}
+                XAF</label>
             </div>
           </q-card-actions>
         </q-card>
       </div>
       <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12 q-px-xs">
-        <q-card
-          :class="
-            statistics_type == 'EXPENDITURES' ? 'expenditures_card' : 'card'
-          "
-          bordered
-          @click="showStatistics('EXPENDITURES')"
-        >
+        <q-card :class="statistics_type == 'EXPENDITURES' ? 'expenditures_card' : 'card'
+            " bordered @click="showStatistics('EXPENDITURES')">
           <q-card-section>
-            <div
-              :class="
-                statistics_type == 'EXPENDITURES' ? 'text-h6-active' : 'text-h6'
-              "
-            >
+            <div :class="statistics_type == 'EXPENDITURES' ? 'text-h6-active' : 'text-h6'
+              ">
               {{ $t("app.expenditureName") }}
             </div>
           </q-card-section>
 
           <q-card-actions align="around" class="q-pb-sm">
             <div>
-              <q-avatar
-                color="teal-2"
-                icon="data_exploration"
-                size="xl"
-                text-color="white"
-              ></q-avatar>
+              <q-avatar color="teal-2" icon="data_exploration" size="xl" text-color="white"></q-avatar>
             </div>
             <div>
-              <label
-                for="total"
-                :class="
-                  statistics_type == 'EXPENDITURES' ? 'total-active' : 'total'
-                "
-                >{{
-                  Number(getTotalYearlyExpenditure).toLocaleString()
-                }}
-                XAF</label
-              >
+              <label for="total" :class="statistics_type == 'EXPENDITURES' ? 'total-active' : 'total'
+                ">{{
+    Number(getTotalYearlyExpenditure).toLocaleString()
+  }}
+                XAF</label>
             </div>
           </q-card-actions>
         </q-card>
@@ -243,13 +176,15 @@ export default {
     ContributionsMixin,
     ExpenditureItemDetailMixinVue,
   ],
+  created() {
+  },
   mounted() {
     if (this.$store.getters.getOrganisation === null) {
       this.getOrganisationInfo();
     }
     const current_session =
       LocalStorage.getItem("data") !== undefined &&
-      LocalStorage.getItem("data") !== null
+        LocalStorage.getItem("data") !== null
         ? LocalStorage.getItem("data").current_session
         : {};
     this.$store.commit("SET_CURRENT_YEAR", current_session);
@@ -489,7 +424,7 @@ export default {
           : null;
       let current_session_id =
         this.$store.getters.getCurrentYear != null ||
-        this.$store.getters.getCurrentYear != undefined
+          this.$store.getters.getCurrentYear != undefined
           ? this.$store.getters.getCurrentYear.id
           : "";
       switch (type) {
@@ -497,9 +432,20 @@ export default {
           this.statistics_type = "MEMBERSHIP";
           this.getUserByRegistrationStatus(organisation_id);
           this.getUserByRegistration(organisation_id);
-          this.getOrganisationMemberSavings(organisation_id, 1, 5);
+          this.getOrganisationMemberSavings(organisation_id, 1, 10);
           this.getTotalContributionByYear(current_session_id);
           this.getTotalYearlyExpenditures(current_session_id);
+          this.filterOrganisationMembers(
+            organisation_id,
+            false,
+            1,
+            10,
+            "name",
+            current_session_id,
+            "",
+            "",
+            ""
+          );
           break;
         case "SAVINGS":
           this.statistics_type = "SAVINGS";
@@ -725,7 +671,7 @@ export default {
           data: [],
         },
       };
-      this.$store.dispatch("getRequest", payload).then(() => {});
+      this.$store.dispatch("getRequest", payload).then(() => { });
     },
   },
   components: {

@@ -32,8 +32,10 @@
               clickable
               v-ripple
               :active-class="item.name == tab.name ? 'item' : 'item_text'"
-              @click="setItem({ name: tab.name, selected: true }, false)"
-            :to="{name:tab.to}"
+              @click="
+                setItem({ name: tab.name, selected: true }, tab.requires_add)
+              "
+              :to="{ name: tab.to }"
             >
               <q-item-section
                 avatar
@@ -264,9 +266,10 @@ import ViewExpenditureItemDetail from "src/components/ViewExpenditureItemDetail.
 import MemberRegistration from "src/components/MemberRegistration.vue";
 import ViewPaymentItem from "src/components/ViewPaymentItem.vue";
 import PaymentDetails from "src/components/PaymentDetails.vue";
+import CurrentYearMixin from "src/mixins/CurrentYearMixin.vue";
 
 export default {
-  mixins: [organisationMixinVue],
+  mixins: [organisationMixinVue, CurrentYearMixin],
   mounted() {},
   data() {
     return {
@@ -277,7 +280,7 @@ export default {
         name: SessionStorage.getItem("from_tab"),
         selected: true,
       },
-      requires_add: true,
+      requires_add: false,
       right_drawer_width: 480,
       current_tab: "",
       right_drawer_tab: "",
@@ -300,7 +303,6 @@ export default {
   watch: {},
   methods: {
     searchContribution(data) {
-      console.log(data);
       this.$emit("search-contribution", data);
     },
     setItem(item, requires_add) {
@@ -330,7 +332,6 @@ export default {
     },
 
     checkRole(tab_roles) {
-      console.log(tab_roles);
       let user_roles = [];
       LocalStorage.getItem("data").user_data.roles.forEach((role) => {
         user_roles.push(role.name);
@@ -377,6 +378,7 @@ export default {
         roles: ["PRESIDENT", "FINANCIAL_SECRETARY", "TREASURER", "ADMIN"],
         disable: false,
         has_image: false,
+        requires_add: false,
       });
       menu_tabs.push({
         to: "organisation",
@@ -386,26 +388,28 @@ export default {
         label: this.$t("app.organisationLabel"),
         disable: false,
         has_image: false,
+        requires_add: false,
       });
-      menu_tabs.push(
-        {
-        to: "role_privilge",
-        roles:["ADMIN"],
-        name:"Roles Managment",
-        icon:"engineering",
-        label:this.$t('app.role_privilage'),
-        disable:this.getOrganisation == null,
-        has_image:false
-      }),
       menu_tabs.push({
-        to: "settings",
-        name: "Settings",
-        roles: ["ADMIN", "PRESIDENT"],
-        icon: "settings",
-        label: this.$t("app.settingsLabel"),
+        to: "role_privilge",
+        roles: ["ADMIN"],
+        name: "Roles Managment",
+        icon: "engineering",
+        label: this.$t("app.role_privilage"),
         disable: this.getOrganisation == null,
         has_image: false,
-      });
+        requires_add: false,
+      }),
+        menu_tabs.push({
+          to: "settings",
+          name: "Settings",
+          roles: ["ADMIN", "PRESIDENT"],
+          icon: "settings",
+          label: this.$t("app.settingsLabel"),
+          disable: this.getOrganisation == null,
+          has_image: false,
+          requires_add: false,
+        });
       menu_tabs.push({
         to: "members",
         roles: ["ADMIN", "PRESIDENT", "FINANCIAL_SECRETARY", "TREASURER"],
@@ -414,15 +418,17 @@ export default {
         icon: "manage_accounts",
         disable: this.getOrganisation == null,
         has_image: false,
+        requires_add: true,
       });
       menu_tabs.push({
         to: "payment_category",
-        roles: ["AMDIN", "PRESIDENT", "FINANCIAL_SECRETARY", "TREASURER"],
+        roles: ["ADMIN", "PRESIDENT", "FINANCIAL_SECRETARY", "TREASURER"],
+        name: "Payment Categories",
         label: this.$t("app.paymentCategoryLabel"),
         icon: "monetization_on",
-        name: "Payment Categories",
         disable: this.getOrganisation == null,
         has_image: false,
+        requires_add: true,
       });
       menu_tabs.push({
         to: "expenditure_category",
@@ -432,6 +438,7 @@ export default {
         label: this.$t("app.expenditureCategoryLabel"),
         disable: this.getOrganisation == null,
         has_image: false,
+        requires_add: true,
       });
       menu_tabs.push({
         to: "expenditures",
@@ -441,6 +448,7 @@ export default {
         label: this.$t("app.expenditureLabel"),
         disable: this.getOrganisation == null,
         has_image: false,
+        requires_add: false,
       });
       menu_tabs.push({
         to: "income_activity",
@@ -450,6 +458,7 @@ export default {
         name: "Income Activities",
         disable: this.getOrganisation == null,
         has_image: false,
+        requires_add: true,
       });
       menu_tabs.push({
         to: "savings",
@@ -459,6 +468,7 @@ export default {
         icon: "savings",
         disable: this.getOrganisation == null,
         has_image: false,
+        requires_add: true,
       });
       menu_tabs.push({
         to: "members_contributions",
@@ -468,6 +478,7 @@ export default {
         label: this.$t("app.contributionName"),
         disable: this.getOrganisation == null,
         has_image: false,
+        requires_add: true,
       });
       menu_tabs.push({
         to: "sponsorship",
@@ -478,6 +489,7 @@ export default {
         disable: this.getOrganisation == null,
         image_src: "images/sponsorship.png",
         has_image: true,
+        requires_add: true,
       });
       menu_tabs.push({
         to: "report_generation",
@@ -487,6 +499,7 @@ export default {
         label: this.$t("app.reportGenerationLabel"),
         disable: this.getOrganisation == null,
         has_image: false,
+        requires_add: false,
       });
 
       return menu_tabs;

@@ -436,6 +436,9 @@
           <q-td key="quarterly_name" :props="props" v-if="props.row.payment_item_frequency == 'ONE_TIME'">
             {{ props.row.payment_item_frequency }}
           </q-td>
+          <q-td key="quarterly_name" :props="props" v-if="props.row.payment_item_frequency == 'YEARLY'">
+            {{ props.row.payment_item_frequency }}
+          </q-td>
           <q-td key="amount_deposited" :props="props">
             {{ Number(props.row.amount_deposited).toLocaleString() }}
           </q-td>

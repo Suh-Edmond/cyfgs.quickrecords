@@ -509,8 +509,8 @@ export default {
     },
 
     getRoleGroups() {
-      const storage_data = LocalStorage.getItem("data").user_data;
-      return storage_data !== undefined ? storage_data.roles.map((ele) => ele.name) : [];
+      const storage_data = LocalStorage.getItem("data") !== undefined? LocalStorage.getItem("data").user_data : {};
+      return  storage_data.roles.map((ele) => ele.name);
     },
 
     getUserSideTabs() {

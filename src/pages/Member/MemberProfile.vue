@@ -92,17 +92,6 @@
                           </label>
                         </div>
                         <q-space />
-                        <div v-if="canEditUserRole">
-                          <q-icon
-                            name="add"
-                            size="sm"
-                            color="primary"
-                            class="edit_icon"
-                            @click="showAddRole()"
-                          >
-                            <q-tooltip>{{ $t("app.addRoleLabel") }}</q-tooltip>
-                          </q-icon>
-                        </div>
                       </div>
                       <div class="q-mt-md">
                         <q-list>
@@ -435,12 +424,24 @@
                           <div>
                             <label for="credential" class="form_field">{{
                               $t("app.emailLabel")
-                            }}</label>
+                            }}  <span class="text-red">*</span></label>
                             <q-input
                               v-model="user.email"
                               outlined
                               dense
                               type="email"
+                            />
+                          </div>
+                          <div>
+                            <label for="credential" class="form_field">{{
+                              $t("app.telephoneLabel")
+                            }}  </label>
+                            <q-input
+                              v-model="user.telephone"
+                              outlined
+                              dense
+                              type="text"
+                              disable
                             />
                           </div>
                           <div>
@@ -1131,9 +1132,8 @@ export default {
         this.user.address == null ||
         this.user.address == null ||
         this.user.occupation == null ||
-        this.user.gender == null
-        ? true
-        : false;
+        this.user.gender == null ||
+        this.user.email == null;
     },
 
     validatePayment() {
@@ -1176,7 +1176,7 @@ export default {
 
     canEditUserRole() {
       const auth_user = LocalStorage.getItem("data").user_data.roles.find(
-        (role) => role.name === "ADMIN" || role.name === "PRESIDENT"
+        (role) => role.name === "ADMIN"
       );
       return auth_user !== undefined;
     },

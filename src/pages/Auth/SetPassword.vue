@@ -1,34 +1,66 @@
 <template>
   <q-page class="page">
-    <div class="row q-px-sm" :class="$q.screen.lg ? 'q-pt-lg flex flex-center' : 'q-pt-sm'">
+    <div
+      class="row q-px-sm"
+      :class="$q.screen.lg ? 'q-pt-lg flex flex-center' : 'q-pt-sm'"
+    >
       <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12">
         <q-card :class="$q.screen.lg ? 'q-mt-lg' : 'q-mt-md q-mb-xl'">
           <q-card-section>
             <div class="back_arrow_button" v-show="is_exist_user">
-              <q-btn class="material-icons back_arrow" icon="arrow_back" @click="goBack" flat />
+              <q-btn
+                class="material-icons back_arrow"
+                icon="arrow_back"
+                @click="goBack"
+                flat
+              />
             </div>
-            <div class="text_h6 text-center q-pt-sm q-pb-sm">{{ $t('app.signIn') }}</div>
+            <div class="text_h6 text-center q-pt-sm q-pb-sm">
+              {{ $t("app.signIn") }}
+            </div>
             <div class="text-subtitle2 text-center q-pb-xs">
-              {{ $t('app.loginCaption') }}
+              {{ $t("app.loginCaption") }}
             </div>
 
             <!-- form to check invited member exist -->
-            <q-form @submit="onCheckUserExist" class="q-gutter-md q-mt-md q-px-xs" v-show="!is_exist_user">
+            <q-form
+              @submit="onCheckUserExist"
+              class="q-gutter-md q-mt-md q-px-xs"
+              v-show="!is_exist_user"
+            >
               <div>
-                <label for="credential" class="form_field">{{ $t('app.telephoneLabel') }} <span
-                    class="text-red">*</span></label>
-                <vue-tel-input v-model="check_user.credential" defaultCountry="cm" mode="international"
-                  class="q-pa-xs"></vue-tel-input>
+                <label for="credential" class="form_field"
+                  >{{ $t("app.telephoneLabel") }}
+                  <span class="text-red">*</span></label
+                >
+                <vue-tel-input
+                  v-model="check_user.credential"
+                  defaultCountry="cm"
+                  mode="international"
+                  class="q-pa-xs"
+                ></vue-tel-input>
               </div>
               <div>
-                <q-btn class="form_button q-mt-md q-pa-xs" :label="label_continue" :loading="loading"
-                  :disabled="validatePhone" :color="color" :no_caps="no_caps" type="submit">
-                  <q-icon name="arrow_forward" size="xs" class="q-pl-lg"></q-icon>
+                <q-btn
+                  class="form_button q-mt-md q-pa-xs"
+                  :label="label_continue"
+                  :loading="loading"
+                  :disabled="validatePhone"
+                  :color="color"
+                  :no_caps="no_caps"
+                  type="submit"
+                >
+                  <q-icon
+                    name="arrow_forward"
+                    size="xs"
+                    class="q-pl-lg"
+                  ></q-icon>
                 </q-btn>
                 <div class="row q-mb-xl justify-end">
-                  <span class="account_text" v-if="!$q.screen.lg">{{ $t('app.noAccountMsg') }}
+                  <span class="account_text" v-if="!$q.screen.lg"
+                    >{{ $t("app.noAccountMsg") }}
                     <router-link to="/auth/register" class="sign_link">
-                      <span>{{ $t('app.signUpLabel') }}</span>
+                      <span>{{ $t("app.signUpLabel") }}</span>
                     </router-link>
                   </span>
                 </div>
@@ -36,50 +68,102 @@
             </q-form>
 
             <!-- form to set password for invited members -->
-            <q-form @submit="onSetPassword" class="q-gutter-md q-mt-md q-px-md" v-show="is_exist_user">
+            <q-form
+              @submit="onSetPassword"
+              class="q-gutter-md q-mt-md q-px-md"
+              v-show="is_exist_user"
+            >
               <div>
-                <label for="credential" class="form_field">{{ $t('app.telephoneLabel') }} <span
-                    class="text-red">*</span></label>
-                <vue-tel-input v-model="user.credential" defaultCountry="cm" mode="international"
-                  class="q-pa-xs"></vue-tel-input>
+                <label for="credential" class="form_field"
+                  >{{ $t("app.telephoneLabel") }}
+                  <span class="text-red">*</span></label
+                >
+                <vue-tel-input
+                  v-model="user.credential"
+                  defaultCountry="cm"
+                  mode="international"
+                  class="q-pa-xs"
+                ></vue-tel-input>
               </div>
               <div>
-                <label for="password" class="form_field">{{ $t('app.passwordLabel') }} <span
-                    class="text-red">*</span></label>
-                <q-input v-model="user.password" :type="isPwd ? 'password' : 'text'" outlined dense>
+                <label for="password" class="form_field"
+                  >{{ $t("app.passwordLabel") }}
+                  <span class="text-red">*</span></label
+                >
+                <q-input
+                  v-model="user.password"
+                  :type="isPwd ? 'password' : 'text'"
+                  outlined
+                  dense
+                >
                   <template v-slot:append>
-                    <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
-                      @click="isPwd = !isPwd" />
+                    <q-icon
+                      :name="isPwd ? 'visibility_off' : 'visibility'"
+                      class="cursor-pointer"
+                      @click="isPwd = !isPwd"
+                    />
                   </template>
                 </q-input>
               </div>
               <div>
-                <label for="password_confirmation" class="form_field">{{ $t('app.confirmPasswordLabel') }}<span
-                    class="text-red">*</span></label>
-                <q-input v-model="user.password_confirmation" :type="is_pwd_confirm ? 'password' : 'text'" outlined dense
-                  bottom-slots>
+                <label for="password_confirmation" class="form_field"
+                  >{{ $t("app.confirmPasswordLabel")
+                  }}<span class="text-red">*</span></label
+                >
+                <q-input
+                  v-model="user.password_confirmation"
+                  :type="is_pwd_confirm ? 'password' : 'text'"
+                  outlined
+                  dense
+                  bottom-slots
+                >
                   <template v-slot:append>
-                    <q-icon :name="is_pwd_confirm ? 'visibility_off' : 'visibility'" class="cursor-pointer"
-                      @click="is_pwd_confirm = !is_pwd_confirm" />
+                    <q-icon
+                      :name="is_pwd_confirm ? 'visibility_off' : 'visibility'"
+                      class="cursor-pointer"
+                      @click="is_pwd_confirm = !is_pwd_confirm"
+                    />
                   </template>
                   <template v-slot:hint v-if="validatePasswordMatch">
-                    <span class="text-red">{{ $t('app.passwordNotMatchMsg') }}</span>
+                    <span class="text-red">{{
+                      $t("app.passwordNotMatchMsg")
+                    }}</span>
                   </template>
                 </q-input>
               </div>
               <div>
-                <q-btn class="form_button q-pa-xs" :label="label_sigin" :loading="loading" :color="color"
-                  :disabled="validatePasswordMatch" :no_caps="no_caps" type="submit">
-                  <q-icon name="arrow_forward" size="xs" class="q-pl-lg"></q-icon>
+                <q-btn
+                  class="form_button q-pa-xs"
+                  :label="label_sigin"
+                  :loading="loading"
+                  :color="color"
+                  :disabled="validatePasswordMatch"
+                  :no_caps="no_caps"
+                  type="submit"
+                >
+                  <q-icon
+                    name="arrow_forward"
+                    size="xs"
+                    class="q-pl-lg"
+                  ></q-icon>
                 </q-btn>
-                <div class="row q-mb-xl" :class="!$q.screen.lg ? 'justify-evenly' : 'justify-end'">
-                  <span class="account_text" v-if="!$q.screen.lg">{{ $t('app.noAccountMsg') }}
+                <div
+                  class="row q-mb-xl"
+                  :class="!$q.screen.lg ? 'justify-evenly' : 'justify-end'"
+                >
+                  <span class="account_text" v-if="!$q.screen.lg"
+                    >{{ $t("app.noAccountMsg") }}
                     <router-link to="/auth/register" class="sign_link">
-                      <span>{{ $t('app.signUpLabel') }}</span>
+                      <span>{{ $t("app.signUpLabel") }}</span>
                     </router-link>
                   </span>
-                  <router-link to="/auth/password-reset/get-token" class="sign_link">
-                    <span class="forgot_password">{{ $t('app.forgotPasswordMsg') }}</span>
+                  <router-link
+                    to="/auth/password-reset/get-token"
+                    class="sign_link"
+                  >
+                    <span class="forgot_password">{{
+                      $t("app.forgotPasswordMsg")
+                    }}</span>
                   </router-link>
                 </div>
               </div>
@@ -127,8 +211,8 @@ export default {
       },
       isPwd: true,
       is_pwd_confirm: true,
-      label_continue: this.$t('app.continue'),
-      label_sigin: this.$t('app.signIn'),
+      label_continue: this.$t("app.continue"),
+      label_sigin: this.$t("app.signIn"),
       loading: false,
       is_exist_user: false,
       color: "primary",
@@ -160,12 +244,12 @@ export default {
         data: {
           credential: this.check_user.credential.replace(/\s+/g, ""),
         },
-        msg: this.$t('app.inviteUserSuccessMsg'),
+        msg: this.$t("app.inviteUserSuccessMsg"),
         color: "default",
         show_feedback: true,
         to_on_ok: "none",
         to_on_fail: "none",
-        error_msg: this.$t('app.inviteMemberFailMsg'),
+        error_msg: this.$t("app.inviteMemberFailMsg"),
         to_be_store_data: {
           required: true,
           has_value: true,
@@ -184,7 +268,7 @@ export default {
             this.user.credential = this.check_user.credential;
           }
         })
-        .catch((error) => { })
+        .catch((error) => {})
         .finally(() => {
           this.loading = false;
         });
@@ -197,7 +281,7 @@ export default {
           password: this.user.password,
           password_confirmation: this.user.password_confirmation,
         },
-        msg: this.$t('app.loginSuccess'),
+        msg: this.$t("app.loginSuccess"),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
@@ -209,11 +293,16 @@ export default {
           data: [{ key: "data", value: null }],
         },
       };
+      let current_session_id = "";
+      let organisation_id = "";
       this.loading = true;
+
       this.$store
         .dispatch("postRequest", payload)
         .then((response) => {
           if (response.status == 200) {
+            current_session_id = response.data.data.current_session.id;
+            organisation_id = response.data.data.user_data.organisation_id;
             SessionStorage.set("to_tab", "Dashboard");
             this.getOrganisationInfo();
             this.$store.dispatch(
@@ -224,47 +313,65 @@ export default {
               name: "dashboard",
             });
           }
-          if (response.status == 404 || 403) {
+          if (response.status == 404 || response.status == 403) {
             Notify.create({
               type: "info",
-              message: this.$t('app.invalidAccount'),
-              position: Platform.is.mobile ? 'bottom' : 'top-right'
-            })
+              message: this.$t("app.invalidAccount"),
+              position: Platform.is.mobile ? "bottom" : "top-right",
+            });
           }
           return response;
         })
         .then(async (response) => {
           if (response.status == 200) {
-            this.getUserByRegistrationStatus(this.$store.getters.getOrganisation.id);
-          }
-          return response;
-        }).then(async (response) => {
-          if (response.status == 200) {
-            this.getTotalContributionByYear(this.$store.getters.getCurrentYear.id);
-          }
-          return response
-        }).then(async (response) => {
-          if (response.status == 200) {
-            this.getUserByRegistration(this.$store.getters.getOrganisation.id);
-          }
-          return response
-        })
-        .then(async (response) => {
-          if (response.status == 200) {
-            this.getOrganisationMemberSavings(this.$store.getters.getOrganisation.id);
+            this.getUserByRegistrationStatus(organisation_id);
           }
           return response;
         })
         .then(async (response) => {
           if (response.status == 200) {
-            this.getOrganisationMembers(this.$store.getOrganisation.id);
+            this.getTotalContributionByYear(current_session_id);
           }
           return response;
-        }).then(async (response) => {
+        })
+        .then(async (response) => {
           if (response.status == 200) {
-            this.getTotalYearlyExpenditures(this.$store.getCurrentYear.id);
+            this.getUserByRegistration(organisation_id);
           }
           return response;
+        })
+        .then(async (response) => {
+          if (response.status == 200) {
+            this.getOrganisationMemberSavings(organisation_id);
+          }
+          return response;
+        })
+        .then(async (response) => {
+          if (response.status == 200) {
+            this.getOrganisationMembers(organisation_id);
+          }
+          return response;
+        })
+        .then(async (response) => {
+          if (response.status == 200) {
+            this.getTotalYearlyExpenditures(current_session_id);
+          }
+          return response;
+        })
+        .then(async (response) => {
+          if (response.status == 200) {
+            this.filterOrganisationMembers(
+              organisation_id,
+              false,
+              1,
+              10,
+              "name",
+              current_session_id,
+              "",
+              "",
+              ""
+            );
+          }
         })
         .finally(() => {
           this.loading = false;

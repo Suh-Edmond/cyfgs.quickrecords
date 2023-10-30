@@ -101,9 +101,6 @@
 
         <!-- table body for payment items -->
         <q-tr :props="props" v-if="show_payment_item">
-          <!-- <q-td key="counter" :props="props">
-            {{ props.row.counter }}
-          </q-td> -->
           <q-td key="name" :props="props">
             {{ props.row.name }}
           </q-td>
@@ -220,6 +217,22 @@
                   </q-list>
                 </q-menu>
               </q-icon>
+            </q-btn>
+
+            <q-btn
+              unelevated
+              color="primary"
+              no-caps
+              class="view_items"
+              @click="onViewPaymentItem(props.row)"
+              v-if="
+               checkTreasurerRole()
+              "
+            >
+              {{ $t("app.view") }}
+              <span class="q-pl-md"
+                ><q-icon name="visibility" size="xs"></q-icon
+              ></span>
             </q-btn>
           </q-td>
         </q-tr>

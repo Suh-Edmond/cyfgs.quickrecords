@@ -587,11 +587,11 @@
             <div class="col-md-12">
               <label for="msg">
                 <span class="text-weight-bold">{{ $t("app.doYouKnow") }}{{ chosen_state }}
-                  {{ approve_msg }} ?</span>
+                  {{ approve_msg }}?</span>
               </label>
             </div>
 
-            <div v-if="show_members" class="text-red">
+            <div v-if="show_members" class="text-red q-mt-md">
               <div class="text-weight-bold text-left">
                 {{ $t("app.nameLabel") }}:
                 <span class="q-pl-lg">{{ approve_data.name }}</span>
@@ -1057,7 +1057,7 @@ export default {
           break;
         case "MEMBERS":
           this.register_member_name = data.name;
-          this.approve_msg = this.$t("app.regFor") + `${data.year} `;
+          this.approve_msg = this.$t("app.regFor") + `${data.year}`;
           break;
       }
       return this.approve_msg;
@@ -1109,12 +1109,16 @@ export default {
           );
           break;
         case "MEMBERS":
-          this.getOrganisationMembers(
+          this.filterOrganisationMembers(
             organisation_id,
             true,
             1,
             10,
-            "name"
+            "name",
+            "",
+            "",
+            "",
+            ""
           );
           break;
       }

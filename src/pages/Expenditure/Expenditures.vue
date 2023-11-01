@@ -93,7 +93,7 @@
               no-caps
               :loading="loading_filter"
               icon-right="filter_list"
-              @click="filterExpenditureItems(1, 7)"
+              @click="filterItems(1, 7)"
             >
             </q-btn>
           </div>
@@ -433,56 +433,6 @@ export default {
       });
     },
 
-    filterExpenditureItems(page, fetch_count) {
-      let selected_expenditure_cat =
-        this.expenditure_category_id != null
-          ? this.expenditure_category_id.value
-          : "";
-      let selected_payment_item =
-        this.payment_item_id !== null && this.payment_item_id !== ""
-          ? this.payment_item_id.value
-          : "";
-      let session =
-        this.year !== null && this.year !== ""
-          ? this.year.value
-          : this.$store.getters.getCurrentYear.id;
-
-      let payload = {
-        status: "none",
-        url: `/api/protected/expenditure_categories/expenditure_items/filter?expenditure_category_id=${selected_expenditure_cat}&payment_item_id=${selected_payment_item}&session_id=${session}&page=${page}&per_page=${fetch_count}`,
-        has_path_val: true,
-        show_feedback: false,
-        show_spinner: false,
-        msg: "none",
-        color: "default",
-        error_msg: "default",
-        commit: "SET_EXPENDITURES",
-        has_commit: true,
-        to_be_store_data: {
-          required: true,
-          has_value: false,
-          data: null,
-        },
-      };
-      this.loading_filter = true;
-      this.$store.commit("SET_IS_FETCHING", true);
-      this.$store
-        .dispatch("getRequest", payload)
-        .then((response) => {
-          this.$store.commit("SET_PAGINATION", {
-            sortBy: "name",
-            descending: false,
-            page: response.data.current_page,
-            rowsPerPage: response.data.per_page,
-            rowsNumber: response.data.total,
-          });
-        })
-        .finally(() => {
-          this.loading_filter = false;
-          this.$store.commit("SET_IS_FETCHING", false);
-        });
-    },
-
     downloadExpenditureItems() {
       let selected_expenditure_cat =
         this.expenditure_category_id != null
@@ -512,8 +462,18 @@ export default {
       const { page, rowsPerPage } = props.pagination;
       const fetch_count =
         rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
-      this.filterExpenditureItems(page, fetch_count);
+      this.filterExpenditureItems(
+        page,
+        fetch_count,
+        this.expenditure_category_id,
+        this.payment_item_id,
+        this.year
+      );
     },
+
+    filterItems(page, page_count){
+      this.filterExpenditureItems(page, page_count, this.expenditure_category_id, '', '');
+    }
   },
   components: {
     CategoryTable,

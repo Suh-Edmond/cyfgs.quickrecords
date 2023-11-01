@@ -183,7 +183,7 @@
                 </div>
               </div>
             </div>
-            <div class="row q-mt-md q-ml-md q-mb-lg">
+            <div class="row q-mt-md q-ml-md q-mb-lg" v-if="total_balance < 0">
                   <q-icon
                     name="info"
                     color="warning"
@@ -449,7 +449,6 @@ export default {
         .dispatch("getRequest", payload)
         .then((response) => {
           if (response.success) {
-            console.log(response.data);
             response.data.data.forEach((ele) => {
               this.expenditure_item_details.push({
                 counter: response.data.data.indexOf(ele) + 1,

@@ -366,7 +366,7 @@
               color="primary"
               :label="$t('app.details')"
               v-if="checkTreasurerRole()"
-              class="view"
+              class="view q-mr-md"
               @click="showDetails(props.row)"
               :to="{ name: 'expenditure_detail', params: { id: props.row.id } }"
             >
@@ -374,12 +374,12 @@
             </q-btn>
             <!-- approved btn for expenditure items -->
             <q-btn
-              class="decline_btn"
+              class="approve_btn"
               dense
-              :label="$t('app.decline')"
-              unelevated
+              :label="$t('app.approve')"
               no-caps
-              @click="onDeclineRecord(props.row, 'Decline')"
+              unelevated
+              @click="onApprovedRecord(props.row, 'Approve')"
               v-if="
                 checkTreasurerRole() &&
                 props.row.approve == 'PENDING' &&
@@ -388,12 +388,12 @@
             />
             <!-- decline btn for expenditure items -->
             <q-btn
-              class="approve_btn"
+              class="decline_btn q-ml-md"
               dense
-              :label="$t('app.approve')"
-              no-caps
+              :label="$t('app.decline')"
               unelevated
-              @click="onApprovedRecord(props.row, 'Approve')"
+              no-caps
+              @click="onDeclineRecord(props.row, 'Decline')"
               v-if="
                 checkTreasurerRole() &&
                 props.row.approve == 'PENDING' &&
@@ -1259,7 +1259,6 @@ export default {
 }
 
 .view {
-  margin-right: 4.5rem;
   width: 6rem;
 }
 

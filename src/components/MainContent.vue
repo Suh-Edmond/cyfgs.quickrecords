@@ -249,6 +249,17 @@ export default {
     },
     goBack(tab) {
       history.back();
+      const expenditure_category_id = this.$store.getters.getCurrentExpenditureCategory.id;
+      const route = Object.assign({}, this.$route);
+      if ((route.name == "expenditure_detail")) {
+        this.filterExpenditureItems(
+          1,
+          10,
+          {value:expenditure_category_id},
+          "",
+          ""
+        );
+      }
       let data = [];
       data = Array.from(this.$store.getters.getIntermediateTabs);
       if (tab == "Expenditure Categories") {

@@ -225,9 +225,7 @@
               no-caps
               class="view_items"
               @click="onViewPaymentItem(props.row)"
-              v-if="
-               checkTreasurerRole()
-              "
+              v-if="checkTreasurerRole()"
             >
               {{ $t("app.view") }}
               <span class="q-pl-md"
@@ -319,9 +317,6 @@
 
         <!-- table body for expenditure items -->
         <q-tr :props="props" v-if="show_expenditure_item">
-          <!-- <q-td key="counter" :props="props">
-            {{ props.row.counter }}
-          </q-td> -->
           <q-td key="name" :props="props">
             {{ props.row.name }}
           </q-td>
@@ -858,7 +853,7 @@ export default {
       delete_msg: "",
       show_confirm_dialog_detail: false,
       selectedRecords: [],
-      expensesSet : new Set(),
+      expensesSet: new Set(),
     };
   },
   computed: {
@@ -1077,7 +1072,7 @@ export default {
     setApproveFeedbackMsg() {
       let msg =
         this.$t("app.recordWas") +
-        `${this.chosen_state}` +
+        `${this.chosen_state} ` +
         this.$t("app.successfull");
       return msg;
     },
@@ -1113,10 +1108,17 @@ export default {
     callFetchDataAfterApproveAction(data) {
       switch (data.type) {
         case "EXPENDITURE_ITEMS":
-          this.fetchExpenditureItems(1, 7, "", "", "");
+          this.filterExpenditureItems(
+            1,
+            10,
+            { value: this.$store.getters.getCurrentExpenditureCategory.id },
+            "",
+            ""
+          );
           break;
         case "EXPENDITURE_DETAILS":
           this.getExpenditureDetailsByItemId(data.expenditure_item_id, 1, 7);
+
           break;
       }
     },
@@ -1153,6 +1155,10 @@ export default {
     },
 
     showDetails(data) {
+      this.$store.dispatch(
+        "setCurrentExpenditureCategory",
+        data.expenditure_category_id
+      );
       this.$store.dispatch("setExpenditureItemName", data.name);
       const intermediate_tabs = Array.from(
         this.$store.getters.getIntermediateTabs
@@ -1175,10 +1181,10 @@ export default {
     },
 
     computeTotal(data, event) {
-      if(event){
+      if (event) {
         this.expensesSet.add(data);
-      }else {
-        this.expensesSet.delete(data)
+      } else {
+        this.expensesSet.delete(data);
       }
       this.$emit("showSelectedRecords", this.expensesSet);
     },

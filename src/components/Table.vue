@@ -1083,7 +1083,7 @@ export default {
           this.getOrganisationIncomeActivities(
             organisation_id,
             1,
-            7
+            10
           );
           break;
         case "MEMBER_SAVINGS":

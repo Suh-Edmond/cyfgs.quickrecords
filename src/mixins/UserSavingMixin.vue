@@ -47,7 +47,11 @@ export default {
           data: [],
         },
       };
-      this.$store.dispatch("getRequest", payload).then(() => {});
+      this.$store.commit("SET_IS_FETCHING", true);
+      this.$store.dispatch("getRequest", payload).then(() => {})
+      .finally(() => {
+        this.$store.commit("SET_IS_FETCHING", false);
+      });
     },
 
     filterSaving(url) {

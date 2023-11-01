@@ -1161,16 +1161,16 @@ export default {
       let payload = {
         year: this.year !== null && this.year !== "" ? this.year : "",
         has_register: this.has_register,
-        gender: this.gender,
+        gender: this.gender !== null && this.gender !== "" ? this.gender : "",
       };
 
       this.$emit("filter-members", payload);
     },
     downloadMembers() {
       let payload = {
-        year: this.year,
+        year:  this.year !== null && this.year !== "" ? this.year : "",
         has_register: this.has_register,
-        gender: this.gender,
+        gender: this.gender !== null && this.gender !== "" ? this.gender : "",
       };
 
       this.$emit("download-members", payload);

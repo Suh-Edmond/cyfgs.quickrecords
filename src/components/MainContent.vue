@@ -18,7 +18,7 @@
             <span class="material-icons"> account_circle </span>
           </q-avatar>
           <q-avatar size="sm" v-if="hasProfilePic">
-            <img :src="getLoggedInUserProfilePic" alt="Profile Picture">
+            <img :src="getLoggedInUserProfilePic" alt="Profile Picture" />
           </q-avatar>
           {{ auth_user.name }}
           <q-btn-dropdown flat>
@@ -96,7 +96,10 @@
               dense
               no-caps
               v-show="
-                requires_add && !checkTreasurerRole() && verifyRequiredAdd() && this.$route.name !== 'member_profile'
+                requires_add &&
+                !checkTreasurerRole() &&
+                verifyRequiredAdd() &&
+                this.$route.name !== 'member_profile'
               "
               @click="showRightDrawer"
               class="q-pa-xs"
@@ -141,13 +144,15 @@
 
 <script>
 import { LocalStorage, SessionStorage } from "quasar";
-
+import expenditureItemMixin from "src/mixins/expenditureItemMixin.vue";
 export default {
+  mixins: [expenditureItemMixin],
   mounted() {
     this.auth_user = LocalStorage.getItem("data").user_data;
-    const welcome_title = this.auth_user.roles.find((role) => role.name !== "MEMBER").name
-    this.auth_user_role = this.formatUserRole(welcome_title)
-
+    const welcome_title = this.auth_user.roles.find(
+      (role) => role.name !== "MEMBER"
+    ).name;
+    this.auth_user_role = this.formatUserRole(welcome_title);
   },
   props: {
     item: {
@@ -195,14 +200,17 @@ export default {
       );
     },
 
-    hasProfilePic(){
-      return this.auth_user !== undefined &&this.auth_user.picture !== null && this.auth_user.picture !== undefined
-    }
+    hasProfilePic() {
+      return (
+        this.auth_user !== undefined &&
+        this.auth_user.picture !== null &&
+        this.auth_user.picture !== undefined
+      );
+    },
   },
 
   methods: {
-    searchContribution(data){
-      console.log(data);
+    searchContribution(data) {
       this.$emit("search-contribution", data);
     },
 
@@ -241,6 +249,17 @@ export default {
     },
     goBack(tab) {
       history.back();
+      const expenditure_category_id = this.$store.getters.getCurrentExpenditureCategory.id;
+      const route = Object.assign({}, this.$route);
+      if ((route.name == "expenditure_detail")) {
+        this.filterExpenditureItems(
+          1,
+          10,
+          {value:expenditure_category_id},
+          "",
+          ""
+        );
+      }
       let data = [];
       data = Array.from(this.$store.getters.getIntermediateTabs);
       if (tab == "Expenditure Categories") {
@@ -254,8 +273,6 @@ export default {
     registerMember(data) {
       this.updateDrawer(data);
     },
-
-
 
     updatePaymentCategory(data) {
       this.updateDrawer(data);
@@ -388,14 +405,12 @@ export default {
     },
 
     verifyRequiredAdd() {
-      return this.$route.name !== "member_account" ;
+      return this.$route.name !== "member_account";
     },
 
-
-
-    onViewPaymentDetails(data){
+    onViewPaymentDetails(data) {
       this.updateDrawer(data);
-    }
+    },
   },
 };
 </script>
@@ -445,7 +460,6 @@ export default {
   background-color: $white2;
   height: 8vh;
 }
-
 
 .title {
   font-family: "Roboto";

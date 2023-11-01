@@ -101,9 +101,6 @@
 
         <!-- table body for payment items -->
         <q-tr :props="props" v-if="show_payment_item">
-          <!-- <q-td key="counter" :props="props">
-            {{ props.row.counter }}
-          </q-td> -->
           <q-td key="name" :props="props">
             {{ props.row.name }}
           </q-td>
@@ -221,6 +218,20 @@
                 </q-menu>
               </q-icon>
             </q-btn>
+
+            <q-btn
+              unelevated
+              color="primary"
+              no-caps
+              class="view_items"
+              @click="onViewPaymentItem(props.row)"
+              v-if="checkTreasurerRole()"
+            >
+              {{ $t("app.view") }}
+              <span class="q-pl-md"
+                ><q-icon name="visibility" size="xs"></q-icon
+              ></span>
+            </q-btn>
           </q-td>
         </q-tr>
         <!-- end of table body for payment items -->
@@ -306,9 +317,6 @@
 
         <!-- table body for expenditure items -->
         <q-tr :props="props" v-if="show_expenditure_item">
-          <!-- <q-td key="counter" :props="props">
-            {{ props.row.counter }}
-          </q-td> -->
           <q-td key="name" :props="props">
             {{ props.row.name }}
           </q-td>
@@ -353,7 +361,7 @@
               color="primary"
               :label="$t('app.details')"
               v-if="checkTreasurerRole()"
-              class="view"
+              class="view q-mr-md"
               @click="showDetails(props.row)"
               :to="{ name: 'expenditure_detail', params: { id: props.row.id } }"
             >
@@ -361,12 +369,12 @@
             </q-btn>
             <!-- approved btn for expenditure items -->
             <q-btn
-              class="decline_btn"
+              class="approve_btn"
               dense
-              :label="$t('app.decline')"
-              unelevated
+              :label="$t('app.approve')"
               no-caps
-              @click="onDeclineRecord(props.row, 'Decline')"
+              unelevated
+              @click="onApprovedRecord(props.row, 'Approve')"
               v-if="
                 checkTreasurerRole() &&
                 props.row.approve == 'PENDING' &&
@@ -375,12 +383,12 @@
             />
             <!-- decline btn for expenditure items -->
             <q-btn
-              class="approve_btn"
+              class="decline_btn q-ml-md"
               dense
-              :label="$t('app.approve')"
-              no-caps
+              :label="$t('app.decline')"
               unelevated
-              @click="onApprovedRecord(props.row, 'Approve')"
+              no-caps
+              @click="onDeclineRecord(props.row, 'Decline')"
               v-if="
                 checkTreasurerRole() &&
                 props.row.approve == 'PENDING' &&
@@ -845,7 +853,7 @@ export default {
       delete_msg: "",
       show_confirm_dialog_detail: false,
       selectedRecords: [],
-      expensesSet : new Set(),
+      expensesSet: new Set(),
     };
   },
   computed: {
@@ -1064,7 +1072,7 @@ export default {
     setApproveFeedbackMsg() {
       let msg =
         this.$t("app.recordWas") +
-        `${this.chosen_state}` +
+        `${this.chosen_state} ` +
         this.$t("app.successfull");
       return msg;
     },
@@ -1100,10 +1108,17 @@ export default {
     callFetchDataAfterApproveAction(data) {
       switch (data.type) {
         case "EXPENDITURE_ITEMS":
-          this.fetchExpenditureItems(1, 7, "", "", "");
+          this.filterExpenditureItems(
+            1,
+            10,
+            { value: this.$store.getters.getCurrentExpenditureCategory.id },
+            "",
+            ""
+          );
           break;
         case "EXPENDITURE_DETAILS":
           this.getExpenditureDetailsByItemId(data.expenditure_item_id, 1, 7);
+
           break;
       }
     },
@@ -1140,6 +1155,10 @@ export default {
     },
 
     showDetails(data) {
+      this.$store.dispatch(
+        "setCurrentExpenditureCategory",
+        data.expenditure_category_id
+      );
       this.$store.dispatch("setExpenditureItemName", data.name);
       const intermediate_tabs = Array.from(
         this.$store.getters.getIntermediateTabs
@@ -1162,10 +1181,10 @@ export default {
     },
 
     computeTotal(data, event) {
-      if(event){
+      if (event) {
         this.expensesSet.add(data);
-      }else {
-        this.expensesSet.delete(data)
+      } else {
+        this.expensesSet.delete(data);
       }
       this.$emit("showSelectedRecords", this.expensesSet);
     },
@@ -1246,7 +1265,6 @@ export default {
 }
 
 .view {
-  margin-right: 4.5rem;
   width: 6rem;
 }
 

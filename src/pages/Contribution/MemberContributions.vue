@@ -152,7 +152,7 @@
                 </div>
               </div>
             </div>
-            <div class="row q-ml-md q-mb-lg">
+            <div class="row q-ml-md q-mb-lg" v-if="getPaymentItemFrequency == 'QUARTERLY' || 'MONTHLY'">
               <span>
                 <q-icon
                   name="info"

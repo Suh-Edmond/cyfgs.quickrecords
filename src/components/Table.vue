@@ -1103,8 +1103,9 @@ export default {
             range,
             amount_deposited,
             1,
-            7
+            10
           );
+          this.$store.dispatch("setSearchContributionParams", {item: {label:data.payment_item_name, value:data.payment_item_id}})
           break;
         case "MEMBERS":
           this.filterOrganisationMembers(

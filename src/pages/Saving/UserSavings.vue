@@ -26,7 +26,7 @@
             :show_contribution="false"
             :total_saving="getMemberTotalSaving"
             :pagination="pagination"
-            :table_loading="table_loader"
+            :table_loading="getLoadingState"
             @fetch-member-saving="fetchMemberSaving"
             @view-member-saving="ViewMemberSaving"
             @edit-member-saving="editMemberSaving"
@@ -89,7 +89,6 @@ export default {
       message: this.$t("app.deleteSavingWarningMsg"),
       status: "",
       month: "",
-      table_loader: false,
       pagination: {
         sortBy: "name",
         descending: false,
@@ -158,7 +157,6 @@ export default {
     },
 
     getPaginatedData(id, page, fetch_count) {
-      this.table_loader = true;
       let searched_month =
         this.month !== "" && this.status !== null ? this.month.value : "";
       let searched_status =
@@ -178,6 +176,7 @@ export default {
           data: [],
         },
       };
+      this.$store.commit("SET_IS_FETCHING", true);
       this.$store.commit("SET_MEMBER_SAVINGS", null);
       this.$store
         .dispatch("getRequest", payload)
@@ -188,7 +187,7 @@ export default {
           this.pagination.rowsNumber = data.total;
         })
         .finally(() => {
-          this.table_loader = false;
+          this.$store.commit("SET_IS_FETCHING", false);
         });
 
       return this.is_fetching;

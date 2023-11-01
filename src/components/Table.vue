@@ -628,7 +628,7 @@
                   XAF</span>
               </div>
             </div>
-            <div v-if="show_savings" class="q-mt-md text-red">
+            <div v-if="show_member_savings" class="q-mt-md text-red">
               <div class="text-weight-bold text-left">
                 {{ $t("app.member") }}::
                 <span class="q-pl-sm">{{ contributor }}</span>
@@ -783,6 +783,7 @@ export default {
       member_invite_name: "",
       selected_role: "",
       loading_invitation: false,
+      current_session_id: LocalStorage.getItem("data").current_session.id
     };
   },
 
@@ -1004,7 +1005,7 @@ export default {
         case "INCOME_ACTIVITIES":
           url = `/api/protected/income-activities/${data.id}/approve?type=${type}`;
           break;
-        case "MEMBERS_SAVINGS":
+        case "MEMBER_SAVINGS":
           url = `/api/protected/user-savings/${data.id}?type=${type}`;
           break;
         case "MEMBERS_CONTRIBUTIONS":
@@ -1041,7 +1042,7 @@ export default {
           this.approve_msg =
             this.$t("app.contributionFor") + `${data.payment_item.name}`;
           break;
-        case "MEMBERS_SAVINGS":
+        case "MEMBER_SAVINGS":
           date = moment(data.created_at).format("MMMM Do YYYY");
           this.income_amount = data.amount_deposited;
           this.contributor = data.user_name;
@@ -1067,7 +1068,7 @@ export default {
       const route_data = Object.assign({}, this.$route.query);
 
       let organisation_id = this.$store.getters.getOrganisation.id;
-      let session_id = route_data.session_id;
+      let session_id = this.current_session_id;
       let status = route_data.status != undefined ? route_data.status : "";
       let name = route_data.name != undefined ? route_data.name : "";
       let amount_deposited =
@@ -1077,8 +1078,6 @@ export default {
       let month = route_data.month != undefined ? route_data.month : "";
       let date = route_data.date ? route_data.date : "";
       let range = route_data.range ? route_data.range : "";
-      let search_savings_url = "";
-
       switch (data.type) {
         case "INCOME_ACTIVITIES":
           this.getOrganisationIncomeActivities(
@@ -1087,9 +1086,8 @@ export default {
             7
           );
           break;
-        case "MEMBERS_SAVINGS":
-          search_savings_url = `/api/protected/user-savings?organisation_id=${organisation_id}&status=${status}&name=${name}&amount_deposited=${amount_deposited}&session_id=${session_id}&month=${month}&date=${date}&date_range=${range}&page=${1}&per_page=${7}`;
-          this.filterSaving(search_savings_url);
+        case "MEMBER_SAVINGS":
+          this.getMemberSavings(data.user_id, 1, 10, month, status)
           break;
         case "MEMBERS_CONTRIBUTIONS":
           let payload = {

@@ -496,7 +496,7 @@ export default {
       });
       menu_tabs.push({
         to: "report_generation",
-        roles: ["ADMIN", "PRESIDENT", "FINANCIAL_SECRETARY", "TREASURER"],
+        roles: ["ADMIN", "PRESIDENT", "FINANCIAL_SECRETARY"],
         name: "Reports Generation",
         icon: "summarize",
         label: this.$t("app.reportGenerationLabel"),

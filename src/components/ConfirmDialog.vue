@@ -114,7 +114,7 @@
           <!-- Expenditure Item -->
           <div
             class="text-weight-bold text-left text-red"
-            v-if="show_expenditure_item"
+            v-if="show_expenditure_item || show_payment_item"
           >
           {{$t('app.nameLabel')}}:
             <span class="payment_item_name">{{ data.name }}</span>

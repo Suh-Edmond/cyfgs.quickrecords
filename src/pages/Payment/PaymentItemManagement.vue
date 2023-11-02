@@ -370,7 +370,7 @@ export default {
     deleteRow(data) {
       let payload = {
         url: `/api/protected/payment-categories/${data.payment_category_id}/payment-items/${data.id}`,
-        msg: this.$t("app.paymentCategoryDeleteFeedbackMsg"),
+        msg: this.$t("app.deletePaymentItemFeedbackMsg"),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",

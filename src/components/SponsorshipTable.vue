@@ -155,11 +155,8 @@
 
       <!-- slot for table headings -->
       <template v-slot:top-left>
-        <!-- <div class="text-h6 title">
-          {{ title }}
-        </div> -->
         <div class="text-h6 title">
-          {{ $t("app.total") }} : {{ Number(total).toLocaleString() }} XAF
+          {{ title }},  <span> {{ $t("app.total") }} : {{ Number(total).toLocaleString() }} XAF</span>
         </div>
       </template>
 
@@ -434,7 +431,7 @@ export default {
         },
       };
       this.$store.dispatch("deleteRequest", payload).then(() => {
-        this.getAllSponsorships();
+        this.getAllSponsorships(1, 10, "", "");
         this.$store.dispatch("setSelectedSponsorship", null);
       });
     },

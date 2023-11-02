@@ -94,7 +94,7 @@ export default {
       sortBy: "name",
       descending: false,
       page: 1,
-      rowsPerPage: 7,
+      rowsPerPage: 10,
       rowsNumber: 0,
     });
   },
@@ -103,7 +103,7 @@ export default {
     this.getPaginatedOrganisationMemberSavings(
       this.organisation_id,
       1,
-      7,
+      10,
       "",
       this.session_id
     );
@@ -281,8 +281,8 @@ export default {
       });
       this.getPaginatedOrganisationMemberSavings(
         this.organisation_id,
-        this.pagination.page,
-        this.pagination.rowsPerPage,
+        1,
+        10,
         month,
         session
       );

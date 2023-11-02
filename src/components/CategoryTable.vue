@@ -20,9 +20,6 @@
       <template v-slot:body="props">
         <!-- table body for payment category -->
         <q-tr :props="props" v-if="show_payment_category">
-          <!-- <q-td key="counter" :props="props">
-            {{ props.row.counter }}
-          </q-td> -->
           <q-td key="name" :props="props">
             {{ props.row.name }}
           </q-td>
@@ -78,7 +75,7 @@
                       clickable
                       v-close-popup
                       @click="onDelete(props.row, 'PAYMENT_CATEGORY')"
-                      v-if="checkPresidentRole()"
+                      v-if="checkPresidentOrAdminRole()"
                     >
                       <q-item-section avatar>
                         <span>
@@ -882,11 +879,10 @@ export default {
       return treasurer_role != undefined;
     },
 
-    checkPresidentRole() {
-      const president_role = LocalStorage.getItem("data").user_data.roles.find(
-        (role) => role.name == "PRESIDENT"
-      );
-      return president_role != undefined;
+    checkPresidentOrAdminRole() {
+      let req_roles = ["ADMIN", "PRESIDENT"];
+      const user_roles = LocalStorage.getItem("data").user_data.roles.map(role => role.name)
+      return user_roles.includes(...req_roles);
     },
 
     showPaymentItems(data) {

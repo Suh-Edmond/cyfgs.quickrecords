@@ -339,7 +339,7 @@ export default {
       LocalStorage.getItem("data").user_data.roles.forEach((role) => {
         user_roles.push(role.name);
       });
-      return user_roles.includes(...tab_roles) ? true : false;
+      return user_roles.includes(...tab_roles);
     },
 
     logoutUser() {
@@ -496,7 +496,7 @@ export default {
       });
       menu_tabs.push({
         to: "report_generation",
-        roles: ["ADMIN", "PRESIDENT", "FINANCIAL_SECRETARY", "TREASURER"],
+        roles: ["ADMIN", "PRESIDENT", "FINANCIAL_SECRETARY"],
         name: "Reports Generation",
         icon: "summarize",
         label: this.$t("app.reportGenerationLabel"),

@@ -339,7 +339,7 @@ export default {
       LocalStorage.getItem("data").user_data.roles.forEach((role) => {
         user_roles.push(role.name);
       });
-      return user_roles.includes(...tab_roles) ? true : false;
+      return user_roles.includes(...tab_roles);
     },
 
     logoutUser() {

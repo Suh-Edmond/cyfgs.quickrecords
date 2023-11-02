@@ -343,9 +343,10 @@ export default {
     },
 
     downloadPaymentItems(data) {
+      console.log(data.is_compulsory.value);
       let payment_category_id = this.$route.params.id;
       let category_name = this.$store.getters.getCurrentPaymentCategory.name;
-      let url = `/api/protected/download-payment-items?payment_category_id=${payment_category_id}&is_compulsory=${data.is_compulsory}&frequency=${data.frequency}&type=${data.type}&state=${data.state}&page=&per_page&category_name=${category_name}`;
+      let url = `/api/protected/download-payment-items?payment_category_id=${payment_category_id}&is_compulsory=${data.is_compulsory.value}&frequency=${data.frequency}&type=${data.type}&state=${data.state}&page=&per_page&category_name=${category_name}`;
       let file_name = "Payment_Items.pdf";
       this.loading_download = this.downloadPdf(url, file_name);
     },

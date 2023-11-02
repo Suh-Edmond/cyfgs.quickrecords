@@ -185,7 +185,7 @@ export default {
         this.$store
           .dispatch("postRequest", payload)
           .then(() => {
-            this.getAllSponsorships(1, 7, "", "");
+            this.getAllSponsorships(1, 10, payload.data.payment_item_id, "");
             this.resetForm();
           })
           .finally(() => {
@@ -197,7 +197,7 @@ export default {
         this.$store
           .dispatch("putRequest", payload)
           .then(() => {
-            this.getAllSponsorships(1, 7, "", "");
+            this.getAllSponsorships(1, 10, payload.data.payment_item_id, "");
             this.resetForm();
           })
           .finally(() => {

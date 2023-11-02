@@ -309,7 +309,6 @@ export default {
           1,
           10,
           "name",
-          false,
           "",
           this.has_register,
           this.gender

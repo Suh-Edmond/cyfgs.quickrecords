@@ -77,7 +77,7 @@
         </label>
         <label
           class="value text-info"
-          v-show="getSelectedSponsorship.approve == 'DECLINED'"
+          v-show="getSelectedSponsorship.approve == 'PENDING'"
         >
           {{ getSelectedSponsorship.approve }}
         </label>
@@ -158,6 +158,7 @@ export default {
       );
     },
     getFormatedCreatedDate() {
+      console.log(this.$store.getters.getSelectedSponsorship);
       return moment(this.getSelectedSponsorship.created_at).format(
         "MMMM Do YYYY"
       );

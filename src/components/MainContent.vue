@@ -249,13 +249,16 @@ export default {
     },
     goBack(tab) {
       history.back();
-      const expenditure_category_id = this.$store.getters.getCurrentExpenditureCategory.id;
+      const expenditure_category_id =
+        this.$store.getters.getCurrentExpenditureCategory !== null
+          ? this.$store.getters.getCurrentExpenditureCategory.id
+          : { value: "" };
       const route = Object.assign({}, this.$route);
-      if ((route.name == "expenditure_detail")) {
+      if (route.name == "expenditure_detail") {
         this.filterExpenditureItems(
           1,
           10,
-          {value:expenditure_category_id},
+          { value: expenditure_category_id },
           "",
           ""
         );

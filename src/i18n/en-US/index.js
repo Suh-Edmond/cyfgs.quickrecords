@@ -509,6 +509,7 @@ export default {
     termNotExpired:"Adminstrator has not completed the Term of office. Please check the Term of office",
     memberHasRegister: "Member has already Register for this Year",
     expirationTermNotCompletedMsg:"Administrator has not completed the Term of Office for this role",
-    warningPayments:"All Payment Items under this category will be lost"
+    warningPayments:"All Payment Items under this category will be lost",
+    noSavingAvailableMsg:"Member does not have any Savings"
    }
 };

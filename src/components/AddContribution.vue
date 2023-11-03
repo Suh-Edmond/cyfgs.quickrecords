@@ -82,7 +82,7 @@
                         outlined
                         dense
                         type="number"
-                        disable
+                        readonly
                       />
                     </div>
                     <div
@@ -156,7 +156,7 @@
                         use-input
                         input-debounce="0"
                         clearable
-                        @filter="filterMonths"
+                        @input="getTotalMonthlyContributionByPaymentItem"
                       >
                         <template v-slot:no-option>
                           <q-item>
@@ -179,9 +179,10 @@
                         v-model="contribution.quarterly_name"
                         outlined
                         dense
-                        :options="quartersOptions"
+                        :options="quarterOptions"
                         input-debounce="0"
                         clearable
+                        @input="getTotalQuarterlyContributionByPaymentItem"
                       >
                         <template v-slot:no-option>
                           <q-item>
@@ -201,7 +202,7 @@
                         outlined
                         dense
                         type="number"
-                        disable
+                        readonly
                       >
                       </q-input>
                     </div>
@@ -214,7 +215,7 @@
                         outlined
                         dense
                         type="number"
-                        disable
+                        readonly
                       />
                     </div>
                     <div class="q-mb-md">
@@ -231,15 +232,16 @@
                         :disable="has_completed_payment"
                       >
                       </q-input>
-                      <small v-if="checkPaymentItemBal" class="text-red">
+                      <label v-if="checkPaymentItemBal" class="text-red">
                         <b>{{ $t("app.excessAmountLabel") }}</b>
-                      </small>
-                      <small v-if="has_completed_payment" class="text-info">
+                      </label>
+                      <br v-if="has_completed_payment" />
+                      <label v-if="has_completed_payment" class="text-info">
                         <b
                           >{{ $t("app.hasCompletedAmountLabel") }}
                           {{ selected_payment_item.label }}</b
                         >
-                      </small>
+                      </label>
                     </div>
                     <div class="q-mb-md">
                       <label for="credential" class="form_field"
@@ -338,7 +340,7 @@
                         outlined
                         dense
                         type="number"
-                        disable
+                        readonly
                       />
                     </div>
                     <div
@@ -409,10 +411,9 @@
                         dense
                         :options="monthsOptions"
                         :label="$t('app.searchMonth')"
-                        use-input
                         input-debounce="0"
                         clearable
-                        @filter="filterMonths"
+                        @input="getTotalMonthlyContributionByPaymentItem"
                       >
                         <template v-slot:no-option>
                           <q-item>
@@ -435,9 +436,10 @@
                         v-model="contribution.quarterly_name"
                         outlined
                         dense
-                        :options="quartersOptions"
+                        :options="quarterOptions"
                         input-debounce="0"
                         clearable
+                        @input="getTotalQuarterlyContributionByPaymentItem"
                       >
                         <template v-slot:no-option>
                           <q-item>
@@ -457,7 +459,7 @@
                         outlined
                         dense
                         type="number"
-                        disable
+                        readonly
                       >
                       </q-input>
                     </div>
@@ -470,7 +472,7 @@
                         outlined
                         dense
                         type="number"
-                        disable
+                        readonly
                       >
                       </q-input>
                     </div>
@@ -483,7 +485,7 @@
                         outlined
                         dense
                         type="number"
-                        disable
+                        readonly
                       />
                     </div>
                     <div class="q-mb-md">
@@ -570,8 +572,7 @@ import PaymentCategoryMixinVue from "src/mixins/PaymentCategoryMixin.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import memberMixinVue from "src/mixins/memberMixin.vue";
 import ContributionsMixinVue from "src/mixins/ContributionsMixin.vue";
-import MonthsMixinVue from "src/mixins/MonthsMixin.vue";
-import { LocalStorage } from "quasar";
+import { LocalStorage, Notify, Platform } from "quasar";
 
 export default {
   mixins: [
@@ -579,7 +580,6 @@ export default {
     organisationMixinVue,
     memberMixinVue,
     ContributionsMixinVue,
-    MonthsMixinVue,
   ],
 
   mounted() {
@@ -618,7 +618,7 @@ export default {
       payment_categories: [],
       members: [],
       monthsOptions: [],
-      quartersOptions: this.getQuarters,
+      quarterOptions: [],
       tab: "Enter Contribution",
       start_filter_members: false,
       start_filtering: false,
@@ -700,8 +700,7 @@ export default {
           comment: this.contribution.comment,
           month_name: this.contribution.month_name,
           quarterly_name: this.contribution.quarterly_name,
-          contributed_via_saving:
-            this.getCurrentTab == "Use Saving" ? true : false,
+          contributed_via_saving: this.getCurrentTab == "Use Saving",
         },
         msg: this.$t("app.saveContributionSuccessMsg"),
         color: "default",
@@ -726,13 +725,51 @@ export default {
         this.selected_payment_item = this.filtered_payment_items.find(
           (item) => item.value == this.contribution.payment_item_id.value
         );
-        if (this.selected_payment_item != undefined) {
+        if (
+          this.selected_payment_item !== undefined &&
+          this.selected_payment_item.frequency == "QUARTERLY"
+        ) {
           this.contribution.amount_payable = this.selected_payment_item.amount;
+          this.quarterOptions =
+            this.selected_payment_item.payment_item_quarters;
+        } else if (
+          this.selected_payment_item !== undefined &&
+          this.selected_payment_item.frequency == "MONTHLY"
+        ) {
+          this.contribution.amount_payable = this.selected_payment_item.amount;
+          this.monthsOptions = this.selected_payment_item.payment_item_months;
+        } else {
+          this.contribution.amount_payable =
+            this.selected_payment_item !== undefined
+              ? this.selected_payment_item.amount
+              : 0;
         }
       }
     },
 
     selectMember() {
+      switch (this.contribution.payment_item_id.frequency) {
+        case "QUARTERLY":
+          this.getTotalQuarterlyContributionByPaymentItem();
+          break;
+        case "MONTHLY":
+          this.getTotalMonthlyContributionByPaymentItem();
+          break;
+        default:
+          this.getMemberTotalContributionByPaymentItem();
+          break;
+      }
+    },
+
+    getTotalMonthlyContributionByPaymentItem() {
+      return this.getMemberTotalContributionByPaymentItem();
+    },
+
+    getTotalQuarterlyContributionByPaymentItem() {
+      return this.getMemberTotalContributionByPaymentItem();
+    },
+
+    getMemberTotalContributionByPaymentItem() {
       this.start_filter_members = true;
       this.has_completed_payment = false;
       let user_id =
@@ -742,7 +779,7 @@ export default {
       if (this.tab == "Enter Contribution") {
         let amount_deposited_payload = {
           status: "none",
-          url: `/api/protected/contributions/users/${user_id}/items/${this.contribution.payment_item_id.value}`,
+          url: `/api/protected/contributions/users/${user_id}/items/${this.contribution.payment_item_id.value}?month=${this.contribution.month_name}&quarter=${this.contribution.quarterly_name}&frequency=${this.contribution.payment_item_id.frequency}`,
           has_path_val: true,
           show_feedback: false,
           show_spinner: false,
@@ -776,7 +813,7 @@ export default {
       } else {
         let payload = {
           status: "none",
-          url: `/api/protected/user-savings/${user_id}`,
+          url: `/api/protected/user-savings/${user_id}?page=${1}&per_page=${10}`,
           has_path_val: true,
           show_feedback: false,
           show_spinner: false,
@@ -796,12 +833,20 @@ export default {
           .then((res) => {
             this.contribution.total_saving = parseFloat(res.data.total_savings);
             LocalStorage.set("saving", this.contribution.total_saving);
+            if (res.success && res.data.total_savings == 0) {
+              Notify.create({
+                color: "info",
+                message: this.$t("app.noSavingAvailableMsg"),
+                type: "info",
+                position: Platform.is.mobile ? "bottom" : "top-right",
+              });
+            }
             return res;
           })
           .then((res) => {
             let amount_deposited_payload = {
               status: "none",
-              url: `/api/protected/contributions/users/${user_id}/items/${this.contribution.payment_item_id.value}`,
+              url: `/api/protected/contributions/users/${user_id}/items/${this.contribution.payment_item_id.value}?month=${this.contribution.month_name}&quarter=${this.contribution.quarterly_name}&frequency=${this.contribution.payment_item_id.frequency}`,
               has_path_val: true,
               show_feedback: false,
               show_spinner: false,
@@ -861,7 +906,7 @@ export default {
       this.contribution.user_id = null;
       this.contribution.amount_payable = 0.0;
       this.contribution.amount_deposited = 0.0;
-      this.contribution.balance = null;
+      this.contribution.balance = 0.0;
       this.contribution.comment = null;
       this.contribution.payment_item_id = null;
       this.contribution.payment_category_id = null;
@@ -888,7 +933,17 @@ export default {
             status: "",
             date_range: "",
           };
-          this.filterMembersContributions(data, data.year, data.status, data.month, data.date, data.date_range, 0, 1, 7);
+          this.filterMembersContributions(
+            data,
+            data.year,
+            data.status,
+            data.month,
+            data.date,
+            data.date_range,
+            0,
+            1,
+            7
+          );
           this.resetForm();
         })
         .finally(() => {
@@ -967,22 +1022,6 @@ export default {
       });
     },
 
-    filterMonths(val, update, abort) {
-      if (val.length < 1) {
-        abort();
-        return;
-      }
-      if (this.month == "") {
-        this.monthsOptions = this.getMonths;
-      }
-      update(() => {
-        const needle = val.toLowerCase();
-        this.monthsOptions = this.getMonths.filter(
-          (v) => v.toLowerCase().indexOf(needle) > -1
-        );
-      });
-    },
-
     getPaymentItems() {
       this.payment_items_by_category = [];
       let payload = {
@@ -1009,6 +1048,9 @@ export default {
               label: ele.name,
               value: ele.id,
               amount: ele.amount,
+              frequency: ele.frequency,
+              payment_item_months: ele.payment_item_months,
+              payment_item_quarters: ele.payment_item_quarters,
             });
           });
         }

@@ -21,10 +21,10 @@ export default {
         { label: this.$t("app.decemberName"), value: 12 },
       ],
       quarters: [
-        this.$t("app.firstQuarter"),
-        this.$t("app.secondQuarter"),
-        this.$t("app.thirdQuarter"),
-        this.$t("app.fourthQuarter"),
+        { label: this.$t("app.firstQuarter"), value: "January - March" },
+        { label: this.$t("app.secondQuarter"), value: "April - June" },
+        { label: this.$t("app.thirdQuarter"), value: "July - September" },
+        { label: this.$t("app.fourthQuarter"), value: "October - December" },
       ],
     };
   },

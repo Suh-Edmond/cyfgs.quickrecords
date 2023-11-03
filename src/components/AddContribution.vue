@@ -156,7 +156,6 @@
                         use-input
                         input-debounce="0"
                         clearable
-                        @filter="filterMonths"
                         @input="getTotalMonthlyContributionByPaymentItem"
                       >
                         <template v-slot:no-option>
@@ -412,10 +411,8 @@
                         dense
                         :options="monthsOptions"
                         :label="$t('app.searchMonth')"
-                        use-input
                         input-debounce="0"
                         clearable
-                        @filter="filterMonths"
                         @input="getTotalMonthlyContributionByPaymentItem"
                       >
                         <template v-slot:no-option>
@@ -575,7 +572,6 @@ import PaymentCategoryMixinVue from "src/mixins/PaymentCategoryMixin.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import memberMixinVue from "src/mixins/memberMixin.vue";
 import ContributionsMixinVue from "src/mixins/ContributionsMixin.vue";
-import MonthsMixinVue from "src/mixins/MonthsMixin.vue";
 import { LocalStorage, Notify, Platform } from "quasar";
 
 export default {
@@ -584,7 +580,6 @@ export default {
     organisationMixinVue,
     memberMixinVue,
     ContributionsMixinVue,
-    MonthsMixinVue,
   ],
 
   mounted() {
@@ -1024,22 +1019,6 @@ export default {
           item.label.toLowerCase().includes(val.toLowerCase())
         );
         return this.members;
-      });
-    },
-
-    filterMonths(val, update, abort) {
-      if (val.length < 1) {
-        abort();
-        return;
-      }
-      if (this.month == "") {
-        this.monthsOptions = this.getMonths;
-      }
-      update(() => {
-        const needle = val.toLowerCase();
-        this.monthsOptions = this.getMonths.filter(
-          (v) => v.toLowerCase().indexOf(needle) > -1
-        );
       });
     },
 

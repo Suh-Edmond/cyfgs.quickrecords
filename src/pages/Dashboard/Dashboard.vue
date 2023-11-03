@@ -176,12 +176,8 @@ export default {
     ContributionsMixin,
     ExpenditureItemDetailMixinVue,
   ],
-  created() {
-  },
-  mounted() {
-    if (this.$store.getters.getOrganisation === null) {
-      this.getOrganisationInfo();
-    }
+  beforeCreate() {
+    this.getOrganisationInfo();
     const current_session =
       LocalStorage.getItem("data") !== undefined &&
         LocalStorage.getItem("data") !== null
@@ -189,6 +185,19 @@ export default {
         : {};
     this.$store.commit("SET_CURRENT_YEAR", current_session);
   },
+  beforeMount() {
+    const current_session =
+      LocalStorage.getItem("data") !== undefined &&
+        LocalStorage.getItem("data") !== null
+        ? LocalStorage.getItem("data").current_session
+        : {};
+    this.$store.commit("SET_CURRENT_YEAR", current_session);
+  },
+
+  mounted() {
+    this.showStatistics("MEMBERSHIP");
+  },
+
   data() {
     return {
       loading: false,

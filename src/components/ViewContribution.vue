@@ -128,9 +128,14 @@
           </label>
         </div>
         <div class="detail-value wrap">
-          <label class="value">
+          <label class="value" v-if="getSelectedContribution.payment_item_frequency == 'QUARTERLY'">
             {{ getSelectedContribution.quarterly_name }}
-
+          </label>
+          <label class="value" v-if="getSelectedContribution.payment_item_frequency == 'MONTHLY'">
+            {{ getSelectedContribution.month_name }}
+          </label>
+          <label class="value" v-else>
+            {{ getSelectedContribution.payment_item_frequency }}
           </label>
         </div>
       </div>

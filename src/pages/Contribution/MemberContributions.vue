@@ -195,7 +195,7 @@ export default {
 
   mounted() {
     const page = 1;
-    const per_page = 7;
+    const per_page = 10;
     this.getMemberContributionsByPaymentItem(
       this.$router.currentRoute.params.item_id,
       this.$router.currentRoute.params.id,
@@ -265,7 +265,7 @@ export default {
         sortBy: "name",
         descending: false,
         page: 1,
-        rowsPerPage: 7,
+        rowsPerPage: 10,
         rowsNumber: 0,
       },
       table_loader: false,
@@ -293,7 +293,7 @@ export default {
     getTableTitle() {
       let title = "";
       let user_name =
-        this.$store.getters.getMemberContributions !== null
+        this.$store.getters.getMemberContributions !== null && this.$store.getters.getMemberContributions.data.length > 0
           ? this.$store.getters.getMemberContributions.data[0].user_name
           : "";
       let payment_item_name =
@@ -439,7 +439,7 @@ export default {
           data.payment_item_id,
           data.user_id,
           1,
-          7
+          10
         );
       });
     },
@@ -499,7 +499,7 @@ export default {
         this.$router.currentRoute.params.item_id,
         this.$router.currentRoute.params.id,
         1,
-        7
+        10
       );
     },
   },

@@ -65,6 +65,25 @@
                 <router-link
                   to="/auth/password-reset/get-token"
                   class="sign_link"
+                  v-if="!$q.platform.is.mobile"
+                >
+                  <span class="forgot_password text-right">{{
+                    $t("app.forgotPasswordMsg")
+                  }}</span>
+                </router-link>
+              </div>
+              <div class="row justify-center" v-if="$q.platform.is.mobile">
+                <div class="account_text">{{ $t("app.noAccountMsg") }}</div>
+                    <router-link to="/auth/register" class="sign_link"
+                    > &nbsp;<span @click="checkAccountExist('SIGN_UP')">{{
+                      $t("app.signUpLabel")
+                    }}</span></router-link
+                  >
+              </div>
+              <div class="row justify-center q-mb-xl" v-if="$q.platform.is.mobile">
+                <router-link
+                  to="/auth/password-reset/get-token"
+                  class="sign_link"
                 >
                   <span class="forgot_password text-right">{{
                     $t("app.forgotPasswordMsg")
@@ -182,10 +201,10 @@ export default {
                     name: "create_organisation",
                   });
                   Notify.create({
-                    type:"info",
-                    message:this.$t('app.createOrganisationCaption'),
-                    position:Platform.is.mobile ? "bottom" : "top-right",
-                  })
+                    type: "info",
+                    message: this.$t("app.createOrganisationCaption"),
+                    position: Platform.is.mobile ? "bottom" : "top-right",
+                  });
                 }
                 return res;
               })
@@ -350,5 +369,7 @@ export default {
 .sign_link {
   text-decoration: none;
   color: $primary;
+  font-weight: 600;
+  font-size: 14px;
 }
 </style>

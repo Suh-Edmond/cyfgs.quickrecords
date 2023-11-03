@@ -480,7 +480,7 @@ export default {
     memberInviteSuccess:"Member's invitation sent successfully",
     memberInviteFail:"An error occurred! Could not send invitation",
     paymentDetails: "Payment Details",
-    quarterLabel:"Quarter",
+    quarterLabel:"Quarter/Month",
     monthLabel:"Month",
     bulkSuccessMsg:"Payments completed successfully",
     amountUsed:"Amount Used",

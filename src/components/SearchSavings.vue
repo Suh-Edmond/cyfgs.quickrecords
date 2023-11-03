@@ -120,13 +120,11 @@
             v-model="param.month"
             outlined
             dense
-            :options="months"
+            :options="getAllMonths"
             :label="$t('app.searchMonth')"
             input-debounce="0"
             use-input
             clearable
-            @filter="filterMonths"
-            @input="stopSearch"
           >
             <template v-slot:append v-if="start_filter_month">
               <q-spinner color="primary" size="1.2em" :thickness="3" />
@@ -277,6 +275,23 @@ export default {
     validateAmount() {
       return this.param.amount_deposited === 0;
     },
+
+    getAllMonths(){
+      return [
+        { label: this.$t("app.januaryName"), value: 1 },
+        { label: this.$t("app.februaryName"), value: 2 },
+        { label: this.$t("app.marchName"), value: 3 },
+        { label: this.$t("app.aprilName"), value: 4 },
+        { label: this.$t("app.mayName"), value: 5 },
+        { label: this.$t("app.juneName"), value: 6 },
+        { label: this.$t("app.julyName"), value: 7 },
+        { label: this.$t("app.augustName"), value: 8 },
+        { label: this.$t("app.septemberName"), value: 9 },
+        { label: this.$t("app.octoberName"), value: 10 },
+        { label: this.$t("app.novemberName"), value: 11 },
+        { label: this.$t("app.decemberName"), value: 12 },
+      ]
+    }
   },
   methods: {
     filterByUserInfo() {

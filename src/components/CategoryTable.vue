@@ -1218,6 +1218,7 @@ export default {
   font-size: 12px;
   align-items: center;
   text-transform: capitalize;
+  width: 200px;
 }
 
 .field_total {

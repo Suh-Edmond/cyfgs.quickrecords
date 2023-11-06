@@ -2,7 +2,7 @@
   <div>
     <!---------------------------------------------MEMBER MANAGEMENT FILTERS----------------------------------------------->
     <div
-    class="q-pa-sm"
+      class="q-pa-sm"
       :class="$q.screen.lg ? 'row' : 'q-gutter-sm'"
       :style="
         $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
@@ -102,7 +102,7 @@
 
     <!---------------------------------------------PAYMENT AND EXPENDITURE CATEGORIES FILTERS------------------------------->
     <div
-      :class="$q.screen.lg ? 'row' : 'row'"
+      :class="$q.screen.lg ? 'row q-pa-sm' : 'row q-pa-sm'"
       :style="
         $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
       "
@@ -118,7 +118,10 @@
           :label="$t('app.selectYearLabel')"
         />
       </div>
-      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-ml-md">
+      <div
+        class="row col-md-9 col-lg-9 col-xs-12 col-sm-12"
+        :class="$q.platform.is.mobile ? 'row q-pt-md' : 'q-pl-md'"
+      >
         <q-btn
           :label="$t('app.filter')"
           color="primary"
@@ -128,9 +131,8 @@
           icon-right="filter_list"
         >
         </q-btn>
-      </div>
-      <q-space />
-      <div class="button q-pb-xs">
+        <!-- <q-space /> -->
+        <q-space />
         <q-btn
           :label="$t('app.print')"
           :loading="getDownloadLoadingState"
@@ -674,7 +676,6 @@
       "
       v-if="show_member_contribution"
     >
-
       <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
         <q-select
           v-model="transaction_status"
@@ -1007,7 +1008,7 @@ export default {
         "DECLINED",
         "ALL",
         "ACTIVE",
-        "IN_ACTIVE"
+        "IN_ACTIVE",
       ],
       is_compulsory: "",
       type: "",
@@ -1167,7 +1168,7 @@ export default {
     },
     downloadMembers() {
       let payload = {
-        year:  this.year !== null && this.year !== "" ? this.year : "",
+        year: this.year !== null && this.year !== "" ? this.year : "",
         has_register: this.has_register,
         gender: this.gender !== null && this.gender !== "" ? this.gender : "",
       };

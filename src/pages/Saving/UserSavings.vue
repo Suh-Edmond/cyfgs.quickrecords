@@ -153,7 +153,7 @@ export default {
     },
 
     fetchMemberSaving() {
-      this.getPaginatedData(this.$route.params.id, 1, 7);
+      this.getPaginatedData(this.$route.params.id, 1, 10);
     },
 
     getPaginatedData(id, page, fetch_count) {
@@ -198,8 +198,6 @@ export default {
     },
 
     editMemberSaving(data) {
-      // this.$store.dispatch("setEditState", false);
-
       this.$emit("edit-member-saving", data);
     },
 

@@ -834,9 +834,10 @@
           :placeholder="$t('app.search')"
           :class="
             $q.platform.is.mobile
-              ? 'row text-h6-sm full-width'
+              ? 'row text-h6-sm'
               : 'text-h6-sm q-mb-lg q-mt-lg full-width'
           "
+          :style="$q.platform.is.mobile?'width:88vw':''"
         >
           <template v-slot:append>
             <q-icon name="search" />

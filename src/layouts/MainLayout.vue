@@ -57,7 +57,11 @@
         </div>
       </div>
     </q-drawer>
-    <q-scroll-area style="height: 100vh; max-width: 100vw;" :bar-style="{width: '0px'}" :thumb-style="{width: '0px'}">
+    <q-scroll-area
+      style="height: 100vh; max-width: 100vw"
+      :bar-style="{ width: '0px' }"
+      :thumb-style="{ width: '0px' }"
+    >
       <q-page-container class="content">
         <MainContent
           :item="item"
@@ -75,8 +79,11 @@
       v-model="right"
       side="right"
       bordered
-      :width="right_drawer_width"
-      class="q-ml-lg"
+      :width="
+        $q.platform.is.mobile
+          ? right_drawer_width_mobile
+          : right_drawer_width_desktop
+      "
     >
       <q-page>
         <q-card class="bar" flat>
@@ -89,17 +96,17 @@
                 icon="arrow_back"
                 v-close-popup
                 @click="goBack()"
-                size="sm"
+                :size="$q.platform.is.desktop?'sm':'md'"
               >
               </q-btn>
             </div>
             <div class="flex flex-center">
-              <label for="heading" class="heading text-white q-pl-lg text_h6">{{
+              <label for="heading" class="text-white q-pl-lg" :class="$q.platform.is.desktop?'text_h6':'text-h6'">{{
                 heading
               }}</label>
             </div>
             <q-space />
-            <div>
+            <div v-if="$q.platform.is.desktop">
               <q-btn
                 dense
                 flat
@@ -285,7 +292,8 @@ export default {
         selected: true,
       },
       requires_add: false,
-      right_drawer_width: 480,
+      right_drawer_width_mobile: 400,
+      right_drawer_width_desktop: 480,
       current_tab: "",
       right_drawer_tab: "",
       data: null,
@@ -510,8 +518,11 @@ export default {
     },
 
     getRoleGroups() {
-      const storage_data = LocalStorage.getItem("data") !== undefined? LocalStorage.getItem("data").user_data : {};
-      return  storage_data.roles.map((ele) => ele.name);
+      const storage_data =
+        LocalStorage.getItem("data") !== undefined
+          ? LocalStorage.getItem("data").user_data
+          : {};
+      return storage_data.roles.map((ele) => ele.name);
     },
 
     getUserSideTabs() {
@@ -566,6 +577,7 @@ export default {
 .content {
   background-color: $grey1;
   overflow: hidden;
+  height: 100vh;
 }
 
 .drop_down_text {

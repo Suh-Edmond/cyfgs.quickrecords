@@ -9,11 +9,8 @@
       @download-members="downloadMembers"
     >
     </FilterComponentVue>
-
-    <!-- table for members -->
-    <!-- <div class="q-pt-md"> -->
-      <!-- <TableVue
-      class="q-pt-md"
+    <TableVue
+      :class="$q.platform.is.desktop?'q-pt-sm q-px-sm':' q-px-sm q-pt-md'"
       :columns="columns"
       :data="getMembers"
       :label="label"
@@ -30,8 +27,7 @@
       @delete-row="deleteRow"
       @onRequest="onRequest"
     >
-    </TableVue> -->
-    <!-- </div> -->
+    </TableVue>
   </div>
 </template>
 <script>
@@ -49,13 +45,13 @@ export default {
       sortBy: "name",
       descending: false,
       page: 1,
-      rowsPerPage: 1,
+      rowsPerPage: 10,
       rowsNumber: 0,
     });
     this.getPaginatedOrganisationMembers(
       this.organisation_id,
       1,
-      1,
+      10,
       "name",
       "",
       this.has_register,
@@ -357,7 +353,7 @@ export default {
   },
 
   components: {
-    // TableVue,
+    TableVue,
     FilterComponentVue,
   },
 };

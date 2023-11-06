@@ -100,8 +100,11 @@
           />
         </q-card-section>
       </q-card>
-      <q-scroll-area style="height: 90vh">
-        <q-card class="card">
+      <q-scroll-area style="height: 88vh">
+        <q-card
+          class="card"
+          :style="$q.platform.is.mobile ? 'width: 100vw;' : 'height:100vh'"
+        >
           <router-view
             @start-loading="startLoading"
             @update-payment-category="updatePaymentCategory"
@@ -444,11 +447,6 @@ export default {
 .header {
   height: 130px;
 }
-
-// .content {
-//   background-color: $white1;
-//   padding-bottom: 4rem;
-// }
 
 .content_header {
   background-color: $white2;

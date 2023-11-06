@@ -1,9 +1,23 @@
 <template>
   <div>
-    <div class="row">
-      <!-- add fee button -->
-      <div class="col-12 q-mb-sm">
-        <div class="flex justify-end">
+    <div :class="$q.platform.is.mobile?'q-mt-sm':'q-ml-sm'">
+      <!-- table for session fees -->
+      <q-table
+        :data="data"
+        :columns="columns"
+        row-key="index"
+        :table-header-style="{
+          backgroundColor: '#5384ae',
+          color: '#FFFFFF',
+        }"
+        :loading="table_loading"
+      >
+        <template v-slot:top-left>
+          <div>
+            <label for="title" class="title">{{ table_header }}</label>
+          </div>
+        </template>
+        <template v-slot:top-right >
           <q-btn
             label="Add"
             dense
@@ -16,70 +30,49 @@
           >
             <q-tooltip> {{ $t("app.settingsAddSessionLabel") }} </q-tooltip>
           </q-btn>
-        </div>
-      </div>
-      <!-- end of fee button -->
-
-      <!-- table for session fees -->
-      <div class="col-md-12 col-xs-12 col-sm-12">
-        <q-table
-          :data="data"
-          :columns="columns"
-          row-key="index"
-          :table-header-style="{
-            backgroundColor: '#5384ae',
-            color: '#FFFFFF',
-          }"
-          :loading="table_loading"
-        >
-          <template v-slot:top-left>
-            <div>
-              <label for="title" class="title">{{ table_header }}</label>
-            </div>
-          </template>
-          <template v-slot:body="props">
-            <q-tr :props="props" class="text-bold">
-              <q-td key="year" :props="props">
-                {{ props.row.year }}
-              </q-td>
-              <q-td
-                key="status"
-                :props="props"
-                :class="
-                  props.row.status == 'ACTIVE'
-                    ? 'status_active'
-                    : 'status_in_active'
-                "
+        </template>
+        <template v-slot:body="props">
+          <q-tr :props="props" class="text-bold">
+            <q-td key="year" :props="props">
+              {{ props.row.year }}
+            </q-td>
+            <q-td
+              key="status"
+              :props="props"
+              :class="
+                props.row.status == 'ACTIVE'
+                  ? 'status_active'
+                  : 'status_in_active'
+              "
+            >
+              {{ props.row.status }}
+            </q-td>
+            <q-td key="updated_by" :props="props">
+              {{ props.row.updated_by }}
+            </q-td>
+            <q-td key="action" :props="props">
+              <q-icon
+                name="edit"
+                size="xs"
+                class="edit_fee q-mr-xl"
+                @click="editSession(props.row)"
               >
-                {{ props.row.status }}
-              </q-td>
-              <q-td key="updated_by" :props="props">
-                {{ props.row.updated_by }}
-              </q-td>
-              <q-td key="action" :props="props">
-                <q-icon
-                  name="edit"
-                  size="xs"
-                  class="edit_fee q-mr-xl"
-                  @click="editSession(props.row)"
-                >
-                  <q-tooltip>{{ $t("app.edit") }}</q-tooltip>
-                </q-icon>
-              </q-td>
-            </q-tr>
-          </template>
+                <q-tooltip>{{ $t("app.edit") }}</q-tooltip>
+              </q-icon>
+            </q-td>
+          </q-tr>
+        </template>
 
-          <template v-slot:loading>
-            <q-inner-loading showing color="primary" />
-          </template>
-        </q-table>
-      </div>
+        <template v-slot:loading>
+          <q-inner-loading showing color="primary" />
+        </template>
+      </q-table>
       <!-- end table for session fees -->
     </div>
 
     <!--add session fee -->
     <q-dialog v-model="show_add_session">
-      <q-card style="min-width: 450px" class="q-px-md q-pt-sm q-pb-sm">
+      <q-card :style="$q.platform.is.mobile?'min-width: 350px':'min-width: 450px'" class="q-px-md q-pt-sm q-pb-sm">
         <q-card-section class="row items-center q-pb-lg">
           <div class="text-h6 add_year" v-if="session.id == null">
             {{ $t("app.settingsAddSessionLabel") }}
@@ -228,7 +221,6 @@ export default {
     },
   },
   methods: {
-
     editSession(data) {
       this.show_add_session = true;
       this.session.year = data.year;
@@ -244,7 +236,6 @@ export default {
       );
       return current_session != undefined ? current_session[0] : null;
     },
-
 
     onSetSession() {
       let current_session = this.getCurrentSession();

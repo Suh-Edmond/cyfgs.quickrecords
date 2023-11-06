@@ -434,6 +434,7 @@ export default {
 
 .card {
   height: 100vh;
+  width: 100vw;
   border-bottom-left-radius: 0;
   border-top-right-radius: 0;
   border-top-left-radius: 0;

@@ -1,16 +1,16 @@
 <template>
-  <div class="q-pa-xs">
+  <div>
     <!---------------------------------------------MEMBER MANAGEMENT FILTERS----------------------------------------------->
     <div
-      class="row q-ml-xs"
-      :class="$q.screen.lg ? 'q-pa-sm' : ''"
+      class="row"
+      :class="$q.screen.lg ? 'q-pa-sm' : 'q-gutter-sm'"
       :style="
         $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
       "
       v-if="show_member_filters"
     >
       <div
-        class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+        class="col col-md-3 col-lg-3 col-xs-12 col-sm-12"
         :class="$q.screen.lg ? 'q-pr-md' : ''"
       >
         <q-select
@@ -31,7 +31,7 @@
         </q-select>
       </div>
       <div
-        class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+        class="col col-md-3 col-lg-3 col-xs-12 col-sm-12"
         :class="$q.screen.lg ? 'q-pr-md' : ''"
       >
         <q-select
@@ -52,7 +52,7 @@
         </q-select>
       </div>
       <div
-        class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+        class="col col-md-3 col-lg-3 col-xs-12 col-sm-12"
         :class="$q.screen.lg ? 'q-pr-md' : ''"
       >
         <q-select

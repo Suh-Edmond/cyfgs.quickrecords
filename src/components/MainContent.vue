@@ -423,6 +423,7 @@ export default {
   position: relative;
   z-index: 2000;
   margin-top: -70px;
+  height: 100vh;
 }
 
 .header_section {

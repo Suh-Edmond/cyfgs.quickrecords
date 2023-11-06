@@ -216,9 +216,6 @@
 
         <!---------------------------------------------------------------------------MEMBER SAVINGS--------------------------------------------------->
         <q-tr :props="props" v-if="show_member_savings">
-          <!-- <q-td key="counter" :props="props">
-            {{ props.row.counter }}
-          </q-td> -->
           <q-td key="amount_deposited" :props="props">
             {{ Number(props.row.amount_deposited).toLocaleString() }}
           </q-td>
@@ -1157,7 +1154,7 @@ export default {
     onEditMemberSaving(data) {
       let payload = {
         data: data,
-        tab: "Member Savings",
+        tab: "Savings",
       };
       this.$store.dispatch("setUpdatedMemberSaving", data);
       this.$emit("edit-member-saving", payload);

@@ -75,6 +75,7 @@
   </div>
 </template>
 <script>
+import { Notify, Platform } from "quasar";
 import ButtonVue from "src/components/Button.vue";
 import memberMixinVue from "src/mixins/memberMixin.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
@@ -98,7 +99,7 @@ export default {
       saving: {
         user_id: null,
         amount_deposited: 0,
-        comment: null,
+        comment: " ",
         id: null,
       },
       position: "right",
@@ -146,12 +147,13 @@ export default {
     },
 
     onAddSaving() {
+
       let payload = {
         url: this.setActionUrl(this.saving.id, this.saving.user_id.value),
         data: {
           user_id: this.saving.user_id.value,
           amount_deposited: JSON.parse(this.saving.amount_deposited),
-          comment: this.saving.comment,
+          comment: this.saving.comment === null ? "" : this.saving.comment,
           id: this.saving.id,
         },
         msg: this.$t('app.addSavingSuccessMsg'),
@@ -159,7 +161,7 @@ export default {
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: this.$t('app.defaultErrorMsg'),
+        error_msg: "",
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -204,7 +206,7 @@ export default {
       if (id === null || id === undefined) {
         this.$store
           .dispatch("postRequest", payload)
-          .then(() => {
+          .then((response) => {
             this.getPaginatedOrganisationMemberSavings(this.organisation_id, 1, 7, "", this.$store.getters.getCurrentYear.id);
           })
           .finally(() => {
@@ -215,7 +217,14 @@ export default {
       } else {
         this.$store
           .dispatch("putRequest", payload)
-          .then(() => {
+          .then((response) => {
+            if(response.status == 403) {
+              Notify.create({
+                type:"info",
+                position:Platform.is.mobile ? 'bottom':'top-right',
+                message:response.data.message
+              })
+            }
             this.getPaginatedOrganisationMemberSavings(this.organisation_id, 1, 7, "", this.$store.getters.getCurrentYear.id);
           })
           .finally(() => {
@@ -234,7 +243,7 @@ export default {
       this.saving.user_id = null;
       this.saving.amount_deposited = 0;
       this.saving.id = null;
-      this.saving.comment = null;
+      this.saving.comment = "";
 
       return this.saving;
     },

@@ -57,7 +57,7 @@
         </div>
       </div>
     </q-drawer>
-    <!-- <q-scroll-area style="height: 100vh; max-width: 100vw;" :bar-style="{width: '0px'}" :thumb-style="{width: '0px'}"> -->
+    <q-scroll-area style="height: 100vh; max-width: 100vw;" :bar-style="{width: '0px'}" :thumb-style="{width: '0px'}">
       <q-page-container class="content">
         <MainContent
           :item="item"
@@ -69,7 +69,7 @@
           <router-view />
         </MainContent>
       </q-page-container>
-    <!-- </q-scroll-area> -->
+    </q-scroll-area>
 
     <q-drawer
       v-model="right"

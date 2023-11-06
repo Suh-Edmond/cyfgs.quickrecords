@@ -198,7 +198,7 @@ export default {
     },
 
     editMemberSaving(data) {
-      this.$store.dispatch("setEditState", false);
+      // this.$store.dispatch("setEditState", false);
 
       this.$emit("edit-member-saving", data);
     },

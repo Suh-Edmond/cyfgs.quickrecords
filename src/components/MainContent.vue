@@ -101,7 +101,7 @@
         </q-card-section>
       </q-card>
       <q-scroll-area style="height: 90vh">
-        <q-card class="card q-pr-md">
+        <q-card class="card">
           <router-view
             @start-loading="startLoading"
             @update-payment-category="updatePaymentCategory"
@@ -439,7 +439,6 @@ export default {
   display: flex;
   align-items: center;
   text-align: center;
-  letter-spacing: 0.005em;
 }
 
 .header {
@@ -457,8 +456,6 @@ export default {
 
 .title {
   font-family: "Roboto";
-  font-style: normal;
-  letter-spacing: 0.01em;
   text-transform: uppercase;
   color: $primary;
   font-weight: 500;

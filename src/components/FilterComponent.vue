@@ -3,7 +3,7 @@
     <!---------------------------------------------MEMBER MANAGEMENT FILTERS----------------------------------------------->
     <div
       class="row"
-      :class="$q.screen.lg ? 'q-pa-sm' : 'q-gutter-sm'"
+      :class="$q.screen.lg ? 'q-pa-sm' : ''"
       :style="
         $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
       "

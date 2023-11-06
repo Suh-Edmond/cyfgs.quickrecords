@@ -1,5 +1,5 @@
 <template>
-  <q-page>
+  <div>
     <q-table
       :data="data"
       :columns="columns"
@@ -1007,7 +1007,7 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-  </q-page>
+  </div>
 </template>
 <script>
 import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";

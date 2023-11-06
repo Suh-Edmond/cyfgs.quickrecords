@@ -88,36 +88,34 @@
       <q-page>
         <q-card class="bar" flat>
           <div class="flex q-pa-xs">
-            <div>
-              <q-btn
-                dense
-                color="white"
-                flat
-                icon="arrow_back"
-                v-close-popup
-                @click="goBack()"
-                :size="$q.platform.is.desktop?'sm':'md'"
-              >
-              </q-btn>
-            </div>
-            <div class="flex flex-center">
-              <label for="heading" class="text-white q-pl-lg" :class="$q.platform.is.desktop?'text_h6':'side-bar-heading'">{{
-                heading
-              }}</label>
-            </div>
+            <q-btn
+              dense
+              color="white"
+              flat
+              icon="arrow_back"
+              v-close-popup
+              @click="goBack()"
+              :size="$q.platform.is.desktop ? 'sm' : 'md'"
+            >
+            </q-btn>
+            <label
+              for="heading"
+              class="text-white q-ml-lg"
+              :class="$q.platform.is.desktop ? 'text_h6' : 'side-bar-heading'"
+              >{{ heading }}</label
+            >
             <q-space />
-            <div v-if="$q.platform.is.desktop">
-              <q-btn
-                dense
-                flat
-                color="white"
-                icon="close"
-                v-close-popup
-                @click="closeRightDrawer()"
-                size="sm"
-              >
-              </q-btn>
-            </div>
+            <q-btn
+              v-if="$q.platform.is.desktop"
+              dense
+              flat
+              color="white"
+              icon="close"
+              v-close-popup
+              @click="closeRightDrawer()"
+              size="sm"
+            >
+            </q-btn>
           </div>
         </q-card>
         <AddMember

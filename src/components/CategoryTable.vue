@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-xs">
+  <div>
     <!---------------------------------------------------MAIN TABLE COMPONENT------------------------------>
     <q-table
       :data="data"
@@ -667,7 +667,8 @@
               : 'text-h6-sm'
           "
           v-model="filter"
-          placeholder="Search category..."
+          :placeholder="$t('app.tableSearch')"
+          :style="$q.platform.is.mobile?'width:88vw':''"
         >
           <template v-slot:append>
             <q-icon name="search" />

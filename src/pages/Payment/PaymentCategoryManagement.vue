@@ -11,10 +11,8 @@
         @download-categories="downloadPaymentCategory"
       >
       </FilterComponentVue>
-      <!-- table for categories -->
-      <div class="row q-pt-sm">
-        <div class="col-md-12 col-xs-12 col-sm-12">
-          <CategoryTable
+      <CategoryTable
+          :class="$q.platform.is.desktop?'q-pt-sm q-px-sm':' q-px-sm q-pt-md'"
             :columns="columns"
             :data="getData"
             :label="label"
@@ -31,8 +29,6 @@
             @onRequest="onRequest"
           >
           </CategoryTable>
-        </div>
-      </div>
     </div>
   </q-page>
 </template>

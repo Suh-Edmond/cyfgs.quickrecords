@@ -148,8 +148,7 @@
 
     <!-------------------------------------------------HEADER FILTER FOR PAYMENT ITEMS------------------------------------->
     <div
-      class="row q-ml-xs"
-      :class="$q.screen.lg ? 'q-pa-sm' : ''"
+      :class="$q.screen.lg ? 'row q-pa-sm' : 'col q-gutter-sm q-px-sm'"
       :style="
         $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
       "
@@ -165,7 +164,7 @@
           clearable
         />
       </div>
-      <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12 q-pl-sm">
+      <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12" :class="$q.platform.is.desktop?'q-ml-xs':''">
         <q-select
           v-model="type"
           outlined
@@ -175,7 +174,7 @@
           clearable
         />
       </div>
-      <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12 q-pl-sm">
+      <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12" :class="$q.platform.is.desktop?'q-ml-xs':''">
         <q-select
           v-model="frequency"
           outlined
@@ -185,7 +184,7 @@
           clearable
         />
       </div>
-      <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12 q-pl-sm">
+      <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12" :class="$q.platform.is.desktop?'q-ml-xs':''">
         <q-select
           v-model="state"
           outlined
@@ -195,7 +194,7 @@
           :label="$t('app.selectState')"
         />
       </div>
-      <div class="col-md-4 col-lg-4 col-xs-12 col-sm-12 flex q-pl-sm">
+      <div class="col-md-4 col-lg-4 col-xs-12 col-sm-12 flex" :class="$q.platform.is.desktop?'q-ml-xs':''">
         <div>
           <q-btn
             :label="$t('app.filter')"

@@ -831,7 +831,7 @@
           outlined
           dense
           v-model="filter"
-          :placeholder="$t('app.search')"
+          :placeholder="$t('app.tableSearch')"
           :class="
             $q.platform.is.mobile
               ? 'row text-h6-sm'

@@ -12,7 +12,7 @@
 
     <!-- table for members -->
     <!-- <div class="q-pt-md"> -->
-      <TableVue
+      <!-- <TableVue
       class="q-pt-md"
       :columns="columns"
       :data="getMembers"
@@ -30,7 +30,7 @@
       @delete-row="deleteRow"
       @onRequest="onRequest"
     >
-    </TableVue>
+    </TableVue> -->
     <!-- </div> -->
   </div>
 </template>
@@ -357,7 +357,7 @@ export default {
   },
 
   components: {
-    TableVue,
+    // TableVue,
     FilterComponentVue,
   },
 };

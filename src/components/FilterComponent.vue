@@ -2,8 +2,8 @@
   <div>
     <!---------------------------------------------MEMBER MANAGEMENT FILTERS----------------------------------------------->
     <div
-      class="row"
-      :class="$q.screen.lg ? 'q-pa-sm' : ''"
+    class="q-pa-sm"
+      :class="$q.screen.lg ? 'row' : 'q-gutter-sm'"
       :style="
         $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
       "
@@ -102,8 +102,7 @@
 
     <!---------------------------------------------PAYMENT AND EXPENDITURE CATEGORIES FILTERS------------------------------->
     <div
-      class="row q-ml-xs q-pt-xs"
-      :class="$q.screen.lg ? 'q-pa-sm' : ''"
+      :class="$q.screen.lg ? 'row' : 'row'"
       :style="
         $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
       "

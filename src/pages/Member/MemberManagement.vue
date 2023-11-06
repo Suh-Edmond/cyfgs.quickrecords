@@ -11,9 +11,9 @@
     </FilterComponentVue>
 
     <!-- table for members -->
-    <div class="q-pt-md">
+    <!-- <div class="q-pt-md"> -->
       <TableVue
-      class=""
+      class="q-pt-md"
       :columns="columns"
       :data="getMembers"
       :label="label"
@@ -31,7 +31,7 @@
       @onRequest="onRequest"
     >
     </TableVue>
-    </div>
+    <!-- </div> -->
   </div>
 </template>
 <script>

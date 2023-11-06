@@ -831,12 +831,12 @@
           outlined
           dense
           v-model="filter"
-          :class="
-            $q.screen.md
-              ? 'text-h6-sm q-mb-lg q-mt-lg full-width'
-              : 'text-h6-sm'
-          "
           :placeholder="$t('app.search')"
+          :class="
+            $q.platform.is.mobile
+              ? 'row text-h6-sm full-width'
+              : 'text-h6-sm q-mb-lg q-mt-lg full-width'
+          "
         >
           <template v-slot:append>
             <q-icon name="search" />

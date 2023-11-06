@@ -101,7 +101,7 @@
               </q-btn>
             </div>
             <div class="flex flex-center">
-              <label for="heading" class="text-white q-pl-lg" :class="$q.platform.is.desktop?'text_h6':'text-h6'">{{
+              <label for="heading" class="text-white q-pl-lg" :class="$q.platform.is.desktop?'text_h6':'side-bar-heading'">{{
                 heading
               }}</label>
             </div>
@@ -675,5 +675,9 @@ export default {
   color: $dark;
   font-weight: 700;
   font-size: medium;
+}
+
+.side-bar-heading {
+  font-size: large;
 }
 </style>

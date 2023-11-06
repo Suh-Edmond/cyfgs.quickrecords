@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="row">
+    <div class="row" :class="$q.platform.is.mobile?'q-px-sm':''">
       <q-list
         bordered
         padding

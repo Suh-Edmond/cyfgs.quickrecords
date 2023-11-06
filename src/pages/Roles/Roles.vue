@@ -1,5 +1,5 @@
 <template>
-  <div :class="$q.platform.is.mobile?'':'q-pa-sm'">
+  <div :class="$q.platform.is.mobile?'q-px-sm':'q-pa-sm'">
     <div class="flex justify-center q-mb-md" v-if="getLoadingState">
       <q-spinner color="primary" size="2.5em" />
     </div>

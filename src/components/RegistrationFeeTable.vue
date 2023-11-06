@@ -10,7 +10,7 @@
           color: '#FFFFFF',
         }"
         :loading="loading"
-        :grid="$q.screen.xs"
+        
       >
         <template v-slot:top-left>
           <div>

@@ -14,29 +14,26 @@
       </FilterComponentVue>
 
       <!-- table for categories -->
-      <div class="row q-pt-sm">
-        <div class="col-md-12 col-xs-12 col-sm-12">
-          <CategoryTable
-            :columns="columns"
-            :data="getExpenditureItems"
-            :label="label"
-            :message="message"
-            :title="getTableTitle"
-            :show_payment_category="false"
-            :show_payment_item="false"
-            :show_expenditure_category="false"
-            :show_expenditure_item="true"
-            :pagination="getPagination"
-            :table_loading="getLoadingState"
-            @edit-expenditure-item="editExpenditureItem"
-            @view-expenditure-item="viewExpenditureItem"
-            @show-expenditure-item-details="showExpenditureItemDetails"
-            @delete-row="deleteRow"
-            @onRequest="onRequest"
-          >
-          </CategoryTable>
-        </div>
-      </div>
+      <CategoryTable
+        :class="$q.platform.is.desktop ? 'q-pt-sm q-px-sm' : ' q-px-sm q-pt-xl'"
+        :columns="columns"
+        :data="getExpenditureItems"
+        :label="label"
+        :message="message"
+        :title="getTableTitle"
+        :show_payment_category="false"
+        :show_payment_item="false"
+        :show_expenditure_category="false"
+        :show_expenditure_item="true"
+        :pagination="getPagination"
+        :table_loading="getLoadingState"
+        @edit-expenditure-item="editExpenditureItem"
+        @view-expenditure-item="viewExpenditureItem"
+        @show-expenditure-item-details="showExpenditureItemDetails"
+        @delete-row="deleteRow"
+        @onRequest="onRequest"
+      >
+      </CategoryTable>
     </div>
   </q-page>
 </template>
@@ -55,7 +52,7 @@ export default {
     expenditureItemMixinVue,
   ],
 
-  beforeMount(){
+  beforeMount() {
     this.$store.commit("SET_PAGINATION", {
       sortBy: "name",
       descending: false,
@@ -64,7 +61,6 @@ export default {
       rowsNumber: 0,
     });
   },
-
 
   mounted() {
     this.fetchExpenditureItems(1, 7, "", this.status, "");
@@ -186,11 +182,17 @@ export default {
       const { page, rowsPerPage } = props.pagination;
       const fetch_count =
         rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
-        let payment_item_value =
+      let payment_item_value =
         this.payment_item_id !== "" && this.payment_item_id !== null
           ? this.payment_item_id.value
           : "";
-      this.fetchExpenditureItems(page, fetch_count, "", this.status, payment_item_value);
+      this.fetchExpenditureItems(
+        page,
+        fetch_count,
+        "",
+        this.status,
+        payment_item_value
+      );
     },
 
     editExpenditureItem(data) {
@@ -227,9 +229,16 @@ export default {
     downloadExpenditureItems(data) {
       let expenditure_category_id =
         this.$store.getters.getCurrentExpenditureCategory.id;
-      let category_name = this.$store.getters.getCurrentExpenditureCategory.name;
-      let payment_item_id_value = data.payment_item_id !== null && data.payment_item_id !== "" ? data.payment_item_id.value: "";
-      let year_value = data.year !== null && data.year !== "" ? data.year.value : this.session_id
+      let category_name =
+        this.$store.getters.getCurrentExpenditureCategory.name;
+      let payment_item_id_value =
+        data.payment_item_id !== null && data.payment_item_id !== ""
+          ? data.payment_item_id.value
+          : "";
+      let year_value =
+        data.year !== null && data.year !== ""
+          ? data.year.value
+          : this.session_id;
       let url = `/api/protected/expenditure-categories/expenditure-items/download?expenditure_category_id=${expenditure_category_id}&status=${data.payment_status}&payment_item_id=${payment_item_id_value}&session_id=${year_value}&category_name=${category_name}`;
       let file_name = "Expenditure_Items.pdf";
       this.loading_download = this.downloadPdf(url, file_name);
@@ -253,7 +262,13 @@ export default {
         this.payment_item_id !== "" && this.payment_item_id !== null
           ? this.payment_item_id.value
           : "";
-      this.fetchExpenditureItems(1, 7, data.year, this.status, payment_item_value);
+      this.fetchExpenditureItems(
+        1,
+        7,
+        data.year,
+        this.status,
+        payment_item_value
+      );
     },
 
     deleteRow(data) {
@@ -275,9 +290,9 @@ export default {
       };
       this.$store.dispatch("deleteRequest", payload).then(() => {
         let payment_item_value =
-        this.payment_item_id !== "" && this.payment_item_id !== null
-          ? this.payment_item_id.value
-          : "";
+          this.payment_item_id !== "" && this.payment_item_id !== null
+            ? this.payment_item_id.value
+            : "";
         this.fetchExpenditureItems(1, 7, "", this.status, payment_item_value);
       });
     },

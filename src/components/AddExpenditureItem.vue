@@ -1,12 +1,11 @@
 <template>
-  <div class="q-pa-md">
-    <div class="q-ml-sm q-mb-lg">
-      <label class="text-muted q-ml-sm info"
+  <div class="q-mb-md">
+    <div class="q-mt-md">
+      <label class="text-muted q-pl-lg"
         >{{$t('app.warningField')}} <span class="text-red">*</span> {{$t('app.fields')}}</label
       >
     </div>
-    <div class="q-mt-md q-mx-md">
-      <q-form @submit="onAddExpenditureItem" class="q-gutter-sm">
+    <q-form @submit="onAddExpenditureItem" class="q-gutter-md q-mt-xs q-mx-sm">
         <div class="q-mb-md">
           <label for="name" class="form_field"
             >{{$t('app.paymentItem')}} <span class="text-red">*</span>
@@ -101,8 +100,10 @@
             :placeholder="$t('app.expenditureComment')"
           />
         </div>
-        <div class="flex q-mt-lg justify-end">
-          <div>
+        <div :class=" $q.platform.is.desktop
+            ? 'flex q-mt-sm justify-end'
+            : 'q-mb-lg'
+        ">
             <ButtonVue
               class="form_button"
               :label="$t('app.saveBtnLabel')"
@@ -113,9 +114,7 @@
             >
             </ButtonVue>
           </div>
-        </div>
       </q-form>
-    </div>
   </div>
 </template>
 <script>

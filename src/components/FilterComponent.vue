@@ -224,8 +224,7 @@
 
     <!-----------------------------------------------HEADER FILTER FOR EXPENDITURE ITEMS------------------------------------------->
     <div
-      class="row q-ml-xs q-pt-xs"
-      :class="$q.screen.lg ? 'q-pa-sm' : ''"
+      :class="$q.screen.lg ? 'row q-pa-sm' : 'col q-gutter-sm q-px-sm'"
       :style="
         $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
       "
@@ -256,7 +255,7 @@
           </template>
         </q-select>
       </div>
-      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-pl-md">
+      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12" :class="$q.platform.is.desktop?'q-pl-md':''">
         <q-select
           v-model="year"
           outlined
@@ -276,7 +275,7 @@
           </template>
         </q-select>
       </div>
-      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-pl-md">
+      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12" :class="$q.platform.is.desktop?'q-pl-md':''">
         <q-select
           v-model="payment_status"
           outlined
@@ -293,7 +292,7 @@
           </template>
         </q-select>
       </div>
-      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 flex q-pl-md">
+      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 flex" :class="$q.platform.is.desktop?'q-pl-md':''">
         <div>
           <q-btn
             :label="$t('app.filter')"

@@ -58,24 +58,6 @@
               >
                 <q-menu>
                   <q-list style="width: 180px" bordered separator>
-                    <!-- edit support -->
-                    <q-item
-                      clickable
-                      v-close-popup
-                      @click="onEditSupport(props.row)"
-                    >
-                      <q-item-section avatar class="q-mr-lg">
-                        <span>
-                          <q-icon name="edit" size="xs" class="edit" />
-                        </span>
-                      </q-item-section>
-                      <q-item-section>
-                        <q-item-label class="edit">{{
-                          $t("app.edit")
-                        }}</q-item-label>
-                      </q-item-section>
-                    </q-item>
-
                     <!-- view support -->
                     <q-item
                       clickable
@@ -90,6 +72,24 @@
                       <q-item-section>
                         <q-item-label class="edit">{{
                           $t("app.view")
+                        }}</q-item-label>
+                      </q-item-section>
+                    </q-item>
+
+                     <!-- edit support -->
+                     <q-item
+                      clickable
+                      v-close-popup
+                      @click="onEditSupport(props.row)"
+                    >
+                      <q-item-section avatar class="q-mr-lg">
+                        <span>
+                          <q-icon name="edit" size="xs" class="edit" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="edit">{{
+                          $t("app.edit")
                         }}</q-item-label>
                       </q-item-section>
                     </q-item>
@@ -155,7 +155,7 @@
 
       <!-- slot for table headings -->
       <template v-slot:top-left>
-        <div class="text-h6 title">
+        <div class="text-h6 title" v-if="title !== ''">
           {{ title }},  <span> {{ $t("app.total") }} : {{ Number(total).toLocaleString() }} XAF</span>
         </div>
       </template>

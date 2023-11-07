@@ -807,7 +807,7 @@
           no-caps
           icon-right="filter_list"
           @click="filterSponsorship"
-          :size="$q.platform.is.mobile ? 'sm' : 'sm'"
+          :size="$q.platform.is.mobile ? 'sm' : 'md'"
         >
         </q-btn>
         <q-space />
@@ -819,7 +819,7 @@
           no-caps
           icon-right="print"
           @click="downloadSponsorship"
-          :size="$q.platform.is.mobile ? 'sm' : 'sm'"
+          :size="$q.platform.is.mobile ? 'sm' : 'md'"
         ></q-btn>
       </div>
     </div>

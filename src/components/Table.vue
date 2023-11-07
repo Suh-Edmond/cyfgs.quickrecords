@@ -231,9 +231,6 @@
 
         <!---------------------------------------------------START OF SAVINGS FOR ALL MEMBER TO BE VIEW BY USER WITH UNTREASUERER ROLE------------------------->
         <q-tr :props="props" v-if="show_savings && !checkTreasurerRole()">
-          <!-- <q-td key="counter" :props="props">
-            {{ props.row.counter }}
-          </q-td> -->
           <q-td key="user_name" :props="props">
             {{ props.row.user_name }}
           </q-td>
@@ -276,9 +273,6 @@
 
         <!----------------------------------------------------END OF MEMBER SAVINGS TO BE VIEW BY THE TREASUERER--------------------------------------------->
         <q-tr :props="props" v-if="show_savings && checkTreasurerRole()">
-          <!-- <q-td key="counter" :props="props">
-            {{ props.row.counter }}
-          </q-td> -->
           <q-td key="user_name" :props="props">
             {{ props.row.user_name }}
           </q-td>
@@ -369,23 +363,6 @@
                     <q-item
                       clickable
                       v-close-popup
-                      @click="onEditMemberSaving(props.row)"
-                    >
-                      <q-item-section avatar class="q-mr-lg">
-                        <span>
-                          <q-icon name="edit" size="xs" class="edit" />
-                        </span>
-                      </q-item-section>
-                      <q-item-section>
-                        <q-item-label class="edit">{{
-                          $t("app.edit")
-                        }}</q-item-label>
-                      </q-item-section>
-                    </q-item>
-
-                    <q-item
-                      clickable
-                      v-close-popup
                       @click="onViewMemberSaving(props.row)"
                     >
                       <q-item-section avatar class="q-mr-lg">
@@ -396,6 +373,22 @@
                       <q-item-section>
                         <q-item-label class="edit">{{
                           $t("app.view")
+                        }}</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onEditMemberSaving(props.row)"
+                    >
+                      <q-item-section avatar class="q-mr-lg">
+                        <span>
+                          <q-icon name="edit" size="xs" class="edit" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="edit">{{
+                          $t("app.edit")
                         }}</q-item-label>
                       </q-item-section>
                     </q-item>
@@ -528,23 +521,6 @@
                     <q-item
                       clickable
                       v-close-popup
-                      @click="onEditIncomeActivity(props.row)"
-                    >
-                      <q-item-section avatar class="q-mr-lg">
-                        <span>
-                          <q-icon name="edit" size="xs" class="edit" />
-                        </span>
-                      </q-item-section>
-                      <q-item-section>
-                        <q-item-label class="edit">{{
-                          $t("app.edit")
-                        }}</q-item-label>
-                      </q-item-section>
-                    </q-item>
-
-                    <q-item
-                      clickable
-                      v-close-popup
                       @click="onViewIncomeActivity(props.row)"
                     >
                       <q-item-section avatar class="q-mr-lg">
@@ -559,6 +535,22 @@
                       </q-item-section>
                     </q-item>
 
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onEditIncomeActivity(props.row)"
+                    >
+                      <q-item-section avatar class="q-mr-lg">
+                        <span>
+                          <q-icon name="edit" size="xs" class="edit" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="edit">{{
+                          $t("app.edit")
+                        }}</q-item-label>
+                      </q-item-section>
+                    </q-item>
                     <!-- deleted specify row -->
                     <q-item
                       clickable

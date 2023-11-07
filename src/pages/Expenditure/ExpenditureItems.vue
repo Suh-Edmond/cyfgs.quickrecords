@@ -196,13 +196,10 @@ export default {
     },
 
     editExpenditureItem(data) {
-      this.$store.dispatch("setUpdatedExpenditureItem", data.data);
       this.$emit("edit-expenditure-item", data);
     },
 
     viewExpenditureItem(data) {
-      this.$store.dispatch("setUpdatedExpenditureItem", data.data);
-
       this.$emit("view-expenditure-item", data);
     },
 

@@ -258,6 +258,7 @@ export default {
     this.$emit("set-heading", heading);
     this.resetForm();
     this.$store.commit("SET_MEMBERS", []);
+    this.setFormFields(this.$store.getters.getUpdatedPaymentItem)
   },
 
   beforeMount() {

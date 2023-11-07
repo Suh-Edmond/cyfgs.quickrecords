@@ -3,7 +3,7 @@
     <q-banner
       inline-actions
       rounded
-      class="bg-info text-white q-mx-md q-mt-sm"
+      class="bg-secondary text-white q-mx-md q-mt-sm q-mb-sm"
       dense
       v-if="existExpenditureItemDetail"
     >
@@ -158,7 +158,7 @@ export default {
     },
 
     existExpenditureItemDetail() {
-      return this.$store.getters.getUpdatedExpenditureItemDetail !== null;
+      return this.$store.getters.getUpdatedExpenditureItemDetail !== null && this.$store.getters.getUpdatedExpenditureItemDetail.approve !== "PENDING";
     },
   },
   watch: {

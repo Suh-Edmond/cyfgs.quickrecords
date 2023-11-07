@@ -143,6 +143,7 @@
 import ButtonVue from "src/components/Button.vue";
 import expenditureItemMixinVue from "src/mixins/expenditureItemMixin.vue";
 import moment from "moment";
+import { Notify, Platform } from "quasar";
 
 export default {
   mixins: [expenditureItemMixinVue],
@@ -196,7 +197,7 @@ export default {
     },
 
     existExpenditureItem() {
-      return this.$store.getters.getUpdatedExpenditureItem !== null;
+      return this.$store.getters.getUpdatedExpenditureItem !== null && this.$store.getters.getUpdatedExpenditureItem.approve !== "PENDING";
     },
   },
   watch: {

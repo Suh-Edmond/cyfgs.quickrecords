@@ -1,12 +1,17 @@
 <template>
-  <div class="q-pa-sm">
-    <q-card flat>
-      <q-card-section>
-        <Bar :chart-options="chartOptions" :chart-data="chartData" :chart-id="chartId" :dataset-id-key="datasetIdKey"
-          :plugins="plugins" :css-classes="cssClasses" :styles="styles" :width="width" :height="height" />
-      </q-card-section>
-    </q-card>
-  </div>
+  <q-card flat>
+    <Bar
+      :chart-options="chartOptions"
+      :chart-data="chartData"
+      :chart-id="chartId"
+      :dataset-id-key="datasetIdKey"
+      :plugins="plugins"
+      :css-classes="cssClasses"
+      :styles="styles"
+      :width="width"
+      :height="height"
+    />
+  </q-card>
 </template>
 
 <script>
@@ -21,8 +26,8 @@ import {
   CategoryScale,
   LinearScale,
 } from "chart.js";
-import organisationMixinVue from 'src/mixins/organisationMixin.vue';
-import memberMixinVue from 'src/mixins/memberMixin.vue';
+import organisationMixinVue from "src/mixins/organisationMixin.vue";
+import memberMixinVue from "src/mixins/memberMixin.vue";
 
 ChartJS.register(
   Title,
@@ -59,7 +64,7 @@ export default {
     },
     styles: {
       type: Object,
-      default: () => { },
+      default: () => {},
     },
     plugins: {
       type: Array,
@@ -67,12 +72,10 @@ export default {
     },
     chartData: {
       type: Object,
-      require: true
-    }
+      require: true,
+    },
   },
-  mounted() {
-
-  },
+  mounted() {},
   data() {
     return {
       chartOptions: {
@@ -81,10 +84,8 @@ export default {
       },
     };
   },
-  computed: {
-  },
-  methods: {
-  },
+  computed: {},
+  methods: {},
   components: {
     Bar,
   },

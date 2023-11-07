@@ -749,80 +749,79 @@
 
     <!--------------------------------------------FILTER HEADER FOR SPONSORSHIP----------------------------------------------------------------->
     <div
-      class="row q-ml-xs q-pt-xs"
-      :class="$q.screen.lg ? 'q-pa-sm' : ''"
+      :class="$q.screen.lg ? 'row q-pa-sm' : 'col q-gutter-sm q-px-sm'"
       :style="
         $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
       "
       v-if="show_sponsorship"
     >
-      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
-        <q-select
-          v-model="payment_item_id"
-          outlined
-          dense
-          :options="filtered_payment_items"
-          :label="$t('app.searchPaymentItem')"
-          input-debounce="0"
-          use-input
-          clearable
-          @filter="searchPaymentItems"
-          @input="stopSelectInputSearch"
+      <q-select
+        v-model="payment_item_id"
+        outlined
+        dense
+        :options="filtered_payment_items"
+        :label="$t('app.searchPaymentItem')"
+        input-debounce="0"
+        use-input
+        clearable
+        @filter="searchPaymentItems"
+        @input="stopSelectInputSearch"
+        class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+      >
+        <template v-slot:append v-if="start_payment_item_select_filtering">
+          <q-spinner color="primary" size="1.2em" :thickness="3" />
+        </template>
+        <template v-slot:no-option>
+          <q-item>
+            <q-item-section class="text-grey">
+              {{ $t("app.noResults") }}
+            </q-item-section>
+          </q-item>
+        </template>
+      </q-select>
+      <q-select
+        v-model="payment_status"
+        outlined
+        dense
+        :options="payment_statuses"
+        :label="$t('app.selectStatusLabel')"
+        clearable
+        class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+        :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
+      >
+        <template v-slot:no-option>
+          <q-item>
+            <q-item-section class="text-grey">
+              {{ $t("app.noResults") }}
+            </q-item-section>
+          </q-item>
+        </template>
+      </q-select>
+      <div
+        class="col-md-6 col-lg-6 col-xs-12 col-sm-12 flex"
+        :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
+      >
+        <q-btn
+          :label="$t('app.filter')"
+          color="primary"
+          :disabled="validateFilterSponsorship"
+          no-caps
+          icon-right="filter_list"
+          @click="filterSponsorship"
+          :size="$q.platform.is.mobile ? 'sm' : 'sm'"
         >
-          <template v-slot:append v-if="start_payment_item_select_filtering">
-            <q-spinner color="primary" size="1.2em" :thickness="3" />
-          </template>
-          <template v-slot:no-option>
-            <q-item>
-              <q-item-section class="text-grey">
-                {{ $t("app.noResults") }}
-              </q-item-section>
-            </q-item>
-          </template>
-        </q-select>
-      </div>
-      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-pl-md">
-        <q-select
-          v-model="payment_status"
-          outlined
-          dense
-          :options="payment_statuses"
-          :label="$t('app.selectStatusLabel')"
-          clearable
-        >
-          <template v-slot:no-option>
-            <q-item>
-              <q-item-section class="text-grey">
-                {{ $t("app.noResults") }}
-              </q-item-section>
-            </q-item>
-          </template>
-        </q-select>
-      </div>
-      <div class="col-md-6 col-lg-6 col-xs-12 col-sm-12 flex q-pl-md">
-        <div>
-          <q-btn
-            :label="$t('app.filter')"
-            color="primary"
-            :disabled="validateFilterSponsorship"
-            no-caps
-            icon-right="filter_list"
-            @click="filterSponsorship"
-          >
-          </q-btn>
-        </div>
+        </q-btn>
         <q-space />
-        <div class="button q-pb-xs">
-          <q-btn
-            :label="$t('app.print')"
-            :loading="getDownloadLoadingState"
-            color="positive"
-            :disabled="getDisableDownloadBtn"
-            no-caps
-            icon-right="print"
-            @click="downloadSponsorship"
-          ></q-btn>
-        </div>
+        <q-btn
+          :label="$t('app.print')"
+          :loading="getDownloadLoadingState"
+          color="positive"
+          :disabled="getDisableDownloadBtn"
+          no-caps
+          icon-right="print"
+          @click="downloadSponsorship"
+          :size="$q.platform.is.mobile ? 'sm' : 'sm'"
+        ></q-btn>
       </div>
     </div>
     <!--------------------------------------------END OF FILTER HEADER FOR SPONSORSHIP---------------------------------------------------------->

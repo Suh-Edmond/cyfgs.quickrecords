@@ -12,29 +12,26 @@
       </FilterComponentVue>
 
       <!-- table for activities -->
-      <div class="row q-pt-sm">
-        <div class="col-md-12 col-xs-12 col-sm-12">
-          <TableVue
-            :columns="columns"
-            :data="getIncomeActivities"
-            :label="label"
-            :title="getTableTitle"
-            :message="message"
-            :show_savings="false"
-            :show_income_activity="true"
-            :show_contribution="false"
-            :total_income="getTotalIncome"
-            :show_members="false"
-            :pagination="getPagination"
-            :table_loading="getLoadingState"
-            @edit-income-activity="editIncomeActivity"
-            @view-income-activity="viewIncomeActivity"
-            @delete-row="deleteRow"
-            @onRequest="onRequest"
-          >
-          </TableVue>
-        </div>
-      </div>
+      <TableVue
+        :class="$q.platform.is.desktop ? 'q-pt-sm q-px-sm' : ' q-px-sm q-pt-lg'"
+        :columns="columns"
+        :data="getIncomeActivities"
+        :label="label"
+        :title="getTableTitle"
+        :message="message"
+        :show_savings="false"
+        :show_income_activity="true"
+        :show_contribution="false"
+        :total_income="getTotalIncome"
+        :show_members="false"
+        :pagination="getPagination"
+        :table_loading="getLoadingState"
+        @edit-income-activity="editIncomeActivity"
+        @view-income-activity="viewIncomeActivity"
+        @delete-row="deleteRow"
+        @onRequest="onRequest"
+      >
+      </TableVue>
     </div>
   </q-page>
 </template>
@@ -295,7 +292,7 @@ export default {
         data.month != null && data.month != "" ? data.month.value : "";
       let status =
         data.status !== null && data.status !== "" ? data.status : "";
-      let year = LocalStorage.getItem('data').current_session.year
+      let year = LocalStorage.getItem("data").current_session.year;
       let url = `/api/protected/organisations/income-activities/generate-pdf?organisation_id=${this.organisation_id}&month=${month}&payment_item_id=${payment_item_value}&status=${status}&payment_item_name=${payment_item_label}&year=${year}`;
 
       let file_name = "Organisation_Income_Activities.pdf";

@@ -10,7 +10,7 @@
     >
     </FilterComponentVue>
     <TableVue
-      :class="$q.platform.is.desktop?'q-pt-sm q-px-sm':' q-px-sm q-pt-md'"
+      :class="$q.platform.is.desktop?'q-pt-sm q-px-sm':' q-px-sm q-pt-lg'"
       :columns="columns"
       :data="getMembers"
       :label="label"

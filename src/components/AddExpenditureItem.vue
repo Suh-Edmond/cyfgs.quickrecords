@@ -3,7 +3,7 @@
     <q-banner
       inline-actions
       rounded
-      class="bg-secondary text-white q-mx-md q-mt-sm"
+      class="bg-warning text-white q-mx-md q-mt-sm"
       dense
       v-if="existExpenditureItem"
     >

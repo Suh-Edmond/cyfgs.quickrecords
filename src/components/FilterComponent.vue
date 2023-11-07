@@ -674,75 +674,74 @@
 
     <!--------------------------------------------FILTER HEADER FOR VIEW MEMBER CONTRIBUTIONS---------------------------------------------------->
     <div
-      class="row justify-end"
-      :class="$q.screen.lg ? 'q-pa-sm' : ''"
+    :class="$q.screen.lg ? 'row q-pa-sm' : 'col q-gutter-sm q-px-xs'"
       :style="
         $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
       "
       v-if="show_member_contribution"
     >
-      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
-        <q-select
-          v-model="transaction_status"
-          outlined
-          dense
-          :options="transaction_statuses"
-          :label="$t('app.selectStatusLabel')"
-          use-input
-          input-debounce="0"
-          clearable
+      <q-select
+        v-model="transaction_status"
+        outlined
+        dense
+        :options="transaction_statuses"
+        :label="$t('app.selectStatusLabel')"
+        use-input
+        input-debounce="0"
+        clearable
+        class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+      >
+        <template v-slot:no-option>
+          <q-item>
+            <q-item-section class="text-grey">
+              {{ $t("app.noResults") }}
+            </q-item-section>
+          </q-item>
+        </template>
+      </q-select>
+      <q-select
+        v-model="payment_status"
+        outlined
+        dense
+        :options="payment_statuses"
+        :label="$t('app.searchTransactionStatus')"
+        clearable
+        class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+        :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
+      >
+        <template v-slot:no-option>
+          <q-item>
+            <q-item-section class="text-grey">
+              {{ $t("app.noResults") }}</q-item-section
+            >
+          </q-item>
+        </template>
+      </q-select>
+      <div
+        class="col-md-6 col-lg-6 col-xs-12 col-sm-12 flex"
+        :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
+      >
+        <q-btn
+          :label="$t('app.filter')"
+          :color="'primary'"
+          :disabled="validateFilterMemberContribution"
+          no-caps
+          icon-right="filter_list"
+          @click="filterMemberContribution"
+          :size="$q.platform.is.mobile ? 'sm' : 'md'"
         >
-          <template v-slot:no-option>
-            <q-item>
-              <q-item-section class="text-grey">
-                {{ $t("app.noResults") }}
-              </q-item-section>
-            </q-item>
-          </template>
-        </q-select>
-      </div>
-      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-pl-md">
-        <q-select
-          v-model="payment_status"
-          outlined
-          dense
-          :options="payment_statuses"
-          :label="$t('app.searchTransactionStatus')"
-          clearable
-        >
-          <template v-slot:no-option>
-            <q-item>
-              <q-item-section class="text-grey">
-                {{ $t("app.noResults") }}</q-item-section
-              >
-            </q-item>
-          </template>
-        </q-select>
-      </div>
-      <div class="col-md-6 col-lg-6 col-xs-12 col-sm-12 flex q-pl-md">
-        <div>
-          <q-btn
-            :label="$t('app.filter')"
-            :color="'primary'"
-            :disabled="validateFilterMemberContribution"
-            no-caps
-            icon-right="filter_list"
-            @click="filterMemberContribution"
-          >
-          </q-btn>
-        </div>
+        </q-btn>
         <q-space />
-        <div class="button">
-          <q-btn
-            :label="$t('app.print')"
-            :loading="getDownloadLoadingState"
-            color="positive"
-            :disabled="getDisableDownloadBtn"
-            no-caps
-            icon-right="print"
-            @click="downloadMemberContribution"
-          ></q-btn>
-        </div>
+        <q-btn
+          :label="$t('app.print')"
+          :loading="getDownloadLoadingState"
+          color="positive"
+          :disabled="getDisableDownloadBtn"
+          no-caps
+          icon-right="print"
+          @click="downloadMemberContribution"
+          :size="$q.platform.is.mobile ? 'sm' : 'md'"
+        ></q-btn>
       </div>
     </div>
     <!--------------------------------------------END OF FILTER HEADER FOR VIEW MEMBER CONTTRIBUTION--------------------------------------------->

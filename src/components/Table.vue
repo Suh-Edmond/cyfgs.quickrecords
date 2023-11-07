@@ -1628,6 +1628,7 @@ export default {
   font-size: 12px;
   align-items: center;
   text-transform: capitalize;
+  width: 120px;
 }
 
 .button {

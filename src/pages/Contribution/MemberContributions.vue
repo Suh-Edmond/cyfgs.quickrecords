@@ -11,9 +11,8 @@
       >
       </FilterComponentVue>
       <!-- table for contributions -->
-      <div class="row q-pt-sm">
-        <div class="col-md-12 col-xs-12 col-sm-12">
-          <TableVue
+      <TableVue
+      :class="$q.platform.is.desktop ? 'q-pt-sm q-px-sm' : ' q-px-xs q-pt-lg'"
             :columns="columns"
             :data="getMemberContributions"
             :label="label"
@@ -35,8 +34,6 @@
             @onRequest="onRequest"
           >
           </TableVue>
-        </div>
-      </div>
 
       <div class="q-mt-md" v-if="getMemberContributions.length > 0">
         <q-card>

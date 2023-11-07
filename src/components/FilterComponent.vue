@@ -376,82 +376,81 @@
 
     <!--------------------------------------------FILTER HEADER FOR MEMBERS SAVINGS NON TREASURER------------------------------------------------->
     <div
-      class="row q-ml-xs q-pt-xs"
-      :class="$q.screen.lg ? 'q-pa-sm' : ''"
+      :class="$q.screen.lg ? 'row q-pa-sm' : 'col q-gutter-sm q-px-sm'"
       :style="
         $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
       "
       v-if="show_savings_non_treasurer"
     >
-      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
-        <q-select
-          v-model="year"
-          outlined
-          dense
-          :options="getSessionsFromState"
-          :label="$t('app.searchYear')"
-          use-input
-          input-debounce="0"
-          clearable
+      <q-select
+        v-model="year"
+        outlined
+        dense
+        :options="getSessionsFromState"
+        :label="$t('app.searchYear')"
+        use-input
+        input-debounce="0"
+        clearable
+        class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+      >
+        <template v-slot:no-option>
+          <q-item>
+            <q-item-section class="text-grey">
+              {{ $t("app.noResults") }}
+            </q-item-section>
+          </q-item>
+        </template>
+      </q-select>
+      <q-select
+        v-model="month"
+        outlined
+        dense
+        :options="monthsOptions"
+        :label="$t('app.searchMonth')"
+        use-input
+        input-debounce="0"
+        clearable
+        @filter="filterMonths"
+        @input="stopSelectInputSearch"
+        class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+        :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
+      >
+        <template v-slot:append v-if="start_month_filtering">
+          <q-spinner color="primary" size="1.2em" :thickness="3" />
+        </template>
+        <template v-slot:no-option>
+          <q-item>
+            <q-item-section class="text-grey">
+              {{ $t("app.noResults") }}
+            </q-item-section>
+          </q-item>
+        </template>
+      </q-select>
+      <div
+        class="col-md-6 col-lg-6 col-xs-12 col-sm-12 flex"
+        :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
+      >
+        <q-btn
+          :label="$t('app.filter')"
+          :color="'primary'"
+          :disabled="validateFilterSavings"
+          no-caps
+          icon-right="filter_list"
+          @click="filterAllSavings"
+          :size="$q.platform.is.mobile ? 'sm' : 'md'"
         >
-          <template v-slot:no-option>
-            <q-item>
-              <q-item-section class="text-grey">
-                {{ $t("app.noResults") }}
-              </q-item-section>
-            </q-item>
-          </template>
-        </q-select>
-      </div>
-      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-pl-md">
-        <q-select
-          v-model="month"
-          outlined
-          dense
-          :options="monthsOptions"
-          :label="$t('app.searchMonth')"
-          use-input
-          input-debounce="0"
-          clearable
-          @filter="filterMonths"
-          @input="stopSelectInputSearch"
-        >
-          <template v-slot:append v-if="start_month_filtering">
-            <q-spinner color="primary" size="1.2em" :thickness="3" />
-          </template>
-          <template v-slot:no-option>
-            <q-item>
-              <q-item-section class="text-grey">
-                {{ $t("app.noResults") }}
-              </q-item-section>
-            </q-item>
-          </template>
-        </q-select>
-      </div>
-      <div class="col-md-6 col-lg-6 col-xs-12 col-sm-12 flex q-pl-md">
-        <div>
-          <q-btn
-            :label="$t('app.filter')"
-            :color="'primary'"
-            :disabled="validateFilterSavings"
-            no-caps
-            icon-right="filter_list"
-            @click="filterAllSavings"
-          >
-          </q-btn>
-        </div>
+        </q-btn>
         <q-space />
-        <div class="button q-pb-xs">
-          <q-btn
-            :label="$t('app.print')"
-            :loading="getDownloadLoadingState"
-            :color="'positive'"
-            :disabled="getDisableDownloadBtn"
-            no-caps
-            icon-right="print"
-            @click="downloadMembersSavings"
-          ></q-btn>
-        </div>
+        <q-btn
+          :label="$t('app.print')"
+          :loading="getDownloadLoadingState"
+          :color="'positive'"
+          :disabled="getDisableDownloadBtn"
+          no-caps
+          icon-right="print"
+          @click="downloadMembersSavings"
+          :size="$q.platform.is.mobile ? 'sm' : 'md'"
+        ></q-btn>
       </div>
     </div>
     <!-------------------------------------------END OF FILTER FOR MEMBERS SAVINGS NON TREASURER-------------------------------------------------->
@@ -492,80 +491,79 @@
     <!---------------------------------------------END OF FILTER FOR MEMBERS SAVINGS TREASURER---------------------------------------------------->
     <!----------------------------------------------FILTER HEADER FOR MEMBER SAVINGS-------------------------------------------------------------->
     <div
-      class="row q-ml-xs q-pt-xs"
-      :class="$q.screen.lg ? 'q-pa-sm' : ''"
+      :class="$q.screen.lg ? 'row q-pa-sm' : 'col q-gutter-sm q-px-sm'"
       :style="
         $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
       "
       v-if="show_filter_member_savings"
     >
-      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
-        <q-select
-          v-model="month"
-          outlined
-          dense
-          :options="monthsOptions"
-          :label="$t('app.searchMonth')"
-          use-input
-          input-debounce="0"
-          clearable
-          @filter="filterMonths"
-          @input="stopSelectInputSearch"
+      <q-select
+        v-model="month"
+        outlined
+        dense
+        :options="monthsOptions"
+        :label="$t('app.searchMonth')"
+        use-input
+        input-debounce="0"
+        clearable
+        @filter="filterMonths"
+        @input="stopSelectInputSearch"
+        class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+      >
+        <template v-slot:append v-if="start_month_filtering">
+          <q-spinner color="primary" size="1.2em" :thickness="3" />
+        </template>
+        <template v-slot:no-option>
+          <q-item>
+            <q-item-section class="text-grey">
+              {{ $t("app.noResults") }}
+            </q-item-section>
+          </q-item>
+        </template>
+      </q-select>
+      <q-select
+        v-model="payment_status"
+        outlined
+        dense
+        :options="payment_statuses"
+        :label="$t('app.selectStatusLabel')"
+        clearable
+        class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+        :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
+      >
+        <template v-slot:no-option>
+          <q-item>
+            <q-item-section class="text-grey">
+              {{ $t("app.noResults") }}</q-item-section
+            >
+          </q-item>
+        </template>
+      </q-select>
+      <div
+        class="col-md-6 col-lg-6 col-xs-12 col-sm-12 flex"
+        :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
+      >
+        <q-btn
+          :label="$t('app.filter')"
+          :color="'primary'"
+          :disabled="validateFilterMemberSavings"
+          no-caps
+          icon-right="filter_list"
+          @click="filterMemberSavings"
+          :size="$q.platform.is.mobile ? 'sm' : 'md'"
         >
-          <template v-slot:append v-if="start_month_filtering">
-            <q-spinner color="primary" size="1.2em" :thickness="3" />
-          </template>
-          <template v-slot:no-option>
-            <q-item>
-              <q-item-section class="text-grey">
-                {{ $t("app.noResults") }}
-              </q-item-section>
-            </q-item>
-          </template>
-        </q-select>
-      </div>
-      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-pl-md">
-        <q-select
-          v-model="payment_status"
-          outlined
-          dense
-          :options="payment_statuses"
-          :label="$t('app.selectStatusLabel')"
-          clearable
-        >
-          <template v-slot:no-option>
-            <q-item>
-              <q-item-section class="text-grey">
-                {{ $t("app.noResults") }}</q-item-section
-              >
-            </q-item>
-          </template>
-        </q-select>
-      </div>
-      <div class="col-md-6 col-lg-6 col-xs-12 col-sm-12 flex q-pl-md">
-        <div>
-          <q-btn
-            :label="$t('app.filter')"
-            :color="'primary'"
-            :disabled="validateFilterMemberSavings"
-            no-caps
-            icon-right="filter_list"
-            @click="filterMemberSavings"
-          >
-          </q-btn>
-        </div>
+        </q-btn>
         <q-space />
-        <div class="button">
-          <q-btn
-            :label="$t('app.print')"
-            :loading="getDownloadLoadingState"
-            color="positive"
-            :disabled="getDisableDownloadBtn"
-            no-caps
-            icon-right="print"
-            @click="downloadMemberSavings"
-          ></q-btn>
-        </div>
+        <q-btn
+          :label="$t('app.print')"
+          :loading="getDownloadLoadingState"
+          color="positive"
+          :disabled="getDisableDownloadBtn"
+          no-caps
+          icon-right="print"
+          @click="downloadMemberSavings"
+          :size="$q.platform.is.mobile ? 'sm' : 'md'"
+        ></q-btn>
       </div>
     </div>
     <!----------------------------------------------END OF FILTER HEADER FOR MEMBER SAVINGS------------------------------------------------------->
@@ -614,7 +612,7 @@
         use-input
         clearable
         class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
-        :class="$q.platform.is.desktop?'q-pl-sm':''"
+        :class="$q.platform.is.desktop ? 'q-pl-sm' : ''"
       >
         <template v-slot:append v-if="start_month_filtering">
           <q-spinner color="primary" size="1.2em" :thickness="3" />
@@ -628,45 +626,48 @@
         </template>
       </q-select>
       <q-select
-          v-model="payment_status"
-          outlined
-          dense
-          :options="payment_statuses"
-          clearable
-          :label="$t('app.selectStatusLabel')"
-          class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
-          :class="$q.platform.is.desktop?'q-pl-sm':''"
-        >
-          <template v-slot:no-option>
-            <q-item>
-              <q-item-section class="text-grey">
-                {{ $t("app.noResults") }}
-              </q-item-section>
-            </q-item>
-          </template>
-        </q-select>
-      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 flex" :class="$q.platform.is.desktop?'q-pl-sm':''">
+        v-model="payment_status"
+        outlined
+        dense
+        :options="payment_statuses"
+        clearable
+        :label="$t('app.selectStatusLabel')"
+        class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+        :class="$q.platform.is.desktop ? 'q-pl-sm' : ''"
+      >
+        <template v-slot:no-option>
+          <q-item>
+            <q-item-section class="text-grey">
+              {{ $t("app.noResults") }}
+            </q-item-section>
+          </q-item>
+        </template>
+      </q-select>
+      <div
+        class="col-md-3 col-lg-3 col-xs-12 col-sm-12 flex"
+        :class="$q.platform.is.desktop ? 'q-pl-sm' : ''"
+      >
         <q-btn
-            :label="$t('app.filter')"
-            color="primary"
-            :disabled="validateFilterIncomeActivity"
-            no-caps
-            icon-right="filter_list"
-            @click="filterIncomeActivity"
-            :size="$q.platform.is.mobile?'sm':'md'"
-          >
-          </q-btn>
+          :label="$t('app.filter')"
+          color="primary"
+          :disabled="validateFilterIncomeActivity"
+          no-caps
+          icon-right="filter_list"
+          @click="filterIncomeActivity"
+          :size="$q.platform.is.mobile ? 'sm' : 'md'"
+        >
+        </q-btn>
         <q-space />
         <q-btn
-            :label="$t('app.print')"
-            :loading="getDownloadLoadingState"
-            color="positive"
-            :disabled="getDisableDownloadBtn"
-            no-caps
-            icon-right="print"
-            @click="downloadIncomeActivity"
-            :size="$q.platform.is.mobile?'sm':'md'"
-          ></q-btn>
+          :label="$t('app.print')"
+          :loading="getDownloadLoadingState"
+          color="positive"
+          :disabled="getDisableDownloadBtn"
+          no-caps
+          icon-right="print"
+          @click="downloadIncomeActivity"
+          :size="$q.platform.is.mobile ? 'sm' : 'md'"
+        ></q-btn>
       </div>
     </div>
     <!----------------------------------------------END OF FILTER HEADER FOR INCOME ACTIVITIES---------------------------------------------------->

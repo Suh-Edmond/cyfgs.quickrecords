@@ -1,77 +1,79 @@
 <template>
-  <div class="q-pa-md">
-    <div class="q-ml-sm q-mb-lg">
-      <label class="text-muted q-ml-sm instruction_info"
-        >{{$t('app.warningField')}}<span class="text-red">*</span> {{$t('app.fields')}}</label
+  <div>
+    <div class="q-mt-md">
+      <label class="text-muted q-pl-lg instruction_info"
+        >{{ $t("app.warningField") }}<span class="text-red">*</span>
+        {{ $t("app.fields") }}</label
       >
     </div>
-    <div class="q-mt-md q-mx-md">
-      <q-form @submit="onAddSaving" class="q-gutter-md">
-        <div>
-          <label for="name" class="form_field"
-            >{{$t('app.memberName')}}<span class="text-red">*</span>
-          </label>
-          <q-select
-            outlined
-            dense
-            v-model="saving.user_id"
-            :options="members"
-            use-input
-            input-debounce="0"
-            @filter="filterFn"
-            @input="stopSearch"
-            clearable
-            :disable="onMemberExist"
-          >
+    <q-form @submit="onAddSaving" class="q-gutter-sm q-mx-sm">
+      <div>
+        <label for="name" class="form_field"
+          >{{ $t("app.memberName") }}<span class="text-red">*</span>
+        </label>
+        <q-select
+          outlined
+          dense
+          v-model="saving.user_id"
+          :options="members"
+          use-input
+          input-debounce="0"
+          @filter="filterFn"
+          @input="stopSearch"
+          clearable
+          :readonly="onMemberSavingExist"
+        >
           <template v-slot:append v-if="start_filtering">
-              <q-spinner color="primary" size="1.2em" :thickness="3" />
-            </template>
-            <template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey"> {{$t('app.noResults')}} </q-item-section>
-              </q-item>
-            </template>
-
-          </q-select>
-        </div>
-        <div>
-          <label for="credential" class="form_field q-mt-ms"
-            >{{$t('app.amount')}} <span class="text-red">*</span></label
-          >
-          <q-input
-            v-model="saving.amount_deposited"
-            outlined
-            dense
-            type="number"
-          />
-        </div>
-        <div>
-          <label for="credential" class="form_field"
-            >{{$t('app.comment')}} </label
-          >
-          <q-input
-            v-model="saving.comment"
-            outlined
-            dense
-            type="textarea"
-            :placeholder="$t('app.savingComment')"
-          />
-        </div>
-        <div class="flex q-mt-lg justify-end">
-          <div>
-            <ButtonVue
-              class="form_button"
-              :label="$t('app.saveBtnLabel')"
-              :loading="loading"
-              :color="'primary'"
-              :disabled="validateForm"
-              :no_caps="true"
-            >
-            </ButtonVue>
-          </div>
-        </div>
-      </q-form>
-    </div>
+            <q-spinner color="primary" size="1.2em" :thickness="3" />
+          </template>
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey">
+                {{ $t("app.noResults") }}
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
+      </div>
+      <div>
+        <label for="credential" class="form_field q-mt-ms"
+          >{{ $t("app.amount") }} <span class="text-red">*</span></label
+        >
+        <q-input
+          v-model="saving.amount_deposited"
+          outlined
+          dense
+          type="number"
+          :readonly="onMemberSavingExist"
+        />
+      </div>
+      <div>
+        <label for="credential" class="form_field"
+          >{{ $t("app.comment") }}
+        </label>
+        <q-input
+          v-model="saving.comment"
+          outlined
+          dense
+          type="textarea"
+          :placeholder="$t('app.savingComment')"
+          :readonly="onMemberSavingExist"
+        />
+      </div>
+      <div
+        :class="$q.platform.is.desktop ? 'flex q-mt-md justify-end' : ' q-mt-md q-mb-xl'"
+      >
+        <ButtonVue
+          class="form_button"
+          :label="$t('app.saveBtnLabel')"
+          :loading="loading"
+          :color="'primary'"
+          :disabled="validateForm"
+          :no_caps="true"
+        >
+        </ButtonVue>
+      </div>
+    </q-form>
   </div>
 </template>
 <script>
@@ -85,7 +87,7 @@ export default {
   mixins: [memberMixinVue, organisationMixinVue, UserSavingMixinVue],
 
   mounted() {
-    let heading = this.$t('app.addSavingHeading');
+    let heading = this.$t("app.addSavingHeading");
     this.$emit("set-heading", heading);
 
     this.getOrganisationMembers(this.organisation_id, false);
@@ -105,18 +107,20 @@ export default {
       position: "right",
       dialog: false,
       members: [],
-      start_filtering:false,
-      organisation_id:this.$store.getters.getOrganisation.id,
+      start_filtering: false,
+      organisation_id: this.$store.getters.getOrganisation.id,
     };
   },
   computed: {
     validateForm() {
-      return this.saving.user_id == null || this.saving.amount_deposited == 0;
+      return this.saving.user_id == null || this.saving.amount_deposited == 0 || this.onMemberSavingExist;
     },
     isMemberExist() {
-      return this.saving.user_id !== null &&
+      return (
+        this.saving.user_id !== null &&
         this.saving.amount_deposited != 0 &&
-        this.saving.id != null;
+        this.saving.id != null
+      );
     },
     startSearch() {
       return this.saving.user_id === null ? false : true;
@@ -124,9 +128,9 @@ export default {
     getUpdateMemberSaving() {
       return this.setFormFields(this.$store.getters.getUpdatedMemberSaving);
     },
-    onMemberExist(){
-      return this.$store.getters.getUpdatedMemberSaving != null
-    }
+    onMemberSavingExist() {
+      return this.$store.getters.getUpdatedMemberSaving !== null && this.$store.getters.getUpdatedMemberSaving.approve !== "PENDING";
+    },
   },
 
   watch: {
@@ -147,7 +151,6 @@ export default {
     },
 
     onAddSaving() {
-
       let payload = {
         url: this.setActionUrl(this.saving.id, this.saving.user_id.value),
         data: {
@@ -156,7 +159,7 @@ export default {
           comment: this.saving.comment === null ? "" : this.saving.comment,
           id: this.saving.id,
         },
-        msg: this.$t('app.addSavingSuccessMsg'),
+        msg: this.$t("app.addSavingSuccessMsg"),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
@@ -207,7 +210,13 @@ export default {
         this.$store
           .dispatch("postRequest", payload)
           .then((response) => {
-            this.getPaginatedOrganisationMemberSavings(this.organisation_id, 1, 7, "", this.$store.getters.getCurrentYear.id);
+            this.getPaginatedOrganisationMemberSavings(
+              this.organisation_id,
+              1,
+              7,
+              "",
+              this.$store.getters.getCurrentYear.id
+            );
           })
           .finally(() => {
             this.$emit("close-right-drawer");
@@ -218,14 +227,20 @@ export default {
         this.$store
           .dispatch("putRequest", payload)
           .then((response) => {
-            if(response.status == 403) {
+            if (response.status == 403) {
               Notify.create({
-                type:"info",
-                position:Platform.is.mobile ? 'bottom':'top-right',
-                message:response.data.message
-              })
+                type: "info",
+                position: Platform.is.mobile ? "bottom" : "top-right",
+                message: response.data.message,
+              });
             }
-            this.getPaginatedOrganisationMemberSavings(this.organisation_id, 1, 7, "", this.$store.getters.getCurrentYear.id);
+            this.getPaginatedOrganisationMemberSavings(
+              this.organisation_id,
+              1,
+              7,
+              "",
+              this.$store.getters.getCurrentYear.id
+            );
           })
           .finally(() => {
             this.$emit("close-right-drawer");
@@ -259,11 +274,11 @@ export default {
       return this.saving;
     },
 
-    stopSearch(){
-      if(this.saving.user_id != null){
-        this.start_filtering = false
+    stopSearch() {
+      if (this.saving.user_id != null) {
+        this.start_filtering = false;
       }
-    }
+    },
   },
   components: {
     ButtonVue,

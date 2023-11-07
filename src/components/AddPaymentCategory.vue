@@ -24,6 +24,7 @@
             outlined
             dense
             type="text"
+            readonly
           >
             <template v-slot:hint>
               {{ $t("app.codeHintCategory") }}
@@ -42,7 +43,7 @@
             placeholder="Please provide a description about the category"
           />
         </div>
-        <div class="flex q-mt-lg justify-end">
+        <div   :class="$q.platform.is.desktop?'flex q-mt-lg justify-end':'q-pt-xs q-mb-lg'">
           <div>
             <ButtonVue
               class="form_button"
@@ -102,14 +103,18 @@ export default {
     },
   },
   methods: {
+    setRequestUrl(){
+      return this.getUpdatedPaymentCategoryFromState() === null ? `/api/protected/organisations/${this.organisation_id}/payment-categories`:
+      `/api/protected/organisations/${this.organisation_id}/payment-categories/${this.getUpdatedPaymentCategoryFromState().id}`
+    },
     onAddPaymentCategory() {
       let payload = {
-        url: `/api/protected/organisations/${this.organisation_id}/payment-categories`,
+        url: this.setRequestUrl(),
         data: {
           name: this.payment_category.name,
           description: this.payment_category.description,
           id:
-            this.getUpdatedPaymentCategoryFromState() != null
+            this.getUpdatedPaymentCategoryFromState() !== null
               ? this.getUpdatedPaymentCategoryFromState().id
               : null,
           code: this.payment_category.code,
@@ -129,13 +134,14 @@ export default {
         },
       };
       this.loading = true;
-      this.$store
+      if(this.getUpdatedPaymentCategoryFromState() === null) {
+        this.$store
         .dispatch("postRequest", payload)
         .then(() => {
           this.fetchOrganisationCategories(
             this.organisation_id,
             1,
-            7,
+            10,
             "name",
             ""
           );
@@ -145,6 +151,24 @@ export default {
           this.resetForm();
           this.$emit("close-right-drawer");
         });
+      }else {
+        this.$store
+        .dispatch("putRequest", payload)
+        .then(() => {
+          this.fetchOrganisationCategories(
+            this.organisation_id,
+            1,
+            10,
+            "name",
+            ""
+          );
+        })
+        .finally(() => {
+          this.loading = false;
+          this.resetForm();
+          this.$emit("close-right-drawer");
+        });
+      }
     },
 
     resetForm() {

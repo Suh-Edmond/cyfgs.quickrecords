@@ -1,41 +1,34 @@
 <template>
-  <q-page>
-    <div>
-      <!-- header for filter members -->
-      <FilterComponentVue
-        :show_member_filters="true"
-        :loading_download="loading_download"
-        :disable_download_btn="validateDownloadBtn"
-        @filter-members="filterMembers"
-        @download-members="downloadMembers"
-      >
-      </FilterComponentVue>
-
-      <!-- table for members -->
-      <div class="row q-pt-sm">
-        <div class="col-md-12 col-xs-12 col-sm-12">
-          <TableVue
-            :columns="columns"
-            :data="getMembers"
-            :label="label"
-            :message="message"
-            :show_savings="false"
-            :show_income_activity="false"
-            :show_members="true"
-            :show_contribution="false"
-            :pagination="getPagination"
-            :total_members="computeTotalMembership"
-            :table_loading="getLoadingState"
-            @fetch-members="onFetchMembers"
-            @register-member="registerMember"
-            @delete-row="deleteRow"
-            @onRequest="onRequest"
-          >
-          </TableVue>
-        </div>
-      </div>
-    </div>
-  </q-page>
+  <div>
+    <!-- header for filter members -->
+    <FilterComponentVue
+      :show_member_filters="true"
+      :loading_download="loading_download"
+      :disable_download_btn="validateDownloadBtn"
+      @filter-members="filterMembers"
+      @download-members="downloadMembers"
+    >
+    </FilterComponentVue>
+    <TableVue
+      :class="$q.platform.is.desktop?'q-pt-sm q-px-sm':' q-px-sm q-pt-lg'"
+      :columns="columns"
+      :data="getMembers"
+      :label="label"
+      :message="message"
+      :show_savings="false"
+      :show_income_activity="false"
+      :show_members="true"
+      :show_contribution="false"
+      :pagination="getPagination"
+      :total_members="computeTotalMembership"
+      :table_loading="getLoadingState"
+      @fetch-members="onFetchMembers"
+      @register-member="registerMember"
+      @delete-row="deleteRow"
+      @onRequest="onRequest"
+    >
+    </TableVue>
+  </div>
 </template>
 <script>
 import TableVue from "src/components/Table.vue";
@@ -187,10 +180,22 @@ export default {
     getPagination() {
       let paginate_object = {
         sortBy: "name",
-        descending: this.$store.getters.getPagination != null ? this.$store.getters.getPagination.descending : true,
-        page: this.$store.getters.getPagination !== null ? this.$store.getters.getPagination.page : 1,
-        rowsPerPage: this.$store.getters.getPagination !== null ? this.$store.getters.getPagination.rowsPerPage : 10,
-        rowsNumber: this.$store.getters.getPagination !== null ? this.$store.getters.getPagination.rowsNumber : 1,
+        descending:
+          this.$store.getters.getPagination != null
+            ? this.$store.getters.getPagination.descending
+            : true,
+        page:
+          this.$store.getters.getPagination !== null
+            ? this.$store.getters.getPagination.page
+            : 1,
+        rowsPerPage:
+          this.$store.getters.getPagination !== null
+            ? this.$store.getters.getPagination.rowsPerPage
+            : 10,
+        rowsNumber:
+          this.$store.getters.getPagination !== null
+            ? this.$store.getters.getPagination.rowsNumber
+            : 1,
       };
 
       return paginate_object;

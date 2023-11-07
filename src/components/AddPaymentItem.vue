@@ -1,249 +1,246 @@
 <template>
   <div class="q-mb-md">
-    <div class="q-ml-sm q-mb-lg q-mt-md">
+    <div class="text-left q-pl-md q-mb-md q-mt-md">
       <label class="text-muted q-pl-sm info"
         >{{ $t("app.warningField") }}<span class="text-red">*</span
         >{{ $t("app.fields") }}</label
       >
     </div>
-    <div class="q-mt-md q-mx-md">
-      <q-form @submit="onAddPaymentItem" class="q-gutter-md">
+    <q-form @submit="onAddPaymentItem" class="q-gutter-md q-mt-sm q-mx-sm">
+      <div>
+        <label for="credential" class="form_field"
+          >{{ $t("app.nameLabel") }} <span class="text-red">*</span></label
+        >
+        <q-input v-model="payment_item.name" outlined dense type="text" />
+      </div>
+      <div>
+        <label for="credential" class="form_field"
+          >{{ $t("app.amount") }} <span class="text-red">*</span></label
+        >
+        <q-input v-model="payment_item.amount" outlined dense type="number" />
+      </div>
+      <div class="flex">
         <div>
           <label for="credential" class="form_field"
-            >{{ $t("app.nameLabel") }} <span class="text-red">*</span></label
+            >{{ $t("app.compulsoryLabel") }}
+            <span class="text-red">*</span></label
           >
-          <q-input v-model="payment_item.name" outlined dense type="text" />
         </div>
-        <div>
-          <label for="credential" class="form_field"
-            >{{ $t("app.amount") }} <span class="text-red">*</span></label
-          >
-          <q-input v-model="payment_item.amount" outlined dense type="number" />
-        </div>
-        <div class="flex">
-          <div>
-            <label for="credential" class="form_field"
-              >{{ $t("app.compulsoryLabel") }}
-              <span class="text-red">*</span></label
-            >
-          </div>
-          <div class="q-gutter-sm q-ml-lg">
-            <q-radio
-              dense
-              v-model="payment_item.compulsory"
-              :val="true"
-              :label="$t('app.yes')"
-              size="xs"
-            />
-            <q-radio
-              dense
-              v-model="payment_item.compulsory"
-              :val="false"
-              :label="$t('app.no')"
-              size="xs"
-            />
-          </div>
-        </div>
-
-        <div>
-          <label for="credential" class="form_field"
-            >{{ $t("app.deadline") }} <span class="text-red">*</span></label
-          >
-          <q-input
+        <div class="q-gutter-sm q-ml-lg">
+          <q-radio
             dense
-            outlined
-            v-model="payment_item.deadline"
-            @input="validateDeadline()"
-          >
-            <template v-slot:append>
-              <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy
-                  ref="qDateProxy"
-                  transition-show="scale"
-                  transition-hide="scale"
+            v-model="payment_item.compulsory"
+            :val="true"
+            :label="$t('app.yes')"
+            size="xs"
+          />
+          <q-radio
+            dense
+            v-model="payment_item.compulsory"
+            :val="false"
+            :label="$t('app.no')"
+            size="xs"
+          />
+        </div>
+      </div>
+      <div>
+        <label for="credential" class="form_field"
+          >{{ $t("app.deadline") }} <span class="text-red">*</span></label
+        >
+        <q-input
+          dense
+          outlined
+          v-model="payment_item.deadline"
+          @input="validateDeadline()"
+        >
+          <template v-slot:append>
+            <q-icon name="event" class="cursor-pointer">
+              <q-popup-proxy
+                ref="qDateProxy"
+                transition-show="scale"
+                transition-hide="scale"
+              >
+                <q-date
+                  v-model="payment_item.deadline"
+                  @input="validateDeadline()"
                 >
-                  <q-date
-                    v-model="payment_item.deadline"
-                    @input="validateDeadline()"
-                  >
-                    <div class="row items-center justify-end">
-                      <q-btn v-close-popup label="Close" color="primary" flat />
-                    </div>
-                  </q-date>
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-          </q-input>
-          <label v-if="invalid_deadline" class="text-red">
-            <b>{{ $t("app.invalidDeadline") }}</b>
-          </label>
-        </div>
-        <div>
-          <label for="credential" class="form_field"
-            >{{ $t("app.frequency") }} <span class="text-red">*</span></label
+                  <div class="row items-center justify-end">
+                    <q-btn v-close-popup label="Close" color="primary" flat />
+                  </div>
+                </q-date>
+              </q-popup-proxy>
+            </q-icon>
+          </template>
+        </q-input>
+        <label v-if="invalid_deadline" class="text-red">
+          <b>{{ $t("app.invalidDeadline") }}</b>
+        </label>
+      </div>
+      <div>
+        <label for="credential" class="form_field"
+          >{{ $t("app.frequency") }} <span class="text-red">*</span></label
+        >
+        <q-select
+          v-model="payment_item.frequency"
+          outlined
+          dense
+          :options="frequencies"
+          :label="$t('app.selectFrequency')"
+          :disable="validateDisableFrequency"
+        />
+      </div>
+      <div>
+        <label for="credential" class="form_field"
+          >{{ $t("app.type") }} <span class="text-red">*</span></label
+        >
+        <q-select
+          v-model="payment_item.type"
+          outlined
+          dense
+          :options="payment_item_types"
+          :label="$t('app.selectType')"
+          @input="handlePaymentItemType()"
+          :disable="validateDisableType"
+        />
+      </div>
+
+      <!-- when the payment item type is A_MEMBER -->
+      <div v-if="payment_item.type == 'A_MEMBER'">
+        <div v-if="references.length == 0">
+          <label for="title" class="q-mt-sm form_field"
+            >{{ $t("app.selectMember") }} <span class="text-red">*</span></label
           >
-          <q-select
-            v-model="payment_item.frequency"
-            outlined
-            dense
-            :options="frequencies"
-            :label="$t('app.selectFrequency')"
-            :disable="validateDisableFrequency"
-          />
         </div>
-        <div>
-          <label for="credential" class="form_field"
-            >{{ $t("app.type") }} <span class="text-red">*</span></label
+        <div v-if="references.length > 0">
+          <label for="title" class="q-mt-sm form_field"
+            >{{ $t("app.selectedMember") }}:</label
           >
-          <q-select
-            v-model="payment_item.type"
-            outlined
-            dense
-            :options="payment_item_types"
-            :label="$t('app.selectType')"
-            @input="handlePaymentItemType()"
-            :disable="validateDisableType"
-          />
-        </div>
-
-        <!-- when the payment item type is A_MEMBER -->
-        <div v-if="payment_item.type == 'A_MEMBER'">
-          <div v-if="references.length == 0">
-            <label for="title" class="q-mt-sm form_field"
-              >{{ $t("app.selectMember") }}
-              <span class="text-red">*</span></label
-            >
-          </div>
-          <div v-if="references.length > 0">
-            <label for="title" class="q-mt-sm form_field"
-              >{{ $t("app.selectedMember") }}:</label
-            >
-            <div class="q-gutter-sm q-mb-lg">
-              <q-btn
-                color="primary"
-                class="ref_btn"
-                v-for="ref in references"
-                :key="ref.value"
-                @click="removeSelectedReference(ref)"
-                >{{ ref.label }}
-                <q-icon name="clear" class="q-pl-sm" size="xs"></q-icon>
-                <q-tooltip>{{ $t("app.removeMemberTip") }}</q-tooltip>
-              </q-btn>
-            </div>
-          </div>
-
-          <q-select
-            :class="references.length > 0 ? 'q-mt-lg' : ''"
-            v-model="payment_item.reference"
-            :options="members"
-            :label="$t('app.searchMember')"
-            outlined
-            dense
-            @input="selectMember()"
-            use-input
-            input-debounce="0"
-            @filter="filterFn"
-            clearable
-            v-if="references.length == 0"
-          >
-            <template v-slot:append v-if="start_filtering">
-              <q-spinner color="primary" size="1.2em" :thickness="5" />
-            </template>
-
-            <!-- no member found message -->
-            <template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey">
-                  {{ $t("app.notFound") }}
-                </q-item-section>
-              </q-item>
-            </template>
-          </q-select>
-        </div>
-
-        <!-- When the type is GROUPED_MEMBERS -->
-        <div v-if="payment_item.type == 'GROUPED_MEMBERS'">
-          <div v-if="references.length == 0">
-            <label for="title" class="q-mt-sm form_field"
-              >{{ $t("app.selectMembers") }}
-              <span class="text-red">*</span></label
-            >
-          </div>
-          <div v-if="references.length > 0">
-            <label for="title" class="q-mt-sm form_field">{{
-              $t("app.selectedMembers")
-            }}</label>
-            <div class="q-gutter-sm q-mb-lg">
-              <q-btn
-                color="primary"
-                class="ref_btn"
-                v-for="ref in references"
-                :key="ref.value"
-                @click="removeSelectedReference(ref)"
-                >{{ ref.label }}
-                <q-icon name="clear" class="q-pl-sm" size="xs"></q-icon>
-                <q-tooltip>{{ $t("app.removeMemberTip") }}</q-tooltip>
-              </q-btn>
-            </div>
-          </div>
-
-          <q-select
-            :class="references.length > 0 ? 'q-mt-lg' : ''"
-            v-model="payment_item.reference"
-            :options="members"
-            :label="$t('app.searchMember')"
-            multiple
-            outlined
-            dense
-            @input="selectMember()"
-            use-input
-            input-debounce="0"
-            @filter="filterFn"
-            clearable
-          >
-            <template v-slot:append v-if="start_filtering">
-              <q-spinner color="primary" size="1.2em" :thickness="3" />
-            </template>
-
-            <!-- no member found message -->
-            <template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey">
-                  {{ $t("app.notFound") }}
-                </q-item-section>
-              </q-item>
-            </template>
-          </q-select>
-        </div>
-        <!-- END OF SELECTIONS -->
-
-        <div class="q-mt-lg">
-          <label for="credential" class="form_field"
-            >{{ $t("app.description") }}
-          </label>
-          <q-input
-            v-model="payment_item.description"
-            outlined
-            dense
-            type="textarea"
-            :placeholder="$t('app.provideDescription')"
-          />
-        </div>
-        <div class="flex q-mt-lg justify-end">
-          <div>
-            <ButtonVue
-              class="form_button"
-              :label="$t('app.saveBtnLabel')"
-              :loading="loading"
+          <div class="q-gutter-sm q-mb-lg">
+            <q-btn
               color="primary"
-              :disabled="validateForm"
-              :no_caps="true"
-            >
-            </ButtonVue>
+              class="ref_btn"
+              v-for="ref in references"
+              :key="ref.value"
+              @click="removeSelectedReference(ref)"
+              >{{ ref.label }}
+              <q-icon name="clear" class="q-pl-sm" size="xs"></q-icon>
+              <q-tooltip>{{ $t("app.removeMemberTip") }}</q-tooltip>
+            </q-btn>
           </div>
         </div>
-      </q-form>
-    </div>
+
+        <q-select
+          :class="references.length > 0 ? 'q-mt-lg' : ''"
+          v-model="payment_item.reference"
+          :options="members"
+          :label="$t('app.searchMember')"
+          outlined
+          dense
+          @input="selectMember()"
+          use-input
+          input-debounce="0"
+          @filter="filterFn"
+          clearable
+          v-if="references.length == 0"
+        >
+          <template v-slot:append v-if="start_filtering">
+            <q-spinner color="primary" size="1.2em" :thickness="5" />
+          </template>
+
+          <!-- no member found message -->
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey">
+                {{ $t("app.notFound") }}
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
+      </div>
+
+      <!-- When the type is GROUPED_MEMBERS -->
+      <div v-if="payment_item.type == 'GROUPED_MEMBERS'">
+        <div v-if="references.length == 0">
+          <label for="title" class="q-mt-sm form_field"
+            >{{ $t("app.selectMembers") }}
+            <span class="text-red">*</span></label
+          >
+        </div>
+        <div v-if="references.length > 0">
+          <label for="title" class="q-mt-sm form_field">{{
+            $t("app.selectedMembers")
+          }}</label>
+          <div class="q-gutter-sm q-mb-lg">
+            <q-btn
+              color="primary"
+              class="ref_btn"
+              v-for="ref in references"
+              :key="ref.value"
+              @click="removeSelectedReference(ref)"
+              >{{ ref.label }}
+              <q-icon name="clear" class="q-pl-sm" size="xs"></q-icon>
+              <q-tooltip>{{ $t("app.removeMemberTip") }}</q-tooltip>
+            </q-btn>
+          </div>
+        </div>
+
+        <q-select
+          :class="references.length > 0 ? 'q-mt-lg' : ''"
+          v-model="payment_item.reference"
+          :options="members"
+          :label="$t('app.searchMember')"
+          multiple
+          outlined
+          dense
+          @input="selectMember()"
+          use-input
+          input-debounce="0"
+          @filter="filterFn"
+          clearable
+        >
+          <template v-slot:append v-if="start_filtering">
+            <q-spinner color="primary" size="1.2em" :thickness="3" />
+          </template>
+
+          <!-- no member found message -->
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey">
+                {{ $t("app.notFound") }}
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
+      </div>
+      <!-- END OF SELECTIONS -->
+
+      <div class="q-mt-lg">
+        <label for="credential" class="form_field"
+          >{{ $t("app.description") }}
+        </label>
+        <q-input
+          v-model="payment_item.description"
+          outlined
+          dense
+          type="textarea"
+          :placeholder="$t('app.provideDescription')"
+        />
+      </div>
+      <div :class="
+          $q.platform.is.desktop
+            ? 'flex q-mt-lg justify-end'
+            : 'q-pt-xs q-mb-lg'
+        ">
+        <ButtonVue
+        :label="$t('app.saveBtnLabel')"
+        :loading="loading"
+        color="primary"
+        :disabled="validateForm"
+        :no_caps="true"
+      >
+      </ButtonVue>
+      </div>
+    </q-form>
   </div>
 </template>
 <script>
@@ -502,10 +499,8 @@ export default {
       };
       this.$store
         .dispatch("getRequest", payload)
-        .then(() => {
-        })
-        .finally(() => {
-        });
+        .then(() => {})
+        .finally(() => {});
     },
 
     selectMember() {

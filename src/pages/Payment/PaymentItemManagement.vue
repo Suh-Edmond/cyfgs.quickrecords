@@ -12,50 +12,53 @@
       >
       </FilterComponentVue>
       <!-----------------------------------------------TABLE FOR PAYMENT ITEMS-->
-      <div class="row q-pt-sm">
-        <div class="col-md-12 col-xs-12 col-sm-12">
-          <CategoryTable
-            :columns="columns"
-            :data="getPaymentItemsFromState"
-            :label="label"
-            :message="message"
-            :title="getPaymentCategoryName"
-            :show_payment_category="false"
-            :show_payment_item="true"
-            :show_expenditure_category="false"
-            :show_expenditure_item="false"
-            :pagination="getPagination"
-            :table_loading="getLoadingState"
-            @fetch-payment-items="fetchPaymentItems"
-            @update-payment-item="updatePaymentItems"
-            @delete-row="deleteRow"
-            @update-payment-category="updatePaymentCategory"
-            @show-references="showReferences"
-            @view-payment-item="viewPaymentItem"
-            @onRequest="onRequest"
-          >
-          </CategoryTable>
-        </div>
-      </div>
+      <CategoryTable
+        :class="$q.platform.is.desktop ? 'q-pt-sm q-px-sm' : ' q-px-sm q-pt-xl'"
+        :columns="columns"
+        :data="getPaymentItemsFromState"
+        :label="label"
+        :message="message"
+        :title="getPaymentCategoryName"
+        :show_payment_category="false"
+        :show_payment_item="true"
+        :show_expenditure_category="false"
+        :show_expenditure_item="false"
+        :pagination="getPagination"
+        :table_loading="getLoadingState"
+        @fetch-payment-items="fetchPaymentItems"
+        @update-payment-item="updatePaymentItems"
+        @delete-row="deleteRow"
+        @update-payment-category="updatePaymentCategory"
+        @show-references="showReferences"
+        @view-payment-item="viewPaymentItem"
+        @onRequest="onRequest"
+      >
+      </CategoryTable>
       <!------------------------------------------------END OF TABLE PAYMENT ITEMS-------------------------------->
     </div>
 
     <!-------------------------------------------------DAILOG FOR MEMBERS UNDER A PAYMENT ITEM------------------->
     <div v-if="show_reference_dialog">
       <q-dialog v-model="show_reference_dialog">
-        <q-card>
+        <q-card style="width: 400px">
           <q-card-section class="bg-primary">
-            <label class="text-white toolbar_title" v-if="selected_payment_item.type !== 'A_MEMBER' ">
+            <label
+              class="text-white toolbar_title"
+              v-if="selected_payment_item.type !== 'A_MEMBER'"
+            >
               {{ $t("app.memberLabel") }} ({{ references.length }})
             </label>
-            <label class="text-white toolbar_title" v-if="selected_payment_item.type === 'A_MEMBER'">
+            <label
+              class="text-white toolbar_title"
+              v-if="selected_payment_item.type === 'A_MEMBER'"
+            >
               {{ $t("app.member") }} ({{ references.length }})
             </label>
           </q-card-section>
-           <q-linear-progress indeterminate v-show="is_fetching_members" />
+          <q-linear-progress indeterminate v-show="is_fetching_members" />
           <q-card-section>
             <div>
-              <q-list style="width: 400px">
+              <q-list>
                 <q-item
                   v-for="reference in references"
                   :key="reference.id"
@@ -122,19 +125,18 @@ import FilterComponentVue from "src/components/FilterComponent.vue";
 
 export default {
   mixins: [HelperMixinVue],
-  beforeMount(){
+  beforeMount() {
     this.$store.commit("SET_PAGINATION", {
       sortBy: "name",
       descending: false,
       page: 1,
-      rowsPerPage: 7,
+      rowsPerPage: 10,
       rowsNumber: 0,
     });
   },
 
-
   mounted() {
-    this.fetchPaymentItems(false, 1, 7, "name");
+    this.fetchPaymentItems(false, 1, 10, "name");
   },
   data() {
     return {
@@ -214,7 +216,7 @@ export default {
       show_delete_dialog: false,
       selected_payment_item: null,
       loading_download: false,
-      is_fetching_members:false
+      is_fetching_members: false,
     };
   },
   computed: {
@@ -344,7 +346,8 @@ export default {
 
     downloadPaymentItems(data) {
       let payment_category_id = this.$route.params.id;
-      let is_compulsory = data.is_compulsory !== "" ? data.is_compulsory.value:""
+      let is_compulsory =
+        data.is_compulsory !== "" ? data.is_compulsory.value : "";
       let category_name = this.$store.getters.getCurrentPaymentCategory.name;
       let url = `/api/protected/download-payment-items?payment_category_id=${payment_category_id}&is_compulsory=${is_compulsory}&frequency=${data.frequency}&type=${data.type}&state=${data.state}&page=&per_page&category_name=${category_name}`;
       let file_name = "Payment_Items.pdf";
@@ -364,7 +367,7 @@ export default {
           t: new Date().getTime(),
         },
       });
-      this.fetchPaymentItems(true, 1, 7, "name");
+      this.fetchPaymentItems(true, 1, 10, "name");
     },
 
     deleteRow(data) {
@@ -385,7 +388,7 @@ export default {
         },
       };
       this.$store.dispatch("deleteRequest", payload).then(() => {
-        this.fetchPaymentItems(false, 1, 7, "name");
+        this.fetchPaymentItems(false, 1, 10, "name");
       });
     },
 

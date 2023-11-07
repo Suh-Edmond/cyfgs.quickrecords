@@ -13,26 +13,25 @@
         </FilterComponentVue>
 
         <!--------------------------------------------------------START OF TABLE TO DISPLAY SAVINGS-------------------------->
-        <div class="row q-pt-sm">
-          <div class="col-md-12 col-xs-12 col-sm-12">
-            <TableVue
-              :columns="columns"
-              :data="getMembersSavings"
-              :label="label"
-              :message="message"
-              :show_savings="true"
-              :show_income_activity="false"
-              :show_members="false"
-              :total_saving="getTotalMembersSavings"
-              :show_contribution="false"
-              :pagination="getPagination"
-              :table_loading="getLoadingState"
-              @edit-member-saving="editMemberSaving"
-              @onRequest="onRequest"
-            >
-            </TableVue>
-          </div>
-        </div>
+        <TableVue
+          :class="
+            $q.platform.is.desktop ? 'q-pt-sm q-px-sm' : ' q-px-sm q-pt-lg'
+          "
+          :columns="columns"
+          :data="getMembersSavings"
+          :label="label"
+          :message="message"
+          :show_savings="true"
+          :show_income_activity="false"
+          :show_members="false"
+          :total_saving="getTotalMembersSavings"
+          :show_contribution="false"
+          :pagination="getPagination"
+          :table_loading="getLoadingState"
+          @edit-member-saving="editMemberSaving"
+          @onRequest="onRequest"
+        >
+        </TableVue>
         <!---------------------------------------------------------END OF TABLE OF SAVINGS------------------------------------>
       </div>
       <!---------------------------------------------------------END OF SAVINGS---------------------------------------->
@@ -49,26 +48,23 @@
       >
       </FilterComponentVue>
       <!-- table for filtered savings -->
-      <div class="row q-pt-sm">
-        <div class="col-md-12 col-xs-12 col-sm-12">
-          <TableVue
-            :columns="columns"
-            :data="getMembersSavings"
-            :label="label"
-            :message="message"
-            :show_savings="true"
-            :show_income_activity="false"
-            :show_members="false"
-            :total_saving="getTotalMembersSavings"
-            :show_contribution="false"
-            :pagination="getPagination"
-            :table_loading="getLoadingState"
-            @view-member-saving="ViewMemberSaving"
-            @onRequest="onRequest"
-          >
-          </TableVue>
-        </div>
-      </div>
+      <TableVue
+        :class="$q.platform.is.desktop ? 'q-pt-sm q-px-sm' : ' q-px-sm q-pt-lg'"
+        :columns="columns"
+        :data="getMembersSavings"
+        :label="label"
+        :message="message"
+        :show_savings="true"
+        :show_income_activity="false"
+        :show_members="false"
+        :total_saving="getTotalMembersSavings"
+        :show_contribution="false"
+        :pagination="getPagination"
+        :table_loading="getLoadingState"
+        @view-member-saving="ViewMemberSaving"
+        @onRequest="onRequest"
+      >
+      </TableVue>
     </div>
     <!------------------------------------------------------------END OF SAVINGS TO BE APPROVED / DECLINED------------->
   </q-page>
@@ -299,6 +295,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

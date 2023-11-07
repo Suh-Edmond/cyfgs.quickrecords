@@ -5,7 +5,7 @@
       :class="$q.screen.lg ? 'q-pt-lg flex flex-center' : 'q-pt-sm'"
     >
       <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12">
-        <q-card :class="$q.screen.lg ? 'q-mt-lg' : 'q-mt-md q-mb-xl'">
+        <q-card :class="$q.screen.lg ? 'q-mt-lg' : 'q-mt-md q-mb-xl login-card'">
           <q-card-section>
             <div class="text_h6 text-center q-pt-sm q-pb-sm">
               {{ $t("app.signIn") }}
@@ -62,6 +62,25 @@
                     class="q-pl-lg"
                   ></q-icon>
                 </q-btn>
+                <router-link
+                  to="/auth/password-reset/get-token"
+                  class="sign_link"
+                  v-if="!$q.platform.is.mobile"
+                >
+                  <span class="forgot_password text-right">{{
+                    $t("app.forgotPasswordMsg")
+                  }}</span>
+                </router-link>
+              </div>
+              <div class="row justify-center" v-if="$q.platform.is.mobile">
+                <div class="account_text">{{ $t("app.noAccountMsg") }}</div>
+                    <router-link to="/auth/register" class="sign_link"
+                    > &nbsp;<span @click="checkAccountExist('SIGN_UP')">{{
+                      $t("app.signUpLabel")
+                    }}</span></router-link
+                  >
+              </div>
+              <div class="row justify-center q-mb-xl" v-if="$q.platform.is.mobile">
                 <router-link
                   to="/auth/password-reset/get-token"
                   class="sign_link"
@@ -182,10 +201,10 @@ export default {
                     name: "create_organisation",
                   });
                   Notify.create({
-                    type:"info",
-                    message:this.$t('app.createOrganisationCaption'),
-                    position:Platform.is.mobile ? "bottom" : "top-right",
-                  })
+                    type: "info",
+                    message: this.$t("app.createOrganisationCaption"),
+                    position: Platform.is.mobile ? "bottom" : "top-right",
+                  });
                 }
                 return res;
               })
@@ -249,7 +268,6 @@ export default {
           }
         })
         .catch((error) => {
-          console.log(error);
         })
         .finally(() => {
           this.loading = false;
@@ -350,5 +368,11 @@ export default {
 .sign_link {
   text-decoration: none;
   color: $primary;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.login-card {
+  height: 500px;
 }
 </style>

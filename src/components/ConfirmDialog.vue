@@ -2,7 +2,7 @@
   <div>
     <!-- confirmation dialog for delete -->
     <q-dialog v-model="show_dialog">
-      <q-card>
+      <q-card :style="$q.platform.is.mobile?'min-width: 350px':'min-width: 400px'">
         <q-card-section class="q-pa-lg">
           <div class="q-mb-sm text-left">
             <label class="message">{{ msg }}</label

@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-sm">
+  <div :class="$q.platform.is.mobile?'q-px-sm':'q-pa-sm'">
     <div class="flex justify-center q-mb-md" v-if="getLoadingState">
       <q-spinner color="primary" size="2.5em" />
     </div>
@@ -7,7 +7,7 @@
       <label for="title" class="q-pb-md title">Available Roles:</label>
     </div>
     <div class="row" v-if="!getLoadingState">
-      <div class="col-3">
+      <div class="col-3 col-sm-12 col-md-3 col-lg-3 col-xs-12">
         <q-list separator bordered padding class="rounded-borders">
           <q-item
             clickable
@@ -36,9 +36,9 @@
           </q-item>
         </q-list>
       </div>
-      <div class="col-1"></div>
-      <div class="col-6">
-        <div class="flex justify-between">
+      <div class="col-1 col-sm-12 col-xs-12 col-lg-1 col-md-1"></div>
+      <div class="col-6 col-sm-12 col-xs-12 col-lg-6 col-md-1">
+        <div class="flex justify-between" :class="$q.platform.is.mobile? 'q-pt-md':''">
           <div>
             <label class="title">Role details</label>
           </div>
@@ -154,13 +154,12 @@
 
     <!------------------------------------------START DIALOG TO UPDATE ROLE------------------------------------------->
     <q-dialog v-model="show_dialog">
-      <q-card style="min-width: 450px" class="q-px-md q-pt-sm q-pb-md">
+      <q-card :style="$q.platform.is.mobile?'min-width: 350px':'min-width: 450px'" class="q-px-md q-pt-sm q-pb-md">
         <q-card-section class="row items-center q-pb-lg">
           <div class="text-h6 add_year">{{ $t("app.editRole") }}</div>
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
-
         <q-card-section class="q-pt-none">
           <q-form @submit="onUpdateRole" class="q-gutter-md">
             <div>
@@ -221,7 +220,7 @@ export default {
   data() {
     return {
       current_tag: "ADMIN",
-      selected_role: null,
+      selected_role: this.$store.getters.getRoles[0],
       show_dialog: false,
       role: {
         name: null,

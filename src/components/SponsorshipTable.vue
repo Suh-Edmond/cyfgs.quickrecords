@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-xs">
+  <div>
     <!-- table element -->
     <q-table
       :data="data"
@@ -165,13 +165,14 @@
         <q-input
           outlined
           dense
-          :class="
-            $q.screen.md
-              ? 'text-h6-sm q-mb-sm q-mt-sm full-width'
-              : 'text-h6-sm'
-          "
           v-model="filter"
-          :placeholder="$t('app.search')"
+          :placeholder="$t('app.tableSearch')"
+          :class="
+            $q.platform.is.mobile
+              ? 'row text-h6-sm'
+              : 'text-h6-sm q-mb-lg q-mt-lg full-width'
+          "
+          :style="$q.platform.is.mobile?'width:88vw':''"
         >
           <template v-slot:append>
             <q-icon name="search" />

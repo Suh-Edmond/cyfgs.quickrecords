@@ -1,267 +1,184 @@
 <template>
   <div>
-    <div class="row q-px-sm">
-      <div class="col-md-4 col-sm-12 col-xs-12">
-        <div class="items">
-          <q-list bordered padding>
-            <q-item-label header class="setting_title"
-              >{{$t('app.organisationLabel')}}</q-item-label
+    <div class="row" :class="$q.platform.is.mobile?'q-px-sm':''">
+      <q-list
+        bordered
+        padding
+        class="col-4 col-md-4 col-sm-12 col-xs-12 col-lg-4"
+      >
+        <q-item-label header class="setting_title">{{
+          $t("app.organisationLabel")
+        }}</q-item-label>
+
+        <q-item
+          clickable
+          v-ripple
+          @click="getCurrentItem('Session')"
+          :active-class="tag == 'Session' ? 'active_item' : ''"
+          :active="tag == 'Session'"
+        >
+          <q-item-section avatar top>
+            <q-icon
+              name="timer"
+              :class="
+                tag == 'Session' ? 'icon_color_active' : 'icon_color_in_active'
+              "
+              size="xs"
+            ></q-icon>
+          </q-item-section>
+          <q-item-section>
+            <q-item-label
+              :class="
+                tag == 'Session'
+                  ? 'text_header_active'
+                  : 'text_header_in_active'
+              "
+              >{{ $t("app.sessionLabel") }}</q-item-label
             >
-
-            <q-item
-              clickable
-              v-ripple
-              @click="getCurrentItem('Session')"
-              :active-class="tag == 'Session' ? 'active_item' : ''"
-              :active="tag == 'Session'"
+            <q-item-label
+              caption
+              :class="tag == 'Session' ? 'text_active' : 'text_in_active'"
             >
-              <q-item-section avatar top>
-                <q-icon
-                  name="timer"
-                  :class="
-                    tag == 'Session'
-                      ? 'icon_color_active'
-                      : 'icon_color_in_active'
-                  "
-                  size="xs"
-                ></q-icon>
-              </q-item-section>
-              <q-item-section>
-                <q-item-label
-                  :class="
-                    tag == 'Session'
-                      ? 'text_header_active'
-                      : 'text_header_in_active'
-                  "
-                  >{{$t('app.sessionLabel')}}</q-item-label
-                >
-                <q-item-label
-                  caption
-                  :class="tag == 'Session' ? 'text_active' : 'text_in_active'"
-                >
-                  {{$t('app.sessionCaptionMsg')}}
-                </q-item-label>
-              </q-item-section>
-            </q-item>
+              {{ $t("app.sessionCaptionMsg") }}
+            </q-item-label>
+          </q-item-section>
+        </q-item>
 
-            <q-item
-              clickable
-              v-ripple
-              @click="getCurrentItem('Registration_fee')"
-              :active-class="tag == 'Registration_fee' ? 'active_item' : ''"
-              :active="tag == 'Registration_fee'"
+        <q-item
+          clickable
+          v-ripple
+          @click="getCurrentItem('Registration_fee')"
+          :active-class="tag == 'Registration_fee' ? 'active_item' : ''"
+          :active="tag == 'Registration_fee'"
+        >
+          <q-item-section avatar top>
+            <q-icon
+              name="monetization_on"
+              :class="
+                tag == 'Registration_fee'
+                  ? 'icon_color_active'
+                  : 'icon_color_in_active'
+              "
+              size="xs"
+            ></q-icon>
+          </q-item-section>
+          <q-item-section>
+            <q-item-label
+              :class="
+                tag == 'Registration_fee'
+                  ? 'text_header_active'
+                  : 'text_header_in_active'
+              "
+              >{{ $t("app.registrationFeeLabel") }}</q-item-label
             >
-              <q-item-section avatar top>
-                <q-icon
-                  name="monetization_on"
-                  :class="
-                    tag == 'Registration_fee'
-                      ? 'icon_color_active'
-                      : 'icon_color_in_active'
-                  "
-                  size="xs"
-                ></q-icon>
-              </q-item-section>
-              <q-item-section>
-                <q-item-label
-                  :class="
-                    tag == 'Registration_fee'
-                      ? 'text_header_active'
-                      : 'text_header_in_active'
-                  "
-                  >{{$t('app.registrationFeeLabel')}}</q-item-label
-                >
-                <q-item-label
-                  caption
-                  :class="
-                    tag == 'Registration_fee' ? 'text_active' : 'text_in_active'
-                  "
-                >
-                 {{$t('app.registrationFeeCaptionMsg')}}
-                </q-item-label>
-              </q-item-section>
-            </q-item>
-
-            <!-- <q-item
-              clickable
-              v-ripple
-              @click="getCurrentItem('Roles')"
-              :active-class="tag == 'Roles' ? 'active_item' : ''"
-              :active="tag == 'Roles'"
+            <q-item-label
+              caption
+              :class="
+                tag == 'Registration_fee' ? 'text_active' : 'text_in_active'
+              "
             >
-              <q-item-section avatar top>
-                <q-icon
-                  name="folder"
-                  :class="
-                    tag == 'Roles'
-                      ? 'icon_color_active'
-                      : 'icon_color_in_active'
-                  "
-                  size="xs"
-                ></q-icon>
-              </q-item-section>
-              <q-item-section>
-                <q-item-label
-                  :class="
-                    tag == 'Roles'
-                      ? 'text_header_active'
-                      : 'text_header_in_active'
-                  "
-                  >Roles</q-item-label
+              {{ $t("app.registrationFeeCaptionMsg") }}
+            </q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-separator spaced />
+        <q-item-label header class="setting_title">{{
+          $t("app.settingsGeneralLabel")
+        }}</q-item-label>
+
+        <q-item>
+          <q-item-section avatar top>
+            <q-icon
+              name="notifications"
+              class="icon_color_general"
+              size="xs"
+            ></q-icon>
+          </q-item-section>
+          <q-item-section>
+            <q-item-label class="text_header_general">{{
+              $t("app.settingsNotificationLabel")
+            }}</q-item-label>
+            <q-item-label caption class="caption_text_general">
+              {{ $t("app.settingsNotificationCaption") }}
+            </q-item-label>
+          </q-item-section>
+          <q-item-section side>
+            <q-toggle color="blue" v-model="new_role_member" val="battery" />
+          </q-item-section>
+        </q-item>
+
+        <q-item tag="label" v-ripple>
+          <q-item-section avatar top>
+            <q-icon
+              name="translate"
+              class="icon_color_general"
+              size="xs"
+            ></q-icon>
+          </q-item-section>
+          <q-item-section>
+            <q-item-label class="text_header_general">{{
+              $t("app.settingsLanguage")
+            }}</q-item-label>
+            <q-item-label caption class="caption_text_general">
+              {{ $t("app.settingsLanguageCaption") }}
+            </q-item-label>
+          </q-item-section>
+          <q-item-section side>
+            <q-btn-dropdown :label="getLocale" flat class="labelText">
+              <q-list>
+                <q-item
+                  clickable
+                  v-close-popup
+                  @click="onItemClick('en-US')"
+                  class="lang_text"
                 >
-                <q-item-label
-                  caption
-                  :class="tag == 'Roles' ? 'text_active' : 'text_in_active'"
+                  <q-item-section class="text-center">
+                    <q-item-label>{{ $t("app.english") }}</q-item-label>
+                  </q-item-section>
+                </q-item>
+
+                <q-item
+                  clickable
+                  v-close-popup
+                  @click="onItemClick('fr')"
+                  class="lang_text"
                 >
-                  Set the number of members for each role
-                </q-item-label>
-              </q-item-section>
-            </q-item> -->
-
-            <!-- <q-item
-              clickable
-              v-ripple
-              @click="getCurrentItem('Subscription')"
-              :active-class="tag == 'Subscription' ? 'active_item' : ''"
-              :active="tag == 'Subscription'"
-            >
-              <q-item-section avatar top>
-                <q-icon
-                  name="folder"
-                  :class="
-                    tag == 'Subscription'
-                      ? 'icon_color_active'
-                      : 'icon_color_in_active'
-                  "
-                  size="xs"
-                ></q-icon>
-              </q-item-section>
-              <q-item-section>
-                <q-item-label
-                  :class="
-                    tag == 'Subscription'
-                      ? 'text_header_active'
-                      : 'text_header_in_active'
-                  "
-                  >Subscription Plan</q-item-label
-                >
-                <q-item-label
-                  caption
-                  :class="
-                    tag == 'Subscription' ? 'text_active' : 'text_in_active'
-                  "
-                >
-                  Manage organisation subscription plans
-                </q-item-label>
-              </q-item-section>
-            </q-item> -->
-
-            <q-separator spaced />
-            <q-item-label header class="setting_title">{{$t('app.settingsGeneralLabel')}}</q-item-label>
-
-            <q-item>
-              <q-item-section avatar top>
-                <q-icon
-                  name="notifications"
-                  class="icon_color_general"
-                  size="xs"
-                ></q-icon>
-              </q-item-section>
-              <q-item-section>
-                <q-item-label class="text_header_general"
-                  >{{$t('app.settingsNotificationLabel')}}</q-item-label
-                >
-                <q-item-label caption class="caption_text_general">
-                 {{$t('app.settingsNotificationCaption')}}
-                </q-item-label>
-              </q-item-section>
-              <q-item-section side>
-                <q-toggle
-                  color="blue"
-                  v-model="new_role_member"
-                  val="battery"
-                />
-              </q-item-section>
-            </q-item>
-
-            <q-item tag="label" v-ripple>
-              <q-item-section avatar top>
-                <q-icon
-                  name="translate"
-                  class="icon_color_general"
-                  size="xs"
-                ></q-icon>
-              </q-item-section>
-              <q-item-section>
-                <q-item-label class="text_header_general"
-                  >{{$t('app.settingsLanguage')}}</q-item-label
-                >
-                <q-item-label caption class="caption_text_general">
-                  {{$t('app.settingsLanguageCaption')}}
-                </q-item-label>
-              </q-item-section>
-              <q-item-section side>
-                  <q-btn-dropdown :label="getLocale" flat class="labelText">
-                    <q-list>
-                      <q-item
-                        clickable
-                        v-close-popup
-                        @click="onItemClick('en-US')"
-                        class="lang_text"
-                      >
-                        <q-item-section class="text-center" >
-                          <q-item-label>{{ $t("app.english") }}</q-item-label>
-                        </q-item-section>
-                      </q-item>
-
-                      <q-item
-                        clickable
-                        v-close-popup
-                        @click="onItemClick('fr')"
-                        class="lang_text"
-                      >
-                        <q-item-section class="text-center">
-                          <q-item-label>{{ $t("app.french") }}</q-item-label>
-                        </q-item-section>
-                      </q-item>
-                    </q-list>
-                  </q-btn-dropdown>
-              </q-item-section>
-            </q-item>
-          </q-list>
-        </div>
-      </div>
-
-      <div class="col-md-8 col-sm-12 col-xs-12">
-        <!-- div for Sessions -->
-        <div v-if="tag == 'Session'" class="q-ml-lg">
-          <SessionsTable
-            :data="data"
-            :columns="columns"
-            :table_loading="loading_session"
-            :table_header="session_table_header"
-            @fetch-sessions="getSessions"
-          ></SessionsTable>
-        </div>
-
-        <!-- div for registration fee -->
-        <div v-if="tag == 'Registration_fee'" class="q-ml-lg">
-          <RegistrationFeeTable
-            :columns="reg_table_columns"
-            :data="reg_table_data"
-            :table_header="table_header"
-            :loading="loading_reg_fees"
-            @fetch-registration-fee="getRegFee"
-          ></RegistrationFeeTable>
-        </div>
-      </div>
+                  <q-item-section class="text-center">
+                    <q-item-label>{{ $t("app.french") }}</q-item-label>
+                  </q-item-section>
+                </q-item>
+              </q-list>
+            </q-btn-dropdown>
+          </q-item-section>
+        </q-item>
+      </q-list>
+      <SessionsTable
+        :data="data"
+        :columns="columns"
+        :table_loading="loading_session"
+        :table_header="session_table_header"
+        @fetch-sessions="getSessions"
+        class="col-8 col-md-8 col-sm-12 col-xs-12"
+        v-if="tag == 'Session'"
+      ></SessionsTable>
+      <RegistrationFeeTable
+        :columns="reg_table_columns"
+        :data="reg_table_data"
+        :table_header="table_header"
+        :loading="loading_reg_fees"
+        @fetch-registration-fee="getRegFee"
+        class="col-8 col-md-8 col-sm-12 col-xs-12 col-lg-8"
+        v-if="tag == 'Registration_fee'"
+      ></RegistrationFeeTable>
     </div>
 
     <!-- add new year dialog -->
     <q-dialog v-model="show_add_year">
       <q-card style="min-width: 400px" class="q-px-md q-pt-sm q-pb-md">
         <q-card-section class="row items-center q-pb-lg">
-          <div class="text-h6 add_year">{{$t('app.settingsAddSessionLabel')}}</div>
+          <div class="text-h6 add_year">
+            {{ $t("app.settingsAddSessionLabel") }}
+          </div>
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
@@ -293,7 +210,9 @@
     <q-dialog v-model="show_edit_year">
       <q-card style="min-width: 400px" class="q-px-md q-pt-sm q-pb-sm">
         <q-card-section class="row items-center q-pb-lg">
-          <div class="text-h6 add_year">{{$t('app.settingsUpdateSessionLabel')}}</div>
+          <div class="text-h6 add_year">
+            {{ $t("app.settingsUpdateSessionLabel") }}
+          </div>
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
@@ -348,8 +267,8 @@ export default {
   },
   data() {
     return {
-      saveBtnLabel:this.$t('app.saveBtnLabel'),
-      yearLabel:this.$t('app.selectYearLabel'),
+      saveBtnLabel: this.$t("app.saveBtnLabel"),
+      yearLabel: this.$t("app.selectYearLabel"),
       new_role_member: true,
       columns: [
         {
@@ -421,10 +340,10 @@ export default {
         { name: "action", label: "Action", field: "action", align: "left" },
       ],
       reg_table_data: [],
-      table_header: this.$t('app.regFeeLabel'),
-      session_table_header: this.$t('app.sessionLabel'),
+      table_header: this.$t("app.regFeeLabel"),
+      session_table_header: this.$t("app.sessionLabel"),
       loading_session: false,
-      loading_reg_fees:false,
+      loading_reg_fees: false,
     };
   },
   computed: {
@@ -434,17 +353,17 @@ export default {
     getLoadingState() {
       return this.$store.getters.getFetchingState;
     },
-    getLocale(){
-      return this.$i18n.locale === 'en-US' ? this.$t('app.english') :this.$t('app.french');
-    }
+    getLocale() {
+      return this.$i18n.locale === "en-US"
+        ? this.$t("app.english")
+        : this.$t("app.french");
+    },
   },
 
   methods: {
-
     formDateTime(date) {
       return moment(date).format("MMMM Do YYYY");
     },
-
 
     getCurrentItem(type) {
       this.tag = type;
@@ -457,7 +376,6 @@ export default {
           break;
       }
     },
-
 
     onAddYear() {
       this.is_fetching = true;
@@ -509,24 +427,27 @@ export default {
       };
       this.loading_session = true;
       this.data = [];
-      this.$store.dispatch("getRequest", payload).then((res) => {
-        if (res.success) {
-          res.data.forEach((session) => {
-            this.data.push({
-              id:session.id,
-              year:session.year,
-              status:session.status,
-              created_at:session.created_at,
-              updated_at:session.updated_at,
-              counter:res.data.indexOf(session) + 1,
-              updated_by:session.updated_by
-            })
-          });
-        }
-        return this.data;
-      }).finally(() => {
-        this.loading_session = false;
-      });
+      this.$store
+        .dispatch("getRequest", payload)
+        .then((res) => {
+          if (res.success) {
+            res.data.forEach((session) => {
+              this.data.push({
+                id: session.id,
+                year: session.year,
+                status: session.status,
+                created_at: session.created_at,
+                updated_at: session.updated_at,
+                counter: res.data.indexOf(session) + 1,
+                updated_by: session.updated_by,
+              });
+            });
+          }
+          return this.data;
+        })
+        .finally(() => {
+          this.loading_session = false;
+        });
     },
 
     editYear(data) {
@@ -572,7 +493,7 @@ export default {
         to_on_fail: "none",
         show_spinner: true,
         show_feedback: false,
-        error_msg: this.$t('app.defaultErrorMsg'),
+        error_msg: this.$t("app.defaultErrorMsg"),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -583,59 +504,62 @@ export default {
       };
       this.loading_reg_fees = true;
       this.reg_table_data = [];
-      this.$store.dispatch("getRequest", payload).then((res) => {
-        if (res.success) {
-          res.data.forEach((ele) => {
-            this.reg_table_data.push({
-              counter: res.data.indexOf(ele) + 1,
-              id: ele.id,
-              amount: ele.amount,
-              frequency: ele.frequency,
-              status: ele.status,
-              is_compulsory: ele.is_compulsory,
-              created_at: ele.created_at,
-              updated_at: ele.updated_at,
-              updated_by: ele.updated_by,
+      this.$store
+        .dispatch("getRequest", payload)
+        .then((res) => {
+          if (res.success) {
+            res.data.forEach((ele) => {
+              this.reg_table_data.push({
+                counter: res.data.indexOf(ele) + 1,
+                id: ele.id,
+                amount: ele.amount,
+                frequency: ele.frequency,
+                status: ele.status,
+                is_compulsory: ele.is_compulsory,
+                created_at: ele.created_at,
+                updated_at: ele.updated_at,
+                updated_by: ele.updated_by,
+              });
             });
-          });
-        }
-        return this.reg_table_data;
-      }).finally(() => {
-        this.loading_reg_fees = false;
-      });
+          }
+          return this.reg_table_data;
+        })
+        .finally(() => {
+          this.loading_reg_fees = false;
+        });
     },
 
     onItemClick(lang) {
       if (lang == "fr") {
-        this.$i18n.locale = 'fr'
+        this.$i18n.locale = "fr";
         this.showAppTranslateLoading();
       }
       if (lang == "en-US") {
-        this.$i18n.locale = 'en-US';
+        this.$i18n.locale = "en-US";
         this.showAppTranslateLoading();
       }
     },
 
-    showAppTranslateLoading(){
+    showAppTranslateLoading() {
       this.$q.loading.show({
-        message: this.$t('app.appTranslationLabel'),
-        backgroundColor:'primary',
-        sanitize:true
-      })
+        message: this.$t("app.appTranslationLabel"),
+        backgroundColor: "primary",
+        sanitize: true,
+      });
 
       // hiding in 3s
       this.timer = setTimeout(() => {
-        this.$q.loading.hide()
-        this.timer = void 0
-      }, 5000)
+        this.$q.loading.hide();
+        this.timer = void 0;
+      }, 5000);
     },
 
-    beforeDestroy () {
-    if (this.timer !== void 0) {
-      clearTimeout(this.timer)
-      this.$q.loading.hide()
-    }
-  }
+    beforeDestroy() {
+      if (this.timer !== void 0) {
+        clearTimeout(this.timer);
+        this.$q.loading.hide();
+      }
+    },
   },
 
   components: {
@@ -743,7 +667,6 @@ export default {
 
 .caption_text_general {
   color: $grey2;
-
 }
 
 .edit_year {

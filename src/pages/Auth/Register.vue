@@ -80,7 +80,7 @@
                     </template>
                   </q-input>
                 </div>
-                <div class="q-pb-sm">
+                <div>
                   <label for="confirm_password" class="form_field"
                     >{{ $t("app.confirmPasswordLabel")
                     }}<span class="text-red">*</span></label
@@ -107,7 +107,7 @@
                     </template>
                   </q-input>
                 </div>
-                <div class="bottom">
+                <div :class="$q.platform.is.desktop ? 'bottom' : 'q-mt-md'">
                   <q-btn
                     class="form_button"
                     :label="label_sigup"
@@ -123,12 +123,15 @@
                       class="q-pl-lg"
                     ></q-icon>
                   </q-btn>
-                  <div class="account_text" v-if="!$q.screen.lg">
-                    {{ $t("app.haveAccountMsg")
-                    }}<router-link to="/auth/login" class="sign_link">
-                      <span>{{ $t("app.signInLabel") }}</span>
-                    </router-link>
-                  </div>
+                </div>
+                <div
+                  class="row justify-center bottom q-pt-md"
+                  v-if="$q.platform.is.mobile"
+                >
+                  {{ $t("app.haveAccountMsg")
+                  }}<router-link to="/auth/login" class="sign_link">
+                    <span>&nbsp;{{ $t("app.signInLabel") }}</span>
+                  </router-link>
                 </div>
               </q-form>
             </div>
@@ -140,6 +143,7 @@
 </template>
 
 <script>
+import { Notify, Platform } from "quasar";
 import { VueTelInput } from "vue-tel-input";
 export default {
   name: "PageIndex",
@@ -167,16 +171,18 @@ export default {
       return this.checkValidate();
     },
     validateForm() {
-      return this.user.name !== null &&
+      return (
+        this.user.name !== null &&
         this.user.telephone !== null &&
         this.user.password !== null &&
         this.user.password_confirmation !== null &&
         this.validatePasswordMatch
+      );
     },
 
-    invalidPassword(){
+    invalidPassword() {
       return this.user.password !== null && this.user.password.length < 8;
-    }
+    },
   },
   methods: {
     onSubmit() {
@@ -186,7 +192,7 @@ export default {
         msg: "Account Created Successfully",
         color: "default",
         to_on_ok: "Login",
-        to_on_fail: "undefined",
+        to_on_fail: "Register",
         error_msg: "default",
         show_feedback: true,
         to_be_store_data: {
@@ -199,7 +205,14 @@ export default {
         },
       };
       this.loading = true;
-      this.$store.dispatch("postRequest", payload).then(() => {
+      this.$store.dispatch("postRequest", payload).then((res) => {
+        if ((res.status = 422)) {
+          Notify.create({
+            type: "negative",
+            message: this.$t("app.createAccountFailMsg"),
+            position: Platform.is.mobile ? "bottom" : "top-right",
+          });
+        }
         this.loading = false;
       });
     },
@@ -260,8 +273,8 @@ export default {
 
 .form_button {
   width: 100%;
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
+  // margin-top: 0.5rem;
+  // margin-bottom: 0.5rem;
 }
 
 .forgot_password {
@@ -282,17 +295,17 @@ export default {
 .sign_link {
   text-decoration: none;
   color: $primary;
+  font-weight: 600;
+  font-size: 14px;
 }
 
 .account_text {
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 500;
-  font-size: 10px;
+  font-weight: 600;
+  font-size: 14px;
   color: $dark;
   text-transform: uppercase;
-  line-height: 37px;
-  float: right;
 }
 
 .bottom {

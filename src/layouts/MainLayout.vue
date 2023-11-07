@@ -57,59 +57,65 @@
         </div>
       </div>
     </q-drawer>
-
-    <q-page-container class="content">
-      <MainContent
-        :item="item"
-        :requires_add="requires_add"
-        @show-right-drawer="updateRightDrawer"
-        @show-left-drawer="updateLeftDrawer"
-        @search-contribution="searchContribution"
-      >
-        <router-view />
-      </MainContent>
-    </q-page-container>
+    <q-scroll-area
+      style="height: 100vh; max-width: 100vw"
+      :bar-style="{ width: '0px' }"
+      :thumb-style="{ width: '0px' }"
+    >
+      <q-page-container class="content">
+        <MainContent
+          :item="item"
+          :requires_add="requires_add"
+          @show-right-drawer="updateRightDrawer"
+          @show-left-drawer="updateLeftDrawer"
+          @search-contribution="searchContribution"
+        >
+          <router-view />
+        </MainContent>
+      </q-page-container>
+    </q-scroll-area>
 
     <q-drawer
       v-model="right"
       side="right"
       bordered
-      :width="right_drawer_width"
-      class="q-ml-lg"
+      :width="
+        $q.platform.is.mobile
+          ? right_drawer_width_mobile
+          : right_drawer_width_desktop
+      "
     >
       <q-page>
         <q-card class="bar" flat>
           <div class="flex q-pa-xs">
-            <div>
-              <q-btn
-                dense
-                color="white"
-                flat
-                icon="arrow_back"
-                v-close-popup
-                @click="goBack()"
-                size="sm"
-              >
-              </q-btn>
-            </div>
-            <div class="flex flex-center">
-              <label for="heading" class="heading text-white q-pl-lg text_h6">{{
-                heading
-              }}</label>
-            </div>
+            <q-btn
+              dense
+              color="white"
+              flat
+              icon="arrow_back"
+              v-close-popup
+              @click="goBack()"
+              :size="$q.platform.is.desktop ? 'sm' : 'md'"
+            >
+            </q-btn>
+            <label
+              for="heading"
+              class="text-white q-ml-lg"
+              :class="$q.platform.is.desktop ? 'text_h6' : 'side-bar-heading'"
+              >{{ heading }}</label
+            >
             <q-space />
-            <div>
-              <q-btn
-                dense
-                flat
-                color="white"
-                icon="close"
-                v-close-popup
-                @click="closeRightDrawer()"
-                size="sm"
-              >
-              </q-btn>
-            </div>
+            <q-btn
+              v-if="$q.platform.is.desktop"
+              dense
+              flat
+              color="white"
+              icon="close"
+              v-close-popup
+              @click="closeRightDrawer()"
+              size="sm"
+            >
+            </q-btn>
           </div>
         </q-card>
         <AddMember
@@ -284,7 +290,8 @@ export default {
         selected: true,
       },
       requires_add: false,
-      right_drawer_width: 480,
+      right_drawer_width_mobile: 400,
+      right_drawer_width_desktop: 480,
       current_tab: "",
       right_drawer_tab: "",
       data: null,
@@ -509,8 +516,11 @@ export default {
     },
 
     getRoleGroups() {
-      const storage_data = LocalStorage.getItem("data") !== undefined? LocalStorage.getItem("data").user_data : {};
-      return  storage_data.roles.map((ele) => ele.name);
+      const storage_data =
+        LocalStorage.getItem("data") !== undefined
+          ? LocalStorage.getItem("data").user_data
+          : {};
+      return storage_data.roles.map((ele) => ele.name);
     },
 
     getUserSideTabs() {
@@ -554,6 +564,10 @@ export default {
 </script>
 
 <style scoped lang="scss">
+::-webkit-scrollbar {
+  display: none;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -561,6 +575,7 @@ export default {
 .content {
   background-color: $grey1;
   overflow: hidden;
+  height: 100vh;
 }
 
 .drop_down_text {
@@ -658,5 +673,9 @@ export default {
   color: $dark;
   font-weight: 700;
   font-size: medium;
+}
+
+.side-bar-heading {
+  font-size: large;
 }
 </style>

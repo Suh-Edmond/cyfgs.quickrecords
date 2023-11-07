@@ -1,124 +1,145 @@
 <template>
-  <div class="q-pa-md">
-    <div class="q-ml-sm q-mb-md">
-      <label class="text-muted q-ml-sm info"
-        >{{$t('app.warningField')}}<span class="text-red">*</span> {{$t('app.fields')}}</label
+  <div>
+    <div class="q-mt-md">
+      <label class="text-muted info q-pl-lg"
+        >{{ $t("app.warningField") }}<span class="text-red">*</span>
+        {{ $t("app.fields") }}</label
       >
     </div>
-    <div class="q-mx-md">
-      <q-form @submit="onAddIncomeActivity" class="q-gutter-sm">
-        <div class="q-mb-md">
-          <label for="name" class="form_field"
-            >{{$t('app.paymentItem')}}<span class="text-red">*</span></label
-          >
-          <q-select
-            outlined
-            dense
-            v-model="income_activity.payment_item_id"
-            :label="$t('app.searchPaymentItem')"
-            :options="payment_items"
-            input-debounce="0"
-            clearable
-            use-input
-            @filter="filterPaymentItems"
-            @input="stopSearch"
-          >
-            <template v-slot:append v-if="start_filtering">
-              <q-spinner color="primary" size="1.2em" :thickness="5" />
-            </template>
+    <q-form @submit="onAddIncomeActivity" class="q-gutter-md q-mx-xs">
+      <div class="q-mb-md">
+        <label for="name" class="form_field"
+          >{{ $t("app.paymentItem") }}<span class="text-red">*</span></label
+        >
+        <q-select
+          outlined
+          dense
+          v-model="income_activity.payment_item_id"
+          :label="$t('app.searchPaymentItem')"
+          :options="payment_items"
+          input-debounce="0"
+          clearable
+          use-input
+          @filter="filterPaymentItems"
+          @input="stopSearch"
+          :readonly="existIncomeActivity"
+        >
+          <template v-slot:append v-if="start_filtering">
+            <q-spinner color="primary" size="1.2em" :thickness="5" />
+          </template>
 
-            <!-- no member found message -->
-            <template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey">
-                 {{$t('app.noResults')}}
-                </q-item-section>
-              </q-item>
-            </template>
-          </q-select>
-        </div>
-        <div class="q-mb-md">
-          <label for="credential" class="form_field"
-            >{{$t('app.nameLabel')}} <span class="text-red">*</span></label
-          >
-          <q-input v-model="income_activity.name" outlined dense type="text" />
-        </div>
-        <div class="q-mb-md">
-          <label for="credential" class="form_field"
-            >{{$t('app.amount')}} <span class="text-red">*</span></label
-          >
-          <q-input
-            v-model="income_activity.amount"
-            outlined
-            dense
-            type="number"
-          />
-        </div>
-        <div class="q-mb-md">
-          <label for="credential" class="form_field"
-            >{{$t('app.venue')}} <span class="text-red">*</span></label
-          >
-          <q-input v-model="income_activity.venue" outlined dense type="text" />
-        </div>
-        <div class="q-mb-md">
-          <label for="credential" class="form_field"
-            >{{$t('app.date')}} <span class="text-red">*</span></label
-          >
-          <q-input v-model="income_activity.date" outlined dense>
-            <template v-slot:append>
-              <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy
-                  ref="qDateProxy"
-                  transition-show="scale"
-                  transition-hide="scale"
-                >
-                  <q-date v-model="income_activity.date">
-                    <div class="row items-center justify-end">
-                      <q-btn v-close-popup label="Close" color="primary" flat />
-                    </div>
-                  </q-date>
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-          </q-input>
-        </div>
-        <div class="q-mb-md">
-          <label for="credential" class="form_field">{{$t('app.description')}}</label>
-          <q-input
-            v-model="income_activity.description"
-            outlined
-            dense
-            type="textarea"
-            :placeholder="$t('app.incomeDescription')"
-          />
-        </div>
-        <div class="row q-mt-lg justify-end">
-          <div class="col-md-2 col-sm-2 col-xs-2">
-            <ButtonVue
-              class="form_button"
-              :label="$t('app.saveBtnLabel')"
-              :loading="loading"
-              color="primary"
-              :disabled="validateForm"
-              :no_caps="true"
-            >
-            </ButtonVue>
-          </div>
-        </div>
-      </q-form>
-    </div>
+          <!-- no member found message -->
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey">
+                {{ $t("app.noResults") }}
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
+      </div>
+      <div class="q-mb-md">
+        <label for="credential" class="form_field"
+          >{{ $t("app.nameLabel") }} <span class="text-red">*</span></label
+        >
+        <q-input
+          v-model="income_activity.name"
+          outlined
+          dense
+          type="text"
+          :readonly="existIncomeActivity"
+        />
+      </div>
+      <div class="q-mb-md">
+        <label for="credential" class="form_field"
+          >{{ $t("app.amount") }} <span class="text-red">*</span></label
+        >
+        <q-input
+          v-model="income_activity.amount"
+          outlined
+          dense
+          type="number"
+          :readonly="existIncomeActivity"
+        />
+      </div>
+      <div class="q-mb-md">
+        <label for="credential" class="form_field"
+          >{{ $t("app.venue") }} <span class="text-red">*</span></label
+        >
+        <q-input
+          v-model="income_activity.venue"
+          outlined
+          dense
+          type="text"
+          :readonly="existIncomeActivity"
+        />
+      </div>
+      <div class="q-mb-md">
+        <label for="credential" class="form_field"
+          >{{ $t("app.date") }} <span class="text-red">*</span></label
+        >
+        <q-input
+          v-model="income_activity.date"
+          outlined
+          dense
+          :readonly="existIncomeActivity"
+        >
+          <template v-slot:append>
+            <q-icon name="event" class="cursor-pointer">
+              <q-popup-proxy
+                ref="qDateProxy"
+                transition-show="scale"
+                transition-hide="scale"
+              >
+                <q-date v-model="income_activity.date">
+                  <div class="row items-center justify-end">
+                    <q-btn v-close-popup label="Close" color="primary" flat />
+                  </div>
+                </q-date>
+              </q-popup-proxy>
+            </q-icon>
+          </template>
+        </q-input>
+      </div>
+      <div class="q-mb-md">
+        <label for="credential" class="form_field">{{
+          $t("app.description")
+        }}</label>
+        <q-input
+          v-model="income_activity.description"
+          outlined
+          dense
+          type="textarea"
+          :placeholder="$t('app.incomeDescription')"
+          :readonly="existIncomeActivity"
+        />
+      </div>
+      <div
+        :class="$q.platform.is.desktop ? 'flex q-mt-md justify-end' : 'q-mb-xl'"
+      >
+        <ButtonVue
+          class="form_button"
+          :label="$t('app.saveBtnLabel')"
+          :loading="loading"
+          color="primary"
+          :disabled="validateForm"
+          :no_caps="true"
+        >
+        </ButtonVue>
+      </div>
+    </q-form>
   </div>
 </template>
 <script>
 import ButtonVue from "src/components/Button.vue";
 import IncomeActivityMixinVue from "src/mixins/IncomeActivityMixin.vue";
-import moment from 'moment';
+import moment from "moment";
 
 export default {
   mixins: [IncomeActivityMixinVue],
 
   mounted() {
-    let heading = this.$t('app.addIncomeActivityHeading');
+    let heading = this.$t("app.addIncomeActivityHeading");
     this.$emit("set-heading", heading);
     this.getPaymentActivities();
   },
@@ -128,7 +149,7 @@ export default {
       loading: false,
       income_activity: {
         venue: null,
-        date: moment(new Date()).format('YYYY/MM/DD'),
+        date: moment(new Date()).format("YYYY/MM/DD"),
         name: null,
         description: null,
         amount: 0,
@@ -143,24 +164,30 @@ export default {
       dialog: false,
       payment_items: [],
       start_filtering: false,
-      organisation_id:this.$store.getters.getOrganisation.id,
+      organisation_id: this.$store.getters.getOrganisation.id,
     };
   },
   computed: {
     validateForm() {
-      return this.income_activity.amount == 0 ||
+      return (
+        this.income_activity.amount == 0 ||
         this.income_activity.name == null ||
         this.income_activity.date == null ||
-        this.income_activity.venue == null;
+        this.income_activity.venue == null ||
+        this.existIncomeActivity
+      );
     },
 
-    validateDisablePaymentItem()
-    {
-      return this,this.income_activity.payment_item_id != null;
+    validateDisablePaymentItem() {
+      return this, this.income_activity.payment_item_id != null;
     },
 
     getIncomeActivity() {
       return this.setFormFields(this.getUpdatedIncomeActivityFromState());
+    },
+
+    existIncomeActivity() {
+      return this.getIncomeActivity !== null;
     },
   },
 
@@ -214,12 +241,12 @@ export default {
               ? this.income_activity.payment_item_id.value
               : null,
         },
-        msg: this.$t('app.addIncomeSuccessFeedbackMsg'),
+        msg: this.$t("app.addIncomeSuccessFeedbackMsg"),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: this.$t('app.defaultErrorMsg'),
+        error_msg: this.$t("app.defaultErrorMsg"),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -228,7 +255,11 @@ export default {
           data: [],
         },
       };
-      this.setDispatchAction(this.income_activity.id, payload, this.organisation_id);
+      this.setDispatchAction(
+        this.income_activity.id,
+        payload,
+        this.organisation_id
+      );
     },
 
     resetForm() {
@@ -260,7 +291,7 @@ export default {
         this.$store
           .dispatch("postRequest", payload)
           .then(() => {
-            this.getOrganisationIncomeActivities(organisation_id,1 , 7);
+            this.getOrganisationIncomeActivities(organisation_id, 1, 7);
           })
           .finally(() => {
             this.$emit("close-right-drawer");
@@ -312,11 +343,11 @@ export default {
       return this.income_activity;
     },
 
-    stopSearch(){
-      if(this.income_activity.payment_item_id != null){
-        this.start_filtering = false
+    stopSearch() {
+      if (this.income_activity.payment_item_id != null) {
+        this.start_filtering = false;
       }
-    }
+    },
   },
   components: {
     ButtonVue,

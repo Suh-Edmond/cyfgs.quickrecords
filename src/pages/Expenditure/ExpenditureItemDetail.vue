@@ -13,34 +13,31 @@
       >
       </FilterComponentVue>
       <!-- table for categories -->
-      <div class="row q-pt-sm">
-        <div class="col-md-12 col-xs-12 col-sm-12">
-          <CategoryTable
-            :columns="columns"
-            :data="getExpenditureItemDetails"
-            :label="label"
-            :message="message"
-            :title="getExpenditureItemName"
-            :show_payment_category="false"
-            :show_payment_item="false"
-            :show_expenditure_category="false"
-            :show_expenditure_item="false"
-            :show_expenditure_item_detail="true"
-            :expenditure_item_amount="total_item_amount"
-            :total_amount_given="total_amount_given"
-            :total_amount_spent="total_amount_spent"
-            :balance="total_balance"
-            :total_balance="total_balance"
-            :pagination="getPagination"
-            :table_loading="getLoadingState"
-            @edit-expenditure-item-detail="editExpenditureItemDetail"
-            @view-expenditure-item-detail="viewExpenditureItemDetail"
-            @delete-row="onDeleteRow"
-            @onRequest="onRequest"
-          >
-          </CategoryTable>
-        </div>
-      </div>
+      <CategoryTable
+        :class="$q.platform.is.desktop ? 'q-pt-sm q-px-sm' : ' q-px-sm q-pt-xl'"
+        :columns="columns"
+        :data="getExpenditureItemDetails"
+        :label="label"
+        :message="message"
+        :title="getExpenditureItemName"
+        :show_payment_category="false"
+        :show_payment_item="false"
+        :show_expenditure_category="false"
+        :show_expenditure_item="false"
+        :show_expenditure_item_detail="true"
+        :expenditure_item_amount="total_item_amount"
+        :total_amount_given="total_amount_given"
+        :total_amount_spent="total_amount_spent"
+        :balance="total_balance"
+        :total_balance="total_balance"
+        :pagination="getPagination"
+        :table_loading="getLoadingState"
+        @edit-expenditure-item-detail="editExpenditureItemDetail"
+        @view-expenditure-item-detail="viewExpenditureItemDetail"
+        @delete-row="onDeleteRow"
+        @onRequest="onRequest"
+      >
+      </CategoryTable>
 
       <div class="q-mt-md" v-if="getExpenditureItemDetails.length > 0">
         <q-card>
@@ -136,8 +133,7 @@
               ></q-icon>
               <label class="text-orange text-subtitle2">
                 {{ $t("app.negativeExpenditureBalanceMsg") }}
-                </label
-              >
+              </label>
             </div>
           </q-card-section>
         </q-card>
@@ -285,16 +281,16 @@ export default {
     },
 
     getTotalAmountGiven() {
-      return this.$store.getters.getExpenditureItemDetails.total_amount_given
+      return this.$store.getters.getExpenditureItemDetails.total_amount_given;
     },
 
     getTotalAmountSpent() {
-      return this.$store.getters.getExpenditureItemDetails.total_amount_spent
+      return this.$store.getters.getExpenditureItemDetails.total_amount_spent;
     },
 
     getNetBalance() {
-      return this.$store.getters.getExpenditureItemDetails.total_balance
-    }
+      return this.$store.getters.getExpenditureItemDetails.total_balance;
+    },
   },
 
   methods: {

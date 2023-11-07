@@ -43,7 +43,6 @@
           />
         </div>
       </div>
-
       <div>
         <label for="credential" class="form_field"
           >{{ $t("app.deadline") }} <span class="text-red">*</span></label

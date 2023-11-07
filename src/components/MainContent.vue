@@ -86,7 +86,7 @@
             icon-right="add"
             label="Add"
             push
-            size="md"
+            :size="$q.platform.is.mobile ? 'sm' : 'md'"
             dense
             no-caps
             v-show="

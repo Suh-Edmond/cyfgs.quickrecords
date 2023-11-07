@@ -1,5 +1,20 @@
 <template>
   <div class="q-pa-md">
+    <q-banner
+      inline-actions
+      rounded
+      class="bg-secondary text-white q-mx-md q-mt-sm"
+      dense
+      v-if="existExpenditureItemDetail"
+    >
+      {{ $t("app.cantUpdatedExpenditureItemDetailAfterApprovalMsg") }}
+      <span class="text-lowercase">{{
+        getUpdatedExpenditureItemDetailFromState.approve
+      }}</span>
+      <template v-slot:action>
+        <q-btn flat icon="close" size="sm" />
+      </template>
+    </q-banner>
     <div class="q-ml-sm q-mb-md">
       <label class="text-muted q-ml-sm info"
         >{{ $t("app.warningField") }}<span class="text-red">*</span
@@ -129,6 +144,10 @@ export default {
         this.$store.getters.getUpdatedExpenditureItemDetail
       );
     },
+
+    existExpenditureItemDetail(){
+      return this.this.$store.getters.getUpdatedExpenditureItemDetail === null
+    }
   },
   watch: {
     setFormUpdateDetail() {

@@ -73,29 +73,28 @@
         </q-select>
       </div>
       <div class="flex col-md-3 col-lg-3 col-xs-12 col-sm-12">
-        <div :class="$q.screen.lg ? 'q-pr-md' : ''">
-          <q-btn
-            :label="$t('app.filter')"
-            color="primary"
-            :disabled="validateFilterMembers"
-            @click="filterMembers"
-            no-caps
-            icon-right="filter_list"
-          >
-          </q-btn>
-        </div>
+        <q-btn
+          :label="$t('app.filter')"
+          color="primary"
+          :disabled="validateFilterMembers"
+          @click="filterMembers"
+          no-caps
+          icon-right="filter_list"
+          :size="$q.platform.is.mobile ? 'sm' : 'md'"
+          :class="$q.screen.lg ? 'q-pr-md' : ''"
+        >
+        </q-btn>
         <q-space />
-        <div>
-          <q-btn
-            :label="$t('app.print')"
-            :loading="getDownloadLoadingState"
-            color="positive"
-            :disabled="getDisableDownloadBtn"
-            no-caps
-            icon-right="print"
-            @click="downloadMembers"
-          ></q-btn>
-        </div>
+        <q-btn
+          :label="$t('app.print')"
+          :loading="getDownloadLoadingState"
+          color="positive"
+          :disabled="getDisableDownloadBtn"
+          no-caps
+          icon-right="print"
+          @click="downloadMembers"
+          :size="$q.platform.is.mobile ? 'sm' : 'md'"
+        ></q-btn>
       </div>
     </div>
     <!---------------------------------------------END OF MEMBER MANAGEMENT FILTERS---------------------------------------->
@@ -129,9 +128,9 @@
           @click="filterCategories"
           no-caps
           icon-right="filter_list"
+          :size="$q.platform.is.mobile ? 'sm' : 'md'"
         >
         </q-btn>
-        <!-- <q-space /> -->
         <q-space />
         <q-btn
           :label="$t('app.print')"
@@ -141,6 +140,7 @@
           no-caps
           icon-right="print"
           @click="downloadCategories"
+          :size="$q.platform.is.mobile ? 'sm' : 'md'"
         ></q-btn>
       </div>
     </div>
@@ -148,13 +148,13 @@
 
     <!-------------------------------------------------HEADER FILTER FOR PAYMENT ITEMS------------------------------------->
     <div
-      :class="$q.screen.lg ? 'row q-pa-sm' : 'col q-gutter-sm q-px-sm'"
+      :class="$q.screen.lg ? 'row q-pa-sm' : 'q-gutter-sm q-px-sm'"
       :style="
         $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
       "
       v-if="show_filter_payment_items"
     >
-      <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12">
+      <div class="col">
         <q-select
           v-model="is_compulsory"
           outlined
@@ -164,7 +164,7 @@
           clearable
         />
       </div>
-      <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12" :class="$q.platform.is.desktop?'q-ml-xs':''">
+      <div class="col" :class="$q.platform.is.desktop ? 'q-ml-xs' : ''">
         <q-select
           v-model="type"
           outlined
@@ -174,7 +174,7 @@
           clearable
         />
       </div>
-      <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12" :class="$q.platform.is.desktop?'q-ml-xs':''">
+      <div class="col" :class="$q.platform.is.desktop ? 'q-ml-xs' : ''">
         <q-select
           v-model="frequency"
           outlined
@@ -184,7 +184,7 @@
           clearable
         />
       </div>
-      <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12" :class="$q.platform.is.desktop?'q-ml-xs':''">
+      <div class="col" :class="$q.platform.is.desktop ? 'q-ml-xs' : ''">
         <q-select
           v-model="state"
           outlined
@@ -194,30 +194,31 @@
           :label="$t('app.selectState')"
         />
       </div>
-      <div class="col-md-4 col-lg-4 col-xs-12 col-sm-12 flex" :class="$q.platform.is.desktop?'q-ml-xs':''">
-        <div>
-          <q-btn
-            :label="$t('app.filter')"
-            color="primary"
-            :disabled="validateFilterPaymentItem"
-            @click="filterPaymentItems"
-            no-caps
-            icon-right="filter_list"
-          >
-          </q-btn>
-        </div>
+      <div
+        class="col-4 col-md-4 col-lg-4 col-xs-12 col-sm-12 flex"
+        :class="$q.platform.is.desktop ? 'q-ml-xs' : ''"
+      >
+        <q-btn
+          :label="$t('app.filter')"
+          color="primary"
+          :disabled="validateFilterPaymentItem"
+          @click="filterPaymentItems"
+          no-caps
+          icon-right="filter_list"
+          :size="$q.platform.is.mobile ? 'sm' : 'md'"
+        >
+        </q-btn>
         <q-space />
-        <div>
-          <q-btn
-            :label="$t('app.print')"
-            :loading="getDownloadLoadingState"
-            color="positive"
-            :disabled="getDisableDownloadBtn"
-            no-caps
-            icon-right="print"
-            @click="downloadPaymentItems"
-          ></q-btn>
-        </div>
+        <q-btn
+          :label="$t('app.print')"
+          :loading="getDownloadLoadingState"
+          color="positive"
+          :disabled="getDisableDownloadBtn"
+          no-caps
+          icon-right="print"
+          @click="downloadPaymentItems"
+          :size="$q.platform.is.mobile ? 'sm' : 'md'"
+        ></q-btn>
       </div>
     </div>
     <!------------------------------------------------END OF FILTER HEADER PAYMENT  ITEM------------------------------------------>
@@ -255,7 +256,10 @@
           </template>
         </q-select>
       </div>
-      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12" :class="$q.platform.is.desktop?'q-pl-md':''">
+      <div
+        class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+        :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
+      >
         <q-select
           v-model="year"
           outlined
@@ -275,7 +279,10 @@
           </template>
         </q-select>
       </div>
-      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12" :class="$q.platform.is.desktop?'q-pl-md':''">
+      <div
+        class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+        :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
+      >
         <q-select
           v-model="payment_status"
           outlined
@@ -292,21 +299,22 @@
           </template>
         </q-select>
       </div>
-      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 flex" :class="$q.platform.is.desktop?'q-pl-md':''">
-        <div>
-          <q-btn
+      <div
+        class="col-md-3 col-lg-3 col-xs-12 col-sm-12 flex"
+        :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
+      >
+      <q-btn
             :label="$t('app.filter')"
             color="primary"
             :disabled="validateFilterExpenditureItems"
             no-caps
             icon-right="filter_list"
             @click="filterExpenditureItems"
+            :size="$q.platform.is.mobile ? 'sm' : 'md'"
           >
           </q-btn>
-        </div>
         <q-space />
-        <div class="button q-pb-xs">
-          <q-btn
+        <q-btn
             :label="$t('app.print')"
             :loading="getDownloadLoadingState"
             color="positive"
@@ -314,16 +322,15 @@
             no-caps
             icon-right="print"
             @click="downloadExpenditureItems"
+            :size="$q.platform.is.mobile ? 'sm' : 'md'"
           ></q-btn>
-        </div>
       </div>
     </div>
     <!-----------------------------------------------END HEADER FILTER FOR EXPENDITURE ITEMS--------------------------------------->
 
     <!----------------------------------------------HEADER FILTER FOR EXPENDITURE ITEM DETAILS-------------------------------------->
     <div
-      class="row q-ml-xs q-pt-xs"
-      :class="$q.screen.lg ? 'q-pa-sm' : ''"
+      :class="$q.screen.lg ? 'row q-pa-sm' : 'q-gutter-sm q-px-sm'"
       :style="
         $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
       "
@@ -338,7 +345,10 @@
           :label="$t('app.selectStatusLabel')"
         />
       </div>
-      <div class="q-pl-lg col-md-3 col-lg-3 col-xs-12 col-sm-12">
+      <div
+        class="col-md-9 col-lg-9 col-xs-12 col-sm-12 flex"
+        :class="$q.platform.is.desktop ? 'q-pl-sm' : ''"
+      >
         <q-btn
           :label="$t('app.filter')"
           color="primary"
@@ -346,11 +356,10 @@
           no-caps
           icon-right="filter_list"
           @click="filterItemDetails"
+          :size="$q.platform.is.mobile ? 'sm' : 'md'"
         >
         </q-btn>
-      </div>
-      <q-space />
-      <div class="button q-pb-xs">
+        <q-space />
         <q-btn
           :label="$t('app.print')"
           :loading="getDownloadLoadingState"
@@ -358,6 +367,7 @@
           :disabled="getDisableDownloadBtn"
           no-caps
           icon-right="print"
+          :size="$q.platform.is.mobile ? 'sm' : 'md'"
           @click="downloadExpenditureItemDetails"
         ></q-btn>
       </div>

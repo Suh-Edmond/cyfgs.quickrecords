@@ -512,5 +512,7 @@ export default {
     warningPayments:"All Payment Items under this category will be lost",
     noSavingAvailableMsg:"Member does not have any Savings",
     createAccountFailMsg:"Account Creation Fail! Please try again",
+    cantUpdatedExpenditureItemAfterApprovalMsg:"Expenditure Item cannot be updated after been ",
+    cantUpdatedExpenditureItemDetailAfterApprovalMsg:"Expenditure Item detail cannot be updated after been "
    }
 };

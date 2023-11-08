@@ -12,41 +12,41 @@
       </FilterComponentVue>
       <!-- table for contributions -->
       <TableVue
-      :class="$q.platform.is.desktop ? 'q-pt-sm q-px-sm' : ' q-px-xs q-pt-lg'"
-            :columns="columns"
-            :data="getMemberContributions"
-            :label="label"
-            :message="message"
-            :show_savings="false"
-            :show_income_activity="false"
-            :show_members="false"
-            :show_contribution="false"
-            :show_delete_contribution="true"
-            :total_contribution="getTotalMemberContribution"
-            :total_balance="getTotalBalance"
-            :show_member_contribution="true"
-            :pagination="pagination"
-            :table_loading="table_loader"
-            :title="getTableTitle"
-            @view-contribution="viewContribution"
-            @edit-contribution="editContribution"
-            @delete-row="deleteRow"
-            @onRequest="onRequest"
-          >
-          </TableVue>
+        :class="$q.platform.is.desktop ? 'q-pt-sm q-px-sm' : ' q-px-xs q-pt-lg'"
+        :columns="columns"
+        :data="getMemberContributions"
+        :label="label"
+        :message="message"
+        :show_savings="false"
+        :show_income_activity="false"
+        :show_members="false"
+        :show_contribution="false"
+        :show_delete_contribution="true"
+        :total_contribution="getTotalMemberContribution"
+        :total_balance="getTotalBalance"
+        :show_member_contribution="true"
+        :pagination="pagination"
+        :table_loading="table_loader"
+        :title="getTableTitle"
+        @view-contribution="viewContribution"
+        @edit-contribution="editContribution"
+        @delete-row="deleteRow"
+        @onRequest="onRequest"
+      >
+      </TableVue>
 
       <div class="q-mt-md" v-if="getMemberContributions.length > 0">
         <q-card>
           <q-card-section>
-            <div class="row q-ml-md">
+            <div class="row">
               <label
-                class="q-py-lg text-bold summary text-capitalize text-h6 text-underline"
+                class="q-py-md text-bold summary text-capitalize text-h6 text-underline"
                 >{{ $t("app.expenditureSummaryLabel") }}</label
               >
             </div>
-            <div class="row q-ml-md q-mb-lg">
+            <div class="row q-gutter-md q-mb-lg">
               <div
-                class="col-3 col-md-3 col-lg-3 col-xs-12 col-sm-3 summary_label"
+                class="col-md-3 col-sm-3 summary_label"
               >
                 <div class="q-mb-sm">
                   <label class="text-bold q-py-md detail_name"
@@ -96,7 +96,7 @@
                 </div>
               </div>
               <div
-                class="col-3 col-md-3 col-lg-3 col-xs-12 col-sm-3 summary_value"
+                class="col-md-3 col-sm-3 summary_value"
               >
                 <div class="q-mb-sm">
                   <label class="text-bold q-py-md detail_name"
@@ -149,8 +149,13 @@
                 </div>
               </div>
             </div>
-            <div class="row q-ml-md q-mb-lg">
-              <span v-if="getPaymentItemFrequency == 'QUARTERLY' || getPaymentItemFrequency == 'MONTHLY'">
+            <div class="row q-gutter-md q-mb-lg">
+              <span
+                v-if="
+                  getPaymentItemFrequency == 'QUARTERLY' ||
+                  getPaymentItemFrequency == 'MONTHLY'
+                "
+              >
                 <q-icon
                   name="info"
                   color="info"
@@ -281,7 +286,7 @@ export default {
         : 0;
     },
 
-    getTotalAmountPayable (){
+    getTotalAmountPayable() {
       return this.$store.getters.getMemberContributions !== null
         ? this.$store.getters.getMemberContributions.total_amount_payable
         : 0;
@@ -290,7 +295,8 @@ export default {
     getTableTitle() {
       let title = "";
       let user_name =
-        this.$store.getters.getMemberContributions !== null && this.$store.getters.getMemberContributions.data.length > 0
+        this.$store.getters.getMemberContributions !== null &&
+        this.$store.getters.getMemberContributions.data.length > 0
           ? this.$store.getters.getMemberContributions.data[0].user_name
           : "";
       let payment_item_name =

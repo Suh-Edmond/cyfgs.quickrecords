@@ -55,16 +55,15 @@
       >
       </TableVue>
 
-      <div class="q-mt-md" v-if="getTableData.length > 0">
+      <div class="q-mx-sm q-mt-md" v-if="getTableData.length > 0">
         <q-card>
-          <q-card-section>
-            <div class="row q-ml-md">
-              <label class="q-py-lg text-bold summary text-capitalize">{{
+          <div class="row  q-pa-sm">
+              <label class="q-py-sm text-bold summary text-capitalize text-underline">{{
                 $t("app.expenditureSummaryLabel")
               }}</label>
             </div>
-            <div class="row q-ml-md q-mb-lg">
-              <div class="col-2 col-md-2 col-lg-2 col-xs-12 col-sm-2">
+            <div class="row q-mb-lg q-gutter-md q-px-sm q-pb-lg">
+              <div class="col-md-3">
                 <div class="q-mb-xs">
                   <label class="text-bold q-py-md detail_name"
                     >{{ $t("app.paymentItem") }}:</label
@@ -75,13 +74,8 @@
                     >{{ $t("app.amountContributed") }}:</label
                   >
                 </div>
-                <!-- <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_name"
-                    >{{$t('app.balance')}}:</label
-                  >
-                </div> -->
               </div>
-              <div class="col-2 col-md-2 col-lg-2 col-xs-12 col-sm-2">
+              <div class="col-md-3">
                 <div class="q-mb-xs">
                   <label class="text-bold q-py-md detail_name"
                     >{{ getPaymentItemName }}
@@ -95,14 +89,8 @@
                     XAF</label
                   >
                 </div>
-                <!-- <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_name"
-                    >{{Number(9).toLocaleString()}} XAF</label
-                  >
-                </div> -->
               </div>
             </div>
-          </q-card-section>
         </q-card>
       </div>
     </div>
@@ -565,5 +553,6 @@ export default {
   line-height: 11px;
   letter-spacing: 0.01em;
   color: $grey8;
+  text-decoration: underline;
 }
 </style>

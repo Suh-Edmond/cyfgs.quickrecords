@@ -12,7 +12,7 @@
           <label for="credential" class="form_field"
             >{{ $t("app.nameLabel") }} <span class="text-red">*</span></label
           >
-          <q-input v-model="payment_category.name" outlined dense type="text" />
+          <q-input v-model="payment_category.name" outlined dense type="text" :readonly="checkTreasurerRole()" />
         </div>
         <div>
           <label for="credential" class="form_field"
@@ -24,7 +24,7 @@
             outlined
             dense
             type="text"
-            readonly
+            :readonly="checkTreasurerRole()"
           >
             <template v-slot:hint>
               {{ $t("app.codeHintCategory") }}
@@ -41,6 +41,7 @@
             dense
             type="textarea"
             placeholder="Please provide a description about the category"
+            :readonly="checkTreasurerRole()"
           />
         </div>
         <div   :class="$q.platform.is.desktop?'flex q-mt-lg justify-end':'q-pt-xs q-mb-lg'">
@@ -63,6 +64,7 @@
 <script>
 import ButtonVue from "src/components/Button.vue";
 import PaymentCategoryMixinVue from "src/mixins/PaymentCategoryMixin.vue";
+import { LocalStorage } from "quasar";
 
 export default {
   mixins: [PaymentCategoryMixinVue],
@@ -90,7 +92,7 @@ export default {
     validateForm() {
       return (
         this.payment_category.name === null ||
-        this.payment_category.code === null
+        this.payment_category.code === null || this.checkTreasurerRole()
       );
     },
     getUpdatedCategory() {
@@ -103,6 +105,13 @@ export default {
     },
   },
   methods: {
+    checkTreasurerRole() {
+      const treasurer_role = LocalStorage.getItem("data").user_data.roles.find(
+        (role) => role.name === "TREASURER"
+      );
+       return treasurer_role != undefined;
+    },
+
     setRequestUrl(){
       return this.getUpdatedPaymentCategoryFromState() === null ? `/api/protected/organisations/${this.organisation_id}/payment-categories`:
       `/api/protected/organisations/${this.organisation_id}/payment-categories/${this.getUpdatedPaymentCategoryFromState().id}`

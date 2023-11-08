@@ -32,6 +32,7 @@
               color="primary"
               no-caps
               class="view_items"
+              :style="$q.platform.is.mobile?'width:200px':'width:200px'"
               @click="showPaymentItems(props.row)"
               :to="{ name: 'payment_items', params: { id: props.row.id } }"
             >
@@ -92,6 +93,19 @@
                 </q-menu>
               </q-icon>
             </q-btn>
+            <q-btn
+              unelevated
+              color="primary"
+              no-caps
+              class="view_payment_category"
+              @click="onViewPaymentCategory(props.row)"
+              v-if="checkTreasurerRole()"
+            >
+              {{ $t("app.view") }}
+              <span class="q-pl-md"
+                ><q-icon name="visibility" size="xs"></q-icon
+              ></span>
+            </q-btn>
           </q-td>
         </q-tr>
         <!-- end of table body for payment category -->
@@ -120,6 +134,7 @@
               color="primary"
               no-caps
               class="view_items"
+              :style="$q.platform.is.mobile?'width:200px':'width:150px'"
               @click="showReferences(props.row)"
               v-if="props.row.payment_item_type == 'A_MEMBER'"
             >
@@ -136,6 +151,7 @@
               no-caps
               class="view_items"
               @click="showReferences(props.row)"
+              :style="$q.platform.is.mobile?'width:200px':'width:150px'"
               v-if="
                 props.row.payment_item_type == 'GROUPED_MEMBERS' ||
                 props.row.payment_item_type == 'MEMBERS_WITH_ROLES' ||
@@ -215,12 +231,12 @@
                 </q-menu>
               </q-icon>
             </q-btn>
-
             <q-btn
               unelevated
               color="primary"
               no-caps
               class="view_items"
+
               @click="onViewPaymentItem(props.row)"
               v-if="checkTreasurerRole()"
             >
@@ -247,6 +263,7 @@
               color="primary"
               no-caps
               class="view_items"
+              :style="$q.platform.is.mobile?'width:200px':'width:200px'"
               @click="showExpenditureItems(props.row)"
               :to="{ name: 'expenditure_items', params: { id: props.row.id } }"
             >
@@ -872,9 +889,9 @@ export default {
 
     checkTreasurerRole() {
       const treasurer_role = LocalStorage.getItem("data").user_data.roles.find(
-        (role) => role.name == "TREASURER"
+        (role) => role.name === "TREASURER"
       );
-      return treasurer_role != undefined;
+       return treasurer_role != undefined;
     },
 
     checkPresidentOrAdminRole() {
@@ -1225,8 +1242,16 @@ export default {
   font-size: 12px;
   align-items: center;
   text-transform: capitalize;
-  width: 200px;
 }
+
+.view_payment_category {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  align-items: center;
+  text-transform: capitalize;
+ }
 
 .field_total {
   font-family: "Roboto";

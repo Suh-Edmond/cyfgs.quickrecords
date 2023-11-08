@@ -3,22 +3,23 @@
     <!--------------------------------------------------TABLE FOR EXPENDITURE DETAILS---------------------------------------->
     <div>
       <div
-        class="row q-ml-xs q-pt-xs"
-        :class="$q.screen.lg ? 'q-pa-sm' : ''"
+        :class="$q.screen.lg ? 'row q-pa-sm' : 'col q-gutter-sm q-px-sm'"
         :style="
           $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
         "
       >
-        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
-          <q-select
-            v-model="status"
-            outlined
-            dense
-            :options="statuses"
-            :label="$t('app.selectStatusLabel')"
-          />
-        </div>
-        <div class="q-pl-lg col-md-3 col-lg-3 col-xs-12 col-sm-12">
+        <q-select
+          class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+          v-model="status"
+          outlined
+          dense
+          :options="statuses"
+          :label="$t('app.selectStatusLabel')"
+        />
+        <div
+          class="col-md-3 col-lg-3 col-xs-12 col-sm-12 flex"
+          :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
+        >
           <q-btn
             :label="$t('app.filter')"
             color="primary"
@@ -27,11 +28,10 @@
             icon-right="filter_list"
             @click="filterItems"
             :loading="is_fetching"
+            :size="$q.platform.is.mobile ? 'sm' : 'md'"
           >
           </q-btn>
-        </div>
-        <q-space />
-        <div class="button q-pb-xs">
+          <q-space />
           <q-btn
             :label="$t('app.print')"
             :loading="loading_download"
@@ -40,39 +40,37 @@
             no-caps
             icon-right="print"
             @click="downloadExpenditureItemDetails"
+            :size="$q.platform.is.mobile ? 'sm' : 'md'"
           ></q-btn>
         </div>
       </div>
 
-      <div class="q-px-sm q-pt-md">
-        <div class="col-md-12 col-xs-12 col-sm-12">
-          <CategoryTable
-            :columns="columns"
-            :data="expenditure_item_details"
-            :label="label"
-            :message="message"
-            :title="getTableTitle"
-            :show_payment_category="false"
-            :show_payment_item="false"
-            :show_expenditure_category="false"
-            :show_expenditure_item="false"
-            :show_expenditure_item_detail="true"
-            :expenditure_item_amount="total_item_amount"
-            :total_amount_given="total_amount_given"
-            :total_amount_spent="total_amount_spent"
-            :balance="total_balance"
-            :total_balance="total_balance"
-            :pagination="getPagination"
-            :table_loading="getLoadingState"
-            @edit-expenditure-item-detail="editExpenditureItemDetail"
-            @view-expenditure-item-detail="viewExpenditureItemDetail"
-            @delete-row="onDeleteRow"
-            @onRequest="onRequest"
-            @showSelectedRecords="showSelectedRecords"
-          >
-          </CategoryTable>
-        </div>
-      </div>
+      <CategoryTable
+        :class="$q.platform.is.desktop ? 'q-pt-sm q-px-sm' : ' q-px-sm q-pt-xl'"
+        :columns="columns"
+        :data="expenditure_item_details"
+        :label="label"
+        :message="message"
+        :title="getTableTitle"
+        :show_payment_category="false"
+        :show_payment_item="false"
+        :show_expenditure_category="false"
+        :show_expenditure_item="false"
+        :show_expenditure_item_detail="true"
+        :expenditure_item_amount="total_item_amount"
+        :total_amount_given="total_amount_given"
+        :total_amount_spent="total_amount_spent"
+        :balance="total_balance"
+        :total_balance="total_balance"
+        :pagination="getPagination"
+        :table_loading="getLoadingState"
+        @edit-expenditure-item-detail="editExpenditureItemDetail"
+        @view-expenditure-item-detail="viewExpenditureItemDetail"
+        @delete-row="onDeleteRow"
+        @onRequest="onRequest"
+        @showSelectedRecords="showSelectedRecords"
+      >
+      </CategoryTable>
 
       <!----------------------------------------------MULTIPLE APPROVAL/DECLINE OF RECORDS------------------------------->
       <q-card v-if="canShowBulkApproval" class="q-my-md q-mx-md">
@@ -99,16 +97,16 @@
       <!----------------------------------------------END OF MULTIPLE APPROVAL/DECLINE OF RECORDS----------------------->
 
       <!-----------------------------------------------SUMMARY FOR EXPENDITURE DETAILS ------------------------------------->
-      <div class="q-mt-md q-mx-md" v-if="expenditure_item_details.length > 0">
+      <div class="q-mt-sm" v-if="expenditure_item_details.length > 0">
         <q-card>
           <q-card-section>
-            <div class="row q-ml-md">
+            <div class="row">
               <label class="q-py-lg text-bold summary text-capitalize">{{
                 $t("app.expenditureSummaryLabel")
               }}</label>
             </div>
-            <div class="row q-ml-md q-mb-sm">
-              <div class="col-4 col-md-4 col-lg-4 col-xs-12 col-sm-4">
+            <div class="row">
+              <div class="col-6 col-md-6 col-lg-6 col-xs-6 col-sm-6">
                 <div class="q-mb-xs">
                   <label class="text-bold q-py-md detail_name"
                     >{{ $t("app.expenditureItemSummary") }}:</label
@@ -144,7 +142,7 @@
                   </label>
                 </div>
               </div>
-              <div class="col-3 col-md-3 col-lg-3 col-xs-12 col-sm-3">
+              <div class="col-6 col-md-6 col-lg-6 col-xs-6 col-sm-6">
                 <div class="q-mb-xs">
                   <label class="text-bold q-py-md detail_value"
                     >{{ expenditure_item_name }}
@@ -183,17 +181,17 @@
                 </div>
               </div>
             </div>
-            <div class="row q-mt-md q-ml-md q-mb-lg" v-if="total_balance < 0">
-                  <q-icon
-                    name="info"
-                    color="warning"
-                    size="sm"
-                    class="q-pr-md"
-                  ></q-icon>
-                  <label class="text-orange text-subtitle2">
-                    {{ $t("app.negativeExpenditureBalanceMsg") }}</label
-                  >
-                </div>
+            <div class="row q-ml-md" v-if="total_balance < 0">
+              <q-icon
+                name="info"
+                color="warning"
+                size="sm"
+                class="q-pr-md"
+              ></q-icon>
+              <label class="text-orange text-subtitle2">
+                {{ $t("app.negativeExpenditureBalanceMsg") }}</label
+              >
+            </div>
           </q-card-section>
         </q-card>
       </div>
@@ -379,7 +377,7 @@ export default {
       loading_payment: false,
       show_payment_dialog: false,
       type: "",
-      expenditure_item_name:""
+      expenditure_item_name: "",
     };
   },
   computed: {
@@ -415,9 +413,11 @@ export default {
       return this.selectedRecords.size > 0;
     },
 
-    getTableTitle(){
-      return this.expenditure_item_details.length > 0 ? this.$t('app.expensesFor') + this.expenditure_item_name : ""
-    }
+    getTableTitle() {
+      return this.expenditure_item_details.length > 0
+        ? this.$t("app.expensesFor") + this.expenditure_item_name
+        : "";
+    },
   },
   methods: {
     getExpenditureDetailsByItemId(
@@ -478,7 +478,7 @@ export default {
             this.total_amount_spent = response.data.total_amount_spent;
             this.total_item_amount = response.data.total_item_amount;
             this.total_balance = response.data.total_balance;
-            this.expenditure_item_name = response.data.expenditure_item_name
+            this.expenditure_item_name = response.data.expenditure_item_name;
           }
         })
         .finally(() => {

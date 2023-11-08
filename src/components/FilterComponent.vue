@@ -674,7 +674,7 @@
 
     <!--------------------------------------------FILTER HEADER FOR VIEW MEMBER CONTRIBUTIONS---------------------------------------------------->
     <div
-    :class="$q.screen.lg ? 'row q-pa-sm' : 'col q-gutter-sm q-px-xs'"
+      :class="$q.screen.lg ? 'row q-pa-sm' : 'col q-gutter-sm q-px-xs'"
       :style="
         $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
       "
@@ -827,8 +827,7 @@
 
     <!--------------------------------------------FILTER HEADER FOR REPORTS--------------------------------------------------------------------->
     <div
-      class="row q-ml-xs justify-between"
-      :class="$q.screen.lg ? 'q-pa-sm' : ''"
+      :class="$q.screen.lg ? 'row q-pa-sm' : 'col q-gutter-sm q-px-sm'"
       :style="
         $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
       "

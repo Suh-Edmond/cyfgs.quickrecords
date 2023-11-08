@@ -513,6 +513,9 @@ export default {
     noSavingAvailableMsg:"Member does not have any Savings",
     createAccountFailMsg:"Account Creation Fail! Please try again",
     cantUpdatedExpenditureItemAfterApprovalMsg:"Expenditure Item cannot be updated after been ",
-    cantUpdatedExpenditureItemDetailAfterApprovalMsg:"Expenditure Item detail cannot be updated after been "
+    cantUpdatedExpenditureItemDetailAfterApprovalMsg:"Expenditure Item detail cannot be updated after been ",
+    cantUpdatedIncomeAfterApprovalMsg:"Income Activity cannot be updated after been ",
+    cantUpdateSavingMsg:"Saving cannot be updated after been ",
+    cantUpdateSponsorshipMsg:"Sponsorship cannot be updated after been "
    }
 };

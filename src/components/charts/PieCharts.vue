@@ -1,12 +1,17 @@
 <template>
-  <div class="q-pa-md">
-    <q-card flat>
-      <q-card-section>
-        <Doughnut :chart-options="chartOptions" :chart-data="chartData" :chart-id="chartId" :dataset-id-key="datasetIdKey"
-          :plugins="plugins" :css-classes="cssClasses" :styles="styles" :width="width" :height="height"></Doughnut>
-      </q-card-section>
-    </q-card>
-  </div>
+  <q-card flat>
+    <Doughnut
+      :chart-options="chartOptions"
+      :chart-data="chartData"
+      :chart-id="chartId"
+      :dataset-id-key="datasetIdKey"
+      :plugins="plugins"
+      :css-classes="cssClasses"
+      :styles="styles"
+      :width="width"
+      :height="height"
+    ></Doughnut>
+  </q-card>
 </template>
 
 <script>
@@ -19,8 +24,8 @@ import {
   ArcElement,
   CategoryScale,
 } from "chart.js";
-import organisationMixinVue from 'src/mixins/organisationMixin.vue';
-import memberMixinVue from 'src/mixins/memberMixin.vue';
+import organisationMixinVue from "src/mixins/organisationMixin.vue";
+import memberMixinVue from "src/mixins/memberMixin.vue";
 
 ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale);
 
@@ -51,16 +56,16 @@ export default {
     },
     styles: {
       type: Object,
-      default: () => { },
+      default: () => {},
     },
     plugins: {
       type: Array,
       default: () => [],
     },
-    chartData:{
+    chartData: {
       type: Object,
-      required:true
-    }
+      required: true,
+    },
   },
   data() {
     return {
@@ -70,12 +75,9 @@ export default {
       },
     };
   },
-  computed: {
-  },
-  watch: {
-  },
-  methods: {
-  },
+  computed: {},
+  watch: {},
+  methods: {},
   components: {
     Doughnut,
   },

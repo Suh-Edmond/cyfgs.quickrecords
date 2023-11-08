@@ -1,5 +1,21 @@
 <template>
   <div>
+    <q-banner
+      inline-actions
+      rounded
+      class="bg-warning text-white q-mx-md q-mt-sm"
+      dense
+      v-if="existIncomeActivity"
+    >
+      {{ $t("app.cantUpdatedIncomeAfterApprovalMsg") }}
+      <span class="text-lowercase">{{
+        getUpdatedIncomeActivityFromState().approve
+      }}</span>
+      <template v-slot:action>
+        <q-btn flat icon="close" size="sm" />
+      </template>
+    </q-banner>
+
     <div class="q-mt-md">
       <label class="text-muted info q-pl-lg"
         >{{ $t("app.warningField") }}<span class="text-red">*</span>
@@ -187,7 +203,10 @@ export default {
     },
 
     existIncomeActivity() {
-      return this.getIncomeActivity !== null;
+      return (
+        this.getUpdatedIncomeActivityFromState() !== null &&
+        this.getUpdatedIncomeActivityFromState().approve !== "PENDING"
+      );
     },
   },
 

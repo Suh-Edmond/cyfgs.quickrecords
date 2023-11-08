@@ -39,7 +39,7 @@
       >
       </CategoryTable>
 
-      <div class="q-mt-md" v-if="getExpenditureItemDetails.length > 0">
+      <div class="q-mt-xs q-mx-lg" v-if="getExpenditureItemDetails.length > 0">
         <q-card>
           <q-card-section>
             <div class="row q-ml-md">

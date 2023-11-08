@@ -1,5 +1,20 @@
 <template>
   <div>
+    <q-banner
+      inline-actions
+      rounded
+      class="bg-warning text-white q-mx-md q-mt-sm q-mb-sm"
+      dense
+      v-if="existSponsorship"
+    >
+      {{ $t("app.cantUpdateSponsorshipMsg") }}
+      <span class="text-lowercase">{{
+        getSelectedSponsorship.approve
+      }}</span>
+      <template v-slot:action>
+        <q-btn flat icon="close" size="sm" />
+      </template>
+    </q-banner>
     <div class="q-mt-md">
       <label class="instruction_info q-pl-md"
         >{{ $t("app.warningField") }} <span class="text-red">*</span>
@@ -140,7 +155,7 @@ export default {
     },
 
     existSponsorship() {
-      return this.getSelectedSponsorship !== null && this.getSelectedSponsorship.approve !== "PENDING";
+      return this.$store.getters.getSelectedSponsorship !== null && this.$store.getters.getSelectedSponsorship.approve != "PENDING";
     }
   },
   watch: {

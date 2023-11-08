@@ -1,168 +1,157 @@
 <template>
   <q-page>
     <div class="row">
-      <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12 q-px-xs">
-        <q-card
-          :class="statistics_type == 'MEMBERSHIP' ? 'members_card' : 'card'"
-          bordered
-          @click="showStatistics('MEMBERSHIP')"
-        >
-          <q-card-section>
-            <div
-              :class="
-                statistics_type == 'MEMBERSHIP' ? 'text-h6-active' : 'text-h6'
-              "
-            >
-              {{ $t("app.memberLabel") }}
-            </div>
-          </q-card-section>
+      <q-card
+        class="col-6 col-md-3"
+        :class="statistics_type == 'MEMBERSHIP' ? 'members_card' : 'card'"
+        bordered
+        @click="showStatistics('MEMBERSHIP')"
+      >
+        <q-card-section>
+          <div
+            :class="
+              statistics_type == 'MEMBERSHIP' ? 'text-h6-active' : 'text-h6'
+            "
+          >
+            {{ $t("app.memberLabel") }}
+          </div>
+        </q-card-section>
 
-          <q-card-actions align="around" class="q-pb-sm">
-            <div>
-              <q-avatar
-                color="positive"
-                icon="groups"
-                size="xl"
-                text-color="white"
-              >
-              </q-avatar>
-            </div>
-            <div>
-              <label
-                for="total"
-                :class="
-                  statistics_type == 'MEMBERSHIP' ? 'total-active' : 'total'
-                "
-                >{{ getTotalMembers }}</label
-              >
-            </div>
-          </q-card-actions>
-        </q-card>
-      </div>
-      <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12 q-px-xs">
-        <q-card
-          :class="statistics_type == 'SAVINGS' ? 'saving_card' : 'card'"
-          bordered
-          @click="showStatistics('SAVINGS')"
-        >
-          <q-card-section>
-            <div
-              :class="
-                statistics_type == 'SAVINGS' ? 'text-h6-active' : 'text-h6'
-              "
+        <q-card-actions align="around" class="q-pb-sm">
+          <div>
+            <q-avatar
+              color="positive"
+              icon="groups"
+              size="xl"
+              text-color="white"
             >
-              {{ $t("app.savingtitle") }}
-            </div>
-          </q-card-section>
-
-          <q-card-actions align="around" class="q-pb-sm">
-            <div>
-              <q-avatar
-                color="pink-11"
-                icon="savings"
-                size="xl"
-                text-color="white"
-              ></q-avatar>
-            </div>
-            <div>
-              <label
-                for="total"
-                :class="statistics_type == 'SAVINGS' ? 'total-active' : 'total'"
-                >{{
-                  Number(getTotalMembersSavings).toLocaleString()
-                }}
-                XAF</label
-              >
-            </div>
-          </q-card-actions>
-        </q-card>
-      </div>
-      <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12 q-px-xs">
-        <q-card
-          :class="
-            statistics_type == 'CONTRIBUTIONS' ? 'contribution_card' : 'card'
-          "
-          bordered
-          @click="showStatistics('CONTRIBUTIONS')"
-        >
-          <q-card-section>
-            <div
+            </q-avatar>
+          </div>
+          <div>
+            <label
+              for="total"
               :class="
-                statistics_type == 'CONTRIBUTIONS'
-                  ? 'text-h6-active'
-                  : 'text-h6'
+                statistics_type == 'MEMBERSHIP' ? 'total-active' : 'total'
               "
+              >{{ getTotalMembers }}</label
             >
-              {{ $t("app.contributionName") }}
-            </div>
-          </q-card-section>
+          </div>
+        </q-card-actions>
+      </q-card>
+      <q-card
+        class="col-6 col-md-3"
+        :class="statistics_type == 'SAVINGS' ? 'saving_card' : 'card'"
+        bordered
+        @click="showStatistics('SAVINGS')"
+      >
+        <q-card-section>
+          <div
+            :class="statistics_type == 'SAVINGS' ? 'text-h6-active' : 'text-h6'"
+          >
+            {{ $t("app.savingtitle") }}
+          </div>
+        </q-card-section>
 
-          <q-card-actions align="around" class="q-pb-sm">
-            <div>
-              <q-avatar
-                color="indigo-11"
-                icon="payments"
-                size="xl"
-                text-color="white"
-              ></q-avatar>
-            </div>
-            <div>
-              <label
-                for="total"
-                :class="
-                  statistics_type == 'CONTRIBUTIONS' ? 'total-active' : 'total'
-                "
-                >{{
-                  Number(getTotalYearlyContribution).toLocaleString()
-                }}
-                XAF</label
-              >
-            </div>
-          </q-card-actions>
-        </q-card>
-      </div>
-      <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12 q-px-xs">
-        <q-card
-          :class="
-            statistics_type == 'EXPENDITURES' ? 'expenditures_card' : 'card'
-          "
-          bordered
-          @click="showStatistics('EXPENDITURES')"
-        >
-          <q-card-section>
-            <div
+        <q-card-actions align="around" class="q-pb-sm">
+          <div>
+            <q-avatar
+              color="pink-11"
+              icon="savings"
+              size="xl"
+              text-color="white"
+            ></q-avatar>
+          </div>
+          <div>
+            <label
+              for="total"
+              :class="statistics_type == 'SAVINGS' ? 'total-active' : 'total'"
+              >{{ Number(getTotalMembersSavings).toLocaleString() }} XAF</label
+            >
+          </div>
+        </q-card-actions>
+      </q-card>
+      <q-card
+        class="col-6 col-md-3"
+        :class="
+          statistics_type == 'CONTRIBUTIONS' ? 'contribution_card' : 'card'
+        "
+        bordered
+        @click="showStatistics('CONTRIBUTIONS')"
+      >
+        <q-card-section>
+          <div
+            :class="
+              statistics_type == 'CONTRIBUTIONS' ? 'text-h6-active' : 'text-h6'
+            "
+          >
+            {{ $t("app.contributionName") }}
+          </div>
+        </q-card-section>
+
+        <q-card-actions align="around" class="q-pb-sm">
+          <div>
+            <q-avatar
+              color="indigo-11"
+              icon="payments"
+              size="xl"
+              text-color="white"
+            ></q-avatar>
+          </div>
+          <div>
+            <label
+              for="total"
               :class="
-                statistics_type == 'EXPENDITURES' ? 'text-h6-active' : 'text-h6'
+                statistics_type == 'CONTRIBUTIONS' ? 'total-active' : 'total'
               "
+              >{{
+                Number(getTotalYearlyContribution).toLocaleString()
+              }}
+              XAF</label
             >
-              {{ $t("app.expenditureName") }}
-            </div>
-          </q-card-section>
+          </div>
+        </q-card-actions>
+      </q-card>
+      <q-card
+        class="col-6 col-md-3"
+        :class="
+          statistics_type == 'EXPENDITURES' ? 'expenditures_card' : 'card'
+        "
+        bordered
+        @click="showStatistics('EXPENDITURES')"
+      >
+        <q-card-section>
+          <div
+            :class="
+              statistics_type == 'EXPENDITURES' ? 'text-h6-active' : 'text-h6'
+            "
+          >
+            {{ $t("app.expenditureName") }}
+          </div>
+        </q-card-section>
 
-          <q-card-actions align="around" class="q-pb-sm">
-            <div>
-              <q-avatar
-                color="teal-2"
-                icon="data_exploration"
-                size="xl"
-                text-color="white"
-              ></q-avatar>
-            </div>
-            <div>
-              <label
-                for="total"
-                :class="
-                  statistics_type == 'EXPENDITURES' ? 'total-active' : 'total'
-                "
-                >{{
-                  Number(getTotalYearlyExpenditure).toLocaleString()
-                }}
-                XAF</label
-              >
-            </div>
-          </q-card-actions>
-        </q-card>
-      </div>
+        <q-card-actions align="around" class="q-pb-sm">
+          <div>
+            <q-avatar
+              color="teal-2"
+              icon="data_exploration"
+              size="xl"
+              text-color="white"
+            ></q-avatar>
+          </div>
+          <div>
+            <label
+              for="total"
+              :class="
+                statistics_type == 'EXPENDITURES' ? 'total-active' : 'total'
+              "
+              >{{
+                Number(getTotalYearlyExpenditure).toLocaleString()
+              }}
+              XAF</label
+            >
+          </div>
+        </q-card-actions>
+      </q-card>
     </div>
 
     <!-- <div> -->
@@ -193,32 +182,20 @@
 
     <!-----------------------------------------------CONTRIBUTIONS STATISTICS--------------------------------------->
     <div class="row" v-if="statistics_type == 'CONTRIBUTIONS'">
-      <div class="col-md-6 col-sm-12 col-xs-12 col-lg-6">
-        <LineChart :chartData="lineChartData3"></LineChart>
-      </div>
-      <div class="col-md-6 col-sm-12 col-xs-12 col-lg-6">
-        <LineChart :chartData="lineChartData4"></LineChart>
-      </div>
+      <LineChart class="col-6 col-md-6 col-xs-12 col-sm-12" :chartData="lineChartData3"></LineChart>
+      <LineChart class="col-6 col-md-6 col-xs-12 col-sm-12" :chartData="lineChartData4"></LineChart>
     </div>
 
     <div class="row" v-if="statistics_type == 'CONTRIBUTIONS'">
-      <div class="col-6 col-md-6 col-sm-12 col-xs-12 col-lg-6">
-        <BarChartVue :chartData="barChartData1"></BarChartVue>
-      </div>
-      <div class="col-6 col-md-6 col-sm-12 col-xs-12 col-lg-6">
-        <BarChartVue :chartData="barChartData2"></BarChartVue>
-      </div>
+      <BarChartVue class="col-6 col-md-6 col-xs-12 col-sm-12" :chartData="barChartData1"></BarChartVue>
+      <BarChartVue class="col-6 col-md-6 col-xs-12 col-sm-12" :chartData="barChartData2"></BarChartVue>
     </div>
     <!--------------------------------------------END OF CONTRIBUTIONS STATISTICS----------------------------------->
 
     <!-----------------------------------------------EXPENDITURES STATISTICS--------------------------------------->
     <div class="row" v-if="statistics_type == 'EXPENDITURES'">
-      <div class="col-6 col-md-6 col-sm-12 col-xs-12 col-lg-6">
-        <LineChart :chartData="expenditureLineChartData1"></LineChart>
-      </div>
-      <div class="col-6 col-md-6 col-sm-12 col-xs-12 col-lg-6">
-        <BarChartVue :chartData="expenditureBarChartData2"></BarChartVue>
-      </div>
+      <LineChart class="col-6 col-md-6 col-xs-12 col-sm-12" :chartData="expenditureLineChartData1"></LineChart>
+      <BarChartVue class="col-6 col-md-6 col-xs-12 col-sm-12" :chartData="expenditureBarChartData2"></BarChartVue>
     </div>
     <!--------------------------------------------END OF EXPENDITURES STATISTICS----------------------------------->
     <!-- </div> -->

@@ -1,8 +1,15 @@
 <template>
   <div class="q-px-sm">
-    <div class="row flex justify-between q-pa-sm q-mx-sm q-my-md" :style="$q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-      " v-if="show_hint">
-      <div class="hint_text_color q-pt-sm">{{ $t('app.generateReportHint') }}</div>
+    <div
+      class="row flex justify-between q-pa-sm q-mx-sm q-my-md"
+      :style="
+        $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+      "
+      v-if="show_hint"
+    >
+      <div class="hint_text_color q-pt-sm">
+        {{ $t("app.generateReportHint") }}
+      </div>
       <div>
         <q-btn flat round class="close_color" icon="close" @click="closeHint" />
       </div>
@@ -10,8 +17,13 @@
     <!-- report details available -->
     <div>
       <!-- header for filter sponsors -->
-      <FilterComponentVue :show_report="true" :loading_download="loading_download"
-        :disable_download_btn="validateDownloadBtn" @generate-report="generateReport" @download-report="downloadReport">
+      <FilterComponentVue
+        :show_report="true"
+        :loading_download="loading_download"
+        :disable_download_btn="validateDownloadBtn"
+        @generate-report="generateReport"
+        @download-report="downloadReport"
+      >
       </FilterComponentVue>
 
       <div class="flex flex-center q-mt-lg" v-if="getLoadingState">
@@ -20,7 +32,10 @@
       <!-- table for report by activity -->
       <div class="row q-pt-sm" v-if="show_activity_report">
         <div class="col-md-12 col-xs-12 col-sm-12">
-          <ActivityReportTable :heading="heading" :activity_report_data="activity_report_data">
+          <ActivityReportTable
+            :heading="heading"
+            :activity_report_data="activity_report_data"
+          >
           </ActivityReportTable>
         </div>
       </div>
@@ -53,7 +68,7 @@ import { LocalStorage } from "quasar";
 
 export default {
   mixins: [HelperMixin, CurrentYearMixinVue],
-  mounted() { },
+  mounted() {},
 
   data() {
     return {
@@ -89,9 +104,8 @@ export default {
 
   methods: {
     closeHint() {
-      return this.show_hint = false;
+      return (this.show_hint = false);
     },
-
 
     generateReport(data) {
       switch (data.report_option.value) {

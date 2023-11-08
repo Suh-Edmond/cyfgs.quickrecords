@@ -32,6 +32,7 @@
               color="primary"
               no-caps
               class="view_items"
+              :style="$q.platform.is.mobile?'width:200px':'width:200px'"
               @click="showPaymentItems(props.row)"
               :to="{ name: 'payment_items', params: { id: props.row.id } }"
             >
@@ -92,6 +93,19 @@
                 </q-menu>
               </q-icon>
             </q-btn>
+            <q-btn
+              unelevated
+              color="primary"
+              no-caps
+              class="view_payment_category"
+              @click="onViewPaymentCategory(props.row)"
+              v-if="checkTreasurerRole()"
+            >
+              {{ $t("app.view") }}
+              <span class="q-pl-md"
+                ><q-icon name="visibility" size="xs"></q-icon
+              ></span>
+            </q-btn>
           </q-td>
         </q-tr>
         <!-- end of table body for payment category -->
@@ -120,6 +134,7 @@
               color="primary"
               no-caps
               class="view_items"
+              :style="$q.platform.is.mobile?'width:200px':'width:150px'"
               @click="showReferences(props.row)"
               v-if="props.row.payment_item_type == 'A_MEMBER'"
             >
@@ -136,6 +151,7 @@
               no-caps
               class="view_items"
               @click="showReferences(props.row)"
+              :style="$q.platform.is.mobile?'width:200px':'width:150px'"
               v-if="
                 props.row.payment_item_type == 'GROUPED_MEMBERS' ||
                 props.row.payment_item_type == 'MEMBERS_WITH_ROLES' ||
@@ -215,12 +231,12 @@
                 </q-menu>
               </q-icon>
             </q-btn>
-
             <q-btn
               unelevated
               color="primary"
               no-caps
               class="view_items"
+
               @click="onViewPaymentItem(props.row)"
               v-if="checkTreasurerRole()"
             >
@@ -235,9 +251,6 @@
 
         <!-- table body for expenditure category -->
         <q-tr :props="props" v-if="show_expenditure_category">
-          <!-- <q-td key="counter" :props="props">
-            {{ props.row.counter }}
-          </q-td> -->
           <q-td key="name" :props="props">
             {{ props.row.name }}
           </q-td>
@@ -250,6 +263,7 @@
               color="primary"
               no-caps
               class="view_items"
+              :style="$q.platform.is.mobile?'width:200px':'width:200px'"
               @click="showExpenditureItems(props.row)"
               :to="{ name: 'expenditure_items', params: { id: props.row.id } }"
             >
@@ -668,7 +682,7 @@
           "
           v-model="filter"
           :placeholder="$t('app.tableSearch')"
-          :style="$q.platform.is.mobile?'width:88vw':''"
+          :style="$q.platform.is.mobile ? 'width:88vw' : ''"
         >
           <template v-slot:append>
             <q-icon name="search" />
@@ -875,14 +889,16 @@ export default {
 
     checkTreasurerRole() {
       const treasurer_role = LocalStorage.getItem("data").user_data.roles.find(
-        (role) => role.name == "TREASURER"
+        (role) => role.name === "TREASURER"
       );
-      return treasurer_role != undefined;
+       return treasurer_role != undefined;
     },
 
     checkPresidentOrAdminRole() {
       let req_roles = ["ADMIN", "PRESIDENT"];
-      const user_roles = LocalStorage.getItem("data").user_data.roles.map(role => role.name)
+      const user_roles = LocalStorage.getItem("data").user_data.roles.map(
+        (role) => role.name
+      );
       return user_roles.includes(...req_roles);
     },
 
@@ -898,19 +914,22 @@ export default {
       this.$emit("update-payment-category", payload);
     },
 
-    onViewPaymentItem(payment_items) {
+    onViewPaymentItem(payment_item) {
       let payload = {
-        data: payment_items,
+        data: payment_item,
         tab: "View Payment Item",
       };
+      this.$store.dispatch("setUpdatedPaymentItem", payment_item);
       this.$emit("view-payment-item", payload);
     },
 
-    onEditPaymentItem(payment_items) {
+    onEditPaymentItem(payment_item) {
       let payload = {
-        data: payment_items,
+        data: payment_item,
         tab: "Payment Items",
       };
+      this.$store.dispatch("setUpdatedPaymentItem", payment_item);
+
       this.$emit("update-payment-item", payload);
     },
 
@@ -987,6 +1006,8 @@ export default {
         data: data,
         tab: "Expenditure Activity Information",
       };
+      this.$store.dispatch("setUpdatedExpenditureItem", data);
+
       this.$emit("view-expenditure-item", payload);
     },
 
@@ -995,6 +1016,8 @@ export default {
         data: expenditure_item,
         tab: "Expenditure Items",
       };
+      this.$store.dispatch("setUpdatedExpenditureItem", expenditure_item);
+
       this.$emit("edit-expenditure-item", payload);
     },
 
@@ -1219,8 +1242,16 @@ export default {
   font-size: 12px;
   align-items: center;
   text-transform: capitalize;
-  width: 200px;
 }
+
+.view_payment_category {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  align-items: center;
+  text-transform: capitalize;
+ }
 
 .field_total {
   font-family: "Roboto";

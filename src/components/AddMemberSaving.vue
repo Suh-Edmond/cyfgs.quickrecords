@@ -1,12 +1,27 @@
 <template>
   <div>
+    <q-banner
+      inline-actions
+      rounded
+      class="bg-warning text-white q-mx-md q-mt-sm q-mb-sm"
+      dense
+      v-if="onMemberSavingExist"
+    >
+      {{ $t("app.cantUpdateSavingMsg") }}
+      <span class="text-lowercase">{{
+        getUpdateMemberSaving.approve
+      }}</span>
+      <template v-slot:action>
+        <q-btn flat icon="close" size="sm" />
+      </template>
+    </q-banner>
     <div class="q-mt-md">
-      <label class="text-muted q-pl-lg instruction_info"
+      <label class="text-muted q-pl-md instruction_info"
         >{{ $t("app.warningField") }}<span class="text-red">*</span>
         {{ $t("app.fields") }}</label
       >
     </div>
-    <q-form @submit="onAddSaving" class="q-gutter-sm q-mx-sm">
+    <q-form @submit="onAddSaving" class="q-gutter-sm q-mx-sm q-mt-md">
       <div>
         <label for="name" class="form_field"
           >{{ $t("app.memberName") }}<span class="text-red">*</span>

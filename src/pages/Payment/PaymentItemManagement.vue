@@ -333,14 +333,10 @@ export default {
     },
 
     updatePaymentItems(data) {
-      this.$store.dispatch("setUpdatedPaymentItem", data.data);
-
       this.$emit("update-payment-item", data);
     },
 
     viewPaymentItem(data) {
-      this.$store.dispatch("setUpdatedPaymentItem", data.data);
-
       this.$emit("view-payment-item", data);
     },
 

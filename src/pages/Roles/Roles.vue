@@ -1,5 +1,5 @@
 <template>
-  <div :class="$q.platform.is.mobile?'q-px-sm':'q-pa-sm'">
+  <div :class="$q.platform.is.mobile ? 'q-px-sm' : 'q-pa-sm'">
     <div class="flex justify-center q-mb-md" v-if="getLoadingState">
       <q-spinner color="primary" size="2.5em" />
     </div>
@@ -37,8 +37,11 @@
         </q-list>
       </div>
       <div class="col-1 col-sm-12 col-xs-12 col-lg-1 col-md-1"></div>
-      <div class="col-6 col-sm-12 col-xs-12 col-lg-6 col-md-1">
-        <div class="flex justify-between" :class="$q.platform.is.mobile? 'q-pt-md':''">
+      <div class="col-6 col-sm-12 col-xs-12 col-lg-6 col-md-1" :class="$q.platform.is.mobile?'q-px-md':''">
+        <div
+          class="flex justify-between"
+          :class="$q.platform.is.mobile ? 'q-pt-md' : ''"
+        >
           <div>
             <label class="title">Role details</label>
           </div>
@@ -63,7 +66,11 @@
               >{{ $t("app.nameLabel") }}:</span
             >
           </label>
-          <label class="value text-weight-bold" v-if="getSelectedRole !== undefined">{{ getSelectedRole.name }}</label>
+          <label
+            class="value text-weight-bold"
+            v-if="getSelectedRole !== undefined"
+            >{{ getSelectedRole.name }}</label
+          >
         </div>
         <div class="flex justify-between q-mt-md">
           <label for=""
@@ -154,7 +161,10 @@
 
     <!------------------------------------------START DIALOG TO UPDATE ROLE------------------------------------------->
     <q-dialog v-model="show_dialog">
-      <q-card :style="$q.platform.is.mobile?'min-width: 350px':'min-width: 450px'" class="q-px-md q-pt-sm q-pb-md">
+      <q-card
+        :style="$q.platform.is.mobile ? 'min-width: 350px' : 'min-width: 450px'"
+        class="q-px-md q-pt-sm q-pb-md"
+      >
         <q-card-section class="row items-center q-pb-lg">
           <div class="text-h6 add_year">{{ $t("app.editRole") }}</div>
           <q-space />
@@ -261,23 +271,23 @@ export default {
 
   methods: {
     getFirstLetter(role) {
-      let avatar_letter = ""
+      let avatar_letter = "";
       switch (role) {
         case "ADMIN":
           avatar_letter = "A";
-        break;
+          break;
         case "PRESIDENT":
           avatar_letter = "PP";
-        break;
+          break;
         case "FINANCIAL_SECRETARY":
-          avatar_letter ="FS";
-        break;
+          avatar_letter = "FS";
+          break;
         case "TREASURER":
           avatar_letter = "TR";
-        break;
+          break;
         case "MEMBER":
           avatar_letter = "M";
-        break;
+          break;
       }
 
       return avatar_letter;
@@ -327,7 +337,8 @@ export default {
             this.getAllRoles();
           }
           return this.selected_role;
-        }).then(async (role) => {
+        })
+        .then(async (role) => {
           this.selected_role = role;
         })
         .finally(() => {

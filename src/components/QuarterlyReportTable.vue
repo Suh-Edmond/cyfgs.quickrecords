@@ -470,16 +470,15 @@ import ReportHead from "./ReportHead.vue";
     },
 
     getTotalIncome() {
-      return this.$store.getters.getReportData[2].total_income + this.getBalanceBF;
+      return this.$store.getters.getReportData.length > 0 ?  this.$store.getters.getReportData[2].total_income : 0 + this.getBalanceBF;
     },
 
     getTotalExpenditure() {
-      return this.$store.getters.getReportData[3].total_expenditure;
+      return this.$store.getters.getReportData.length > 0 ? this.$store.getters.getReportData[3].total_expenditure : 0;
     },
 
     getBalanceBF() {
-      console.log(this.$store.getters.getReportData);
-      return this.$store.getters.getReportData[4].balance_brought_forward;
+      return this.$store.getters.getReportData.length > 0 ? this.$store.getters.getReportData[4].balance_brought_forward: 0;
     },
 
     getTotalBalance(){

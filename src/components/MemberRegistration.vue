@@ -7,69 +7,73 @@
       dense
       v-if="checkUserHasRegister"
     >
-    {{ $t('app.memberHasRegister') }}
+      {{ $t("app.memberHasRegister") }}
       <template v-slot:action>
         <q-btn flat icon="close" size="sm" />
       </template>
     </q-banner>
-    <div class="q-mx-md q-mt-lg">
-      <q-form @submit="onRegisterMember" class="q-gutter-md">
-        <div>
-          <label for="credential" class="form_field">{{
-            $t("app.membersName")
-          }}</label>
-          <q-input v-model="user.user_name" outlined dense disable />
-        </div>
-        <div>
-          <label for="credential" class="form_field">{{
-            $t("app.year")
-          }}</label>
-          <q-input v-model="user.year" outlined dense disable />
-        </div>
-        <div>
-          <label for="credential" class="form_field"
-            >{{ $t("app.amount") }}
-          </label>
-          <q-input v-model="user.amount" outlined dense type="number" disable />
-        </div>
-        <div v-if="isMonthlyRegFrequency">
-          <label for="month" class="form_field"
-            >{{ $t("app.selectMonth") }}<span class="text-red">*</span></label
-          >
-          <q-select
-            v-model="user.month_name"
-            outlined
-            dense
-            :options="monthsOptions"
-            :label="$t('app.searchMonth')"
-            use-input
-            input-debounce="0"
-            clearable
-            @filter="filterMonths"
-          >
-            <template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey">
-                  {{ $t("app.noResults") }}
-                </q-item-section>
-              </q-item>
-            </template>
-          </q-select>
-        </div>
-        <div class="flex q-mt-lg justify-end">
-          <div>
-            <ButtonVue
-              :label="$t('app.saveBtnLabel')"
-              :loading="loading"
-              color="primary"
-              :no_caps="true"
-              :disabled="validateForm"
-            >
-            </ButtonVue>
-          </div>
-        </div>
-      </q-form>
-    </div>
+    <q-form
+      @submit="onRegisterMember"
+      class="q-gutter-sm"
+      :class="$q.platform.is.mobile ? 'q-pl-sm' : ''"
+    >
+      <div>
+        <label for="credential" class="form_field">{{
+          $t("app.membersName")
+        }}</label>
+        <q-input v-model="user.user_name" outlined dense disable />
+      </div>
+      <div>
+        <label for="credential" class="form_field">{{ $t("app.year") }}</label>
+        <q-input v-model="user.year" outlined dense disable />
+      </div>
+      <div>
+        <label for="credential" class="form_field"
+          >{{ $t("app.amount") }}
+        </label>
+        <q-input v-model="user.amount" outlined dense type="number" disable />
+      </div>
+      <div v-if="isMonthlyRegFrequency">
+        <label for="month" class="form_field"
+          >{{ $t("app.selectMonth") }}<span class="text-red">*</span></label
+        >
+        <q-select
+          v-model="user.month_name"
+          outlined
+          dense
+          :options="monthsOptions"
+          :label="$t('app.searchMonth')"
+          use-input
+          input-debounce="0"
+          clearable
+          @filter="filterMonths"
+        >
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey">
+                {{ $t("app.noResults") }}
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
+      </div>
+      <div
+        :class="
+          $q.platform.is.desktop
+            ? 'flex q-mt-lg justify-end'
+            : 'q-pt-xs q-mb-lg'
+        "
+      >
+        <ButtonVue
+          :label="$t('app.saveBtnLabel')"
+          :loading="loading"
+          color="primary"
+          :no_caps="true"
+          :disabled="validateForm"
+        >
+        </ButtonVue>
+      </div>
+    </q-form>
   </div>
 </template>
 <script>

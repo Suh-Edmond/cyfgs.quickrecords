@@ -65,7 +65,7 @@
       <!-- filter by status of savings -->
       <div class="q-mb-lg row q-gutter-xs">
         <div
-          class="col-md-3 col-lg-3 col-sm-12 col-xs-12"
+          class="col-md-4 col-lg-4"
           v-for="status in statuses"
           :key="status.index"
         >

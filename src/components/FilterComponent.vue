@@ -457,36 +457,33 @@
 
     <!----------------------------------------------FILTER HEADER FOR MEMBERS SAVINGS TREASURER--------------------------------------------------->
     <div
-      class="row q-ml-xs q-pt-md justify-between"
-      :class="$q.screen.lg ? 'q-pa-md' : ''"
+      :class="$q.screen.lg ? 'row q-pa-sm' : 'row q-gutter-sm q-px-sm'"
       :style="
         $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
       "
       v-if="show_savings_treasurer"
     >
-      <div>
-        <q-btn
-          :label="$t('app.filter')"
-          :color="'primary'"
-          :disabled="false"
-          no-caps
-          icon-right="filter_list"
-          @click="searchSavings()"
-        >
-        </q-btn>
-      </div>
+      <q-btn
+        :label="$t('app.filter')"
+        :color="'primary'"
+        :disabled="false"
+        no-caps
+        icon-right="filter_list"
+        @click="searchSavings()"
+        :size="$q.platform.is.mobile ? 'sm' : 'md'"
+      >
+      </q-btn>
       <q-space />
-      <div class="button q-pb-xs">
-        <q-btn
-          :label="$t('app.print')"
-          :loading="getDownloadLoadingState"
-          :color="'positive'"
-          :disabled="getDisableDownloadBtn"
-          no-caps
-          icon-right="print"
-          @click="downloadMembersSavings"
-        ></q-btn>
-      </div>
+      <q-btn
+        :label="$t('app.print')"
+        :loading="getDownloadLoadingState"
+        :color="'positive'"
+        :disabled="getDisableDownloadBtn"
+        no-caps
+        icon-right="print"
+        @click="downloadMembersSavings"
+        :size="$q.platform.is.mobile ? 'sm' : 'md'"
+      ></q-btn>
     </div>
     <!---------------------------------------------END OF FILTER FOR MEMBERS SAVINGS TREASURER---------------------------------------------------->
     <!----------------------------------------------FILTER HEADER FOR MEMBER SAVINGS-------------------------------------------------------------->
@@ -674,7 +671,7 @@
 
     <!--------------------------------------------FILTER HEADER FOR VIEW MEMBER CONTRIBUTIONS---------------------------------------------------->
     <div
-    :class="$q.screen.lg ? 'row q-pa-sm' : 'col q-gutter-sm q-px-xs'"
+      :class="$q.screen.lg ? 'row q-pa-sm' : 'col q-gutter-sm q-px-xs'"
       :style="
         $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
       "
@@ -807,7 +804,7 @@
           no-caps
           icon-right="filter_list"
           @click="filterSponsorship"
-          :size="$q.platform.is.mobile ? 'sm' : 'sm'"
+          :size="$q.platform.is.mobile ? 'sm' : 'md'"
         >
         </q-btn>
         <q-space />
@@ -819,7 +816,7 @@
           no-caps
           icon-right="print"
           @click="downloadSponsorship"
-          :size="$q.platform.is.mobile ? 'sm' : 'sm'"
+          :size="$q.platform.is.mobile ? 'sm' : 'md'"
         ></q-btn>
       </div>
     </div>
@@ -827,8 +824,7 @@
 
     <!--------------------------------------------FILTER HEADER FOR REPORTS--------------------------------------------------------------------->
     <div
-      class="row q-ml-xs justify-between"
-      :class="$q.screen.lg ? 'q-pa-sm' : ''"
+      :class="$q.screen.lg ? 'row q-pa-sm' : 'col q-gutter-sm q-px-sm'"
       :style="
         $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
       "

@@ -12,6 +12,7 @@ const ESLintPlugin = require("eslint-webpack-plugin");
 
 module.exports = function (ctx) {
   return {
+    bin: "C:/Program Files/Android/Android Studio/bin/studio64.sh",
     // https://v1.quasar.dev/quasar-cli/supporting-ts
     supportTS: false,
 

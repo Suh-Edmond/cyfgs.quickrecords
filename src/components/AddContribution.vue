@@ -257,6 +257,7 @@
                 outline
                 @click="resetForm"
                 :class="$q.platform.is.desktop ? 'q-mr-lg' : 'full-width'"
+                v-if="$q.platform.is.mobile"
               >
               </q-btn>
             </div>

@@ -516,6 +516,6 @@ export default {
     cantUpdatedExpenditureItemDetailAfterApprovalMsg:"Expenditure Item detail cannot be updated after been ",
     cantUpdatedIncomeAfterApprovalMsg:"Income Activity cannot be updated after been ",
     cantUpdateSavingMsg:"Saving cannot be updated after been ",
-    cantUpdateSponsorshipMsg:"Sponsorship cannot be updated after been "
+    cantUpdateSponsorshipMsg:"Sponsorship cannot be updated after been ",
    }
 };

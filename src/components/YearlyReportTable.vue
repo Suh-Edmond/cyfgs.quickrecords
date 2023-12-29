@@ -174,7 +174,7 @@
               </div>
               <div class="col-md-2 column_details"></div>
               <div class="col-md-2 column_details text-bold">
-                {{ Number(income.total).toLocaleString() }}
+                <!-- {{ Number(income.total).toLocaleString() }} -->
               </div>
               <div class="col-md-2 column_details_end text-bold"> {{ Number(income.total).toLocaleString() }}</div>
             </div>
@@ -189,7 +189,7 @@
             </div>
             <div class="col-md-2 column_details"></div>
             <div class="col-md-2 column_details text-bold">
-              {{ Number(getTotalIncome).toLocaleString() }}
+              <!-- {{ Number(getTotalIncome).toLocaleString() }} -->
             </div>
             <div class="col-md-2 column_details_end text-bold">
               {{ Number(getTotalIncome).toLocaleString() }}
@@ -306,9 +306,9 @@
               </div>
               <div class="col-md-2 column_details"></div>
               <div class="col-md-2 column_details text-bold">
-                {{ Number(getTotalExpenditure).toLocaleString() }}
+                <!-- {{ Number(getTotalExpenditure).toLocaleString() }} -->
               </div>
-              <div class="col-md-2 column_details_end text-bold"> {{ Number(getTotalExpenditure).toLocaleString() }}</div>
+              <div class="col-md-2 column_details_end text-bold"> {{ Number(expenditures.total).toLocaleString() }}</div>
             </div>
           </div>
           <!------------------------------------------------END OF CATEGORIES OF EXPENDITURES-------------------------------------------------->
@@ -321,7 +321,7 @@
             </div>
             <div class="col-md-2 column_details"></div>
             <div class="col-md-2 column_details text-bold">
-              {{ Number(getTotalExpenditure).toLocaleString() }}
+              <!-- {{ Number(getTotalExpenditure).toLocaleString() }} -->
             </div>
             <div class="col-md-2 column_details_end text-bold">
               {{ Number(getTotalExpenditure).toLocaleString() }}

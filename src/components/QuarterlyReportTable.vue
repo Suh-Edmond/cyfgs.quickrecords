@@ -173,7 +173,7 @@
               </div>
               <div class="col-md-2 column_details"></div>
               <div class="col-md-2 column_details text-bold">
-                {{ Number(income.total).toLocaleString() }}
+                <!-- {{ Number(income.total).toLocaleString() }} -->
               </div>
               <div class="col-md-2 column_details_end text-bold"> {{ Number(income.total).toLocaleString() }}</div>
             </div>
@@ -188,7 +188,7 @@
             </div>
             <div class="col-md-2 column_details"></div>
             <div class="col-md-2 column_details text-bold">
-              {{ Number(getTotalIncome).toLocaleString() }}
+              <!-- {{ Number(getTotalIncome).toLocaleString() }} -->
             </div>
             <div class="col-md-2 column_details_end text-bold">
               {{ Number(getTotalIncome).toLocaleString() }}
@@ -305,9 +305,9 @@
               </div>
               <div class="col-md-2 column_details"></div>
               <div class="col-md-2 column_details text-bold">
-                {{ Number(getTotalExpenditure).toLocaleString() }}
+                <!-- {{ Number(expenditures.total).toLocaleString() }} -->
               </div>
-              <div class="col-md-2 column_details_end text-bold"> {{ Number(getTotalExpenditure).toLocaleString() }}</div>
+              <div class="col-md-2 column_details_end text-bold"> {{ Number(expenditures.total).toLocaleString() }}</div>
             </div>
           </div>
           <!------------------------------------------------END OF CATEGORIES OF EXPENDITURES-------------------------------------------------->
@@ -320,7 +320,7 @@
             </div>
             <div class="col-md-2 column_details"></div>
             <div class="col-md-2 column_details text-bold">
-              {{ Number(getTotalExpenditure).toLocaleString() }}
+              <!-- {{ Number(getTotalExpenditure).toLocaleString() }} -->
             </div>
             <div class="col-md-2 column_details_end text-bold">
               {{ Number(getTotalExpenditure).toLocaleString() }}
@@ -474,6 +474,7 @@ import ReportHead from "./ReportHead.vue";
     },
 
     getTotalExpenditure() {
+      console.log(this.$store.getters.getReportData);
       return this.$store.getters.getReportData.length > 0 ? this.$store.getters.getReportData[3].total_expenditure : 0;
     },
 
@@ -486,10 +487,12 @@ import ReportHead from "./ReportHead.vue";
     },
 
     getPresident(){
+      console.log(this.$store.getters.getReportData);
       return this.$store.getters.getReportData[5].president;
     },
 
     getTreasurer(){
+      console.log(this.$store.getters.getReportData);
       return this.$store.getters.getReportData[6].treasurer;
     },
 

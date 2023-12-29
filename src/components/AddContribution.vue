@@ -224,9 +224,7 @@
                 :disable="has_completed_payment"
               />
             </div>
-            <div
-              :class="$q.platform.is.desktop ? 'flex q-mt-lg justify-end' : ''"
-            >
+            <div :class="$q.platform.is.desktop ? 'flex q-mt-lg justify-end' : ''">
               <q-btn
                 class="form_button q-mr-lg"
                 :label="$t('app.reset')"
@@ -238,28 +236,17 @@
                 v-if="$q.platform.is.desktop"
               >
               </q-btn>
-              <ButtonVue
+              <div>
+                <ButtonVue
                 class="form_button"
                 :label="$t('app.saveBtnLabel')"
                 :loading="loading"
                 :color="'primary'"
                 :disabled="validateForm"
                 :no_caps="true"
-                :class="$q.platform.is.mobile ? 'q-mb-md' : ''"
               >
               </ButtonVue>
-              <q-btn
-                class="form_button"
-                :label="$t('app.reset')"
-                :color="'primary'"
-                :disabled="!validateForm"
-                no-caps
-                outline
-                @click="resetForm"
-                :class="$q.platform.is.desktop ? 'q-mr-lg' : 'full-width'"
-                v-if="$q.platform.is.mobile"
-              >
-              </q-btn>
+              </div>
             </div>
           </div>
         </q-form>

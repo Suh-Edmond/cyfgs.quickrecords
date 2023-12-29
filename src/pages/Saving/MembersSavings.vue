@@ -3,36 +3,35 @@
     <div v-if="!checkTreasurerRole()">
       <!--------------------------------------------------------START OF SAVINGS--------------------------------------->
       <div>
-       <FilterComponentVue
-       :show_savings_non_treasurer="true"
-       :loading_download="loading_download"
-        :disable_download_btn="validateDownload"
-        @filter-savings="filterSavings"
-        @download-savings="downloadMembersSavings"
-       >
+        <FilterComponentVue
+          :show_savings_non_treasurer="true"
+          :loading_download="loading_download"
+          :disable_download_btn="validateDownload"
+          @filter-savings="filterSavings"
+          @download-savings="downloadMembersSavings"
+        >
         </FilterComponentVue>
 
         <!--------------------------------------------------------START OF TABLE TO DISPLAY SAVINGS-------------------------->
-        <div class="row q-pt-sm">
-          <div class="col-md-12 col-xs-12 col-sm-12">
-            <TableVue
-              :columns="columns"
-              :data="getMembersSavings"
-              :label="label"
-              :message="message"
-              :show_savings="true"
-              :show_income_activity="false"
-              :show_members="false"
-              :total_saving="getTotalMembersSavings"
-              :show_contribution="false"
-              :pagination="getPagination"
-              :table_loading="getLoadingState"
-              @edit-member-saving="editMemberSaving"
-              @onRequest="onRequest"
-            >
-            </TableVue>
-          </div>
-        </div>
+        <TableVue
+          :class="
+            $q.platform.is.desktop ? 'q-pt-sm q-px-sm' : ' q-px-sm q-pt-lg'
+          "
+          :columns="columns"
+          :data="getMembersSavings"
+          :label="label"
+          :message="message"
+          :show_savings="true"
+          :show_income_activity="false"
+          :show_members="false"
+          :total_saving="getTotalMembersSavings"
+          :show_contribution="false"
+          :pagination="getPagination"
+          :table_loading="getLoadingState"
+          @edit-member-saving="editMemberSaving"
+          @onRequest="onRequest"
+        >
+        </TableVue>
         <!---------------------------------------------------------END OF TABLE OF SAVINGS------------------------------------>
       </div>
       <!---------------------------------------------------------END OF SAVINGS---------------------------------------->
@@ -40,36 +39,32 @@
 
     <!----------------------------------------------------------SAVINGS TO BE APPROVE/DECLINE------------------------->
     <div v-if="checkTreasurerRole()">
-
       <FilterComponentVue
-       :show_savings_treasurer="true"
-       :loading_download="loading_download"
+        :show_savings_treasurer="true"
+        :loading_download="loading_download"
         :disable_download_btn="validateDownload"
         @search-savings="searchSavings"
         @download-savings="downloadMembersSavings"
-       >
-        </FilterComponentVue>
+      >
+      </FilterComponentVue>
       <!-- table for filtered savings -->
-      <div class="row q-pt-sm">
-        <div class="col-md-12 col-xs-12 col-sm-12">
-          <TableVue
-            :columns="columns"
-            :data="getMembersSavings"
-            :label="label"
-            :message="message"
-            :show_savings="true"
-            :show_income_activity="false"
-            :show_members="false"
-            :total_saving="getTotalMembersSavings"
-            :show_contribution="false"
-            :pagination="getPagination"
-            :table_loading="getLoadingState"
-            @view-member-saving="ViewMemberSaving"
-            @onRequest="onRequest"
-          >
-          </TableVue>
-        </div>
-      </div>
+      <TableVue
+        :class="$q.platform.is.desktop ? 'q-pt-sm q-px-sm' : ' q-px-sm q-pt-lg'"
+        :columns="columns"
+        :data="getMembersSavings"
+        :label="label"
+        :message="message"
+        :show_savings="true"
+        :show_income_activity="false"
+        :show_members="false"
+        :total_saving="getTotalMembersSavings"
+        :show_contribution="false"
+        :pagination="getPagination"
+        :table_loading="getLoadingState"
+        @view-member-saving="ViewMemberSaving"
+        @onRequest="onRequest"
+      >
+      </TableVue>
     </div>
     <!------------------------------------------------------------END OF SAVINGS TO BE APPROVED / DECLINED------------->
   </q-page>
@@ -90,12 +85,12 @@ export default {
     CurrentYearMixinVue,
     MonthsMixinVue,
   ],
-  beforeMount(){
+  beforeMount() {
     this.$store.commit("SET_PAGINATION", {
       sortBy: "name",
       descending: false,
       page: 1,
-      rowsPerPage: 7,
+      rowsPerPage: 10,
       rowsNumber: 0,
     });
   },
@@ -104,9 +99,9 @@ export default {
     this.getPaginatedOrganisationMemberSavings(
       this.organisation_id,
       1,
-      7,
+      10,
       "",
-      this.session_id,
+      this.session_id
     );
     this.getSessions();
   },
@@ -115,13 +110,6 @@ export default {
       year: "",
       month: "",
       columns: [
-        {
-          name: "counter",
-          required: true,
-          label: "S/N",
-          align: "left",
-          field: "counter",
-        },
         {
           name: "user_name",
           required: true,
@@ -158,8 +146,8 @@ export default {
       ],
       label: this.$t("app.delete"),
       message: this.$t("app.deleteSavingWarningMsg"),
-      organisation_id: this.$store.getters.getOrganisation.id,
-      session_id: this.$store.getters.getCurrentYear.id,
+      organisation_id: LocalStorage.getItem("data").user_data.organisation_id,
+      session_id: LocalStorage.getItem("data").current_session.id,
       loading_download: false,
     };
   },
@@ -204,8 +192,8 @@ export default {
       return data;
     },
 
-    validateDownload(){
-      return this.getMembersSavings.length == 0
+    validateDownload() {
+      return this.getMembersSavings.length == 0;
     },
 
     getPagination() {
@@ -220,8 +208,7 @@ export default {
       return paginate_object;
     },
   },
-  watch: {
-  },
+  watch: {},
   methods: {
     onRequest(props) {
       const { page, rowsPerPage } = props.pagination;
@@ -234,7 +221,7 @@ export default {
           page,
           fetch_count,
           "",
-          this.session_id,
+          this.session_id
         );
       } else {
         this.filterSavings();
@@ -290,10 +277,10 @@ export default {
       });
       this.getPaginatedOrganisationMemberSavings(
         this.organisation_id,
-        this.pagination.page,
-        this.pagination.rowsPerPage,
+        1,
+        10,
         month,
-        session,
+        session
       );
     },
 
@@ -303,7 +290,7 @@ export default {
   },
   components: {
     TableVue,
-    FilterComponentVue
+    FilterComponentVue,
   },
 };
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-sm">
+  <div :class="$q.platform.is.desktop?'q-pa-sm':''">
     <div>
       <q-tabs
         v-model="tab"
@@ -28,8 +28,7 @@
 
       <q-tab-panels v-model="tab" animated>
         <q-tab-panel name="Add Member">
-          <div class="q-mx-md">
-            <q-form @submit="onAddMember" class="q-gutter-md">
+          <q-form @submit="onAddMember" class="q-gutter-md" :class="$q.platform.is.mobile?'q-pl-sm':''">
               <div class="text-subtitle2 text-left text-primary q-pt-xs">
                 {{ $t("app.personalInformationLabel") }}
               </div>
@@ -88,8 +87,7 @@
                 >
                 <q-input v-model="user.occupation" outlined dense type="text" />
               </div>
-              <div class="flex q-mt-lg justify-end">
-                <div>
+              <div :class="$q.platform.is.desktop?'flex q-mt-lg justify-end':'q-pt-xs q-mb-lg'">
                   <ButtonVue
                     :label="label_save"
                     :loading="loading"
@@ -99,13 +97,10 @@
                   >
                   </ButtonVue>
                 </div>
-              </div>
             </q-form>
-          </div>
         </q-tab-panel>
         <q-tab-panel name="Upload File">
-          <div>
-            <q-form @submit="uploadFile">
+          <q-form @submit="uploadFile" :class="$q.platform.is.mobile?'q-pl-sm':''">
               <div class="text-subtitle2 text-center text-primary">
                 {{ $t("app.importMemberMsg") }}
                 <span class="q-pl-md">
@@ -143,7 +138,6 @@
                 </div>
               </div>
             </q-form>
-          </div>
         </q-tab-panel>
       </q-tab-panels>
     </div>
@@ -286,12 +280,14 @@ export default {
       this.$store
         .dispatch("postRequest", payload)
         .then(() => {
-          this.getOrganisationMembers(
+          this.filterOrganisationMembers(
             this.organisation_id,
             false,
             1,
-            7,
+            10,
             "name",
+            "",
+            "",
             "",
             ""
           );
@@ -331,12 +327,14 @@ export default {
       this.$store
         .dispatch("uploadFileRequest", payload)
         .then(() => {
-          this.getOrganisationMembers(
+          this.filterOrganisationMembers(
             this.organisation_id,
             false,
             1,
-            7,
+            10,
             "name",
+            "",
+            "",
             "",
             ""
           );

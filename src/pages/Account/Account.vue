@@ -1,6 +1,11 @@
 <template>
   <div class="q-pa-sm">
-    <q-linear-progress rounded indeterminate color="primary" v-show="is_fetch_picture"/>
+    <q-linear-progress
+      rounded
+      indeterminate
+      color="primary"
+      v-show="is_fetch_picture"
+    />
     <q-card class="my-card" flat>
       <div class="row">
         <div class="col col-md-4 col-sm-12 col-xs-12">
@@ -53,61 +58,57 @@
               <q-space />
               <div></div>
             </div>
-            <div class="q-mt-md">
-              <q-list>
-                <q-item
-                  v-for="(role, index) in user.roles"
-                  :key="index"
-                  class="q-mb-md"
-                >
-                  <q-item-section avatar v-if="role.name == 'MEMBER'">
-                    <q-avatar color="primary" text-color="white" size="35px">
-                      M</q-avatar
-                    >
-                  </q-item-section>
-                  <q-item-section avatar v-if="role.name == 'PRESIDENT'">
-                    <q-avatar color="primary" text-color="white" size="35px">
-                      PP
-                    </q-avatar>
-                  </q-item-section>
-                  <q-item-section
-                    avatar
-                    v-if="role.name == 'FINANCIAL_SECRETARY'"
+            <q-list class="q-mt-md">
+              <q-item
+                v-for="(role, index) in user.roles"
+                :key="index"
+                class="q-mb-md"
+              >
+                <q-item-section avatar v-if="role.name == 'MEMBER'">
+                  <q-avatar color="primary" text-color="white" size="35px">
+                    M</q-avatar
                   >
-                    <q-avatar color="primary" text-color="white" size="35px">
-                      FS
-                    </q-avatar>
-                  </q-item-section>
-                  <q-item-section avatar v-if="role.name == 'TREASURER'">
-                    <q-avatar color="primary" text-color="white" size="35px">
-                      TR
-                    </q-avatar>
-                  </q-item-section>
-                  <q-item-section avatar v-if="role.name == 'AUDITOR'">
-                    <q-avatar color="primary" text-color="white" size="35px">
-                      AU
-                    </q-avatar>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label class="role_name">{{
-                      role.name
-                    }}</q-item-label>
-                    <q-item-label caption class="text-sm role_update_date"
-                      >{{ $t("app.updatedBy") }}:
-                      <span> {{ role.updated_by }}</span></q-item-label
-                    >
-                  </q-item-section>
+                </q-item-section>
+                <q-item-section avatar v-if="role.name == 'PRESIDENT'">
+                  <q-avatar color="primary" text-color="white" size="35px">
+                    PP
+                  </q-avatar>
+                </q-item-section>
+                <q-item-section
+                  avatar
+                  v-if="role.name == 'FINANCIAL_SECRETARY'"
+                >
+                  <q-avatar color="primary" text-color="white" size="35px">
+                    FS
+                  </q-avatar>
+                </q-item-section>
+                <q-item-section avatar v-if="role.name == 'TREASURER'">
+                  <q-avatar color="primary" text-color="white" size="35px">
+                    TR
+                  </q-avatar>
+                </q-item-section>
+                <q-item-section avatar v-if="role.name == 'ADMIN'">
+                  <q-avatar color="primary" text-color="white" size="35px">
+                    A
+                  </q-avatar>
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label class="role_name">{{ role.name }}</q-item-label>
+                  <q-item-label caption class="text-sm role_update_date"
+                    >{{ $t("app.updatedBy") }}:
+                    <span> {{ role.updated_by }}</span></q-item-label
+                  >
+                </q-item-section>
 
-                  <q-item-section side top>
-                    <q-item-label caption class="role_update_date">
-                      <span
-                        >{{ formDateTime(role.created_at) }}
-                      </span></q-item-label
-                    >
-                  </q-item-section>
-                </q-item>
-              </q-list>
-            </div>
+                <q-item-section side top>
+                  <q-item-label caption class="role_update_date">
+                    <span
+                      >{{ formDateTime(role.created_at) }}
+                    </span></q-item-label
+                  >
+                </q-item-section>
+              </q-item>
+            </q-list>
           </q-card-section>
         </div>
         <div class="col col-1"></div>
@@ -283,10 +284,23 @@
                   />
                 </div>
                 <div>
-                  <label for="credential" class="form_field">{{
-                    $t("app.emailLabel")
-                  }}</label>
+                  <label for="credential" class="form_field"
+                    >{{ $t("app.emailLabel") }}
+                    <span class="text-red">*</span></label
+                  >
                   <q-input v-model="user.email" outlined dense type="email" />
+                </div>
+                <div>
+                  <label for="credential" class="form_field">{{
+                    $t("app.telephoneLabel")
+                  }}</label>
+                  <q-input
+                    v-model="user.telephone"
+                    outlined
+                    dense
+                    type="text"
+                    disable
+                  />
                 </div>
                 <div>
                   <label for="credential" class="form_field"
@@ -459,11 +473,198 @@
         </div>
       </div>
     </q-card>
+
+    <!-----------------------------------------------EDIT PROFILE DIALOG----------------------------------------->
+    <q-dialog v-model="showEditProfileDialog" persistent>
+      <q-card style="min-width: 360px">
+        <q-form @submit="onUpdateProfile" class="q-gutter-sm q-pa-md">
+          <div class="info2 q-pb-md flex">
+            {{ $t("app.editProfile") }}
+            <q-space />
+            <span
+              ><q-icon
+                name="close"
+                size="xs"
+                class="q-pr-xs"
+                @click="closeEditDialog"
+              ></q-icon
+            ></span>
+          </div>
+          <small class="hint"
+            >{{ $t("app.warningField") }}<span class="text-red">*</span
+            >{{ $t("app.fields") }}</small
+          >
+          <div>
+            <label for="credential" class="form_field"
+              >{{ $t("app.nameLabel") }} <span class="text-red">*</span></label
+            >
+            <q-input v-model="user.name" outlined dense type="text" />
+          </div>
+          <div>
+            <label for="credential" class="form_field"
+              >{{ $t("app.gender") }} <span class="text-red">*</span></label
+            >
+            <q-select
+              v-model="user.gender"
+              outlined
+              dense
+              :options="gender_options"
+            />
+          </div>
+          <div>
+            <label for="credential" class="form_field"
+              >{{ $t("app.emailLabel") }} <span class="text-red">*</span></label
+            >
+            <q-input v-model="user.email" outlined dense type="email" />
+          </div>
+          <div>
+            <label for="credential" class="form_field">{{
+              $t("app.telephoneLabel")
+            }}</label>
+            <q-input
+              v-model="user.telephone"
+              outlined
+              dense
+              type="text"
+              disable
+            />
+          </div>
+          <div>
+            <label for="credential" class="form_field"
+              >{{ $t("app.addressLabel") }}
+              <span class="text-red">*</span></label
+            >
+            <q-input v-model="user.address" outlined dense type="text" />
+          </div>
+          <div>
+            <label for="credential" class="form_field"
+              >{{ $t("app.occupation") }} <span class="text-red">*</span></label
+            >
+            <q-input v-model="user.occupation" outlined dense type="text" />
+          </div>
+          <div
+            class="row justify-end"
+            :class="$q.platform.is.mobile ? 'q-mb-lg q-mt-md' : ''"
+          >
+            <ButtonVue
+              :label="$t('app.saveBtnLabel')"
+              :loading="loading"
+              color="primary"
+              :disabled="validateForm"
+              :no_caps="no_caps"
+            >
+            </ButtonVue>
+          </div>
+        </q-form>
+      </q-card>
+    </q-dialog>
+    <!-----------------------------------------------END OF EDIT PROFILE DIALOG---------------------------------->
+
+    <!-----------------------------------------------EDIT PROFILE DIALOG----------------------------------------->
+    <q-dialog v-model="showEditPasswordDialog" persistent>
+      <q-card style="min-width: 360px">
+        <q-form @submit="onUpdatePassword" class="q-gutter-sm q-pa-md">
+          <div class="info q-pb-md flex">
+            {{ $t("app.editPassword") }}
+            <q-space />
+            <span
+              ><q-icon
+                name="close"
+                size="xs"
+                class="q-pr-xs"
+                @click="closeEditPasswordDialog"
+              ></q-icon
+            ></span>
+          </div>
+          <small class="hint"
+            >{{ $t("app.warningField") }}<span class="text-red">*</span
+            >{{ $t("app.fields") }}</small
+          >
+          <div>
+            <label for="password" class="form_field">{{
+              $t("app.oldPassword")
+            }}</label>
+            <q-input
+              v-model="security.old_password"
+              :type="is_pwd ? 'password' : 'text'"
+              outlined
+              dense
+            >
+              <template v-slot:append>
+                <q-icon
+                  :name="is_pwd ? 'visibility_off' : 'visibility'"
+                  class="cursor-pointer"
+                  @click="is_pwd = !is_pwd"
+                />
+              </template>
+            </q-input>
+          </div>
+          <div>
+            <label for="password" class="form_field">{{
+              $t("app.newPassword")
+            }}</label>
+            <q-input
+              v-model="security.password"
+              :type="is_old_pwd ? 'password' : 'text'"
+              outlined
+              dense
+            >
+              <template v-slot:append>
+                <q-icon
+                  :name="is_pwd ? 'visibility_off' : 'visibility'"
+                  class="cursor-pointer"
+                  @click="is_old_pwd = !is_old_pwd"
+                />
+              </template>
+            </q-input>
+          </div>
+          <div>
+            <label for="confirm_password" class="form_field">{{
+              $t("app.confirmPasswordLabel")
+            }}</label>
+            <q-input
+              v-model="security.password_confirmation"
+              :type="is_confirm_pwd ? 'password' : 'text'"
+              outlined
+              bottom-slots
+              dense
+            >
+              <template v-slot:append>
+                <q-icon
+                  :name="is_confirm_pwd ? 'visibility_off' : 'visibility'"
+                  class="cursor-pointer"
+                  @click="is_confirm_pwd = !is_confirm_pwd"
+                />
+              </template>
+              <template v-slot:hint v-if="validatePasswordMatch">
+                <span class="text-red">{{
+                  $t("app.passwordNotMatchMsg")
+                }}</span>
+              </template>
+            </q-input>
+          </div>
+          <div
+            class="row justify-end"
+            :class="$q.platform.is.mobile ? 'q-mb-lg q-mt-md' : ''"
+          >
+            <ButtonVue
+              :label="$t('app.saveBtnLabel')"
+              :loading="loading"
+              color="primary"
+              :disabled="validatePassword"
+              :no_caps="no_caps"
+            >
+            </ButtonVue>
+          </div>
+        </q-form>
+      </q-card>
+    </q-dialog>
+    <!-----------------------------------------------END OF EDIT PROFILE DIALOG---------------------------------->
   </div>
 </template>
 
 <script>
-import { LocalStorage } from "quasar";
+import { LocalStorage, Platform } from "quasar";
 import ButtonVue from "src/components/Button.vue";
 import moment from "moment";
 import organisationMixin from "src/mixins/organisationMixin.vue";
@@ -471,9 +672,7 @@ import organisationMixin from "src/mixins/organisationMixin.vue";
 export default {
   mixins: [organisationMixin],
 
-  mounted() {
-    this.getOrganisationInfo();
-  },
+  mounted() {},
 
   data() {
     return {
@@ -487,6 +686,7 @@ export default {
         roles: LocalStorage.getItem("data").user_data.roles,
         picture: LocalStorage.getItem("data").user_data.picture,
         telephone: LocalStorage.getItem("data").user_data.telephone,
+        status: LocalStorage.getItem("data").user_data.status,
       },
       security: {
         old_password: null,
@@ -502,7 +702,9 @@ export default {
       is_old_pwd: true,
       no_caps: true,
       gender_options: ["MALE", "FEMALE", "OTHER"],
-      is_fetch_picture:false,
+      is_fetch_picture: false,
+      showEditProfileDialog: false,
+      showEditPasswordDialog: false,
     };
   },
   computed: {
@@ -519,11 +721,11 @@ export default {
     },
 
     validateForm() {
-      return this.user.name == null ||
+      return (
+        this.user.name == null ||
         this.user.address == null ||
         this.user.occupation == null
-        ? true
-        : false;
+      );
     },
 
     validatePasswordMatch() {
@@ -534,11 +736,11 @@ export default {
     },
 
     validatePassword() {
-      return this.security.old_password == null ||
+      return (
+        this.security.old_password == null ||
         this.security.password == null ||
         this.security.password_confirmation == null
-        ? true
-        : false;
+      );
     },
 
     getProfilePicture() {
@@ -576,21 +778,42 @@ export default {
       this.$store
         .dispatch("putRequest", payload)
         .then((res) => {
+          if (res.success) {
+            LocalStorage.remove("data");
+            LocalStorage.set("data", res.data);
+          }
           this.edit_profile = false;
-          LocalStorage.remove("data");
-          LocalStorage.set("data", res.data);
         })
         .finally(() => {
+          if (Platform.is.mobile) {
+            this.showEditProfileDialog = false;
+          }
           this.loading = false;
         });
     },
 
     showEditProfile() {
-      return (this.edit_profile = true);
+      if (Platform.is.mobile) {
+        this.showEditProfileDialog = true;
+      } else {
+        this.edit_profile = true;
+      }
+    },
+
+    closeEditDialog() {
+      return (this.showEditProfileDialog = false);
+    },
+
+    closeEditPasswordDialog(){
+      return this.showEditPasswordDialog = false;
     },
 
     showEditPassword() {
-      return (this.edit_password = true);
+      if (Platform.is.mobile) {
+        this.showEditPasswordDialog = true;
+      } else {
+        this.edit_password = true;
+      }
     },
 
     onUpdatePassword() {
@@ -624,6 +847,9 @@ export default {
         .finally(() => {
           this.loading = false;
           this.resetForm();
+          if (Platform.is.mobile) {
+            this.showEditPasswordDialog = false;
+          }
         });
     },
 
@@ -659,30 +885,31 @@ export default {
         has_commit: false,
       };
 
-      this.$store.dispatch("uploadImageRequest", payload).then((response) => {
-        if (response.status == 200) {
-          this.user.picture = response.data.fileDownloadUri.split(
-            process.env.FILE_SEPARATOR_KEY
-          )[1];
-          let update_user = {
-            url: `/api/protected/users/${user.id}`,
-            data: {
-              picture: this.user.picture,
-            },
-            status: "none",
-            show_feedback: false,
-          };
-          this.$store.dispatch("putRequest", update_user).then(() => {
+      this.$store
+        .dispatch("uploadImageRequest", payload)
+        .then((response) => {
+          if (response.status == 200) {
             this.user.picture = response.data.fileDownloadUri.split(
               process.env.FILE_SEPARATOR_KEY
             )[1];
-            LocalStorage.remove("data");
-            LocalStorage.set("data.user_data", user);
-          });
-        }
-      }).finally(() => {
-        this.is_fetch_picture = false;
-      });
+            let update_user = {
+              url: `/api/protected/users/${user.id}`,
+              data: {
+                picture: this.user.picture,
+              },
+              status: "none",
+              show_feedback: false,
+            };
+            this.$store.dispatch("putRequest", update_user).then(() => {
+              this.user.picture = response.data.fileDownloadUri.split(
+                process.env.FILE_SEPARATOR_KEY
+              )[1];
+            });
+          }
+        })
+        .finally(() => {
+          this.is_fetch_picture = false;
+        });
     },
   },
   components: {

@@ -19,7 +19,7 @@
       <div class="col-1 col-md-1 col-sm-12 col-xs-12"></div>
       <div class="col-10 col-md-10 col-sm-12 col-xs-12">
         <div class="text-center q-pt-md">
-          <label for="income" class="income_heading">{{$t('app.income')}} (F CFA)</label>
+          <label for="income" class="income_heading">{{$t('app.income')}} (XAF)</label>
         </div>
 
         <!---------------------------------------------------------------------START OF INCOME LIST---------------------------------------------------------->
@@ -46,13 +46,13 @@
 
           <!----------------------------START OF AMOUNT BROUGHT FORWARD------------->
           <div class="row">
-            <div class="col-1 col-md-1 column_details text-bold">I1</div>
+            <div class="col-1 col-md-1 column_details text-bold">BBF</div>
             <div class="col-md-5 column_details text-bold text-center">
               {{$t('app.balanceBrought')}}
             </div>
             <div class="col-md-2 column_details"></div>
             <div class="col-md-2 column_details"></div>
-            <div class="col-md-2 column_details_end">{{ getBalanceBF }}</div>
+            <div class="col-md-2 column_details_end text-bold">{{ Number(getBalanceBF).toLocaleString() }}</div>
           </div>
 
           <!-----------------------------END OF AMOUNT BROUGHT FORWARD----------------->
@@ -69,7 +69,7 @@
               <div class="col-md-2 column_details"></div>
               <div class="col-md-2 column_details">
               </div>
-              <div class="col-md-2 column_details_end" v-if="income.items.length == 0">
+              <div class="col-md-2 column_details_end text-bold" v-if="income.items.length == 0">
                 {{ Number(income.total).toLocaleString() }}
               </div>
               <div class="col-md-2 column_details_end" v-if="income.items.length > 0"></div>
@@ -154,10 +154,9 @@
                   {{ income.code }}.{{ value.code }}
                 </div>
                 <div class="col-md-5 column_details text-bold text-left">
-                  {{$t('app.subtotal')}}
                 </div>
                 <div class="col-md-2 column_details"></div>
-                <div class="col-md-2 column_details">
+                <div class="col-md-2 column_details text-bold">
                   {{ Number(value.total).toLocaleString() }}
                 </div>
                 <div class="col-md-2 column_details_end"></div>
@@ -173,10 +172,10 @@
                 {{$t('app.total')}}
               </div>
               <div class="col-md-2 column_details"></div>
-              <div class="col-md-2 column_details">
+              <div class="col-md-2 column_details text-bold">
                 {{ Number(income.total).toLocaleString() }}
               </div>
-              <div class="col-md-2 column_details_end"> {{ Number(income.total).toLocaleString() }}</div>
+              <div class="col-md-2 column_details_end text-bold"> {{ Number(income.total).toLocaleString() }}</div>
             </div>
           </div>
           <!------------------------------------------------END OF CATEGORIES OF INCOME-------------------------------------------------->
@@ -188,10 +187,10 @@
               {{$t('app.totalIncome')}}
             </div>
             <div class="col-md-2 column_details"></div>
-            <div class="col-md-2 column_details">
+            <div class="col-md-2 column_details text-bold">
               {{ Number(getTotalIncome).toLocaleString() }}
             </div>
-            <div class="col-md-2 column_details_end">
+            <div class="col-md-2 column_details_end text-bold">
               {{ Number(getTotalIncome).toLocaleString() }}
             </div>
           </div>
@@ -209,7 +208,7 @@
       <div class="col-1 col-md-1 col-sm-12 col-xs-12"></div>
       <div class="col-10 col-md-10 col-sm-12 col-xs-12">
         <div class="text-center">
-          <label for="income" class="income_heading">{{$t('app.expenditures')}} (F CFA)</label>
+          <label for="income" class="income_heading">{{$t('app.expenditures')}} (XAF)</label>
         </div>
 
         <!---------------------------------------------------------------------START OF EXPENDITURES LIST---------------------------------------------------------->
@@ -286,10 +285,10 @@
                   {{ expenditures.code }}.{{ value.code }}
                 </div>
                 <div class="col-md-5 column_details text-left text-bold">
-                  {{$t('app.subtotal')}}
+
                 </div>
                 <div class="col-md-2 column_details"></div>
-                <div class="col-md-2 column_details">
+                <div class="col-md-2 column_details text-bold">
                   {{ Number(value.total).toLocaleString() }}
                 </div>
                 <div class="col-md-2 column_details_end"></div>
@@ -305,10 +304,10 @@
                 {{$t('app.total')}}
               </div>
               <div class="col-md-2 column_details"></div>
-              <div class="col-md-2 column_details">
+              <div class="col-md-2 column_details text-bold">
                 {{ Number(getTotalExpenditure).toLocaleString() }}
               </div>
-              <div class="col-md-2 column_details_end"> {{ Number(getTotalExpenditure).toLocaleString() }}</div>
+              <div class="col-md-2 column_details_end text-bold"> {{ Number(getTotalExpenditure).toLocaleString() }}</div>
             </div>
           </div>
           <!------------------------------------------------END OF CATEGORIES OF EXPENDITURES-------------------------------------------------->
@@ -320,10 +319,10 @@
               {{$t('app.totalExpenditure')}}
             </div>
             <div class="col-md-2 column_details"></div>
-            <div class="col-md-2 column_details">
+            <div class="col-md-2 column_details text-bold">
               {{ Number(getTotalExpenditure).toLocaleString() }}
             </div>
-            <div class="col-md-2 column_details_end">
+            <div class="col-md-2 column_details_end text-bold">
               {{ Number(getTotalExpenditure).toLocaleString() }}
             </div>
           </div>
@@ -341,7 +340,7 @@
       <div class="col-md-1 col-sm-1 col-xs-1"></div>
       <div class="col-md-10 col-xs-12 col-sm-12">
         <div class="q-my-md text-center">
-          <label for="income" class="summary">{{$t('app.summary')}} (F CFA)</label>
+          <label for="income" class="summary">{{$t('app.summary')}} (XAF)</label>
         </div>
         <div class="row table_header">
             <div class="col-1 col-md-1 columns text-bold text-center">
@@ -398,7 +397,7 @@
           <div class="col-md-6 text-bold text-center text-uppercase admin_details">
             <div>
               <label for="name">{{$t('app.finSec')}} </label><br/>
-              <span class="admin_name">{{getFinancialSecretary.name}}</span>
+              <span class="admin_name" v-if="getFinancialSecretary !== null">{{getFinancialSecretary.name}}</span>
             </div>
             <br/>
             <div>
@@ -409,7 +408,7 @@
           <div class="col-md-6 text-bold text-center text-uppercase admin_details">
             <div>
               <label for="name">{{$t('app.treasurer')}}</label><br/>
-              <span class="admin_name">{{getTreasurer.name}}</span>
+              <span class="admin_name" v-if="getTreasurer !== null">{{getTreasurer.name}}</span>
             </div>
             <br/>
             <div>
@@ -423,7 +422,7 @@
           <div class="col-md-12 text-bold text-center text-uppercase admin_details">
             <div>
               <label for="name">{{$t('app.president')}}</label><br/>
-              <span class="admin_name">{{getPresident.name}}</span>
+              <span class="admin_name" v-if="getPresident !== null">{{getPresident.name}}</span>
             </div>
             <br/>
             <div>
@@ -440,10 +439,10 @@
   </div>
 </template>
 <script>
+import { LocalStorage } from "quasar";
 import ReportHead from "./ReportHead.vue";
-import CurrentYearMixin from "src/mixins/CurrentYearMixin.vue";
-export default {
-  mixins: [CurrentYearMixin],
+ export default {
+  mixins: [ ],
   props: {
     heading: {
       type: String,
@@ -471,15 +470,15 @@ export default {
     },
 
     getTotalIncome() {
-      return this.$store.getters.getReportData[2].total_income + this.getBalanceBF;
+      return this.$store.getters.getReportData.length > 0 ?  this.$store.getters.getReportData[2].total_income : 0 + this.getBalanceBF;
     },
 
     getTotalExpenditure() {
-      return this.$store.getters.getReportData[3].total_expenditure;
+      return this.$store.getters.getReportData.length > 0 ? this.$store.getters.getReportData[3].total_expenditure : 0;
     },
 
     getBalanceBF() {
-      return this.$store.getters.getReportData[4].balance_brought_forward;
+      return this.$store.getters.getReportData.length > 0 ? this.$store.getters.getReportData[4].balance_brought_forward: 0;
     },
 
     getTotalBalance(){
@@ -496,6 +495,10 @@ export default {
 
     getFinancialSecretary(){
       return this.$store.getters.getReportData[7].fin_sec;
+    },
+
+    getCurrentYear(){
+      return LocalStorage.getItem("data").current_session;
     }
   },
   methods: {},

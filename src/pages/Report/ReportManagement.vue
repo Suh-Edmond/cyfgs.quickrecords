@@ -1,8 +1,15 @@
 <template>
   <div class="q-px-sm">
-    <div class="row flex justify-between q-pa-sm q-mx-sm q-my-md" :style="$q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-      " v-if="show_hint">
-      <div class="hint_text_color q-pt-sm">{{ $t('app.generateReportHint') }}</div>
+    <div
+      class="row flex justify-between q-pa-sm q-mx-sm q-my-md"
+      :style="
+        $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+      "
+      v-if="show_hint"
+    >
+      <div class="hint_text_color q-pt-sm">
+        {{ $t("app.generateReportHint") }}
+      </div>
       <div>
         <q-btn flat round class="close_color" icon="close" @click="closeHint" />
       </div>
@@ -10,8 +17,13 @@
     <!-- report details available -->
     <div>
       <!-- header for filter sponsors -->
-      <FilterComponentVue :show_report="true" :loading_download="loading_download"
-        :disable_download_btn="validateDownloadBtn" @generate-report="generateReport" @download-report="downloadReport">
+      <FilterComponentVue
+        :show_report="true"
+        :loading_download="loading_download"
+        :disable_download_btn="validateDownloadBtn"
+        @generate-report="generateReport"
+        @download-report="downloadReport"
+      >
       </FilterComponentVue>
 
       <div class="flex flex-center q-mt-lg" v-if="getLoadingState">
@@ -20,20 +32,23 @@
       <!-- table for report by activity -->
       <div class="row q-pt-sm" v-if="show_activity_report">
         <div class="col-md-12 col-xs-12 col-sm-12">
-          <ActivityReportTable :heading="heading" :activity_report_data="activity_report_data">
+          <ActivityReportTable
+            :heading="heading"
+            :activity_report_data="activity_report_data"
+          >
           </ActivityReportTable>
         </div>
       </div>
 
       <!-- quarterly report table -->
-      <div class="row q-pt-sm" v-if="show_quarterly_report">
+      <div class="row q-pt-sm" v-if="show_quarterly_report && !getLoadingState">
         <div class="col-md-12 col-xs-12 col-sm-12">
           <QuarterlyReportTable :heading="heading"> </QuarterlyReportTable>
         </div>
       </div>
 
       <!---------yearly reports table-->
-      <div class="row q-pt-sm" v-if="show_yearly_report">
+      <div class="row q-pt-sm" v-if="show_yearly_report && !getLoadingState">
         <div class="col-md-12 col-xs-12 col-sm-12">
           <YearlyReportTable :heading="heading"> </YearlyReportTable>
         </div>
@@ -49,10 +64,11 @@ import QuarterlyReportTable from "src/components/QuarterlyReportTable.vue";
 import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
 import YearlyReportTable from "src/components/YearlyReportTable.vue";
 import FilterComponentVue from "src/components/FilterComponent.vue";
+import { LocalStorage } from "quasar";
 
 export default {
   mixins: [HelperMixin, CurrentYearMixinVue],
-  mounted() { },
+  mounted() {},
 
   data() {
     return {
@@ -63,7 +79,7 @@ export default {
       group: null,
       options: [],
       label: this.$t("app.generateReport"),
-      year: this.$store.getters.getCurrentYear.name,
+      year: LocalStorage.getItem("data").current_session.year,
       heading: null,
       is_fetching: false,
       option: null,
@@ -88,9 +104,8 @@ export default {
 
   methods: {
     closeHint() {
-      return this.show_hint = false;
+      return (this.show_hint = false);
     },
-
 
     generateReport(data) {
       switch (data.report_option.value) {
@@ -214,13 +229,13 @@ export default {
       let url = "";
       let file_name = "";
       if (data.report_option.value == 1) {
-        url = `/api/protected/activity/${id}/report/download?payment_actvity=${label}`;
+        url = `/api/protected/activity/${id}/report/download?payment_activity=${label}&year=${this.year}`;
         file_name = "Activity_Report.pdf";
       } else if (data.report_option.value == 2) {
-        url = `/api/protected/report/quarter/download?quarter=${data.group.value}`;
+        url = `/api/protected/report/quarter/download?quarter=${data.group.value}&year=${this.year}&organisation_id=${this.organisation_id}`;
         file_name = "Quarterly_Report.pdf";
       } else {
-        url = `/api/protected/report/yearly/download?year_id=${data.group.value}&year_label=${data.group.label}`;
+        url = `/api/protected/report/yearly/download?year_id=${data.group.value}&year_label=${data.group.label}&year=${this.year}&organisation_id=${this.organisation_id}`;
         file_name = "Yearly_Report.pdf";
       }
       this.loading_download = this.downloadPdf(url, file_name);

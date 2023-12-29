@@ -1,10 +1,10 @@
 <template>
-  <div class="q-pa-xs">
+  <div>
     <!---------------------------------------------------MAIN TABLE COMPONENT------------------------------>
     <q-table
       :data="data"
       :columns="columns"
-      row-key="counter"
+      row-key="name"
       :table-header-style="{ backgroundColor: '#5384ae', color: '#FFFFFF' }"
       class="col-xs-12"
       :filter="filter"
@@ -20,9 +20,6 @@
       <template v-slot:body="props">
         <!-- table body for payment category -->
         <q-tr :props="props" v-if="show_payment_category">
-          <q-td key="counter" :props="props">
-            {{ props.row.counter }}
-          </q-td>
           <q-td key="name" :props="props">
             {{ props.row.name }}
           </q-td>
@@ -35,6 +32,7 @@
               color="primary"
               no-caps
               class="view_items"
+              :style="$q.platform.is.mobile?'width:200px':'width:200px'"
               @click="showPaymentItems(props.row)"
               :to="{ name: 'payment_items', params: { id: props.row.id } }"
             >
@@ -78,7 +76,7 @@
                       clickable
                       v-close-popup
                       @click="onDelete(props.row, 'PAYMENT_CATEGORY')"
-                      v-if="checkPresidentRole()"
+                      v-if="checkPresidentOrAdminRole()"
                     >
                       <q-item-section avatar>
                         <span>
@@ -95,15 +93,25 @@
                 </q-menu>
               </q-icon>
             </q-btn>
+            <q-btn
+              unelevated
+              color="primary"
+              no-caps
+              class="view_payment_category"
+              @click="onViewPaymentCategory(props.row)"
+              v-if="checkTreasurerRole()"
+            >
+              {{ $t("app.view") }}
+              <span class="q-pl-md"
+                ><q-icon name="visibility" size="xs"></q-icon
+              ></span>
+            </q-btn>
           </q-td>
         </q-tr>
         <!-- end of table body for payment category -->
 
         <!-- table body for payment items -->
         <q-tr :props="props" v-if="show_payment_item">
-          <q-td key="counter" :props="props">
-            {{ props.row.counter }}
-          </q-td>
           <q-td key="name" :props="props">
             {{ props.row.name }}
           </q-td>
@@ -126,6 +134,7 @@
               color="primary"
               no-caps
               class="view_items"
+              :style="$q.platform.is.mobile?'width:200px':'width:150px'"
               @click="showReferences(props.row)"
               v-if="props.row.payment_item_type == 'A_MEMBER'"
             >
@@ -142,6 +151,7 @@
               no-caps
               class="view_items"
               @click="showReferences(props.row)"
+              :style="$q.platform.is.mobile?'width:200px':'width:150px'"
               v-if="
                 props.row.payment_item_type == 'GROUPED_MEMBERS' ||
                 props.row.payment_item_type == 'MEMBERS_WITH_ROLES' ||
@@ -221,15 +231,26 @@
                 </q-menu>
               </q-icon>
             </q-btn>
+            <q-btn
+              unelevated
+              color="primary"
+              no-caps
+              class="view_items"
+
+              @click="onViewPaymentItem(props.row)"
+              v-if="checkTreasurerRole()"
+            >
+              {{ $t("app.view") }}
+              <span class="q-pl-md"
+                ><q-icon name="visibility" size="xs"></q-icon
+              ></span>
+            </q-btn>
           </q-td>
         </q-tr>
         <!-- end of table body for payment items -->
 
         <!-- table body for expenditure category -->
         <q-tr :props="props" v-if="show_expenditure_category">
-          <q-td key="counter" :props="props">
-            {{ props.row.counter }}
-          </q-td>
           <q-td key="name" :props="props">
             {{ props.row.name }}
           </q-td>
@@ -242,6 +263,7 @@
               color="primary"
               no-caps
               class="view_items"
+              :style="$q.platform.is.mobile?'width:200px':'width:200px'"
               @click="showExpenditureItems(props.row)"
               :to="{ name: 'expenditure_items', params: { id: props.row.id } }"
             >
@@ -306,9 +328,6 @@
 
         <!-- table body for expenditure items -->
         <q-tr :props="props" v-if="show_expenditure_item">
-          <q-td key="counter" :props="props">
-            {{ props.row.counter }}
-          </q-td>
           <q-td key="name" :props="props">
             {{ props.row.name }}
           </q-td>
@@ -353,27 +372,13 @@
               color="primary"
               :label="$t('app.details')"
               v-if="checkTreasurerRole()"
-              class="view"
+              class="view q-mr-md"
               @click="showDetails(props.row)"
               :to="{ name: 'expenditure_detail', params: { id: props.row.id } }"
             >
               <q-icon name="visibility" size="xs" class="q-pl-md"></q-icon>
             </q-btn>
             <!-- approved btn for expenditure items -->
-            <q-btn
-              class="decline_btn"
-              dense
-              :label="$t('app.decline')"
-              unelevated
-              no-caps
-              @click="onDeclineRecord(props.row, 'Decline')"
-              v-if="
-                checkTreasurerRole() &&
-                props.row.approve == 'PENDING' &&
-               props.row.has_no_pending_details
-              "
-            />
-            <!-- decline btn for expenditure items -->
             <q-btn
               class="approve_btn"
               dense
@@ -384,7 +389,21 @@
               v-if="
                 checkTreasurerRole() &&
                 props.row.approve == 'PENDING' &&
-               props.row.has_no_pending_details
+                props.row.has_no_pending_details
+              "
+            />
+            <!-- decline btn for expenditure items -->
+            <q-btn
+              class="decline_btn q-ml-md"
+              dense
+              :label="$t('app.decline')"
+              unelevated
+              no-caps
+              @click="onDeclineRecord(props.row, 'Decline')"
+              v-if="
+                checkTreasurerRole() &&
+                props.row.approve == 'PENDING' &&
+                props.row.has_no_pending_details
               "
             />
 
@@ -476,8 +495,14 @@
 
         <!-- table body for expenditure item details -->
         <q-tr :props="props" v-if="show_expenditure_item_detail">
-          <q-td key="counter" :props="props">
-            {{ props.row.counter }}
+          <q-td key="is_selected" :props="props">
+            <q-checkbox
+              v-model="props.row.is_selected"
+              v-if="props.row.approve == 'PENDING'"
+              dense
+              size="md"
+              @input="computeTotal(props.row, $event)"
+            />
           </q-td>
           <q-td key="name" :props="props">
             {{ props.row.name }}
@@ -582,6 +607,31 @@
               </q-icon>
             </q-btn>
 
+            <!-- view expenditure item details -->
+            <q-btn
+              color="primary"
+              class="viewPending"
+              dense
+              :label="$t('app.view')"
+              no-caps
+              unelevated
+              @click="onViewExpenditureDetail(props.row)"
+              v-if="checkTreasurerRole()"
+            >
+              <q-icon name="visibility" size="xs" class="q-pl-md"></q-icon>
+            </q-btn>
+
+            <!-- decline btn for expenditure item details -->
+            <q-btn
+              class="approve_btn q-mx-md"
+              dense
+              :label="$t('app.approve')"
+              no-caps
+              unelevated
+              @click="onApprovedRecord(props.row, 'Approve')"
+              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
+            />
+
             <!-- approved btn for expenditure item details -->
             <q-btn
               class="decline_btn"
@@ -592,34 +642,6 @@
               @click="onDeclineRecord(props.row, 'Decline')"
               v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
             />
-            <!-- decline btn for expenditure item details -->
-            <q-btn
-              class="approve_btn"
-              dense
-              :label="$t('app.approve')"
-              no-caps
-              unelevated
-              @click="onApprovedRecord(props.row, 'Approve')"
-              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
-            />
-
-            <!-- view expenditure item details -->
-            <q-btn
-              color="primary"
-              :class="
-                props.row.approve == 'PENDING'
-                  ? 'viewExpenditureItem'
-                  : 'viewPending'
-              "
-              dense
-              :label="$t('app.view')"
-              no-caps
-              unelevated
-              @click="onViewExpenditureDetail(props.row)"
-              v-if="checkTreasurerRole()"
-            >
-              <q-icon name="visibility" size="xs" class="q-pl-md"></q-icon>
-            </q-btn>
           </q-td>
         </q-tr>
         <!-- end of table body for expenditure item details -->
@@ -659,7 +681,8 @@
               : 'text-h6-sm'
           "
           v-model="filter"
-          placeholder="Search category..."
+          :placeholder="$t('app.tableSearch')"
+          :style="$q.platform.is.mobile ? 'width:88vw' : ''"
         >
           <template v-slot:append>
             <q-icon name="search" />
@@ -841,6 +864,8 @@ export default {
       type: null,
       delete_msg: "",
       show_confirm_dialog_detail: false,
+      selectedRecords: [],
+      expensesSet: new Set(),
     };
   },
   computed: {
@@ -864,20 +889,21 @@ export default {
 
     checkTreasurerRole() {
       const treasurer_role = LocalStorage.getItem("data").user_data.roles.find(
-        (role) => role.name == "TREASURER"
+        (role) => role.name === "TREASURER"
       );
-      return treasurer_role != undefined;
+       return treasurer_role != undefined;
     },
 
-    checkPresidentRole() {
-      const president_role = LocalStorage.getItem("data").user_data.roles.find(
-        (role) => role.name == "PRESIDENT"
+    checkPresidentOrAdminRole() {
+      let req_roles = ["ADMIN", "PRESIDENT"];
+      const user_roles = LocalStorage.getItem("data").user_data.roles.map(
+        (role) => role.name
       );
-      return president_role != undefined;
+      return user_roles.includes(...req_roles);
     },
 
     showPaymentItems(data) {
-      this.$emit("show-payment-items",  data);
+      this.$emit("show-payment-items", data);
     },
 
     onViewPaymentCategory(categories) {
@@ -888,19 +914,22 @@ export default {
       this.$emit("update-payment-category", payload);
     },
 
-    onViewPaymentItem(payment_items) {
+    onViewPaymentItem(payment_item) {
       let payload = {
-        data: payment_items,
+        data: payment_item,
         tab: "View Payment Item",
       };
+      this.$store.dispatch("setUpdatedPaymentItem", payment_item);
       this.$emit("view-payment-item", payload);
     },
 
-    onEditPaymentItem(payment_items) {
+    onEditPaymentItem(payment_item) {
       let payload = {
-        data: payment_items,
+        data: payment_item,
         tab: "Payment Items",
       };
+      this.$store.dispatch("setUpdatedPaymentItem", payment_item);
+
       this.$emit("update-payment-item", payload);
     },
 
@@ -977,6 +1006,8 @@ export default {
         data: data,
         tab: "Expenditure Activity Information",
       };
+      this.$store.dispatch("setUpdatedExpenditureItem", data);
+
       this.$emit("view-expenditure-item", payload);
     },
 
@@ -985,6 +1016,8 @@ export default {
         data: expenditure_item,
         tab: "Expenditure Items",
       };
+      this.$store.dispatch("setUpdatedExpenditureItem", expenditure_item);
+
       this.$emit("edit-expenditure-item", payload);
     },
 
@@ -1059,7 +1092,7 @@ export default {
     setApproveFeedbackMsg() {
       let msg =
         this.$t("app.recordWas") +
-        `${this.chosen_state}` +
+        `${this.chosen_state} ` +
         this.$t("app.successfull");
       return msg;
     },
@@ -1095,10 +1128,17 @@ export default {
     callFetchDataAfterApproveAction(data) {
       switch (data.type) {
         case "EXPENDITURE_ITEMS":
-          this.getExpendituresByCategory(data.expenditure_category_id.id);
+          this.filterExpenditureItems(
+            1,
+            10,
+            { value: this.$store.getters.getCurrentExpenditureCategory.id },
+            "",
+            ""
+          );
           break;
         case "EXPENDITURE_DETAILS":
-          this.getExpenditureDetailsByItemId(data.expenditure_item_id);
+          this.getExpenditureDetailsByItemId(data.expenditure_item_id, 1, 7);
+
           break;
       }
     },
@@ -1121,14 +1161,24 @@ export default {
           data: [],
         },
       };
-      this.$store.dispatch("putRequest", payload).then((res) => {
-        if (res.success) {
-          this.callFetchDataAfterApproveAction(this.approve_data);
-        }
-      });
+      this.$store.commit("SET_IS_FETCHING", true);
+      this.$store
+        .dispatch("putRequest", payload)
+        .then((res) => {
+          if (res.success) {
+            this.callFetchDataAfterApproveAction(this.approve_data);
+          }
+        })
+        .finally(() => {
+          this.$store.commit("SET_IS_FETCHING", false);
+        });
     },
 
     showDetails(data) {
+      this.$store.dispatch(
+        "setCurrentExpenditureCategory",
+        data.expenditure_category_id
+      );
       this.$store.dispatch("setExpenditureItemName", data.name);
       const intermediate_tabs = Array.from(
         this.$store.getters.getIntermediateTabs
@@ -1148,6 +1198,15 @@ export default {
             (ele) => ele.approve == "PENDING"
           ).length == 0
         : false;
+    },
+
+    computeTotal(data, event) {
+      if (event) {
+        this.expensesSet.add(data);
+      } else {
+        this.expensesSet.delete(data);
+      }
+      this.$emit("showSelectedRecords", this.expensesSet);
     },
   },
   components: {
@@ -1185,6 +1244,15 @@ export default {
   text-transform: capitalize;
 }
 
+.view_payment_category {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  align-items: center;
+  text-transform: capitalize;
+ }
+
 .field_total {
   font-family: "Roboto";
   font-style: normal;
@@ -1198,9 +1266,9 @@ export default {
 }
 
 .title {
-  // font-size: small;
-  font-size: medium;
+  font-size: 15px;
   font-weight: 500;
+  color: $grey8;
 }
 
 .dialog_button {
@@ -1214,18 +1282,18 @@ export default {
   color: white;
   width: 5.5rem;
 }
+
 .approve_card {
   width: 25rem;
-  // padding: 0.7rem;
 }
+
 .decline_btn {
   background-color: $orange;
   color: white;
-  margin-right: 4.5rem;
   width: 5.5rem;
 }
+
 .view {
-  margin-right: 4.5rem;
   width: 6rem;
 }
 
@@ -1233,9 +1301,11 @@ export default {
   width: 5.5rem;
   margin-left: 5rem;
 }
+
 .viewPending {
   width: 5.5rem;
 }
+
 .approve {
   color: $secondary;
 }
@@ -1248,19 +1318,23 @@ export default {
   font-size: 13px;
   padding-left: 5.5rem;
 }
+
 .total {
   font-size: 13px;
   padding-left: 6rem;
 }
+
 .total_given {
   font-size: 13px;
   padding-left: 12rem;
 }
+
 .amount_given {
   font-size: 13px;
   padding-left: 7rem;
   padding-right: 250px;
 }
+
 .total_spent {
   font-size: 13px;
   padding-left: 15rem;
@@ -1269,6 +1343,7 @@ export default {
 .summary {
   font-size: 15px;
 }
+
 .amount_spent {
   font-size: 13px;
   padding-left: 13.5rem;
@@ -1288,9 +1363,11 @@ export default {
   letter-spacing: 0.01em;
   color: $grey2;
 }
+
 .delete_item_name {
   padding-left: 1.8rem;
 }
+
 .detail_name {
   padding-left: 4.3rem;
 }

@@ -38,7 +38,7 @@
       </div>
       <div class="q-mb-lg row">
         <div
-          class="col-md-4 col-lg-4 col-sm-12 col-xs-12"
+          class="col-md-4 col-lg-4"
           v-for="status in statuses"
           :key="status.index"
         >
@@ -173,6 +173,7 @@ import ContributionsMixinVue from "src/mixins/ContributionsMixin.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
 import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
 import MonthsMixinVue from "src/mixins/MonthsMixin.vue";
+import { LocalStorage } from "quasar";
 
 export default {
   mixins: [
@@ -239,6 +240,7 @@ export default {
       start_filter_payment_item: false,
       start_filter_month: false,
       start_filter_year: false,
+      current_session_id: LocalStorage.getItem("data").current_session.id
     };
   },
   computed: {
@@ -275,6 +277,8 @@ export default {
               label: ele.name,
               value: ele.id,
               amount: ele.amount,
+              frequency:ele.frequency,
+              created_at:ele.created_at
             });
           });
         }
@@ -289,8 +293,8 @@ export default {
         status: status !== null && status !== "" ? status : "",
         payment_item_id: this.param.payment_item_id,
         year:
-          this.param.year == ""
-            ? this.$store.getters.getCurrentYear.id
+          this.param.year == "" && this.param.year !== null
+            ? this.current_session_id
             : this.param.year.value,
         month:
           this.param.month !== null && this.param.month !== ""
@@ -305,6 +309,7 @@ export default {
             ? this.param.date_range
             : "",
         amount: this.param.payment_item_id.amount,
+        frequency: this.param.payment_item_id.frequency
       };
       this.loading = this.filterMembersContributions(
         payload,

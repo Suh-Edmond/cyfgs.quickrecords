@@ -65,7 +65,7 @@
       <!-- filter by status of savings -->
       <div class="q-mb-lg row q-gutter-xs">
         <div
-          class="col-md-3 col-lg-3 col-sm-12 col-xs-12"
+          class="col-md-4 col-lg-4"
           v-for="status in statuses"
           :key="status.index"
         >
@@ -120,13 +120,11 @@
             v-model="param.month"
             outlined
             dense
-            :options="months"
+            :options="getAllMonths"
             :label="$t('app.searchMonth')"
             input-debounce="0"
             use-input
             clearable
-            @filter="filterMonths"
-            @input="stopSearch"
           >
             <template v-slot:append v-if="start_filter_month">
               <q-spinner color="primary" size="1.2em" :thickness="3" />
@@ -277,6 +275,23 @@ export default {
     validateAmount() {
       return this.param.amount_deposited === 0;
     },
+
+    getAllMonths(){
+      return [
+        { label: this.$t("app.januaryName"), value: 1 },
+        { label: this.$t("app.februaryName"), value: 2 },
+        { label: this.$t("app.marchName"), value: 3 },
+        { label: this.$t("app.aprilName"), value: 4 },
+        { label: this.$t("app.mayName"), value: 5 },
+        { label: this.$t("app.juneName"), value: 6 },
+        { label: this.$t("app.julyName"), value: 7 },
+        { label: this.$t("app.augustName"), value: 8 },
+        { label: this.$t("app.septemberName"), value: 9 },
+        { label: this.$t("app.octoberName"), value: 10 },
+        { label: this.$t("app.novemberName"), value: 11 },
+        { label: this.$t("app.decemberName"), value: 12 },
+      ]
+    }
   },
   methods: {
     filterByUserInfo() {
@@ -289,7 +304,7 @@ export default {
           t: new Date().getTime(),
         },
       });
-      let url = `/api/protected/user-savings?organisation_id=${this.organisation_id}&name=${this.param.name}&session_id=${this.session_id}&page=${1}&per_page=${1}`;
+      let url = `/api/protected/user-savings?organisation_id=${this.organisation_id}&name=${this.param.name}&session_id=${this.session_id}&page=${1}&per_page=${7}`;
       this.loading_user_info = this.filterSaving(url);
     },
 
@@ -303,7 +318,7 @@ export default {
           t: new Date().getTime(),
         },
       });
-      let url = `/api/protected/user-savings?organisation_id=${this.organisation_id}&amount_deposited=${this.param.amount_deposited}&session_id=${this.session_id}&page=${1}&per_page=${1}`;
+      let url = `/api/protected/user-savings?organisation_id=${this.organisation_id}&amount_deposited=${this.param.amount_deposited}&session_id=${this.session_id}&page=${1}&per_page=${7}`;
       this.loading_save_amount = this.filterSaving(url);
     },
 
@@ -317,7 +332,7 @@ export default {
           t: new Date().getTime(),
         },
       });
-      let url = `/api/protected/user-savings?organisation_id=${this.organisation_id}&status=${status}&session_id=${this.session_id}&page=${1}&per_page=${1}`;
+      let url = `/api/protected/user-savings?organisation_id=${this.organisation_id}&status=${status}&session_id=${this.session_id}&page=${1}&per_page=${7}`;
       this.filterSaving(url);
     },
 
@@ -334,7 +349,7 @@ export default {
         },
       });
 
-      let url = `/api/protected/user-savings?organisation_id=${this.organisation_id}&session_id=${this.session_id}&month=${this.param.month}&date=${this.param.date}&range=${this.param.date_range}&page=${1}&per_page=${1}`;
+      let url = `/api/protected/user-savings?organisation_id=${this.organisation_id}&session_id=${this.session_id}&month=${this.param.month}&date=${this.param.date}&range=${this.param.date_range}&page=${1}&per_page=${7}`;
       this.loading = this.filterSaving(url);
     },
 

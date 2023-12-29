@@ -11,10 +11,8 @@
         @download-categories="downloadPaymentCategory"
       >
       </FilterComponentVue>
-      <!-- table for categories -->
-      <div class="row q-pt-sm">
-        <div class="col-md-12 col-xs-12 col-sm-12">
-          <CategoryTable
+      <CategoryTable
+          :class="$q.platform.is.desktop?'q-pt-sm q-px-sm':' q-px-sm q-pt-md'"
             :columns="columns"
             :data="getData"
             :label="label"
@@ -31,8 +29,6 @@
             @onRequest="onRequest"
           >
           </CategoryTable>
-        </div>
-      </div>
     </div>
   </q-page>
 </template>
@@ -64,13 +60,6 @@ export default {
       year: "",
       loading: false,
       columns: [
-        {
-          name: "counter",
-          required: true,
-          label: "S/N",
-          align: "left",
-          field: "counter",
-        },
         {
           name: "name",
           required: true,
@@ -206,7 +195,8 @@ export default {
     },
 
     downloadPaymentCategory(data) {
-      let url = `/api/protected/download-payment-categories?organisation_id=${this.organisation_id}&year=${data.year.label}`;
+      let year_label = data.year !== "" && data.year !== "" ? data.year.label: ""
+      let url = `/api/protected/download-payment-categories?organisation_id=${this.organisation_id}&year=${year_label}&sort_by=name`;
       let file_name = "Organisation_Payment_Categories.pdf";
       this.loading = this.downloadPdf(url, file_name);
     },

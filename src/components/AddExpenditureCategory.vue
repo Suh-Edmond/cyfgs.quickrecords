@@ -96,10 +96,14 @@ export default {
     },
   },
   methods: {
-    onAddExpenditureCategory() {
+    setRequestUrl() {
       let id = this.getOrganisationId;
+      return this.getUpdatedExpenditureCategoryFromState() === null ? `/api/protected/organisations/${id}/expenditure-categories` :
+      `/api/protected/organisations/${id}/expenditure-categories/${this.getUpdatedExpenditureCategoryFromState().id}`
+    },
+    onAddExpenditureCategory() {
       let payload = {
-        url: `/api/protected/organisations/${id}/expenditure-categories`,
+        url: this.setRequestUrl(),
         data: {
           name: this.expenditure.name,
           description: this.expenditure.description,
@@ -124,6 +128,7 @@ export default {
         },
       };
       this.loading = true;
+     if(this.getUpdatedExpenditureCategoryFromState() == null) {
       this.$store
         .dispatch("postRequest", payload)
         .then(() => {
@@ -134,6 +139,18 @@ export default {
           this.resetForm();
           this.$emit("close-right-drawer");
         });
+     }else {
+      this.$store
+        .dispatch("putRequest", payload)
+        .then(() => {
+          this.fetchOrganisationExpenditureCategories(this.$store.getters.getOrganisation.id, 1, 7, "name", null);
+        })
+        .finally(() => {
+          this.loading = false;
+          this.resetForm();
+          this.$emit("close-right-drawer");
+        });
+     }
     },
     resetForm() {
       this.expenditure.description = null;

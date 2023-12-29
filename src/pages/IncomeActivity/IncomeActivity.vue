@@ -12,29 +12,26 @@
       </FilterComponentVue>
 
       <!-- table for activities -->
-      <div class="row q-pt-sm">
-        <div class="col-md-12 col-xs-12 col-sm-12">
-          <TableVue
-            :columns="columns"
-            :data="getIncomeActivities"
-            :label="label"
-            :title="getTableTitle"
-            :message="message"
-            :show_savings="false"
-            :show_income_activity="true"
-            :show_contribution="false"
-            :total_income="getTotalIncome"
-            :show_members="false"
-            :pagination="getPagination"
-            :table_loading="getLoadingState"
-            @edit-income-activity="editIncomeActivity"
-            @view-income-activity="viewIncomeActivity"
-            @delete-row="deleteRow"
-            @onRequest="onRequest"
-          >
-          </TableVue>
-        </div>
-      </div>
+      <TableVue
+        :class="$q.platform.is.desktop ? 'q-pt-sm q-px-sm' : ' q-px-sm q-pt-lg'"
+        :columns="columns"
+        :data="getIncomeActivities"
+        :label="label"
+        :title="getTableTitle"
+        :message="message"
+        :show_savings="false"
+        :show_income_activity="true"
+        :show_contribution="false"
+        :total_income="getTotalIncome"
+        :show_members="false"
+        :pagination="getPagination"
+        :table_loading="getLoadingState"
+        @edit-income-activity="editIncomeActivity"
+        @view-income-activity="viewIncomeActivity"
+        @delete-row="deleteRow"
+        @onRequest="onRequest"
+      >
+      </TableVue>
     </div>
   </q-page>
 </template>
@@ -44,10 +41,11 @@ import TableVue from "src/components/Table.vue";
 import IncomeActivityMixinVue from "src/mixins/IncomeActivityMixin.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
 import FilterComponentVue from "src/components/FilterComponent.vue";
+import { LocalStorage } from "quasar";
 
 export default {
   mixins: [IncomeActivityMixinVue, HelperMixinVue],
-  beforeMount(){
+  beforeMount() {
     this.$store.commit("SET_PAGINATION", {
       sortBy: "name",
       descending: false,
@@ -74,13 +72,6 @@ export default {
       month: "",
       status: "",
       columns: [
-        {
-          name: "counter",
-          required: true,
-          label: "S/N",
-          align: "left",
-          field: "counter",
-        },
         {
           name: "name",
           required: true,
@@ -130,7 +121,7 @@ export default {
   computed: {
     getTotalIncome() {
       return this.$store.getters.getIncomeActivities !== null
-        ? this.$store.getters.getIncomeActivities.total
+        ? this.$store.getters.getIncomeActivities.total_income
         : 0;
     },
 
@@ -289,15 +280,20 @@ export default {
     },
 
     downloadIncomeActivity(data) {
-      let payment_item_id =
+      let payment_item_value =
         data.payment_item_id != null && data.payment_item_id != ""
           ? data.payment_item_id.value
+          : "";
+      let payment_item_label =
+        data.payment_item_id != null && data.payment_item_id != ""
+          ? data.payment_item_id.label
           : "";
       let month =
         data.month != null && data.month != "" ? data.month.value : "";
       let status =
         data.status !== null && data.status !== "" ? data.status : "";
-      let url = `/api/protected/organisations/income-activities/generate-pdf?organisation_id=${this.organisation_id}&month=${month}&payment_item_id=${payment_item_id}&status=${status}`;
+      let year = LocalStorage.getItem("data").current_session.year;
+      let url = `/api/protected/organisations/income-activities/generate-pdf?organisation_id=${this.organisation_id}&month=${month}&payment_item_id=${payment_item_value}&status=${status}&payment_item_name=${payment_item_label}&year=${year}`;
 
       let file_name = "Organisation_Income_Activities.pdf";
 

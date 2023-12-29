@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-xs">
+  <div>
     <!-- table element -->
     <q-table
       :data="data"
@@ -15,9 +15,6 @@
     >
       <template v-slot:body="props">
         <q-tr :props="props">
-          <q-td key="counter" :props="props">
-            {{ props.row.counter }}
-          </q-td>
           <q-td key="supporter" :props="props">
             {{ props.row.supporter }}
           </q-td>
@@ -61,24 +58,6 @@
               >
                 <q-menu>
                   <q-list style="width: 180px" bordered separator>
-                    <!-- edit support -->
-                    <q-item
-                      clickable
-                      v-close-popup
-                      @click="onEditSupport(props.row)"
-                    >
-                      <q-item-section avatar class="q-mr-lg">
-                        <span>
-                          <q-icon name="edit" size="xs" class="edit" />
-                        </span>
-                      </q-item-section>
-                      <q-item-section>
-                        <q-item-label class="edit">{{
-                          $t("app.edit")
-                        }}</q-item-label>
-                      </q-item-section>
-                    </q-item>
-
                     <!-- view support -->
                     <q-item
                       clickable
@@ -93,6 +72,24 @@
                       <q-item-section>
                         <q-item-label class="edit">{{
                           $t("app.view")
+                        }}</q-item-label>
+                      </q-item-section>
+                    </q-item>
+
+                     <!-- edit support -->
+                     <q-item
+                      clickable
+                      v-close-popup
+                      @click="onEditSupport(props.row)"
+                    >
+                      <q-item-section avatar class="q-mr-lg">
+                        <span>
+                          <q-icon name="edit" size="xs" class="edit" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="edit">{{
+                          $t("app.edit")
                         }}</q-item-label>
                       </q-item-section>
                     </q-item>
@@ -158,8 +155,8 @@
 
       <!-- slot for table headings -->
       <template v-slot:top-left>
-        <div class="text-h6 title">
-          {{ title }}
+        <div class="text-h6 title" v-if="title !== ''">
+          {{ title }},  <span> {{ $t("app.total") }} : {{ Number(total).toLocaleString() }} XAF</span>
         </div>
       </template>
 
@@ -168,13 +165,14 @@
         <q-input
           outlined
           dense
-          :class="
-            $q.screen.md
-              ? 'text-h6-sm q-mb-sm q-mt-sm full-width'
-              : 'text-h6-sm'
-          "
           v-model="filter"
-          :placeholder="$t('app.search')"
+          :placeholder="$t('app.tableSearch')"
+          :class="
+            $q.platform.is.mobile
+              ? 'row text-h6-sm'
+              : 'text-h6-sm q-mb-lg q-mt-lg full-width'
+          "
+          :style="$q.platform.is.mobile?'width:88vw':''"
         >
           <template v-slot:append>
             <q-icon name="search" />
@@ -434,7 +432,7 @@ export default {
         },
       };
       this.$store.dispatch("deleteRequest", payload).then(() => {
-        this.getAllSponsorships();
+        this.getAllSponsorships(1, 10, "", "");
         this.$store.dispatch("setSelectedSponsorship", null);
       });
     },
@@ -467,9 +465,14 @@ export default {
       this.$store.dispatch("putRequest", payload).then((res) => {
         if (res.success) {
           if (this.approve_data.payment_item == null) {
-            this.getAllSponsorships();
+            this.getAllSponsorships(1, 7, "", "");
           } else {
-            this.getSponsorships(this.approve_data.payment_item.id);
+            this.getAllSponsorships(
+              1,
+              7,
+              this.approve_data.payment_item.id,
+              ""
+            );
           }
         }
       });
@@ -481,7 +484,9 @@ export default {
 
 <style lang="scss" scoped>
 .title {
-  font-size: small;
+  font-size: 15px;
+  font-weight: 500;
+  color: $grey8;
 }
 
 .menu_icon {
@@ -536,6 +541,7 @@ export default {
 .total {
   font-size: 15px;
 }
+
 .total_given {
   padding-left: 3rem;
   font-size: 13px;

@@ -13,27 +13,24 @@
       </FilterComponentVue>
 
       <!-- table for categories -->
-      <div class="row q-pt-sm">
-        <div class="col-md-12 col-xs-12 col-sm-12">
-          <CategoryTable
-            :columns="columns"
-            :data="getData"
-            :label="label"
-            :message="message"
-            :show_payment_category="false"
-            :show_payment_item="false"
-            :show_expenditure_category="true"
-            :show_expenditure_item="false"
-            :pagination="getPagination"
-            :table_loading="getLoadingState"
-            @show-expenditure-items="showExpenditureItems"
-            @update-expenditure-category="updateExpenditureCategory"
-            @delete-row="onDeleteRow"
-            @onRequest="onRequest"
-          >
-          </CategoryTable>
-        </div>
-      </div>
+      <CategoryTable
+        :class="$q.platform.is.desktop ? 'q-pt-sm q-px-sm' : ' q-px-sm q-pt-xl'"
+        :columns="columns"
+        :data="getData"
+        :label="label"
+        :message="message"
+        :show_payment_category="false"
+        :show_payment_item="false"
+        :show_expenditure_category="true"
+        :show_expenditure_item="false"
+        :pagination="getPagination"
+        :table_loading="getLoadingState"
+        @show-expenditure-items="showExpenditureItems"
+        @update-expenditure-category="updateExpenditureCategory"
+        @delete-row="onDeleteRow"
+        @onRequest="onRequest"
+      >
+      </CategoryTable>
     </div>
   </q-page>
 </template>
@@ -70,13 +67,6 @@ export default {
   data() {
     return {
       columns: [
-        {
-          name: "counter",
-          required: true,
-          label: "S/N",
-          align: "left",
-          field: "counter",
-        },
         {
           name: "name",
           required: true,
@@ -115,7 +105,10 @@ export default {
   computed: {
     getData() {
       let data = [];
-      if (this.$store.getters.getExpenditureCategories !== null) {
+      if (
+        this.$store.getters.getExpenditureCategories !== null &&
+        this.$store.getters.getExpenditureCategories !== undefined
+      ) {
         this.$store.getters.getExpenditureCategories.data.forEach((element) => {
           data.push({
             counter:
@@ -209,7 +202,9 @@ export default {
     },
 
     downloadExpenditureCategory(data) {
-      let url = `/api/protected/expenditure-categories/download?organisation_id=${this.organisation_id}&year=${data.year.value}`;
+      let year_value =
+        data.year !== "" && data.year !== "" ? data.year.value : "";
+      let url = `/api/protected/expenditure-categories/download?organisation_id=${this.organisation_id}&year=${year_value}&sort_by=name`;
       let file_name = "Expenditure_Categories.pdf";
       this.loading_download = this.downloadPdf(url, file_name);
     },

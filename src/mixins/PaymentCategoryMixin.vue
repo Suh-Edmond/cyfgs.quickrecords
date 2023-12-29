@@ -3,9 +3,6 @@ import CurrentYearMixinVue from "./CurrentYearMixin.vue";
 export default {
   mixins: [CurrentYearMixinVue],
   mounted() {
-    if(this.$store.getters.getCurrentYear === null){
-      this.fetchCurrentYear();
-    }
   },
   data() {
     return {};

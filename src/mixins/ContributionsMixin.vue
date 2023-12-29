@@ -84,6 +84,7 @@ export default {
         })
         .finally(() => {
           this.$store.commit("SET_IS_FETCHING", false);
+          this.$emit("close-right-drawer");
         });
 
       return this.loading;

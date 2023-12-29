@@ -1,41 +1,34 @@
 <template>
-  <q-page>
-    <div>
-      <!-- header for filter members -->
-      <FilterComponentVue
-        :show_member_filters="true"
-        :loading_download="loading_download"
-        :disable_download_btn="validateDownloadBtn"
-        @filter-members="filterMembers"
-        @download-members="downloadMembers"
-      >
-      </FilterComponentVue>
-
-      <!-- table for members -->
-      <div class="row q-pt-sm">
-        <div class="col-md-12 col-xs-12 col-sm-12">
-          <TableVue
-            :columns="columns"
-            :data="getMembers"
-            :label="label"
-            :message="message"
-            :show_savings="false"
-            :show_income_activity="false"
-            :show_members="true"
-            :show_contribution="false"
-            :pagination="getPagination"
-            :total_members="computeTotalMembership"
-            :table_loading="getLoadingState"
-            @fetch-members="onFetchMembers"
-            @register-member="registerMember"
-            @delete-row="deleteRow"
-            @onRequest="onRequest"
-          >
-          </TableVue>
-        </div>
-      </div>
-    </div>
-  </q-page>
+  <div>
+    <!-- header for filter members -->
+    <FilterComponentVue
+      :show_member_filters="true"
+      :loading_download="loading_download"
+      :disable_download_btn="validateDownloadBtn"
+      @filter-members="filterMembers"
+      @download-members="downloadMembers"
+    >
+    </FilterComponentVue>
+    <TableVue
+      :class="$q.platform.is.desktop?'q-pt-sm q-px-sm':' q-px-sm q-pt-lg'"
+      :columns="columns"
+      :data="getMembers"
+      :label="label"
+      :message="message"
+      :show_savings="false"
+      :show_income_activity="false"
+      :show_members="true"
+      :show_contribution="false"
+      :pagination="getPagination"
+      :total_members="computeTotalMembership"
+      :table_loading="getLoadingState"
+      @fetch-members="onFetchMembers"
+      @register-member="registerMember"
+      @delete-row="deleteRow"
+      @onRequest="onRequest"
+    >
+    </TableVue>
+  </div>
 </template>
 <script>
 import TableVue from "src/components/Table.vue";
@@ -52,15 +45,17 @@ export default {
       sortBy: "name",
       descending: false,
       page: 1,
-      rowsPerPage: 7,
+      rowsPerPage: 10,
       rowsNumber: 0,
     });
     this.getPaginatedOrganisationMembers(
       this.organisation_id,
       1,
-      7,
+      10,
       "name",
-      ""
+      "",
+      this.has_register,
+      this.gender
     );
     this.getRegistrationAmount();
   },
@@ -73,13 +68,6 @@ export default {
       message: this.$t("app.deleteMemberWarningMsg"),
       label: this.$t("app.delete"),
       columns: [
-        {
-          name: "counter",
-          required: true,
-          label: "S/N",
-          align: "left",
-          field: "counter",
-        },
         {
           name: "name",
           required: true,
@@ -129,7 +117,7 @@ export default {
           label: "Action",
           field: "action",
           sortable: true,
-          sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
+          align: "left",
         },
       ],
       organisation_id: this.$store.getters.getOrganisation.id,
@@ -191,11 +179,23 @@ export default {
 
     getPagination() {
       let paginate_object = {
-        sortBy: this.$store.getters.getPagination.sortBy,
-        descending: this.$store.getters.getPagination.descending,
-        page: this.$store.getters.getPagination.page,
-        rowsPerPage: this.$store.getters.getPagination.rowsPerPage,
-        rowsNumber: this.$store.getters.getPagination.rowsNumber,
+        sortBy: "name",
+        descending:
+          this.$store.getters.getPagination != null
+            ? this.$store.getters.getPagination.descending
+            : true,
+        page:
+          this.$store.getters.getPagination !== null
+            ? this.$store.getters.getPagination.page
+            : 1,
+        rowsPerPage:
+          this.$store.getters.getPagination !== null
+            ? this.$store.getters.getPagination.rowsPerPage
+            : 10,
+        rowsNumber:
+          this.$store.getters.getPagination !== null
+            ? this.$store.getters.getPagination.rowsNumber
+            : 1,
       };
 
       return paginate_object;
@@ -213,11 +213,21 @@ export default {
         page,
         fetch_count,
         sortBy,
-        filter
+        filter,
+        this.gender,
+        this.has_register
       );
     },
 
-    getPaginatedOrganisationMembers(id, page, rowsPerPage, sort_by, filter) {
+    getPaginatedOrganisationMembers(
+      id,
+      page,
+      rowsPerPage,
+      sort_by,
+      filter,
+      has_register,
+      gender
+    ) {
       let year_value =
         this.year !== null && this.year !== "" ? this.year.value : "";
       this.filterOrganisationMembers(
@@ -227,7 +237,9 @@ export default {
         rowsPerPage,
         sort_by,
         year_value,
-        filter
+        filter,
+        has_register,
+        gender
       );
     },
 
@@ -249,15 +261,19 @@ export default {
       this.getPaginatedOrganisationMembers(
         this.organisation_id,
         1,
-        7,
+        10,
         "name",
-        ""
+        "",
+        this.has_register,
+        this.gender
       );
     },
 
     downloadMembers(data) {
       this.setFilterVariables(data);
-      let url = `/api/protected/organisations/download-users?organisation_id=${this.organisation_id}&has_register=${this.has_register}&gender=${this.gender}&year=${this.year.value}`;
+      let year_value =
+        this.year !== null && this.year !== "" ? this.year.value : "";
+      let url = `/api/protected/organisations/download-users?organisation_id=${this.organisation_id}&has_register=${this.has_register}&gender=${this.gender}&year=${year_value}?page=&per_page=`;
       let file_name = "Organisation_Members.pdf";
       this.loading_download = this.downloadPdf(url, file_name);
     },
@@ -266,10 +282,12 @@ export default {
       this.getPaginatedOrganisationMembers(
         this.organisation_id,
         1,
-        7,
+        10,
         "name",
         false,
-        ""
+        "",
+        this.has_register,
+        this.gender
       );
     },
 
@@ -294,10 +312,11 @@ export default {
         this.getPaginatedOrganisationMembers(
           this.organisation_id,
           1,
-          7,
+          10,
           "name",
-          false,
-          ""
+          "",
+          this.has_register,
+          this.gender
         );
       });
     },

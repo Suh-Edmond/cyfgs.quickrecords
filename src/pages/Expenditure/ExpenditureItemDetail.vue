@@ -13,43 +13,128 @@
       >
       </FilterComponentVue>
       <!-- table for categories -->
-      <div class="row q-pt-sm">
-        <div class="col-md-12 col-xs-12 col-sm-12">
-          <CategoryTable
-            :columns="columns"
-            :data="getExpenditureItemDetails"
-            :label="label"
-            :message="message"
-            :title="getExpenditureItemName"
-            :show_payment_category="false"
-            :show_payment_item="false"
-            :show_expenditure_category="false"
-            :show_expenditure_item="false"
-            :show_expenditure_item_detail="true"
-            :expenditure_item_amount="total_item_amount"
-            :total_amount_given="total_amount_given"
-            :total_amount_spent="total_amount_spent"
-            :balance="total_balance"
-            :total_balance="total_balance"
-            :pagination="getPagination"
-            :table_loading="getLoadingState"
-            @edit-expenditure-item-detail="editExpenditureItemDetail"
-            @view-expenditure-item-detail="viewExpenditureItemDetail"
-            @delete-row="onDeleteRow"
-            @onRequest="onRequest"
-          >
-          </CategoryTable>
-        </div>
-      </div>
+      <CategoryTable
+        :class="$q.platform.is.desktop ? 'q-pt-sm q-px-sm' : ' q-px-sm q-pt-xl'"
+        :columns="columns"
+        :data="getExpenditureItemDetails"
+        :label="label"
+        :message="message"
+        :title="getExpenditureItemName"
+        :show_payment_category="false"
+        :show_payment_item="false"
+        :show_expenditure_category="false"
+        :show_expenditure_item="false"
+        :show_expenditure_item_detail="true"
+        :expenditure_item_amount="total_item_amount"
+        :total_amount_given="total_amount_given"
+        :total_amount_spent="total_amount_spent"
+        :balance="total_balance"
+        :total_balance="total_balance"
+        :pagination="getPagination"
+        :table_loading="getLoadingState"
+        @edit-expenditure-item-detail="editExpenditureItemDetail"
+        @view-expenditure-item-detail="viewExpenditureItemDetail"
+        @delete-row="onDeleteRow"
+        @onRequest="onRequest"
+      >
+      </CategoryTable>
 
-      <div class="q-px-xs q-mt-md">
+      <div class="q-mt-xs q-mx-lg" v-if="getExpenditureItemDetails.length > 0">
         <q-card>
           <q-card-section>
-            <p>Summary</p>
-            <p>Estimated Amount</p>
-            <p>Total Amount Given</p>
-            <p>Total Amount Spent</p>
-            <p>Total Balance</p>
+            <div class="row q-ml-md">
+              <label class="q-py-lg text-bold summary text-capitalize">{{
+                $t("app.expenditureSummaryLabel")
+              }}</label>
+            </div>
+            <div class="row q-ml-md">
+              <div class="col-4 col-md-4 col-lg-4 col-xs-12 col-sm-4">
+                <div class="q-mb-xs">
+                  <label class="text-bold q-py-md detail_name"
+                    >{{ $t("app.expenditureItemSummary") }}:</label
+                  >
+                </div>
+                <div class="q-mb-xs">
+                  <label class="text-bold q-py-md detail_name"
+                    >{{ $t("app.estimatedAmount") }}:</label
+                  >
+                </div>
+                <div class="q-mb-xs">
+                  <label class="text-bold q-py-md detail_name"
+                    >{{ $t("app.totalAmountGiven") }}:</label
+                  >
+                </div>
+                <div class="q-mb-xs">
+                  <label class="text-bold q-py-md detail_name"
+                    >{{ $t("app.totalAmountSpent") }}:</label
+                  >
+                </div>
+                <div class="q-mb-xs">
+                  <label class="text-bold q-py-md detail_name"
+                    >{{ $t("app.totalBalance") }}:</label
+                  >
+                </div>
+                <div class="q-mb-xs">
+                  <label class="text-bold q-py-md detail_name"
+                    >{{ $t("app.netBalance") }}:<br />
+                    <small class="text-italic"
+                      >[ {{ $t("app.netBalance") }} =
+                      {{ $t("app.formular") }} ]</small
+                    >
+                    <br />
+                  </label>
+                </div>
+              </div>
+              <div class="col-4 col-md-4 col-lg-4 col-xs-12 col-sm-4">
+                <div class="q-mb-xs">
+                  <label class="text-bold q-py-md detail_value"
+                    >{{ getExpenditureItemName }}
+                  </label>
+                </div>
+                <div class="q-mb-xs">
+                  <label class="text-bold q-py-md detail_value"
+                    >{{ Number(total_item_amount).toLocaleString() }} XAF</label
+                  >
+                </div>
+                <div class="q-mb-xs">
+                  <label class="text-bold q-py-md detail_value"
+                    >{{
+                      Number(getTotalAmountGiven).toLocaleString()
+                    }}
+                    XAF</label
+                  >
+                </div>
+                <div class="q-mb-xs">
+                  <label class="text-bold q-py-md detail_value"
+                    >{{
+                      Number(getTotalAmountSpent).toLocaleString()
+                    }}
+                    XAF</label
+                  >
+                </div>
+                <div class="q-mb-xs">
+                  <label class="text-bold q-py-md detail_value"
+                    >{{ Number(getBalance).toLocaleString() }} XAF</label
+                  >
+                </div>
+                <div class="q-mb-xs">
+                  <label class="text-bold q-py-md detail_value"
+                    >{{ Number(getNetBalance).toLocaleString() }} XAF</label
+                  >
+                </div>
+              </div>
+            </div>
+            <div class="row q-mt-md q-mb-lg" v-if="total_balance < 0">
+              <q-icon
+                name="info"
+                color="warning"
+                size="sm"
+                class="q-pr-md"
+              ></q-icon>
+              <label class="text-orange text-subtitle2">
+                {{ $t("app.negativeExpenditureBalanceMsg") }}
+              </label>
+            </div>
           </q-card-section>
         </q-card>
       </div>
@@ -81,15 +166,9 @@ export default {
 
   data() {
     return {
+      selected: [],
       loading_download: false,
       columns: [
-        {
-          name: "counter",
-          required: true,
-          label: "S/N",
-          align: "left",
-          field: "counter",
-        },
         {
           name: "name",
           required: true,
@@ -196,6 +275,22 @@ export default {
     getLoadingState() {
       return this.$store.getters.getFetchingState;
     },
+
+    getBalance() {
+      return this.getTotalAmountGiven - this.getTotalAmountSpent;
+    },
+
+    getTotalAmountGiven() {
+      return this.$store.getters.getExpenditureItemDetails.total_amount_given;
+    },
+
+    getTotalAmountSpent() {
+      return this.$store.getters.getExpenditureItemDetails.total_amount_spent;
+    },
+
+    getNetBalance() {
+      return this.$store.getters.getExpenditureItemDetails.total_balance;
+    },
   },
 
   methods: {
@@ -260,7 +355,10 @@ export default {
     downloadExpenditureItemDetails(data) {
       let expenditure_item_id =
         this.$store.getters.getCurrentExpenditureItem.id;
-      let url = `/api/protected/expenditure-item-details/download?expenditure_item_id=${expenditure_item_id}&status=${data.payment_status}`;
+      let expenditure_item_name =
+        this.$store.getters.getCurrentExpenditureItem.name;
+
+      let url = `/api/protected/expenditure-item-details/download?expenditure_item_id=${expenditure_item_id}&status=${data.payment_status}&expenditure_item_name=${expenditure_item_name}`;
       let file_name = "Expenditure_Item_Details.pdf";
       this.loading_download = this.downloadPdf(url, file_name);
     },
@@ -307,4 +405,31 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.detail_name {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  color: $grey5;
+}
+.detail_value {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  color: $grey8;
+}
+.summary {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  color: $grey8;
+  text-decoration: underline;
+}
+
+.text-subtitle2 {
+  font-size: small;
+}
+</style>

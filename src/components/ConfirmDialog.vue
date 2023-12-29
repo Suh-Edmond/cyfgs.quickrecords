@@ -2,7 +2,7 @@
   <div>
     <!-- confirmation dialog for delete -->
     <q-dialog v-model="show_dialog">
-      <q-card>
+      <q-card :style="$q.platform.is.mobile?'min-width: 350px':'min-width: 400px'">
         <q-card-section class="q-pa-lg">
           <div class="q-mb-sm text-left">
             <label class="message">{{ msg }}</label
@@ -114,7 +114,7 @@
           <!-- Expenditure Item -->
           <div
             class="text-weight-bold text-left text-red"
-            v-if="show_expenditure_item"
+            v-if="show_expenditure_item || show_payment_item"
           >
           {{$t('app.nameLabel')}}:
             <span class="payment_item_name">{{ data.name }}</span>

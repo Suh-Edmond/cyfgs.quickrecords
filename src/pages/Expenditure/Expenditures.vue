@@ -3,136 +3,130 @@
     <div>
       <!-- header for filter categories -->
       <div
-        class="row q-ml-xs q-pt-xs"
-        :class="$q.screen.lg ? 'q-pa-sm' : ''"
+        :class="$q.screen.lg ? 'row q-pa-sm' : 'col q-gutter-sm q-px-sm'"
         :style="
           $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
         "
       >
-        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
-          <q-select
-            v-model="expenditure_category_id"
-            outlined
-            dense
-            :options="expenditure_categories"
-            :label="$t('app.searchExpenditureCategory')"
-            use-input
-            input-debounce="0"
-            clearable
-            @filter="filterCategories"
-            @input="stopSearch"
+        <q-select
+          class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+          v-model="expenditure_category_id"
+          outlined
+          dense
+          :options="expenditure_categories"
+          :label="$t('app.searchExpenditureCategory')"
+          use-input
+          input-debounce="0"
+          clearable
+          @filter="filterCategories"
+          @input="stopSearch"
+        >
+          <template v-slot:append v-if="start_filtering_expenditure_category">
+            <q-spinner color="primary" size="1.2em" :thickness="3" />
+          </template>
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey">
+                {{ $t("app.noResults") }}
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
+        <q-select
+          class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+          :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
+          v-model="payment_item_id"
+          outlined
+          dense
+          :options="filtered_items"
+          :label="$t('app.searchPaymentItem')"
+          use-input
+          input-debounce="0"
+          clearable
+          @filter="filterPaymentItems"
+          @input="stopSearch"
+        >
+          <template v-slot:append v-if="start_filtering_payment_item">
+            <q-spinner color="primary" size="1.2em" :thickness="3" />
+          </template>
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey"
+                >{{ $t("app.noResults") }}
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
+        <q-select
+          class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+          :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
+          v-model="year"
+          outlined
+          dense
+          :options="years"
+          :label="$t('app.searchYear')"
+          use-input
+          input-debounce="0"
+          clearable
+          @filter="filterYear"
+          @input="stopSearch"
+        >
+          <template v-slot:append v-if="start_filtering_year">
+            <q-spinner color="primary" size="1.2em" :thickness="3" />
+          </template>
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey">
+                {{ $t("app.noResults") }}
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
+        <div
+          class="col-md-3 col-lg-3 col-xs-12 col-sm-12 flex"
+          :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
+        >
+          <q-btn
+            :label="$t('app.filter')"
+            color="primary"
+            :disabled="validateFilter"
+            no-caps
+            :loading="loading_filter"
+            icon-right="filter_list"
+            @click="filterItems(1, 7)"
+            :size="$q.platform.is.mobile ? 'sm' : 'md'"
           >
-            <template v-slot:append v-if="start_filtering_expenditure_category">
-              <q-spinner color="primary" size="1.2em" :thickness="3" />
-            </template>
-            <template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey">
-                  {{ $t("app.noResults") }}
-                </q-item-section>
-              </q-item>
-            </template>
-          </q-select>
-        </div>
-        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-pl-md">
-          <q-select
-            v-model="payment_item_id"
-            outlined
-            dense
-            :options="filtered_items"
-            :label="$t('app.searchPaymentItem')"
-            use-input
-            input-debounce="0"
-            clearable
-            @filter="filterPaymentItems"
-            @input="stopSearch"
-          >
-            <template v-slot:append v-if="start_filtering_payment_item">
-              <q-spinner color="primary" size="1.2em" :thickness="3" />
-            </template>
-            <template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey"
-                  >{{ $t("app.noResults") }}
-                </q-item-section>
-              </q-item>
-            </template>
-          </q-select>
-        </div>
-        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 q-pl-md">
-          <q-select
-            v-model="year"
-            outlined
-            dense
-            :options="years"
-            :label="$t('app.searchYear')"
-            use-input
-            input-debounce="0"
-            clearable
-            @filter="filterYear"
-            @input="stopSearch"
-          >
-            <template v-slot:append v-if="start_filtering_year">
-              <q-spinner color="primary" size="1.2em" :thickness="3" />
-            </template>
-            <template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey">
-                  {{ $t("app.noResults") }}
-                </q-item-section>
-              </q-item>
-            </template>
-          </q-select>
-        </div>
-        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12 flex q-pl-md">
-          <div>
-            <q-btn
-              :label="$t('app.filter')"
-              color="primary"
-              :disabled="validateFilter"
-              no-caps
-              :loading="loading_filter"
-              icon-right="filter_list"
-              @click="filterExpenditureItems(1, 7)"
-            >
-            </q-btn>
-          </div>
+          </q-btn>
           <q-space />
-          <div class="button q-pb-xs">
-            <q-btn
-              :label="$t('app.print')"
-              :loading="loading"
-              :color="'positive'"
-              :disabled="validateDownload"
-              no-caps
-              icon-right="print"
-              @click="downloadExpenditureItems"
-            ></q-btn>
-          </div>
+          <q-btn
+            :label="$t('app.print')"
+            :loading="loading"
+            :color="'positive'"
+            :disabled="validateDownload"
+            no-caps
+            icon-right="print"
+            @click="downloadExpenditureItems"
+            :size="$q.platform.is.mobile ? 'sm' : 'md'"
+          ></q-btn>
         </div>
       </div>
       <!-- table for expenditure items -->
-      <div>
-        <div class="row q-pt-sm">
-          <div class="col-md-12 col-xs-12 col-sm-12">
-            <CategoryTable
-              :columns="columns"
-              :data="getExpenditures"
-              :label="label"
-              :message="message"
-              :title="table_title"
-              :show_payment_category="false"
-              :show_payment_item="false"
-              :show_expenditure_category="false"
-              :show_expenditure_item="true"
-              :pagination="pagination"
-              :table_loading="table_loader"
-              @onRequest="onRequest"
-            >
-            </CategoryTable>
-          </div>
-        </div>
-      </div>
+      <CategoryTable
+        :class="$q.platform.is.desktop ? 'q-pt-sm q-px-sm' : ' q-px-sm q-pt-xl'"
+        :columns="columns"
+        :data="getExpenditures"
+        :label="label"
+        :message="message"
+        :title="table_title"
+        :show_payment_category="false"
+        :show_payment_item="false"
+        :show_expenditure_category="false"
+        :show_expenditure_item="true"
+        :pagination="getPagination"
+        :table_loading="getLoadingState"
+        @onRequest="onRequest"
+      >
+      </CategoryTable>
     </div>
   </q-page>
 </template>
@@ -168,13 +162,6 @@ export default {
       search: null,
       loading: false,
       columns: [
-        {
-          name: "counter",
-          required: true,
-          label: "S/N",
-          align: "left",
-          field: "counter",
-        },
         {
           name: "name",
           required: true,
@@ -249,7 +236,8 @@ export default {
   computed: {
     validateFilter() {
       return (
-        this.expenditure_category_id === null || this.expenditure_category_id === ""
+        this.expenditure_category_id === null ||
+        this.expenditure_category_id === ""
       );
     },
 
@@ -285,6 +273,22 @@ export default {
       }
       return data;
     },
+
+    getLoadingState() {
+      return this.$store.getters.getFetchingState;
+    },
+
+    getPagination() {
+      let paginate_object = {
+        sortBy: this.$store.getters.getPagination.sortBy,
+        descending: this.$store.getters.getPagination.descending,
+        page: this.$store.getters.getPagination.page,
+        rowsPerPage: this.$store.getters.getPagination.rowsPerPage,
+        rowsNumber: this.$store.getters.getPagination.rowsNumber,
+      };
+
+      return paginate_object;
+    },
   },
   methods: {
     fetchExpenditureCategories() {
@@ -305,8 +309,10 @@ export default {
           data: [],
         },
       };
-      this.$store.commit("SET_EXPENDITURE_CATEGORIES", null);
-      this.$store.dispatch("getRequest", payload).then(() => {});
+      this.$store
+        .dispatch("getRequest", payload)
+        .then(() => {})
+        .finally(() => {});
     },
 
     showExpenditureItem(data) {
@@ -369,8 +375,10 @@ export default {
           data: null,
         },
       };
-      this.$store.commit("SET_PAYMENT_ACTIVITIES", null);
-      this.$store.dispatch("getRequest", payload).then(() => {});
+      this.$store
+        .dispatch("getRequest", payload)
+        .then(() => {})
+        .finally(() => {});
     },
 
     getPaymentActivitiesFromStore() {
@@ -419,47 +427,6 @@ export default {
       });
     },
 
-    filterExpenditureItems(page, fetch_count) {
-      let selected_expenditure_cat =
-        this.expenditure_category_id != null
-          ? this.expenditure_category_id.value
-          : "";
-      let selected_payment_item = this.payment_item_id !== null && this.payment_item_id !== "" ? this.payment_item_id.value : "";
-      let session = this.year !== null && this.year !== "" ? this.year.value : this.$store.getters.getCurrentYear.id;
-
-      let payload = {
-        status: "none",
-        url: `/api/protected/expenditure_categories/expenditure_items/filter?expenditure_category_id=${selected_expenditure_cat}&payment_item_id=${selected_payment_item}&session_id=${session}&page=${page}&per_page=${fetch_count}`,
-        has_path_val: true,
-        show_feedback: false,
-        show_spinner: false,
-        msg: "none",
-        color: "default",
-        error_msg: "default",
-        commit: "SET_EXPENDITURES",
-        has_commit: true,
-        to_be_store_data: {
-          required: true,
-          has_value: false,
-          data: null,
-        },
-      };
-      this.loading_filter = true;
-      this.table_loader = true;
-      this.$store.commit("SET_EXPENDITURES", null);
-      this.$store
-        .dispatch("getRequest", payload)
-        .then((response) => {
-          this.pagination.page = response.data.current_page;
-          this.pagination.rowsPerPage = response.data.per_page;
-          this.pagination.rowsNumber = response.data.total;
-        })
-        .finally(() => {
-          this.loading_filter = false;
-          this.table_loader = false;
-        });
-    },
-
     downloadExpenditureItems() {
       let selected_expenditure_cat =
         this.expenditure_category_id != null
@@ -489,7 +456,23 @@ export default {
       const { page, rowsPerPage } = props.pagination;
       const fetch_count =
         rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
-      this.filterExpenditureItems(page, fetch_count);
+      this.filterExpenditureItems(
+        page,
+        fetch_count,
+        this.expenditure_category_id,
+        this.payment_item_id,
+        this.year
+      );
+    },
+
+    filterItems(page, page_count) {
+      this.filterExpenditureItems(
+        page,
+        page_count,
+        this.expenditure_category_id,
+        "",
+        ""
+      );
     },
   },
   components: {
@@ -501,5 +484,29 @@ export default {
 <style lang="scss" scoped>
 .search {
   cursor: pointer;
+}
+
+.detail_name {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 11px;
+  letter-spacing: 0.01em;
+  color: $grey8;
+}
+
+.summary {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 11px;
+  letter-spacing: 0.01em;
+  color: $grey8;
+}
+
+.text-subtitle2 {
+  font-size: small;
 }
 </style>

@@ -2,19 +2,24 @@
   <q-page class="page">
     <div
       class="row q-px-sm"
-      :class="$q.screen.lg ? 'q-pt-md flex flex-center' : 'q-pt-sm'"
+      :class="$q.screen.lg ? 'q-pt-xl flex flex-center' : 'q-pt-sm'"
     >
       <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12">
         <q-card>
           <q-card-section>
-            <div class="text_h6 text-center q-pt-xs q-pb-sm">{{$t('app.signUpLabel')}}</div>
+            <div class="text_h6 text-center q-pt-xs q-pb-sm">
+              {{ $t("app.signUpLabel") }}
+            </div>
             <div class="text-subtitle2 text-center q-pb-xs">
-              {{$t('app.signUpCaptionMsg')}}
+              {{ $t("app.signUpCaptionMsg") }}
             </div>
             <div class="q-pa-md">
               <q-form @submit="onSubmit" class="q-gutter-md">
                 <div class="q-pb-md">
-                  <label for="name" class="form_field">{{$t('app.nameLabel')}} <span class="text-red">*</span></label>
+                  <label for="name" class="form_field"
+                    >{{ $t("app.nameLabel") }}
+                    <span class="text-red">*</span></label
+                  >
                   <q-input
                     v-model="user.name"
                     outlined
@@ -24,11 +29,22 @@
                   />
                 </div>
                 <div class="q-pb-md">
-                  <label for="telephone" class="form_field">{{$t('app.telephoneLabel')}} <span class="text-red">*</span></label>
-                  <vue-tel-input v-model="user.telephone" defaultCountry="cm" mode="international" class="q-pa-xs"></vue-tel-input>
+                  <label for="telephone" class="form_field"
+                    >{{ $t("app.telephoneLabel") }}
+                    <span class="text-red">*</span></label
+                  >
+                  <vue-tel-input
+                    v-model="user.telephone"
+                    defaultCountry="cm"
+                    mode="international"
+                    class="q-pa-xs"
+                  ></vue-tel-input>
                 </div>
-                <div class="q-pb-sm">
-                  <label for="email" class="form_field">{{$t('app.emailLabel')}} <span class="text-red">*</span></label>
+                <div>
+                  <label for="email" class="form_field"
+                    >{{ $t("app.emailLabel") }}
+                    <span class="text-red">*</span></label
+                  >
                   <q-input
                     v-model="user.email"
                     outlined
@@ -38,8 +54,11 @@
                   >
                   </q-input>
                 </div>
-                <div class="q-pb-md">
-                  <label for="password" class="form_field">{{$t('app.passwordLabel')}} <span class="text-red">*</span></label>
+                <div>
+                  <label for="password" class="form_field"
+                    >{{ $t("app.passwordLabel") }}
+                    <span class="text-red">*</span></label
+                  >
                   <q-input
                     v-model="user.password"
                     :type="is_pwd ? 'password' : 'text'"
@@ -55,13 +74,16 @@
                       />
                     </template>
                     <template v-slot:hint>
-                    <span class="text-red">{{ $t('app.newPasswordHintMsg') }}</span>
-                  </template>
+                      <span class="text-red" v-if="invalidPassword">{{
+                        $t("app.newPasswordHintMsg")
+                      }}</span>
+                    </template>
                   </q-input>
                 </div>
-                <div class="q-pb-sm">
+                <div>
                   <label for="confirm_password" class="form_field"
-                    >{{ $t('app.confirmPasswordLabel') }}<span class="text-red">*</span></label
+                    >{{ $t("app.confirmPasswordLabel")
+                    }}<span class="text-red">*</span></label
                   >
                   <q-input
                     v-model="user.password_confirmation"
@@ -79,11 +101,13 @@
                       />
                     </template>
                     <template v-slot:hint v-if="!validatePasswordMatch">
-                      <span class="text-red">{{$t('app.passwordNotMatchMsg')}}</span>
+                      <span class="text-red">{{
+                        $t("app.passwordNotMatchMsg")
+                      }}</span>
                     </template>
                   </q-input>
                 </div>
-                <div class="bottom">
+                <div :class="$q.platform.is.desktop ? 'bottom' : 'q-mt-md'">
                   <q-btn
                     class="form_button"
                     :label="label_sigup"
@@ -93,16 +117,21 @@
                     :no_caps="true"
                     type="submit"
                   >
-                  <q-icon name="arrow_forward" size="xs" class="q-pl-lg"></q-icon>
+                    <q-icon
+                      name="arrow_forward"
+                      size="xs"
+                      class="q-pl-lg"
+                    ></q-icon>
                   </q-btn>
-                  <div class="account_text" v-if="!$q.screen.lg">
-                   {{$t('app.haveAccountMsg')}}<router-link
-                      to="/auth/login"
-                      class="sign_link"
-                    >
-                      <span>{{$t('app.signInLabel')}}</span>
-                    </router-link>
-                  </div>
+                </div>
+                <div
+                  class="row justify-center bottom q-pt-md"
+                  v-if="$q.platform.is.mobile"
+                >
+                  {{ $t("app.haveAccountMsg")
+                  }}<router-link to="/auth/login" class="sign_link">
+                    <span>&nbsp;{{ $t("app.signInLabel") }}</span>
+                  </router-link>
                 </div>
               </q-form>
             </div>
@@ -114,7 +143,8 @@
 </template>
 
 <script>
-import { VueTelInput } from 'vue-tel-input';
+import { Notify, Platform } from "quasar";
+import { VueTelInput } from "vue-tel-input";
 export default {
   name: "PageIndex",
   data() {
@@ -128,7 +158,7 @@ export default {
       },
       is_pwd: true,
       is_confirm_pwd: true,
-      label_sigup: this.$t('app.signUpLabel'),
+      label_sigup: this.$t("app.signUpLabel"),
       loading: false,
       has_logged_in: false,
       disabled: true,
@@ -141,13 +171,17 @@ export default {
       return this.checkValidate();
     },
     validateForm() {
-      return this.user.name !== null &&
+      return (
+        this.user.name !== null &&
         this.user.telephone !== null &&
         this.user.password !== null &&
         this.user.password_confirmation !== null &&
         this.validatePasswordMatch
-        ? true
-        : false;
+      );
+    },
+
+    invalidPassword() {
+      return this.user.password !== null && this.user.password.length < 8;
     },
   },
   methods: {
@@ -158,9 +192,9 @@ export default {
         msg: "Account Created Successfully",
         color: "default",
         to_on_ok: "Login",
-        to_on_fail: "undefined",
+        to_on_fail: "Register",
         error_msg: "default",
-        show_feedback:true,
+        show_feedback: true,
         to_be_store_data: {
           required: true,
           has_value: true,
@@ -171,7 +205,14 @@ export default {
         },
       };
       this.loading = true;
-      this.$store.dispatch("postRequest", payload).then(() => {
+      this.$store.dispatch("postRequest", payload).then((res) => {
+        if ((res.status = 422)) {
+          Notify.create({
+            type: "negative",
+            message: this.$t("app.createAccountFailMsg"),
+            position: Platform.is.mobile ? "bottom" : "top-right",
+          });
+        }
         this.loading = false;
       });
     },
@@ -182,7 +223,7 @@ export default {
     },
   },
   components: {
-    VueTelInput
+    VueTelInput,
   },
 };
 </script>
@@ -232,8 +273,8 @@ export default {
 
 .form_button {
   width: 100%;
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
+  // margin-top: 0.5rem;
+  // margin-bottom: 0.5rem;
 }
 
 .forgot_password {
@@ -254,17 +295,17 @@ export default {
 .sign_link {
   text-decoration: none;
   color: $primary;
+  font-weight: 600;
+  font-size: 14px;
 }
 
 .account_text {
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 500;
-  font-size: 10px;
+  font-weight: 600;
+  font-size: 14px;
   color: $dark;
   text-transform: uppercase;
-  line-height: 37px;
-  float: right;
 }
 
 .bottom {

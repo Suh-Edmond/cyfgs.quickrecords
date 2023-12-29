@@ -1,107 +1,136 @@
 <template>
-  <div class="q-px-lg q-pt-md">
-    <div>
-      <div class="q-mb-md">
-        <label for="name" class="field"
+  <div class="q-pa-md">
+    <div class="flex justify-between q-mb-md">
+      <div>
+        <label for="name" class="label"
           ><span> <q-icon name="person" size="xs" class="q-pr-sm" /> </span
-          >{{$t('app.memberName')}}:
-          <span class="field_value item_value">{{
-            getCurrentMemberSaving.user_name
-          }}</span></label
-        >
-      </div>
-      <div class="q-mb-md">
-        <label for="email" class="field"
-          ><span> <q-icon name="email" size="xs" class="q-pr-sm" /> </span
-          >{{$t('app.emailLabel')}}:
-          <span class="field_value item_venue">{{
-            getCurrentMemberSaving.email
-          }}</span></label
-        >
-      </div>
-      <div class="q-mb-md">
-        <label for="telephone" class="field"
-          ><span> <q-icon name="phone" size="xs" class="q-pr-sm" /> </span
-          >{{$t('app.telephoneLabel')}}:
-          <span class="field_value item_tel">{{
-            getCurrentMemberSaving.telephone
-          }}</span></label
-        >
-      </div>
-      <div class="q-mb-md">
-        <label for="amount" class="field"
-          ><span>
-            <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
-          >{{ $t('app.amountDeposited') }}:
-          <span class="field_value item_amount">
-            {{
-              Number(getCurrentMemberSaving.amount_deposited).toLocaleString()
-            }}
-            XAF</span
-          ></label
-        >
-      </div>
-      <div class="q-mb-md">
-        <label
-          for="status"
-          class="field"
-          v-show="getCurrentMemberSaving.approve == 'DECLINED'"
-          ><span>
-            <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span
-          >{{$t('app.transactionStatus')}}:
-          <span class="field_value item_statue unapproved_color">
-            {{ getCurrentMemberSaving.approve }}</span
-          ></label
-        >
-        <label
-          for="status"
-          class="field"
-          v-show="getCurrentMemberSaving.approve == 'APPROVED'"
-          ><span>
-            <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span
-          >{{$t('app.transactionStatus')}}:
-          <span class="field_value item_statue approved_color">
-            {{ getCurrentMemberSaving.approve }}</span
-          ></label
-        >
-        <label
-          for="status"
-          class="field"
-          v-show="getCurrentMemberSaving.approve == 'PENDING'"
-          ><span>
-            <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span
-          >{{$t('app.transactionStatus')}}:
-          <span class="field_value item_statue pending_color">
-            {{ getCurrentMemberSaving.approve }}</span
-          ></label
-        >
-      </div>
-      <div class="q-mb-md">
-        <label for="amount" class="field"
-          ><span> <q-icon name="schedule" size="xs" class="q-pr-sm" /> </span
-          >{{$t('app.createdDate')}}:
-          <span class="field_value detail_date">
-            {{ getFormatSavingCreatedDate }}
-          </span></label
-        >
+          >{{ $t("app.memberName") }}:
+        </label>
       </div>
 
-      <div class="q-mb-md">
-        <label for="amount" class="field"
+      <div class="detail-value wrap">
+        <label class="value">
+          {{ getCurrentMemberSaving.user_name }}
+        </label>
+      </div>
+    </div>
+    <div class="flex justify-between q-mb-md">
+      <div>
+        <label for="email" class="label"
+          ><span> <q-icon name="email" size="xs" class="q-pr-sm" /> </span
+          >{{ $t("app.emailLabel") }}:
+        </label>
+      </div>
+      <div class="detail-value wrap">
+        <label class="value">
+          {{ getCurrentMemberSaving.email }}
+        </label>
+      </div>
+    </div>
+    <div class="flex justify-between q-mb-md">
+      <label for="telephone" class="label"
+        ><span> <q-icon name="phone" size="xs" class="q-pr-sm" /> </span
+        >{{ $t("app.telephoneLabel") }}:
+      </label>
+      <div class="detail-value wrap">
+        <label class="value">
+          {{ getCurrentMemberSaving.telephone }}
+        </label>
+      </div>
+    </div>
+    <div class="flex justify-between q-mb-md">
+      <label for="amount" class="label"
+        ><span>
+          <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
+        >{{ $t("app.amountDeposited") }}:
+      </label>
+      <div class="detail-value wrap">
+        <label class="value">
+          {{ Number(getCurrentMemberSaving.amount_deposited).toLocaleString() }}
+          XAF
+        </label>
+      </div>
+    </div>
+    <div class="flex justify-between q-mb-md">
+      <label for="amount" class="label"
+        ><span>
+          <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
+        >{{ $t("app.amountUsed") }}:
+      </label>
+      <div class="detail-value wrap">
+        <label class="value">
+          {{ Number(getCurrentMemberSaving.amount_used).toLocaleString() }}
+          XAF
+        </label>
+      </div>
+    </div>
+    <div class="flex justify-between q-mb-md">
+      <div>
+        <label for="status" class="label"
+          ><span>
+            <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span
+          >{{ $t("app.transactionStatus") }}:
+        </label>
+      </div>
+      <div class="detail-value wrap">
+        <label
+          class="value text-info"
+          v-show="getCurrentMemberSaving.approve == 'PENDING'"
+        >
+          {{ getCurrentMemberSaving.approve }}
+        </label>
+        <label
+          class="value text-secondary"
+          v-show="getCurrentMemberSaving.approve == 'APPROVED'"
+        >
+          {{ getCurrentMemberSaving.approve }}
+        </label>
+        <label
+          class="value text-warning"
+          v-show="getCurrentMemberSaving.approve == 'DECLINED'"
+        >
+          {{ getCurrentMemberSaving.approve }}
+        </label>
+      </div>
+    </div>
+    <div class="flex justify-between q-mb-md">
+      <div>
+        <label for="amount" class="label"
+          ><span> <q-icon name="schedule" size="xs" class="q-pr-sm" /> </span
+          >{{ $t("app.createdDate") }}:
+        </label>
+      </div>
+      <div class="detail-value wrap">
+        <label class="value">
+          {{ getFormatSavingCreatedDate }}
+        </label>
+      </div>
+    </div>
+
+    <div class="flex justify-between q-mb-md">
+      <div>
+        <label for="amount" class="label"
           ><span> <q-icon name="person" size="xs" class="q-pr-sm" /> </span
-          >{{$t('app.createdBy')}}:
-          <span class="field_value detail_created_by">
-            {{ getCurrentMemberSaving.updated_by }}
-          </span></label
-        >
+          >{{ $t("app.createdBy") }}:
+        </label>
       </div>
-      <div class="q-mb-md">
-        <label for="comment" class="field"
-          ><span> <q-icon name="description" size="xs" class="q-pr-sm" /> </span
-          >{{$t('app.comment')}}:</label
-        >
-        <p class="value_comment">{{ getCurrentMemberSaving.comment }}.</p>
+      <div class="detail-value wrap">
+        <label class="value">
+          {{ getCurrentMemberSaving.updated_by }}
+        </label>
       </div>
+    </div>
+    <div class="row q-mb-md">
+      <label for="comment" class="label"
+        ><span> <q-icon name="description" size="xs" class="q-pr-sm" /> </span
+        >{{ $t("app.comment") }}:</label
+      >
+    </div>
+    <div class="value_comment" v-show="getCurrentMemberSaving.comment !== null">
+      {{ getCurrentMemberSaving.comment }}
+    </div>
+    <div class="value_comment" v-show="getCurrentMemberSaving.comment === null">
+      {{ $t("app.none") }}
     </div>
   </div>
 </template>
@@ -110,7 +139,7 @@ import moment from "moment";
 
 export default {
   created() {
-    let heading = this.$t('app.viewSavingHeading');
+    let heading = this.$t("app.viewSavingHeading");
     this.$emit("set-heading", heading);
   },
 
@@ -139,82 +168,33 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.field {
+.label {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 400;
   font-size: 14px;
   line-height: 11px;
-
   letter-spacing: 0.01em;
   color: $grey5;
 }
-
-.field_value {
+.value {
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 500;
-  font-size: 15px;
-  line-height: 27px;
-  letter-spacing: 0.005em;
-  color: $dark;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.01em;
+  color: $grey8;
 }
-
-.item_value {
-  padding-left: 1.8rem;
+.detail-value {
+  max-width: 250px;
 }
-
-.item_venue {
-  padding-left: 5.8rem;
-}
-
-.item_tel {
-  padding-left: 3.9rem;
-}
-
-.item_amount {
-  padding-left: 0.7rem;
-}
-
-.item_statue {
-  padding: 0.7rem;
-}
-
-.unapproved_color {
-  color: #f2994a;
-}
-
-.approved_color {
-  color: #27ae60;
-}
-
-.detail_date {
-  padding-left: 3.2rem;
-}
-
-.detail_created_by {
-  padding-left: 3.7rem;
-}
-
-.pending_color {
-  color: $info;
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 15px;
-  line-height: 27px;
-  letter-spacing: 0.005em;
-}
-
 .value_comment {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
-  line-height: 27px;
-  text-align: start;
-  letter-spacing: 0.005em;
+  letter-spacing: 0.01em;
   color: $dark;
-  padding-left: 1.5rem;
+  margin-left: 1.8rem;
 }
 </style>

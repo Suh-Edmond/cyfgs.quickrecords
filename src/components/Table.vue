@@ -1,6 +1,5 @@
 <template>
-  <div class="q-pa-xs">
-    <div class="button q-pb-xs"></div>
+  <div>
     <q-table
       :data="data"
       :columns="columns"
@@ -15,28 +14,30 @@
       <template v-slot:top-left>
         <div
           class="text-h6 title"
-          v-show="
-            show_contribution ||
-            show_member_contribution ||
-            show_income_activity
-          "
+          v-show="show_contribution || show_member_contribution"
         >
-          {{ title }}
+          <label for="title">
+            {{ title }}
+          </label>
+        </div>
+        <div class="text-h6 title" v-show="show_income_activity">
+          {{ $t("app.total") }}: {{ Number(total_income).toLocaleString() }} XAF
         </div>
         <div class="text-h6 title" v-show="show_members">
           {{ $t("app.organisationMembers") }}
         </div>
         <div class="text-h6 title" v-show="show_savings">
-          {{ $t("app.memberSaving") }}
+          {{ $t("app.totalSaving") }} :
+          {{ Number(total_saving).toLocaleString() }} XAF
+        </div>
+        <div class="text-h6 title" v-show="show_member_savings">
+          {{ $t("app.totalSaving") }} :
+          {{ Number(total_saving).toLocaleString() }} XAF
         </div>
       </template>
       <template v-slot:body="props">
         <!---------------------------------------------BODY FOR MEMBERS------------------------------------------------------>
         <q-tr :props="props" v-if="show_members">
-          <q-td key="counter" :props="props">
-            {{ props.row.counter }}
-          </q-td>
-
           <q-td key="name" :props="props">
             {{ props.row.name }}
           </q-td>
@@ -68,7 +69,7 @@
             key="approve"
             :props="props"
             v-if="props.row.approve == 'PENDING'"
-            class="text-negative"
+            class="text-info"
           >
             {{ props.row.approve }}
           </q-td>
@@ -166,7 +167,10 @@
                       clickable
                       v-close-popup
                       @click="onInviteMember(props.row)"
-                      v-if="checkPresidentRole() && props.row.status == 'ACTIVE'"
+                      v-if="
+                        checkAdminPresidentRole() &&
+                        props.row.status == 'ACTIVE'
+                      "
                     >
                       <q-item-section avatar>
                         <span>
@@ -204,7 +208,7 @@
                       clickable
                       v-close-popup
                       @click="onDeleteMember(props.row)"
-                      v-if="checkPresidentRole()"
+                      v-if="checkAdminPresidentRole()"
                     >
                       <q-item-section avatar>
                         <span>
@@ -227,9 +231,6 @@
 
         <!---------------------------------------------------START OF SAVINGS FOR ALL MEMBER TO BE VIEW BY USER WITH UNTREASUERER ROLE------------------------->
         <q-tr :props="props" v-if="show_savings && !checkTreasurerRole()">
-          <q-td key="counter" :props="props">
-            {{ props.row.counter }}
-          </q-td>
           <q-td key="user_name" :props="props">
             {{ props.row.user_name }}
           </q-td>
@@ -272,9 +273,6 @@
 
         <!----------------------------------------------------END OF MEMBER SAVINGS TO BE VIEW BY THE TREASUERER--------------------------------------------->
         <q-tr :props="props" v-if="show_savings && checkTreasurerRole()">
-          <q-td key="counter" :props="props">
-            {{ props.row.counter }}
-          </q-td>
           <q-td key="user_name" :props="props">
             {{ props.row.user_name }}
           </q-td>
@@ -317,9 +315,6 @@
 
         <!---------------------------------------------------------------------------MEMBER SAVINGS--------------------------------------------------->
         <q-tr :props="props" v-if="show_member_savings">
-          <q-td key="counter" :props="props">
-            {{ props.row.counter }}
-          </q-td>
           <q-td key="amount_deposited" :props="props">
             {{ Number(props.row.amount_deposited).toLocaleString() }}
           </q-td>
@@ -368,23 +363,6 @@
                     <q-item
                       clickable
                       v-close-popup
-                      @click="onEditMemberSaving(props.row)"
-                    >
-                      <q-item-section avatar class="q-mr-lg">
-                        <span>
-                          <q-icon name="edit" size="xs" class="edit" />
-                        </span>
-                      </q-item-section>
-                      <q-item-section>
-                        <q-item-label class="edit">{{
-                          $t("app.edit")
-                        }}</q-item-label>
-                      </q-item-section>
-                    </q-item>
-
-                    <q-item
-                      clickable
-                      v-close-popup
                       @click="onViewMemberSaving(props.row)"
                     >
                       <q-item-section avatar class="q-mr-lg">
@@ -395,6 +373,22 @@
                       <q-item-section>
                         <q-item-label class="edit">{{
                           $t("app.view")
+                        }}</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onEditMemberSaving(props.row)"
+                    >
+                      <q-item-section avatar class="q-mr-lg">
+                        <span>
+                          <q-icon name="edit" size="xs" class="edit" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="edit">{{
+                          $t("app.edit")
                         }}</q-item-label>
                       </q-item-section>
                     </q-item>
@@ -442,9 +436,6 @@
 
         <!----------------------------------------------------------------------INCOME ACTIVITIES----------------------------------------------------------->
         <q-tr :props="props" v-if="show_income_activity">
-          <q-td key="counter" :props="props">
-            {{ props.row.counter }}
-          </q-td>
           <q-td key="name" :props="props">
             {{ props.row.name }}
           </q-td>
@@ -530,23 +521,6 @@
                     <q-item
                       clickable
                       v-close-popup
-                      @click="onEditIncomeActivity(props.row)"
-                    >
-                      <q-item-section avatar class="q-mr-lg">
-                        <span>
-                          <q-icon name="edit" size="xs" class="edit" />
-                        </span>
-                      </q-item-section>
-                      <q-item-section>
-                        <q-item-label class="edit">{{
-                          $t("app.edit")
-                        }}</q-item-label>
-                      </q-item-section>
-                    </q-item>
-
-                    <q-item
-                      clickable
-                      v-close-popup
                       @click="onViewIncomeActivity(props.row)"
                     >
                       <q-item-section avatar class="q-mr-lg">
@@ -561,6 +535,22 @@
                       </q-item-section>
                     </q-item>
 
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onEditIncomeActivity(props.row)"
+                    >
+                      <q-item-section avatar class="q-mr-lg">
+                        <span>
+                          <q-icon name="edit" size="xs" class="edit" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="edit">{{
+                          $t("app.edit")
+                        }}</q-item-label>
+                      </q-item-section>
+                    </q-item>
                     <!-- deleted specify row -->
                     <q-item
                       clickable
@@ -588,9 +578,6 @@
 
         <!--------------------------------------------------------------------CONTRIBUTION-------------------------------------->
         <q-tr :props="props" v-if="show_contribution">
-          <q-td key="counter" :props="props">
-            {{ props.row.counter }}
-          </q-td>
           <q-td key="user_name" :props="props">
             {{ props.row.user_name }}
           </q-td>
@@ -668,11 +655,33 @@
 
         <!------------------------------------------------------------MEMBER CONTRIBUTIONS------------------------------------------>
         <q-tr :props="props" v-if="show_member_contribution">
-          <q-td key="counter" :props="props">
-            {{ props.row.counter }}
+          <q-td
+            key="quarterly_name"
+            :props="props"
+            v-if="props.row.payment_item_frequency == 'QUARTERLY'"
+          >
+            {{ props.row.quarterly_name }}
           </q-td>
-          <q-td key="user_name" :props="props">
-            {{ props.row.user_name }}
+          <q-td
+            key="quarterly_name"
+            :props="props"
+            v-if="props.row.payment_item_frequency == 'MONTHLY'"
+          >
+            {{ props.row.month_name }}
+          </q-td>
+          <q-td
+            key="quarterly_name"
+            :props="props"
+            v-if="props.row.payment_item_frequency == 'ONE_TIME'"
+          >
+            {{ props.row.payment_item_frequency }}
+          </q-td>
+          <q-td
+            key="quarterly_name"
+            :props="props"
+            v-if="props.row.payment_item_frequency == 'YEARLY'"
+          >
+            {{ props.row.payment_item_frequency }}
           </q-td>
           <q-td key="amount_deposited" :props="props">
             {{ Number(props.row.amount_deposited).toLocaleString() }}
@@ -814,12 +823,13 @@
           outlined
           dense
           v-model="filter"
+          :placeholder="$t('app.tableSearch')"
           :class="
-            $q.screen.md
-              ? 'text-h6-sm q-mb-lg q-mt-lg full-width'
-              : 'text-h6-sm'
+            $q.platform.is.mobile
+              ? 'row text-h6-sm'
+              : 'text-h6-sm q-mb-lg q-mt-lg full-width'
           "
-          :placeholder="$t('app.search')"
+          :style="$q.platform.is.mobile?'width:88vw':''"
         >
           <template v-slot:append>
             <q-icon name="search" />
@@ -906,12 +916,12 @@
               <label for="msg">
                 <span class="text-weight-bold"
                   >{{ $t("app.doYouKnow") }}{{ chosen_state }}
-                  {{ approve_msg }} ?</span
+                  {{ approve_msg }}?</span
                 >
               </label>
             </div>
 
-            <div v-if="show_members" class="text-red">
+            <div v-if="show_members" class="text-red q-mt-md">
               <div class="text-weight-bold text-left">
                 {{ $t("app.nameLabel") }}:
                 <span class="q-pl-lg">{{ approve_data.name }}</span>
@@ -954,7 +964,7 @@
                 >
               </div>
             </div>
-            <div v-if="show_savings" class="q-mt-md text-red">
+            <div v-if="show_member_savings" class="q-mt-md text-red">
               <div class="text-weight-bold text-left">
                 {{ $t("app.member") }}::
                 <span class="q-pl-sm">{{ contributor }}</span>
@@ -1077,6 +1087,10 @@ export default {
       required: false,
       type: Number,
     },
+    total_member_saving: {
+      required: false,
+      type: Number,
+    },
     total_contribution: {
       required: false,
       type: Number,
@@ -1116,10 +1130,11 @@ export default {
       registration_amount: null,
       income_amount: 0,
       contributor: null,
-      roles: ["TREASURER", "FINANCIAL_SECRETARY", "AUDITOR"],
+      roles: ["TREASURER", "FINANCIAL_SECRETARY", "ADMIN", "PRESIDENT"],
       member_invite_name: "",
       selected_role: "",
       loading_invitation: false,
+      current_session_id: LocalStorage.getItem("data").current_session.id,
     };
   },
 
@@ -1133,9 +1148,9 @@ export default {
       },
     },
 
-    validateMemberInvite(){
+    validateMemberInvite() {
       return this.selected_role === "";
-    }
+    },
   },
 
   methods: {
@@ -1177,46 +1192,58 @@ export default {
         },
       };
       this.loading_invitation = true;
-      this.$store.dispatch("postRequest", payload).then((response) => {
-        if (response.status == 200) {
-          Notify.create({
-            type: "positive",
-            color: "positive",
-            message: this.$t("app.memberInviteSuccess"),
-            position: Platform.is.mobile ? "bottom" : "top-right",
-          });
-        }else if(response.status == 403){
-          Notify.create({
-            type: "info",
-            color: "info",
-            message: this.$t("app.oneMemberRoleWarningMsg"),
-            position: Platform.is.mobile ? "bottom" : "top-right",
-          });
-        }
-        else {
-          Notify.create({
-            type: "negative",
-            color: "negative",
-            message: this.$t("app.memberInviteFail"),
-            position: Platform.is.mobile ? "bottom" : "top-right",
-          });
-        }
-      }).finally(() => {
-        this.show_invite = false;
-        this.loading_invitation = false;
-      });
+      this.$store
+        .dispatch("postRequest", payload)
+        .then((response) => {
+          if (response.status == 200) {
+            Notify.create({
+              type: "positive",
+              color: "positive",
+              message: this.$t("app.memberInviteSuccess"),
+              position: Platform.is.mobile ? "bottom" : "top-right",
+            });
+          } else if (response.status == 403) {
+            Notify.create({
+              type: "info",
+              color: "info",
+              message: this.$t("app.oneMemberRoleWarningMsg"),
+              position: Platform.is.mobile ? "bottom" : "top-right",
+            });
+          } else if (response.status == 427) {
+            Notify.create({
+              type: "info",
+              color: "info",
+              message: this.$t("app.expirationTermNotCompletedMsg"),
+              position: Platform.is.mobile ? "bottom" : "top-right",
+            });
+          } else {
+            Notify.create({
+              type: "negative",
+              color: "negative",
+              message: this.$t("app.memberInviteFail"),
+              position: Platform.is.mobile ? "bottom" : "top-right",
+            });
+          }
+        })
+        .finally(() => {
+          this.show_invite = false;
+          this.loading_invitation = false;
+        });
     },
 
-    checkPresidentRole() {
+    checkAdminPresidentRole() {
       const president_role = LocalStorage.getItem("data").user_data.roles.find(
-        (role) => role.name == "PRESIDENT"
+        (role) => role.name === "PRESIDENT" || role.name === "ADMIN"
       );
       return president_role != undefined;
     },
 
     checkRole() {
       const president_role = LocalStorage.getItem("data").user_data.roles.find(
-        (role) => role.name == "PRESIDENT" || role.name == "FINANCIAL_SECRETARY"
+        (role) =>
+          role.name === "PRESIDENT" ||
+          role.name === "FINANCIAL_SECRETARY" ||
+          role.name === "ADMIN"
       );
       return president_role != undefined;
     },
@@ -1333,7 +1360,7 @@ export default {
         case "INCOME_ACTIVITIES":
           url = `/api/protected/income-activities/${data.id}/approve?type=${type}`;
           break;
-        case "MEMBERS_SAVINGS":
+        case "MEMBER_SAVINGS":
           url = `/api/protected/user-savings/${data.id}?type=${type}`;
           break;
         case "MEMBERS_CONTRIBUTIONS":
@@ -1370,7 +1397,7 @@ export default {
           this.approve_msg =
             this.$t("app.contributionFor") + `${data.payment_item.name}`;
           break;
-        case "MEMBERS_SAVINGS":
+        case "MEMBER_SAVINGS":
           date = moment(data.created_at).format("MMMM Do YYYY");
           this.income_amount = data.amount_deposited;
           this.contributor = data.user_name;
@@ -1386,7 +1413,7 @@ export default {
           break;
         case "MEMBERS":
           this.register_member_name = data.name;
-          this.approve_msg = this.$t("app.regFor") + `${data.year} `;
+          this.approve_msg = this.$t("app.regFor") + `${data.year}`;
           break;
       }
       return this.approve_msg;
@@ -1395,8 +1422,8 @@ export default {
     fetchDataBaseOnTypeAfterApprove(data) {
       const route_data = Object.assign({}, this.$route.query);
 
-      let organisation_id = route_data.organisation_id;
-      let session_id = route_data.session_id;
+      let organisation_id = this.$store.getters.getOrganisation.id;
+      let session_id = this.current_session_id;
       let status = route_data.status != undefined ? route_data.status : "";
       let name = route_data.name != undefined ? route_data.name : "";
       let amount_deposited =
@@ -1406,17 +1433,12 @@ export default {
       let month = route_data.month != undefined ? route_data.month : "";
       let date = route_data.date ? route_data.date : "";
       let range = route_data.range ? route_data.range : "";
-      let search_savings_url = "";
-
       switch (data.type) {
         case "INCOME_ACTIVITIES":
-          this.getOrganisationIncomeActivities(
-            this.$store.getters.getOrganisation.id
-          );
+          this.getOrganisationIncomeActivities(organisation_id, 1, 10);
           break;
-        case "MEMBERS_SAVINGS":
-          search_savings_url = `/api/protected/user-savings?organisation_id=${this.$store.getters.getOrganisation.id}&status=${status}&name=${name}&amount_deposited=${amount_deposited}&session_id=${session_id}&month=${month}&date=${date}&date_range=${range}`;
-          this.filterSaving(search_savings_url);
+        case "MEMBER_SAVINGS":
+          this.getMemberSavings(data.user_id, 1, 10, month, status);
           break;
         case "MEMBERS_CONTRIBUTIONS":
           let payload = {
@@ -1430,16 +1452,28 @@ export default {
             month,
             date,
             range,
-            amount_deposited
+            amount_deposited,
+            1,
+            10
           );
+          this.$store.dispatch("setSearchContributionParams", {
+            item: {
+              label: data.payment_item_name,
+              value: data.payment_item_id,
+            },
+          });
           break;
         case "MEMBERS":
-          this.getOrganisationMembers(
-            this.$store.getters.getOrganisation.id,
+          this.filterOrganisationMembers(
+            organisation_id,
             true,
             1,
             10,
-            "name"
+            "name",
+            "",
+            "",
+            "",
+            ""
           );
           break;
       }
@@ -1479,7 +1513,7 @@ export default {
     onEditMemberSaving(data) {
       let payload = {
         data: data,
-        tab: "Member Savings",
+        tab: "Savings",
       };
       this.$store.dispatch("setUpdatedMemberSaving", data);
       this.$emit("edit-member-saving", payload);
@@ -1520,13 +1554,13 @@ export default {
       );
 
       intermediate_tabs.push({
-        name: data.user_name,
+        name: data.user_name + " Contributions",
         has_intermediate_tab: true,
       });
 
       this.$store.dispatch("setIntermediateTabs", intermediate_tabs);
 
-      this.$router.push({
+      this.$router.replace({
         name: "member_contributions",
         params: { item_id: data.payment_item_id, id: data.user_id },
       });
@@ -1578,6 +1612,7 @@ export default {
   width: 100%;
   max-width: 460px;
 }
+
 .view_items {
   font-family: "Roboto";
   font-style: normal;
@@ -1585,7 +1620,9 @@ export default {
   font-size: 12px;
   align-items: center;
   text-transform: capitalize;
+  width: 120px;
 }
+
 .button {
   text-align: end;
 }
@@ -1712,8 +1749,9 @@ export default {
 }
 
 .title {
-  font-size: small;
-  font-weight: bold;
+  font-size: 15px;
+  font-weight: 500;
+  color: $grey8;
 }
 
 .message {

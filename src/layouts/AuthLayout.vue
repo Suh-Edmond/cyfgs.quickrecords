@@ -5,26 +5,39 @@
         <q-toolbar-title
           :class="$q.screen.lg ? 'header_title' : 'header_title_small'"
         >
-          <span class="app_name">{{$t('app.nameOne')}}</span>{{$t('app.nameTwo')}}
+          <span class="app_name">{{ $t("app.nameOne") }}</span
+          >{{ $t("app.nameTwo") }}
         </q-toolbar-title>
         <div class="header_note" v-show="$q.screen.lg">
-          <div class="flex" v-if="this.$router.currentRoute.name == 'Login' && getOrganisation == null">
-            <div class="account_text">{{$t('app.noAccountMsg')}}</div>
+          <div
+            class="flex"
+            v-if="
+              this.$router.currentRoute.name == 'Login' &&
+              getOrganisation == null
+            "
+          >
+            <div class="account_text">{{ $t("app.noAccountMsg") }}</div>
             <div class="account_text__signup">
               <router-link to="/auth/register" class="sign_link"
-                ><span @click="checkAccountExist('SIGN_UP')"
-                  >{{$t('app.signUpLabel')}}</span
-                ></router-link
+                ><span @click="checkAccountExist('SIGN_UP')">{{
+                  $t("app.signUpLabel")
+                }}</span></router-link
               >
             </div>
           </div>
-          <div class="flex" v-if="this.$router.currentRoute.name == 'Register' && getOrganisation == null">
-            <div class="account_text">{{$t('app.haveAccountMsg')}}</div>
+          <div
+            class="flex"
+            v-if="
+              this.$router.currentRoute.name == 'Register' &&
+              getOrganisation == null
+            "
+          >
+            <div class="account_text">{{ $t("app.haveAccountMsg") }}</div>
             <div class="account_text__signup">
               <router-link to="/auth/login" class="sign_link"
-                ><span @click="checkAccountExist('SIGN_IN')"
-                  >{{$t('app.signInLabel')}}</span
-                ></router-link
+                ><span @click="checkAccountExist('SIGN_IN')">{{
+                  $t("app.signInLabel")
+                }}</span></router-link
               >
             </div>
           </div>
@@ -33,13 +46,13 @@
               <q-list>
                 <q-item clickable v-close-popup @click="onItemClick('en-US')">
                   <q-item-section class="text-center">
-                    <q-item-label>{{$t('app.english')}}</q-item-label>
+                    <q-item-label>{{ $t("app.english") }}</q-item-label>
                   </q-item-section>
                 </q-item>
 
                 <q-item clickable v-close-popup @click="onItemClick('fr')">
                   <q-item-section class="text-center">
-                    <q-item-label>{{$t('app.french')}}</q-item-label>
+                    <q-item-label>{{ $t("app.french") }}</q-item-label>
                   </q-item-section>
                 </q-item>
               </q-list>
@@ -52,13 +65,13 @@
               <q-list>
                 <q-item clickable v-close-popup @click="onItemClick('en-US')">
                   <q-item-section class="text-center">
-                    <q-item-label>{{$t('app.english')}}</q-item-label>
+                    <q-item-label>{{ $t("app.english") }}</q-item-label>
                   </q-item-section>
                 </q-item>
 
                 <q-item clickable v-close-popup @click="onItemClick('fr')">
                   <q-item-section class="text-center">
-                    <q-item-label>{{$t('app.french')}}</q-item-label>
+                    <q-item-label>{{ $t("app.french") }}</q-item-label>
                   </q-item-section>
                 </q-item>
               </q-list>
@@ -74,8 +87,11 @@
       <q-toolbar>
         <q-toolbar-title>
           <p class="footer_text">
-            <span class="material-icons copy_right"> copyright </span>{{$t('app.copyright')}}
-            {{ year }}  <span class="appName">{{$t('app.nameOne')}}{{$t('app.nameTwo')}}</span>.{{$t('app.allRightsReserved')}}
+            <span class="material-icons copy_right"> copyright </span
+            >{{ $t("app.copyright") }} {{ year }}
+            <span class="appName"
+              >{{ $t("app.nameOne") }}{{ $t("app.nameTwo") }}</span
+            >.{{ $t("app.allRightsReserved") }}
           </p>
         </q-toolbar-title>
       </q-toolbar>
@@ -85,34 +101,52 @@
 
 <script>
 export default {
-  mounted(){
-    return this.$store.getters.getOrganisation
+  mounted() {
+    return this.$store.getters.getOrganisation;
   },
   data() {
     return {
       year: new Date().getFullYear(),
-      language:this.$i18n.locale,
+      language: this.$i18n.locale,
       type: "SIGN_IN",
     };
   },
   computed: {
     getOrganisation() {
-       return this.$store.getters.getOrganisation;
+      return this.$store.getters.getOrganisation;
     },
 
-    getLocale(){
-      return this.$i18n.locale === 'en-US' ? this.$t('app.english') :this.$t('app.french');
-    }
+    getLocale() {
+      return this.$i18n.locale === "en-US"
+        ? this.$t("app.english")
+        : this.$t("app.french");
+    },
   },
   methods: {
     onItemClick(lang) {
       if (lang == "fr") {
-        this.$i18n.locale = 'fr'
+        this.$i18n.locale = "fr";
+        this.showAppTranslateLoading();
       }
       if (lang == "en-US") {
-        this.$i18n.locale = 'en-US'
+        this.$i18n.locale = "en-US";
+        this.showAppTranslateLoading();
       }
     },
+    showAppTranslateLoading() {
+      this.$q.loading.show({
+        message: this.$t("app.appTranslationLabel"),
+        backgroundColor: "primary",
+        sanitize: true,
+      });
+
+      // hiding in 3s
+      this.timer = setTimeout(() => {
+        this.$q.loading.hide();
+        this.timer = void 0;
+      }, 5000);
+    },
+
     checkAccountExist(type) {
       return (this.type = type);
     },

@@ -11,23 +11,20 @@
       >
       </FilterComponentVue>
       <!-- table for support activities -->
-      <div class="row q-pt-sm">
-        <div class="col-md-12 col-xs-12 col-sm-12">
-          <SponsorshipTable
-            :columns="columns"
-            :data="getData"
-            :title="setTableTitle"
-            :message="message"
-            :total="getTotalSponsorship"
-            :pagination="getPagination"
-            :table_loading="getLoadingState"
-            @view-sponsorship="viewSponsorship"
-            @edit-sponsorship="editSponsorship"
-            @onRequest="onRequest"
-          >
-          </SponsorshipTable>
-        </div>
-      </div>
+      <SponsorshipTable
+        :class="$q.platform.is.desktop ? 'q-pt-sm q-px-sm' : ' q-px-sm q-pt-lg'"
+        :columns="columns"
+        :data="getData"
+        :title="setTableTitle"
+        :message="message"
+        :total="getTotalSponsorship"
+        :pagination="getPagination"
+        :table_loading="getLoadingState"
+        @view-sponsorship="viewSponsorship"
+        @edit-sponsorship="editSponsorship"
+        @onRequest="onRequest"
+      >
+      </SponsorshipTable>
     </div>
   </q-page>
 </template>
@@ -41,7 +38,7 @@ import FilterComponentVue from "src/components/FilterComponent.vue";
 
 export default {
   mixins: [PaymentItemMixin, SponsorshipMixin, HelperMixin],
-  beforeMount(){
+  beforeMount() {
     this.$store.commit("SET_PAGINATION", {
       sortBy: "name",
       descending: false,
@@ -50,7 +47,6 @@ export default {
       rowsNumber: 0,
     });
   },
-
 
   mounted() {
     let page = 1;
@@ -64,13 +60,6 @@ export default {
     return {
       status: "",
       columns: [
-        {
-          name: "counter",
-          required: true,
-          label: "S/N",
-          align: "left",
-          field: "counter",
-        },
         {
           name: "supporter",
           required: true,
@@ -111,7 +100,7 @@ export default {
 
     getTotalSponsorship() {
       return this.$store.getters.getSponsorships !== null
-        ? this.$store.getters.getSponsorships.total
+        ? this.$store.getters.getSponsorships.total_amount
         : 0;
     },
 

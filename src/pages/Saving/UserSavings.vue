@@ -3,38 +3,35 @@
     <div>
       <!----------------------------------------------------------------START OF USER SAVINGS-------------------------------------------------->
       <FilterComponentVue
-       :show_filter_member_savings="true"
-       :loading_download="loading_download"
+        :show_filter_member_savings="true"
+        :loading_download="loading_download"
         :disable_download_btn="validateDownload"
         @filter-member-savings="filterSavings"
         @download-member-savings="downloadSavings"
-       >
-        </FilterComponentVue>
+      >
+      </FilterComponentVue>
       <!-------------------------------------------------------TABLE FOR USER SAVINGS---------------------------------------->
-      <div class="row q-pt-sm">
-        <div class="col-md-12 col-xs-12 col-sm-12">
-          <TableVue
-            :columns="columns"
-            :data="getMemberSavings"
-            :label="label"
-            :message="message"
-            :title="''"
-            :show_savings="false"
-            :show_member_savings="true"
-            :show_income_activity="false"
-            :show_members="false"
-            :show_contribution="false"
-            :total_saving="getMemberTotalSaving"
-            :pagination="pagination"
-            :table_loading="table_loader"
-            @fetch-member-saving="fetchMemberSaving"
-            @view-member-saving="ViewMemberSaving"
-            @edit-member-saving="editMemberSaving"
-            @onRequest="onRequest"
-          >
-          </TableVue>
-        </div>
-      </div>
+      <TableVue
+        :class="$q.platform.is.desktop ? 'q-pt-sm q-px-sm' : ' q-px-sm q-pt-lg'"
+        :columns="columns"
+        :data="getMemberSavings"
+        :label="label"
+        :message="message"
+        :title="''"
+        :show_savings="false"
+        :show_member_savings="true"
+        :show_income_activity="false"
+        :show_members="false"
+        :show_contribution="false"
+        :total_saving="getMemberTotalSaving"
+        :pagination="pagination"
+        :table_loading="getLoadingState"
+        @fetch-member-saving="fetchMemberSaving"
+        @view-member-saving="ViewMemberSaving"
+        @edit-member-saving="editMemberSaving"
+        @onRequest="onRequest"
+      >
+      </TableVue>
       <!-------------------------------------------------------END TABLE FOR USER SAVINGS---------------------------------------->
     </div>
   </q-page>
@@ -54,13 +51,6 @@ export default {
   data() {
     return {
       columns: [
-        {
-          name: "counter",
-          required: true,
-          label: "S/N",
-          align: "left",
-          field: "counter",
-        },
         {
           name: "amount_deposited",
           align: "left",
@@ -96,7 +86,6 @@ export default {
       message: this.$t("app.deleteSavingWarningMsg"),
       status: "",
       month: "",
-      table_loader: false,
       pagination: {
         sortBy: "name",
         descending: false,
@@ -147,9 +136,9 @@ export default {
         : 0;
     },
 
-    validateDownload(){
+    validateDownload() {
       return this.getMemberSavings.length == 0;
-    }
+    },
   },
   methods: {
     onRequest(props) {
@@ -161,11 +150,10 @@ export default {
     },
 
     fetchMemberSaving() {
-      this.getPaginatedData(this.$route.params.id, 1, 7);
+      this.getPaginatedData(this.$route.params.id, 1, 10);
     },
 
     getPaginatedData(id, page, fetch_count) {
-      this.table_loader = true;
       let searched_month =
         this.month !== "" && this.status !== null ? this.month.value : "";
       let searched_status =
@@ -185,6 +173,7 @@ export default {
           data: [],
         },
       };
+      this.$store.commit("SET_IS_FETCHING", true);
       this.$store.commit("SET_MEMBER_SAVINGS", null);
       this.$store
         .dispatch("getRequest", payload)
@@ -195,7 +184,7 @@ export default {
           this.pagination.rowsNumber = data.total;
         })
         .finally(() => {
-          this.table_loader = false;
+          this.$store.commit("SET_IS_FETCHING", false);
         });
 
       return this.is_fetching;
@@ -206,8 +195,6 @@ export default {
     },
 
     editMemberSaving(data) {
-      this.$store.dispatch("setEditState", false);
-
       this.$emit("edit-member-saving", data);
     },
 
@@ -216,7 +203,7 @@ export default {
         path: `/dashboard/members-savings/users/${this.$route.params.id}`,
         query: {
           status: data.payment_status,
-          month: typeof(data.month.label) !== undefined ?data.month.label :"",
+          month: typeof data.month.label !== undefined ? data.month.label : "",
           t: new Date().getTime(),
         },
       });
@@ -227,9 +214,20 @@ export default {
 
     downloadSavings(data) {
       let user_id = this.$route.params.id;
-      let status = data.payment_status !== "" || null ? data.payment_status : "";
-      let month = data.month !== "" || null ? data.month : "";
-      let url = `/api/protected/savings/download?user_id=${user_id}&status=${status}&session_id=${this.session_id}&month=${month.value}`;
+      let user_name =
+        this.$store.getters.getMemberSavings !== undefined &&
+        this.$store.getters.getMemberSavings !== null
+          ? this.$store.getters.getMemberSavings.data[0].user_name
+          : "";
+      let status =
+        data.payment_status !== "" && data.payment_status !== null
+          ? data.payment_status
+          : "";
+      let month =
+        (data.month !== null && data.month !== "") || null
+          ? data.month.value
+          : "";
+      let url = `/api/protected/savings/download?user_id=${user_id}&status=${status}&session_id=${this.session_id}&month=${month}&name=${user_name}`;
 
       let file_name = "User_Savings.pdf";
 
@@ -238,7 +236,7 @@ export default {
   },
   components: {
     TableVue,
-    FilterComponentVue
+    FilterComponentVue,
   },
 };
 </script>

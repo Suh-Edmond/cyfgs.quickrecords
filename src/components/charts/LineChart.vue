@@ -1,21 +1,17 @@
 <template>
-  <div class="q-pa-md">
-    <div class="card">
-      <q-card-section>
-        <LineChartGenerator
-          :chart-options="chartOptions"
-          :chart-data="chartData"
-          :chart-id="chartId"
-          :dataset-id-key="datasetIdKey"
-          :plugins="plugins"
-          :css-classes="cssClasses"
-          :styles="styles"
-          :width="width"
-          :height="height"
-        />
-      </q-card-section>
-    </div>
-  </div>
+  <q-card class="q-pr-sm">
+    <LineChartGenerator
+      :chart-options="chartOptions"
+      :chart-data="chartData"
+      :chart-id="chartId"
+      :dataset-id-key="datasetIdKey"
+      :plugins="plugins"
+      :css-classes="cssClasses"
+      :styles="styles"
+      :width="width"
+      :height="height"
+    />
+  </q-card>
 </template>
 
 <script>
@@ -76,10 +72,10 @@ export default {
       type: Array,
       default: () => [],
     },
-    chartData:{
+    chartData: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {

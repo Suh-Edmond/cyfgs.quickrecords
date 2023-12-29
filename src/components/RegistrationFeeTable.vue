@@ -1,9 +1,23 @@
 <template>
   <div>
-    <div class="row">
-      <!-- add fee button -->
-      <div class="col-12 q-mb-sm">
-        <div class="flex justify-end">
+    <div :class="$q.platform.is.mobile?'q-mt-sm':'q-ml-sm'">
+      <q-table
+        :data="data"
+        :columns="columns"
+        row-key="index"
+        :table-header-style="{
+          backgroundColor: '#5384ae',
+          color: '#FFFFFF',
+        }"
+        :loading="loading"
+        
+      >
+        <template v-slot:top-left>
+          <div>
+            <label for="title" class="title">{{ table_header }}</label>
+          </div>
+        </template>
+        <template v-slot:top-right>
           <q-btn
             label="Add"
             dense
@@ -14,101 +28,79 @@
             icon-right="add"
             @click="show_add_fee = true"
           >
-            <q-tooltip> {{$t('app.addRegFee')}} </q-tooltip>
+            <q-tooltip> {{ $t("app.addRegFee") }} </q-tooltip>
           </q-btn>
-        </div>
-      </div>
-      <!-- end of fee button -->
-
-
-      <!-- table for registration fees -->
-      <div class="col-md-12 col-xs-12 col-sm-12">
-        <q-table
-          :data="data"
-          :columns="columns"
-          row-key="index"
-          :table-header-style="{
-            backgroundColor: '#5384ae',
-            color: '#FFFFFF',
-          }"
-           :loading="loading"
-        >
-          <template v-slot:top-left>
-            <div>
-              <label for="title" class="title">{{ table_header }}</label>
-            </div>
-          </template>
-          <template v-slot:body="props">
-            <q-tr :props="props" class="text-bold">
-              <q-td key="counter" :props="props">
-                {{ props.row.counter }}
-              </q-td>
-              <q-td key="amount" :props="props">
-                {{ Number(props.row.amount).toLocaleString() }}
-              </q-td>
-              <q-td key="frequency" :props="props">
-                {{ props.row.frequency }}
-              </q-td>
-              <q-td
-                key="status"
-                :props="props"
-                :class="
-                  props.row.status == 'ACTIVE'
-                    ? 'status_active'
-                    : 'status_in_active'
-                "
+        </template>
+        <template v-slot:body="props">
+          <q-tr :props="props" class="text-bold">
+            <q-td key="amount" :props="props">
+              {{ Number(props.row.amount).toLocaleString() }}
+            </q-td>
+            <q-td key="frequency" :props="props">
+              {{ props.row.frequency }}
+            </q-td>
+            <q-td
+              key="status"
+              :props="props"
+              :class="
+                props.row.status == 'ACTIVE'
+                  ? 'status_active'
+                  : 'status_in_active'
+              "
+            >
+              {{ props.row.status }}
+            </q-td>
+            <q-td
+              key="is_complusory"
+              :props="props"
+              v-if="props.row.is_compulsory"
+            >
+              {{ $t("app.yes") }}
+            </q-td>
+            <q-td
+              key="is_complusory"
+              :props="props"
+              v-if="!props.row.is_compulsory"
+            >
+              {{ $t("app.no") }}
+            </q-td>
+            <q-td key="action" :props="props">
+              <q-icon
+                name="edit"
+                size="xs"
+                class="edit_fee q-mr-xl"
+                @click="editFee(props.row)"
               >
-                {{ props.row.status }}
-              </q-td>
-              <q-td
-                key="is_complusory"
-                :props="props"
-                v-if="props.row.is_compulsory"
-              >
-                {{$t('app.yes')}}
-              </q-td>
-              <q-td
-                key="is_complusory"
-                :props="props"
-                v-if="!props.row.is_compulsory"
-              >
-                {{$t('app.no')}}
-              </q-td>
-              <q-td key="action" :props="props">
-                <q-icon
-                  name="edit"
-                  size="xs"
-                  class="edit_fee q-mr-xl"
-                  @click="editFee(props.row)"
-                >
-                  <q-tooltip>{{$t('app.edit')}}</q-tooltip>
-                </q-icon>
+                <q-tooltip>{{ $t("app.edit") }}</q-tooltip>
+              </q-icon>
 
-                <q-icon
-                  name="delete"
-                  size="xs"
-                  class="delete_fee q-ml-md"
-                  @click="deleteFee(props.row)"
-                >
-                  <q-tooltip>{{$t('app.delete')}}</q-tooltip>
-                </q-icon>
-              </q-td>
-            </q-tr>
-          </template>
-          <template v-slot:loading>
-            <q-inner-loading showing color="primary" />
-          </template>
-        </q-table>
-      </div>
-      <!-- end table for registration fees -->
+              <q-icon
+                name="delete"
+                size="xs"
+                class="delete_fee q-ml-md"
+                @click="deleteFee(props.row)"
+              >
+                <q-tooltip>{{ $t("app.delete") }}</q-tooltip>
+              </q-icon>
+            </q-td>
+          </q-tr>
+        </template>
+        <template v-slot:loading>
+          <q-inner-loading showing color="primary" />
+        </template>
+      </q-table>
     </div>
 
     <!--add registration fee -->
     <q-dialog v-model="show_add_fee">
-      <q-card style="min-width: 450px" class="q-px-md q-pt-sm q-pb-sm">
+      <q-card :style="$q.platform.is.mobile?'min-width: 350px':'min-width: 450px'" class="q-px-md q-pt-sm q-pb-sm">
         <q-card-section class="row items-center q-pb-lg">
-          <div class="text-h6 add_year" v-if="fee.id == null">{{$t('app.addRegFee')}}</div>
-          <div class="text-h6 add_year" v-else>{{$t('app.updateRegFee')}}</div>
+          <div class="text-h6 add_year" v-if="fee.id == null">
+            {{ $t("app.addRegFee") }}
+          </div>
+          <div class="text-h6 add_year" v-else>
+            {{ $t("app.updateRegFee") }}
+          </div>
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
@@ -117,14 +109,15 @@
           <q-form @submit="onAddFee" class="q-gutter-md">
             <div>
               <label for="credential" class="form_field"
-                >{{$t('app.amount')}} <span class="text-red">*</span></label
+                >{{ $t("app.amount") }} <span class="text-red">*</span></label
               >
               <q-input v-model="fee.amount" outlined dense type="number" />
             </div>
             <div class="flex">
               <div>
                 <label for="credential" class="form_field"
-                  >{{$t('app.compulsory')}} <span class="text-red">*</span></label
+                  >{{ $t("app.compulsory") }}
+                  <span class="text-red">*</span></label
                 >
               </div>
               <div class="q-gutter-sm q-ml-lg">
@@ -146,7 +139,8 @@
             </div>
             <div>
               <label for="credential" class="form_field"
-                >{{$t('app.frequency')}} <span class="text-red">*</span></label
+                >{{ $t("app.frequency") }}
+                <span class="text-red">*</span></label
               >
               <q-select
                 v-model="fee.frequency"
@@ -191,7 +185,6 @@
 <script>
 import ButtonVue from "./Button.vue";
 import RegistrationFreqencyVue from "./Constants/RegistrationFreqency.vue";
-import NotFound from "./NotFound.vue";
 import ConfirmDialog from "./ConfirmDialog.vue";
 export default {
   props: {
@@ -247,7 +240,7 @@ export default {
     deleteFee(data) {
       this.show_confirm_dialog = !this.show_confirm_dialog;
       this.deleted_data = data;
-      this.delete_msg = this.$t('app.removeRegFeeWarningMsg');
+      this.delete_msg = this.$t("app.removeRegFeeWarningMsg");
       return this.show_confirm_dialog;
     },
 
@@ -261,13 +254,13 @@ export default {
         data: this.fee,
         msg:
           this.fee.id == null
-            ? this.$t('app.saveRegFeeSuccessMsg')
-            : this.$t('app.saveRegFeeSuccessMsg'),
+            ? this.$t("app.saveRegFeeSuccessMsg")
+            : this.$t("app.saveRegFeeSuccessMsg"),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: this.$t('app.defaultErrorMsg'),
+        error_msg: this.$t("app.defaultErrorMsg"),
         has_commit: false,
         commit: "none",
         to_be_store_data: {

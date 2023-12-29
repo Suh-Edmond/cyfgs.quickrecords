@@ -1,80 +1,106 @@
 <template>
-  <div class="q-pa-md">
+  <div>
+    <q-banner
+      inline-actions
+      rounded
+      class="bg-warning text-white q-mx-md q-mt-sm q-mb-sm"
+      dense
+      v-if="existExpenditureItemDetail"
+    >
+      {{ $t("app.cantUpdatedExpenditureItemDetailAfterApprovalMsg") }}
+      <span class="text-lowercase">{{
+        getUpdatedExpenditureItemDetailFromState.approve
+      }}</span>
+      <template v-slot:action>
+        <q-btn flat icon="close" size="sm" />
+      </template>
+    </q-banner>
     <div class="q-ml-sm q-mb-md">
       <label class="text-muted q-ml-sm info"
         >{{ $t("app.warningField") }}<span class="text-red">*</span
         >{{ $t("app.fields") }}</label
       >
     </div>
-    <div class="q-mt-md q-mx-md">
-      <q-form @submit="onAddExpenditureItemDetail" class="q-gutter-sm">
-        <div class="q-mb-md">
-          <label for="credential" class="form_field"
-            >{{ $t("app.nameLabel") }} <span class="text-red">*</span></label
-          >
-          <q-input
-            v-model="expenditure_item_detail.name"
-            outlined
-            dense
-            type="text"
-          />
-        </div>
-        <div class="q-mb-md">
-          <label for="credential" class="form_field"
-            >{{ $t("app.amountGivenLabel")
-            }}<span class="text-red">*</span></label
-          >
-          <q-input
-            v-model="expenditure_item_detail.amount_given"
-            outlined
-            dense
-            type="number"
-            @input="validateExpenditureAmountGiven"
-          />
-          <small v-if="is_valid_amount_given" class="text-red">
-            <b>{{ $t("app.amountGivenWarningMsg") }}</b>
-          </small>
-        </div>
-        <div class="q-mb-md">
-          <label for="credential" class="form_field"
-            >{{ $t("app.amountSpent") }}<span class="text-red">*</span></label
-          >
-          <q-input
-            v-model="expenditure_item_detail.amount_spent"
-            outlined
-            dense
-            type="number"
-          >
-          </q-input>
-        </div>
-        <div class="q-mb-md">
-          <label for="credential" class="form_field">{{
-            $t("app.comment")
-          }}</label>
-          <q-input
-            v-model="expenditure_item_detail.comment"
-            dense
-            class="text_color"
-            type="textarea"
-            outlined
-            :placeholder="$t('app.provideCommentDetail')"
-          />
-        </div>
-        <div class="flex q-mt-lg justify-end">
-          <div>
-            <ButtonVue
-              class="form_button"
-              :label="$t('app.saveBtnLabel')"
-              :loading="loading"
-              :color="'primary'"
-              :disabled="validateForm"
-              :no_caps="true"
-            >
-            </ButtonVue>
-          </div>
-        </div>
-      </q-form>
-    </div>
+
+    <q-form
+      @submit="onAddExpenditureItemDetail"
+      class="q-gutter-sm q-mt-xs q-mx-sm"
+    >
+      <div class="q-mb-md">
+        <label for="credential" class="form_field"
+          >{{ $t("app.nameLabel") }} <span class="text-red">*</span></label
+        >
+
+        <q-input
+          v-model="expenditure_item_detail.name"
+          outlined
+          dense
+          type="text"
+          :readonly="existExpenditureItemDetail"
+        />
+      </div>
+      <div class="q-mb-md">
+        <label for="credential" class="form_field"
+          >{{ $t("app.amountGivenLabel")
+          }}<span class="text-red">*</span></label
+        >
+        <q-input
+          v-model="expenditure_item_detail.amount_given"
+          outlined
+          dense
+          type="number"
+          @input="validateExpenditureAmountGiven"
+          :readonly="existExpenditureItemDetail"
+        />
+        <small v-if="is_valid_amount_given" class="text-red">
+          <b>{{ $t("app.amountGivenWarningMsg") }}</b>
+        </small>
+      </div>
+      <div class="q-mb-md">
+        <label for="credential" class="form_field"
+          >{{ $t("app.amountSpent") }}<span class="text-red">*</span></label
+        >
+        <q-input
+          v-model="expenditure_item_detail.amount_spent"
+          outlined
+          dense
+          type="number"
+          :readonly="existExpenditureItemDetail"
+        >
+        </q-input>
+      </div>
+      <div class="q-mb-md">
+        <label for="credential" class="form_field">{{
+          $t("app.comment")
+        }}</label>
+        <q-input
+          v-model="expenditure_item_detail.comment"
+          dense
+          class="text_color"
+          type="textarea"
+          outlined
+          :placeholder="$t('app.provideCommentDetail')"
+          :readonly="existExpenditureItemDetail"
+        />
+      </div>
+      <div
+        :class="
+          $q.platform.is.desktop
+            ? 'flex q-mt-lg justify-end'
+            : 'q-pt-xs q-mb-lg'
+        "
+      >
+        <ButtonVue
+          class="form_button"
+          :label="$t('app.saveBtnLabel')"
+          :loading="loading"
+          :color="'primary'"
+          :disabled="validateForm"
+          :no_caps="true"
+        >
+        </ButtonVue>
+      </div>
+    </q-form>
   </div>
 </template>
 <script>
@@ -106,11 +132,12 @@ export default {
 
   computed: {
     validateForm() {
-      return this.expenditure_item_detail.amount_given == null ||
+      return (
+        this.expenditure_item_detail.amount_given == null ||
         this.expenditure_item_detail.name == null ||
-        this.expenditure_item_detail.amount_spent == null
-        ? true
-        : false;
+        this.expenditure_item_detail.amount_spent == null ||
+        this.existExpenditureItemDetail
+      );
     },
     getCurrentExpenditureItem() {
       return this.$store.getters.getCurrentExpenditureItem;
@@ -128,6 +155,10 @@ export default {
       return this.setFormFields(
         this.$store.getters.getUpdatedExpenditureItemDetail
       );
+    },
+
+    existExpenditureItemDetail() {
+      return this.$store.getters.getUpdatedExpenditureItemDetail !== null && this.$store.getters.getUpdatedExpenditureItemDetail.approve !== "PENDING";
     },
   },
   watch: {

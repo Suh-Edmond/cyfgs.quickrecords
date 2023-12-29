@@ -10,6 +10,7 @@
     "test": "echo \"No test specified\" && exit 0"
   },
   "dependencies": {
+    "@capacitor/core": "^5.5.1",
     "@quasar/cli": "^2.3.0",
     "@quasar/extras": "^1.15.8",
     "axios": "^0.21.1",

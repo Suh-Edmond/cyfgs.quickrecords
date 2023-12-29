@@ -203,7 +203,6 @@ export default {
 
   methods: {
     searchContribution(data){
-      console.log(data);
       this.$emit("search-contribution", data);
     },
 

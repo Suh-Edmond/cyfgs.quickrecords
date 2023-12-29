@@ -100,7 +100,7 @@
           />
         </q-card-section>
       </q-card>
-      <q-scroll-area style="height: 100vh">
+      <q-scroll-area style="height: 90vh">
         <q-card
           class="card"
           :style="$q.platform.is.mobile ? 'width: 100vw;' : 'height:100vh'"
@@ -417,7 +417,6 @@ export default {
   position: relative;
   z-index: 2000;
   margin-top: -70px;
-  height: 100vh;
 }
 
 .header_section {

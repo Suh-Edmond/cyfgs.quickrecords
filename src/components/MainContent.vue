@@ -100,7 +100,7 @@
           />
         </q-card-section>
       </q-card>
-      <q-scroll-area style="height: 90vh">
+      <!-- <q-scroll-area style="height: 90vh">
         <q-card
           class="card"
           :style="$q.platform.is.mobile ? 'width: 100vw;' : ''"
@@ -130,6 +130,37 @@
             @search-contribution="searchContribution"
             @view-payment-details="onViewPaymentDetails"
           />
+        </q-card>
+      </q-scroll-area> -->
+      <q-scroll-area style="height: 90vh">
+        <q-card class="card">
+          <q-card-section class="content">
+            <router-view
+              @start-loading="startLoading"
+              @update-payment-category="updatePaymentCategory"
+              @update-payment-item="updatePaymentItem"
+              @view-payment-item="viewPaymentItem"
+              @update-expenditure-category="updateExpenditureCategory"
+              @edit-expenditure-item="editExpenditureItem"
+              @view-expenditure-item="viewExpenditureItem"
+              @edit-expenditure-item-detail="editExpenditureItemDetail"
+              @view-expenditure-item-detail="viewExpenditureItemDetail"
+              @edit-member-saving="editMemberSaving"
+              @view-member-saving="viewMemberSaving"
+              @edit-income-activity="editIncomeActivity"
+              @view-income-activity="viewIncomeActivity"
+              @view-contribution="viewContribution"
+              @edit-contribution="editContribution"
+              @search-member-saving="searchMemberSaving"
+              @search-members-contribution="searchMemberContribution"
+              @report-generation="reportGeneration"
+              @view-sponsorship="viewSponsorship"
+              @edit-sponsorship="editSponsorship"
+              @register-member="registerMember"
+              @search-contribution="searchContribution"
+              @view-payment-details="onViewPaymentDetails"
+            />
+          </q-card-section>
         </q-card>
       </q-scroll-area>
     </div>
@@ -441,18 +472,28 @@ export default {
   display: flex;
   align-items: center;
   text-align: center;
+  letter-spacing: 0.005em;
 }
 
 .header {
   height: 130px;
 }
 
+.content {
+  background-color: $white1;
+  padding-bottom: 4rem;
+}
+
 .content_header {
   background-color: $white2;
+  height: 8vh;
 }
+
 
 .title {
   font-family: "Roboto";
+  font-style: normal;
+  letter-spacing: 0.01em;
   text-transform: uppercase;
   color: $primary;
   font-weight: 500;

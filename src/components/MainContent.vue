@@ -100,7 +100,7 @@
           />
         </q-card-section>
       </q-card>
-      <q-scroll-area style="height: 88vh">
+      <q-scroll-area style="height: 90vh">
         <q-card
           class="card"
           :style="$q.platform.is.mobile ? 'width: 100vw;' : 'height:100vh'"

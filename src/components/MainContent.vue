@@ -103,7 +103,7 @@
       <q-scroll-area style="height: 90vh">
         <q-card
           class="card"
-          :style="$q.platform.is.mobile ? 'width: 100vw;' : 'height:100vh'"
+          :style="$q.platform.is.mobile ? 'width: 100vw;' : ''"
         >
           <router-view
             @start-loading="startLoading"
@@ -417,7 +417,6 @@ export default {
   position: relative;
   z-index: 2000;
   margin-top: -70px;
-  height: 100vh;
 }
 
 .header_section {

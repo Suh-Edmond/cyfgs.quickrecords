@@ -612,12 +612,10 @@ export default {
         this.contribution.payment_item_id == null ||
         this.checkPaymentItemBal ||
         (this.valideteMonthlyPaymentItemFrequency &&
-          this.contribution.month_name == "") ||
+          this.contribution.month_name === "") ||
         (this.valideteQuarterlyPaymentItemFrequency &&
-          this.contribution.quarterly_name == "") ||
+          this.contribution.quarterly_name === "") ||
         this.checkAmountDepositedBasedOnSaving
-        ? true
-        : false;
     },
 
     validatePaymentItem() {
@@ -626,15 +624,15 @@ export default {
 
     valideteMonthlyPaymentItemFrequency() {
       return (
-        this.contribution.payment_item_id != null &&
-        this.contribution.payment_item_id.frequency == "MONTHLY"
+        this.contribution.payment_item_id !== null &&
+        this.contribution.payment_item_id.frequency === "MONTHLY"
       );
     },
 
     valideteQuarterlyPaymentItemFrequency() {
       return (
-        this.contribution.payment_item_id != null &&
-        this.contribution.payment_item_id.frequency == "QUARTERLY"
+        this.contribution.payment_item_id !== null &&
+        this.contribution.payment_item_id.frequency === "QUARTERLY"
       );
     },
 

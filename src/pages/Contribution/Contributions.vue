@@ -205,7 +205,7 @@ export default {
         {
           name: "balance",
           align: "left",
-          label: "Balance (XAF)",
+          label: "Total Balance (XAF)",
           field: "balance",
         },
         {

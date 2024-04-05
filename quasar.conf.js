@@ -22,7 +22,7 @@ module.exports = function (ctx) {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://v1.quasar.dev/quasar-cli/boot-files
-    boot: ["i18n", "axios"],
+    boot: ["i18n", "axios", "addressbar-color", "app-init"],
 
     // https://v1.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
     css: ["app.scss"],
@@ -46,10 +46,10 @@ module.exports = function (ctx) {
     build: {
       vueRouterMode: "history", // available values: 'hash', 'history'
       env: {
-        API_BASE_URL: ctx.dev ? "http://localhost:8000" : "financial-assistant-api.com",
-        CLIENT_SERVER: ctx.dev ? "http://localhost:7000" : "financial-assistant.com",
-        REDIRECT_URL: ctx.dev ? "http://localhost:7000/auth/invite-member" : "financial-assistant.com/auth/invite-member",
-        FILE_API_URL: ctx.dev ? "http://localhost:9000/api/v1/protected": "file-storage-web-api",
+        API_BASE_URL: ctx.dev ? "http://127.0.0.1:8000" : "http://127.0.0.1:8000",
+        CLIENT_SERVER: ctx.dev ? "http://192.168.224.1:7000" : "http://192.168.224.1:7000",
+        REDIRECT_URL: ctx.dev ? "http://192.168.224.1:7000/auth/invite-member" : "financial-assistant.com/auth/invite-member",
+        FILE_API_URL: ctx.dev ? "http://127.0.0.1:9000/api/v1/protected": "file-storage-web-api",
         APP_NAME : "FINANCIAL_ASSISTANT_APP",
         FILE_CATEGORY : "IMAGES",
         BASE_FOLDER : "LOGOS",
@@ -115,7 +115,7 @@ module.exports = function (ctx) {
       // directives: [],
 
       // Quasar plugins
-      plugins: ["Notify", "LocalStorage", "SessionStorage","Loading"],
+      plugins: ["Notify", "LocalStorage", "SessionStorage","Loading", "AddressbarColor"],
       config: {
         notify: {
           /* look at QUASARCONFOPTIONS from the API card (bottom of page) */

@@ -549,7 +549,7 @@
                   :columns="columns"
                   row-key="index"
                   :table-header-style="{
-                    backgroundColor: '#5384ae',
+                    backgroundColor: '#213c65',
                     color: '#FFFFFF',
                   }"
                   :loading="getLoadingState"
@@ -675,7 +675,7 @@
                   row-key="counter"
                   ref="table"
                   :table-header-style="{
-                    backgroundColor: '#5384ae',
+                    backgroundColor: '#213c65',
                     color: '#FFFFFF',
                   }"
                   :loading="getLoadingState"

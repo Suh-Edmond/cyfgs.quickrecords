@@ -4,7 +4,7 @@
       :data="data"
       :columns="columns"
       row-key="index"
-      :table-header-style="{ backgroundColor: '#5384ae', color: '#FFFFFF' }"
+      :table-header-style="{ backgroundColor: '#213c65', color: '#FFFFFF' }"
       :filter="filter"
       :loading="table_loading"
       :pagination.sync="getPagination"

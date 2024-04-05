@@ -5,7 +5,7 @@
       :data="data"
       :columns="columns"
       row-key="id"
-      :table-header-style="{ backgroundColor: '#5384ae', color: '#FFFFFF' }"
+      :table-header-style="{ backgroundColor: '#213c65', color: '#FFFFFF' }"
       class="col-xs-12"
       :filter="filter"
       :loading="table_loading"

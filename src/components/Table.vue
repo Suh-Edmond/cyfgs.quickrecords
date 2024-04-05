@@ -706,7 +706,7 @@
             {{ props.row.status }}
           </q-td>
           <q-td key="date" :props="props">
-            {{ getDate(props.row.date) }}
+            {{ getDate(props.row.created_at) }}
           </q-td>
           <q-td
             key="approve"

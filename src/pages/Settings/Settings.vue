@@ -86,27 +86,6 @@
           $t("app.settingsGeneralLabel")
         }}</q-item-label>
 
-        <q-item>
-          <q-item-section avatar top>
-            <q-icon
-              name="notifications"
-              class="icon_color_general"
-              size="xs"
-            ></q-icon>
-          </q-item-section>
-          <q-item-section>
-            <q-item-label class="text_header_general">{{
-              $t("app.settingsNotificationLabel")
-            }}</q-item-label>
-            <q-item-label caption class="caption_text_general">
-              {{ $t("app.settingsNotificationCaption") }}
-            </q-item-label>
-          </q-item-section>
-          <q-item-section side>
-            <q-toggle color="blue" v-model="new_role_member" val="battery" />
-          </q-item-section>
-        </q-item>
-
         <q-item tag="label" v-ripple>
           <q-item-section avatar top>
             <q-icon
@@ -258,6 +237,7 @@ import moment from "moment";
 import RegistrationFeeTable from "src/components/RegistrationFeeTable.vue";
 import SessionsTable from "src/components/SessionsTable.vue";
 import RegistrationAmountMixin from "src/mixins/RegistrationAmountMixin.vue";
+import { LocalStorage } from "quasar";
 export default {
   mixins: [RegistrationAmountMixin],
   mounted() {
@@ -269,7 +249,6 @@ export default {
     return {
       saveBtnLabel: this.$t("app.saveBtnLabel"),
       yearLabel: this.$t("app.selectYearLabel"),
-      new_role_member: true,
       columns: [
         {
           name: "year",

@@ -47,8 +47,8 @@ module.exports = function (ctx) {
       vueRouterMode: "history", // available values: 'hash', 'history'
       env: {
         API_BASE_URL: ctx.dev ? "http://127.0.0.1:8000" : "http://127.0.0.1:8000",
-        CLIENT_SERVER: ctx.dev ? "http://192.168.224.1:7000" : "http://192.168.224.1:7000",
-        REDIRECT_URL: ctx.dev ? "http://192.168.224.1:7000/auth/invite-member" : "financial-assistant.com/auth/invite-member",
+        CLIENT_SERVER: ctx.dev ? "http://127.0.0.1:7000" : "http://127.0.0.1:7000",
+        REDIRECT_URL: ctx.dev ? "http://127.0.0.1:7000/auth/invite-member" : "financial-assistant.com/auth/invite-member",
         FILE_API_URL: ctx.dev ? "http://127.0.0.1:9000/api/v1/protected": "file-storage-web-api",
         APP_NAME : "FINANCIAL_ASSISTANT_APP",
         FILE_CATEGORY : "IMAGES",

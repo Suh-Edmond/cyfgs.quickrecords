@@ -14,6 +14,72 @@
           {{ $t("app.welcomeLabel") }} {{ auth_user_role }}
         </q-toolbar-title>
         <div>
+          <q-btn
+            round
+            icon="notifications"
+            class="q-mr-xl q-mt-sm"
+            flat
+            v-if="canViewNotification()"
+          >
+            <q-badge
+              floating
+              :color="notifications.length > 0 ? 'red' : ''"
+              rounded
+            >
+              <span v-if="notifications.length > 0">{{
+                notifications.length
+              }}</span>
+            </q-badge>
+            <q-menu
+              max-height="400px"
+              max-width="450px"
+              anchor="top left"
+              self="bottom start"
+            >
+              <q-list style="min-width: 450px">
+                <q-item>
+                  <q-item-section>
+                    <label class="text-weight-medium">Notifications</label>
+                  </q-item-section>
+                </q-item>
+
+                <q-item
+                  clickable
+                  v-ripple
+                  @click="markNotificationRead(notification.id)"
+                  v-for="notification in notifications"
+                  :key="notification.id"
+                >
+                  <q-item-section avatar>
+                    <q-avatar color="primary" text-color="white">{{
+                      getRoleFirstName(notification.role)
+                    }}</q-avatar>
+                  </q-item-section>
+
+                  <q-item-section>
+                    <q-item-label lines="1" class="text-subtitle2"
+                      >New Platform Administrator</q-item-label
+                    >
+                    <q-item-label caption lines="2">
+                      <span class="text-weight-medium">{{
+                        notification.name
+                      }}</span>
+                      -- Recently join the platform as the
+                      <span>{{ notification.role }}</span>
+                    </q-item-label>
+                  </q-item-section>
+
+                  <q-item-section side top>
+                    <q-item-label caption
+                      >{{ calculateNotificationTime(notification.date) }}
+                    </q-item-label>
+                  </q-item-section>
+                </q-item>
+
+                <q-separator inset="item" />
+              </q-list>
+            </q-menu>
+          </q-btn>
           <q-avatar size="xl" v-if="!hasProfilePic">
             <span class="material-icons"> account_circle </span>
           </q-avatar>
@@ -148,6 +214,10 @@ export default {
     ).name;
     this.auth_user_role = this.formatUserRole(welcome_title);
   },
+  created() {
+    return this.getNotifications();
+  },
+
   props: {
     item: {
       type: Object,
@@ -171,6 +241,7 @@ export default {
       intermediate_tab2: "",
       has_intermediate_tab2: false,
       loading: false,
+      notifications: [],
     };
   },
 
@@ -204,6 +275,13 @@ export default {
   },
 
   methods: {
+    canViewNotification() {
+      const president_role = LocalStorage.getItem("data").user_data.roles.find(
+        (role) => role.name === "PRESIDENT" || role.name === "ADMIN"
+      );
+      return president_role != undefined;
+    },
+
     searchContribution(data) {
       this.$emit("search-contribution", data);
     },
@@ -408,6 +486,89 @@ export default {
     onViewPaymentDetails(data) {
       this.updateDrawer(data);
     },
+
+    markNotificationRead(id) {
+      let payload = {
+        url: `/api/protected/organisations/members/get_invitation_notifications/${id}/mark_as_read`,
+        msg: this.$t("app.notificationMarkReadMsg"),
+        color: "default",
+        to_on_ok: "none",
+        to_on_fail: "none",
+        show_feedback: true,
+        error_msg: this.$t("app.defaultErrorMsg"),
+        has_commit: false,
+        commit: "none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.$store.dispatch("putRequest", payload).then((res) => {
+        this.getNotifications();
+      });
+    },
+
+    getNotifications() {
+      let payload = {
+        url: `/api/protected/organisations/members/get_invitation_notifications`,
+        msg: this.$t("app.saveContributionSuccessMsg"),
+        show_feedback: false,
+        show_spinner: false,
+        msg: "none",
+        color: "default",
+        error_msg: "default",
+        commit: "none",
+        has_commit: false,
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: null,
+        },
+      };
+      this.$store.dispatch("getRequest", payload).then((res) => {
+        this.notifications = res.data;
+      });
+    },
+
+    calculateNotificationTime(date) {
+      let currentDate = new Date();
+      let notificationDate = new Date(date);
+      let oneDay = 24 * 60 * 60 * 1000;
+      let hour = 60 * 60 * 1000;
+      let mins = 60 * 1000;
+      let time = "";
+      let millisec = Math.abs(
+        currentDate.getTime() - notificationDate.getTime()
+      );
+      console.log(millisec/mins);
+      if (Math.trunc(millisec / hour) < 1) {
+        // console.log(Math.trunc(millisec / mins));
+        time =
+          Math.trunc(millisec / mins) > 1
+            ? Math.trunc(millisec / mins) + "mins ago"
+            : Math.trunc(millisec / mins) + "min ago";
+      } else if (
+        Math.trunc(millisec / hour) >= 1 ||
+        Math.trunc(millisec / hour) <= 59
+      ) {
+        // console.log(Math.trunc(millisec / hour));
+        time =
+          Math.trunc(millisec / hour) > 1
+            ? Math.trunc(millisec / hour) + " hours ago"
+            : Math.trunc(millisec / hour) + " hour ago";
+      } else if (millisec >= 60 || millisec <= 1440) {
+        time =
+          Math.trunc(millisec / oneDay) > 1
+            ? Math.trunc(millisec / oneDay) + " days ago"
+            : Math.trunc(millisec / oneDay) + "day ago";
+      }
+      return time;
+    },
+
+    getRoleFirstName(role) {
+      return role.substring(0, 1);
+    },
   },
 };
 </script>
@@ -457,7 +618,6 @@ export default {
   background-color: $white2;
   height: 8vh;
 }
-
 
 .title {
   font-family: "Roboto";

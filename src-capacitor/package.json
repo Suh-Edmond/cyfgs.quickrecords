@@ -1,0 +1,12 @@
+{
+  "name": "financial-assistant-web",
+  "version": "0.0.1",
+  "description": "A web,mobile and desktop application for assisting the management of financial transactions in a group or organisation",
+  "author": "Suh-Edmond <suhedmond25@yahoo.com>",
+  "private": true,
+  "dependencies": {
+    "@capacitor/android": "^2.5.0",
+    "@capacitor/cli": "^2.0.0",
+    "@capacitor/core": "^2.0.0"
+  }
+}

@@ -3,7 +3,7 @@ import { LocalStorage } from 'quasar';
 export default {
   data() {
     return {
-      loading: false,
+      loading_download: false,
     }
   },
   computed: {
@@ -19,7 +19,7 @@ export default {
         msg: "none",
         file_name: file_name,
         color: "default",
-        error_msg: "Could not download pdf file",
+        error_msg:this.$t('app.downloadFileErrorMsg'),
         commit: "none",
         has_commit: false,
         to_be_store_data: {
@@ -29,21 +29,21 @@ export default {
         },
       };
 
-      this.loading = true;
+      this.loading_download = true;
       this.$store
         .dispatch("downloadPdf", payload)
         .then(() => {
-          this.loading = false;
+          this.loading_download = false;
         })
         .catch(() => {
           Notify.create({
             type: "info",
-            message: "Could not download pdf file",
+            message: this.$t('app.downloadFileErrorMsg'),
             position: Platform.is.mobile ? "bottom-left" : "top-right",
           });
         });
 
-      return this.loading
+      return this.loading_download
     },
 
     checkTreasurerRole() {

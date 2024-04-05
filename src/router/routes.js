@@ -6,7 +6,7 @@ const routes = [
     meta: {
       middleware: "guest",
       firstTimer: true,
-      enableSignUp:true,
+      enableSignUp: true,
     },
     children: [
       {
@@ -16,7 +16,7 @@ const routes = [
         meta: {
           middleware: "guest",
           firstTimer: true,
-          enableSignUp:true,
+          enableSignUp: true,
         },
       },
       {
@@ -25,13 +25,41 @@ const routes = [
         component: () => import("src/pages/Auth/Register.vue"),
         meta: {
           middleware: "guest",
-          enableSignUp:true,
+          enableSignUp: true,
+        },
+      },
+      {
+        name: "PasswordResetToken",
+        path: "auth/password-reset/get-token",
+        component: () => import("src/pages/Auth/PasswordResetToken.vue"),
+        meta: {
+          middleware: "guest",
+          enableSignUp: true,
+        },
+      },
+      {
+        name:"PasswordReset",
+        path:"/auth/password-reset",
+        component:() => import("src/pages/Auth/ResetPassword.vue"),
+        meta: {
+          middleware: "guest",
+          enableSignUp: true,
+        },
+      },
+      {
+        name: "create_organisation",
+        path: "organisation/create",
+        component: () =>
+          import("src/pages/Organisation/CreateOrganisation.vue"),
+        meta: {
+          middleware: "auth",
+          role: "MEMBER",
         },
       },
     ],
   },
   {
-    path:"/auth/invite-member",
+    path: "/auth/invite-member",
     component: () => import("layouts/AuthLayout.vue"),
     redirect: "/auth/set-password",
     meta: {
@@ -40,17 +68,16 @@ const routes = [
     },
     children: [
       {
-        name:"Set_Password",
-        path:"/auth/set-password",
+        name: "Set_Password",
+        path: "/auth/set-password",
         component: () => import("src/pages/Auth/SetPassword.vue"),
         meta: {
           middleware: "guest",
           firstTimer: true,
-          enableSignUp:false,
+          enableSignUp: false,
         },
-      }
-    ]
-
+      },
+    ],
   },
   {
     path: "/dashboard",
@@ -67,7 +94,7 @@ const routes = [
         meta: {
           middleware: "auth",
           role: "MEMBER",
-          has_intermediate_tab:false
+          has_intermediate_tab: false,
         },
       },
       {
@@ -78,7 +105,7 @@ const routes = [
         meta: {
           middleware: "auth",
           role: "MEMBER",
-          has_intermediate_tab:false
+          has_intermediate_tab: false,
         },
       },
       {
@@ -89,7 +116,7 @@ const routes = [
         meta: {
           middleware: "auth",
           role: "MEMBER",
-          has_intermediate_tab:false
+          has_intermediate_tab: false,
         },
       },
       {
@@ -99,7 +126,7 @@ const routes = [
         meta: {
           middleware: "auth",
           role: "MEMBER",
-          has_intermediate_tab:true
+          has_intermediate_tab: true,
         },
       },
       {
@@ -109,7 +136,7 @@ const routes = [
         meta: {
           middleware: "auth",
           role: "MEMBER",
-          has_intermediate_tab:false
+          has_intermediate_tab: false,
         },
       },
       {
@@ -119,17 +146,18 @@ const routes = [
         meta: {
           middleware: "auth",
           role: "MEMBER",
-          has_intermediate_tab:false
+          has_intermediate_tab: false,
         },
       },
       {
         name: "expenditure_category",
         path: "/dashboard/expenditure-categories",
-        component: () => import("src/pages/Expenditure/ExpenditureCategory.vue"),
+        component: () =>
+          import("src/pages/Expenditure/ExpenditureCategory.vue"),
         meta: {
           middleware: "auth",
           role: "MEMBER",
-          has_intermediate_tab:false
+          has_intermediate_tab: false,
         },
       },
       {
@@ -139,17 +167,18 @@ const routes = [
         meta: {
           middleware: "auth",
           role: "MEMBER",
-          has_intermediate_tab:true
+          has_intermediate_tab: true,
         },
       },
       {
         name: "expenditure_item_details",
         path: "/dashboard/expenditure-categories/:id/items/:item_id/details",
-        component: () => import("src/pages/Expenditure/ExpenditureItemDetail.vue"),
+        component: () =>
+          import("src/pages/Expenditure/ExpenditureItemDetail.vue"),
         meta: {
           middleware: "auth",
           role: "MEMBER",
-          has_intermediate_tab:true
+          has_intermediate_tab: true,
         },
       },
       {
@@ -159,7 +188,7 @@ const routes = [
         meta: {
           middleware: "auth",
           role: "MEMBER",
-          has_intermediate_tab:true
+          has_intermediate_tab: true,
         },
       },
       {
@@ -169,7 +198,7 @@ const routes = [
         meta: {
           middleware: "auth",
           role: "MEMBER",
-          has_intermediate_tab:true
+          has_intermediate_tab: true,
         },
       },
       {
@@ -179,7 +208,7 @@ const routes = [
         meta: {
           middleware: "auth",
           role: "MEMBER",
-          has_intermediate_tab:false
+          has_intermediate_tab: false,
         },
       },
       {
@@ -189,7 +218,7 @@ const routes = [
         meta: {
           middleware: "auth",
           role: "MEMBER",
-          has_intermediate_tab:false
+          has_intermediate_tab: false,
         },
       },
       {
@@ -199,27 +228,28 @@ const routes = [
         meta: {
           middleware: "auth",
           role: "MEMBER",
-          has_intermediate_tab:false
+          has_intermediate_tab: false,
         },
       },
       {
         name: "members_contributions",
-        path: "/dashboard/contributions",
+        path: "/dashboard/contributions/payment-item",
         component: () => import("src/pages/Contribution/Contributions.vue"),
         meta: {
           middleware: "auth",
           role: "MEMBER",
-          has_intermediate_tab:false
+          has_intermediate_tab: false,
         },
       },
       {
         name: "member_contributions",
         path: "/dashboard/contributions/payment-item/:item_id/members/:id",
-        component: () => import("src/pages/Contribution/MemberContributions.vue"),
+        component: () =>
+          import("src/pages/Contribution/MemberContributions.vue"),
         meta: {
           middleware: "auth",
           role: "MEMBER",
-          has_intermediate_tab:false
+          has_intermediate_tab: false,
         },
       },
 
@@ -230,7 +260,7 @@ const routes = [
         meta: {
           middleware: "auth",
           role: "MEMBER",
-          has_intermediate_tab:false
+          has_intermediate_tab: false,
         },
       },
 
@@ -241,7 +271,7 @@ const routes = [
         meta: {
           middleware: "auth",
           role: "MEMBER",
-          has_intermediate_tab:false
+          has_intermediate_tab: false,
         },
       },
 
@@ -252,7 +282,7 @@ const routes = [
         meta: {
           middleware: "auth",
           role: "MEMBER",
-          has_intermediate_tab:false
+          has_intermediate_tab: false,
         },
       },
 
@@ -263,10 +293,19 @@ const routes = [
         meta: {
           middleware: "auth",
           role: "MEMBER",
-          has_intermediate_tab:false
+          has_intermediate_tab: false,
         },
       },
-
+      {
+        name: "role_privilge",
+        path: "/dashboard/roles/managment",
+        component: () => import("src/pages/Roles/Roles.vue"),
+        meta: {
+          middleware: "auth",
+          role: "MEMBER",
+          has_intermediate_tab: false,
+        },
+      },
     ],
   },
 

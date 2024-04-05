@@ -2,7 +2,9 @@
   <q-page class="q-pa-xs">
     <div v-if="!exist_organisation">
       <div class="flex flex-center q-mb-md">
-        <label for="title" class="title">Organisation Information</label>
+        <label for="title" class="title">{{
+          $t("app.updateOrganisationHeading")
+        }}</label>
       </div>
       <div>
         <q-form
@@ -20,7 +22,8 @@
             >
               <div>
                 <label for="credential" class="form_field"
-                  >Name <span class="text-red q-pl-xs">*</span></label
+                  >{{ $t("app.nameLabel") }}
+                  <span class="text-red q-pl-xs">*</span></label
                 >
                 <q-input
                   v-model="organisation.name"
@@ -46,7 +49,8 @@
             >
               <div>
                 <label for="credential" class="form_field"
-                  >Email <span class="text-red q-pl-xs">*</span></label
+                  >{{ $t("app.emailLabel") }}
+                  <span class="text-red q-pl-xs">*</span></label
                 >
                 <q-input
                   dense
@@ -68,16 +72,21 @@
               :class="$q.screen.lg ? 'q-px-sm' : ''"
             >
               <div>
-                <label for="credential" class="form_field"
-                  >Telephone Number <span class="text-red q-pl-xs">*</span
-                  ><q-space></q-space>
+                <label for="credential" class="form_field flex justify-between"
+                  >
+                  <span>
+                    {{ $t("app.telephoneLabel") }}
+                  <span class="text-red q-pl-xs">*</span>
+                  </span>
                   <a @click.prevent="showAddTelephone" class="add_telephone">
                     <q-icon
                       name="add"
                       size="xs"
                       color="primary"
                       v-if="!show_telephone2"
-                      ><q-tooltip>Add Telephone</q-tooltip></q-icon
+                      ><q-tooltip>{{
+                        $t("app.addTelephoneLabel")
+                      }}</q-tooltip></q-icon
                     >
                     <q-icon
                       name="close"
@@ -85,31 +94,23 @@
                       color="primary"
                       v-if="show_telephone2"
                     >
-                      <q-tooltip>Remove</q-tooltip>
+                      <q-tooltip>{{ $t("app.remove") }}</q-tooltip>
                     </q-icon>
                   </a>
                 </label>
-                <q-input
+                <vue-tel-input
                   v-model="organisation.telephone"
-                  outlined
-                  type="tel"
-                  dense
-                  mask="(+###) ### - ### - ###"
-                  unmasked-value
-                  hint="Example: (+237) ### - ### - ###"
-                >
-                </q-input>
-                <q-input
+                  defaultCountry="cm"
+                  mode="international"
+                  class="q-pa-xs q-mb-sm"
+                ></vue-tel-input>
+                <vue-tel-input
                   v-model="organisation.telephone2"
-                  outlined
-                  dense
-                  type="tel"
-                  class="q-mt-xs"
-                  mask="(+###) ### - ### - ###"
-                  unmasked-value
-                  hint="Example: (+237) ### - ### - ###"
+                  defaultCountry="cm"
+                  mode="international"
+                  class="q-pa-xs"
                   v-if="show_telephone2"
-                />
+                ></vue-tel-input>
               </div>
             </div>
             <div
@@ -118,7 +119,8 @@
             >
               <div>
                 <label for="credential" class="form_field"
-                  >Address <span class="text-red q-pl-xs">*</span></label
+                  >{{ $t("app.addressLabel") }}
+                  <span class="text-red q-pl-xs">*</span></label
                 >
                 <q-input
                   v-model="organisation.address"
@@ -140,7 +142,9 @@
               :class="$q.screen.lg ? 'q-px-sm' : 'q-py-sm'"
             >
               <div>
-                <label for="credential" class="form_field">Salutation</label>
+                <label for="credential" class="form_field">{{
+                  $t("app.salutation")
+                }}</label>
                 <q-input
                   v-model="organisation.salutation"
                   outlined
@@ -154,7 +158,9 @@
               :class="$q.screen.lg ? 'q-px-sm' : 'q-py-sm'"
             >
               <div>
-                <label for="credential" class="form_field">P.O Box</label>
+                <label for="credential" class="form_field">{{
+                  $t("app.boxLabel")
+                }}</label>
                 <q-input
                   v-model="organisation.box_number"
                   outlined
@@ -176,7 +182,8 @@
             >
               <div>
                 <label for="credential" class="form_field"
-                  >Description <span class="text-red q-pl-xs">*</span></label
+                  >{{ $t("app.description") }}
+                  <span class="text-red q-pl-xs">*</span></label
                 >
                 <q-input
                   v-model="organisation.description"
@@ -192,7 +199,8 @@
             >
               <div>
                 <label for="credential" class="form_field"
-                  >Region <span class="text-red q-pl-xs">*</span></label
+                  >{{ $t("app.region") }}
+                  <span class="text-red q-pl-xs">*</span></label
                 >
                 <q-input
                   v-model="organisation.region"
@@ -214,7 +222,7 @@
                 <q-btn
                   outline
                   color="primary"
-                  label="Cancel"
+                  :label="$t('app.cancel')"
                   no-caps
                   @click="showDetail"
                   class="q-pa-xs"
@@ -223,7 +231,7 @@
               </div>
               <div>
                 <ButtonVue
-                  :label="label"
+                  :label="$t('app.saveBtnLabel')"
                   :loading="loading"
                   :disabled="validateForm"
                   :color="color"
@@ -248,7 +256,7 @@
                 font-size="52px"
                 v-if="organisation.logo != null"
               >
-                <img :src="organisation.logo" alt="" width="160px" />
+                <img :src="getOrganisationLogo" alt="" width="160px" />
               </q-avatar>
               <q-avatar
                 size="150px"
@@ -271,13 +279,15 @@
                   class="camara"
                   @click="openFileUpload"
                 >
-                <q-tooltip>Upload Logo</q-tooltip>
+                  <q-tooltip>{{ $t("app.uploadLogo") }}</q-tooltip>
                 </q-icon>
               </div>
             </q-card-section>
             <q-card-section>
               <div class="flex">
-                <div class="text-h6 title">Organisation information</div>
+                <div class="text-h6 title">
+                  {{ $t("app.organisationMgtHeading") }}
+                </div>
                 <q-space />
                 <div>
                   <q-btn
@@ -348,9 +358,9 @@
 
 <script>
 import ButtonVue from "src/components/Button.vue";
-import FileConstants from "src/components/Constants/FileConstants.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
-import { Notify, Platform } from 'quasar';
+import { Notify, Platform } from "quasar";
+import { VueTelInput } from "vue-tel-input";
 
 export default {
   mixins: [organisationMixinVue],
@@ -396,8 +406,16 @@ export default {
     },
 
     checkIfOrganisationExist() {
-      return this.$store.getters.getOrganisation == null ? true : false
-    }
+      return this.$store.getters.getOrganisation == null ? true : false;
+    },
+
+    getOrganisationLogo() {
+      return (
+        process.env.FILE_API_URL +
+        process.env.FILE_DOWNLOAD_PATH +
+        this.$store.getters.getOrganisation.logo
+      );
+    },
   },
   methods: {
     onSubmit() {
@@ -465,12 +483,13 @@ export default {
       this.$store.dispatch("getRequest", payload).then((res) => {
         if (res !== undefined) {
           this.setOrganisationInfo();
-        }else {
+        } else {
           Notify.create({
             type: "info",
-            message: "Organisation not yet created! Please fill the fields to add organisation",
-            position: !Platform.is.mobile ? "top-right": "bottom"
-          })
+            message:
+              "Organisation not yet created! Please fill the fields to add organisation",
+            position: !Platform.is.mobile ? "top-right" : "bottom",
+          });
         }
       });
     },
@@ -513,49 +532,45 @@ export default {
       const formData = new FormData();
       formData.append("file", e.target.files[0]);
       let directory =
-        FileConstants.APP_NAME +
-        "/" +
+        `${process.env.APP_NAME}/` +
         this.organisation.name +
-        "/" +
-        FileConstants.LOGOS;
+        `/${process.env.BASE_FOLDER}`;
       let payload = {
-        url: `/api/v1/protected/upload-file?directory=${directory}&fileCategory=${FileConstants.IMAGES}`,
+        url: `/upload-file?directory=${directory}&fileCategory=${process.env.FILE_CATEGORY}`,
         data: formData,
         status: "none",
-        show_feedback: false,
+        show_feedback: true,
         msg: "Logo uploaded successfully",
         color: "default",
         error_msg: "default",
         commit: "none",
         has_commit: false,
       };
-      this.$store.dispatch("uploadImageRequest", payload).then((res) => {
-        let get_file_payload = {
-          url: `/api/v1/protected/file?directory=${directory}&fileCategory=${FileConstants.IMAGES}&fileName=${e.target.files[0].name}`,
-          data: formData,
-          show_feedback: false,
-        };
-        this.$store
-          .dispatch("fetchUploadedImageRequest", get_file_payload)
-          .then((res) => {
-            this.organisation.logo = res.data.fileDownloadUri;
-            let update_organisation = {
-              url: `/api/protected/organisations/${this.$store.getters.getOrganisation.id}`,
-              data: { logo: res.data.fileDownloadUri },
-              status: "none",
-              show_feedback: false,
-            };
-            this.$store
-              .dispatch("putRequest", update_organisation)
-              .then(() => {
-                location.reload()
-              });
+      this.$store.dispatch("uploadImageRequest", payload).then((response) => {
+        if (response.status == 200) {
+          this.organisation.logo = response.data.fileDownloadUri.split(
+            process.env.FILE_SEPARATOR_KEY
+          )[1];
+          let update_organisation = {
+            url: `/api/protected/organisations/${this.$store.getters.getOrganisation.id}`,
+            data: {
+              logo: response.data.fileDownloadUri.split(
+                process.env.FILE_SEPARATOR_KEY
+              )[1],
+            },
+            status: "none",
+            show_feedback: false,
+          };
+          this.$store.dispatch("putRequest", update_organisation).then(() => {
+            this.getOrganisationInfo();
           });
+        }
       });
     },
   },
   components: {
     ButtonVue,
+    VueTelInput,
   },
 };
 </script>
@@ -595,13 +610,11 @@ export default {
 .form_field {
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 400;
-  font-size: 13px;
-  line-height: 24px;
-  display: flex;
+  font-weight: 500;
+  font-size: 12px;
   align-items: center;
   letter-spacing: 0.01em;
-  color: $grey8;
+  color: $grey2;
 }
 
 .card {

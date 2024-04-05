@@ -12,6 +12,7 @@ const ESLintPlugin = require("eslint-webpack-plugin");
 
 module.exports = function (ctx) {
   return {
+    bin: "C:/Program Files/Android/Android Studio/bin/studio64.sh",
     // https://v1.quasar.dev/quasar-cli/supporting-ts
     supportTS: false,
 
@@ -21,7 +22,7 @@ module.exports = function (ctx) {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://v1.quasar.dev/quasar-cli/boot-files
-    boot: ["i18n", "axios"],
+    boot: ["i18n", "axios", "addressbar-color", "app-init"],
 
     // https://v1.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
     css: ["app.scss"],
@@ -45,12 +46,16 @@ module.exports = function (ctx) {
     build: {
       vueRouterMode: "history", // available values: 'hash', 'history'
       env: {
-
-        API_BASE_URL: ctx.dev ? "http://localhost:8000" : "financial-assistant-api.com",
-        CLIENT_SERVER: ctx.dev ? "http://localhost:7000" : "financial-assistant.com",
-        REDIRECT_URL: ctx.dev ? "http://localhost:7000/auth/invite-member" : "financial-assistant.com/auth/invite-member",
-        FILE_UPLOAD_URL: ctx.dev ? "http://localhost:9000": "file-storage-web-api"
-
+        API_BASE_URL: ctx.dev ? "http://127.0.0.1:8000" : "http://127.0.0.1:8000",
+        CLIENT_SERVER: ctx.dev ? "http://192.168.224.1:7000" : "http://192.168.224.1:7000",
+        REDIRECT_URL: ctx.dev ? "http://192.168.224.1:7000/auth/invite-member" : "financial-assistant.com/auth/invite-member",
+        FILE_API_URL: ctx.dev ? "http://127.0.0.1:9000/api/v1/protected": "file-storage-web-api",
+        APP_NAME : "FINANCIAL_ASSISTANT_APP",
+        FILE_CATEGORY : "IMAGES",
+        BASE_FOLDER : "LOGOS",
+        PROFILE_PICTURES:"PROFILE_PICTURES",
+        FILE_DOWNLOAD_PATH: "/downloadFile?directory=",
+        FILE_SEPARATOR_KEY: "?directory="
       },
       // env: envparser(),
       // transpile: false,
@@ -71,14 +76,16 @@ module.exports = function (ctx) {
 
       // https://v1.quasar.dev/quasar-cli/handling-webpack
       // "chain" is a webpack-chain object https://github.com/neutrinojs/webpack-chain
-      chainWebpack(chain) {
-        chain
-          .plugin("eslint-webpack-plugin")
-          .use(ESLintPlugin, [
-            { extensions: ["js", "vue"] },
-            { loader: "@kazupon/vue-i18n-loader" },
-            { loader: "yaml-loader" },
-          ]);
+      // chainWebpack(chain) {
+      //   chain
+      //     .plugin("eslint-webpack-plugin")
+      //     .use(ESLintPlugin, [
+      //       { extensions: ["js", "vue"] },
+      //       { loader: "@kazupon/vue-i18n-loader" },
+      //       { loader: "yaml-loader" },
+      //     ]);
+      // },
+      extendWebpack(cfg) {
       },
     },
 
@@ -108,11 +115,14 @@ module.exports = function (ctx) {
       // directives: [],
 
       // Quasar plugins
-      plugins: ["Notify", "LocalStorage", "SessionStorage"],
+      plugins: ["Notify", "LocalStorage", "SessionStorage","Loading", "AddressbarColor"],
       config: {
         notify: {
           /* look at QUASARCONFOPTIONS from the API card (bottom of page) */
         },
+        loading:{
+
+        }
       },
     },
 
@@ -130,8 +140,8 @@ module.exports = function (ctx) {
       workboxPluginMode: "GenerateSW", // 'GenerateSW' or 'InjectManifest'
       workboxOptions: {}, // only for GenerateSW
       manifest: {
-        name: `Financial-Assistant`,
-        short_name: `Financial-Assistant`,
+        name: `Quick-Records`,
+        short_name: `Quick-Records`,
         description: `A web,mobile and desktop application for assisting the management of financial transactions in a group or organisation`,
         display: "standalone",
         orientation: "portrait",

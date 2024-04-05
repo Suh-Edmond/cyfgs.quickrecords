@@ -2,20 +2,38 @@
   <div class="q-pa-md">
     <div class="q-ml-sm q-mb-lg">
       <label class="text-muted info"
-        >All fields with <span class="text-red">*</span> are required</label
+        >{{ $t("app.warningField") }}<span class="text-red">*</span
+        >{{ $t("app.fields") }}</label
       >
     </div>
     <div class="q-mt-lg q-mx-sm">
       <q-form @submit="onAddPaymentCategory" class="q-gutter-md">
         <div>
           <label for="credential" class="form_field"
-            >Name <span class="text-red">*</span></label
+            >{{ $t("app.nameLabel") }} <span class="text-red">*</span></label
           >
-          <q-input v-model="payment_category.name" outlined dense type="text" />
+          <q-input v-model="payment_category.name" outlined dense type="text" :readonly="checkTreasurerRole()" />
         </div>
         <div>
           <label for="credential" class="form_field"
-            >Description <span class="text-red">*</span></label
+            >{{ $t("app.codeLabel") }} <span class="text-red">*</span></label
+          >
+          <q-input
+            v-model="payment_category.code"
+            bottom-slots
+            outlined
+            dense
+            type="text"
+            :readonly="checkTreasurerRole()"
+          >
+            <template v-slot:hint>
+              {{ $t("app.codeHintCategory") }}
+            </template>
+          </q-input>
+        </div>
+        <div>
+          <label for="credential" class="form_field"
+            >{{ $t("app.description") }} <span class="text-red">*</span></label
           >
           <q-input
             v-model="payment_category.description"
@@ -23,15 +41,16 @@
             dense
             type="textarea"
             placeholder="Please provide a description about the category"
+            :readonly="checkTreasurerRole()"
           />
         </div>
-        <div class="flex q-mt-lg justify-end">
+        <div   :class="$q.platform.is.desktop?'flex q-mt-lg justify-end':'q-pt-xs q-mb-lg'">
           <div>
             <ButtonVue
               class="form_button"
               :label="label_save"
               :loading="loading"
-              :color="color"
+              :color="'primary'"
               :disabled="validateForm"
               :no_caps="no_caps"
             >
@@ -44,33 +63,37 @@
 </template>
 <script>
 import ButtonVue from "src/components/Button.vue";
-import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import PaymentCategoryMixinVue from "src/mixins/PaymentCategoryMixin.vue";
+import { LocalStorage } from "quasar";
 
 export default {
-  mixins: [organisationMixinVue, PaymentCategoryMixinVue],
+  mixins: [PaymentCategoryMixinVue],
   created() {
-    let heading = "Payment Category Information";
+    let heading = this.$t("app.paymentCategoryHeading");
     this.$emit("set-heading", heading);
   },
   data() {
     return {
-      label_save: "Save",
+      label_save: this.$t("app.saveBtnLabel"),
       loading: false,
-      color: "primary",
       payment_category: {
         name: null,
         description: null,
         id: null,
+        code: null,
       },
       position: "right",
       dialog: false,
       no_caps: true,
+      organisation_id: this.$store.getters.getOrganisation.id,
     };
   },
   computed: {
     validateForm() {
-      return this.payment_category.name === null ? true : false;
+      return (
+        this.payment_category.name === null ||
+        this.payment_category.code === null || this.checkTreasurerRole()
+      );
     },
     getUpdatedCategory() {
       return this.setFormField(this.getUpdatedPaymentCategoryFromState());
@@ -82,21 +105,35 @@ export default {
     },
   },
   methods: {
+    checkTreasurerRole() {
+      const treasurer_role = LocalStorage.getItem("data").user_data.roles.find(
+        (role) => role.name === "TREASURER"
+      );
+       return treasurer_role != undefined;
+    },
+
+    setRequestUrl(){
+      return this.getUpdatedPaymentCategoryFromState() === null ? `/api/protected/organisations/${this.organisation_id}/payment-categories`:
+      `/api/protected/organisations/${this.organisation_id}/payment-categories/${this.getUpdatedPaymentCategoryFromState().id}`
+    },
     onAddPaymentCategory() {
-      let id = this.getOrganisationId;
       let payload = {
-        url: `/api/protected/organisations/${id}/payment-categories`,
+        url: this.setRequestUrl(),
         data: {
           name: this.payment_category.name,
           description: this.payment_category.description,
-          id: this.getUpdatedPaymentCategoryFromState() != null ? this.getUpdatedPaymentCategoryFromState().id: null,
+          id:
+            this.getUpdatedPaymentCategoryFromState() !== null
+              ? this.getUpdatedPaymentCategoryFromState().id
+              : null,
+          code: this.payment_category.code,
         },
-        msg: "Payment Category save Successfully",
+        msg: this.$t("app.paymentCategorySuccessMsg"),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: "An Error occurred! Please try again",
+        error_msg: this.$t("app.defaultErrorMsg"),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -106,22 +143,48 @@ export default {
         },
       };
       this.loading = true;
-      this.$store
+      if(this.getUpdatedPaymentCategoryFromState() === null) {
+        this.$store
         .dispatch("postRequest", payload)
         .then(() => {
-          this.fetchCategories(id, true);
+          this.fetchOrganisationCategories(
+            this.organisation_id,
+            1,
+            10,
+            "name",
+            ""
+          );
         })
         .finally(() => {
           this.loading = false;
           this.resetForm();
           this.$emit("close-right-drawer");
         });
+      }else {
+        this.$store
+        .dispatch("putRequest", payload)
+        .then(() => {
+          this.fetchOrganisationCategories(
+            this.organisation_id,
+            1,
+            10,
+            "name",
+            ""
+          );
+        })
+        .finally(() => {
+          this.loading = false;
+          this.resetForm();
+          this.$emit("close-right-drawer");
+        });
+      }
     },
 
     resetForm() {
       this.payment_category.description = null;
       this.payment_category.name = null;
-      this.payment_category.id = null
+      this.payment_category.id = null;
+      this.payment_category.code = null;
       return this.payment_category;
     },
 
@@ -134,6 +197,7 @@ export default {
         (this.payment_category.description =
           data == null ? null : data.description),
         (this.id = data == null ? null : data.id);
+      this.payment_category.code = data == null ? null : data.code;
 
       return this.payment_category;
     },
@@ -145,12 +209,11 @@ export default {
 </script>
 
 <style scoped lang="scss">
-
 .form_field {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 11px;
+  font-size: 12px;
   align-items: center;
   letter-spacing: 0.01em;
   color: $grey2;
@@ -158,6 +221,6 @@ export default {
 
 .info {
   color: $grey2;
+  font-size: small;
 }
-
 </style>

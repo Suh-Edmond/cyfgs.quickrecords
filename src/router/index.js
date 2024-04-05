@@ -48,7 +48,7 @@ export default function (
     }
 
     if (to.meta.middleware === "auth" && data !== null) {
-      data.roles.forEach((role) => {
+      data.user_data.roles.forEach((role) => {
         roles.push(role.name);
       });
       if (roles.includes(to.meta.role)) {
@@ -57,7 +57,7 @@ export default function (
         Notify.create({
           type: "info",
           position: Platform.is.mobile ? "bottom" : "top-right",
-          message: "Access denied to view this page",
+          message: "Access Denied to view this Page",
         });
       }
     }

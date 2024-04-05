@@ -1,119 +1,141 @@
 <template>
   <div class="q-pa-md">
     <div>
-      <div class="flex q-pb-md">
-        <label for="name" class="field"
-          ><span> <q-icon name="category" size="xs" class="q-pr-sm" /> </span
-          >Name:
-          <span class="field_value field_name">{{
-            getCurrentIncomeActivity.name
-          }}</span></label
-        >
+      <div class="flex justify-between q-pb-md">
+        <div>
+          <label for="name" class="label"
+            ><span> <q-icon name="category" size="xs" class="q-pr-sm" /> </span
+            >{{ $t("app.nameLabel") }}:
+          </label>
+        </div>
+        <div class="detail-value wrap">
+          <label class="value">
+            {{ getCurrentIncomeActivity.name }}
+          </label>
+        </div>
       </div>
-      <div class="flex q-pb-md">
-        <label for="name" class="field"
-          ><span>
-            <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
-          >Amount:
-          <span class="field_value field_amount"
-            >{{
-              Number(getCurrentIncomeActivity.amount).toLocaleString()
-            }}
-            XAF</span
-          ></label
-        >
+      <div class="flex justify-between q-pb-md">
+        <div>
+          <label for="name" class="label"
+            ><span>
+              <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
+            >{{ $t("app.amount") }}:
+          </label>
+        </div>
+        <div class="detail-value wrap">
+          <label class="value">
+            {{ Number(getCurrentIncomeActivity.amount).toLocaleString() }}
+            XAF
+          </label>
+        </div>
       </div>
-      <div class="flex q-pb-md">
-        <label for="name" class="field"
-          ><span> <q-icon name="category" size="xs" class="q-pr-sm" /> </span
-          >Payment Activity:
-          <span
-            class="field_value field_item"
-            v-if="getCurrentIncomeActivity.payment_item != null"
-            >{{ getCurrentIncomeActivity.payment_item.name }}</span
-          >
-          <span
-            class="field_value field_item"
-            v-if="getCurrentIncomeActivity.payment_item == null"
-            >None</span
-          >
-        </label>
+      <div class="flex justify-between q-pb-md">
+        <div>
+          <label for="name" class="label"
+            ><span> <q-icon name="category" size="xs" class="q-pr-sm" /> </span
+            >{{ $t("app.paymentItem") }}:
+          </label>
+        </div>
+        <div class="detail-value wrap">
+          <label class="value">
+            {{ getCurrentIncomeActivity.payment_item.name }}
+          </label>
+        </div>
       </div>
-      <div class="flex q-pb-md">
-        <label for="name" class="field"
-          ><span> <q-icon name="schedule" size="xs" class="q-pr-sm" /> </span
-          >Date:
-          <span class="field_value field_date">{{
-            getFormatIncomeDate
-          }}</span></label
-        >
-      </div>
-      <div class="flex q-pb-md">
-        <label for="name" class="field"
-          ><span> <q-icon name="location_on" size="xs" class="q-pr-sm" /> </span
-          >Venue:
-          <span class="field_value field_venue">{{
-            getCurrentIncomeActivity.venue
-          }}</span></label
-        >
-      </div>
-      <div class="flex q-pb-md">
-        <label
-          for="status"
-          class="field"
-          v-show="getCurrentIncomeActivity.approve == 'DECLINED'"
-          ><span>
-            <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span
-          >Status:
-          <span class="item_statue unapproved_color">{{
-            getCurrentIncomeActivity.approve
-          }}</span></label
-        >
-        <label
-          for="status"
-          class="field"
-          v-show="getCurrentIncomeActivity.approve == 'APPROVED'"
-          ><span>
-            <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span
-          >Status:
-          <span class="item_statue approved_color">
-            {{ getCurrentIncomeActivity.approve }}</span
-          ></label
-        >
-        <label
-          for="status"
-          class="field"
-          v-show="getCurrentIncomeActivity.approve == 'PENDING'"
-          ><span>
-            <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span
-          >Status:
-          <span class="item_statue pending_color">
-            {{ getCurrentIncomeActivity.approve }}</span
-          ></label
-        >
-      </div>
+      <div class="flex justify-between q-pb-md">
+        <div>
+          <label for="name" class="label"
+            ><span> <q-icon name="schedule" size="xs" class="q-pr-sm" /> </span
+            >{{ $t("app.date") }}:
+          </label>
+        </div>
 
-      <div class="q-mb-md">
-        <label for="amount" class="field"
+        <div class="detail-value wrap">
+          <label class="value">
+            {{ getFormatIncomeDate }}
+          </label>
+        </div>
+      </div>
+      <div class="flex justify-between q-pb-md">
+        <div>
+          <label for="name" class="label"
+            ><span>
+              <q-icon name="location_on" size="xs" class="q-pr-sm" /> </span
+            >{{ $t("app.venue") }}:
+          </label>
+        </div>
+        <div class="detail-value wrap">
+          <label class="value">
+            {{ getCurrentIncomeActivity.venue }}
+          </label>
+        </div>
+      </div>
+      <div class="flex justify-between q-pb-md">
+        <div>
+          <label for="status" class="label">
+            <span>
+              <q-icon name="check_circle" size="xs" class="q-pr-sm" />
+            </span>
+            {{ $t("app.status") }}:
+          </label>
+        </div>
+
+        <div class="detail-value wrap">
+          <label
+            class="value text-warning"
+            v-show="getCurrentIncomeActivity.approve == 'DECLINED'"
+          >
+            {{ getCurrentIncomeActivity.approve }}
+          </label>
+          <label
+            class="value text-secondary"
+            v-show="getCurrentIncomeActivity.approve == 'APPROVED'"
+          >
+            {{ getCurrentIncomeActivity.approve }}
+          </label>
+          <label
+            class="value text-info"
+            v-show="getCurrentIncomeActivity.approve == 'PENDING'"
+          >
+            {{ getCurrentIncomeActivity.approve }}
+          </label>
+        </div>
+      </div>
+      <div class="flex justify-between q-mb-md">
+        <div>
+          <label for="amount" class="label"
+            ><span> <q-icon name="schedule" size="xs" class="q-pr-sm" /> </span
+            >{{ $t("app.createdDate") }}:
+          </label>
+        </div>
+
+        <div class="detail-value wrap">
+          <label class="value">
+            {{ getFormatIncomeCreatedDate }}
+          </label>
+        </div>
+      </div>
+      <div class="flex justify-between q-mb-md">
+        <label for="amount" class="label"
           ><span> <q-icon name="person" size="xs" class="q-pr-sm" /> </span
-          >Created By:
-          <span class="field_value detail_created_by">
-            {{ getCurrentIncomeActivity.updated_by }}
-          </span></label
+          >{{ $t("app.createdBy") }}:
+          </label
         >
+        <div class="detail-value wrap">
+          <label class="value">
+            {{ getCurrentIncomeActivity.updated_by }}
+          </label>
+        </div>
       </div>
-      <div class="flex q-pb-md">
-        <label for="name" class="field"
+      <div class="row q-pb-md">
+        <label for="name" class="label"
           ><span> <q-icon name="description" size="xs" class="q-pr-sm" /> </span
-          >Comment: <span class="field_value description" v-if="getCurrentIncomeActivity.description == null">
-        None
-      </span>
+          >{{ $t("app.comment") }}:
         </label>
       </div>
-      <p class="field_value" v-if="getCurrentIncomeActivity.description != null">
-        {{ getCurrentIncomeActivity.description }}
-      </p>
 
+      <div class="value_comment" v-show="getCurrentIncomeActivity.comment !== null">{{ getCurrentIncomeActivity.comment }}</div>
+      <div class="value_comment" v-show="getCurrentIncomeActivity.comment === null">{{ $t('app.none') }}</div>
     </div>
   </div>
 </template>
@@ -123,7 +145,7 @@ import moment from "moment";
 
 export default {
   created() {
-    let heading = "Income Activity Information";
+    let heading = this.$t("app.addIncomeActivityHeading");
     this.$emit("set-heading", heading);
   },
   data() {
@@ -156,35 +178,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.unapproved_color {
-  color: #f2994a;
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 15px;
-  line-height: 27px;
-  letter-spacing: 0.005em;
-}
-
-.approved_color {
-  color: #27ae60;
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 15px;
-  line-height: 27px;
-  letter-spacing: 0.005em;
-}
-.pending_color {
-  color: $info;
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 15px;
-  line-height: 27px;
-  letter-spacing: 0.005em;
-}
-.field {
+.label {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 400;
@@ -193,45 +187,23 @@ export default {
   letter-spacing: 0.01em;
   color: $grey5;
 }
-
-.field_venue {
-  padding-left: 6rem;
+.value {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.01em;
+  color: $grey8;}
+.detail-value {
+  max-width: 250px;
 }
-
-.item_statue {
-  padding-left: 6rem;
-}
-
-.field_value {
+.value_comment {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 15px;
-  line-height: 27px;
-  letter-spacing: 0.005em;
+  font-size: 14px;
+  letter-spacing: 0.01em;
   color: $dark;
-}
-.field_name {
-  padding-left: 6rem;
-}
-
-.field_amount {
-  padding-left: 5.2rem;
-}
-
-.field_item {
-  padding-left: 1.7rem;
-}
-
-.field_date {
-  padding-left: 6.5rem;
-}
-
-.detail_created_by {
-  padding-left: 4.2rem;
-}
-
-.description {
-  padding-left: 4.6rem;
+  margin-left: 1.8rem;
 }
 </style>

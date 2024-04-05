@@ -1,131 +1,174 @@
 <template>
   <q-page>
-    <!-- spinners -->
-    <div class="flex justify-center">
-      <q-spinner-ios
-        color="primary"
-        size="2em"
-        class="q-mb-lg"
-        v-if="getLoadingState"
-      />
-    </div>
-
-    <NotFound
-      :message="getNotFoundMsg"
-      v-if="getExpenditureItemDetails.length == 0 && !getLoadingState"
-    ></NotFound>
-
-    <div v-if="getExpenditureItemDetails.length > 0 && !getLoadingState">
+    <div>
       <!-- header for filter categories -->
-      <div
-        class="row q-ml-xs q-pt-xs"
-        :class="$q.screen.lg ? 'q-pa-sm' : ''"
-        :style="
-          $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-        "
+      <FilterComponentVue
+        :show_member_filters="false"
+        :show_categories="false"
+        :show_filter_expenditure_items_details="true"
+        :loading_download="loading_download"
+        :disable_download_btn="validateDownload"
+        @filter-expenditure-item-details="filterItems"
+        @download-expenditure-item-details="downloadExpenditureItemDetails"
       >
-        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
-          <q-select
-            v-model="status"
-            outlined
-            dense
-            :options="statuses"
-            label="Select Status"
-            @input="filterItems"
-          />
-        </div>
-        <q-space />
-        <div class="button q-pb-xs">
-          <q-btn
-            :label="label_download"
-            :loading="loading"
-            :color="color_print"
-            :disabled="false"
-            no-caps
-            icon-right="print"
-            @click="downloadExpenditureItemDetails"
-          ></q-btn>
-        </div>
-      </div>
+      </FilterComponentVue>
       <!-- table for categories -->
-      <div>
-        <div class="row q-pt-sm">
-          <div class="col-md-12 col-xs-12 col-sm-12" v-show="!start_filter">
-            <CategoryTable
-              :columns="columns"
-              :data="getExpenditureItemDetails"
-              :label="label"
-              :message="message"
-              :title="getExpenditureItemName"
-              :show_payment_category="false"
-              :show_payment_item="false"
-              :show_expenditure_category="false"
-              :show_expenditure_item="false"
-              :show_expenditure_item_detail="true"
-              @edit-expenditure-item-detail="editExpenditureItemDetail"
-              @view-expenditure-item-detail="viewExpenditureItemDetail"
-              :expenditure_item_amount="getExpenditureItemAmount"
-              :total_amount_given="getTotalAmountGiven"
-              :total_amount_spent="getTotalAmountSpent"
-              :balance="getBalance"
-              :total_balance="getTotalBalance"
-            >
-            </CategoryTable>
-          </div>
+      <CategoryTable
+        :class="$q.platform.is.desktop ? 'q-pt-sm q-px-sm' : ' q-px-sm q-pt-xl'"
+        :columns="columns"
+        :data="getExpenditureItemDetails"
+        :label="label"
+        :message="message"
+        :title="getExpenditureItemName"
+        :show_payment_category="false"
+        :show_payment_item="false"
+        :show_expenditure_category="false"
+        :show_expenditure_item="false"
+        :show_expenditure_item_detail="true"
+        :expenditure_item_amount="total_item_amount"
+        :total_amount_given="total_amount_given"
+        :total_amount_spent="total_amount_spent"
+        :balance="total_balance"
+        :total_balance="total_balance"
+        :pagination="getPagination"
+        :table_loading="getLoadingState"
+        @edit-expenditure-item-detail="editExpenditureItemDetail"
+        @view-expenditure-item-detail="viewExpenditureItemDetail"
+        @delete-row="onDeleteRow"
+        @onRequest="onRequest"
+      >
+      </CategoryTable>
 
-          <!-- table for filtered results -->
-          <div class="col-md-12 col-xs-12 col-sm-12" v-show="start_filter">
-            <CategoryTable
-              :columns="columns"
-              :data="filtered_items"
-              :label="label"
-              :message="message"
-              :title="getExpenditureItemName"
-              :show_payment_category="false"
-              :show_payment_item="false"
-              :show_expenditure_category="false"
-              :show_expenditure_item="false"
-              :show_expenditure_item_detail="true"
-              @edit-expenditure-item-detail="editExpenditureItemDetail"
-              @view-expenditure-item-detail="viewExpenditureItemDetail"
-              :expenditure_item_amount="getExpenditureItemAmount"
-              :total_amount_given="getTotalAmountGiven"
-              :total_amount_spent="getTotalAmountSpent"
-              :balance="getBalance"
-              :total_balance="getTotalBalance"
-            >
-            </CategoryTable>
-          </div>
-        </div>
+      <div class="q-mt-xs q-mx-lg" v-if="getExpenditureItemDetails.length > 0">
+        <q-card>
+          <q-card-section>
+            <div class="row q-ml-md">
+              <label class="q-py-lg text-bold summary text-capitalize">{{
+                $t("app.expenditureSummaryLabel")
+              }}</label>
+            </div>
+            <div class="row q-ml-md">
+              <div class="col-4 col-md-4 col-lg-4 col-xs-12 col-sm-4">
+                <div class="q-mb-xs">
+                  <label class="text-bold q-py-md detail_name"
+                    >{{ $t("app.expenditureItemSummary") }}:</label
+                  >
+                </div>
+                <div class="q-mb-xs">
+                  <label class="text-bold q-py-md detail_name"
+                    >{{ $t("app.estimatedAmount") }}:</label
+                  >
+                </div>
+                <div class="q-mb-xs">
+                  <label class="text-bold q-py-md detail_name"
+                    >{{ $t("app.totalAmountGiven") }}:</label
+                  >
+                </div>
+                <div class="q-mb-xs">
+                  <label class="text-bold q-py-md detail_name"
+                    >{{ $t("app.totalAmountSpent") }}:</label
+                  >
+                </div>
+                <div class="q-mb-xs">
+                  <label class="text-bold q-py-md detail_name"
+                    >{{ $t("app.totalBalance") }}:</label
+                  >
+                </div>
+                <div class="q-mb-xs">
+                  <label class="text-bold q-py-md detail_name"
+                    >{{ $t("app.netBalance") }}:<br />
+                    <small class="text-italic"
+                      >[ {{ $t("app.netBalance") }} =
+                      {{ $t("app.formular") }} ]</small
+                    >
+                    <br />
+                  </label>
+                </div>
+              </div>
+              <div class="col-4 col-md-4 col-lg-4 col-xs-12 col-sm-4">
+                <div class="q-mb-xs">
+                  <label class="text-bold q-py-md detail_value"
+                    >{{ getExpenditureItemName }}
+                  </label>
+                </div>
+                <div class="q-mb-xs">
+                  <label class="text-bold q-py-md detail_value"
+                    >{{ Number(total_item_amount).toLocaleString() }} XAF</label
+                  >
+                </div>
+                <div class="q-mb-xs">
+                  <label class="text-bold q-py-md detail_value"
+                    >{{
+                      Number(getTotalAmountGiven).toLocaleString()
+                    }}
+                    XAF</label
+                  >
+                </div>
+                <div class="q-mb-xs">
+                  <label class="text-bold q-py-md detail_value"
+                    >{{
+                      Number(getTotalAmountSpent).toLocaleString()
+                    }}
+                    XAF</label
+                  >
+                </div>
+                <div class="q-mb-xs">
+                  <label class="text-bold q-py-md detail_value"
+                    >{{ Number(getBalance).toLocaleString() }} XAF</label
+                  >
+                </div>
+                <div class="q-mb-xs">
+                  <label class="text-bold q-py-md detail_value"
+                    >{{ Number(getNetBalance).toLocaleString() }} XAF</label
+                  >
+                </div>
+              </div>
+            </div>
+            <div class="row q-mt-md q-mb-lg" v-if="total_balance < 0">
+              <q-icon
+                name="info"
+                color="warning"
+                size="sm"
+                class="q-pr-md"
+              ></q-icon>
+              <label class="text-orange text-subtitle2">
+                {{ $t("app.negativeExpenditureBalanceMsg") }}
+              </label>
+            </div>
+          </q-card-section>
+        </q-card>
       </div>
     </div>
   </q-page>
 </template>
 
 <script>
-import NotFound from "src/components/NotFound.vue";
 import CategoryTable from "src/components/CategoryTable.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
+import ExpenditureItemDetailMixinVue from "src/mixins/ExpenditureItemDetailMixin.vue";
+import FilterComponentVue from "src/components/FilterComponent.vue";
 
 export default {
-  mixins: [HelperMixinVue],
+  mixins: [HelperMixinVue, ExpenditureItemDetailMixinVue],
+  beforeMount() {
+    this.$store.commit("SET_PAGINATION", {
+      sortBy: "name",
+      descending: false,
+      page: 1,
+      rowsPerPage: 7,
+      rowsNumber: 0,
+    });
+  },
+
+  mounted() {
+    this.getExpenditureDetailsByItemId(1, 7, false);
+  },
+
   data() {
     return {
-      start_filter: false,
-      label_fetch: "Filter",
-      color: "primary",
-      no_caps: true,
-      loading: false,
-      label_download: "Print",
-      color_print: "positive",
+      selected: [],
+      loading_download: false,
       columns: [
-        {
-          name: "counter",
-          required: true,
-          label: "S/N",
-          align: "left",
-          field: "counter",
-        },
         {
           name: "name",
           required: true,
@@ -137,23 +180,30 @@ export default {
         },
         {
           name: "amount_given",
-          align: "center",
+          align: "left",
           label: "Amount Given (XAF)",
           field: "amount_given",
           sortable: true,
         },
         {
           name: "amount_spent",
-          align: "center",
+          align: "left",
           label: "Amount Spent (XAF)",
           field: "amount_spent",
           sortable: true,
         },
         {
           name: "balance",
-          align: "center",
+          align: "left",
           label: "Balance (XAF)",
           field: "balance",
+          sortable: true,
+        },
+        {
+          name: "approve",
+          align: "left",
+          label: "Status",
+          field: "approve",
           sortable: true,
         },
         {
@@ -164,17 +214,19 @@ export default {
           sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
         },
       ],
-      label: "Delete",
-      message: "Are you sure you want to delete this Expenditure Item Detail?",
-      statuses: ["PENDING", "APPROVED", "DECLINED", "ALL"],
-      status: null,
-      filtered_items: [],
+      label: this.$t("app.delete"),
+      message: this.$t("app.expenditureItemDetailDeleteMsg"),
+      status: "",
+      total_item_amount: 0,
+      total_amount_given: 0,
+      total_amount_spent: 0,
+      total_balance: 0,
     };
   },
   computed: {
     getExpenditureItemDetails() {
       let data = [];
-      if (this.$store.getters.getExpenditureItemDetails != null) {
+      if (this.$store.getters.getExpenditureItemDetails !== null) {
         this.$store.getters.getExpenditureItemDetails.data.forEach((ele) => {
           data.push({
             counter:
@@ -192,14 +244,6 @@ export default {
             created_at: ele.created_at,
             updated_at: ele.updated_at,
             updated_by: ele.updated_by,
-            total_item_amount:
-              this.$store.getters.getExpenditureItemDetails.total_item_amount,
-            total_amount_given:
-              this.$store.getters.getExpenditureItemDetails.total_amount_given,
-            total_amount_spent:
-              this.$store.getters.getExpenditureItemDetails.total_amount_spent,
-            total_balance:
-              this.$store.getters.getExpenditureItemDetails.total_balance,
           });
         });
       }
@@ -207,19 +251,33 @@ export default {
     },
 
     getExpenditureItemName() {
-      return this.$store.getters.getCurrentExpenditureItem != null ? this.$store.getters.getCurrentExpenditureItem.name : "";
+      return this.$store.getters.getCurrentExpenditureItem != null
+        ? this.$store.getters.getCurrentExpenditureItem.name
+        : "";
     },
 
-    getNotFoundMsg() {
-      return `Ooops!! No Detail(s) has been recorded under for [${this.getExpenditureItemName}]. Click the add button to add details.`;
+    validateDownload() {
+      return this.getExpenditureItemDetails.length == 0;
+    },
+
+    getPagination() {
+      let paginate_object = {
+        sortBy: this.$store.getters.getPagination.sortBy,
+        descending: this.$store.getters.getPagination.descending,
+        page: this.$store.getters.getPagination.page,
+        rowsPerPage: this.$store.getters.getPagination.rowsPerPage,
+        rowsNumber: this.$store.getters.getPagination.rowsNumber,
+      };
+
+      return paginate_object;
     },
 
     getLoadingState() {
       return this.$store.getters.getFetchingState;
     },
 
-    getExpenditureItemAmount() {
-      return this.$store.getters.getExpenditureItemDetails.total_item_amount;
+    getBalance() {
+      return this.getTotalAmountGiven - this.getTotalAmountSpent;
     },
 
     getTotalAmountGiven() {
@@ -230,59 +288,104 @@ export default {
       return this.$store.getters.getExpenditureItemDetails.total_amount_spent;
     },
 
-    getBalance(){
-      return this.getTotalAmountGiven - this.getTotalAmountSpent
-    },
-    getTotalBalance() {
+    getNetBalance() {
       return this.$store.getters.getExpenditureItemDetails.total_balance;
     },
   },
+
   methods: {
+    getExpenditureDetailsByItemId(page, per_page) {
+      let expenditure_item = this.$store.getters.getCurrentExpenditureItem;
+      let payload = {
+        url: `/api/protected/expenditure-items/${expenditure_item.id}/details?page=${page}&per_page=${per_page}&status=${this.status}`,
+        msg: "none",
+        color: "default",
+        status: "none",
+        error_msg: this.$t("app.defaultErrorMsg"),
+        has_commit: true,
+        show_feedback: false,
+        show_spinner: false,
+        commit: "SET_EXPENDITURE_ITEM_DETAIL",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.$store.commit("SET_IS_FETCHING", true);
+      this.$store
+        .dispatch("getRequest", payload)
+        .then((response) => {
+          if (response.success) {
+            this.$store.commit("SET_PAGINATION", {
+              sortBy: "name",
+              descending: false,
+              page: response.data.current_page,
+              rowsPerPage: response.data.per_page,
+              rowsNumber: response.data.total,
+            });
+            this.total_amount_given = response.data.total_amount_given;
+            this.total_amount_spent = response.data.total_amount_spent;
+            this.total_item_amount = response.data.total_item_amount;
+            this.total_balance = response.data.total_balance;
+          }
+        })
+        .finally(() => {
+          this.$store.commit("SET_IS_FETCHING", false);
+        });
+    },
+
+    onRequest(props) {
+      const { page, rowsPerPage } = props.pagination;
+      const fetch_count =
+        rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
+      this.getExpenditureDetailsByItemId(page, fetch_count, false);
+    },
+
     editExpenditureItemDetail(data) {
       this.$store.dispatch("setUpdatedExpenditureItemDetail", data.data);
-
-      this.$store.dispatch("setEditState", true);
-
       this.$emit("edit-expenditure-item-detail", data);
     },
 
     viewExpenditureItemDetail(data) {
       this.$store.dispatch("setUpdatedExpenditureItemDetail", data.data);
-
-      this.$store.dispatch("setEditState", true);
-
       this.$emit("view-expenditure-item-detail", data);
     },
 
-    downloadExpenditureItemDetails() {
+    downloadExpenditureItemDetails(data) {
       let expenditure_item_id =
         this.$store.getters.getCurrentExpenditureItem.id;
-      let url = `/api/protected/expenditure-item-details/download?expenditure_item_id=${expenditure_item_id}&status=${this.status}`;
+      let expenditure_item_name =
+        this.$store.getters.getCurrentExpenditureItem.name;
+
+      let url = `/api/protected/expenditure-item-details/download?expenditure_item_id=${expenditure_item_id}&status=${data.payment_status}&expenditure_item_name=${expenditure_item_name}`;
       let file_name = "Expenditure_Item_Details.pdf";
-      this.loading = this.downloadPdf(url, file_name);
+      this.loading_download = this.downloadPdf(url, file_name);
     },
 
-    filterItems() {
+    filterItems(data) {
       let expenditure_category =
         this.$store.getters.getCurrentExpenditureCategory;
       let expenditure_item = this.$store.getters.getCurrentExpenditureItem;
-      this.filtered_items = [];
-
+      this.status = data.payment_status;
       this.$router.push({
         path: `/dashboard/expenditure-categories/${expenditure_category.id}/items/${expenditure_item.id}/details`,
-        query: { status: this.status },
+        query: { status: data.payment_status, t: new Date().getTime() },
       });
 
+      this.getExpenditureDetailsByItemId(1, 7);
+    },
+
+    onDeleteRow(data) {
       let payload = {
-        url: this.setFilterItemActionUrl(this.status, expenditure_item.id),
-        msg: "none",
+        url: `/api/protected/expenditure-item-details/${data.id}`,
+        msg: this.$t("app.expenditureItemDetailDeletedSuccessMsg"),
         color: "default",
-        status: "none",
-        error_msg:
-          "An Error occurred! Could not fetch expenditure item details",
+        to_on_ok: "none",
+        to_on_fail: "none",
+        show_feedback: true,
+        error_msg: this.$t("app.defaultErrorMsg"),
         has_commit: false,
-        show_feedback: false,
-        show_spinner: true,
         commit: "none",
         to_be_store_data: {
           required: false,
@@ -290,51 +393,43 @@ export default {
           data: [],
         },
       };
-      this.$store.dispatch("getRequest", payload).then((res) => {
-        this.start_filter = true;
-        if (res != undefined) {
-          res.data.data.forEach((ele) => {
-            this.filtered_items.push({
-              counter: res.data.data.indexOf(ele) + 1,
-              name: ele.name,
-              amount_given: ele.amount_given,
-              amount_spent: ele.amount_spent,
-              balance: ele.balance,
-              type: "EXPENDITURE_DETAILS",
-              id: ele.id,
-              expenditure_item_id: ele.expenditure_item_id,
-              comment: ele.comment,
-              approve: ele.approve,
-              created_at: ele.created_at,
-              updated_at: ele.updated_at,
-              updated_by: ele.updated_by,
-              total_item_amount: res.data.data.total_item_amount,
-              total_amount_given: res.data.data.total_amount_given,
-              total_amount_spent: res.data.data.total_amount_spent,
-              total_balance: res.data.data.total_balance,
-            });
-          });
-        }
+      this.$store.dispatch("deleteRequest", payload).then(() => {
+        this.getExpenditureDetailsByItemId(1, 7, false);
       });
-
-      return this.filtered_items;
-    },
-
-    setFilterItemActionUrl(status, expenditure_item_id) {
-      let url = "";
-      if (status != "") {
-        url = `/api/protected/expenditure-details?expenditure_item_id=${expenditure_item_id}&status=${this.status}`;
-      } else {
-        url = `/api/protected/expenditure-items/${expenditure_item_id}/details`;
-      }
-      return url;
     },
   },
   components: {
-    NotFound,
     CategoryTable,
+    FilterComponentVue,
   },
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.detail_name {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  color: $grey5;
+}
+.detail_value {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  color: $grey8;
+}
+.summary {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  color: $grey8;
+  text-decoration: underline;
+}
+
+.text-subtitle2 {
+  font-size: small;
+}
+</style>

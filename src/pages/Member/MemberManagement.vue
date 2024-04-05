@@ -1,141 +1,73 @@
 <template>
-  <q-page>
-    <!-- spinners -->
-    <div class="flex justify-center">
-      <q-spinner-ios
-        color="primary"
-        size="2em"
-        class="q-mb-lg"
-        v-if="getLoadingState"
-      />
-    </div>
-
-    <div>
-      <!-- header for filter members -->
-      <div
-        class="row q-ml-xs"
-        :class="$q.screen.lg ? 'q-pa-sm' : ''"
-        :style="
-          $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-        "
-      >
-        <div
-          class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
-          :class="$q.screen.lg ? 'q-pr-md' : ''"
-        >
-          <q-select
-            v-model="has_register"
-            outlined
-            dense
-            :options="registrationStatuses"
-            label="Select status"
-          />
-        </div>
-        <div
-          class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
-          :class="$q.screen.lg ? 'q-pr-md' : ''"
-        >
-          <q-select
-            v-model="year"
-            outlined
-            dense
-            :options="getSessions"
-            label="Select year"
-          />
-        </div>
-        <div
-          class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
-          :class="$q.screen.lg ? 'q-pr-md' : ''"
-        >
-          <q-select
-            v-model="gender"
-            outlined
-            dense
-            :options="genders"
-            label="Select gender"
-          />
-        </div>
-        <div class="flex col-md-3 col-lg-3 col-xs-12 col-sm-12">
-          <div :class="$q.screen.lg ? 'q-pr-md' : ''">
-            <q-btn
-              label="Filter"
-              :loading="loading_filter"
-              color="primary"
-              :disabled="validateFilter"
-              @click="filterMembers"
-              no-caps
-              icon-right="filter_list"
-            >
-            </q-btn>
-          </div>
-          <q-space />
-          <div>
-            <q-btn
-              label="Print"
-              :loading="loading"
-              color="positive"
-              :disabled="false"
-              no-caps
-              icon-right="print"
-              @click="downloadMembers"
-            ></q-btn>
-          </div>
-        </div>
-      </div>
-      <!-- table for members -->
-      <div class="row q-pt-sm">
-        <div class="col-md-12 col-xs-12 col-sm-12">
-          <TableVue
-            :columns="columns"
-            :data="getMembers"
-            :label="label"
-            :message="message"
-            :show_savings="false"
-            :show_income_activity="false"
-            :show_members="true"
-            :show_contribution="false"
-            :total_members="computeTotalMembership"
-            @fetch-members="onFetchMembers"
-            @register-member="registerMember"
-          >
-          </TableVue>
-        </div>
-      </div>
-    </div>
-  </q-page>
+  <div>
+    <!-- header for filter members -->
+    <FilterComponentVue
+      :show_member_filters="true"
+      :loading_download="loading_download"
+      :disable_download_btn="validateDownloadBtn"
+      @filter-members="filterMembers"
+      @download-members="downloadMembers"
+    >
+    </FilterComponentVue>
+    <TableVue
+      :class="$q.platform.is.desktop?'q-pt-sm q-px-sm':' q-px-sm q-pt-lg'"
+      :columns="columns"
+      :data="getMembers"
+      :label="label"
+      :message="message"
+      :show_savings="false"
+      :show_income_activity="false"
+      :show_members="true"
+      :show_contribution="false"
+      :pagination="getPagination"
+      :total_members="computeTotalMembership"
+      :table_loading="getLoadingState"
+      @fetch-members="onFetchMembers"
+      @register-member="registerMember"
+      @delete-row="deleteRow"
+      @onRequest="onRequest"
+    >
+    </TableVue>
+  </div>
 </template>
 <script>
 import TableVue from "src/components/Table.vue";
 import memberMixin from "src/mixins/memberMixin.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
+import FilterComponentVue from "src/components/FilterComponent.vue";
 
 export default {
   mixins: [memberMixin, organisationMixinVue, HelperMixinVue],
 
   mounted() {
-    let id = this.getOrganisationId;
-    this.getOrganisationMembers(id, true);
+    this.$store.commit("SET_PAGINATION", {
+      sortBy: "name",
+      descending: false,
+      page: 1,
+      rowsPerPage: 10,
+      rowsNumber: 0,
+    });
+    this.getPaginatedOrganisationMembers(
+      this.organisation_id,
+      1,
+      10,
+      "name",
+      "",
+      this.has_register,
+      this.gender
+    );
+    this.getRegistrationAmount();
   },
   data() {
     return {
       year: "",
-      has_register: null,
-      loading: false,
-      start_filter: false,
-      genders: ["MALE", "FEMALE", "ALL", "OTHER"],
-      registrationStatuses: ["REGISTERED", "NOT_REGISTERED"],
+      has_register: "",
+      filter: "",
       gender: "",
-      message: "Are you sure you want to delete this Member?",
-      label: "Delete",
+      message: this.$t("app.deleteMemberWarningMsg"),
+      label: this.$t("app.delete"),
       columns: [
-        {
-          name: "counter",
-          required: true,
-          label: "S/N",
-          align: "left",
-          field: "counter",
-        },
         {
           name: "name",
           required: true,
@@ -174,103 +106,238 @@ export default {
           sortable: true,
         },
         {
+          name: "status",
+          align: "left",
+          label: "Status",
+          field: "status",
+          sortable: true,
+        },
+        {
           name: "action",
           label: "Action",
           field: "action",
           sortable: true,
-          sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
+          align: "left",
         },
       ],
-      loading_filter: false,
+      organisation_id: this.$store.getters.getOrganisation.id,
+      loading_download: false,
     };
   },
   computed: {
-    validateFilter() {
-      return this.has_register == null && this.year == "" && this.gender == ""
-        ? true
-        : false;
-    },
     getMembers() {
       let data = [];
-      this.$store.getters.getMembers.forEach((member) => {
-        data.push({
-          counter: this.$store.getters.getMembers.indexOf(member) + 1,
-          name: member.name,
-          telephone: member.telephone,
-          gender: member.gender,
-          address: member.address,
-          occupation: member.occupation,
-          id: member.id,
-          email: member.email,
-          organisation_id: member.organisation_id,
-          has_register: member.has_register,
-          has_paid: member.has_paid,
-          type: "MEMBERS",
-          approve: member.approve,
-          year: member.year,
-          roles: member.roles,
-          created_at: member.created_at,
-          updated_at: member.updated_at,
-          picture: member.picture,
+      if (
+        this.$store.getters.getMembers !== null &&
+        this.$store.getters.getMembers.data !== undefined
+      ) {
+        this.$store.getters.getMembers.data.forEach((member) => {
+          data.push({
+            counter: this.$store.getters.getMembers.data.indexOf(member) + 1,
+            name: member.name,
+            telephone: member.telephone,
+            gender: member.gender,
+            address: member.address,
+            occupation: member.occupation,
+            id: member.id,
+            email: member.email,
+            organisation_id: member.organisation_id,
+            has_register: member.has_register,
+            has_paid: member.has_paid,
+            type: "MEMBERS",
+            approve: member.approve,
+            year: member.year,
+            roles: member.roles,
+            created_at: member.created_at,
+            updated_at: member.updated_at,
+            picture: member.picture,
+            session_id: member.session_id,
+            status: member.status,
+          });
         });
-      });
+      }
       return data;
     },
 
     computeTotalMembership() {
-      return this.getMembers.length;
+      return this.$store.getters.getMembers !== null
+        ? this.$store.getters.getMembers.total
+        : 0;
     },
 
     getLoadingState() {
       return this.$store.getters.getFetchingState;
     },
 
-    getSessions() {
-      let data = [];
-      let current_session = this.$store.getters.getCurrentYear;
-      this.$store.getters.getSessions.forEach((ele) => {
-        if (ele.year == current_session.year && ele.id == current_session.id) {
-          data.push({
-            value: ele.id,
-            label: ele.year + " Current Year",
-          });
-        } else {
-          data.push({
-            value: ele.id,
-            label: ele.year,
-          });
-        }
-      });
+    getTotalPages() {
+      return this.$store.getters.getMembers.last_page;
+    },
 
-      return data;
+    validateDownloadBtn() {
+      return this.getMembers < 0;
+    },
+
+    getPagination() {
+      let paginate_object = {
+        sortBy: "name",
+        descending:
+          this.$store.getters.getPagination != null
+            ? this.$store.getters.getPagination.descending
+            : true,
+        page:
+          this.$store.getters.getPagination !== null
+            ? this.$store.getters.getPagination.page
+            : 1,
+        rowsPerPage:
+          this.$store.getters.getPagination !== null
+            ? this.$store.getters.getPagination.rowsPerPage
+            : 10,
+        rowsNumber:
+          this.$store.getters.getPagination !== null
+            ? this.$store.getters.getPagination.rowsNumber
+            : 1,
+      };
+
+      return paginate_object;
     },
   },
 
   methods: {
+    onRequest(props) {
+      const { page, rowsPerPage, sortBy } = props.pagination;
+      const fetch_count =
+        rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
+      const filter = props.filter;
+      this.getPaginatedOrganisationMembers(
+        this.organisation_id,
+        page,
+        fetch_count,
+        sortBy,
+        filter,
+        this.gender,
+        this.has_register
+      );
+    },
+
+    getPaginatedOrganisationMembers(
+      id,
+      page,
+      rowsPerPage,
+      sort_by,
+      filter,
+      has_register,
+      gender
+    ) {
+      let year_value =
+        this.year !== null && this.year !== "" ? this.year.value : "";
+      this.filterOrganisationMembers(
+        id,
+        false,
+        page,
+        rowsPerPage,
+        sort_by,
+        year_value,
+        filter,
+        has_register,
+        gender
+      );
+    },
+
     registerMember(data) {
-      this.$store.dispatch("setMemberToRegister", data.data);
       this.$emit("register-member", data);
     },
 
-    filterMembers() {
+    filterMembers(data) {
+      this.setFilterVariables(data);
       this.$router.push({
         path: "/dashboard/members",
         query: {
-          has_register: this.has_register,
-          year: this.year,
-          gender: this.gender,
+          has_register: data.has_register,
+          year: data.year.label,
+          gender: data.gender,
+          t: new Date().getTime(),
         },
       });
+      this.getPaginatedOrganisationMembers(
+        this.organisation_id,
+        1,
+        10,
+        "name",
+        "",
+        this.has_register,
+        this.gender
+      );
+    },
+
+    downloadMembers(data) {
+      this.setFilterVariables(data);
+      let year_value =
+        this.year !== null && this.year !== "" ? this.year.value : "";
+      let url = `/api/protected/organisations/download-users?organisation_id=${this.organisation_id}&has_register=${this.has_register}&gender=${this.gender}&year=${year_value}?page=&per_page=`;
+      let file_name = "Organisation_Members.pdf";
+      this.loading_download = this.downloadPdf(url, file_name);
+    },
+
+    onFetchMembers() {
+      this.getPaginatedOrganisationMembers(
+        this.organisation_id,
+        1,
+        10,
+        "name",
+        false,
+        "",
+        this.has_register,
+        this.gender
+      );
+    },
+
+    deleteRow(data) {
+      let payload = {
+        url: `/api/protected/users/${data.id}`,
+        msg: this.$t("app.deleteMemberFeedbackMsg"),
+        color: "default",
+        to_on_ok: "none",
+        to_on_fail: "none",
+        show_feedback: true,
+        error_msg: this.$t("app.defaultErrorMsg"),
+        has_commit: false,
+        commit: "none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.$store.dispatch("deleteRequest", payload).then(() => {
+        this.getPaginatedOrganisationMembers(
+          this.organisation_id,
+          1,
+          10,
+          "name",
+          "",
+          this.has_register,
+          this.gender
+        );
+      });
+    },
+
+    setFilterVariables(data) {
+      this.has_register = data.has_register;
+      this.year = data.year;
+      this.gender = data.gender;
+    },
+
+    getRegistrationAmount() {
       let payload = {
         status: "none",
-        url: `/api/protected/organisations/filter-users?has_register=${this.has_register}&gender=${this.gender}&year=${this.year}`,
+        url: `/api/protected/registration_fees/current`,
         has_path_val: true,
         show_feedback: false,
-        show_spinner: true,
+        show_spinner: false,
         msg: "none",
         color: "default",
         error_msg: "default",
-        commit: "SET_MEMBERS",
+        commit: "SET_REG_AMOUNT",
         has_commit: true,
         to_be_store_data: {
           required: false,
@@ -278,29 +345,16 @@ export default {
           data: null,
         },
       };
-      this.loading_filter = true;
       this.$store
         .dispatch("getRequest", payload)
         .then(() => {})
-        .finally(() => {
-          this.loading_filter = false;
-        });
+        .finally(() => {});
     },
-
-    downloadMembers() {
-      let url = `/api/protected/organisations/download-users?has_register=${this.has_register}&gender=${this.gender}&year=${this.year}`;
-      let file_name = "Organisation_Members.pdf";
-      this.loading = this.downloadPdf(url, file_name);
-    },
-
-    onFetchMembers(){
-      let id = this.$store.getters.getOrganisation.id;
-      this.getOrganisationMembers(id, true);
-    }
   },
 
   components: {
     TableVue,
+    FilterComponentVue,
   },
 };
 </script>

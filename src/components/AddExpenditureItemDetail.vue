@@ -1,76 +1,106 @@
 <template>
-  <div class="q-pa-md">
+  <div>
+    <q-banner
+      inline-actions
+      rounded
+      class="bg-warning text-white q-mx-md q-mt-sm q-mb-sm"
+      dense
+      v-if="existExpenditureItemDetail"
+    >
+      {{ $t("app.cantUpdatedExpenditureItemDetailAfterApprovalMsg") }}
+      <span class="text-lowercase">{{
+        getUpdatedExpenditureItemDetailFromState.approve
+      }}</span>
+      <template v-slot:action>
+        <q-btn flat icon="close" size="sm" />
+      </template>
+    </q-banner>
     <div class="q-ml-sm q-mb-md">
       <label class="text-muted q-ml-sm info"
-        >All fields with <span class="text-red">*</span> are required</label
+        >{{ $t("app.warningField") }}<span class="text-red">*</span
+        >{{ $t("app.fields") }}</label
       >
     </div>
-    <div class="q-mt-md q-mx-md">
-      <q-form @submit="onAddExpenditureItemDetail" class="q-gutter-sm">
-        <div class="q-mb-md">
-          <label for="credential" class="form_field"
-            >Name <span class="text-red">*</span></label
-          >
-          <q-input
-            v-model="expenditure_item_detail.name"
-            outlined
-            dense
-            type="text"
-          />
-        </div>
-        <div class="q-mb-md">
-          <label for="credential" class="form_field"
-            >Amount Given<span class="text-red">*</span></label
-          >
-          <q-input
-            v-model="expenditure_item_detail.amount_given"
-            outlined
-            dense
-            type="number"
-            @input="validateExpenditureAmountGiven"
-          />
-          <small v-if="is_valid_amount_given" class="text-red">
-                <b>Amount given can not be more than Estimated Amount for the Activity</b>
-              </small>
-        </div>
-        <div class="q-mb-md">
-          <label for="credential" class="form_field"
-            >Amount Spent<span class="text-red">*</span></label
-          >
-          <q-input
-            v-model="expenditure_item_detail.amount_spent"
-            outlined
-            dense
-            type="number"
-          >
-          </q-input>
-        </div>
-        <div class="q-mb-md">
-          <label for="credential" class="form_field">Comment</label>
-          <q-input
-            v-model="expenditure_item_detail.comment"
-            dense
-            class="text_color"
-            type="textarea"
-            outlined
-            placeholder="Provide any comment about this expenditure"
-          />
-        </div>
-        <div class="flex q-mt-lg justify-end">
-          <div>
-            <ButtonVue
-              class="form_button"
-              :label="'Save'"
-              :loading="loading"
-              :color="'primary'"
-              :disabled="validateForm"
-              :no_caps="true"
-            >
-            </ButtonVue>
-          </div>
-        </div>
-      </q-form>
-    </div>
+
+    <q-form
+      @submit="onAddExpenditureItemDetail"
+      class="q-gutter-sm q-mt-xs q-mx-sm"
+    >
+      <div class="q-mb-md">
+        <label for="credential" class="form_field"
+          >{{ $t("app.nameLabel") }} <span class="text-red">*</span></label
+        >
+
+        <q-input
+          v-model="expenditure_item_detail.name"
+          outlined
+          dense
+          type="text"
+          :readonly="existExpenditureItemDetail"
+        />
+      </div>
+      <div class="q-mb-md">
+        <label for="credential" class="form_field"
+          >{{ $t("app.amountGivenLabel")
+          }}<span class="text-red">*</span></label
+        >
+        <q-input
+          v-model="expenditure_item_detail.amount_given"
+          outlined
+          dense
+          type="number"
+          @input="validateExpenditureAmountGiven"
+          :readonly="existExpenditureItemDetail"
+        />
+        <small v-if="is_valid_amount_given" class="text-red">
+          <b>{{ $t("app.amountGivenWarningMsg") }}</b>
+        </small>
+      </div>
+      <div class="q-mb-md">
+        <label for="credential" class="form_field"
+          >{{ $t("app.amountSpent") }}<span class="text-red">*</span></label
+        >
+        <q-input
+          v-model="expenditure_item_detail.amount_spent"
+          outlined
+          dense
+          type="number"
+          :readonly="existExpenditureItemDetail"
+        >
+        </q-input>
+      </div>
+      <div class="q-mb-md">
+        <label for="credential" class="form_field">{{
+          $t("app.comment")
+        }}</label>
+        <q-input
+          v-model="expenditure_item_detail.comment"
+          dense
+          class="text_color"
+          type="textarea"
+          outlined
+          :placeholder="$t('app.provideCommentDetail')"
+          :readonly="existExpenditureItemDetail"
+        />
+      </div>
+      <div
+        :class="
+          $q.platform.is.desktop
+            ? 'flex q-mt-lg justify-end'
+            : 'q-pt-xs q-mb-lg'
+        "
+      >
+        <ButtonVue
+          class="form_button"
+          :label="$t('app.saveBtnLabel')"
+          :loading="loading"
+          :color="'primary'"
+          :disabled="validateForm"
+          :no_caps="true"
+        >
+        </ButtonVue>
+      </div>
+    </q-form>
   </div>
 </template>
 <script>
@@ -81,7 +111,7 @@ import moment from "moment";
 export default {
   mixins: [ExpenditureItemDetailMixinVue],
   created() {
-    let heading = "Expenditure activity detail information";
+    let heading = this.$t("app.detailHeading");
     this.$emit("set-heading", heading);
   },
   data() {
@@ -96,17 +126,18 @@ export default {
         picture: null,
         id: null,
       },
-      is_valid_amount_given:false
+      is_valid_amount_given: false,
     };
   },
 
   computed: {
     validateForm() {
-      return this.expenditure_item_detail.amount_given == null ||
+      return (
+        this.expenditure_item_detail.amount_given == null ||
         this.expenditure_item_detail.name == null ||
-        this.expenditure_item_detail.amount_spent == null
-        ? true
-        : false;
+        this.expenditure_item_detail.amount_spent == null ||
+        this.existExpenditureItemDetail
+      );
     },
     getCurrentExpenditureItem() {
       return this.$store.getters.getCurrentExpenditureItem;
@@ -120,14 +151,22 @@ export default {
       ).format("MMMM Do YYYY");
     },
 
-    setFormUpdateDetail(){
-      return this.setFormFields(this.$store.getters.getUpdatedExpenditureItemDetail);
-    }
+    setFormUpdateDetail() {
+      return this.setFormFields(
+        this.$store.getters.getUpdatedExpenditureItemDetail
+      );
+    },
+
+    existExpenditureItemDetail() {
+      return this.$store.getters.getUpdatedExpenditureItemDetail !== null && this.$store.getters.getUpdatedExpenditureItemDetail.approve !== "PENDING";
+    },
   },
-  watch:{
-    setFormUpdateDetail(){
-      return this.setFormFields(this.$store.getters.getUpdatedExpenditureItemDetail);
-    }
+  watch: {
+    setFormUpdateDetail() {
+      return this.setFormFields(
+        this.$store.getters.getUpdatedExpenditureItemDetail
+      );
+    },
   },
   methods: {
     onAddExpenditureItemDetail() {
@@ -135,12 +174,12 @@ export default {
       let payload = {
         url: this.setActionUrl(this.expenditure_item_detail.id, item),
         data: this.expenditure_item_detail,
-        msg: "Expenditure Item detail save Successfully",
+        msg: this.$t("app.saveDetailSuccessMsg"),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: "An Error occurred! Please try again",
+        error_msg: this.$t("app.defaultErrorMsg"),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -151,7 +190,6 @@ export default {
       };
       this.setDispatchAction(this.expenditure_item_detail.id, payload);
     },
-
 
     resetForm() {
       this.expenditure_item_detail.name = null;
@@ -165,18 +203,16 @@ export default {
       return this.expenditure_item_detail;
     },
 
-
-
     setFormFields(data) {
-     if(data != null){
-      this.expenditure_item_detail.expenditure_item_id =
-        data.expenditure_item_id;
-      this.expenditure_item_detail.name = data.name;
-      this.expenditure_item_detail.comment = data.comment;
-      this.expenditure_item_detail.amount_given = data.amount_given;
-      this.expenditure_item_detail.amount_spent = data.amount_spent;
-      this.expenditure_item_detail.id = data.id;
-     }
+      if (data != null) {
+        this.expenditure_item_detail.expenditure_item_id =
+          data.expenditure_item_id;
+        this.expenditure_item_detail.name = data.name;
+        this.expenditure_item_detail.comment = data.comment;
+        this.expenditure_item_detail.amount_given = data.amount_given;
+        this.expenditure_item_detail.amount_spent = data.amount_spent;
+        this.expenditure_item_detail.id = data.id;
+      }
 
       return this.expenditure_item_detail;
     },
@@ -198,7 +234,9 @@ export default {
           .dispatch("postRequest", payload)
           .then(() => {
             this.getExpenditureDetailsByItemId(
-              payload.data.expenditure_item_id
+              payload.data.expenditure_item_id,
+              1,
+              7
             );
           })
           .finally(() => {
@@ -211,7 +249,9 @@ export default {
           .dispatch("putRequest", payload)
           .then(() => {
             this.getExpenditureDetailsByItemId(
-              payload.data.expenditure_item_id
+              payload.data.expenditure_item_id,
+              1,
+              7
             );
           })
           .finally(() => {
@@ -223,9 +263,11 @@ export default {
       }
     },
 
-    validateExpenditureAmountGiven(){
-      if (this.$store.getters.getCurrentExpenditureItem.amount > this.expenditure_item_detail.amount_given) {
-        console.log(1);
+    validateExpenditureAmountGiven() {
+      if (
+        this.$store.getters.getCurrentExpenditureItem.amount >
+        this.expenditure_item_detail.amount_given
+      ) {
         this.is_valid_amount_given = true;
       }
     },
@@ -241,7 +283,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 11px;
+  font-size: 12px;
   align-items: center;
   letter-spacing: 0.01em;
   color: $grey2;
@@ -306,5 +348,6 @@ export default {
 
 .info {
   color: $grey2;
+  font-size: small;
 }
 </style>

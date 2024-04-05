@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-sm">
+  <div :class="$q.platform.is.desktop?'q-pa-sm':''">
     <div>
       <q-tabs
         v-model="tab"
@@ -10,10 +10,15 @@
         align="justify"
         narrow-indicator
       >
-        <q-tab name="Add Member" label="Add Member" no-caps icon="person_add" />
+        <q-tab
+          name="Add Member"
+          :label="$t('app.addMember')"
+          no-caps
+          icon="person_add"
+        />
         <q-tab
           name="Upload File"
-          label="Upload File"
+          :label="$t('app.uploadFile')"
           no-caps
           icon="file_upload"
         />
@@ -23,24 +28,24 @@
 
       <q-tab-panels v-model="tab" animated>
         <q-tab-panel name="Add Member">
-          <div class="q-mx-md">
-            <q-form @submit="onAddMember" class="q-gutter-md">
+          <q-form @submit="onAddMember" class="q-gutter-md" :class="$q.platform.is.mobile?'q-pl-sm':''">
               <div class="text-subtitle2 text-left text-primary q-pt-xs">
-                Personal Information
+                {{ $t("app.personalInformationLabel") }}
               </div>
               <small class="hint"
-                >All fields with <span class="text-red">*</span> are
-                required</small
+                >{{ $t("app.warningField") }}<span class="text-red">*</span
+                >{{ $t("app.fields") }}</small
               >
               <div>
                 <label for="credential" class="form_field"
-                  >Name <span class="text-red">*</span></label
+                  >{{ $t("app.nameLabel") }}
+                  <span class="text-red">*</span></label
                 >
                 <q-input v-model="user.name" outlined dense type="text" />
               </div>
               <div>
                 <label for="credential" class="form_field"
-                  >Gender <span class="text-red">*</span></label
+                  >{{ $t("app.gender") }} <span class="text-red">*</span></label
                 >
                 <q-select
                   v-model="user.gender"
@@ -50,37 +55,39 @@
                 />
               </div>
               <div>
-                <label for="credential" class="form_field">Email</label>
+                <label for="credential" class="form_field"
+                  >{{ $t("app.emailLabel") }}
+                  <span class="text-red">*</span></label
+                >
                 <q-input v-model="user.email" outlined dense type="email" />
               </div>
               <div>
                 <label for="credential" class="form_field"
-                  >Telephone <span class="text-red">*</span></label
+                  >{{ $t("app.telephoneLabel") }}
+                  <span class="text-red">*</span></label
                 >
-                <q-input
+                <vue-tel-input
                   v-model="user.telephone"
-                  outlined
-                  dense
-                  type="tel"
-                  mask="(+###) ### - ### - ###"
-                  unmasked-value
-                  hint="Example: (+237) ### - ### - ###"
-                />
+                  defaultCountry="cm"
+                  mode="international"
+                  class="q-pa-xs"
+                ></vue-tel-input>
               </div>
               <div>
                 <label for="credential" class="form_field"
-                  >Address <span class="text-red">*</span></label
+                  >{{ $t("app.addressLabel") }}
+                  <span class="text-red">*</span></label
                 >
                 <q-input v-model="user.address" outlined dense type="text" />
               </div>
               <div>
                 <label for="credential" class="form_field"
-                  >Occupation <span class="text-red">*</span></label
+                  >{{ $t("app.occupation") }}
+                  <span class="text-red">*</span></label
                 >
                 <q-input v-model="user.occupation" outlined dense type="text" />
               </div>
-              <div class="flex q-mt-lg justify-end">
-                <div>
+              <div :class="$q.platform.is.desktop?'flex q-mt-lg justify-end':'q-pt-xs q-mb-lg'">
                   <ButtonVue
                     :label="label_save"
                     :loading="loading"
@@ -90,19 +97,16 @@
                   >
                   </ButtonVue>
                 </div>
-              </div>
             </q-form>
-          </div>
         </q-tab-panel>
         <q-tab-panel name="Upload File">
-          <div>
-            <q-form @submit="uploadFile">
+          <q-form @submit="uploadFile" :class="$q.platform.is.mobile?'q-pl-sm':''">
               <div class="text-subtitle2 text-center text-primary">
-                Import Members from an Excel File
+                {{ $t("app.importMemberMsg") }}
                 <span class="q-pl-md">
                   <q-btn flat @click="openHelp">
                     <q-icon name="help_outline" size="sm"> </q-icon>
-                    <q-tooltip> Help </q-tooltip>
+                    <q-tooltip> {{ $t("app.help") }} </q-tooltip>
                   </q-btn>
                 </span>
               </div>
@@ -134,7 +138,6 @@
                 </div>
               </div>
             </q-form>
-          </div>
         </q-tab-panel>
       </q-tab-panels>
     </div>
@@ -145,7 +148,7 @@
           <q-space />
 
           <q-btn dense flat icon="close" v-close-popup class="text-white">
-            <q-tooltip>Close</q-tooltip>
+            <q-tooltip>{{ $t("app.close") }}</q-tooltip>
           </q-btn>
         </q-bar>
         <q-card-section
@@ -154,7 +157,7 @@
         >
           <div>
             <div class="q-pb-md help_text">
-              Below is a structure of an example excel file to upload members
+              {{ $t("app.importMemberHelpMsg") }}
             </div>
             <div class="q-mx-lg">
               <q-img
@@ -177,12 +180,12 @@
           <q-space />
 
           <q-btn dense flat icon="close" v-close-popup class="text-white">
-            <q-tooltip>Close</q-tooltip>
+            <q-tooltip>{{ $t("app.close") }}</q-tooltip>
           </q-btn>
         </q-bar>
         <q-card-section>
           <div class="q-pb-md help_text">
-            Below is a structure of an example excel file to upload members
+            {{ $t("app.importMemberHelpMsg") }}
           </div>
         </q-card-section>
 
@@ -201,18 +204,18 @@
 import ButtonVue from "src/components/Button.vue";
 import memberMixinVue from "src/mixins/memberMixin.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
-
+import { VueTelInput } from "vue-tel-input";
 export default {
   mixins: [memberMixinVue, organisationMixinVue],
   created() {
-    let heading = "Add Members to the Organisation";
+    let heading = this.$t("app.addMemberOrganisation");
     this.$emit("set-heading", heading);
   },
   data() {
     return {
       full_width: false,
       image_width: "370px",
-      label_save: "Save",
+      label_save: this.$t("app.saveBtnLabel"),
       loading: false,
       color: "primary",
       user: {
@@ -225,40 +228,47 @@ export default {
       },
       gender_options: ["MALE", "FEMALE", "OTHER"],
       file: null,
-      label_upload: "Import",
+      label_upload: this.$t("app.import"),
       position: "right",
       dialog: false,
       no_caps: true,
-      tab: "Add Member",
+      tab: this.$t("app.addMember"),
+      organisation_id: this.$store.getters.getOrganisation.id,
     };
   },
   computed: {
     validateForm() {
-      return this.user.name === null ||
-        this.user.telephone == null ||
-        this.user.gender == null ||
-        this.user.address == null ||
-        this.user.occupation == null
-        ? true
-        : false;
+      return (
+        this.user.name === null ||
+        this.user.telephone === null ||
+        this.user.gender === null ||
+        this.user.address === null ||
+        this.user.occupation === null
+      );
     },
     validateFormUpload() {
-      return this.file == null ? true : false;
+      return this.file === null;
     },
   },
   methods: {
     onAddMember() {
-      let id = this.getOrganisationId;
       this.loading = true;
       let payload = {
-        url: `/api/protected/organisations/${id}/add-users`,
-        data: this.user,
-        msg: "Member added Successfully",
+        url: `/api/protected/organisations/${this.organisation_id}/add-users`,
+        data: {
+          name: this.user.name,
+          telephone: this.user.telephone.replace(/\s+/g, ""),
+          gender: this.user.gender,
+          address: this.user.address,
+          occupation: this.user.occupation,
+          email: this.user.email,
+        },
+        msg: this.$t("app.addMemberSuccessMsg"),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: "An Error occurred! Please try again",
+        error_msg: this.$t("app.defaultErrorMsg"),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -270,7 +280,17 @@ export default {
       this.$store
         .dispatch("postRequest", payload)
         .then(() => {
-          this.getOrganisationMembers(id, true);
+          this.filterOrganisationMembers(
+            this.organisation_id,
+            false,
+            1,
+            10,
+            "name",
+            "",
+            "",
+            "",
+            ""
+          );
         })
         .finally(() => {
           this.loading = false;
@@ -285,17 +305,16 @@ export default {
     uploadFile(event) {
       const formData = new FormData();
       formData.append("file", this.file);
-      let id = this.getOrganisationId;
       let payload = {
-        url: `/api/protected/organisations/${id}/import-users`,
-        msg: "Members uploaded successfully",
+        url: `/api/protected/organisations/${this.organisation_id}/import-users`,
+        msg: this.$t("app.uploadMemberSuccessMsg"),
         data: formData,
         color: "default",
         show_feedback: true,
         status: "success",
         to_on_ok: "none",
         to_on_fail: "none",
-        error_msg: "An Error occurred! Please try again",
+        error_msg: this.$t("app.defaultErrorMsg"),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -308,7 +327,17 @@ export default {
       this.$store
         .dispatch("uploadFileRequest", payload)
         .then(() => {
-          this.getOrganisationMembers(id, true);
+          this.filterOrganisationMembers(
+            this.organisation_id,
+            false,
+            1,
+            10,
+            "name",
+            "",
+            "",
+            "",
+            ""
+          );
         })
         .finally(() => {
           this.loading = false;
@@ -330,10 +359,12 @@ export default {
   },
   components: {
     ButtonVue,
+    VueTelInput,
   },
 };
 </script>
 
+<style src="vue-tel-input/dist/vue-tel-input.css"></style>
 <style scoped lang="scss">
 .csv_image_card {
   cursor: pointer;
@@ -341,14 +372,14 @@ export default {
 
 .hint {
   color: $grey2;
-  font-size: smaller;
+  font-size: small;
 }
 
 .form_field {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 11px;
+  font-size: 12px;
   align-items: center;
   letter-spacing: 0.01em;
   color: $grey2;

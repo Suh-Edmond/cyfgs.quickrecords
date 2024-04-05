@@ -1,11 +1,19 @@
 <template>
-  <q-btn :color="color" :label="label" :flat="flat" class="button" type="submit"   :loading="loading" :disable="disabled" :no-caps="no_caps" :icon-right="icon_right">
+  <q-btn
+    :color="color"
+    :label="label"
+    :flat="flat"
+    class="button"
+    :class="$q.platform.is.mobile?'full-width':''"
+    type="submit"
+    :loading="loading"
+    :disable="disabled"
+    :no-caps="no_caps"
+    :icon-right="icon_right"
+  >
     <template v-slot:loading>
-      <q-spinner
-        color="white"
-        :size="size"
-      />
-        </template>
+      <q-spinner color="white" :size="size" />
+    </template>
   </q-btn>
 </template>
 
@@ -14,40 +22,39 @@ export default {
   props: {
     size: {
       required: false,
-      type:Number
+      type: Number,
     },
     label: {
-     required:true
+      required: true,
     },
     loading: {
-      required:true
+      required: true,
     },
     disabled: {
-      required:true
+      required: true,
     },
-    color:{
-      required:true
+    color: {
+      required: true,
     },
     no_caps: {
-      required:true
+      required: true,
     },
     icon_right: {
-      required:false
+      required: false,
     },
-    flat:{
+    flat: {
       type: Boolean,
       required: false,
-    }
+    },
   },
-  data(){
-    return {
-    }
-  }
-}
+  data() {
+    return {};
+  },
+};
 </script>
 
 <style>
-  .button {
-    border-radius: 3px;
-  }
+.button {
+  border-radius: 3px;
+}
 </style>

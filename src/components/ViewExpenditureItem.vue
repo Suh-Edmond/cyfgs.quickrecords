@@ -1,102 +1,188 @@
 <template>
   <div class="q-pa-md">
     <div>
-      <div class="flex q-mb-md">
-        <label for="expenditure_item" class="label"><span> <q-icon name="category" size="xs" class="q-pr-sm" />
-          </span>Payment Activity:
-          <span class="value payment_activity">{{
-            getUpdatedExpenditureFromState.payment_item.name
-          }}</span></label>
+      <div class="flex justify-between q-mb-md">
+        <div>
+          <label for="expenditure_item" class="label"
+            ><span> <q-icon name="category" size="xs" class="q-pr-sm" /> </span
+            >{{ $t("app.paymentItem") }}:
+          </label>
+        </div>
+        <div class="detail-value wrap">
+          <label class="value">
+            {{ getUpdatedExpenditureFromState.payment_item.name }}
+          </label>
+        </div>
       </div>
-      <div class="flex q-mb-md">
-        <label for="expenditure_item" class="label"><span> <q-icon name="category" size="xs" class="q-pr-sm" />
-          </span>Expenditure Activity:
-          <span class="value value_item">{{
-            getUpdatedExpenditureFromState.name
-          }}</span></label>
-      </div>
-      <div class="flex q-mb-md">
-        <label for="venue" class="label"><span> <q-icon name="location_on" size="xs" class="q-pr-sm" /> </span>Venue:
-          <span class="value value_venue">{{
-            getUpdatedExpenditureFromState.venue
-          }}</span></label>
-      </div>
-      <div class="q-mb-md">
-        <label for="date" class="label"><span> <q-icon name="schedule" size="xs" class="q-pr-sm" /> </span>Date:
-          <span class="value value_date">{{
-            getFormatedCreatedDate
-          }}</span></label>
-      </div>
-      <div class="q-mb-md">
-        <label for="amount" class="label"><span>
-            <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span>Estimated Amount:
-          <span class="value value_amount">
-            {{ Number(getUpdatedExpenditureFromState.amount).toLocaleString() }} XAF</span></label>
-      </div>
-      <div class="q-mb-md">
-        <label for="amount" class="label"><span>
-            <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span>Total Amount Given:
-          <span class="value value_item">
-            {{ getUpdatedExpenditureFromState.total_amount_given }} XAF</span></label>
-      </div>
-      <div class="q-mb-md">
-        <label for="amount" class="label"><span>
-            <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span>Total Amount Spent:
-          <span class="value value_item">
-            {{ getUpdatedExpenditureFromState.total_amount_spent }} XAF</span></label>
-      </div>
-      <div class="q-mb-md">
-        <label for="amount" class="label"><span>
-            <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span>Total Balance:
-          <span class="value value_balance">
-            {{ Number(getUpdatedExpenditureFromState.total_balance).toLocaleString() }} XAF</span></label>
-      </div>
-      <div class="q-mb-md">
+      <div class="flex justify-between q-mb-md">
+        <div>
+          <label for="expenditure_item" class="label"
+            ><span> <q-icon name="category" size="xs" class="q-pr-sm" /> </span
+            >{{ $t("app.expenditureItem") }}:
+          </label>
+        </div>
 
-            <label
-          for="status"
-          class="label"
-          v-show="getUpdatedExpenditureFromState.approve == 'DECLINED'"
-          ><span>
-            <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span
-          >Transaction Status:
-          <span class="value_trxn unapproved_color">{{
-            getUpdatedExpenditureFromState.approve
-          }}</span></label
-        >
-        <label
-          for="status"
-          class="label"
-          v-show="getUpdatedExpenditureFromState.approve == 'APPROVED'"
-          ><span>
-            <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span
-          >Transaction Status:
-          <span class="value_trxn approved_color">
-            {{ getUpdatedExpenditureFromState.approve }}</span
-          ></label
-        >
-        <label
-          for="status"
-          class="label"
-          v-show="getUpdatedExpenditureFromState.approve == 'PENDING'"
-          ><span>
-            <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span
-          >Transaction Status:
-          <span class="value_trxn pending_color">
-            {{ getUpdatedExpenditureFromState.approve }}</span
-          ></label
+        <div class="detail-value wrap">
+          <label class="value">
+            {{ getUpdatedExpenditureFromState.name }}
+          </label>
+        </div>
+      </div>
+      <div class="flex justify-between q-mb-md">
+        <div>
+          <label for="venue" class="label"
+            ><span>
+              <q-icon name="location_on" size="xs" class="q-pr-sm" /> </span
+            >{{ $t("app.venue") }}:
+          </label>
+        </div>
+
+        <div class="detail-value wrap">
+          <label class="value">
+            {{ getUpdatedExpenditureFromState.venue }}
+          </label>
+        </div>
+      </div>
+      <div class="flex justify-between q-mb-md">
+        <div>
+          <label for="date" class="label"
+            ><span> <q-icon name="schedule" size="xs" class="q-pr-sm" /> </span
+            >{{ $t("app.date") }}:
+          </label>
+        </div>
+        <div class="detail-value wrap">
+          <label class="value">
+            {{ getFormatedCreatedDate }}
+          </label>
+        </div>
+      </div>
+      <div class="flex justify-between q-mb-md">
+        <div>
+          <label for="amount" class="label"
+            ><span>
+              <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
+            >{{ $t("app.estimatedAmount") }}:
+          </label>
+        </div>
+
+        <div class="detail-value wrap">
+          <label class="value">
+            {{ Number(getUpdatedExpenditureFromState.amount).toLocaleString() }}
+            XAF
+          </label>
+        </div>
+      </div>
+      <div class="flex justify-between q-mb-md">
+        <div>
+          <label for="amount" class="label"
+            ><span>
+              <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
+            >{{ $t("app.totalAmountGiven") }}:
+          </label>
+        </div>
+
+        <div class="detail-value wrap">
+          <label class="value">
+            {{
+              Number(
+                getUpdatedExpenditureFromState.total_amount_given
+              ).toLocaleString()
+            }}
+            XAF
+          </label>
+        </div>
+      </div>
+      <div class="flex justify-between q-mb-md">
+        <div>
+          <label for="amount" class="label"
+            ><span>
+              <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
+            >{{ $t("app.totalAmountSpent") }}:
+          </label>
+        </div>
+
+        <div class="detail-value wrap">
+          <label class="value">
+            {{
+              Number(
+                getUpdatedExpenditureFromState.total_amount_spent
+              ).toLocaleString()
+            }}
+            XAF
+          </label>
+        </div>
+      </div>
+      <div class="flex justify-between q-mb-md">
+        <div>
+          <label for="amount" class="label"
+            ><span>
+              <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
+            >{{ $t("app.totalBalance") }}:
+          </label>
+        </div>
+
+        <div class="detail-value wrap">
+          <label class="value">
+            {{
+              Number(
+                getUpdatedExpenditureFromState.total_balance
+              ).toLocaleString()
+            }}
+            XAF
+          </label>
+        </div>
+      </div>
+      <div class="flex justify-between q-mb-md">
+        <div>
+          <label for="status" class="label"
+            ><span>
+              <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span
+            >{{ $t("app.transactionStatus") }}:
+          </label>
+        </div>
+
+        <div class="detail-value wrap">
+          <label
+            class="value text-warning"
+            v-show="getUpdatedExpenditureFromState.approve == 'DECLINED'"
+          >
+            {{ getUpdatedExpenditureFromState.approve }}
+          </label>
+          <label
+            class="value text-secondary"
+            v-show="getUpdatedExpenditureFromState.approve == 'APPROVED'"
+          >
+            {{ getUpdatedExpenditureFromState.approve }}
+          </label>
+          <label
+            class="value text-info"
+            v-show="getUpdatedExpenditureFromState.approve == 'PENDING'"
+          >
+            {{ getUpdatedExpenditureFromState.approve }}
+          </label>
+        </div>
+      </div>
+      <div class="flex justify-between q-mb-md">
+        <div>
+          <label for="amount" class="label"
+            ><span> <q-icon name="person" size="xs" class="q-pr-sm" /> </span
+            >{{ $t("app.updatedBy") }}:
+          </label>
+        </div>
+        <div class="detail-value wrap">
+          <label class="value">
+            {{ getUpdatedExpenditureFromState.updated_by }}
+          </label>
+        </div>
+      </div>
+      <div class="flex justify-between q-mb-md">
+        <label for="comment" class="field"
+          ><span> <q-icon name="description" size="xs" class="q-pr-sm" /> </span
+          >{{ $t("app.comment") }}:</label
         >
       </div>
-      <div class="q-mb-md">
-        <label for="amount" class="label"><span> <q-icon name="person" size="xs" class="q-pr-sm" /> </span>Updated By:
-          <span class="value value_created_by">
-            {{ getUpdatedExpenditureFromState.updated_by }}</span></label>
-      </div>
-      <div class="q-mb-md">
-        <label for="comment" class="field"><span> <q-icon name="description" size="xs" class="q-pr-sm" />
-          </span>Comment:</label>
-        <p class="value q-pl-lg">{{ getUpdatedExpenditureFromState.comment }}</p>
-      </div>
+      <div class="value_comment" v-show="getUpdatedExpenditureFromState.comment !== null">{{ getUpdatedExpenditureFromState.comment }}</div>
+      <div class="value_comment" v-show="getUpdatedExpenditureFromState.comment === null">{{ $t('app.none') }}</div>
     </div>
   </div>
 </template>
@@ -108,12 +194,11 @@ export default {
   mixins: [expenditureItemMixinVue],
 
   created() {
-    let heading = "Expenditure Activity Information";
+    let heading = this.$t("app.addExpenditureItemHeading");
     this.$emit("set-heading", heading);
   },
   data() {
-    return {
-    };
+    return {};
   },
   computed: {
     getUpdatedExpenditureFromState() {
@@ -124,34 +209,15 @@ export default {
       return moment(this.getUpdatedExpenditureFromState.date).format(
         "MMMM Do YYYY"
       );
-    }
+    },
   },
-  methods: {
-  },
+  methods: {},
   components: {},
 };
 </script>
 
 <style scoped lang="scss">
-.unapproved_color {
-  color: #f2994a;
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 15px;
-  line-height: 27px;
-  letter-spacing: 0.005em;
-}
 
-.approved_color {
-  color: #27ae60;
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 15px;
-  line-height: 27px;
-  letter-spacing: 0.005em;
-}
 
 .label {
   font-family: "Roboto";
@@ -166,50 +232,22 @@ export default {
 .value {
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 500;
-  font-size: 15px;
-  line-height: 27px;
-  letter-spacing: 0.005em;
-  color: $dark;
-}
-.value_balance {
-  padding-left: 4.9rem;
-}
-.value_item {
-  padding-left: 2.3rem;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.01em;
+  color: $grey8;
 }
 
-.payment_activity {
-  padding-left: 3.5rem;
+.detail-value {
+  max-width: 250px;
 }
-
-.value_venue {
-  padding-left: 7.6rem;
-}
-
-.value_amount {
-  padding-left: 2.7rem;
-}
-
-.value_date {
-  padding-left: 8.2rem;
-}
-
-.value_trxn {
-  padding-left: 2.8rem;
-}
-
-.value_created_by {
-  padding-left: 5.7rem;
-}
-
-.pending_color {
-  color: $info;
+.value_comment {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 15px;
-  line-height: 27px;
-  letter-spacing: 0.005em;
+  font-size: 14px;
+  letter-spacing: 0.01em;
+  color: $dark;
+  margin-left: 1.8rem;
 }
 </style>

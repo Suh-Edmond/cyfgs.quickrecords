@@ -1,139 +1,87 @@
 <template>
   <q-page>
-    <!-- spinners -->
-    <div class="flex justify-center">
-      <q-spinner-ios
-        color="primary"
-        size="2em"
-        class="q-mb-lg"
-        v-if="getLoadingState"
-      />
-    </div>
-
-    <NotFound
-      :message="not_found_msg"
-      v-if="getData.length == 0 && !getLoadingState"
-    ></NotFound>
-
-    <div v-if="getData.length > 0 && !getLoadingState">
+    <div>
       <!-- header for filter categories -->
-      <div
-        class="row q-ml-xs q-pt-xs"
-        :class="$q.screen.lg ? 'q-pa-sm' : ''"
-        :style="
-          $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
-        "
+      <FilterComponentVue
+        :show_member_filters="false"
+        :show_categories="true"
+        :loading_download="loading_download"
+        :disable_download_btn="validateDownload"
+        @filter-categories="filterExpenditureCategories"
+        @download-categories="downloadExpenditureCategory"
       >
-        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
-          <q-select
-            v-model="year"
-            outlined
-            dense
-            :options="years"
-            label="Select year"
-            @input="filterExpenditureCategories"
-          />
-        </div>
-        <q-space />
-        <div class="button q-pb-xs">
-          <q-btn
-            :label="label_download"
-            :loading="loading"
-            :color="color_print"
-            :disabled="false"
-            no-caps
-            icon-right="print"
-            @click="downloadExpenditureCategory"
-          ></q-btn>
-        </div>
-      </div>
+      </FilterComponentVue>
 
       <!-- table for categories -->
-      <div class="row q-pt-sm" v-show="!start_filter">
-        <div class="col-md-12 col-xs-12 col-sm-12">
-          <CategoryTable
-            :columns="columns"
-            :data="getData"
-            :label="label"
-            :message="message"
-            @show-expenditure-items="showExpenditureItems"
-            @update-expenditure-category="updateExpenditureCategory"
-            :show_payment_category="false"
-            :show_payment_item="false"
-            :show_expenditure_category="true"
-            :show_expenditure_item="false"
-          >
-          </CategoryTable>
-        </div>
-      </div>
-
-      <!-- table for filtered categories -->
-      <div class="col-md-12 col-xs-12 col-sm-12" v-show="start_filter">
-        <CategoryTable
-          :columns="columns"
-          :data="filteredExpenditureCategories"
-          :label="label"
-          :message="message"
-          @show-expenditure-items="showExpenditureItems"
-          @update-expenditure-category="updateExpenditureCategory"
-          :show_payment_category="false"
-          :show_payment_item="false"
-          :show_expenditure_category="true"
-          :show_expenditure_item="false"
-        >
-        </CategoryTable>
-      </div>
+      <CategoryTable
+        :class="$q.platform.is.desktop ? 'q-pt-sm q-px-sm' : ' q-px-sm q-pt-xl'"
+        :columns="columns"
+        :data="getData"
+        :label="label"
+        :message="message"
+        :show_payment_category="false"
+        :show_payment_item="false"
+        :show_expenditure_category="true"
+        :show_expenditure_item="false"
+        :pagination="getPagination"
+        :table_loading="getLoadingState"
+        @show-expenditure-items="showExpenditureItems"
+        @update-expenditure-category="updateExpenditureCategory"
+        @delete-row="onDeleteRow"
+        @onRequest="onRequest"
+      >
+      </CategoryTable>
     </div>
   </q-page>
 </template>
 
 <script>
-import NotFound from "src/components/NotFound.vue";
 import CategoryTable from "src/components/CategoryTable.vue";
 import ExpenditureCategoryMixinVue from "src/mixins/ExpenditureCategoryMixin.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
-import expenditureItemMixinVue from "src/mixins/expenditureItemMixin.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
+import FilterComponentVue from "src/components/FilterComponent.vue";
 
 export default {
-  mixins: [
-    ExpenditureCategoryMixinVue,
-    organisationMixinVue,
-    expenditureItemMixinVue,
-    HelperMixinVue,
-  ],
+  mixins: [ExpenditureCategoryMixinVue, organisationMixinVue, HelperMixinVue],
+  beforeMount() {
+    this.$store.commit("SET_PAGINATION", {
+      sortBy: "name",
+      descending: false,
+      page: 1,
+      rowsPerPage: 7,
+      rowsNumber: 0,
+    });
+  },
+
   mounted() {
-    let id =
-    this.fetchExpenditureCategories();
+    this.fetchOrganisationExpenditureCategories(
+      this.organisation_id,
+      1,
+      7,
+      "name",
+      ""
+    );
   },
 
   data() {
     return {
-      not_found_msg:
-        "Ooops!! No Expenditure Categories found. Click the add button to add Expenditure Categories.",
-      year: null,
-      years: ["2020", "2021", "2022", "2023", "2024"],
-      search: null,
-      label_fetch: "Filter",
-      color: "primary",
-      no_caps: true,
-      loading: false,
-      label_download: "Print",
-      color_print: "positive",
       columns: [
-        {
-          name: "counter",
-          required: true,
-          label: "S/N",
-          align: "left",
-          field: "counter",
-        },
         {
           name: "name",
           required: true,
           label: "Name",
           align: "left",
           field: (row) => row.name,
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "code",
+          required: true,
+          label: "Code",
+          align: "left",
+          field: (row) => row.code,
           format: (val) => `${val}`,
           sortable: true,
         },
@@ -147,32 +95,53 @@ export default {
           name: "action",
           label: "Action",
           field: "action",
-        }
+        },
       ],
-      label: "Delete",
-      message: "Are you sure you want to delete this Expenditure Category?",
-      start_filter: false,
-      filteredExpenditureCategories: [],
+      label: this.$t("app.delete"),
+      message: this.$t("app.deleteExpenditureCategoryWarningMsg"),
+      organisation_id: this.$store.getters.getOrganisation.id,
     };
   },
   computed: {
     getData() {
       let data = [];
-
-      this.$store.getters.getExpenditureCategories.forEach((element) => {
-        data.push({
-          counter:
-            this.$store.getters.getExpenditureCategories.indexOf(element) + 1,
-          name: element.name,
-          expenditure_items: "View Expenditure Items",
-          id: element.id,
-          description: element.description,
-          type: "EXPENDITURE_CATEGORY",
-          organisation_id: element.organisation_id,
+      if (
+        this.$store.getters.getExpenditureCategories !== null &&
+        this.$store.getters.getExpenditureCategories !== undefined
+      ) {
+        this.$store.getters.getExpenditureCategories.data.forEach((element) => {
+          data.push({
+            counter:
+              this.$store.getters.getExpenditureCategories.data.indexOf(
+                element
+              ) + 1,
+            name: element.name,
+            code: element.code,
+            expenditure_items: this.$t("app.viewExpenditureItems"),
+            id: element.id,
+            description: element.description,
+            type: "EXPENDITURE_CATEGORY",
+            organisation_id: element.organisation_id,
+          });
         });
-      });
-
+      }
       return data;
+    },
+
+    validateDownload() {
+      return this.getData.length == 0;
+    },
+
+    getPagination() {
+      let paginate_object = {
+        sortBy: this.$store.getters.getPagination.sortBy,
+        descending: this.$store.getters.getPagination.descending,
+        page: this.$store.getters.getPagination.page,
+        rowsPerPage: this.$store.getters.getPagination.rowsPerPage,
+        rowsNumber: this.$store.getters.getPagination.rowsNumber,
+      };
+
+      return paginate_object;
     },
 
     getLoadingState() {
@@ -180,19 +149,33 @@ export default {
     },
   },
   methods: {
+    onRequest(props) {
+      const { page, rowsPerPage, sortBy } = props.pagination;
+      const fetch_count =
+        rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
+      this.fetchOrganisationExpenditureCategories(
+        this.organisation_id,
+        page,
+        fetch_count,
+        sortBy,
+        ""
+      );
+    },
+
     showExpenditureItems(data) {
       this.$store.dispatch(
         "setCurrentExpenditureCategory",
         data.expenditure_items
       );
 
-      this.getExpenditureItemsByCategory();
-
       let intermediate_tabs = [];
 
-      intermediate_tabs.push({name: "Expenditure Items", has_intermediate_tab: true})
+      intermediate_tabs.push({
+        name: this.$t("app.expenditureItemLabel"),
+        has_intermediate_tab: true,
+      });
 
-      this.$store.dispatch("setIntermediateTabs", intermediate_tabs)
+      this.$store.dispatch("setIntermediateTabs", intermediate_tabs);
 
       this.$emit("show-expenditure-items", data);
     },
@@ -203,23 +186,39 @@ export default {
       this.$emit("update-expenditure-category", data);
     },
 
-    filterExpenditureCategories() {
-      this.filteredExpenditureCategories = [];
-      let organisation_id = this.getOrganisationId;
+    filterExpenditureCategories(data) {
       this.$router.push({
         path: "/dashboard/expenditure-categories",
-        query: { year: this.year},
+        query: { year: data.year.label, t: new Date().getTime() },
       });
 
+      this.fetchOrganisationExpenditureCategories(
+        this.organisation_id,
+        1,
+        7,
+        "name",
+        data.year.value
+      );
+    },
+
+    downloadExpenditureCategory(data) {
+      let year_value =
+        data.year !== "" && data.year !== "" ? data.year.value : "";
+      let url = `/api/protected/expenditure-categories/download?organisation_id=${this.organisation_id}&year=${year_value}&sort_by=name`;
+      let file_name = "Expenditure_Categories.pdf";
+      this.loading_download = this.downloadPdf(url, file_name);
+    },
+
+    onDeleteRow(data) {
       let payload = {
-        url: `/api/protected/expenditure-categories/filter?organisation_id=${organisation_id}&year=${this.year}`,
-        msg: "none",
+        url: `/api/protected/organisations/${data.organisation_id}/expenditure-categories/${data.id}`,
+        msg: this.$t("app.expenditureItemDeleteSuccessMsg"),
         color: "default",
-        status: "none",
-        error_msg: "An Error occurred! Could not fetch payment categories",
+        to_on_ok: "none",
+        to_on_fail: "none",
+        show_feedback: true,
+        error_msg: this.$t("app.defaultErrorMsg"),
         has_commit: false,
-        show_feedback: false,
-        show_spinner:true,
         commit: "none",
         to_be_store_data: {
           required: false,
@@ -227,34 +226,20 @@ export default {
           data: [],
         },
       };
-      this.$store.dispatch("getRequest", payload).then((res) => {
-        this.start_filter = true;
-        if (res != undefined) {
-          res.data.forEach((element) => {
-            this.filteredExpenditureCategories.push({
-              counter: res.data.indexOf(element) + 1,
-              name: element.name,
-              expenditure_items: "View Expenditure Items",
-              id: element.id,
-              description: element.description,
-              type: "EXPENDITURE_CATEGORY",
-              organisation_id: element.organisation_id,
-            });
-          });
-        }
+      this.$store.dispatch("deleteRequest", payload).then(() => {
+        this.fetchOrganisationExpenditureCategories(
+          this.organisation_id,
+          1,
+          7,
+          "name",
+          ""
+        );
       });
-    },
-
-    downloadExpenditureCategory() {
-      let id = this.getOrganisationId;
-      let url = `/api/protected/expenditure-categories/download?organisation_id=${id}&year=${this.year}`;
-      let file_name = "Expenditure_Categories.pdf";
-      this.loading = this.downloadPdf(url, file_name);
     },
   },
   components: {
-    NotFound,
     CategoryTable,
+    FilterComponentVue,
   },
 };
 </script>

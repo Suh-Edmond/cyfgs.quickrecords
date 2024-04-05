@@ -1,107 +1,163 @@
 <template>
-  <div class="q-pa-md">
-    <div class="q-ml-sm q-mb-md">
-      <label class="text-muted q-ml-sm info"
-        >All fields with <span class="text-red">*</span> are required</label
+  <div>
+    <q-banner
+      inline-actions
+      rounded
+      class="bg-warning text-white q-mx-md q-mt-sm"
+      dense
+      v-if="existIncomeActivity"
+    >
+      {{ $t("app.cantUpdatedIncomeAfterApprovalMsg") }}
+      <span class="text-lowercase">{{
+        getUpdatedIncomeActivityFromState().approve
+      }}</span>
+      <template v-slot:action>
+        <q-btn flat icon="close" size="sm" />
+      </template>
+    </q-banner>
+
+    <div class="q-mt-md">
+      <label class="text-muted info q-pl-lg"
+        >{{ $t("app.warningField") }}<span class="text-red">*</span>
+        {{ $t("app.fields") }}</label
       >
     </div>
-    <div class="q-mx-md">
-      <q-form @submit="onAddIncomeActivity" class="q-gutter-sm">
-        <div class="q-mb-md">
-          <label for="credential" class="form_field"
-            >Name <span class="text-red">*</span></label
-          >
-          <q-input v-model="income_activity.name" outlined dense type="text" />
-        </div>
-        <div class="q-mb-md">
-          <label for="credential" class="form_field"
-            >Amount <span class="text-red">*</span></label
-          >
-          <q-input
-            v-model="income_activity.amount"
-            outlined
-            dense
-            type="number"
-          />
-        </div>
-        <div class="q-mb-md">
-          <label for="credential" class="form_field"
-            >Venue <span class="text-red">*</span></label
-          >
-          <q-input v-model="income_activity.venue" outlined dense type="text" />
-        </div>
-        <div class="q-mb-md">
-          <label for="credential" class="form_field"
-            >Date <span class="text-red">*</span></label
-          >
-          <q-input v-model="income_activity.date" outlined dense>
-            <template v-slot:append>
-              <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy
-                  ref="qDateProxy"
-                  transition-show="scale"
-                  transition-hide="scale"
-                >
-                  <q-date v-model="income_activity.date">
-                    <div class="row items-center justify-end">
-                      <q-btn v-close-popup label="Close" color="primary" flat />
-                    </div>
-                  </q-date>
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-          </q-input>
-        </div>
-        <div class="q-mb-md">
-          <label for="name" class="form_field">Payment Activity <span class="text-red">*</span></label>
-          <q-select
-            outlined
-            dense
-            v-model="income_activity.payment_item_id"
-            placeholder="Type name to search..."
-            :options="getPaymentActivities"
-            input-debounce="0"
-          >
-          </q-select>
-        </div>
-        <div class="q-mb-md">
-          <label for="credential" class="form_field">Description</label>
-          <q-input
-            v-model="income_activity.description"
-            outlined
-            dense
-            type="textarea"
-            placeholder="Provide any comment about this income activity"
-          />
-        </div>
-        <div class="row q-mt-lg justify-end">
-          <div class="col-md-2 col-sm-2 col-xs-2">
-            <ButtonVue
-              class="form_button"
-              label="Save"
-              :loading="loading"
-              color="primary"
-              :disabled="validateForm"
-              :no_caps="true"
-            >
-            </ButtonVue>
-          </div>
-        </div>
-      </q-form>
-    </div>
+    <q-form @submit="onAddIncomeActivity" class="q-gutter-md q-mx-xs">
+      <div class="q-mb-md">
+        <label for="name" class="form_field"
+          >{{ $t("app.paymentItem") }}<span class="text-red">*</span></label
+        >
+        <q-select
+          outlined
+          dense
+          v-model="income_activity.payment_item_id"
+          :label="$t('app.searchPaymentItem')"
+          :options="payment_items"
+          input-debounce="0"
+          clearable
+          use-input
+          @filter="filterPaymentItems"
+          @input="stopSearch"
+          :readonly="existIncomeActivity"
+        >
+          <template v-slot:append v-if="start_filtering">
+            <q-spinner color="primary" size="1.2em" :thickness="5" />
+          </template>
+
+          <!-- no member found message -->
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey">
+                {{ $t("app.noResults") }}
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
+      </div>
+      <div class="q-mb-md">
+        <label for="credential" class="form_field"
+          >{{ $t("app.nameLabel") }} <span class="text-red">*</span></label
+        >
+        <q-input
+          v-model="income_activity.name"
+          outlined
+          dense
+          type="text"
+          :readonly="existIncomeActivity"
+        />
+      </div>
+      <div class="q-mb-md">
+        <label for="credential" class="form_field"
+          >{{ $t("app.amount") }} <span class="text-red">*</span></label
+        >
+        <q-input
+          v-model="income_activity.amount"
+          outlined
+          dense
+          type="number"
+          :readonly="existIncomeActivity"
+        />
+      </div>
+      <div class="q-mb-md">
+        <label for="credential" class="form_field"
+          >{{ $t("app.venue") }} <span class="text-red">*</span></label
+        >
+        <q-input
+          v-model="income_activity.venue"
+          outlined
+          dense
+          type="text"
+          :readonly="existIncomeActivity"
+        />
+      </div>
+      <div class="q-mb-md">
+        <label for="credential" class="form_field"
+          >{{ $t("app.date") }} <span class="text-red">*</span></label
+        >
+        <q-input
+          v-model="income_activity.date"
+          outlined
+          dense
+          :readonly="existIncomeActivity"
+        >
+          <template v-slot:append>
+            <q-icon name="event" class="cursor-pointer">
+              <q-popup-proxy
+                ref="qDateProxy"
+                transition-show="scale"
+                transition-hide="scale"
+              >
+                <q-date v-model="income_activity.date">
+                  <div class="row items-center justify-end">
+                    <q-btn v-close-popup label="Close" color="primary" flat />
+                  </div>
+                </q-date>
+              </q-popup-proxy>
+            </q-icon>
+          </template>
+        </q-input>
+      </div>
+      <div class="q-mb-md">
+        <label for="credential" class="form_field">{{
+          $t("app.description")
+        }}</label>
+        <q-input
+          v-model="income_activity.description"
+          outlined
+          dense
+          type="textarea"
+          :placeholder="$t('app.incomeDescription')"
+          :readonly="existIncomeActivity"
+        />
+      </div>
+      <div
+        :class="$q.platform.is.desktop ? 'flex q-mt-md justify-end' : 'q-mb-xl'"
+      >
+        <ButtonVue
+          class="form_button"
+          :label="$t('app.saveBtnLabel')"
+          :loading="loading"
+          color="primary"
+          :disabled="validateForm"
+          :no_caps="true"
+        >
+        </ButtonVue>
+      </div>
+    </q-form>
   </div>
 </template>
 <script>
 import ButtonVue from "src/components/Button.vue";
 import IncomeActivityMixinVue from "src/mixins/IncomeActivityMixin.vue";
-import organisationMixinVue from "src/mixins/organisationMixin.vue";
+import moment from "moment";
 
 export default {
-  mixins: [IncomeActivityMixinVue, organisationMixinVue],
+  mixins: [IncomeActivityMixinVue],
 
-  created() {
-    let heading = "Income Activity Information";
+  mounted() {
+    let heading = this.$t("app.addIncomeActivityHeading");
     this.$emit("set-heading", heading);
+    this.getPaymentActivities();
   },
 
   data() {
@@ -109,7 +165,7 @@ export default {
       loading: false,
       income_activity: {
         venue: null,
-        date: null,
+        date: moment(new Date()).format("YYYY/MM/DD"),
         name: null,
         description: null,
         amount: 0,
@@ -122,36 +178,35 @@ export default {
       },
       position: "right",
       dialog: false,
+      payment_items: [],
+      start_filtering: false,
+      organisation_id: this.$store.getters.getOrganisation.id,
     };
   },
   computed: {
     validateForm() {
-      return this.income_activity.amount == 0 ||
+      return (
+        this.income_activity.amount == 0 ||
         this.income_activity.name == null ||
         this.income_activity.date == null ||
-        this.income_activity.venue == null
-        ? true
-        : false;
+        this.income_activity.venue == null ||
+        this.existIncomeActivity
+      );
     },
 
-    getEditState() {
-      return this.$store.getters.getEditState;
+    validateDisablePaymentItem() {
+      return this, this.income_activity.payment_item_id != null;
     },
 
     getIncomeActivity() {
       return this.setFormFields(this.getUpdatedIncomeActivityFromState());
     },
 
-    getPaymentActivities() {
-      let data = [];
-      this.$store.getters.getPaymentActivities.forEach((ele) => {
-        data.push({
-          label: ele.name,
-          value: ele.id,
-          amount: ele.amount,
-        });
-      });
-      return data;
+    existIncomeActivity() {
+      return (
+        this.getUpdatedIncomeActivityFromState() !== null &&
+        this.getUpdatedIncomeActivityFromState().approve !== "PENDING"
+      );
     },
   },
 
@@ -162,10 +217,37 @@ export default {
   },
 
   methods: {
+    getPaymentActivities() {
+      this.payment_items = [];
+      this.$store.getters.getPaymentActivities.forEach((ele) => {
+        this.payment_items.push({
+          label: ele.name,
+          value: ele.id,
+          amount: ele.amount,
+        });
+      });
+      return this.payment_items;
+    },
+
+    filterPaymentItems(val, update, abort) {
+      if (val < 1 || this.payment_items.payment_item_id != null) {
+        this.start_filtering = false;
+        abort();
+        return;
+      }
+
+      update(() => {
+        this.start_filtering = true;
+        this.payment_items = this.getPaymentActivities().filter((item) =>
+          item.label.toLowerCase().includes(val.toLowerCase())
+        );
+        return this.payment_items;
+      });
+    },
+
     onAddIncomeActivity() {
-      let organisation_id = this.getOrganisationId;
       let payload = {
-        url: this.setActionUrl(this.income_activity.id, organisation_id),
+        url: this.setActionUrl(this.income_activity.id, this.organisation_id),
         data: {
           venue: this.income_activity.venue,
           date: this.income_activity.date,
@@ -178,12 +260,12 @@ export default {
               ? this.income_activity.payment_item_id.value
               : null,
         },
-        msg: "Income Activity saved Successfully",
+        msg: this.$t("app.addIncomeSuccessFeedbackMsg"),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: "An Error occurred! Please try again",
+        error_msg: this.$t("app.defaultErrorMsg"),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -192,7 +274,11 @@ export default {
           data: [],
         },
       };
-      this.setDispatchAction(this.income_activity.id, payload, organisation_id);
+      this.setDispatchAction(
+        this.income_activity.id,
+        payload,
+        this.organisation_id
+      );
     },
 
     resetForm() {
@@ -224,7 +310,7 @@ export default {
         this.$store
           .dispatch("postRequest", payload)
           .then(() => {
-            this.getOrganisationIncomeActivities(organisation_id);
+            this.getOrganisationIncomeActivities(organisation_id, 1, 7);
           })
           .finally(() => {
             this.$emit("close-right-drawer");
@@ -235,7 +321,7 @@ export default {
         this.$store
           .dispatch("putRequest", payload)
           .then(() => {
-            this.getOrganisationIncomeActivities(organisation_id);
+            this.getOrganisationIncomeActivities(organisation_id, 1, 7);
             this.resetForm();
           })
           .finally(() => {
@@ -263,10 +349,23 @@ export default {
         this.income_activity.approve = data.approve;
         this.income_activity.created_at = data.created_at;
         this.income_activity.updated_by = data.updated_by;
-        this.income_activity.payment_item_id = data.payment_item != null ? {label:data.payment_item.name, value:data.payment_item.id, amount:data.payment_item.amount} : null
+        this.income_activity.payment_item_id =
+          data.payment_item != null
+            ? {
+                label: data.payment_item.name,
+                value: data.payment_item.id,
+                amount: data.payment_item.amount,
+              }
+            : null;
       }
 
       return this.income_activity;
+    },
+
+    stopSearch() {
+      if (this.income_activity.payment_item_id != null) {
+        this.start_filtering = false;
+      }
     },
   },
   components: {
@@ -280,7 +379,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 11px;
+  font-size: 12px;
   align-items: center;
   letter-spacing: 0.01em;
   color: $grey2;
@@ -288,5 +387,6 @@ export default {
 
 .info {
   color: $grey2;
+  font-size: small;
 }
 </style>

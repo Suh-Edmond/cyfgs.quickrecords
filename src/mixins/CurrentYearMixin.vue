@@ -1,14 +1,25 @@
 <script>
 export default {
   data() {
-    return {
-    };
+    return {};
   },
 
   computed: {
-    getCurrentYear(){
+    getCurrentYear() {
       return this.$store.getters.getCurrentYear;
-    }
+    },
+
+    getSessionsFromState() {
+      let data = [];
+      this.$store.getters.getSessions.forEach((ele) => {
+        data.push({
+          value: ele.id,
+          label: ele.year,
+        });
+      });
+
+      return data;
+    },
   },
 
   methods: {
@@ -30,10 +41,12 @@ export default {
           data: null,
         },
       };
-      this.$store.dispatch("getRequest", payload).then(() => {});
+      this.$store.dispatch("getRequest", payload).then((res) => {
+        return res;
+      });
     },
 
-    getSessions(){
+    getSessions() {
       let payload = {
         status: "none",
         url: `/api/protected/sessions`,
@@ -51,11 +64,8 @@ export default {
           data: null,
         },
       };
-      this.$store
-        .dispatch("getRequest", payload)
-        .then(() => {
-        })
-    }
+      this.$store.dispatch("getRequest", payload).then(() => {});
+    },
   },
 };
 </script>

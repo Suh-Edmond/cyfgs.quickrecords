@@ -12,13 +12,13 @@
       >
         <q-tab
           name="Personal Information"
-          label="Personal Information"
+          :label="$t('app.personalInformationLabel')"
           no-caps
           icon="person"
         />
         <q-tab
           name="Member Roles"
-          label="Member Roles"
+          :label="$t('app.memberRoles')"
           no-caps
           icon="person"
           v-if="canEditUserRole"
@@ -31,20 +31,19 @@
         <q-tab-panel name="Personal Information">
           <div class="q-ml-lg">
             <label class="text-muted"
-              >All fields with <span class="text-red">*</span> are
-              required</label>
+              >{{$t('app.warningField')}}<span class="text-red">*</span>{{ $t('app.fields') }}</label>
           </div>
           <div class="q-mx-lg q-pt-md">
             <q-form @submit="onUpdateMember" class="q-gutter-md">
               <div>
                 <label for="credential" class="form_field"
-                  >Name <span class="text-red">*</span></label
+                  >{{$t('app.nameLabel')}} <span class="text-red">*</span></label
                 >
                 <q-input v-model="user.name" outlined dense type="text" />
               </div>
               <div>
                 <label for="credential" class="form_field"
-                  >Gender <span class="text-red">*</span></label
+                  >{{$t('app.gender')}} <span class="text-red">*</span></label
                 >
                 <q-select
                   v-model="user.gender"
@@ -55,12 +54,12 @@
                 />
               </div>
               <div>
-                <label for="credential" class="form_field">Email</label>
+                <label for="credential" class="form_field">{{$t('app.emailLabel')}}</label>
                 <q-input v-model="user.email" outlined dense type="email" />
               </div>
               <div>
                 <label for="credential" class="form_field"
-                  >Telephone <span class="text-red">*</span></label
+                  >{{$t('app.telephoneLabel')}} <span class="text-red">*</span></label
                 >
                 <q-input
                   v-model="user.telephone"
@@ -75,13 +74,13 @@
               </div>
               <div>
                 <label for="credential" class="form_field"
-                  >Address <span class="text-red">*</span></label
+                  >{{$t('app.addressLabel')}} <span class="text-red">*</span></label
                 >
                 <q-input v-model="user.address" outlined dense type="text" />
               </div>
               <div>
                 <label for="credential" class="form_field"
-                  >Occupation <span class="text-red">*</span></label
+                  >{{$t('app.occupation')}} <span class="text-red">*</span></label
                 >
                 <q-input v-model="user.occupation" outlined dense type="text" />
               </div>
@@ -89,7 +88,7 @@
                 <div class="col-md-2 col-sm-2 col-xs-2 q-mt-xs">
                   <ButtonVue
                     class="form_button"
-                    :label="label_save"
+                    :label="this.$t('app.saveBtnLabel')"
                     :loading="loading"
                     :color="color"
                     :disabled="validateForm"
@@ -145,7 +144,7 @@
                 <q-item-section>
                   <q-item-label>{{ role.name }}</q-item-label>
                   <q-item-label caption class="text-sm"
-                    >Updated by:
+                    >{{$t('app.updatedBy')}}:
                     <span> {{ role.updated_by }}</span></q-item-label
                   >
                 </q-item-section>
@@ -163,7 +162,7 @@
                     v-if="role.name !== 'MEMBER'"
                   >
                     <q-icon name="close" color="negative">
-                      <q-tooltip>Remove</q-tooltip>
+                      <q-tooltip>{{$t('app.remove')}}</q-tooltip>
                     </q-icon>
                   </q-btn>
                 </q-item-section>
@@ -180,7 +179,7 @@
                       v-model="role"
                       :options="getAvailableRoles"
                       dense
-                      label="Select Role"
+                      :label="$t('app.selectRole')"
                     >
                     </q-select>
                   </div>
@@ -191,7 +190,7 @@
                   >
                     <ButtonVue
                       class="form_button"
-                      :label="label_add_role"
+                      :label="$t('app.add')"
                       :loading="loading"
                       :color="color"
                       :disabled="validateAddRoleForm"
@@ -211,24 +210,24 @@
       <q-card :style="{ width: image_width }">
         <q-card-section>
           <div class="text-left q-pb-md">
-            <label class="text-dark message">Are you sure you want to remove this role ?</label>
+            <label class="text-dark message">{{$t('app.removeRoleWarningMsg')}}</label>
           </div>
           <div
             class="text-weight-medium text-left diaglog_info"
             v-if="show_dialog"
           >
-            Member: <span>{{ user.name }}</span>
+            {{$t('app.member')}}: <span>{{ user.name }}</span>
           </div>
           <div
             class="text-weight-medium text-left diaglog_info q-pt-sm"
             v-if="show_dialog"
           >
-           Role: <span class="q-pl-lg">{{ role_deleted.name }}</span>
+           {{$t('app.role')}}: <span class="q-pl-lg">{{ role_deleted.name }}</span>
           </div>
         </q-card-section>
         <q-card-actions align="right">
           <q-btn
-            :label="label_cancel"
+            :label="this.$t('app.cancel')"
             color="primary"
             no_caps
             flat
@@ -236,7 +235,7 @@
             v-close-popup
           ></q-btn>
           <q-btn
-            :label="label"
+            :label="this.$t('app.remove')"
             color="primary"
             class="dialog_button"
             @click="removeUserRole"
@@ -261,7 +260,7 @@ import moment from "moment";
 export default {
   mixins: [organisationMixin, memberMixin, roleMixinVue],
   created() {
-    let heading = "Update Member Information";
+    let heading = this.$t('app.updateMemberInformation');
     this.$emit("set-heading", heading);
   },
   mounted() {
@@ -271,8 +270,6 @@ export default {
   },
   data() {
     return {
-      label_save: "Save",
-      label_cancel: "Cancel",
       loading: false,
       color: "primary",
       can_edit_user_role: true,
@@ -287,12 +284,10 @@ export default {
       },
       gender_options: ["MALE", "FEMALE", "OTHER"],
       tab: "Personal Information",
-      label_add_role: "Add",
       role: null,
-      label: "Remove",
       position: "right",
       image_width: "400px",
-      message: "Are you sure  you want to remove this role ?",
+      message: this.$t('app.removeRoleWarningMsg'),
       show_dialog: false,
       user_roles: [],
       role_deleted: null,
@@ -337,7 +332,7 @@ export default {
     },
 
     canEditUserRole() {
-      let has_president_role = LocalStorage.getItem("data").roles.find(
+      let has_president_role = LocalStorage.getItem("data").user_data.roles.find(
         (role) => role.name === "PRESIDENT"
       );
       return has_president_role != undefined;
@@ -355,11 +350,11 @@ export default {
       let payload = {
         url: `/api/protected/users/${id}`,
         data: this.user,
-        msg: "Member information updated Successfully",
+        msg: this.$t('app.updateMemberSuccessMsg'),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
-        error_msg: "An Error occurred! Please try again",
+        error_msg:this.$t('app.defaultErrorMsg'),
         has_commit: false,
         show_feedback: true,
         commit: "none",
@@ -390,22 +385,21 @@ export default {
       if (role !== undefined) {
         Notify.create({
           type: "info",
-          message: "Role already exist",
+          message: this.$t('app.roleExistMsg'),
           position: Platform.is.mobile ? "bottom" : "top-right",
         });
       } else {
         let user_id = this.getUpdatedMemberFromState().id;
         let payload = {
           url: `/api/protected/roles`,
-          msg: "Role added successfully",
+          msg: this.$t('app.roleAddedSuccessMsg'),
           data: { user_id: user_id, role: this.role.value },
           color: "default",
           to_on_ok: "none",
           show_feedback: true,
           status: "none",
           to_on_fail: "none",
-          error_msg:
-            "Only one member of your organisation is allowed to have this Role",
+          error_msg:this.$t('app.oneMemberRoleWarningMsg'),
           has_commit: false,
           commit: "none",
           to_be_store_data: {
@@ -432,7 +426,7 @@ export default {
         to_on_ok: "none",
         status: "none",
         to_on_fail: "none",
-        error_msg: "An Error occurred! Please try again",
+        error_msg: this.$t('app.defaultErrorMsg'),
         has_commit: false,
         show_feedback: false,
         show_spinner: false,
@@ -460,13 +454,13 @@ export default {
       let user_id = this.getUpdatedMemberFromState().id;
       let payload = {
         url: `/api/protected/roles/users/${user_id}?role=${this.role_deleted.name}`,
-        msg: "Role removed successfully",
+        msg: this.$t('app.roleRemoveSuccessMsg'),
         color: "default",
         to_on_ok: "none",
         status: "success",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: "An Error occurred! Please try again",
+        error_msg: this.$t('app.defaultErrorMsg'),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -518,7 +512,7 @@ export default {
     },
 
     checkCanEditUserRole() {
-      let has_president_role = LocalStorage.getItem("data").roles.find(
+      let has_president_role = LocalStorage.getItem("data").user_data.roles.find(
         (role) => role.name === "PRESIDENT"
       );
       return has_president_role != undefined;
@@ -540,7 +534,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 11px;
+  font-size: 12px;
   align-items: center;
   letter-spacing: 0.01em;
   color: $grey2;

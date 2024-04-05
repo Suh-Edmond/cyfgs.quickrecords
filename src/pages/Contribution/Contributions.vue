@@ -1,17 +1,6 @@
-<!-- eslint-disable vue/no-side-effects-in-computed-properties -->
 <template>
   <div class="q-pa-sm">
-    <!-- spinner when fetching data -->
-    <div class="flex justify-center">
-      <q-spinner-ios
-        color="primary"
-        size="2em"
-        class="q-mb-lg"
-        v-if="getLoadingState"
-      />
-    </div>
-
-    <!-- contributions available -->
+    <!------------------------------------------CONTRIBUTIONS VIEW FOR MEMBERS WITHOUT TREASURER ROLE----------------------------------- -->
     <div v-if="!checkTreasurerRole()">
       <div
         class="row q-ml-xs q-pt-md justify-between"
@@ -20,108 +9,147 @@
           $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
         "
       >
-        <div>
-          <q-btn
-            :label="label_fetch"
-            :color="color"
-            :disabled="false"
-            no-caps
-            icon-right="filter_list"
-            @click="openSearchBar()"
-          >
-          </q-btn>
-        </div>
+        <q-btn
+          :label="$t('app.filter')"
+          :color="'primary'"
+          :disabled="false"
+          no-caps
+          icon-right="filter_list"
+          @click="openSearchBar()"
+          :size="$q.platform.is.mobile ? 'sm' : 'md'"
+        >
+        </q-btn>
         <q-space />
-        <div class="button q-pb-xs">
-          <q-btn
-            :label="label_download"
-            :loading="loading"
-            :color="color_print"
-            :disabled="getTableData == 0"
-            no-caps
-            icon-right="print"
-            @click="downloadContributions()"
-          ></q-btn>
-        </div>
+        <q-btn
+          :label="$t('app.print')"
+          :loading="loading_download"
+          :color="'positive'"
+          :disabled="getTableData == 0"
+          no-caps
+          icon-right="print"
+          @click="downloadContributions()"
+          :size="$q.platform.is.mobile ? 'sm' : 'md'"
+        ></q-btn>
       </div>
       <!-- table for contributions -->
-      <div class="row q-pt-sm">
-        <div class="col-md-12 col-xs-12 col-sm-12">
-          <TableVue
-            :columns="columns"
-            :data="getTableData"
-            :label="label"
-            :message="message"
-            :show_savings="false"
-            :show_income_activity="false"
-            :show_members="false"
-            :show_member_savings="false"
-            :show_contribution="true"
-            :show_member_contribution="false"
-            :total_contribution="computeTotalContributions"
-            @view-contribution="viewContribution"
-            @edit-contribution="editContribution"
-            :title="getTableTitleForSearchContributions"
-          >
-          </TableVue>
-        </div>
+      <TableVue
+        :class="$q.platform.is.desktop ? 'q-pt-sm q-px-sm' : ' q-px-sm q-pt-lg'"
+        :columns="columns"
+        :data="getTableData"
+        :label="label"
+        :message="message"
+        :show_savings="false"
+        :show_income_activity="false"
+        :show_members="false"
+        :show_member_savings="false"
+        :show_contribution="true"
+        :show_member_contribution="false"
+        :total_contribution="computeTotalContributions"
+        :title="getTableTitleForSearchContributions"
+        :pagination="buildPaginatedObject"
+        :table_loading="getFetchingState"
+        @view-contribution="viewContribution"
+        @edit-contribution="editContribution"
+        @delete-row="deleteRow"
+        @onRequest="onRequest"
+      >
+      </TableVue>
+
+      <div class="q-mx-sm q-mt-md" v-if="getTableData.length > 0">
+        <q-card>
+          <div class="row q-pa-sm">
+            <label
+              class="q-py-sm text-bold summary text-capitalize text-underline"
+              >{{ $t("app.expenditureSummaryLabel") }}</label
+            >
+          </div>
+          <div class="row q-mb-lg q-gutter-md q-px-sm q-pb-lg">
+            <div class="col-md-3">
+              <div class="q-mb-xs">
+                <label class="text-bold q-py-md detail_name"
+                  >{{ $t("app.paymentItem") }}:</label
+                >
+              </div>
+              <div class="q-mb-xs">
+                <label class="text-bold q-py-md detail_name"
+                  >{{ $t("app.amountContributed") }}:</label
+                >
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="q-mb-xs">
+                <label class="text-bold q-py-md detail_name"
+                  >{{ getPaymentItemName }}
+                </label>
+              </div>
+              <div class="q-mb-xs">
+                <label class="text-bold q-py-md detail_name"
+                  >{{
+                    Number(computeTotalContributions).toLocaleString()
+                  }}
+                  XAF</label
+                >
+              </div>
+            </div>
+          </div>
+        </q-card>
       </div>
     </div>
+    <!------------------------------------------END CONTRIBUTIONS VIEW FOR MEMBERS WITHOUT TREASURER ROLE----------------------------------- -->
 
-    <!-- table for filtered savings so they can be approve/decline-->
+    <!------------------------------------------CONTRIBUTIONS VIEW FOR MEMBERS WITH TREASURER ROLE----------------------------------- -->
     <div v-if="checkTreasurerRole()">
       <div
-        class="row q-ml-xs q-pt-md justify-between"
-        :class="$q.screen.lg ? 'q-pa-md' : ''"
+        :class="$q.screen.lg ? 'row q-pa-sm' : 'col q-gutter-sm q-px-sm'"
         :style="
           $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
         "
       >
-        <div>
-          <q-btn
-            :label="label_fetch"
-            :color="color"
-            :disabled="false"
-            no-caps
-            icon-right="filter_list"
-            @click="openSearchBar()"
-          >
-          </q-btn>
-        </div>
+        <q-btn
+          :label="$t('app.filter')"
+          :color="'primary'"
+          :disabled="false"
+          no-caps
+          icon-right="filter_list"
+          @click="openSearchBar()"
+          :size="$q.platform.is.mobile ? 'sm' : 'md'"
+        >
+        </q-btn>
         <q-space />
-        <div class="button q-pb-xs">
-          <q-btn
-            :label="label_download"
-            :loading="loading"
-            :color="color_print"
-            :disabled="getFilteredContributions.length == 0"
-            no-caps
-            icon-right="print"
-            @click="downloadContributions()"
-          ></q-btn>
-        </div>
+        <q-btn
+          :label="$t('app.print')"
+          :loading="loading_download"
+          :color="'positive'"
+          :disabled="getFilteredContributions.length == 0"
+          no-caps
+          icon-right="print"
+          @click="downloadContributions()"
+          :size="$q.platform.is.mobile ? 'sm' : 'md'"
+        ></q-btn>
       </div>
 
       <!-- table for filtered savings -->
-      <div class="row q-pt-sm">
-        <div class="col-md-12 col-xs-12 col-sm-12">
-          <TableVue
-            :columns="columns"
-            :data="getFilteredContributions"
-            :label="label"
-            :message="message"
-            :show_savings="false"
-            :show_income_activity="false"
-            :show_members="false"
-            :show_member_contribution="false"
-            :show_contribution="true"
-            :total_contribution="computeTotalContributionsForFilteredRecord"
-            :title="getTableTitleForSearchContributions"
-          >
-          </TableVue>
-        </div>
-      </div>
+      <TableVue
+        :class="$q.platform.is.desktop ? 'q-pt-sm q-px-sm' : ' q-px-sm q-pt-xl'"
+        :columns="columns"
+        :data="getFilteredContributions"
+        :label="label"
+        :message="message"
+        :show_savings="false"
+        :show_income_activity="false"
+        :show_members="false"
+        :show_member_contribution="false"
+        :show_contribution="true"
+        :total_contribution="computeTotalContributionsForFilteredRecord"
+        :title="getTableTitleForSearchContributions"
+        :pagination="getPagination"
+        :table_loading="getFetchingState"
+        @delete-row="deleteRow"
+        @onRequest="onRequest"
+      >
+      </TableVue>
     </div>
+    <!------------------------------------------CONTRIBUTIONS VIEW FOR MEMBERS WITH TREASURER ROLE----------------------------------- -->
   </div>
 </template>
 
@@ -140,28 +168,25 @@ export default {
     organisationMixinVue,
     HelperMixinVue,
   ],
+  beforeMount() {
+    this.$store.commit("SET_PAGINATION", {
+      sortBy: "name",
+      descending: false,
+      page: 1,
+      rowsPerPage: 7,
+      rowsNumber: 0,
+    });
+  },
 
   mounted() {},
 
   data() {
     return {
-      label_print: "Print",
-      color_print: "positive",
       payment_item_id: null,
-      label_fetch: "Filter",
-      label_download: "Print",
       loading: false,
-      color: "primary",
-      message: "Are you sure you want to delete this member's contribution ?",
-      label: "Delete",
+      message: this.$t("app.deleteContributionWarningMsg"),
+      label: this.$t("app.delete"),
       columns: [
-        {
-          name: "counter",
-          required: true,
-          label: "S/N",
-          align: "left",
-          field: "counter",
-        },
         {
           name: "user_name",
           required: true,
@@ -180,14 +205,14 @@ export default {
         {
           name: "balance",
           align: "left",
-          label: "Balance (XAF)",
+          label: "Total Balance (XAF)",
           field: "balance",
         },
         {
-          name: "state", ///this has to be changed to approve word not state so it is consistent
+          name: "approve", ///this has to be changed to approve word not state so it is consistent
           align: "left",
           label: "Transaction Status",
-          field: "state",
+          field: "approve",
         },
         {
           name: "action",
@@ -199,34 +224,30 @@ export default {
       start_filter: false,
       filteredContributions: [],
       loading_filter: false,
+      loading_download: false,
     };
   },
   computed: {
     validateFilter() {
-      return this.payment_item_id !== null ? false : true;
+      return this.payment_item_id === null;
     },
 
     getTableData() {
       let data = [];
-      if (this.getMembersContributionsByPaymentItem.length != 0) {
+      if (this.getMembersContributionsByPaymentItem.length > 0) {
         data = this.getMembersContributionsByPaymentItem;
       } else {
         data = this.getFilteredContributions;
       }
       return data;
     },
+
     computeTotalContributions() {
-      let total = 0.0;
-      if(this.$store.getters.getMembersContributionsByPaymentItem != null){
-        this.$store.getters.getMembersContributionsByPaymentItem.data
-        .filter((ele) => ele.approve == "APPROVED")
-        .map((ele) => ele.total_amount_deposited)
-        .forEach((amount) => {
-          total += amount;
-        });
-      }
-      return total;
+      return this.$store.getters.getFilteredContributions !== null
+        ? this.$store.getters.getFilteredContributions.total_amount
+        : 0;
     },
+
     getMembersContributionsByPaymentItem() {
       let data = [];
       if (this.$store.getters.getMembersContributionsByPaymentItem != null) {
@@ -244,7 +265,7 @@ export default {
               balance: ele.balance,
               payment_item_amount: ele.payment_item_amount,
               payment_item_id: ele.payment_item_id,
-              payment_item_complusory: ele.payment_item_complusory,
+              payment_item_complusory: ele.payment_item_compulsory,
               payment_item_name: ele.payment_item_name,
               comment: ele.comment,
               code: ele.code,
@@ -256,31 +277,12 @@ export default {
               user_id: ele.user_id,
               user_name: ele.user_name,
               user_telephone: ele.user_telephone,
+              session_id: ele.session_id,
             });
           }
         );
       }
       return data;
-    },
-
-    setTableTitle() {
-      let name = "";
-      let amount = 0;
-      let title = "";
-      if (this.$store.getters.getCurrentPaymentItem != null) {
-        name = this.$store.getters.getCurrentPaymentItem.name;
-        amount = this.$store.getters.getCurrentPaymentItem.amount;
-      }
-      if (
-        this.$store.getters.getCurrentPaymentItem != null &&
-        this.$store.getters.getCurrentContributionPaymentItem != null
-      ) {
-        title =
-          `Contributions for ${name}, Amount Payable: ` +
-          Number(amount).toLocaleString() +
-          "  XAF";
-      }
-      return title;
     },
 
     checkIsExistPaymentItem() {
@@ -291,10 +293,11 @@ export default {
       let data = [];
 
       if (this.$store.getters.getFilteredContributions != null) {
-        this.$store.getters.getFilteredContributions.forEach((ele) => {
+        this.$store.getters.getFilteredContributions.data.forEach((ele) => {
           data.push({
             counter:
-              this.$store.getters.getFilteredContributions.indexOf(ele) + 1,
+              this.$store.getters.getFilteredContributions.data.indexOf(ele) +
+              1,
             amount_deposited: ele.amount_deposited,
             total_amount_deposited: ele.total_amount_deposited,
             id: ele.id,
@@ -307,13 +310,14 @@ export default {
             comment: ele.comment,
             code: ele.code,
             type: "MEMBERS_CONTRIBUTIONS",
-            complusory: ele.complusory,
+            compulsory: ele.compulsory,
             created_at: ele.created_at,
             updated_by: ele.updated_by,
             status: ele.status,
             user_id: ele.user_id,
             user_name: ele.user_name,
             user_telephone: ele.user_telephone,
+            session_id: ele.session_id,
           });
         });
       }
@@ -321,42 +325,87 @@ export default {
     },
 
     computeTotalContributionsForFilteredRecord() {
-      let total = 0.0;
-      if (this.$store.getters.getFilteredContributions != null) {
-        this.$store.getters.getFilteredContributions
-          .filter((ele) => ele.approve == "APPROVED")
-          .map((ele) => ele.total_amount_deposited)
-          .forEach((amount) => {
-            total += amount;
-          });
-      }
-      return total;
-    },
-
-    getLoadingState() {
-      return this.$store.getters.getFetchingState;
+      return this.$store.getters.getFilteredContributions !== null
+        ? this.$store.getters.getFilteredContributions.total_amount
+        : 0;
     },
 
     getTableTitleForSearchContributions() {
       let title = "";
-      let search_data = this.$store.getters.getSearchSavingParams;
+      const payment_item = this.$store.getters.getSearchContributionParams;
       title =
-        search_data != undefined && search_data.payment_item_id != undefined
-          ? `Members Contributions for ${
-              search_data.payment_item_id.name
-            }, Amount Payable:  ${Number(
-              search_data.payment_item_id.amount
-            ).toLocaleString()} XAF`
+        payment_item !== null
+          ? this.$t("app.contributionPartTitle") + `${payment_item.item.label}`
           : "";
       return title;
+    },
+
+    getPaymentItemName() {
+      const payment_item = this.$store.getters.getSearchContributionParams;
+      return payment_item !== undefined && payment_item !== null
+        ? payment_item.item.label
+        : "";
+    },
+
+    buildPaginatedObject() {
+      let paginatedObject = {
+        sortBy: "name",
+        descending: false,
+        page:
+          this.$store.getters.getFilteredContributions !== null
+            ? this.$store.getters.getFilteredContributions.current_page
+            : 1,
+        rowsPerPage:
+          this.$store.getters.getFilteredContributions !== null
+            ? this.$store.getters.getFilteredContributions.per_page
+            : 7,
+        rowsNumber:
+          this.$store.getters.getFilteredContributions !== null
+            ? this.$store.getters.getFilteredContributions.total
+            : 0,
+      };
+      return paginatedObject;
+    },
+
+    getFetchingState() {
+      return this.$store.getters.getFetchingState;
+    },
+
+    getPagination() {
+      let paginate_object = {
+        sortBy: this.$store.getters.getPagination.sortBy,
+        descending: this.$store.getters.getPagination.descending,
+        page: this.$store.getters.getPagination.page,
+        rowsPerPage: this.$store.getters.getPagination.rowsPerPage,
+        rowsNumber: this.$store.getters.getPagination.rowsNumber,
+      };
+
+      return paginate_object;
     },
   },
 
   watch: {},
 
   methods: {
+    onRequest(props) {
+      const { page, rowsPerPage } = props.pagination;
+      const fetch_count =
+        rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
+      const search_params = this.$store.getters.getSearchContributionParams;
+      this.filterContributions(
+        search_params.item.value,
+        search_params.month,
+        search_params.year,
+        search_params.status,
+        search_params.date,
+        search_params.range,
+        page,
+        fetch_count
+      );
+    },
+
     checkTreasurerRole() {
-      const treasurer_role = LocalStorage.getItem("data").roles.find(
+      const treasurer_role = LocalStorage.getItem("data").user_data.roles.find(
         (role) => role.name == "TREASURER"
       );
       return treasurer_role != undefined;
@@ -380,83 +429,98 @@ export default {
       this.$store.dispatch("setCurrentPaymentItem", item[0]); //set the state with the first element from the filtered array
     },
 
-    filterContributions() {
-      this.filteredContributions = [];
+    filterContributions(
+      payment_item_id,
+      month,
+      year,
+      status,
+      date,
+      date_range,
+      page,
+      per_page
+    ) {
       let payload = {
         status: "none",
-        url: `/api/protected/organisation/contributions/search?payment_item_id=${this.payment_item_id.value}&month=${this.month}&year=${this.year}&status=${this.status}`,
+        url: `/api/protected/organisations/contributions/search?payment_item_id=${payment_item_id}&month=${month}&year=${year}&status=${status}&date=${date}&range=${date_range}&page=${page}&per_page=${per_page}`,
         has_path_val: true,
         show_feedback: false,
-        show_spinner: true,
+        show_spinner: false,
         msg: "none",
         color: "default",
         error_msg: "default",
-        commit: "none",
-        has_commit: false,
+        commit: "SET_FILTERED_CONTRIBUTIONS",
+        has_commit: true,
         to_be_store_data: {
           required: true,
           has_value: false,
           data: null,
         },
       };
-      this.loading_filter = true;
+      this.$store.commit("SET_IS_FETCHING", true);
       this.$store
         .dispatch("getRequest", payload)
-        .then((res) => {
-          this.start_filter = true;
-
-          res.data.data.forEach((ele) => {
-            this.filteredContributions.push({
-              counter: res.data.data.indexOf(ele) + 1,
-              amount_deposited: ele.amount_deposited,
-              total_amount_deposited: ele.total_amount_deposited,
-              id: ele.id,
-              approve: ele.approve,
-              balance: ele.balance,
-              payment_item_amount: ele.payment_item_amount,
-              payment_item_id: ele.payment_item_id,
-              payment_item_complusory: ele.payment_item_complusory,
-              payment_item_name: ele.payment_item_name,
-              comment: ele.comment,
-              code: ele.code,
-              type: "MEMBERS_CONTRIBUTIONS",
-              complusory: ele.complusory,
-              created_at: ele.created_at,
-              updated_by: ele.updated_by,
-              status: ele.status,
-              user_id: ele.user_id,
-              user_name: ele.user_name,
-              user_telephone: ele.user_telephone,
-            });
+        .then((response) => {
+          this.$store.commit("SET_PAGINATION", {
+            sortBy: "name",
+            descending: false,
+            page: response.data.current_page,
+            rowsPerPage: response.data.per_page,
+            rowsNumber: response.data.total,
           });
         })
         .finally(() => {
-          this.loading_filter = false;
+          this.$store.commit("SET_IS_FETCHING", false);
         });
+
+      return;
     },
 
     openSearchBar() {
       let payload = {
         data: null,
-        tab: "Search Members Contributions",
+        tab: this.$t("app.searchContribution"),
       };
 
       this.$emit("search-members-contribution", payload);
     },
 
     downloadContributions() {
-      let payment_item_id =
-        this.$store.getters.getSearchSavingParams.payment_item_id.id;
-      let month = this.$store.getters.getSearchSavingParams.month;
-      let year = this.$store.getters.getSearchSavingParams.year;
-      let status = this.$store.getters.getSearchSavingParams.status;
-      let url = `/api/protected/download-contributions?payment_item_id=${payment_item_id}&month=${month}&year=${year}&status=${status}`;
+      const payment_item_id =
+        this.$store.getters.getSearchContributionParams !== null &&
+        this.$store.getters.getSearchContributionParams !== undefined
+          ? this.$store.getters.getSearchContributionParams.item.value
+          : "";
+      const payment_item_name =
+        this.$store.getters.getSearchContributionParams != null &&
+        this.$store.getters.getSearchContributionParams !== undefined
+          ? this.$store.getters.getSearchContributionParams.item.label
+          : "";
+      let month =
+        this.$store.getters.getSearchContributionParams !== null &&
+        this.$store.getters.getSearchContributionParams !== undefined
+          ? this.$store.getters.getSearchContributionParams.month
+          : "";
+      let year =
+        this.$store.getters.getSearchContributionParams !== null &&
+        this.$store.getters.getSearchContributionParams !== undefined
+          ? this.$store.getters.getSearchContributionParams.year
+          : "";
+      let status =
+        this.$store.getters.getSearchContributionParams !== null &&
+        this.$store.getters.getSearchContributionParams !== undefined
+          ? this.$store.getters.getSearchContributionParams.status
+          : "";
+      let url = `/api/protected/download-contributions?payment_item_id=${payment_item_id}&month=${month}&year=${year}&status=${status}&payment_item_name=${payment_item_name}`;
 
       let file_name =
-        "Member's Contribution for " +
-        this.$store.getters.getSearchSavingParams.payment_item_id.name +
+        this.$t("app.memberContributionDownloadLabel") +
+        payment_item_name +
         ".pdf";
-      this.loading = this.downloadPdf(url, file_name);
+      this.loading_download = this.downloadPdf(url, file_name);
+    },
+
+    deleteRow(data) {
+      this.$emit("delete-row", data);
     },
   },
   components: {
@@ -465,4 +529,25 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.detail_name {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 11px;
+  letter-spacing: 0.01em;
+  color: $grey8;
+}
+
+.summary {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 11px;
+  letter-spacing: 0.01em;
+  color: $grey8;
+  text-decoration: underline;
+}
+</style>

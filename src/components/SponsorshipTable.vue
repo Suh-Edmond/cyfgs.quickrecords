@@ -1,36 +1,53 @@
 <template>
-  <div class="q-pa-xs">
+  <div>
     <!-- table element -->
     <q-table
       :data="data"
       :columns="columns"
       row-key="id"
-      :table-header-style="{ backgroundColor: '#5384ae', color: '#FFFFFF' }"
+      :table-header-style="{ backgroundColor: '#213c65', color: '#FFFFFF' }"
       class="col-xs-12"
       :filter="filter"
-      :rows-per-page-options="[0]"
-      hide-pagination
+      :loading="table_loading"
+      :pagination.sync="getPagination"
+      @request="onRequest"
+      binary-state-sort
     >
       <template v-slot:body="props">
         <q-tr :props="props">
-          <q-td key="counter" :props="props">
-            {{ props.row.counter }}
-          </q-td>
           <q-td key="supporter" :props="props">
             {{ props.row.supporter }}
           </q-td>
           <q-td key="amount_deposited" :props="props">
             {{ Number(props.row.amount_deposited).toLocaleString() }}
           </q-td>
-          <q-td key="code" :props="props">
-            {{ props.row.code }}
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'PENDING'"
+            class="text-info"
+          >
+            {{ props.row.approve }}
           </q-td>
-          <q-td key="approve" :props="props">
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'APPROVED'"
+            class="registered"
+          >
+            {{ props.row.approve }}
+          </q-td>
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'DECLINED'"
+            class="not_registered"
+          >
             {{ props.row.approve }}
           </q-td>
 
           <q-td key="action" :props="props">
-            <!-- button to handle edit, view and delete of row data -->
+            <!-- button to handle edit, view and delete of row data  q-px-sm -->
             <q-btn flat round v-if="!checkTreasurerRole()">
               <q-icon
                 name="menu"
@@ -41,35 +58,39 @@
               >
                 <q-menu>
                   <q-list style="width: 180px" bordered separator>
-                       <!-- edit support -->
-                       <q-item
-                      clickable
-                      v-close-popup
-                      @click="onEditSupport(props.row)"
-                    >
-                      <q-item-section avatar>
-                        <span>
-                          <q-icon name="edit" size="xs" class="edit" />
-                        </span>
-                      </q-item-section>
-                      <q-item-section>
-                        <q-item-label class="edit">Edit</q-item-label>
-                      </q-item-section>
-                    </q-item>
-
                     <!-- view support -->
                     <q-item
                       clickable
                       v-close-popup
                       @click="onViewSupport(props.row)"
                     >
-                      <q-item-section avatar>
+                      <q-item-section avatar class="q-mr-lg">
                         <span>
                           <q-icon name="visibility" size="xs" class="edit" />
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="edit">View</q-item-label>
+                        <q-item-label class="edit">{{
+                          $t("app.view")
+                        }}</q-item-label>
+                      </q-item-section>
+                    </q-item>
+
+                     <!-- edit support -->
+                     <q-item
+                      clickable
+                      v-close-popup
+                      @click="onEditSupport(props.row)"
+                    >
+                      <q-item-section avatar class="q-mr-lg">
+                        <span>
+                          <q-icon name="edit" size="xs" class="edit" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="edit">{{
+                          $t("app.edit")
+                        }}</q-item-label>
                       </q-item-section>
                     </q-item>
 
@@ -79,13 +100,15 @@
                       v-close-popup
                       @click="onDeleteSupport(props.row)"
                     >
-                      <q-item-section avatar>
+                      <q-item-section avatar class="q-mr-lg">
                         <span>
                           <q-icon name="delete" size="xs" color="red" />
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="text-red">Delete</q-item-label>
+                        <q-item-label class="text-red">{{
+                          $t("app.delete")
+                        }}</q-item-label>
                       </q-item-section>
                     </q-item>
                   </q-list>
@@ -96,29 +119,44 @@
             <!-- buttons for approve and decline row data -->
             <q-btn
               class="decline_btn"
-              size="md"
-              label="Decline"
+              :label="$t('app.decline')"
               no-caps
+              dense
+              unelevated
               @click="onDeclineRecord(props.row, 'Decline')"
               v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
             />
 
             <q-btn
-              class="approve_btn"
-              size="md"
-              label="Approve"
+              class="approve_btn q-mx-xl"
+              dense
+              :label="$t('app.approve')"
               no-caps
+              unelevated
               @click="onApprovedRecord(props.row, 'Approve')"
               v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
             />
+
+            <q-btn
+              unelevated
+              no-caps
+              dense
+              color="primary"
+              class="view_income"
+              :label="$t('app.view')"
+              @click="onViewSupport(props.row)"
+              v-if="checkTreasurerRole()"
+            >
+              <q-icon name="visibility" size="xs" class="q-pl-md"></q-icon>
+            </q-btn>
           </q-td>
         </q-tr>
       </template>
 
       <!-- slot for table headings -->
       <template v-slot:top-left>
-        <div class="text-h6 title">
-          {{ title }}
+        <div class="text-h6 title" v-if="title !== ''">
+          {{ title }},  <span> {{ $t("app.total") }} : {{ Number(total).toLocaleString() }} XAF</span>
         </div>
       </template>
 
@@ -127,13 +165,14 @@
         <q-input
           outlined
           dense
-          :class="
-            $q.screen.md
-              ? 'text-h6-sm q-mb-sm q-mt-sm full-width'
-              : 'text-h6-sm'
-          "
           v-model="filter"
-          placeholder="Type to search..."
+          :placeholder="$t('app.tableSearch')"
+          :class="
+            $q.platform.is.mobile
+              ? 'row text-h6-sm'
+              : 'text-h6-sm q-mb-lg q-mt-lg full-width'
+          "
+          :style="$q.platform.is.mobile?'width:88vw':''"
         >
           <template v-slot:append>
             <q-icon name="search" />
@@ -141,15 +180,8 @@
         </q-input>
       </template>
 
-      <template v-slot:bottom>
-        <q-tr>
-          <q-th class="text-bold total">
-            Total:
-          </q-th>
-          <q-th class="text-bold total_given">
-            {{ Number(total).toLocaleString() }} XAF
-          </q-th>
-        </q-tr>
+      <template v-slot:loading>
+        <q-inner-loading showing color="primary" />
       </template>
     </q-table>
 
@@ -158,28 +190,45 @@
       <q-card>
         <q-card-section class="q-pa-lg">
           <div class="q-mb-md">
-            <label class="text-dark message">{{ message }}</label>
+            <label class="text-dark message">{{ message }}</label
+            ><br />
+            <small class="warning_caption">{{
+              $t("app.actionUndoneMsg")
+            }}</small>
           </div>
-          <div class="text-weight-bold text-left text-red">Sponsor:  <span class="q-pl-md">{{ deleted_row.supporter }}</span> </div>
-          <div class="text-weight-bold text-left text-red"> Amount: <span class="q-pl-md">{{ Number(deleted_row.amount_deposited).toLocaleString() }} XAF</span></div>
+          <div class="text-weight-bold text-left text-red">
+            {{ $t("app.sponsor") }}:
+            <span class="q-pl-md">{{ deleted_row.supporter }}</span>
+          </div>
+          <div class="text-weight-bold text-left text-red">
+            {{ $t("app.amount") }}:
+            <span class="q-pl-md"
+              >{{
+                Number(deleted_row.amount_deposited).toLocaleString()
+              }}
+              XAF</span
+            >
+          </div>
         </q-card-section>
         <q-card-actions align="right">
           <q-btn
-            label="Cancel"
+            :label="$t('app.cancel')"
             color="primary"
             :disabled="false"
             :loading="loading"
             flat
             class="dialog_button"
             v-close-popup
+            no-caps
           ></q-btn>
           <q-btn
-            label="Delete"
+            :label="$t('app.delete')"
             color="primary"
             class="dialog_button"
             :disabled="false"
             :loading="loading"
             flat
+            no-caps
             v-close-popup
             @click="deleteRow(deleted_row)"
           ></q-btn>
@@ -195,27 +244,43 @@
             <div class="col-md-12">
               <label for="msg">
                 <span class="text-weight-bold"
-                  >Do you want to {{ chosen_state }} {{ approve_msg }}</span
+                  >{{ $t("app.doYouKnow") }}{{ chosen_state }}
+                  {{ approve_msg }}</span
                 >
                 <br />
               </label>
             </div>
           </div>
+          <div class="text-red">
+            <div class="text-weight-bold text-left">
+              {{ $t("app.sponsor") }}:
+              <span class="q-pl-md">{{ supporter }}</span>
+            </div>
+
+            <div class="text-weight-bold text-left">
+              {{ $t("app.amount") }}:
+              <span class="q-pl-lg"
+                >{{ Number(supporter_amount).toLocaleString() }} XAF</span
+              >
+            </div>
+          </div>
         </q-card-section>
 
-        <q-card-actions align="right">
+        <q-card-actions align="right" class="q-ma-md">
           <q-btn
             :class="chosen_state == 'Approve' ? 'approve' : 'decline'"
             size="md"
-            label="Cancel"
+            :label="$t('app.cancel')"
             flat
             v-close-popup
+            no-caps
           />
           <q-btn
             :class="chosen_state == 'Approve' ? 'approve' : 'decline'"
             size="md"
             :label="chosen_state"
             flat
+            no-caps
             @click="onChangeRecordState()"
             v-close-popup
           />
@@ -227,10 +292,9 @@
 <script>
 import { LocalStorage } from "quasar";
 import SponsorshipMixin from "src/mixins/SponsorshipMixin.vue";
-import moment from "moment";
 
 export default {
-  mixins:[SponsorshipMixin],
+  mixins: [SponsorshipMixin],
   props: {
     columns: {
       type: Array,
@@ -252,73 +316,98 @@ export default {
       required: false,
       type: String,
     },
-    total:{
-      required:true,
-      type:Number,
-      default:0
-    }
+    total: {
+      required: true,
+      type: Number,
+      default: 0,
+    },
+    pagination: {
+      type: Object,
+      required: true,
+    },
+    table_loading: {
+      required: true,
+      type: Boolean,
+    },
   },
 
   data() {
     return {
-      label_download: "Print",
       loading: false,
       color: "positive",
       no_caps: true,
       filter: "",
-      pagination: {
-        rowsPerPage: 15, // current rows per page being displayed
-      },
       show_approve_dialog: false,
       dialog: false,
       deleted_row: null,
       chosen_state: null,
       approve_msg: null,
       approve_data: null,
+      supporter: null,
+      supporter_amount: 0,
     };
   },
-  computed: {},
+  computed: {
+    getPagination: {
+      get() {
+        return this.pagination;
+      },
+      set(pagination) {
+        return pagination;
+      },
+    },
+  },
   methods: {
+    onRequest(props) {
+      this.$emit("onRequest", props);
+    },
+
     onViewSupport(data) {
       let payload = {
         data: data,
-        tab: "View Sponsorship",
+        tab: this.$t("app.viewSponsorship"),
       };
       this.$store.dispatch("setSelectedSponsorship", data);
       this.$emit("view-sponsorship", payload);
     },
 
-    onEditSupport(data){
+    onEditSupport(data) {
       let payload = {
         data: data,
-        tab: "Sponsorship Management",
+        tab: this.$t("app.sponsorshipMgt"),
       };
 
       this.$store.dispatch("setSelectedSponsorship", data);
 
-      this.$emit("edit-sponsorship", payload)
+      this.$emit("edit-sponsorship", payload);
     },
     onDeleteSupport(data) {
       this.dialog = true;
-      this.deleted_row = data
+      this.deleted_row = data;
     },
 
     onDeclineRecord(row, state) {
       this.show_approve_dialog = true;
       this.approve_data = row;
       this.chosen_state = state;
-      this.approve_msg = ` ${Number(row.amount_deposited).toLocaleString() } XAF Sponsorship by ${row.supporter} for ${row.payment_item.name}?`;
+      this.supporter_amount = row.amount_deposited;
+      this.supporter = row.supporter;
+      this.approve_msg =
+        this.$t("app.sponsorshipPart") + `${row.payment_item.name} ?`;
     },
 
     onApprovedRecord(row, state) {
       this.show_approve_dialog = true;
       this.approve_data = row;
       this.chosen_state = state;
-      this.approve_msg = ` ${Number(row.amount_deposited).toLocaleString() } XAF Sponsorship by ${row.supporter} for ${row.payment_item.name}?`;
+      this.supporter_amount = row.amount_deposited;
+      this.supporter = row.supporter;
+      this.approve_msg =
+        this.$t("app.sponsorshipPart") + `${row.payment_item.name} ?`;
     },
 
     checkTreasurerRole() {
-      const treasurer_role = LocalStorage.getItem("data").roles.find(
+      const treasurer_role = LocalStorage.getItem("data").user_data.roles.find(
         (role) => role.name == "TREASURER"
       );
       return treasurer_role != undefined;
@@ -327,13 +416,13 @@ export default {
     deleteRow(data) {
       let payload = {
         url: `/api/protected/sponsorships/${data.id}`,
-        msg: "Sponsorship deleted successfully",
+        msg: this.$t("app.sponsorDeletedSuccessMsg"),
         status: "success",
         color: "default",
         to_on_ok: "none",
         show_feedback: true,
         to_on_fail: "none",
-        error_msg: "An Error occurred! Please try again",
+        error_msg: this.$t("app.defaultErrorMsg"),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -343,21 +432,28 @@ export default {
         },
       };
       this.$store.dispatch("deleteRequest", payload).then(() => {
-        this.getAllSponsorships();
+        this.getAllSponsorships(1, 10, "", "");
+        this.$store.dispatch("setSelectedSponsorship", null);
       });
     },
 
     onChangeRecordState() {
-      let state = this.chosen_state == 'Approve' ? 'APPROVED':'DECLINED'
+      let state =
+        this.chosen_state == "Approve"
+          ? this.$t("app.approveLabel")
+          : this.$t("app.declineLabel");
       let payload = {
         url: `/api/protected/sponsorships/${this.approve_data.id}/approve?type=${state}`,
-        msg: `Sponsorship has been ${this.chosen_state} successfully`,
+        msg:
+          this.$t("app.sponsorPart") +
+          `${this.chosen_state}` +
+          this.$t("app.successfull"),
         data: null,
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: "An Error occurred! Please try again",
+        error_msg: this.$t("app.defaultErrorMsg"),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -367,12 +463,17 @@ export default {
         },
       };
       this.$store.dispatch("putRequest", payload).then((res) => {
-        if (res.status == 200) {
-         if(this.approve_data.payment_item == null){
-          this.getAllSponsorships();
-         }else{
-          this.getSponsorships(this.approve_data.payment_item.id);
-         }
+        if (res.success) {
+          if (this.approve_data.payment_item == null) {
+            this.getAllSponsorships(1, 7, "", "");
+          } else {
+            this.getAllSponsorships(
+              1,
+              7,
+              this.approve_data.payment_item.id,
+              ""
+            );
+          }
         }
       });
     },
@@ -383,7 +484,9 @@ export default {
 
 <style lang="scss" scoped>
 .title {
-  font-size: small;
+  font-size: 15px;
+  font-weight: 500;
+  color: $grey8;
 }
 
 .menu_icon {
@@ -395,25 +498,26 @@ export default {
 }
 
 .dialog_button {
-  font-size: .9rem;
+  font-size: 0.9rem;
   font-weight: 500;
-  margin-bottom: .5rem;
+  margin-bottom: 0.5rem;
 }
 
 .approve_btn {
   background-color: $secondary;
   color: white;
+  width: 5.5rem;
 }
 
 .approve_card {
-  width: 30rem;
-  padding: 0.7rem;
+  width: 24rem;
+  // padding: 0.7rem;
 }
 
 .decline_btn {
   background-color: $orange;
   color: white;
-  margin-right: 3rem;
+  width: 5.5rem;
 }
 
 .message {
@@ -435,11 +539,37 @@ export default {
 }
 
 .total {
-  // padding-left: 1rem;
-  font-size: 13px;
+  font-size: 15px;
 }
+
 .total_given {
   padding-left: 3rem;
   font-size: 13px;
+}
+
+.warning_caption {
+  color: $grey2;
+  font-weight: 500;
+  font-size: 13px;
+}
+
+.view_income {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 25px;
+  letter-spacing: 0.01em;
+  text-transform: capitalize;
+  color: $primary;
+  width: 5.5rem;
+}
+
+.not_registered {
+  color: $orange;
+}
+
+.registered {
+  color: $secondary;
 }
 </style>

@@ -1,108 +1,125 @@
 <template>
   <div class="q-pa-md">
-    <div>
-      <div class="flex q-pb-md">
+    <div class="flex justify-between q-pb-md">
+      <div>
         <label for="name" class="label"
           ><span> <q-icon name="category" size="xs" class="q-pr-sm" /> </span
-          >Payment Activity:
-          <span class="value value_item">{{
-            getSelectedSponsorship.payment_item.name
-          }}</span></label
-        >
+          >{{ $t("app.paymentItem") }}:
+        </label>
       </div>
-      <div class="flex q-pb-md">
+      <div class="detail-value wrap">
+        <label class="value">
+          {{ getSelectedSponsorship.payment_item.name }}
+        </label>
+      </div>
+    </div>
+    <div class="flex justify-between q-pb-md">
+      <div>
         <label for="name" class="label"
           ><span> <q-icon name="person" size="xs" class="q-pr-sm" /> </span
-          >Sponsor's Name:
-          <span class="value value_name">{{
-            getSelectedSponsorship.supporter
-          }}</span></label
-        >
+          >{{ $t("app.sponsorNameLabel") }}:
+        </label>
       </div>
-      <div class="flex q-pb-md">
+      <div class="detail-value wrap">
+        <label class="value">
+          {{ getSelectedSponsorship.supporter }}
+        </label>
+      </div>
+    </div>
+    <div class="flex justify-between q-pb-md">
+      <div>
         <label for="name" class="label">
           <span>
             <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
-          >Amount:
-          <span class="value value_amount"
-            >{{
-              Number(getSelectedSponsorship.amount_deposited).toLocaleString()
-            }}
-            XAF</span
-          ></label
-        >
-      </div>
-      <div class="flex q-pb-md">
-        <label for="name" class="label"
-          ><span> <q-icon name="schedule" size="xs" class="q-pr-sm" /> </span
-          >Payment Date:
-          <span class="value value_date">{{
-            getFormatedCreatedDate
-          }}</span></label
-        >
-      </div>
-      <div class="flex q-pb-md">
-        <label
-          for="status"
-          class="label"
-          v-show="getSelectedSponsorship.approve == 'DECLINED'"
-          ><span>
-            <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span
-          >Transaction Status:
-          <span class="value_trxn unapproved_color">{{
-            getSelectedSponsorship.approve
-          }}</span></label
-        >
-        <label
-          for="status"
-          class="label"
-          v-show="getSelectedSponsorship.approve == 'APPROVED'"
-          ><span>
-            <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span
-          >Transaction Status:
-          <span class="value_trxn approved_color">
-            {{ getSelectedSponsorship.approve }}</span
-          ></label
-        >
-        <label
-          for="status"
-          class="label"
-          v-show="getSelectedSponsorship.approve == 'PENDING'"
-          ><span>
-            <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span
-          >Transaction Status:
-          <span class="value_trxn pending_color">
-            {{ getSelectedSponsorship.approve }}</span
-          ></label
-        >
-      </div>
-      <div class="flex q-pb-md">
-        <label for="name" class="label"
-          ><span> <q-icon name="badge" size="xs" class="q-pr-sm" /> </span
-          >Transaction code:
-          <span class="value q-pl-md value_code">{{
-            getSelectedSponsorship.code
-          }}</span></label
-        >
-      </div>
-      <div class="flex q-pb-lg">
-        <label for="name" class="label"
-          ><span> <q-icon name="person" size="xs" class="q-pr-sm" /> </span
-          >Created By:
-          <span class="value q-pl-md value_created_by">{{
-            getSelectedSponsorship.updated_by
-          }}</span></label
-        >
-      </div>
-      <div class="flex q-pb-xs">
-        <label for="name" class="label"
-          ><span> <q-icon name="description" size="xs" class="q-pr-sm" /> </span
-          >Comment:
+          >{{ $t("app.amount") }}:
         </label>
       </div>
-      <p class="value_comment">
-        {{ getSelectedSponsorship.comment }}
-      </p>
+
+      <div class="detail-value wrap">
+        <label class="value">
+          {{ Number(getSelectedSponsorship.amount_deposited).toLocaleString() }}
+          XAF
+        </label>
+      </div>
+    </div>
+    <div class="flex justify-between q-pb-md">
+      <label for="name" class="label"
+        ><span> <q-icon name="schedule" size="xs" class="q-pr-sm" /> </span
+        >{{ $t("app.paymentDate") }}:
+      </label>
+      <div class="detail-value wrap">
+        <label class="value">
+          {{ getFormatedCreatedDate }}
+        </label>
+      </div>
+    </div>
+    <div class="flex justify-between q-pb-md">
+      <div>
+        <label for="status" class="label"
+          ><span>
+            <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span
+          >{{ $t("app.transactionStatus") }}:
+        </label>
+      </div>
+
+      <div class="detail-value wrap">
+        <label
+          class="value text-secondary"
+          v-show="getSelectedSponsorship.approve == 'APPROVED'"
+        >
+          {{ getSelectedSponsorship.approve }}
+        </label>
+        <label
+          class="value text-orange"
+          v-show="getSelectedSponsorship.approve == 'DECLINED'"
+        >
+          {{ getSelectedSponsorship.approve }}
+        </label>
+        <label
+          class="value text-info"
+          v-show="getSelectedSponsorship.approve == 'PENDING'"
+        >
+          {{ getSelectedSponsorship.approve }}
+        </label>
+      </div>
+    </div>
+    <div class="flex justify-between q-pb-md">
+      <label for="name" class="label"
+        ><span> <q-icon name="badge" size="xs" class="q-pr-sm" /> </span
+        >{{ $t("app.transactionCode") }}:</label
+      >
+
+      <div class="detail-value wrap">
+        <label class="value">
+          {{ getSelectedSponsorship.code }}
+        </label>
+      </div>
+    </div>
+    <div class="flex justify-between q-pb-lg">
+      <div>
+        <label for="name" class="label"
+          ><span> <q-icon name="person" size="xs" class="q-pr-sm" /> </span
+          >{{ $t("app.createdBy") }}:
+        </label>
+      </div>
+
+      <div class="detail-value wrap">
+        <label class="value">
+          {{ getSelectedSponsorship.updated_by }}
+        </label>
+      </div>
+    </div>
+    <div class="row q-pb-xs">
+      <label for="name" class="label"
+        ><span> <q-icon name="description" size="xs" class="q-pr-sm" /> </span
+        >{{ $t("app.comment") }}:
+      </label>
+    </div>
+    <div class="value_comment" v-show="getSelectedSponsorship.comment !== null">
+      {{ getSelectedSponsorship.comment }}
+    </div>
+    <div class="value_comment" v-show="getSelectedSponsorship.comment === null">
+      {{ $t("app.none") }}
     </div>
   </div>
 </template>
@@ -114,7 +131,7 @@ import SponsorshipMixin from "src/mixins/SponsorshipMixin.vue";
 export default {
   mixins: [SponsorshipMixin],
   mounted() {
-    let heading = "Sponsorship information";
+    let heading = this.$t("app.sponsorshipHeading");
     this.$emit("set-heading", heading);
   },
 
@@ -134,13 +151,14 @@ export default {
   },
   computed: {
     validateForm() {
-      return this.sponsorship.supporter === null ||
+      return (
+        this.sponsorship.supporter === null ||
         this.sponsorship.amount_deposited == 0 ||
         this.sponsorship.payment_item_id == null
-        ? true
-        : false;
+      );
     },
     getFormatedCreatedDate() {
+      console.log(this.$store.getters.getSelectedSponsorship);
       return moment(this.getSelectedSponsorship.created_at).format(
         "MMMM Do YYYY"
       );
@@ -148,16 +166,14 @@ export default {
 
     getSelectedSponsorship() {
       const id = this.$store.getters.getSelectedSponsorship.id;
-      return this.$store.getters.getSponsorships.filter(
+      return this.$store.getters.getSponsorships.data.filter(
         (ele) => ele.id == id
       )[0];
     },
   },
-  methods: {
-  },
+  methods: {},
 
-  components: {
-  },
+  components: {},
 };
 </script>
 
@@ -166,22 +182,20 @@ export default {
   color: #f2994a;
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 500;
-  font-size: 15px;
-  line-height: 27px;
-  letter-spacing: 0.005em;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 11px;
+  letter-spacing: 0.01em;
 }
-
 .approved_color {
   color: #27ae60;
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 500;
-  font-size: 15px;
-  line-height: 27px;
-  letter-spacing: 0.005em;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 11;
+  letter-spacing: 0.01em;
 }
-
 .label {
   font-family: "Roboto";
   font-style: normal;
@@ -195,74 +209,32 @@ export default {
 .value {
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 500;
-  font-size: 15px;
-  line-height: 27px;
-  letter-spacing: 0.005em;
-  color: $dark;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.01em;
+  color: $grey8;
 }
 
+.detail-value {
+  max-width: 250px;
+}
 .value_comment {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
-  line-height: 27px;
-  text-align: start;
-  letter-spacing: 0.005em;
+  letter-spacing: 0.01em;
   color: $dark;
-  // padding-left: 1.5rem;
-}
-
-.value_name {
-  padding-left: 2.5rem;
-}
-
-.value_item {
-  padding-left: 2.3rem;
-}
-
-.value_amount {
-  padding-left: 5.7rem;
-}
-
-.value_date {
-  padding-left: 3.5rem;
-}
-
-.value_trxn {
-  padding-left: 1.5rem;
-}
-
-.value_code {
-  padding-left: 2.1rem;
-}
-
-.value_created_by {
-  padding-left: 4.5rem;
+  margin-left: 1.8rem;
 }
 
 .pending_color {
   color: $info;
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 500;
-  font-size: 15px;
-  line-height: 27px;
-  letter-spacing: 0.005em;
-}
-
-.form_field {
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 11px;
-  align-items: center;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 11px;
   letter-spacing: 0.01em;
-  color: $grey2;
-}
-
-.instruction_info {
-  color: $grey2;
 }
 </style>

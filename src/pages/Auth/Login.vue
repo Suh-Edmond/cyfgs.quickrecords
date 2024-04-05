@@ -5,30 +5,32 @@
       :class="$q.screen.lg ? 'q-pt-lg flex flex-center' : 'q-pt-sm'"
     >
       <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12">
-        <q-card :class="$q.screen.lg ? 'q-mt-lg' : 'q-mt-md q-mb-xl'">
+        <q-card :class="$q.screen.lg ? 'q-mt-lg' : 'q-mt-md q-mb-xl login-card'">
           <q-card-section>
-            <div class="text_h6 text-center q-pt-sm q-pb-sm">SIGN IN</div>
-            <div class="text-subtitle2 text-center q-pb-xs">
-              Sign in to continue to Financial Assistant
+            <div class="text_h6 text-center q-pt-sm q-pb-sm">
+              {{ $t("app.signIn") }}
             </div>
-            <q-form
-              @submit="onSubmit"
-              class="q-gutter-md q-mt-lg q-px-md"
-            >
+            <div class="text-subtitle2 text-center q-pb-xs">
+              {{ $t("app.loginCaption") }}
+            </div>
+            <q-form @submit="onSubmit" class="q-gutter-md q-mt-lg q-px-md">
               <div>
-                <label for="credential" class="form_field">Telephone <span class="text-red">*</span></label>
-                <q-input
+                <label for="credential" class="form_field"
+                  >{{ $t("app.telephoneLabel") }}
+                  <span class="text-red">*</span></label
+                >
+                <vue-tel-input
                   v-model="user.credential"
-                  outlined
-                  dense
-                  type="tel"
-                  mask="(+###) ### - ### - ###"
-                  unmasked-value
-                  hint="Example: (+237) ### - ### - ###"
-                />
+                  defaultCountry="cm"
+                  mode="international"
+                  class="q-pa-xs"
+                ></vue-tel-input>
               </div>
               <div>
-                <label for="password" class="form_field">Password <span class="text-red">*</span></label>
+                <label for="password" class="form_field"
+                  >{{ $t("app.passwordLabel") }}
+                  <span class="text-red">*</span></label
+                >
                 <q-input
                   v-model="user.password"
                   :type="isPwd ? 'password' : 'text'"
@@ -44,7 +46,7 @@
                   </template>
                 </q-input>
               </div>
-              <div class="q-mt-lg">
+              <div class="q-mt-lg q-mb-lg">
                 <q-btn
                   class="form_button q-pa-xs"
                   :label="label_sigin"
@@ -54,11 +56,39 @@
                   :no_caps="no_caps"
                   type="submit"
                 >
-                <q-icon name="arrow_forward" size="xs" class="q-pl-lg"></q-icon>
+                  <q-icon
+                    name="arrow_forward"
+                    size="xs"
+                    class="q-pl-lg"
+                  ></q-icon>
                 </q-btn>
-                <span class="forgot_password text-right"
-                  >Forgot Password ?</span
+                <router-link
+                  to="/auth/password-reset/get-token"
+                  class="sign_link"
+                  v-if="!$q.platform.is.mobile"
                 >
+                  <span class="forgot_password text-right">{{
+                    $t("app.forgotPasswordMsg")
+                  }}</span>
+                </router-link>
+              </div>
+              <div class="row justify-center" v-if="$q.platform.is.mobile">
+                <div class="account_text">{{ $t("app.noAccountMsg") }}</div>
+                    <router-link to="/auth/register" class="sign_link"
+                    > &nbsp;<span @click="checkAccountExist('SIGN_UP')">{{
+                      $t("app.signUpLabel")
+                    }}</span></router-link
+                  >
+              </div>
+              <div class="row justify-center q-mb-xl" v-if="$q.platform.is.mobile">
+                <router-link
+                  to="/auth/password-reset/get-token"
+                  class="sign_link"
+                >
+                  <span class="forgot_password text-right">{{
+                    $t("app.forgotPasswordMsg")
+                  }}</span>
+                </router-link>
               </div>
             </q-form>
           </q-card-section>
@@ -69,21 +99,32 @@
 </template>
 
 <script>
-import { SessionStorage } from "quasar";
 import organisationMixin from "src/mixins/organisationMixin.vue";
+import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
+import memberMixinVue from "src/mixins/memberMixin.vue";
+import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
+import ContributionsMixinVue from "src/mixins/ContributionsMixin.vue";
+import { VueTelInput } from "vue-tel-input";
+import { Notify, Platform, SessionStorage } from "quasar";
 
 export default {
   name: "PageIndex",
-  mixins: [organisationMixin],
+  mixins: [
+    organisationMixin,
+    CurrentYearMixinVue,
+    memberMixinVue,
+    UserSavingMixinVue,
+    ContributionsMixinVue,
+  ],
   data() {
     return {
       user: {
         password: null,
         password_confirmation: null,
-        credential:null,
+        credential: null,
       },
       isPwd: true,
-      label_sigin: "SIGN IN",
+      label_sigin: this.$t("app.signIn"),
       loading: false,
       color: "primary",
       no_caps: true,
@@ -107,14 +148,14 @@ export default {
       let payload = {
         url: "/api/public/auth/login",
         data: {
-          telephone: this.user.credential,
+          telephone: this.user.credential.replace(/\s+/g, ""),
           password: this.user.password,
         },
         msg: "Login Successful",
         color: "default",
-        to_on_ok: "dashboard",
+        to_on_ok: "none",
         to_on_fail: "none",
-        show_feedback:true,
+        show_feedback: true,
         error_msg: "Invalid Credentials! Please try again",
         to_be_store_data: {
           required: true,
@@ -124,24 +165,143 @@ export default {
       };
       this.$store
         .dispatch("postRequest", payload)
-        .then((res) => {
-          if(res.data != undefined){
-            SessionStorage.set("to_tab", 'Dashboard');
-            this.getOrganisationInfo();
+        .then((response) => {
+          if (response.status == 200) {
+            this.$store.dispatch(
+              "setCurrentYear",
+              response.data.data.current_session
+            );
+            let payload = {
+              status: "none",
+              url: "/api/protected/organisation-info",
+              has_path_val: true,
+              show_feedback: false,
+              msg: "none",
+              color: "default",
+              error_msg: "default",
+              to_on_ok: "none",
+              commit: "SET_ORGANISATION",
+              has_commit: true,
+              to_be_store_data: {
+                required: true,
+                has_value: false,
+                data: null,
+              },
+            };
+            this.$store
+              .dispatch("getRequest", payload)
+              .then((res) => {
+                if (res.success) {
+                  this.$router.push({
+                    name: "dashboard",
+                  });
+                  SessionStorage.set("to_tab", "Dashboard");
+                } else {
+                  this.$router.push({
+                    name: "create_organisation",
+                  });
+                  Notify.create({
+                    type: "info",
+                    message: this.$t("app.createOrganisationCaption"),
+                    position: Platform.is.mobile ? "bottom" : "top-right",
+                  });
+                }
+                return res;
+              })
+              .then(async (res) => {
+                if (res.success) {
+                  this.getTotalYearlyExpenditures(
+                    this.$store.getters.getCurrentYear.id
+                  );
+                }
+                return res;
+              })
+              .then(async (res) => {
+                if (res.success) {
+                  this.getUserByRegistration(
+                    this.$store.getters.getOrganisation.id
+                  );
+                }
+                return res;
+              })
+              .then(async (res) => {
+                if (res.success) {
+                  this.getUserByRegistrationStatus(
+                    this.$store.getters.getOrganisation.id
+                  );
+                }
+                return res;
+              })
+              .then(async (res) => {
+                if (res.success) {
+                  this.getOrganisationMemberSavings(
+                    this.$store.getters.getOrganisation.id,
+                    1,
+                    5
+                  );
+                }
+                return res;
+              })
+              .then(async (res) => {
+                if (res.success) {
+                  this.filterOrganisationMembers(
+                    this.$store.getters.getOrganisation.id,
+                    false,
+                    1,
+                    10,
+                    "name",
+                    this.$store.getters.getCurrentYear.id,
+                    "",
+                    "",
+                    ""
+                  );
+                }
+                return res;
+              })
+              .then(async (res) => {
+                if (res.success) {
+                  this.getTotalContributionByYear(
+                    this.$store.getters.getCurrentYear.id
+                  );
+                }
+              });
           }
-        }).catch((error) => {
-
+        })
+        .catch((error) => {
         })
         .finally(() => {
           this.loading = false;
         });
     },
+
+    getTotalYearlyExpenditures(id) {
+      let payload = {
+        url: `/api/protected/expenditures_total?session_id=${id}`,
+        msg: "none",
+        color: "default",
+        status: "none",
+        error_msg: "An Error occurred! Could not fetch payment categories",
+        has_commit: true,
+        show_feedback: false,
+        show_spinner: false,
+        has_path_val: false,
+        commit: "SET_TOTAL_YEARLY_EXPENDITURE",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.$store.dispatch("getRequest", payload).then(() => {});
+    },
   },
   components: {
+    VueTelInput,
   },
 };
 </script>
 
+<style src="vue-tel-input/dist/vue-tel-input.css"></style>
 <style lang="scss" scoped>
 * {
   box-sizing: border-box;
@@ -179,7 +339,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 11px;
+  font-size: 12px;
   align-items: center;
   letter-spacing: 0.01em;
   color: $grey2;
@@ -205,4 +365,14 @@ export default {
   margin-bottom: 0.5rem;
 }
 
+.sign_link {
+  text-decoration: none;
+  color: $primary;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.login-card {
+  height: 500px;
+}
 </style>

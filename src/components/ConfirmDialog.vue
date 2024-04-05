@@ -2,34 +2,50 @@
   <div>
     <!-- confirmation dialog for delete -->
     <q-dialog v-model="show_dialog">
-      <q-card>
+      <q-card :style="$q.platform.is.mobile?'min-width: 350px':'min-width: 400px'">
         <q-card-section class="q-pa-lg">
           <div class="q-mb-sm text-left">
             <label class="message">{{ msg }}</label
             ><br />
-            <small class="warning_caption">This action can not be undone</small>
+            <small class="warning_caption">
+              <span v-if="show_payment_category"
+                >{{$t('app.warningPayments')}}</span
+              >
+              <span v-if="show_expenditure_category"
+                >{{$t('app.warningExpenditure')}}</span
+              >
+              <span v-if="show_expenditure_item"
+                >{{$t('app.warningDetails')}}</span
+              > </small
+            ><br
+              v-if="
+                show_payment_category ||
+                show_expenditure_category ||
+                show_expenditure_item
+              "
+            />
+            <small class="warning_caption">{{$t('app.actionUndoneMsg')}}</small>
           </div>
 
           <!-- contribution details -->
-          <div v-if="show_contribution">
+          <div v-if="show_delete_contribution">
             <div class="text-weight-bold text-left text-red">
-              Name:
+              {{$t('app.paymentItem')}}:
               <span
-                class="q-pl-md"
-                :class="show_members ? 'name' : ' q-ml-md'"
-                >{{ data.name }}</span
+                class="q-pl-xl"
+                >{{ data.payment_item_name }}</span
               >
             </div>
 
             <div class="text-weight-bold text-left text-red">
-              Amount Deposited:
+             {{$t('app.amountDeposited')}}:
               <span class="amount"
                 >{{ Number(data.amount_deposited).toLocaleString() }} XAF</span
               >
             </div>
 
             <div class="text-weight-bold text-left text-red">
-              Member's Name:
+              {{$t('app.membersName')}}:
               <span class="member_name">{{ data.user_name }}</span>
             </div>
           </div>
@@ -37,30 +53,37 @@
 
           <!-- members details -->
           <div class="text-weight-bold text-left text-red" v-if="show_members">
-            Name: <span class="q-pl-md">{{ data.name }}</span>
+            {{$t('app.nameLabel')}}: <span class="q-pl-md">{{ data.name }}</span>
           </div>
           <!-- end of members -->
+
+          <!-- a_member details -->
+          <div class="text-weight-bold text-left text-red" v-if="show_member">
+            {{$t('app.nameLabel')}}: <span class="q-pl-md">{{ data.name }}</span>
+          </div>
+          <!-- end of member -->
 
           <!-- income_activity details -->
           <div v-if="show_income_activity">
             <div class="text-weight-bold text-left text-red">
-              Amount:
+              {{$t('app.nameLabel')}}: <span class="income_name">{{ data.name }}</span>
+            </div>
+            <div class="text-weight-bold text-left text-red">
+              {{$t('app.amount')}}:
               <span class="amount"
                 >{{ Number(data.amount).toLocaleString() }} XAF</span
               >
             </div>
-            <div class="text-weight-bold text-left text-red">
-              Date: <span class="date">{{ formatDate(data.date) }}</span>
-            </div>
           </div>
           <!-- end of income activity -->
+
 
           <!-- Payment Activity -->
           <div
             class="text-weight-bold text-left text-red"
             v-if="show_contribution"
           >
-            Payment Activity:
+            {{$t('app.paymentItem')}}:
             <span class="payment_item_name">{{ data.payment_item_name }}</span>
           </div>
           <!-- end of Payment Activity -->
@@ -68,37 +91,76 @@
           <!-- registration fee details -->
           <div v-if="show_reg_fee">
             <div class="text-weight-bold text-left text-red">
-              Amount:
+              {{$t('app.amount')}}:
               <span class="amount"
                 >{{ Number(data.amount).toLocaleString() }} XAF</span
               >
             </div>
             <div class="text-weight-bold text-left text-red">
-              Frequency: <span class="frequency">{{ data.frequency }}</span>
+              {{$t('app.frequency')}}: <span class="frequency">{{ data.frequency }}</span>
             </div>
           </div>
           <!-- end of registration fee -->
+
+          <!-- payment category -->
+          <div v-if="show_payment_category || show_expenditure_category">
+            <div class="text-weight-bold text-left text-red">
+              {{$t('app.nameLabel')}}:
+              <span class="amount">{{ data.name }} </span>
+            </div>
+          </div>
+          <!-- end of payment category -->
+
+          <!-- Expenditure Item -->
+          <div
+            class="text-weight-bold text-left text-red"
+            v-if="show_expenditure_item || show_payment_item"
+          >
+          {{$t('app.nameLabel')}}:
+            <span class="payment_item_name">{{ data.name }}</span>
+          </div>
+          <!-- end of Expenditure Item -->
+
+          <!-- Expenditure Item details -->
+          <div v-if="show_expenditure_item_detail">
+            <div class="text-weight-bold text-left text-red">
+              {{$t('app.nameLabel')}}: <span class="frequency">{{ data.name }}</span>
+            </div>
+            <div class="text-weight-bold text-left text-red">
+              {{$t('app.amountGiven')}}:
+              <span class="amount"
+                >{{ Number(data.amount_given).toLocaleString() }} XAF</span
+              >
+            </div>
+            <div class="text-weight-bold text-left text-red">
+              {{$t('app.amountSpent')}}:
+              <span class="amount"
+                >{{ Number(data.amount_spent).toLocaleString() }} XAF</span
+              >
+            </div>
+          </div>
+          <!-- end of Expenditure Item -->
         </q-card-section>
 
         <q-card-actions align="right">
           <q-btn
-            label="Cancel"
+            :label="$t('app.cancel')"
             :color="'primary'"
             :disabled="false"
             :loading="false"
-            :no_caps="true"
+            no-caps
             :flat="true"
             class="dialog_button"
             @click="cancelDialog"
             v-close-popup
           ></q-btn>
           <q-btn
-            label="Delete"
+            :label="$t('app.delete')"
             :color="'primary'"
             class="dialog_button"
             :disabled="false"
             :loading="false"
-            :no_caps="false"
+            no-caps
             :flat="true"
             v-close-popup
             @click="deleteRow()"
@@ -132,11 +194,39 @@ export default {
       type: Boolean,
       required: false,
     },
+    show_delete_contribution:{
+      type: Boolean,
+      required: false,
+    },
     show_income_activity: {
       type: Boolean,
       required: false,
     },
     show_reg_fee: {
+      type: Boolean,
+      required: false,
+    },
+    show_payment_category: {
+      type: Boolean,
+      required: false,
+    },
+    show_expenditure_item: {
+      type: Boolean,
+      required: false,
+    },
+    show_expenditure_category: {
+      type: Boolean,
+      required: false,
+    },
+    show_payment_item: {
+      type: Boolean,
+      required: false,
+    },
+    show_expenditure_item_detail: {
+      type: Boolean,
+      required: false,
+    },
+    show_member: {
       type: Boolean,
       required: false,
     },
@@ -148,26 +238,7 @@ export default {
   },
   methods: {
     deleteRow() {
-      let payload = {
-        url: this.setDeleteUrl(),
-        msg: this.setFeedBackMsg(),
-        status: "success",
-        color: "default",
-        to_on_ok: "none",
-        show_feedback: true,
-        to_on_fail: "none",
-        error_msg: "An Error occurred! Please try again",
-        has_commit: false,
-        commit: "none",
-        to_be_store_data: {
-          required: false,
-          has_value: false,
-          data: [],
-        },
-      };
-      this.$store.dispatch("deleteRequest", payload).then(() => {
-        this.setFeedBackActionCall();
-      });
+      return this.$emit("delete-row");
     },
 
     formatDate(date) {
@@ -176,43 +247,6 @@ export default {
 
     cancelDialog() {
       return this.$emit("cancel-dialog");
-    },
-
-    setDeleteUrl() {
-      let url = "";
-      switch (this.type) {
-        case "REGISTRATION_FEE":
-          url = `/api/protected/registration_fees/${this.data.id}`;
-          break;
-        case "MEMBERS":
-          url = `/api/protected/users/${this.data.id}`;
-          break;
-      }
-      return url;
-    },
-
-    setFeedBackMsg() {
-      let msg = "";
-      switch (this.type) {
-        case "REGISTRATION_FEE":
-          msg = `Registration fee deleted successfully`;
-          break;
-        case "MEMBERS":
-          msg = "Member deleted successfully";
-          break;
-      }
-      return msg;
-    },
-
-    setFeedBackActionCall() {
-      switch (this.type) {
-        case "REGISTRATION_FEE":
-          this.$emit("fetch-registration-fee");
-          break;
-        case "MEMBERS":
-          this.$emit("fetch-members");
-          break;
-      }
     },
   },
 };
@@ -253,5 +287,13 @@ export default {
   color: $grey2;
   font-weight: 500;
   font-size: 13px;
+}
+
+.category_warning {
+  font-size: 13px;
+}
+
+.income_name {
+padding-left: 2rem;
 }
 </style>

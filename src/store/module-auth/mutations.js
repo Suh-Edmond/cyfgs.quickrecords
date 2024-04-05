@@ -174,3 +174,31 @@ export function SET_SESSIONS(state, data) {
   state.sessions = data;
 }
 
+export function SET_REPORT_DATA(state, data){
+  state.report_data = data
+}
+
+export function SET_BAR_CHART_DATA(state, data){
+  state.bar_chart_data = data;
+}
+
+export function SET_PIE_CHART_DATA(state, data){
+  state.pie_chart_data = data;
+}
+
+export function SET_TOTAL_YEARLY_CONTRIBUTION(state, data){
+  state.total_yearly_contribution = data;
+}
+
+export function SET_TOTAL_YEARLY_EXPENDITURE(state, data) {
+  state.total_yearly_expenditure = data
+}
+
+export function SET_SEARCH_CONTRIBUTION_PARAMS(state, data) {
+  state.search_contribution_data = data;
+}
+
+
+export function SET_PAGINATION(state, data) {
+  state.pagination = data;
+}

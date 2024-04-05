@@ -1,39 +1,43 @@
 <template>
-  <div class="q-pa-xs">
-    <div class="button q-pb-xs"></div>
+  <div>
     <q-table
       :data="data"
       :columns="columns"
       row-key="index"
-      :table-header-style="{ backgroundColor: '#5384ae', color: '#FFFFFF' }"
+      :table-header-style="{ backgroundColor: '#213c65', color: '#FFFFFF' }"
       :filter="filter"
-      :rows-per-page-options="[0]"
+      :loading="table_loading"
+      :pagination.sync="getPagination"
+      @request="onRequest"
+      binary-state-sort
     >
       <template v-slot:top-left>
-        <div class="text-h6 title" v-show="show_member_savings">
-          All Savings for: {{ title }}
-        </div>
         <div
           class="text-h6 title"
-          v-show="
-            show_contribution ||
-            show_member_contribution ||
-            show_income_activity
-          "
+          v-show="show_contribution || show_member_contribution"
         >
-          {{ title }}
+          <label for="title">
+            {{ title }}
+          </label>
+        </div>
+        <div class="text-h6 title" v-show="show_income_activity">
+          {{ $t("app.total") }}: {{ Number(total_income).toLocaleString() }} XAF
         </div>
         <div class="text-h6 title" v-show="show_members">
-          Organisation Members
+          {{ $t("app.organisationMembers") }}
+        </div>
+        <div class="text-h6 title" v-show="show_savings">
+          {{ $t("app.totalSaving") }} :
+          {{ Number(total_saving).toLocaleString() }} XAF
+        </div>
+        <div class="text-h6 title" v-show="show_member_savings">
+          {{ $t("app.totalSaving") }} :
+          {{ Number(total_saving).toLocaleString() }} XAF
         </div>
       </template>
       <template v-slot:body="props">
-        <!-- body for members -->
-        <q-tr :props="props" class="text-bold" v-if="show_members">
-          <q-td key="counter" :props="props">
-            {{ props.row.counter }}
-          </q-td>
-
+        <!---------------------------------------------BODY FOR MEMBERS------------------------------------------------------>
+        <q-tr :props="props" v-if="show_members">
           <q-td key="name" :props="props">
             {{ props.row.name }}
           </q-td>
@@ -72,7 +76,8 @@
           <q-td
             key="approve"
             :props="props"
-            v-if="props.row.approve == ''"
+            v-if="props.row.approve == 'DECLINED'"
+            class="not_registered"
           >
             {{ props.row.approve }}
           </q-td>
@@ -84,29 +89,45 @@
           >
             {{ props.row.approve }}
           </q-td>
+          <q-td key="approve" :props="props" v-if="props.row.approve == ''">
+          </q-td>
+
+          <q-td
+            key="status"
+            :props="props"
+            v-if="props.row.status == 'ACTIVE'"
+            class="registered"
+          >
+            {{ props.row.status }}
+          </q-td>
+
+          <q-td
+            key="status"
+            :props="props"
+            v-if="props.row.status == 'IN_ACTIVE'"
+            class="not_registered"
+          >
+            {{ props.row.status }}
+          </q-td>
 
           <q-td key="action" :props="props">
             <!-- buttons for approve and decline row data -->
             <q-btn
               class="decline_btn_saving"
-              size="md"
-              label="Decline"
+              :label="$t('app.decline')"
               no-caps
+              dense
               @click="onDeclineRecord(props.row, 'Decline')"
-              v-if="
-                checkPresidentTreasurerRole() && props.row.approve == 'PENDING'
-              "
+              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
             />
 
             <q-btn
               class="approve_btn"
-              size="md"
-              label="Approve"
+              :label="$t('app.approve')"
               no-caps
+              dense
               @click="onApprovedRecord(props.row, 'Approve')"
-              v-if="
-                checkPresidentTreasurerRole() && props.row.approve == 'PENDING'
-              "
+              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
             />
 
             <!-- button to handle edit, view and delete, invite and register  a member -->
@@ -125,7 +146,6 @@
                       clickable
                       v-close-popup
                       @click="onViewMember(props.row)"
-                      v-if="checkPresidentRole()"
                     >
                       <q-item-section avatar>
                         <span>
@@ -137,7 +157,9 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="edit">View Profile</q-item-label>
+                        <q-item-label class="edit">{{
+                          $t("app.viewProfile")
+                        }}</q-item-label>
                       </q-item-section>
                     </q-item>
                     <!-- invite members to the app -->
@@ -145,7 +167,10 @@
                       clickable
                       v-close-popup
                       @click="onInviteMember(props.row)"
-                      v-if="checkPresidentRole()"
+                      v-if="
+                        checkAdminPresidentRole() &&
+                        props.row.status == 'ACTIVE'
+                      "
                     >
                       <q-item-section avatar>
                         <span>
@@ -153,7 +178,9 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="edit">Invite Member</q-item-label>
+                        <q-item-label class="edit">{{
+                          $t("app.inviteMember")
+                        }}</q-item-label>
                       </q-item-section>
                     </q-item>
 
@@ -170,9 +197,9 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="edit"
-                          >Register Member</q-item-label
-                        >
+                        <q-item-label class="edit">{{
+                          $t("app.registerMember")
+                        }}</q-item-label>
                       </q-item-section>
                     </q-item>
 
@@ -181,6 +208,7 @@
                       clickable
                       v-close-popup
                       @click="onDeleteMember(props.row)"
+                      v-if="checkAdminPresidentRole()"
                     >
                       <q-item-section avatar>
                         <span>
@@ -188,7 +216,9 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="text-red">Delete</q-item-label>
+                        <q-item-label class="text-red">{{
+                          $t("app.delete")
+                        }}</q-item-label>
                       </q-item-section>
                     </q-item>
                   </q-list>
@@ -197,111 +227,618 @@
             </q-btn>
           </q-td>
         </q-tr>
-        <!-- end of body for members -->
+        <!---------------------------------------------END BODE FOR MEMBERS-->
+
+        <!---------------------------------------------------START OF SAVINGS FOR ALL MEMBER TO BE VIEW BY USER WITH UNTREASUERER ROLE------------------------->
+        <q-tr :props="props" v-if="show_savings && !checkTreasurerRole()">
+          <q-td key="user_name" :props="props">
+            {{ props.row.user_name }}
+          </q-td>
+          <q-td key="email" :props="props">
+            {{ props.row.email }}
+          </q-td>
+          <q-td key="telephone" :props="props">
+            {{ props.row.telephone }}
+          </q-td>
+          <q-td key="total_amount" :props="props">
+            {{ Number(props.row.total_amount).toLocaleString() }}
+          </q-td>
+          <q-td key="date" :props="props">
+            {{ getDate(props.row.date) }}
+          </q-td>
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'DECLINED'"
+            class="not_registered"
+          >
+            {{ props.row.approve }}
+          </q-td>
+          <q-td key="action" :props="props">
+            <q-btn
+              unelevated
+              no-caps
+              dense
+              color="primary"
+              class="view_savings"
+              :label="$t('app.allSavings')"
+              @click="showMemberSavings(props.row)"
+              :to="{ name: 'user_savings', params: { id: props.row.user_id } }"
+            >
+              <q-icon name="visibility" size="xs" class="q-pl-sm"></q-icon>
+            </q-btn>
+          </q-td>
+        </q-tr>
+        <!----------------------------------------------------END F SAVINGS FOR ALL MEMBER TO BE VIEW BY USER WITH UNTREASUERER ROLE---------------------------------------------->
+
+        <!----------------------------------------------------END OF MEMBER SAVINGS TO BE VIEW BY THE TREASUERER--------------------------------------------->
+        <q-tr :props="props" v-if="show_savings && checkTreasurerRole()">
+          <q-td key="user_name" :props="props">
+            {{ props.row.user_name }}
+          </q-td>
+          <q-td key="email" :props="props">
+            {{ props.row.email }}
+          </q-td>
+          <q-td key="telephone" :props="props">
+            {{ props.row.telephone }}
+          </q-td>
+          <q-td key="total_amount" :props="props">
+            {{ Number(props.row.total_amount).toLocaleString() }}
+          </q-td>
+          <q-td key="date" :props="props">
+            {{ getDate(props.row.date) }}
+          </q-td>
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'DECLINED'"
+            class="not_registered"
+          >
+            {{ props.row.approve }}
+          </q-td>
+          <q-td key="action" :props="props">
+            <q-btn
+              unelevated
+              no-caps
+              dense
+              color="primary"
+              class="view_savings"
+              :label="$t('app.allSavings')"
+              @click="showMemberSavings(props.row)"
+              :to="{ name: 'user_savings', params: { id: props.row.user_id } }"
+            >
+              <q-icon name="visibility" size="xs" class="q-pl-sm"></q-icon>
+            </q-btn>
+          </q-td>
+        </q-tr>
+        <!--------------------------------------------------------END OF ALL SAVINGS TO BE VIEW BY THE TREASUERER------------------------------------------------------------------->
+
+        <!---------------------------------------------------------------------------MEMBER SAVINGS--------------------------------------------------->
+        <q-tr :props="props" v-if="show_member_savings">
+          <q-td key="amount_deposited" :props="props">
+            {{ Number(props.row.amount_deposited).toLocaleString() }}
+          </q-td>
+          <q-td key="amount_used" :props="props">
+            {{ Number(props.row.amount_used).toLocaleString() }}
+          </q-td>
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'PENDING'"
+            class="text-info"
+          >
+            {{ props.row.approve }}
+          </q-td>
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'APPROVED'"
+            class="registered"
+          >
+            {{ props.row.approve }}
+          </q-td>
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'DECLINED'"
+            class="not_registered"
+          >
+            {{ props.row.approve }}
+          </q-td>
+          <q-td key="date" :props="props">
+            {{ getDate(props.row.date) }}
+          </q-td>
+          <q-td key="action" :props="props" v-if="!checkTreasurerRole()">
+            <!-- menu to handle edit and view details of a single saving -->
+            <q-btn flat round>
+              <q-icon
+                name="menu"
+                size="xs"
+                color="primary"
+                class="menu_icon"
+                clickable
+              >
+                <q-menu>
+                  <q-list bordered separator style="width: 180px">
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onViewMemberSaving(props.row)"
+                    >
+                      <q-item-section avatar class="q-mr-lg">
+                        <span>
+                          <q-icon name="visibility" size="xs" class="edit" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="edit">{{
+                          $t("app.view")
+                        }}</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onEditMemberSaving(props.row)"
+                    >
+                      <q-item-section avatar class="q-mr-lg">
+                        <span>
+                          <q-icon name="edit" size="xs" class="edit" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="edit">{{
+                          $t("app.edit")
+                        }}</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                  </q-list>
+                </q-menu>
+              </q-icon>
+            </q-btn>
+          </q-td>
+
+          <q-td key="action" :props="props" v-if="checkTreasurerRole()">
+            <q-btn
+              class="approve_btn"
+              :label="$t('app.approve')"
+              no-caps
+              unelevated
+              dense
+              @click="onApprovedRecord(props.row, 'Approve')"
+              v-if="props.row.approve == 'PENDING'"
+            />
+
+            <q-btn
+              class="decline_btn_saving"
+              :label="$t('app.decline')"
+              no-caps
+              unelevated
+              dense
+              @click="onDeclineRecord(props.row, 'Decline')"
+              v-if="props.row.approve == 'PENDING'"
+            />
+
+            <q-btn
+              unelevated
+              no-caps
+              dense
+              color="primary"
+              class="view_income q-px-sm q-mr-md"
+              :label="$t('app.view')"
+              @click="onViewMemberSaving(props.row)"
+            >
+              <q-icon name="visibility" size="xs" class="q-pl-md"></q-icon>
+            </q-btn>
+          </q-td>
+        </q-tr>
+        <!-------------------------------------------------------------------------END OF MEMBER SAVINGS----------------------------------------------------------->
+
+        <!----------------------------------------------------------------------INCOME ACTIVITIES----------------------------------------------------------->
+        <q-tr :props="props" v-if="show_income_activity">
+          <q-td key="name" :props="props">
+            {{ props.row.name }}
+          </q-td>
+          <q-td key="amount" :props="props">
+            {{ Number(props.row.amount).toLocaleString() }}
+          </q-td>
+          <q-td key="date" :props="props">
+            {{ getDate(props.row.date) }}
+          </q-td>
+          <q-td key="venue" :props="props">
+            {{ props.row.venue }}
+          </q-td>
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'PENDING'"
+            class="text-info"
+          >
+            {{ props.row.approve }}
+          </q-td>
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'APPROVED'"
+            class="registered"
+          >
+            {{ props.row.approve }}
+          </q-td>
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'DECLINED'"
+            class="not_registered"
+          >
+            {{ props.row.approve }}
+          </q-td>
+          <q-td key="action" :props="props">
+            <!-- buttons for approve and decline row data -->
+            <q-btn
+              class="decline_btn_income_activity q-mx-xl"
+              :label="$t('app.decline')"
+              no-caps
+              unelevated
+              @click="onDeclineRecord(props.row, 'Decline')"
+              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
+            />
+
+            <q-btn
+              class="approve_btn_income_activity q-mr-sm"
+              :label="$t('app.approve')"
+              no-caps
+              unelevated
+              @click="onApprovedRecord(props.row, 'Approve')"
+              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
+            />
+
+            <!-- button to handle view all activity -->
+            <q-btn
+              unelevated
+              no-caps
+              dense
+              color="primary"
+              class="view_income q-px-sm q-ml-xl"
+              :label="$t('app.view')"
+              @click="onViewIncomeActivity(props.row)"
+              v-if="show_income_activity && checkTreasurerRole()"
+            >
+              <q-icon name="visibility" size="xs" class="q-pl-sm"></q-icon>
+            </q-btn>
+
+            <!-- menu to handle edit and view details of a single show_income_activity -->
+            <q-btn flat round v-if="!checkTreasurerRole()">
+              <q-icon
+                name="menu"
+                size="xs"
+                color="primary"
+                class="menu_icon"
+                clickable
+              >
+                <q-menu>
+                  <q-list bordered separator style="width: 180px">
+                    <!-- edit and view show_income_activity -->
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onViewIncomeActivity(props.row)"
+                    >
+                      <q-item-section avatar class="q-mr-lg">
+                        <span>
+                          <q-icon name="visibility" size="xs" class="edit" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="edit">{{
+                          $t("app.view")
+                        }}</q-item-label>
+                      </q-item-section>
+                    </q-item>
+
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onEditIncomeActivity(props.row)"
+                    >
+                      <q-item-section avatar class="q-mr-lg">
+                        <span>
+                          <q-icon name="edit" size="xs" class="edit" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="edit">{{
+                          $t("app.edit")
+                        }}</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <!-- deleted specify row -->
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onDeleteIncomeActivity(props.row)"
+                    >
+                      <q-item-section avatar class="q-mr-lg">
+                        <span>
+                          <q-icon name="delete" size="xs" color="red" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="text-red">{{
+                          $t("app.delete")
+                        }}</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                  </q-list>
+                </q-menu>
+              </q-icon>
+            </q-btn>
+          </q-td>
+        </q-tr>
+        <!--------------------------------------------------------------------END OF INCOME ACTIVITIES---------------------------------------------------------->
+
+        <!--------------------------------------------------------------------CONTRIBUTION-------------------------------------->
+        <q-tr :props="props" v-if="show_contribution">
+          <q-td key="user_name" :props="props">
+            {{ props.row.user_name }}
+          </q-td>
+          <q-td key="total_amount_deposited" :props="props">
+            {{ Number(props.row.total_amount_deposited).toLocaleString() }}
+          </q-td>
+          <q-td key="balance" :props="props">
+            {{ Number(props.row.balance).toLocaleString() }}
+          </q-td>
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'PENDING'"
+            class="text-info"
+          >
+            {{ props.row.approve }}
+          </q-td>
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'APPROVED'"
+            class="registered"
+          >
+            {{ props.row.approve }}
+          </q-td>
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'DECLINED'"
+            class="not_registered"
+          >
+            {{ props.row.approve }}
+          </q-td>
+          <q-td key="action" :props="props">
+            <!-- buttons for approve and decline row data -->
+            <q-btn
+              class="decline_btn_income_activity"
+              :label="$t('app.decline')"
+              no-caps
+              unelevated
+              @click="onDeclineRecord(props.row, 'Decline')"
+              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
+            />
+
+            <q-btn
+              class="approve_btn_income_activity q-mx-xl"
+              :label="$t('app.approve')"
+              no-caps
+              unelevated
+              @click="onApprovedRecord(props.row, 'Approve')"
+              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
+            />
+
+            <!-- menu to handle edit and view details of a single contributions -->
+            <q-btn
+              unelevated
+              color="primary"
+              :label="$t('app.details')"
+              no-caps
+              class="view_items q-mr-md"
+              icon-right="visibility"
+              @click="onViewAllMemberContributions(props.row)"
+              :to="{
+                name: 'member_contributions',
+                params: {
+                  item_id: props.row.payment_item_id,
+                  id: props.row.user_id,
+                },
+              }"
+            >
+            </q-btn>
+          </q-td>
+        </q-tr>
+        <!-------------------------------------------------------------------END OF ALL CONTRIBUTIONS---------------------------->
+
+        <!------------------------------------------------------------MEMBER CONTRIBUTIONS------------------------------------------>
+        <q-tr :props="props" v-if="show_member_contribution">
+          <q-td
+            key="quarterly_name"
+            :props="props"
+            v-if="props.row.payment_item_frequency == 'QUARTERLY'"
+          >
+            {{ props.row.quarterly_name }}
+          </q-td>
+          <q-td
+            key="quarterly_name"
+            :props="props"
+            v-if="props.row.payment_item_frequency == 'MONTHLY'"
+          >
+            {{ props.row.month_name }}
+          </q-td>
+          <q-td
+            key="quarterly_name"
+            :props="props"
+            v-if="props.row.payment_item_frequency == 'ONE_TIME'"
+          >
+            {{ props.row.payment_item_frequency }}
+          </q-td>
+          <q-td
+            key="quarterly_name"
+            :props="props"
+            v-if="props.row.payment_item_frequency == 'YEARLY'"
+          >
+            {{ props.row.payment_item_frequency }}
+          </q-td>
+          <q-td key="amount_deposited" :props="props">
+            {{ Number(props.row.amount_deposited).toLocaleString() }}
+          </q-td>
+          <q-td key="balance" :props="props">
+            {{ Number(props.row.balance).toLocaleString() }}
+          </q-td>
+          <q-td
+            key="status"
+            :props="props"
+            class="registered"
+            v-if="props.row.status == 'COMPLETE'"
+          >
+            {{ props.row.status }}
+          </q-td>
+          <q-td
+            key="status"
+            :props="props"
+            class="not_registered"
+            v-if="props.row.status == 'INCOMPLETE'"
+          >
+            {{ props.row.status }}
+          </q-td>
+          <q-td key="date" :props="props">
+            {{ getDate(props.row.created_at) }}
+          </q-td>
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'PENDING'"
+            class="text-info"
+          >
+            {{ props.row.approve }}
+          </q-td>
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'APPROVED'"
+            class="registered"
+          >
+            {{ props.row.approve }}
+          </q-td>
+          <q-td
+            key="approve"
+            :props="props"
+            v-if="props.row.approve == 'DECLINED'"
+            class="not_registered"
+          >
+            {{ props.row.approve }}
+          </q-td>
+          <q-td key="action" :props="props">
+            <q-btn
+              unelevated
+              no-caps
+              dense
+              color="primary"
+              class="view_contribution q-mr-md"
+              :label="$t('app.view')"
+              @click="onViewContribution(props.row)"
+              v-if="checkTreasurerRole()"
+            >
+              <q-icon name="visibility" size="xs" class="q-pl-md"></q-icon>
+            </q-btn>
+            <!-- menu to handle edit and view details of a single member contribution -->
+            <q-btn flat round v-if="!checkTreasurerRole()">
+              <q-icon
+                name="menu"
+                size="xs"
+                color="primary"
+                class="menu_icon"
+                clickable
+              >
+                <q-menu>
+                  <q-list bordered separator style="width: 200px">
+                    <!-- edit and view member contribution -->
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onViewContribution(props.row)"
+                      v-if="show_member_contribution"
+                    >
+                      <q-item-section avatar class="q-mr-lg">
+                        <span>
+                          <q-icon name="info" size="xs" class="edit" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="edit">{{
+                          $t("app.view")
+                        }}</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <!-- edit a contribution -->
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onEditContribution(props.row)"
+                      v-if="!show_member_contribution"
+                    >
+                      <q-item-section avatar class="q-mr-lg">
+                        <span>
+                          <q-icon name="edit" size="xs" class="edit" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="edit">{{
+                          $t("app.edit")
+                        }}</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <!-- end of edit contribution -->
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onDeleteContribution(props.row)"
+                      v-if="show_member_contribution"
+                    >
+                      <q-item-section avatar class="q-mr-lg">
+                        <span>
+                          <q-icon name="delete" size="xs" color="red" />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="text-red">{{
+                          $t("app.delete")
+                        }}</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                  </q-list>
+                </q-menu>
+              </q-icon>
+            </q-btn>
+          </q-td>
+        </q-tr>
+        <!---------------------------------------------------------END OF CONTRIBUTIONS--------------------------------------------------->
       </template>
       <template v-slot:top-right>
         <q-input
           outlined
           dense
           v-model="filter"
+          :placeholder="$t('app.tableSearch')"
           :class="
-            $q.screen.md
-              ? 'text-h6-sm q-mb-lg q-mt-lg full-width'
-              : 'text-h6-sm'
+            $q.platform.is.mobile
+              ? 'row text-h6-sm'
+              : 'text-h6-sm q-mb-lg q-mt-lg full-width'
           "
-          placeholder="Type name to search..."
+          :style="$q.platform.is.mobile?'width:88vw':''"
         >
           <template v-slot:append>
             <q-icon name="search" />
           </template>
         </q-input>
       </template>
-      <template v-slot:bottom>
-        <!-- members contributions -->
-        <q-tr v-if="total_contribution > 0">
-          <q-th class="text-bold total_label" v-if="show_contribution">
-            Total Members Contribution:
-          </q-th>
-          <q-th v-if="show_contribution" class="total_value">
-            {{ Number(total_contribution).toLocaleString() }} XAF
-          </q-th>
-        </q-tr>
-        <!-- member contribution -->
-        <div class="text-bold q-pb-md" v-if="show_member_contribution">
-          <div class="q-pt-sm">
-            Amount Contributed:
-            <span class="total_value">
-              {{ Number(total_contribution).toLocaleString() }} XAF
-            </span>
-          </div>
-          <div>
-            <!-- member balance contribution -->
-            <q-tr>
-              Total Balance:
-              <span class="total_contribution_balance">
-                {{ Number(total_balance).toLocaleString() }} XAF
-              </span>
-            </q-tr>
-          </div>
-        </div>
 
-        <!-- income  -->
-        <q-tr>
-          <q-th
-            class="text-bold total_label"
-            v-if="show_income_activity && total_income > 0"
-          >
-            Total Income:
-          </q-th>
-          <q-th
-            class="total_value"
-            v-if="show_income_activity && total_income > 0"
-          >
-            {{ Number(total_income).toLocaleString() }} XAF
-          </q-th>
-        </q-tr>
-
-        <!-- members -->
-        <q-tr>
-          <q-th
-            class="text-bold total_label"
-            v-if="show_members && total_members > 0"
-          >
-            Total Members:
-          </q-th>
-          <q-th class="total_value" v-if="show_members && total_members > 0">
-            {{ total_members }}
-          </q-th>
-        </q-tr>
-
-        <!-- member savings-->
-        <q-tr>
-          <q-th
-            class="text-bold total_label"
-            v-if="show_member_savings && total_saving > 0"
-          >
-            Total Amount Saved:
-          </q-th>
-          <q-th
-            class="total_value"
-            v-if="show_member_savings && total_saving > 0"
-          >
-            {{ Number(total_saving).toLocaleString() }} XAF
-          </q-th>
-        </q-tr>
-
-        <!-- members savings-->
-        <q-tr>
-          <q-th
-            class="text-bold total_label"
-            v-if="show_savings && total_saving > 0"
-          >
-            Total Members Savings:
-          </q-th>
-          <q-th class="total_value" v-if="show_savings && total_saving > 0">
-            {{ Number(total_saving).toLocaleString() }} XAF
-          </q-th>
-        </q-tr>
+      <template v-slot:loading>
+        <q-inner-loading showing color="primary" />
       </template>
     </q-table>
 
@@ -310,82 +847,146 @@
         :data="deleted_row"
         :type="type"
         :msg="delete_msg"
-        :show_members="computeShowConfirmDialogDetail()"
+        :show_members="show_members"
+        :show_income_activity="show_income_activity"
+        :show_contribution="show_contribution"
+        :show_delete_contribution="show_delete_contribution"
         @fetch-members="fetchMembers"
         @cancel-dialog="cancelDialog"
+        @delete-row="deleteRow"
       ></ConfirmDialogVue>
     </div>
 
     <!-- dialog for invite members. -->
-    <q-dialog v-model="show_invite" position="top">
-      <q-card>
+    <q-dialog v-model="show_invite">
+      <q-card class="invite_card">
         <q-card-section>
-          <div class="text-h6 q-pa-sm heading">
-            Invite your Team Members to use Financial Assistance
+          <div class="text-h6 q-px-md q-py-md heading text-center">
+            {{ $t("app.inviteMsg") }}
+          </div>
+          <div v-if="show_invite" class="q-px-md justify-center">
+            <label for="name" class="form_field">{{
+              $t("app.membersName")
+            }}</label>
+            <q-input v-model="member_invite_name" outlined dense disable />
+          </div>
+          <div class="q-px-md justify-center q-pt-md">
+            <label for="credential" class="form_field"
+              >{{ $t("app.selectRole") }} <span class="text-red">*</span></label
+            >
+            <q-select v-model="selected_role" outlined dense :options="roles" />
           </div>
         </q-card-section>
 
-        <q-card-section class="q-pt-none" v-if="show_invite">
-          <div class="row q-gutter-xl justify-center">
-            <div>
-              <q-btn
-                round
-                color="dark"
-                icon="mail"
-                size="md"
-                :href="
-                  'mailto:' +
-                  member_to_be_invited.email +
-                  '?subject=' +
-                  invite_msg_subject +
-                  '&cc=&bcc=&body=' +
-                  invite_msg
-                "
-              >
-                <q-tooltip>Invite via email</q-tooltip></q-btn
-              >
-            </div>
-            <div>
-              <q-btn round color="secondary" size="sm" @click="whatsappInvite()"
-                ><img src="../../src/assets/whatsapp.png" class="whatsapp_icon"
-              /></q-btn>
-              <q-tooltip>Invite via Whatsapp</q-tooltip>
-            </div>
+        <q-card-section>
+          <div class="row q-px-md justify-center">
+            <q-btn
+              icon-right="send"
+              label="Send Invitation"
+              no-caps
+              color="primary"
+              class="full-width"
+              @click="onSendInvitation()"
+              :loading="loading_invitation"
+              :disable="validateMemberInvite"
+            >
+              <q-tooltip>{{ $t("app.inviteVia") }}</q-tooltip></q-btn
+            >
           </div>
         </q-card-section>
 
-        <q-card-actions align="right">
-          <q-btn flat label="Close" color="primary" v-close-popup />
+        <q-card-actions class="justify-end q-mb-md">
+          <q-btn
+            flat
+            label="Close"
+            class="q-mr-lg"
+            color="primary"
+            v-close-popup
+          />
         </q-card-actions>
       </q-card>
     </q-dialog>
 
     <!-- confirmation dialog for approve and decline row data -->
     <q-dialog v-model="show_approve_dialog" v-if="show_approve_dialog">
-      <q-card class="approve_card">
+      <q-card class="approve_card q-pa-sm">
         <q-card-section>
           <div class="row">
             <div class="col-md-12">
               <label for="msg">
                 <span class="text-weight-bold"
-                  >Do you want to {{ chosen_state }} {{ approve_msg }}</span
-                >
-                <br />
-                <span class="text-weight-bold" v-if="show_members"
-                  >Name: {{ register_member_name }}</span
+                  >{{ $t("app.doYouKnow") }}{{ chosen_state }}
+                  {{ approve_msg }}?</span
                 >
               </label>
+            </div>
+
+            <div v-if="show_members" class="text-red q-mt-md">
+              <div class="text-weight-bold text-left">
+                {{ $t("app.nameLabel") }}:
+                <span class="q-pl-lg">{{ approve_data.name }}</span>
+              </div>
+
+              <div class="text-weight-bold text-left">
+                {{ $t("app.amount") }}:
+                <span class="amount"
+                  >{{ Number(registration_amount).toLocaleString() }} XAF</span
+                >
+              </div>
+            </div>
+            <div v-if="show_income_activity" class="text-red">
+              <div class="text-weight-bold text-left">
+                {{ $t("app.contributor") }}:
+                <span class="q-pl-lg">{{ contributor }}</span>
+              </div>
+
+              <div class="text-weight-bold text-left">
+                {{ $t("app.amount") }}:
+                <span class="q-pl-xl"
+                  >{{ Number(income_amount).toLocaleString() }} XAF</span
+                >
+              </div>
+            </div>
+
+            <div v-if="show_contribution" class="q-mt-md">
+              <div class="text-weight-bold text-left text-red">
+                {{ $t("app.nameLabel") }}:
+                <span class="q-pl-md">{{ approve_data.user_name }}</span>
+              </div>
+
+              <div class="text-weight-bold text-left text-red">
+                {{ $t("app.amount") }}:
+                <span class="amount"
+                  >{{
+                    Number(approve_data.total_amount_deposited).toLocaleString()
+                  }}
+                  XAF</span
+                >
+              </div>
+            </div>
+            <div v-if="show_member_savings" class="q-mt-md text-red">
+              <div class="text-weight-bold text-left">
+                {{ $t("app.member") }}::
+                <span class="q-pl-sm">{{ contributor }}</span>
+              </div>
+              <div class="text-weight-bold text-left">
+                {{ $t("app.amount") }}:
+                <span class="amount"
+                  >{{ Number(income_amount).toLocaleString() }} XAF</span
+                >
+              </div>
             </div>
           </div>
         </q-card-section>
 
-        <q-card-actions align="right">
+        <q-card-actions align="right" class="q-my-md q-mx-sm">
           <q-btn
             :class="chosen_state == 'Approve' ? 'approve' : 'decline'"
             size="md"
-            label="Cancel"
+            :label="$t('app.cancel')"
             flat
             v-close-popup
+            no-caps
           />
           <q-btn
             :class="chosen_state == 'Approve' ? 'approve' : 'decline'"
@@ -394,6 +995,7 @@
             flat
             @click="onChangeRecordState()"
             v-close-popup
+            no-caps
           />
         </q-card-actions>
       </q-card>
@@ -403,7 +1005,7 @@
 <script>
 import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
 import IncomeActivityMixin from "src/mixins/IncomeActivityMixin.vue";
-import { LocalStorage } from "quasar";
+import { LocalStorage, Notify, Platform } from "quasar";
 import moment from "moment";
 import ContributionsMixinVue from "src/mixins/ContributionsMixin.vue";
 import memberMixin from "src/mixins/memberMixin.vue";
@@ -417,6 +1019,8 @@ export default {
     ContributionsMixinVue,
     memberMixin,
   ],
+
+  mounted() {},
 
   props: {
     columns: {
@@ -463,6 +1067,10 @@ export default {
       type: Boolean,
       required: true,
     },
+    show_delete_contribution: {
+      type: Boolean,
+      required: false,
+    },
     show_member_contribution: {
       required: false,
       type: Boolean,
@@ -479,6 +1087,10 @@ export default {
       required: false,
       type: Number,
     },
+    total_member_saving: {
+      required: false,
+      type: Number,
+    },
     total_contribution: {
       required: false,
       type: Number,
@@ -489,25 +1101,24 @@ export default {
       type: Number,
       default: 0.0,
     },
+    pagination: {
+      required: true,
+      type: Object,
+    },
+    table_loading: {
+      required: false,
+      type: Boolean,
+    },
   },
+
   data() {
     return {
-      loading: false,
       dialog: false,
       filter: "",
-      pagination: {
-        rowsPerPage: 15, // current rows per page being displayed
-      },
       deleted_row: null,
       show_invite: false,
       member_to_be_invited: null,
       redirect_url: process.env.REDIRECT_URL,
-      invite_msg_subject: "Invitation to Join Financial Assistance",
-      invite_msg:
-        "Hello there! You have been invited to join Financial Assistance in order to better manage your financial transaction.  " +
-        "Click the link to join: " +
-        process.env.REDIRECT_URL +
-        ".  If you don't recognize the sender, simply ignore this message.",
       show_approve_dialog: false,
       chosen_state: null,
       approve_msg: null,
@@ -516,12 +1127,36 @@ export default {
       type: null,
       delete_msg: "",
       show_confirm_dialog_detail: false,
+      registration_amount: null,
+      income_amount: 0,
+      contributor: null,
+      roles: ["TREASURER", "FINANCIAL_SECRETARY", "ADMIN", "PRESIDENT"],
+      member_invite_name: "",
+      selected_role: "",
+      loading_invitation: false,
+      current_session_id: LocalStorage.getItem("data").current_session.id,
     };
   },
 
-  computed: {},
+  computed: {
+    getPagination: {
+      get() {
+        return this.pagination;
+      },
+      set(pagination) {
+        return pagination;
+      },
+    },
+
+    validateMemberInvite() {
+      return this.selected_role === "";
+    },
+  },
 
   methods: {
+    onRequest(props) {
+      this.$emit("onRequest", props);
+    },
     getDate(date) {
       return moment(date).format("MMMM Do YYYY");
     },
@@ -529,26 +1164,86 @@ export default {
     onInviteMember(data) {
       this.show_invite = true;
       this.member_to_be_invited = data;
+      this.member_invite_name = this.member_to_be_invited.name;
     },
 
-    whatsappInvite() {
-      let msg = this.invite_msg_subject + "\n\n" + this.invite_msg;
-      let whatsapp_url = `https://api.whatsapp.com/send?phone=${
-        this.member_to_be_invited.telephone
-      }&text=${encodeURIComponent(msg)}`;
-      window.open(whatsapp_url);
+    onSendInvitation() {
+      let payload = {
+        data: {
+          user_id: this.member_to_be_invited.id,
+          role: this.selected_role,
+          user_name: this.member_to_be_invited.name,
+          user_email: this.member_to_be_invited.email,
+        },
+        url: `/api/protected/organisations/members/send_invitation`,
+        msg: "none",
+        color: "default",
+        to_on_ok: "none",
+        status: "success",
+        to_on_fail: "none",
+        show_feedback: false,
+        error_msg: "none",
+        has_commit: false,
+        commit: "none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.loading_invitation = true;
+      this.$store
+        .dispatch("postRequest", payload)
+        .then((response) => {
+          if (response.status == 200) {
+            Notify.create({
+              type: "positive",
+              color: "positive",
+              message: this.$t("app.memberInviteSuccess"),
+              position: Platform.is.mobile ? "bottom" : "top-right",
+            });
+          } else if (response.status == 403) {
+            Notify.create({
+              type: "info",
+              color: "info",
+              message: this.$t("app.oneMemberRoleWarningMsg"),
+              position: Platform.is.mobile ? "bottom" : "top-right",
+            });
+          } else if (response.status == 427) {
+            Notify.create({
+              type: "info",
+              color: "info",
+              message: this.$t("app.expirationTermNotCompletedMsg"),
+              position: Platform.is.mobile ? "bottom" : "top-right",
+            });
+          } else {
+            Notify.create({
+              type: "negative",
+              color: "negative",
+              message: this.$t("app.memberInviteFail"),
+              position: Platform.is.mobile ? "bottom" : "top-right",
+            });
+          }
+        })
+        .finally(() => {
+          this.show_invite = false;
+          this.loading_invitation = false;
+        });
     },
 
-    checkPresidentRole() {
-      const president_role = LocalStorage.getItem("data").roles.find(
-        (role) => role.name == "PRESIDENT"
+    checkAdminPresidentRole() {
+      const president_role = LocalStorage.getItem("data").user_data.roles.find(
+        (role) => role.name === "PRESIDENT" || role.name === "ADMIN"
       );
       return president_role != undefined;
     },
 
     checkRole() {
-      const president_role = LocalStorage.getItem("data").roles.find(
-        (role) => role.name == "PRESIDENT" || role.name == "FINANCIAL_SECRETARY"
+      const president_role = LocalStorage.getItem("data").user_data.roles.find(
+        (role) =>
+          role.name === "PRESIDENT" ||
+          role.name === "FINANCIAL_SECRETARY" ||
+          role.name === "ADMIN"
       );
       return president_role != undefined;
     },
@@ -558,6 +1253,7 @@ export default {
         data: data,
         tab: "Register Member",
       };
+      this.$store.dispatch("setMemberToRegister", data);
       this.$emit("register-member", payload);
     },
 
@@ -570,7 +1266,7 @@ export default {
       );
 
       intermediate_tabs.push({
-        name: "Member Profile",
+        name: this.$t("app.memberProfile"),
         has_intermediate_tab: true,
       });
 
@@ -585,34 +1281,36 @@ export default {
       this.deleted_row = data;
       this.dialog = true;
       this.type = "MEMBERS";
-      this.delete_msg = "Are you sure you want to delete this Member ?";
+      this.delete_msg = this.$t("app.deleteMemberWarningMsg");
     },
 
-    computeShowConfirmDialogDetail() {
-      let show_confirm_dialog_detail = false;
-      switch (this.type) {
-        case "MEMBERS":
-          show_confirm_dialog_detail = true;
-          break;
-      }
-      return show_confirm_dialog_detail;
+    onDeleteIncomeActivity(data) {
+      this.deleted_row = data;
+      this.dialog = true;
+      this.type = "INCOME_ACTIVITIES";
+      this.delete_msg = this.$t("app.deleteIncomeWarningMsg");
+    },
+
+    deleteRow() {
+      this.$emit("delete-row", this.deleted_row);
     },
 
     checkTreasurerRole() {
-      const treasurer_role = LocalStorage.getItem("data").roles.find(
+      const treasurer_role = LocalStorage.getItem("data").user_data.roles.find(
         (role) => role.name == "TREASURER"
       );
       return treasurer_role != undefined;
     },
 
     checkPresidentTreasurerRole() {
-      const treasurer_role = LocalStorage.getItem("data").roles.find(
+      const treasurer_role = LocalStorage.getItem("data").user_data.roles.find(
         (role) => role.name == "TREASURER" || "PRESIDENT"
       );
       return treasurer_role != undefined;
     },
 
     onApprovedRecord(row, state) {
+      this.registration_amount = this.$store.getters.getRegAmount.amount;
       this.show_approve_dialog = true;
       this.approve_data = row;
       this.chosen_state = state;
@@ -620,6 +1318,7 @@ export default {
     },
 
     onDeclineRecord(row, state) {
+      this.registration_amount = this.$store.getters.getRegAmount.amount;
       this.show_approve_dialog = true;
       this.approve_data = row;
       this.chosen_state = state;
@@ -630,12 +1329,15 @@ export default {
       let payload = {
         url: this.setApproveUrlBaseOnType(this.approve_data),
         msg: this.setApproveFeedbackMsg(this.approve_data),
-        data: null,
+        data:
+          this.approve_data.type == "MEMBERS_CONTRIBUTIONS"
+            ? this.setApproveContributionPayload(this.approve_data)
+            : null,
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: "An Error occurred! Please try again",
+        error_msg: this.$t("app.defaultErrorMsg"),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -645,7 +1347,7 @@ export default {
         },
       };
       this.$store.dispatch("putRequest", payload).then((res) => {
-        if (res.status == 200) {
+        if (res) {
           this.fetchDataBaseOnTypeAfterApprove(this.approve_data);
         }
       });
@@ -658,14 +1360,14 @@ export default {
         case "INCOME_ACTIVITIES":
           url = `/api/protected/income-activities/${data.id}/approve?type=${type}`;
           break;
-        case "MEMBERS_SAVINGS":
+        case "MEMBER_SAVINGS":
           url = `/api/protected/user-savings/${data.id}?type=${type}`;
           break;
         case "MEMBERS_CONTRIBUTIONS":
-          url = `/api/protected/contributions/${data.id}/approve?type=${type}`;
+          url = `/api/protected/contributions/approve`;
           break;
         case "MEMBERS":
-          url = `/api/protected/members-registration/approve?user_id=${data.id}&status=${type}&year=${data.year}`;
+          url = `/api/protected/members-registration/approve?user_id=${data.id}&status=${type}&session_id=${data.session_id}`;
           break;
       }
 
@@ -673,9 +1375,15 @@ export default {
     },
 
     setApproveFeedbackMsg(data) {
-      let msg = `Record was ${this.chosen_state} successfully`;
+      let msg =
+        this.$t("app.recordWas") +
+        `${this.chosen_state}` +
+        this.$t("app.successfull");
       if (data.type == "MEMBERS") {
-        msg = `Member registration ${this.chosen_state} successfully`;
+        msg =
+          this.$t("app.memberReg") +
+          `${this.chosen_state}` +
+          this.$t("app.successfull");
       }
       return msg;
     },
@@ -684,85 +1392,103 @@ export default {
       let date = "";
       switch (data.type) {
         case "INCOME_ACTIVITIES":
-          date = moment(data.date).format("MMMM Do YYYY");
-          this.approve_msg = ` ${data.amount}  F CFA  for ${data.name} on the ${date} at ${data.venue} ?`;
+          this.income_amount = data.amount;
+          this.contributor = data.name;
+          this.approve_msg =
+            this.$t("app.contributionFor") + `${data.payment_item.name}`;
           break;
-        case "MEMBERS_SAVINGS":
+        case "MEMBER_SAVINGS":
           date = moment(data.created_at).format("MMMM Do YYYY");
-          this.approve_msg = ` ${data.amount_deposited} F CFA Member Saving for ${data.name} on the ${date} ?`;
+          this.income_amount = data.amount_deposited;
+          this.contributor = data.user_name;
+          this.approve_msg = this.$t("app.memberContribution") + `${date}`;
           break;
         case "MEMBERS_CONTRIBUTIONS":
           date = moment(data.date).format("MMMM Do YYYY");
-          this.approve_msg = ` ${data.amount_deposited} F CFA Payment for ${data.name} on the ${date} ?`;
+          this.approve_msg =
+            this.$t("app.memberContributionDownloadLabel") +
+            `${data.payment_item_name}` +
+            this.$t("app.on") +
+            `${date}`;
+          break;
         case "MEMBERS":
           this.register_member_name = data.name;
-          this.approve_msg = `Member Registration`;
+          this.approve_msg = this.$t("app.regFor") + `${data.year}`;
+          break;
       }
       return this.approve_msg;
     },
 
     fetchDataBaseOnTypeAfterApprove(data) {
-      let organisation_id = this.$store.getters.getOrganisation.id;
-      let search_savings_url = "";
-      let payload = null;
-      if (data.type != "MEMBERS") {
-        payload = {
-          status:
-            this.$store.getters.getSearchSavingParams.status == undefined
-              ? ""
-              : this.$store.getters.getSearchSavingParams.status,
-          name:
-            this.$store.getters.getSearchSavingParams.name == undefined
-              ? ""
-              : this.$store.getters.getSearchSavingParams.name,
-          amount_deposited:
-            this.$store.getters.getSearchSavingParams.amount_deposited ==
-            undefined
-              ? 0
-              : this.$store.getters.getSearchSavingParams.amount_deposited,
-          date_range:
-            this.$store.getters.getSearchSavingParams.date_range == undefined
-              ? ""
-              : this.$store.getters.getSearchSavingParams.date_range,
-          date:
-            this.$store.getters.getSearchSavingParams.date == undefined
-              ? ""
-              : this.$store.getters.getSearchSavingParams.date,
-          month:
-            this.$store.getters.getSearchSavingParams.month == undefined
-              ? ""
-              : this.$store.getters.getSearchSavingParams.month,
-          year:
-            this.$store.getters.getSearchSavingParams.year == undefined
-              ? ""
-              : this.$store.getters.getSearchSavingParams.year,
-          payment_item_id:
-            this.$store.getters.getSearchSavingParams.payment_item_id ==
-            undefined
-              ? ""
-              : this.$store.getters.getSearchSavingParams.payment_item_id.id,
-          range:
-            this.$store.getters.getSearchSavingParams.range == undefined
-              ? ""
-              : this.$store.getters.getSearchSavingParams.range,
-        };
-      }
+      const route_data = Object.assign({}, this.$route.query);
 
+      let organisation_id = this.$store.getters.getOrganisation.id;
+      let session_id = this.current_session_id;
+      let status = route_data.status != undefined ? route_data.status : "";
+      let name = route_data.name != undefined ? route_data.name : "";
+      let amount_deposited =
+        this.$route.amount_deposited != undefined
+          ? route_data.amount_deposited
+          : "";
+      let month = route_data.month != undefined ? route_data.month : "";
+      let date = route_data.date ? route_data.date : "";
+      let range = route_data.range ? route_data.range : "";
       switch (data.type) {
         case "INCOME_ACTIVITIES":
-          this.getOrganisationIncomeActivities(organisation_id);
+          this.getOrganisationIncomeActivities(organisation_id, 1, 10);
           break;
-        case "MEMBERS_SAVINGS":
-          search_savings_url = `/api/protected/user-savings?organisation_id=${organisation_id}&status=${payload.status}&name=${payload.name}&amount_deposited=${payload.amount_deposited}&year=${payload.year}&month=${payload.month}&date=${payload.date}&date_range=${payload.date_range}`;
-          this.filterSaving(search_savings_url);
+        case "MEMBER_SAVINGS":
+          this.getMemberSavings(data.user_id, 1, 10, month, status);
           break;
         case "MEMBERS_CONTRIBUTIONS":
-          this.filterMembersContributions(payload);
+          let payload = {
+            payment_item_id: data.payment_item_id,
+            year: data.session_id,
+          };
+          this.filterMembersContributions(
+            payload,
+            session_id,
+            status,
+            month,
+            date,
+            range,
+            amount_deposited,
+            1,
+            10
+          );
+          this.$store.dispatch("setSearchContributionParams", {
+            item: {
+              label: data.payment_item_name,
+              value: data.payment_item_id,
+            },
+          });
           break;
         case "MEMBERS":
-          this.getOrganisationMembers(organisation_id, true);
+          this.filterOrganisationMembers(
+            organisation_id,
+            true,
+            1,
+            10,
+            "name",
+            "",
+            "",
+            "",
+            ""
+          );
           break;
       }
+    },
+
+    setApproveContributionPayload(data) {
+      let type = this.chosen_state == "Approve" ? "APPROVED" : "DECLINED";
+      let payload = {
+        payment_item_id: data.payment_item_id,
+        user_id: data.user_id,
+        session_id: data.session_id,
+        type: type,
+      };
+
+      return payload;
     },
 
     cancelDialog() {
@@ -770,6 +1496,111 @@ export default {
       this.dialog = false;
     },
 
+    showMemberSavings(data) {
+      this.$emit("fetch-member-saving", data);
+      const intermediate_tabs = Array.from(
+        this.$store.getters.getIntermediateTabs
+      );
+
+      intermediate_tabs.push({
+        name: data.user_name + " " + this.$t("app.savingtitle"),
+        has_intermediate_tab: true,
+      });
+
+      this.$store.dispatch("setIntermediateTabs", intermediate_tabs);
+    },
+
+    onEditMemberSaving(data) {
+      let payload = {
+        data: data,
+        tab: "Savings",
+      };
+      this.$store.dispatch("setUpdatedMemberSaving", data);
+      this.$emit("edit-member-saving", payload);
+    },
+
+    onViewMemberSaving(data) {
+      let payload = {
+        data: data,
+        tab: "View Member Saving",
+      };
+      this.$store.dispatch("setCurrentMemberSaving", data);
+      this.$emit("view-member-saving", payload);
+    },
+
+    onEditIncomeActivity(data) {
+      let payload = {
+        data: data,
+        tab: "Income Activities",
+      };
+      this.$store.dispatch("setUpdatedIncomeActivity", data);
+
+      this.$emit("edit-income-activity", payload);
+    },
+
+    onViewIncomeActivity(data) {
+      let payload = {
+        data: data,
+        tab: "View Income Activity",
+      };
+      this.$store.dispatch("setCurrentIncomeActivity", data);
+
+      this.$emit("view-income-activity", payload);
+    },
+
+    onViewAllMemberContributions(data) {
+      const intermediate_tabs = Array.from(
+        this.$store.getters.getIntermediateTabs
+      );
+
+      intermediate_tabs.push({
+        name: data.user_name + " Contributions",
+        has_intermediate_tab: true,
+      });
+
+      this.$store.dispatch("setIntermediateTabs", intermediate_tabs);
+
+      this.$router.replace({
+        name: "member_contributions",
+        params: { item_id: data.payment_item_id, id: data.user_id },
+      });
+    },
+
+    onViewContribution(data) {
+      let payload = {
+        data: data,
+        tab: "View Contribution",
+      };
+
+      this.$store.dispatch("setSelectedContribution", data);
+
+      this.$emit("view-contribution", payload);
+    },
+
+    onAllContribution(data) {
+      this.$router.push({
+        name: "member_contributions",
+        params: { id: data.id },
+      });
+    },
+
+    onEditContribution(data) {
+      let payload = {
+        data: data,
+        tab: "Edit Member Contribution",
+      };
+
+      this.$store.dispatch("setSelectedContribution", data);
+
+      this.$emit("edit-contribution", payload);
+    },
+
+    onDeleteContribution(data) {
+      this.deleted_row = data;
+      this.dialog = true;
+      this.type = "MEMBERS_CONTRIBUTIONS";
+      this.delete_msg = this.$t("app.deleteContributionWarningMsg");
+    },
   },
   components: {
     ConfirmDialogVue,
@@ -777,6 +1608,21 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.invite_card {
+  width: 100%;
+  max-width: 460px;
+}
+
+.view_items {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  align-items: center;
+  text-transform: capitalize;
+  width: 120px;
+}
+
 .button {
   text-align: end;
 }
@@ -801,19 +1647,39 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
+  font-size: 12px;
+  align-items: center;
+  text-transform: capitalize;
+  width: 8rem;
+  padding-top: 0.1rem;
+  padding-bottom: 0.1rem;
+}
+
+.view_income {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
   font-size: 13px;
-  line-height: 25px;
-  align-items: left;
-  letter-spacing: 0.01em;
   text-transform: capitalize;
   color: $primary;
+  width: 5.5rem;
+}
+
+.view_contribution {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 13px;
+  text-transform: capitalize;
+  color: $primary;
+  width: 5.7rem;
 }
 
 .heading {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 15px;
+  font-size: 17px;
   line-height: 25px;
   align-items: left;
   letter-spacing: 0.01em;
@@ -830,22 +1696,48 @@ export default {
   background-color: $secondary;
   color: white;
   margin-right: 2.5rem;
+  width: 5.5rem;
+}
+
+.approve_btn_income_activity {
+  background-color: $secondary;
+  color: white;
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  align-items: center;
+  text-transform: capitalize;
+  width: 5.5rem;
 }
 
 .approve_card {
-  width: 30rem;
-  padding: 0.7rem;
+  width: 25rem;
 }
 
 .decline_btn {
   background-color: $orange;
   color: white;
+  width: 5.5rem;
 }
 
 .decline_btn_saving {
   background-color: $orange;
   color: white;
   margin-right: 3rem;
+  width: 5.5rem;
+}
+
+.decline_btn_income_activity {
+  background-color: $orange;
+  color: white;
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  align-items: center;
+  text-transform: capitalize;
+  width: 5.5rem;
 }
 
 .approve {
@@ -857,8 +1749,9 @@ export default {
 }
 
 .title {
-  font-size: small;
-  font-weight: bold;
+  font-size: 15px;
+  font-weight: 500;
+  color: $grey8;
 }
 
 .message {
@@ -880,7 +1773,7 @@ export default {
 }
 
 .amount {
-  margin-left: 1.2rem;
+  margin-left: 0.8rem;
 }
 
 .payment_item_name {
@@ -905,7 +1798,8 @@ export default {
 }
 
 .whatsapp_icon {
-  width: 2.7rem;
+  width: 2rem;
+  padding-right: 0.5rem;
 }
 
 .not_registered {
@@ -914,5 +1808,29 @@ export default {
 
 .registered {
   color: $secondary;
+}
+
+.warning_caption {
+  color: $grey2;
+  font-weight: 500;
+  font-size: 15px;
+}
+
+.summary {
+  font-size: 15px;
+}
+
+.paginate {
+  float: right;
+}
+
+.form_field {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 13px;
+  align-items: center;
+  letter-spacing: 0.01em;
+  color: $grey8;
 }
 </style>

@@ -12,14 +12,14 @@ axios.interceptors.response.use(function(response)  {
   return Promise.resolve(response);
 
 }, function(error) {
-  if(typeof error.response == "undefined"){
+  if(typeof error.response === undefined){
     Notify.create({
       type:'info',
       message:'No Internet Connection',
       position:Platform.is.mobile?'bottom':'top-right'
     })
   }
-  if(error.response.status == 401 && error.response.statusText == "Unauthorized"){
+  if(error.response.status === 401 && error.response.statusText === "Unauthorized"){
 
     LocalStorage.remove('data');
     router.push({name:'Login'}, () => {})
@@ -31,7 +31,7 @@ axios.interceptors.request.use(function (config) {
   const data = LocalStorage.getItem('data');
   let token = "";
   if(data != null){
-    token = data.token;
+    token = data.user_data.token;
   }
   config.headers.common['Authorization'] = 'Bearer '+token;
 

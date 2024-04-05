@@ -178,3 +178,31 @@ export function getRegAmount(state) {
 export function getSessions(state) {
   return state.sessions;
 }
+
+export function getReportData(state) {
+  return state.report_data
+}
+
+export function getBarChartData(state) {
+  return state.bar_chart_data;
+}
+
+export function getPieChartData(state) {
+  return state.pie_chart_data;
+}
+
+export function getTotalYearlyContribution(state) {
+  return state.total_yearly_contribution;
+}
+
+export function getTotalYearlyExpenditure(state) {
+  return state.total_yearly_expenditure;
+}
+
+export function getSearchContributionParams(state){
+  return state.search_contribution_data
+}
+
+export function getPagination(state){
+  return state.pagination;
+}

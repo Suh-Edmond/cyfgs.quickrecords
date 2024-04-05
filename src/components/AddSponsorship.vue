@@ -1,77 +1,119 @@
 <template>
-  <div class="q-pa-md">
-    <div class="q-ml-sm q-mb-lg">
-      <label class="instruction_info"
-        >All fields with <span class="text-red">*</span> are required</label
+  <div>
+    <q-banner
+      inline-actions
+      rounded
+      class="bg-warning text-white q-mx-md q-mt-sm q-mb-sm"
+      dense
+      v-if="existSponsorship"
+    >
+      {{ $t("app.cantUpdateSponsorshipMsg") }}
+      <span class="text-lowercase">{{
+        getSelectedSponsorship.approve
+      }}</span>
+      <template v-slot:action>
+        <q-btn flat icon="close" size="sm" />
+      </template>
+    </q-banner>
+    <div class="q-mt-md">
+      <label class="instruction_info q-pl-md"
+        >{{ $t("app.warningField") }} <span class="text-red">*</span>
+        {{ $t("app.fields") }}</label
       >
     </div>
-    <div class="q-px-sm ">
-      <q-form @submit="onAddSponsorship" class="q-gutter-md">
+    <q-form @submit="onAddSponsorship" class="q-gutter-sm q-mx-sm q-mt-sm">
+      <div>
+        <div class="q-mb-md">
+          <label for="name" class="form_field"
+            >{{ $t("app.paymentItem") }} <span class="text-red">*</span>
+          </label>
+          <q-select
+            outlined
+            dense
+            v-model="sponsorship.payment_item_id"
+            :options="payment_items"
+            :label="$t('app.searchPaymentItem')"
+            input-debounce="0"
+            use-input
+            clearable
+            @filter="filterPaymentItems"
+            @input="stopSearch"
+            class="text_color"
+            :readonly="existSponsorship"
+          >
+            <template v-slot:append v-if="start_filtering">
+              <q-spinner color="primary" size="1.2em" :thickness="3" />
+            </template>
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey">
+                  {{ $t("app.noResults") }}
+                </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
+        </div>
         <div>
           <div class="q-mb-md">
             <label for="name" class="form_field"
-              >Payment Activity <span class="text-red">*</span>
+              >{{ $t("app.sponsorNameLabel") }} <span class="text-red">*</span>
             </label>
-            <q-select
+            <q-input
               outlined
               dense
-              v-model="sponsorship.payment_item_id"
-              placeholder="Type name to search..."
-              :options="getPaymentActivities"
-              input-debounce="0"
+              v-model="sponsorship.supporter"
               class="text_color"
+              :readonly="existSponsorship"
             >
-            </q-select>
+            </q-input>
           </div>
-          <div>
-            <div class="q-mb-md">
-              <label for="name" class="form_field"
-                >Sponsor's Name <span class="text-red">*</span>
-              </label>
-              <q-input outlined dense v-model="sponsorship.supporter"  class="text_color">
-              </q-input>
-            </div>
-            <div class="q-mb-md">
-              <label for="credential" class="form_field"
-                >Amount Deposited(XAF)<span class="text-red">*</span></label
-              >
-              <q-input
-                v-model.lazy="sponsorship.amount_deposited"
-                outlined
-                dense
-                type="number"
-                class="text_color"
-              >
-              </q-input>
-            </div>
-            <div class="q-mb-md">
-              <label for="credential" class="form_field">Comment </label>
-              <q-input
-                v-model="sponsorship.comment"
-                outlined
-                dense
-                class="text_color"
-                type="textarea"
-                placeholder="Provide any comment about this sponsorship"
-              />
-            </div>
-            <div class="flex q-mt-lg justify-end">
-              <div>
-                <ButtonVue
-                  class="form_button"
-                  label="Save"
-                  :loading="loading"
-                  :color="'primary'"
-                  :disabled="validateForm"
-                  :no_caps="no_caps"
-                >
-                </ButtonVue>
-              </div>
-            </div>
+          <div class="q-mb-md">
+            <label for="credential" class="form_field"
+              >{{ $t("app.amountDeposited")
+              }}<span class="text-red">*</span></label
+            >
+            <q-input
+              v-model.lazy="sponsorship.amount_deposited"
+              outlined
+              dense
+              type="number"
+              class="text_color"
+              :readonly="existSponsorship"
+            >
+            </q-input>
+          </div>
+          <div class="q-mb-md">
+            <label for="credential" class="form_field"
+              >{{ $t("app.comment") }}
+            </label>
+            <q-input
+              v-model="sponsorship.comment"
+              outlined
+              dense
+              class="text_color"
+              type="textarea"
+              placeholder="Provide any comment about this sponsorship"
+              :readonly="existSponsorship"
+            />
+          </div>
+          <div
+            :class="
+              $q.platform.is.desktop ? 'flex q-mt-md justify-end' : 'q-mb-xl'
+            "
+          >
+            <ButtonVue
+              class="form_button"
+              :label="$t('app.saveBtnLabel')"
+              :loading="loading"
+              :color="'primary'"
+              :disabled="validateForm"
+              :no_caps="no_caps"
+            >
+            </ButtonVue>
           </div>
         </div>
-      </q-form>
-    </div>
+      </div>
+    </q-form>
   </div>
 </template>
 <script>
@@ -82,9 +124,10 @@ export default {
   mixins: [SponsorshipMixin],
 
   mounted() {
-    let heading = "Sponsorship Information";
+    let heading = this.$t("app.sponsorshipHeading");
 
     this.$emit("set-heading", heading);
+    this.getPaymentActivitiesFromStatus();
   },
 
   data() {
@@ -97,57 +140,51 @@ export default {
         comment: null,
       },
       no_caps: true,
+      payment_items: [],
+      start_filtering: false,
     };
   },
   computed: {
     validateForm() {
       return this.sponsorship.supporter === null ||
         this.sponsorship.amount_deposited == 0 ||
-        this.sponsorship.payment_item_id == null
-        ? true
-        : false;
+        this.sponsorship.payment_item_id == null || this.existSponsorship;
     },
-
-    getPaymentActivities() {
-      let data = [];
-      this.$store.getters.getPaymentActivities.forEach((ele) => {
-        data.push({
-          label: ele.name,
-          value:ele.id,
-          amount:ele.amount
-        })
-      })
-      return data;
-    },
-
     getSelectedSponsorship() {
       return this.setFormField(this.$store.getters.getSelectedSponsorship);
+    },
+
+    existSponsorship() {
+      return this.$store.getters.getSelectedSponsorship !== null && this.$store.getters.getSelectedSponsorship.approve != "PENDING";
     }
   },
-  watch:{
+  watch: {
     getSelectedSponsorship() {
       return this.setFormField(this.$store.getters.getSelectedSponsorship);
-    }
+    },
   },
 
   methods: {
     onAddSponsorship() {
       this.loading = true;
-      let saved_sponsorship_id = this.$store.getters.getSelectedSponsorship != null ? this.$store.getters.getSelectedSponsorship.id : null;
+      let saved_sponsorship_id =
+        this.$store.getters.getSelectedSponsorship != null
+          ? this.$store.getters.getSelectedSponsorship.id
+          : null;
       let payload = {
         url: `/api/protected/activity-supports`,
         data: {
-          supporter:this.sponsorship.supporter,
+          supporter: this.sponsorship.supporter,
           payment_item_id: this.sponsorship.payment_item_id.value,
-          amount_deposited:this.sponsorship.amount_deposited,
-          comment:this.sponsorship.comment
+          amount_deposited: JSON.parse(this.sponsorship.amount_deposited),
+          comment: this.sponsorship.comment,
         },
-        msg: "Sponsorship saved Successfully",
+        msg: this.$t("app.addSponsorshipSuccessMsg"),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: "An Error occurred! Please try again",
+        error_msg: this.$t("app.defaultErrorMsg"),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -159,7 +196,6 @@ export default {
       this.dispatchAction(payload, saved_sponsorship_id);
     },
 
-
     resetForm() {
       this.sponsorship.supporter = null;
       this.sponsorship.amount_deposited = 0.0;
@@ -169,40 +205,81 @@ export default {
       return this.sponsorship;
     },
 
-    dispatchAction(payload, id){
-      if(id == null){
-        this.$store.dispatch("postRequest", payload).then(() => {
-          this.getAllSponsorships();
-          this.resetForm()
-        }).finally(() => {
-          this.$emit("close-right-drawer");
-          this.loading = false;
-        })
-      }else {
-        payload.url = `/api/protected/activity-supports/${id}`
-        this.$store.dispatch("putRequest", payload).then(() => {
-          this.getAllSponsorships();
-          this.resetForm()
-        }).finally(() => {
-          this.$emit("close-right-drawer");
-          this.loading = false;
-        })
+    dispatchAction(payload, id) {
+      if (id == null) {
+        this.$store
+          .dispatch("postRequest", payload)
+          .then(() => {
+            this.getAllSponsorships(1, 10, payload.data.payment_item_id, "");
+            this.resetForm();
+          })
+          .finally(() => {
+            this.$emit("close-right-drawer");
+            this.loading = false;
+          });
+      } else {
+        payload.url = `/api/protected/activity-supports/${id}`;
+        this.$store
+          .dispatch("putRequest", payload)
+          .then(() => {
+            this.getAllSponsorships(1, 10, payload.data.payment_item_id, "");
+            this.resetForm();
+          })
+          .finally(() => {
+            this.$emit("close-right-drawer");
+            this.loading = false;
+          });
       }
     },
 
-
     setFormField(data) {
-      if(data != null) {
+      if (data != null) {
         this.sponsorship.id = data.id;
         this.sponsorship.amount_deposited = parseFloat(data.amount_deposited);
         this.sponsorship.comment = data.comment;
         this.sponsorship.supporter = data.supporter;
-        this.sponsorship.payment_item_id = {label:data.payment_item.name, value:data.payment_item.id}
+        this.sponsorship.payment_item_id = {
+          label: data.payment_item.name,
+          value: data.payment_item.id,
+        };
       }
 
       return this.sponsorship;
-    }
+    },
 
+    filterPaymentItems(val, update, abort) {
+      if (val < 2) {
+        this.start_filtering = false;
+        abort();
+        return;
+      }
+
+      update(() => {
+        this.start_filtering = true;
+        this.payment_items = this.getPaymentActivitiesFromStatus().filter(
+          (item) => item.label.toLowerCase().includes(val.toLowerCase())
+        );
+        return this.payment_items;
+      });
+    },
+
+    getPaymentActivitiesFromStatus() {
+      let payment_items = [];
+      this.$store.getters.getPaymentActivities.forEach((ele) => {
+        payment_items.push({
+          label: ele.name,
+          value: ele.id,
+          amount: ele.amount,
+        });
+      });
+      return payment_items;
+    },
+
+    stopSearch() {
+      if (this.sponsorship.payment_item_id != null) {
+        this.start_filtering = false;
+      }
+    },
   },
   components: {
     ButtonVue,
@@ -211,11 +288,10 @@ export default {
 </script>
 
 <style scoped lang="scss">
-
 .form_field {
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 400;
+  font-weight: 500;
   font-size: 12px;
   align-items: center;
   letter-spacing: 0.01em;
@@ -224,6 +300,7 @@ export default {
 
 .instruction_info {
   color: $grey2;
+  font-size: small;
 }
 
 .text_color {

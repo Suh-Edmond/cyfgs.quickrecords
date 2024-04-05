@@ -1,9 +1,23 @@
 <template>
   <div>
-    <div class="row">
-      <!-- add fee button -->
-      <div class="col-12 q-mb-sm">
-        <div class="flex justify-end">
+    <div :class="$q.platform.is.mobile?'q-mt-sm':'q-ml-sm'">
+      <!-- table for session fees -->
+      <q-table
+        :data="data"
+        :columns="columns"
+        row-key="index"
+        :table-header-style="{
+          backgroundColor: '#5384ae',
+          color: '#FFFFFF',
+        }"
+        :loading="table_loading"
+      >
+        <template v-slot:top-left>
+          <div>
+            <label for="title" class="title">{{ table_header }}</label>
+          </div>
+        </template>
+        <template v-slot:top-right >
           <q-btn
             label="Add"
             dense
@@ -14,83 +28,58 @@
             icon-right="add"
             @click="show_add_session = true"
           >
-            <q-tooltip> Add Session </q-tooltip>
+            <q-tooltip> {{ $t("app.settingsAddSessionLabel") }} </q-tooltip>
           </q-btn>
-        </div>
-      </div>
-      <!-- end of fee button -->
-
-      <!-- not session has been set -->
-      <div class="col-12 q-mt-lg" v-if="data.length == 0 && !loading">
-        <NotFound
-          :message="'Opps! Current session has not been set. Pleasse the add button to set current session'"
-        ></NotFound>
-      </div>
-      <!-- end of not found component -->
-
-      <!-- table for session fees -->
-      <div class="col-md-12 col-xs-12 col-sm-12" v-if="data.length > 0">
-        <q-table
-          :data="data"
-          :columns="columns"
-          row-key="index"
-          :table-header-style="{
-            backgroundColor: '#5384ae',
-            color: '#FFFFFF',
-          }"
-        >
-          <template v-slot:top-left>
-            <div>
-              <label for="title" class="title">{{ table_header }}</label>
-            </div>
-          </template>
-          <template v-slot:body="props">
-            <q-tr :props="props" class="text-bold">
-              <q-td key="counter" :props="props">
-                {{ props.row.counter }}
-              </q-td>
-              <q-td key="year" :props="props">
-                {{ props.row.year }}
-              </q-td>
-              <q-td
-                key="status"
-                :props="props"
-                :class="
-                  props.row.status == 'ACTIVE'
-                    ? 'status_active'
-                    : 'status_in_active'
-                "
+        </template>
+        <template v-slot:body="props">
+          <q-tr :props="props" class="text-bold">
+            <q-td key="year" :props="props">
+              {{ props.row.year }}
+            </q-td>
+            <q-td
+              key="status"
+              :props="props"
+              :class="
+                props.row.status == 'ACTIVE'
+                  ? 'status_active'
+                  : 'status_in_active'
+              "
+            >
+              {{ props.row.status }}
+            </q-td>
+            <q-td key="updated_by" :props="props">
+              {{ props.row.updated_by }}
+            </q-td>
+            <q-td key="action" :props="props">
+              <q-icon
+                name="edit"
+                size="xs"
+                class="edit_fee q-mr-xl"
+                @click="editSession(props.row)"
               >
-                {{ props.row.status }}
-              </q-td>
-              <q-td key="updated_by" :props="props">
-                {{ props.row.updated_by }}
-              </q-td>
-              <q-td key="action" :props="props">
-                <q-icon
-                  name="edit"
-                  size="xs"
-                  class="edit_fee q-mr-xl"
-                  @click="editSession(props.row)"
-                >
-                  <q-tooltip>Edit</q-tooltip>
-                </q-icon>
-              </q-td>
-            </q-tr>
-          </template>
-        </q-table>
-      </div>
+                <q-tooltip>{{ $t("app.edit") }}</q-tooltip>
+              </q-icon>
+            </q-td>
+          </q-tr>
+        </template>
+
+        <template v-slot:loading>
+          <q-inner-loading showing color="primary" />
+        </template>
+      </q-table>
       <!-- end table for session fees -->
     </div>
 
     <!--add session fee -->
     <q-dialog v-model="show_add_session">
-      <q-card style="min-width: 450px" class="q-px-md q-pt-sm q-pb-sm">
+      <q-card :style="$q.platform.is.mobile?'min-width: 350px':'min-width: 450px'" class="q-px-md q-pt-sm q-pb-sm">
         <q-card-section class="row items-center q-pb-lg">
           <div class="text-h6 add_year" v-if="session.id == null">
-            Add Session
+            {{ $t("app.settingsAddSessionLabel") }}
           </div>
-          <div class="text-h6 add_year" v-else>Update Session</div>
+          <div class="text-h6 add_year" v-else>
+            {{ $t("app.updateSession") }}
+          </div>
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
@@ -99,7 +88,7 @@
           <q-form @submit="onSetSession" class="q-gutter-md">
             <div>
               <label for="credential" class="form_field"
-                >Year <span class="text-red">*</span></label
+                >{{ $t("app.year") }} <span class="text-red">*</span></label
               >
               <q-input
                 v-model="session.year"
@@ -111,7 +100,7 @@
             </div>
             <div>
               <label for="credential" class="form_field"
-                >Status <span class="text-red">*</span></label
+                >{{ $t("app.status") }} <span class="text-red">*</span></label
               >
               <q-select
                 v-model="session.status"
@@ -145,17 +134,36 @@
         <q-card-section>
           <div class="row">
             <div class="col-md-2">
-              <q-avatar icon="warning" color="warning" text-color="white" size="lg"/>
+              <q-avatar
+                icon="warning"
+                color="warning"
+                text-color="white"
+                size="lg"
+              />
             </div>
             <div class="col-md-10">
-              <label class="text-left warning_msg">All information of the Current Active Year [{{ current_year }}] will be Set to  [ {{ session.year }}]</label>
+              <label class="text-left warning_msg"
+                >All information of the Current Active Year [{{ current_year }}]
+                will be Set to [ {{ session.year }}]</label
+              >
             </div>
           </div>
         </q-card-section>
 
         <q-card-actions align="right" class="q-my-md">
-          <q-btn flat  label="Cancel" color="primary" v-close-popup class="q-mr-lg"/>
-          <q-btn flat label="Update" color="primary" @click="resetCurrentSession()"/>
+          <q-btn
+            flat
+            label="Cancel"
+            color="primary"
+            v-close-popup
+            class="q-mr-lg"
+          />
+          <q-btn
+            flat
+            label="Update"
+            color="primary"
+            @click="resetCurrentSession()"
+          />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -165,7 +173,6 @@
 
 <script>
 import ButtonVue from "./Button.vue";
-import NotFound from "./NotFound.vue";
 import SessionStatusVue from "./Constants/SessionStatus.vue";
 export default {
   props: {
@@ -181,9 +188,9 @@ export default {
       type: String,
       required: true,
     },
-    loading: {
-      type: Boolean,
+    table_loading: {
       required: false,
+      type: Boolean,
     },
   },
   data() {
@@ -196,19 +203,19 @@ export default {
       },
       is_fetching: false,
       session_statuses: [SessionStatusVue.ACTIVE, SessionStatusVue.IN_ACTIVE],
-      msg: `All information of the Active Year will be Set to `,
+      msg: this.$t("app.sessionWarningMsg"),
       show_dialog: false,
       show_warning: false,
-      current_year:null,
+      current_year: null,
     };
   },
   computed: {
     setLabel() {
       let label = "";
       if (this.session.id == null) {
-        label = "SAVE";
+        label = this.$t("app.saveBtnLabel");
       } else {
-        label = "Update";
+        label = this.$t("app.updateBtnLabel");
       }
       return label;
     },
@@ -229,9 +236,10 @@ export default {
       );
       return current_session != undefined ? current_session[0] : null;
     },
+
     onSetSession() {
       let current_session = this.getCurrentSession();
-      this.current_year = current_session.year
+      this.current_year = current_session.year;
       if (
         this.session.status == SessionStatusVue.ACTIVE &&
         this.session.year != current_session.year
@@ -248,13 +256,13 @@ export default {
           data: this.session,
           msg:
             this.session.id == null
-              ? "Session saved Successfully"
-              : "Session updated Successfully",
+              ? this.$t("app.saveSessionSuccessMsg")
+              : this.$t("app.saveSessionSuccessMsg"),
           color: "default",
           to_on_ok: "none",
           to_on_fail: "none",
           show_feedback: true,
-          error_msg: "An Error occurred! Please try again",
+          error_msg: this.$t("app.defaultErrorMsg"),
           has_commit: false,
           commit: "none",
           to_be_store_data: {
@@ -281,42 +289,41 @@ export default {
       }
     },
 
-    resetCurrentSession(){
+    resetCurrentSession() {
       let payload = {
-          url:`/api/protected/sessions/update?id=${this.session.id}&status=${this.session.status}`,
-          data: this.session,
-          msg: "Current Session updated Successfully",
-          color: "default",
-          to_on_ok: "none",
-          to_on_fail: "none",
-          show_feedback: true,
-          error_msg: "An Error occurred! Please try again",
-          has_commit: false,
-          commit: "none",
-          to_be_store_data: {
-            required: false,
-            has_value: false,
-            data: [],
-          },
-        };
-        this.show_warning = false;
-        this.$store
-          .dispatch("putRequest",payload)
-          .then(() => {
-            this.is_fetching = false;
-            this.$emit("fetch-sessions");
-          })
-          .finally(() => {
-            this.session.status = SessionStatusVue.ACTIVE;
-            this.session.id = null;
-            this.session.year = null;
-            location.reload();
-          });
-    }
+        url: `/api/protected/sessions/update?id=${this.session.id}&status=${this.session.status}`,
+        data: this.session,
+        msg: this.$t("app.updateSessionMsg"),
+        color: "default",
+        to_on_ok: "none",
+        to_on_fail: "none",
+        show_feedback: true,
+        error_msg: this.$t("app.defaultErrorMsg"),
+        has_commit: false,
+        commit: "none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.show_warning = false;
+      this.$store
+        .dispatch("putRequest", payload)
+        .then(() => {
+          this.is_fetching = false;
+          this.$emit("fetch-sessions");
+        })
+        .finally(() => {
+          this.session.status = SessionStatusVue.ACTIVE;
+          this.session.id = null;
+          this.session.year = null;
+          location.reload();
+        });
+    },
   },
   components: {
     ButtonVue,
-    NotFound,
   },
 };
 </script>

@@ -1,65 +1,98 @@
 <template>
-  <div class="q-pa-md">
-    <div class="q-ml-sm q-mb-lg">
-      <label class="text-muted q-ml-sm instruction_info"
-        >All fields with <span class="text-red">*</span> are required</label
+  <div>
+    <q-banner
+      inline-actions
+      rounded
+      class="bg-warning text-white q-mx-md q-mt-sm q-mb-sm"
+      dense
+      v-if="onMemberSavingExist"
+    >
+      {{ $t("app.cantUpdateSavingMsg") }}
+      <span class="text-lowercase">{{
+        getUpdateMemberSaving.approve
+      }}</span>
+      <template v-slot:action>
+        <q-btn flat icon="close" size="sm" />
+      </template>
+    </q-banner>
+    <div class="q-mt-md">
+      <label class="text-muted q-pl-md instruction_info"
+        >{{ $t("app.warningField") }}<span class="text-red">*</span>
+        {{ $t("app.fields") }}</label
       >
     </div>
-    <div class="q-mt-md q-mx-md">
-      <q-form @submit="onAddSaving" class="q-gutter-md">
-        <div>
-          <label for="name" class="form_field"
-            >Member Name <span class="text-red">*</span>
-          </label>
-          <q-select outlined dense v-model="saving.user_id" :options="members">
-            <template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey"> No results </q-item-section>
-              </q-item>
-            </template>
-          </q-select>
-        </div>
-        <div>
-          <label for="credential" class="form_field q-mt-ms"
-            >Amount <span class="text-red">*</span></label
-          >
-          <q-input
-            v-model="saving.amount_deposited"
-            outlined
-            dense
-            type="number"
-          />
-        </div>
-        <div>
-          <label for="credential" class="form_field"
-            >Comment <span class="text-red">*</span></label
-          >
-          <q-input
-            v-model="saving.comment"
-            outlined
-            dense
-            type="textarea"
-            placeholder="Provide any comment about this saving"
-          />
-        </div>
-        <div class="flex q-mt-lg justify-end">
-          <div>
-            <ButtonVue
-              class="form_button"
-              :label="label_save"
-              :loading="loading"
-              :color="color"
-              :disabled="validateForm"
-              :no_caps="no_caps"
-            >
-            </ButtonVue>
-          </div>
-        </div>
-      </q-form>
-    </div>
+    <q-form @submit="onAddSaving" class="q-gutter-sm q-mx-sm q-mt-md">
+      <div>
+        <label for="name" class="form_field"
+          >{{ $t("app.memberName") }}<span class="text-red">*</span>
+        </label>
+        <q-select
+          outlined
+          dense
+          v-model="saving.user_id"
+          :options="members"
+          use-input
+          input-debounce="0"
+          @filter="filterFn"
+          @input="stopSearch"
+          clearable
+          :readonly="onMemberSavingExist"
+        >
+          <template v-slot:append v-if="start_filtering">
+            <q-spinner color="primary" size="1.2em" :thickness="3" />
+          </template>
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey">
+                {{ $t("app.noResults") }}
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
+      </div>
+      <div>
+        <label for="credential" class="form_field q-mt-ms"
+          >{{ $t("app.amount") }} <span class="text-red">*</span></label
+        >
+        <q-input
+          v-model="saving.amount_deposited"
+          outlined
+          dense
+          type="number"
+          :readonly="onMemberSavingExist"
+        />
+      </div>
+      <div>
+        <label for="credential" class="form_field"
+          >{{ $t("app.comment") }}
+        </label>
+        <q-input
+          v-model="saving.comment"
+          outlined
+          dense
+          type="textarea"
+          :placeholder="$t('app.savingComment')"
+          :readonly="onMemberSavingExist"
+        />
+      </div>
+      <div
+        :class="$q.platform.is.desktop ? 'flex q-mt-md justify-end' : ' q-mt-md q-mb-xl'"
+      >
+        <ButtonVue
+          class="form_button"
+          :label="$t('app.saveBtnLabel')"
+          :loading="loading"
+          :color="'primary'"
+          :disabled="validateForm"
+          :no_caps="true"
+        >
+        </ButtonVue>
+      </div>
+    </q-form>
   </div>
 </template>
 <script>
+import { Notify, Platform } from "quasar";
 import ButtonVue from "src/components/Button.vue";
 import memberMixinVue from "src/mixins/memberMixin.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
@@ -69,52 +102,49 @@ export default {
   mixins: [memberMixinVue, organisationMixinVue, UserSavingMixinVue],
 
   mounted() {
-    let heading = "Member Savings Information";
+    let heading = this.$t("app.addSavingHeading");
     this.$emit("set-heading", heading);
 
-    this.getOrganisationMembers(this.getOrganisationId, false);
+    this.getOrganisationMembers(this.organisation_id, false);
 
-    this.setFormFields(null);
-
-    this.getMembers();
-
+    this.getMembersFromState();
   },
 
   data() {
     return {
-      label_save: "Save",
       loading: false,
-      color: "primary",
       saving: {
         user_id: null,
         amount_deposited: 0,
-        comment: null,
+        comment: " ",
         id: null,
       },
       position: "right",
       dialog: false,
-      no_caps: true,
       members: [],
+      start_filtering: false,
+      organisation_id: this.$store.getters.getOrganisation.id,
     };
   },
   computed: {
     validateForm() {
-      return this.saving.user_id === null || this.saving.amount_deposited == 0
-        ? true
-        : false;
+      return this.saving.user_id == null || this.saving.amount_deposited == 0 || this.onMemberSavingExist;
     },
     isMemberExist() {
-      return this.saving.user_id !== null &&
+      return (
+        this.saving.user_id !== null &&
         this.saving.amount_deposited != 0 &&
         this.saving.id != null
-        ? true
-        : false;
+      );
     },
     startSearch() {
       return this.saving.user_id === null ? false : true;
     },
     getUpdateMemberSaving() {
       return this.setFormFields(this.$store.getters.getUpdatedMemberSaving);
+    },
+    onMemberSavingExist() {
+      return this.$store.getters.getUpdatedMemberSaving !== null && this.$store.getters.getUpdatedMemberSaving.approve !== "PENDING";
     },
   },
 
@@ -125,7 +155,7 @@ export default {
   },
 
   methods: {
-    getMembers() {
+    getMembersFromState() {
       this.$store.getters.getMembers.forEach((ele) => {
         this.members.push({
           label: ele.name,
@@ -140,16 +170,16 @@ export default {
         url: this.setActionUrl(this.saving.id, this.saving.user_id.value),
         data: {
           user_id: this.saving.user_id.value,
-          amount_deposited: this.saving.amount_deposited,
-          comment: this.saving.comment,
+          amount_deposited: JSON.parse(this.saving.amount_deposited),
+          comment: this.saving.comment === null ? "" : this.saving.comment,
           id: this.saving.id,
         },
-        msg: "Member Saving save successfully",
+        msg: this.$t("app.addSavingSuccessMsg"),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: "An Error occurred! Please try again",
+        error_msg: "",
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -158,44 +188,25 @@ export default {
           data: [],
         },
       };
-
       this.setDispatchAction(this.saving.id, payload);
     },
 
-    filterMembers(val, update, abort) {
-      // let data = [];
-      // update(() => {
-      //   let filtered = this.$store.getters.getMembers.filter((ele) =>
-      //     ele.name.toLowerCase().includes(val.toLowerCase())
-      //   );
-      //   filtered.forEach((e) => {
-      //     data.push({
-      //       label: e.name,
-      //       value: e.id,
-      //     });
-      //   });
-      // });
-
-      // return data;
-      if (val === "") {
-        // update(() => {
-        //   this.members = stringOptions
-
-        //   // with Quasar v1.7.4+
-        //   // here you have access to "ref" which
-        //   // is the Vue reference of the QSelect
-        // })
-        // return
-        const needle = val.toLowerCase();
-        this.members = this.members.filter(
-          (v) => v.label.toLowerCase().indexOf(needle) > -1
-        );
+    filterFn(val, update, abort) {
+      if (val.length < 1) {
+        this.start_filtering = false;
+        abort();
+        return;
       }
 
-      // update(() => {
-      //   const needle = val.toLowerCase()
-      //   this.options = stringOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
-      // })
+      update(() => {
+        this.members = [];
+        this.start_filtering = true;
+        this.members = this.getMembersFromState();
+        this.members = this.members.filter((v) =>
+          v.label.toLowerCase().includes(val.toLowerCase())
+        );
+        return this.members;
+      });
     },
 
     setActionUrl(id, user_id) {
@@ -203,19 +214,24 @@ export default {
       if (id === null || id === undefined) {
         url = `/api/protected/user-savings`;
       } else {
-        url = `/api/protected/user-savings/${user_id}/${id}`; //the user_id of and the id of the saving to be updated
+        url = `/api/protected/user-savings/${user_id}/${id}`;
       }
       return url;
     },
 
     setDispatchAction(id, payload) {
-      let organisation_id = this.getOrganisationId;
       this.loading = true;
       if (id === null || id === undefined) {
         this.$store
           .dispatch("postRequest", payload)
-          .then(() => {
-            this.getOrganisationMemberSavings(organisation_id);
+          .then((response) => {
+            this.getPaginatedOrganisationMemberSavings(
+              this.organisation_id,
+              1,
+              7,
+              "",
+              this.$store.getters.getCurrentYear.id
+            );
           })
           .finally(() => {
             this.$emit("close-right-drawer");
@@ -225,9 +241,21 @@ export default {
       } else {
         this.$store
           .dispatch("putRequest", payload)
-          .then(() => {
-            this.getOrganisationMemberSavings(organisation_id);
-            this.resetForm();
+          .then((response) => {
+            if (response.status == 403) {
+              Notify.create({
+                type: "info",
+                position: Platform.is.mobile ? "bottom" : "top-right",
+                message: response.data.message,
+              });
+            }
+            this.getPaginatedOrganisationMemberSavings(
+              this.organisation_id,
+              1,
+              7,
+              "",
+              this.$store.getters.getCurrentYear.id
+            );
           })
           .finally(() => {
             this.$emit("close-right-drawer");
@@ -245,7 +273,7 @@ export default {
       this.saving.user_id = null;
       this.saving.amount_deposited = 0;
       this.saving.id = null;
-      this.saving.comment = null;
+      this.saving.comment = "";
 
       return this.saving;
     },
@@ -260,6 +288,12 @@ export default {
 
       return this.saving;
     },
+
+    stopSearch() {
+      if (this.saving.user_id != null) {
+        this.start_filtering = false;
+      }
+    },
   },
   components: {
     ButtonVue,
@@ -268,20 +302,18 @@ export default {
 </script>
 
 <style scoped lang="scss">
-
 .form_field {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 11px;
+  font-size: 12px;
   align-items: center;
   letter-spacing: 0.01em;
   color: $grey2;
 }
 
-
-
 .instruction_info {
   color: $grey2;
+  font-size: small;
 }
 </style>

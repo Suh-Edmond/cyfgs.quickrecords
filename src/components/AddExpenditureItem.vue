@@ -1,132 +1,160 @@
 <template>
-  <div class="q-pa-md">
-    <div class="q-ml-sm q-mb-lg">
-      <label class="text-muted q-ml-sm info"
-        >All fields with <span class="text-red">*</span> are required</label
+  <div class="q-mb-md">
+    <q-banner
+      inline-actions
+      rounded
+      class="bg-warning text-white q-mx-md q-mt-sm"
+      dense
+      v-if="existExpenditureItem"
+    >
+      {{ $t("app.cantUpdatedExpenditureItemAfterApprovalMsg") }}
+      <span class="text-lowercase">{{
+        getUpdatedExpenditureFromState.approve
+      }}</span>
+      <template v-slot:action>
+        <q-btn flat icon="close" size="sm" />
+      </template>
+    </q-banner>
+    <div class="q-mt-md">
+      <label class="text-muted q-pl-lg"
+        >{{ $t("app.warningField") }} <span class="text-red">*</span>
+        {{ $t("app.fields") }}</label
       >
     </div>
-    <div class="q-mt-md q-mx-md">
-      <q-form @submit="onAddExpenditureItem" class="q-gutter-sm">
-        <div class="q-mb-md">
-          <label for="name" class="form_field"
-            >Payment Activity <span class="text-red">*</span>
-          </label>
-          <q-select
-            outlined
-            dense
-            v-model="expenditure_item.payment_item_id"
-            placeholder="Type name to search..."
-            :options="getPaymentActivities"
-            input-debounce="0"
-            class="text_color"
-          >
-          </q-select>
-        </div>
-        <div>
-          <label for="credential" class="form_field"
-            >Name <span class="text-red">*</span></label
-          >
-          <q-input
-            v-model="expenditure_item.name"
-            outlined
-            dense
-            type="text"
-            class="q-mb-md"
-          />
-        </div>
-        <div>
-          <label for="credential" class="form_field"
-            >Estimated Amount <span class="text-red">*</span></label
-          >
-          <q-input
-            v-model="expenditure_item.amount"
-            outlined
-            dense
-            type="number"
-            class="q-mb-md"
-          />
-        </div>
-        <div>
-          <label for="credential" class="form_field"
-            >Venue <span class="text-red">*</span></label
-          >
-          <q-input
-            v-model="expenditure_item.venue"
-            outlined
-            dense
-            type="text"
-            class="q-mb-md"
-          />
-        </div>
-        <div>
-          <label for="credential" class="form_field"
-            >Date <span class="text-red">*</span></label
-          >
-          <q-input
-            v-model="expenditure_item.date"
-            outlined
-            dense
-            class="q-mb-md"
-          >
-            <template v-slot:append>
-              <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy
-                  ref="qDateProxy"
-                  transition-show="scale"
-                  transition-hide="scale"
-                >
-                  <q-date v-model="expenditure_item.date">
-                    <div class="row items-center justify-end">
-                      <q-btn v-close-popup label="Close" color="primary" flat />
-                    </div>
-                  </q-date>
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-          </q-input>
-        </div>
-        <div>
-          <label for="credential" class="form_field"
-            >Comment <span class="text-red">*</span></label
-          >
-          <q-input
-            v-model="expenditure_item.comment"
-            outlined
-            dense
-            class="text_color"
-            type="textarea"
-            placeholder="Provide any comment about this expenditure"
-          />
-        </div>
-        <div class="flex q-mt-lg justify-end">
-          <div>
-            <ButtonVue
-              class="form_button"
-              :label="'Save'"
-              :loading="loading"
-              :color="'primary'"
-              :disabled="validateForm"
-              :no_caps="true"
-            >
-            </ButtonVue>
-          </div>
-        </div>
-      </q-form>
-    </div>
+    <q-form @submit="onAddExpenditureItem" class="q-gutter-md q-mt-xs q-mx-sm">
+      <div class="q-mb-md">
+        <label for="name" class="form_field"
+          >{{ $t("app.paymentItem") }} <span class="text-red">*</span>
+        </label>
+        <q-select
+          outlined
+          dense
+          v-model="expenditure_item.payment_item_id"
+          :label="$t('app.searchPaymentItem')"
+          :options="payment_items"
+          input-debounce="0"
+          class="text_color"
+          clearable
+          use-input
+          @filter="filterPaymentItems"
+          :readonly="existExpenditureItem"
+        >
+        </q-select>
+      </div>
+      <div>
+        <label for="credential" class="form_field"
+          >{{ $t("app.nameLabel") }} <span class="text-red">*</span></label
+        >
+        <q-input
+          v-model="expenditure_item.name"
+          outlined
+          dense
+          type="text"
+          class="q-mb-md"
+          :readonly="existExpenditureItem"
+        />
+      </div>
+      <div>
+        <label for="credential" class="form_field"
+          >{{ $t("app.estimatedAmount") }}
+          <span class="text-red">*</span></label
+        >
+        <q-input
+          v-model="expenditure_item.amount"
+          outlined
+          dense
+          type="number"
+          class="q-mb-md"
+          :readonly="existExpenditureItem"
+        />
+      </div>
+      <div>
+        <label for="credential" class="form_field"
+          >{{ $t("app.venue") }}
+        </label>
+        <q-input
+          v-model="expenditure_item.venue"
+          outlined
+          dense
+          type="text"
+          class="q-mb-md"
+          :readonly="existExpenditureItem"
+        />
+      </div>
+      <div>
+        <label for="credential" class="form_field"
+          >{{ $t("app.date") }} <span class="text-red">*</span></label
+        >
+        <q-input
+          v-model="expenditure_item.date"
+          outlined
+          dense
+          class="q-mb-md"
+          :readonly="existExpenditureItem"
+        >
+          <template v-slot:append>
+            <q-icon name="event" class="cursor-pointer">
+              <q-popup-proxy
+                ref="qDateProxy"
+                transition-show="scale"
+                transition-hide="scale"
+              >
+                <q-date v-model="expenditure_item.date">
+                  <div class="row items-center justify-end">
+                    <q-btn v-close-popup label="Close" color="primary" flat />
+                  </div>
+                </q-date>
+              </q-popup-proxy>
+            </q-icon>
+          </template>
+        </q-input>
+      </div>
+      <div>
+        <label for="credential" class="form_field"
+          >{{ $t("app.comment") }}
+        </label>
+        <q-input
+          v-model="expenditure_item.comment"
+          outlined
+          dense
+          class="text_color"
+          type="textarea"
+          :placeholder="$t('app.expenditureComment')"
+          :readonly="existExpenditureItem"
+        />
+      </div>
+      <div
+        :class="$q.platform.is.desktop ? 'flex q-mt-md justify-end' : 'q-mb-lg'"
+      >
+        <ButtonVue
+          class="form_button"
+          :label="$t('app.saveBtnLabel')"
+          :loading="loading"
+          :color="'primary'"
+          :disabled="validateForm"
+          :no_caps="true"
+        >
+        </ButtonVue>
+      </div>
+    </q-form>
   </div>
 </template>
 <script>
 import ButtonVue from "src/components/Button.vue";
 import expenditureItemMixinVue from "src/mixins/expenditureItemMixin.vue";
+import moment from "moment";
+import { Notify, Platform } from "quasar";
 
 export default {
   mixins: [expenditureItemMixinVue],
 
   mounted() {
-    let heading = "Expenditure Item Information";
+    let heading = this.$t("app.addExpenditureItemHeading");
     this.$emit("set-heading", heading);
 
     this.setFormFields(this.$store.getters.getUpdatedExpenditureItem);
+
+    this.getPaymentActivities();
   },
   data() {
     return {
@@ -134,7 +162,7 @@ export default {
       expenditure_item: {
         expenditure_category_id: null,
         venue: null,
-        date: null,
+        date: moment(new Date()).format("YYYY/MM/DD"),
         name: null,
         comment: null,
         amount: 0.0,
@@ -142,17 +170,19 @@ export default {
         payment_item_id: null,
         id: null,
       },
+      start_filtering: false,
+      payment_items: [],
     };
   },
   computed: {
     validateForm() {
-      return this.expenditure_item.amount === 0 ||
+      return (
+        this.expenditure_item.amount === 0 ||
         this.expenditure_item.name === null ||
         this.expenditure_item.date === null ||
-        this.expenditure_item.venue === null ||
-        this.expenditure_item.payment_item_id === null
-        ? true
-        : false;
+        this.expenditure_item.payment_item_id === null ||
+        this.existExpenditureItem
+      );
     },
 
     getCurrentExpenditureCategory() {
@@ -162,20 +192,12 @@ export default {
       return this.$store.getters.getUpdatedExpenditureItem;
     },
 
-    getPaymentActivities() {
-      let data = [];
-      this.$store.getters.getPaymentActivities.forEach((ele) => {
-        data.push({
-          label: ele.name,
-          value: ele.id,
-          amount: ele.amount,
-        });
-      });
-      return data;
-    },
-
     getUpdatedExpenditureItem() {
       return this.setFormFields(this.$store.getters.getUpdatedExpenditureItem);
+    },
+
+    existExpenditureItem() {
+      return this.$store.getters.getUpdatedExpenditureItem !== null && this.$store.getters.getUpdatedExpenditureItem.approve !== "PENDING";
     },
   },
   watch: {
@@ -196,12 +218,12 @@ export default {
           amount: this.expenditure_item.amount,
           comment: this.expenditure_item.comment,
         },
-        msg: "Expenditure Item save Successfully",
+        msg: this.$t("app.addExpenditureItemSuccessMsg"),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: "An Error occurred! Please try again",
+        error_msg: this.$t("app.defaultErrorMsg"),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -261,7 +283,7 @@ export default {
         this.$store
           .dispatch("postRequest", payload)
           .then(() => {
-            this.getExpenditureItemsByCategory();
+            this.fetchExpenditureItems(1, 7, "", "", "");
           })
           .finally(() => {
             this.$emit("close-right-drawer");
@@ -272,7 +294,7 @@ export default {
         this.$store
           .dispatch("putRequest", payload)
           .then(() => {
-            this.getExpenditureItemsByCategory();
+            this.fetchExpenditureItems(1, 7, "", "", "");
           })
           .finally(() => {
             this.$emit("close-right-drawer");
@@ -281,6 +303,34 @@ export default {
             this.$store.dispatch("setUpdatedExpenditureItem", null);
           });
       }
+    },
+
+    getPaymentActivities() {
+      this.payment_items = [];
+      this.$store.getters.getPaymentActivities.forEach((ele) => {
+        this.payment_items.push({
+          label: ele.name,
+          value: ele.id,
+          amount: ele.amount,
+        });
+      });
+      return this.payment_items;
+    },
+
+    filterPaymentItems(val, update, abort) {
+      if (val < 1 || this.expenditure_item.payment_item_id != null) {
+        this.start_filtering = false;
+        abort();
+        return;
+      }
+
+      update(() => {
+        this.start_filtering = true;
+        this.payment_items = this.getPaymentActivities().filter((item) =>
+          item.label.toLowerCase().includes(val.toLowerCase())
+        );
+        return this.payment_items;
+      });
     },
   },
   components: {
@@ -294,7 +344,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 11px;
+  font-size: 12px;
   align-items: center;
   letter-spacing: 0.01em;
   color: $grey2;
@@ -304,10 +354,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 400;
-  font-size: 14px;
-  line-height: 11px;
-
-  letter-spacing: 0.01em;
+  font-size: 11px;
   color: $grey5;
 }
 
@@ -351,5 +398,6 @@ export default {
 
 .info {
   color: $grey2;
+  font-size: small;
 }
 </style>

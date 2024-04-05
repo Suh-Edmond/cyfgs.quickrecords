@@ -1,9 +1,6 @@
 <script>
 export default {
-  data() {
-
-  },
-
+  data() {},
 
   computed: {
     getPaymentItems() {
@@ -33,8 +30,6 @@ export default {
     },
   },
 
-
-
   methods: {
     getPaymentItemsByCategory(id) {
       let payload = {
@@ -42,7 +37,7 @@ export default {
         url: `/api/protected/payment-categories/${id}/payment-items`,
         has_path_val: true,
         show_feedback: false,
-        show_spinner:true,
+        show_spinner: true,
         msg: "none",
         color: "default",
         error_msg: "default",
@@ -54,7 +49,23 @@ export default {
           data: null,
         },
       };
-      this.$store.dispatch("getRequest", payload).then(() => { });
+      this.$store.commit("SET_IS_FETCHING", true);
+      this.$store
+        .dispatch("getRequest", payload)
+        .then((response) => {
+          if (response.success) {
+            this.$store.commit("SET_PAGINATION", {
+              sortBy: "name",
+              descending: false,
+              page: response.data.current_page,
+              rowsPerPage: response.data.per_page,
+              rowsNumber: response.data.total,
+            });
+          }
+        })
+        .finally(() => {
+          this.$store.commit("SET_IS_FETCHING", false);
+        });
     },
 
     //payment activities also called payment items
@@ -79,6 +90,17 @@ export default {
       this.$store.dispatch("getRequest", payload).then(() => {});
     },
 
-  }
-}
+    getPaymentActivitiesFromStatus() {
+      let payment_items = [];
+      this.$store.getters.getPaymentActivities.forEach((ele) => {
+        payment_items.push({
+          label: ele.name,
+          value: ele.id,
+          amount: ele.amount,
+        });
+      });
+      return payment_items;
+    },
+  },
+};
 </script>

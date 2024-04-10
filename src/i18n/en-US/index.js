@@ -519,6 +519,7 @@ export default {
     cantUpdateSponsorshipMsg:"Sponsorship cannot be updated after been ",
     notificationMarkReadMsg:"Notification mark as read",
     allNotificationMarkReadMsg:"All notification marked as read",
-    setSessionWarnimngMsg:"Do you want to continue"
+    setSessionWarnimngMsg:"Do you want to continue",
+    saveOrganisationSuccessMsg:"Organisation saved successfully"
    }
 };

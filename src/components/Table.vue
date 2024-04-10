@@ -162,14 +162,15 @@
                         }}</q-item-label>
                       </q-item-section>
                     </q-item>
+
                     <!-- invite members to the app -->
                     <q-item
                       clickable
                       v-close-popup
                       @click="onInviteMember(props.row)"
+                      :disabled="props.row.status == 'IN_ACTIVE'"
                       v-if="
-                        checkAdminPresidentRole() &&
-                        props.row.status == 'ACTIVE'
+                        checkAdminPresidentRole() 
                       "
                     >
                       <q-item-section avatar>
@@ -188,6 +189,7 @@
                     <q-item
                       clickable
                       v-close-popup
+                      :disabled="props.row.status == 'IN_ACTIVE'"
                       @click="onRegisterMember(props.row)"
                       v-if="checkRole()"
                     >
@@ -829,7 +831,7 @@
               ? 'row text-h6-sm'
               : 'text-h6-sm q-mb-lg q-mt-lg full-width'
           "
-          :style="$q.platform.is.mobile?'width:88vw':''"
+          :style="$q.platform.is.mobile ? 'width:88vw' : ''"
         >
           <template v-slot:append>
             <q-icon name="search" />

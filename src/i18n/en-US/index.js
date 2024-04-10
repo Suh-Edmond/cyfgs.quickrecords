@@ -206,7 +206,7 @@ export default {
     expenditureCategorySuccessMsg:'Expenditure Category Save Successfully',
     searchPaymentItem:'Search Payment Item...',
     notResults:'No results',
-    searchYear:'Search Year...',
+    searchYear:'Search Year',
     deleteExpenditureItemWarningMsg:'Are you sure you want to delete this Expenditure Item ?',
     expenditureItemTitlePartName:'Expenditures for ',
     expenditureItemDetailLabel:'Expenditure Item Details',
@@ -382,7 +382,7 @@ export default {
     filterAmount:'Filter by Saved Amount',
     searchSaving:"Search Member's Savings",
     updateSession:'Update Session',
-    sessionWarningMsg:'All information of the Active Year will be Set to',
+    sessionWarningMsg:'The Active Session will be set to',
     saveSessionSuccessMsg:'Session saved Successfully',
     updateSessionMsg:"Current Session updated Successfully",
     search:'Type to search...',
@@ -517,5 +517,9 @@ export default {
     cantUpdatedIncomeAfterApprovalMsg:"Income Activity cannot be updated after been ",
     cantUpdateSavingMsg:"Saving cannot be updated after been ",
     cantUpdateSponsorshipMsg:"Sponsorship cannot be updated after been ",
+    notificationMarkReadMsg:"Notification mark as read",
+    allNotificationMarkReadMsg:"All notification marked as read",
+    setSessionWarnimngMsg:"Do you want to continue",
+    saveOrganisationSuccessMsg:"Organisation saved successfully"
    }
 };

@@ -32,12 +32,8 @@ export default {
     },
 
     fetchOrganisationExpenditureCategories(organisation_id, page, per_page, sort_by, year) {
-      let year_value =
-        this.$store.getters.getCurrentYear !== null
-          ? this.$store.getters.getCurrentYear.year
-          : year;
       let payload = {
-        url: `/api/protected/organisations/${organisation_id}/expenditure-categories?year=${year_value}&page=${page}&per_page=${per_page}&sort_by=${sort_by}`,
+        url: `/api/protected/organisations/${organisation_id}/expenditure-categories?year=${year}&page=${page}&per_page=${per_page}&sort_by=${sort_by}`,
         msg: "none",
         color: "default",
         status: "none",

@@ -249,6 +249,7 @@ import ButtonVue from "src/components/Button.vue";
 import PaymentItemMixin from "src/mixins/PaymentItemMixin.vue";
 import PaymentItemMixinVue from "src/mixins/PaymentItemMixin.vue";
 import memberMixin from "src/mixins/memberMixin.vue";
+import moment from "moment";
 
 export default {
   mixins: [PaymentItemMixin, PaymentItemMixinVue, memberMixin],
@@ -280,11 +281,11 @@ export default {
         description: "",
         id: null,
         payment_category_id: null,
-        type: null,
-        frequency: null,
+        type: "ALL_MEMBERS",
+        frequency: "ONE_TIME",
         amount: 0.0,
         reference: null,
-        deadline: null,
+        deadline: new Date(),
       },
       payment_item_types: [
         "ALL_MEMBERS",
@@ -397,11 +398,11 @@ export default {
 
     resetForm() {
       this.payment_item.name = null;
-      this.payment_item.type = null;
+      this.payment_item.type = "ALL_MEMBERS";
       this.payment_item.amount = 0.0;
-      this.payment_item.frequency = null;
+      this.payment_item.frequency = "ONE_TIME";
       this.payment_item.reference = null;
-      this.payment_item.deadline = null;
+      this.payment_item.deadline = moment(new Date()).format("YYYY/MM/D");
       (this.payment_item.description = ""),
         (this.payment_item.compulsory = true);
       this.payment_item.id = null;

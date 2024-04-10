@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="row" :class="$q.platform.is.mobile?'q-px-sm':''">
+    <div class="row" :class="$q.platform.is.mobile ? 'q-px-sm' : ''">
       <q-list
         bordered
         padding
@@ -85,27 +85,6 @@
         <q-item-label header class="setting_title">{{
           $t("app.settingsGeneralLabel")
         }}</q-item-label>
-
-        <q-item>
-          <q-item-section avatar top>
-            <q-icon
-              name="notifications"
-              class="icon_color_general"
-              size="xs"
-            ></q-icon>
-          </q-item-section>
-          <q-item-section>
-            <q-item-label class="text_header_general">{{
-              $t("app.settingsNotificationLabel")
-            }}</q-item-label>
-            <q-item-label caption class="caption_text_general">
-              {{ $t("app.settingsNotificationCaption") }}
-            </q-item-label>
-          </q-item-section>
-          <q-item-section side>
-            <q-toggle color="blue" v-model="new_role_member" val="battery" />
-          </q-item-section>
-        </q-item>
 
         <q-item tag="label" v-ripple>
           <q-item-section avatar top>
@@ -269,7 +248,6 @@ export default {
     return {
       saveBtnLabel: this.$t("app.saveBtnLabel"),
       yearLabel: this.$t("app.selectYearLabel"),
-      new_role_member: true,
       columns: [
         {
           name: "year",
@@ -294,7 +272,12 @@ export default {
           field: "updated_by",
           sortable: true,
         },
-        { name: "action", label: "Action", field: "action", align: "left" },
+        {
+          name: "created_at",
+          label: "Created Date",
+          field: "created_at",
+          align: "left",
+        }
       ],
       data: [],
       tag: "Session",
@@ -335,6 +318,20 @@ export default {
           align: "left",
           label: "Compulsory",
           field: "is_complusory",
+          sortable: true,
+        },
+        {
+          name: "updated_by",
+          align: "left",
+          label: "Created By",
+          field: "updated_by",
+          sortable: true,
+        },
+        {
+          name: "updated_at",
+          align: "left",
+          label: "Modified date",
+          field: "updated_at",
           sortable: true,
         },
         { name: "action", label: "Action", field: "action", align: "left" },

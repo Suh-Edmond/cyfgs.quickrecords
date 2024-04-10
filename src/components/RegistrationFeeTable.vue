@@ -1,16 +1,15 @@
 <template>
   <div>
-    <div :class="$q.platform.is.mobile?'q-mt-sm':'q-ml-sm'">
+    <div :class="$q.platform.is.mobile ? 'q-mt-sm' : 'q-ml-sm'">
       <q-table
         :data="data"
         :columns="columns"
         row-key="index"
         :table-header-style="{
-          backgroundColor: '#5384ae',
+          backgroundColor: '#213c65',
           color: '#FFFFFF',
         }"
         :loading="loading"
-        
       >
         <template v-slot:top-left>
           <div>
@@ -64,6 +63,12 @@
             >
               {{ $t("app.no") }}
             </q-td>
+            <q-td key="updated_by" :props="props">
+              {{ props.row.updated_by}}
+            </q-td>
+            <q-td key="updated_at" :props="props">
+              {{ props.row.updated_at }}
+            </q-td>
             <q-td key="action" :props="props">
               <q-icon
                 name="edit"
@@ -72,15 +77,6 @@
                 @click="editFee(props.row)"
               >
                 <q-tooltip>{{ $t("app.edit") }}</q-tooltip>
-              </q-icon>
-
-              <q-icon
-                name="delete"
-                size="xs"
-                class="delete_fee q-ml-md"
-                @click="deleteFee(props.row)"
-              >
-                <q-tooltip>{{ $t("app.delete") }}</q-tooltip>
               </q-icon>
             </q-td>
           </q-tr>
@@ -93,7 +89,10 @@
 
     <!--add registration fee -->
     <q-dialog v-model="show_add_fee">
-      <q-card :style="$q.platform.is.mobile?'min-width: 350px':'min-width: 450px'" class="q-px-md q-pt-sm q-pb-sm">
+      <q-card
+        :style="$q.platform.is.mobile ? 'min-width: 350px' : 'min-width: 450px'"
+        class="q-px-md q-pt-sm q-pb-sm"
+      >
         <q-card-section class="row items-center q-pb-lg">
           <div class="text-h6 add_year" v-if="fee.id == null">
             {{ $t("app.addRegFee") }}
@@ -139,6 +138,17 @@
             </div>
             <div>
               <label for="credential" class="form_field"
+                >{{ $t("app.status") }} <span class="text-red">*</span></label
+              >
+              <q-select
+                v-model="fee.status"
+                outlined
+                dense
+                :options="statuses"
+              />
+            </div>
+            <div>
+              <label for="credential" class="form_field"
                 >{{ $t("app.frequency") }}
                 <span class="text-red">*</span></label
               >
@@ -167,18 +177,6 @@
       </q-card>
     </q-dialog>
     <!--end add registration fee -->
-
-    <!-- confirmation dialog -->
-    <div v-if="show_confirm_dialog">
-      <ConfirmDialog
-        :data="deleted_data"
-        :msg="delete_msg"
-        :show_reg_fee="true"
-        :type="'REGISTRATION_FEE'"
-        @cancel-dialog="cancelDialog"
-        @fetch-registration-fee="fetchRegistrationFee"
-      ></ConfirmDialog>
-    </div>
   </div>
 </template>
 
@@ -186,6 +184,7 @@
 import ButtonVue from "./Button.vue";
 import RegistrationFreqencyVue from "./Constants/RegistrationFreqency.vue";
 import ConfirmDialog from "./ConfirmDialog.vue";
+import SessionStatusVue from "./Constants/SessionStatus.vue";
 export default {
   props: {
     data: {
@@ -213,19 +212,17 @@ export default {
         frequency: RegistrationFreqencyVue.YEARLY,
         is_compulsory: true,
         id: null,
-        status: null,
+        status: SessionStatusVue.ACTIVE,
       },
       is_fetching: false,
       frequencies: [
         RegistrationFreqencyVue.YEARLY,
         RegistrationFreqencyVue.MONTHLY,
       ],
+      statuses: [SessionStatusVue.ACTIVE, SessionStatusVue.IN_ACTIVE],
       show_confirm_dialog: false,
-      deleted_data: null,
-      delete_msg: "",
     };
   },
-  computed: {},
   methods: {
     editFee(data) {
       this.show_add_fee = true;
@@ -235,13 +232,6 @@ export default {
       this.fee.status = data.status;
 
       return this.fee;
-    },
-
-    deleteFee(data) {
-      this.show_confirm_dialog = !this.show_confirm_dialog;
-      this.deleted_data = data;
-      this.delete_msg = this.$t("app.removeRegFeeWarningMsg");
-      return this.show_confirm_dialog;
     },
 
     onAddFee() {
@@ -294,7 +284,6 @@ export default {
   },
   components: {
     ButtonVue,
-    ConfirmDialog,
   },
 };
 </script>

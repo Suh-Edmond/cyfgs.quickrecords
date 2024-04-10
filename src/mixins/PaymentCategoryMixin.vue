@@ -54,13 +54,9 @@ export default {
       sort_by,
       year
     ) {
-      let year_value =
-        this.$store.getters.getCurrentYear !== null
-          ? this.$store.getters.getCurrentYear.year
-          : year;
 
       let payload = {
-        url: `/api/protected/organisation/payment-categories?organisation_id=${organisation_id}&year=${year_value}&page=${page}&per_page=${per_page}&sort_by=${sort_by}`,
+        url: `/api/protected/organisation/payment-categories?organisation_id=${organisation_id}&year=${year}&page=${page}&per_page=${per_page}&sort_by=${sort_by}`,
         msg: "none",
         color: "default",
         status: "none",

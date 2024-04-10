@@ -72,18 +72,18 @@
               :class="$q.screen.lg ? 'q-px-sm' : ''"
             >
               <div>
-                <label for="credential" class="form_field flex justify-between"
-                  >
+                <label for="credential" class="form_field flex justify-between">
                   <span>
                     {{ $t("app.telephoneLabel") }}
-                  <span class="text-red q-pl-xs">*</span>
+                    <span class="text-red q-pl-xs">*</span>
                   </span>
-                  <a @click.prevent="showAddTelephone" class="add_telephone">
+                  <a class="add_telephone">
                     <q-icon
                       name="add"
                       size="xs"
                       color="primary"
-                      v-if="!show_telephone2"
+                      v-if="canShowTelephoneField"
+                      @click.prevent="showAddTelephone"
                       ><q-tooltip>{{
                         $t("app.addTelephoneLabel")
                       }}</q-tooltip></q-icon
@@ -92,7 +92,8 @@
                       name="close"
                       size="xs"
                       color="primary"
-                      v-if="show_telephone2"
+                      v-if="!canShowTelephoneField"
+                      @click.prevent="removeAddTelephone"
                     >
                       <q-tooltip>{{ $t("app.remove") }}</q-tooltip>
                     </q-icon>
@@ -327,11 +328,7 @@
                 <span class="q-pl-sm text-body1 text-weight-medium"
                   >{{ organisation.telephone }}
                 </span>
-                <span
-                  v-if="organisation.telephone2 !== 'null'"
-                  class="q-pl-sm text-body1 text-weight-medium"
-                  >/ {{ organisation.telephone2 }}</span
-                >
+                <span v-if="organisation.telephone2 !== ''" class="q-pl-sm text-body1 text-weight-medium">/ {{ organisation.telephone2 }}</span>
               </p>
               <p>
                 <q-icon name="location_on" size="sm"></q-icon>
@@ -391,18 +388,17 @@ export default {
       color: "primary",
       show_telephone2: false,
       directory: "LOGOS",
+      updatedTelephone: "",
     };
   },
   computed: {
     validateForm() {
-      return this.organisation.name == null ||
-        this.organisation.email == null ||
-        this.organisation.telephone == null ||
-        this.organisation.address == null ||
-        this.organisation.description == null ||
-        this.organisation.region == null
-        ? true
-        : false;
+      return this.organisation.name == "" ||
+        this.organisation.email == "" ||
+        this.organisation.telephone == "" ||
+        this.organisation.address == "" ||
+        this.organisation.description == "" ||
+        this.organisation.region == "";
     },
 
     checkIfOrganisationExist() {
@@ -416,6 +412,10 @@ export default {
         this.$store.getters.getOrganisation.logo
       );
     },
+
+    canShowTelephoneField(){
+      return this.organisation.telephone2 === "";
+    }
   },
   methods: {
     onSubmit() {
@@ -423,11 +423,7 @@ export default {
         data: {
           name: this.organisation.name,
           email: this.organisation.email,
-          telephone:
-            this.organisation.telephone2 !== null ||
-            this.organisation.telephone2 !== ""
-              ? this.organisation.telephone + "/" + this.organisation.telephone2
-              : this.organisation.telephone,
+          telephone: this.setTelephone(this.show_telephone2, this.organisation.telephone, this.organisation.telephone2),
           address: this.organisation.address,
           description: this.organisation.description,
           box_number: this.organisation.box_number,
@@ -439,11 +435,11 @@ export default {
               : this.$store.getters.getOrganisation.id,
         },
         url: "/api/protected/organisations",
-        msg: "Organisation saved successfully",
+        msg: this.$t('app.saveOrganisationSuccessMsg'),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
-        show_feedback: false,
+        show_feedback: true,
         error_msg: "default",
         to_be_store_data: {
           required: false,
@@ -496,16 +492,17 @@ export default {
 
     setOrganisationInfo() {
       let data = this.$store.getters.getOrganisation;
+      let telephoneString = data.telephone.split("/");
       if (data != null) {
         this.exist_organisation = true;
-        if (data.telephone.split("/").length > 1) {
+        if (telephoneString.length > 1) {
           this.show_telephone2 = true;
         }
         this.organisation.address = data.address;
         this.organisation.name = data.name;
         this.organisation.email = data.email;
-        this.organisation.telephone = data.telephone.split("/")[0];
-        this.organisation.telephone2 = data.telephone.split("/")[1];
+        this.organisation.telephone = telephoneString[0];
+        this.organisation.telephone2 = telephoneString[1] != undefined? telephoneString[1]: ""
         this.organisation.salutation = data.salutation;
         this.organisation.description = data.description;
         this.organisation.box_number = data.box_number;
@@ -519,15 +516,38 @@ export default {
     editOrganisation() {
       this.exist_organisation = false;
     },
+
+
     showDetail() {
       this.exist_organisation = !this.exist_organisation;
     },
-    showAddTelephone() {
-      this.show_telephone2 = !this.show_telephone2;
+
+    showAddTelephone(){
+      return this.show_telephone2 = true;
     },
+
+    removeAddTelephone() {
+      this.organisation.telephone2 = "";
+      return this.show_telephone2 = false;
+    },
+
+    setTelephone(show_telephone2, telephone, telephone2) {
+      let finalTelephone = "";
+      if(show_telephone2 && this.organisation.telephone2 !== undefined || this.organisation.telephone2 != ""){
+        finalTelephone = telephone + "/"+telephone2;
+      }else {
+        finalTelephone = telephone
+      }
+
+      return finalTelephone;
+    },
+
+
     openFileUpload() {
       document.getElementById("logo").click();
     },
+
+
     onFileChanged(e) {
       const formData = new FormData();
       formData.append("file", e.target.files[0]);

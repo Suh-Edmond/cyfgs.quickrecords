@@ -191,7 +191,7 @@ export default {
       show_add_session: false,
       session: {
         status: SessionStatusVue.ACTIVE,
-        year: null,
+        year: new Date().getFullYear(),
         id: null,
       },
       is_fetching: false,

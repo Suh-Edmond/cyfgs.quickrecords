@@ -6,11 +6,11 @@
         :columns="columns"
         row-key="index"
         :table-header-style="{
-          backgroundColor: '#5384ae',
+          backgroundColor: '#213c65',
           color: '#FFFFFF',
         }"
         :loading="loading"
-        
+
       >
         <template v-slot:top-left>
           <div>

@@ -685,6 +685,6 @@ export default {
   cursor: pointer;
 }
 .unread_notification {
-  background-color: lightgrey;
+  background-color: #D9D7D7;
 }
 </style>

@@ -1,13 +1,13 @@
 <template>
   <div>
-    <div :class="$q.platform.is.mobile?'q-mt-sm':'q-ml-sm'">
-      <!-- table for session fees -->
+    <div :class="$q.platform.is.mobile ? 'q-mt-sm' : 'q-ml-sm'">
+      <!-- table for session -->
       <q-table
         :data="data"
         :columns="columns"
         row-key="index"
         :table-header-style="{
-          backgroundColor: '#5384ae',
+          backgroundColor: '#213c65',
           color: '#FFFFFF',
         }"
         :loading="table_loading"
@@ -17,7 +17,7 @@
             <label for="title" class="title">{{ table_header }}</label>
           </div>
         </template>
-        <template v-slot:top-right >
+        <template v-slot:top-right>
           <q-btn
             label="Add"
             dense
@@ -50,15 +50,8 @@
             <q-td key="updated_by" :props="props">
               {{ props.row.updated_by }}
             </q-td>
-            <q-td key="action" :props="props">
-              <q-icon
-                name="edit"
-                size="xs"
-                class="edit_fee q-mr-xl"
-                @click="editSession(props.row)"
-              >
-                <q-tooltip>{{ $t("app.edit") }}</q-tooltip>
-              </q-icon>
+            <q-td key="created_at" :props="props">
+              {{ props.row.created_at }}
             </q-td>
           </q-tr>
         </template>
@@ -67,12 +60,15 @@
           <q-inner-loading showing color="primary" />
         </template>
       </q-table>
-      <!-- end table for session fees -->
+      <!-- end table for session -->
     </div>
 
-    <!--add session fee -->
+    <!--add registration fee -->
     <q-dialog v-model="show_add_session">
-      <q-card :style="$q.platform.is.mobile?'min-width: 350px':'min-width: 450px'" class="q-px-md q-pt-sm q-pb-sm">
+      <q-card
+        :style="$q.platform.is.mobile ? 'min-width: 350px' : 'min-width: 450px'"
+        class="q-px-md q-pt-sm q-pb-sm"
+      >
         <q-card-section class="row items-center q-pb-lg">
           <div class="text-h6 add_year" v-if="session.id == null">
             {{ $t("app.settingsAddSessionLabel") }}
@@ -81,7 +77,7 @@
             {{ $t("app.updateSession") }}
           </div>
           <q-space />
-          <q-btn icon="close" flat round dense v-close-popup />
+          <q-btn icon="close" flat round dense v-close-popup  @click="closeAddSessionDialog" />
         </q-card-section>
 
         <q-card-section class="q-pt-none">
@@ -107,13 +103,14 @@
                 outlined
                 dense
                 :options="session_statuses"
+                disabled
               />
             </div>
             <div class="flex q-mt-lg justify-end">
               <div>
                 <ButtonVue
                   class="form_button"
-                  :label="setLabel"
+                  :label="$t('app.addLabel')"
                   :loading="is_fetching"
                   :color="'primary'"
                   :disabled="session.year == null"
@@ -128,7 +125,6 @@
     </q-dialog>
     <!--end add registration fee -->
 
-    <!-- confirmation dialog -->
     <q-dialog v-model="show_warning">
       <q-card style="width: 400px">
         <q-card-section>
@@ -142,10 +138,8 @@
               />
             </div>
             <div class="col-md-10">
-              <label class="text-left warning_msg"
-                >All information of the Current Active Year [{{ current_year }}]
-                will be Set to [ {{ session.year }}]</label
-              >
+              <label class="text-left warning_msg"> {{$t('app.sessionWarningMsg')}} <b>{{ session.year }}</b></label><br/>
+              <label class="text-grey text-weight-medium"  >{{ $t('app.setSessionWarnimngMsg') }}?</label>
             </div>
           </div>
         </q-card-section>
@@ -160,14 +154,13 @@
           />
           <q-btn
             flat
-            label="Update"
+            :label="$t('app.saveBtnLabel')"
             color="primary"
-            @click="resetCurrentSession()"
+            @click="saveSession()"
           />
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <!-- end of dialog -->
   </div>
 </template>
 
@@ -203,33 +196,10 @@ export default {
       },
       is_fetching: false,
       session_statuses: [SessionStatusVue.ACTIVE, SessionStatusVue.IN_ACTIVE],
-      msg: this.$t("app.sessionWarningMsg"),
-      show_dialog: false,
-      show_warning: false,
-      current_year: null,
+      show_warning:false,
     };
   },
-  computed: {
-    setLabel() {
-      let label = "";
-      if (this.session.id == null) {
-        label = this.$t("app.saveBtnLabel");
-      } else {
-        label = this.$t("app.updateBtnLabel");
-      }
-      return label;
-    },
-  },
   methods: {
-    editSession(data) {
-      this.show_add_session = true;
-      this.session.year = data.year;
-      this.session.id = data.id;
-      this.session.status = data.status;
-
-      return this.session;
-    },
-
     getCurrentSession() {
       const current_session = this.data.filter(
         (ele) => ele.status == SessionStatusVue.ACTIVE
@@ -238,62 +208,15 @@ export default {
     },
 
     onSetSession() {
-      let current_session = this.getCurrentSession();
-      this.current_year = current_session.year;
-      if (
-        this.session.status == SessionStatusVue.ACTIVE &&
-        this.session.year != current_session.year
-      ) {
-        this.show_warning = true;
-        this.show_add_session = false;
-      } else {
-        this.is_fetching = true;
-        let payload = {
-          url:
-            this.session.id == null
-              ? `/api/protected/sessions`
-              : `/api/protected/sessions/update?id=${this.session.id}&status=${this.session.status}`,
-          data: this.session,
-          msg:
-            this.session.id == null
-              ? this.$t("app.saveSessionSuccessMsg")
-              : this.$t("app.saveSessionSuccessMsg"),
-          color: "default",
-          to_on_ok: "none",
-          to_on_fail: "none",
-          show_feedback: true,
-          error_msg: this.$t("app.defaultErrorMsg"),
-          has_commit: false,
-          commit: "none",
-          to_be_store_data: {
-            required: false,
-            has_value: false,
-            data: [],
-          },
-        };
-        this.$store
-          .dispatch(
-            this.session.id == null ? "postRequest" : "putRequest",
-            payload
-          )
-          .then(() => {
-            this.is_fetching = false;
-            this.$emit("fetch-sessions");
-            this.show_add_session = false;
-          })
-          .finally(() => {
-            this.session.status = SessionStatusVue.ACTIVE;
-            this.session.id = null;
-            this.session.year = null;
-          });
-      }
+      this.show_add_session = false;
+     return this.show_warning = !this.show_warning;
     },
 
-    resetCurrentSession() {
+    saveSession(){
       let payload = {
-        url: `/api/protected/sessions/update?id=${this.session.id}&status=${this.session.status}`,
+        url: `/api/protected/sessions`,
         data: this.session,
-        msg: this.$t("app.updateSessionMsg"),
+        msg: this.$t("app.saveSessionSuccessMsg"),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
@@ -307,9 +230,8 @@ export default {
           data: [],
         },
       };
-      this.show_warning = false;
       this.$store
-        .dispatch("putRequest", payload)
+        .dispatch("postRequest", payload)
         .then(() => {
           this.is_fetching = false;
           this.$emit("fetch-sessions");
@@ -318,9 +240,15 @@ export default {
           this.session.status = SessionStatusVue.ACTIVE;
           this.session.id = null;
           this.session.year = null;
-          location.reload();
+          this.show_warning = false;
         });
     },
+
+    closeAddSessionDialog() {
+      this.session.year = null;
+      this.session.status = SessionStatusVue.ACTIVE;
+      this.session.id = null;
+    }
   },
   components: {
     ButtonVue,
@@ -338,9 +266,11 @@ export default {
   font-size: medium;
   letter-spacing: 0.005em;
 }
+
 .alert {
   color: $grey5;
 }
+
 .title {
   color: $primary;
   font-family: "Roboto";
@@ -431,6 +361,7 @@ export default {
   color: $primary;
   cursor: pointer;
 }
+
 .delete_fee {
   color: red;
   cursor: pointer;

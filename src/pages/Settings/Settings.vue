@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="row" :class="$q.platform.is.mobile?'q-px-sm':''">
+    <div class="row" :class="$q.platform.is.mobile ? 'q-px-sm' : ''">
       <q-list
         bordered
         padding
@@ -237,7 +237,6 @@ import moment from "moment";
 import RegistrationFeeTable from "src/components/RegistrationFeeTable.vue";
 import SessionsTable from "src/components/SessionsTable.vue";
 import RegistrationAmountMixin from "src/mixins/RegistrationAmountMixin.vue";
-import { LocalStorage } from "quasar";
 export default {
   mixins: [RegistrationAmountMixin],
   mounted() {
@@ -273,7 +272,12 @@ export default {
           field: "updated_by",
           sortable: true,
         },
-        { name: "action", label: "Action", field: "action", align: "left" },
+        {
+          name: "created_at",
+          label: "Created Date",
+          field: "created_at",
+          align: "left",
+        }
       ],
       data: [],
       tag: "Session",

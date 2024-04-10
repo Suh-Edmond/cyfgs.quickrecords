@@ -382,7 +382,7 @@ export default {
     filterAmount:'Filter by Saved Amount',
     searchSaving:"Search Member's Savings",
     updateSession:'Update Session',
-    sessionWarningMsg:'All information of the Active Year will be Set to',
+    sessionWarningMsg:'The Active Session will be set to',
     saveSessionSuccessMsg:'Session saved Successfully',
     updateSessionMsg:"Current Session updated Successfully",
     search:'Type to search...',
@@ -518,6 +518,7 @@ export default {
     cantUpdateSavingMsg:"Saving cannot be updated after been ",
     cantUpdateSponsorshipMsg:"Sponsorship cannot be updated after been ",
     notificationMarkReadMsg:"Notification mark as read",
-    allNotificationMarkReadMsg:"All notification marked as read"
+    allNotificationMarkReadMsg:"All notification marked as read",
+    setSessionWarnimngMsg:"Do you want to continue"
    }
 };

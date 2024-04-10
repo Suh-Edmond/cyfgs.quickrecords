@@ -136,6 +136,26 @@
     >
       <div class="col">
         <q-select
+          v-model="year"
+          outlined
+          dense
+          :options="getSessionsFromState"
+          :label="$t('app.searchYear')"
+          use-input
+          input-debounce="0"
+          clearable
+        >
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey"
+                >{{ $t("app.notResults") }}
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
+      </div>
+      <div class="col" :class="$q.platform.is.desktop ? 'q-ml-sm' : ''">
+        <q-select
           v-model="is_compulsory"
           outlined
           dense
@@ -144,7 +164,7 @@
           clearable
         />
       </div>
-      <div class="col" :class="$q.platform.is.desktop ? 'q-ml-xs' : ''">
+      <div class="col" :class="$q.platform.is.desktop ? 'q-ml-sm' : ''">
         <q-select
           v-model="type"
           outlined
@@ -154,7 +174,7 @@
           clearable
         />
       </div>
-      <div class="col" :class="$q.platform.is.desktop ? 'q-ml-xs' : ''">
+      <div class="col" :class="$q.platform.is.desktop ? 'q-ml-sm' : ''">
         <q-select
           v-model="frequency"
           outlined
@@ -164,7 +184,7 @@
           clearable
         />
       </div>
-      <div class="col" :class="$q.platform.is.desktop ? 'q-ml-xs' : ''">
+      <div class="col" :class="$q.platform.is.desktop ? 'q-ml-sm' : ''">
         <q-select
           v-model="state"
           outlined
@@ -176,7 +196,7 @@
       </div>
       <div
         class="col-4 col-md-4 col-lg-4 col-xs-12 col-sm-12 flex"
-        :class="$q.platform.is.desktop ? 'q-ml-xs' : ''"
+        :class="$q.platform.is.desktop ? 'q-ml-sm' : ''"
       >
         <q-btn
           :label="$t('app.filter')"
@@ -1078,6 +1098,7 @@ export default {
 
     validateFilterPaymentItem() {
       return (
+        this.year == "" &&
         this.is_compulsory === "" &&
         this.frequency === "" &&
         this.type === "" &&
@@ -1183,6 +1204,8 @@ export default {
             : "",
         type: this.type !== null && this.type !== "" ? this.type : "",
         state: this.state !== null && this.state !== "" ? this.state : "",
+        session_id:
+          this.year !== null && this.year !== "" ? this.year.value : "",
       };
 
       this.$emit("filter-payment-items", payload);

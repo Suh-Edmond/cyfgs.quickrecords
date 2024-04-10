@@ -206,7 +206,7 @@ export default {
     expenditureCategorySuccessMsg:'Expenditure Category Save Successfully',
     searchPaymentItem:'Search Payment Item...',
     notResults:'No results',
-    searchYear:'Search Year...',
+    searchYear:'Search Year',
     deleteExpenditureItemWarningMsg:'Are you sure you want to delete this Expenditure Item ?',
     expenditureItemTitlePartName:'Expenditures for ',
     expenditureItemDetailLabel:'Expenditure Item Details',

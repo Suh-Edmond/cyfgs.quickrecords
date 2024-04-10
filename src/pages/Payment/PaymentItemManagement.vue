@@ -217,6 +217,7 @@ export default {
       selected_payment_item: null,
       loading_download: false,
       is_fetching_members: false,
+      session_id: "",
     };
   },
   computed: {
@@ -285,7 +286,7 @@ export default {
       let type_value = this.type !== null && this.type !== "" ? this.type : "";
       let payload = {
         status: "none",
-        url: `/api/protected/filter-payment-items?payment_category_id=${payment_category_id}&is_compulsory=${is_compulsory_value}&type=${type_value}&frequency=${this.frequency}&state=${state_value}&page=${page}&per_page=${per_page}&sort_by=${sort_by}`,
+        url: `/api/protected/filter-payment-items?payment_category_id=${payment_category_id}&is_compulsory=${is_compulsory_value}&type=${type_value}&frequency=${this.frequency}&state=${state_value}&page=${page}&per_page=${per_page}&sort_by=${sort_by}&session_id=${this.session_id}`,
         has_path_val: true,
         show_feedback: false,
         show_spinner: false,
@@ -356,6 +357,7 @@ export default {
       this.$router.push({
         path: `/dashboard/payment-categories/${id}/items`,
         query: {
+          session_id: data.session_id,
           status: data.is_compulsory,
           type: data.type,
           frequency: data.frequency,
@@ -459,6 +461,7 @@ export default {
       this.frequency = data.frequency;
       this.type = data.type;
       this.state = typeof data.state === undefined ? "" : data.state;
+      this.session_id = data.session_id;
     },
 
     fetchPaymentItem(payment_category_id, payment_item_id) {

@@ -128,6 +128,7 @@ export default {
           position: Platform.is.mobile ? "bottom" : "top-right",
         });
       }
+      console.log(this.$store.getters.getRegAmount.amount);
       return this.setFormField(
         this.$store.getters.getMemberToRegister.name,
         this.$store.getters.getCurrentYear.year,

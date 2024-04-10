@@ -231,7 +231,31 @@
       "
       v-if="show_filter_expenditure_items"
     >
-      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
+      <div
+        class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+
+      >
+        <q-select
+          v-model="year"
+          outlined
+          dense
+          :options="getSessionsFromState"
+          :label="$t('app.searchYear')"
+          use-input
+          input-debounce="0"
+          clearable
+        >
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey"
+                >{{ $t("app.notResults") }}
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
+      </div>
+      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+      :class="$q.platform.is.desktop ? 'q-pl-md' : ''">
         <q-select
           v-model="payment_item_id"
           outlined
@@ -247,29 +271,6 @@
           <template v-slot:append v-if="start_payment_item_select_filtering">
             <q-spinner color="primary" size="1.2em" :thickness="3" />
           </template>
-          <template v-slot:no-option>
-            <q-item>
-              <q-item-section class="text-grey"
-                >{{ $t("app.notResults") }}
-              </q-item-section>
-            </q-item>
-          </template>
-        </q-select>
-      </div>
-      <div
-        class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
-        :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
-      >
-        <q-select
-          v-model="year"
-          outlined
-          dense
-          :options="getSessionsFromState"
-          :label="$t('app.searchYear')"
-          use-input
-          input-debounce="0"
-          clearable
-        >
           <template v-slot:no-option>
             <q-item>
               <q-item-section class="text-grey"
@@ -1107,7 +1108,7 @@ export default {
     },
 
     validateFilterExpenditureItems() {
-      return this.payment_item_id === null || this.payment_item_id === "";
+      return this.payment_item_id == "" && this.year == "" && this.payment_status == "";
     },
 
     validateFilterExpenditureItem() {

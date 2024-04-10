@@ -107,30 +107,10 @@
       "
       v-if="show_categories"
     >
-      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
-        <q-select
-          v-model="year"
-          outlined
-          dense
-          :options="getSessionsFromState"
-          clearable
-          :label="$t('app.selectYearLabel')"
-        />
-      </div>
       <div
-        class="row col-md-9 col-lg-9 col-xs-12 col-sm-12"
+        class="row col-md-12 col-lg-12 col-xs-12 col-sm-12"
         :class="$q.platform.is.mobile ? 'row q-pt-md' : 'q-pl-md'"
       >
-        <q-btn
-          :label="$t('app.filter')"
-          color="primary"
-          :disabled="validateFilterCategories"
-          @click="filterCategories"
-          no-caps
-          icon-right="filter_list"
-          :size="$q.platform.is.mobile ? 'sm' : 'md'"
-        >
-        </q-btn>
         <q-space />
         <q-btn
           :label="$t('app.print')"

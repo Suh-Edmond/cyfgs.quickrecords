@@ -10,14 +10,13 @@
         <q-tabs
           v-model="tab"
           dense
-          class="text-primary bg-grey-2"
-          active-color="white"
+          class="text-primary"
+          active-color="primary"
           indicator-color="primary"
           align="justify"
           narrow-indicator
           inline-label
           shadow-2
-          active-class="active_tab"
         >
           <q-tab
             name="profile"
@@ -449,7 +448,7 @@
                           outlined
                           dense
                           type="text"
-                          :option="status_options"
+                          :options="status_options"
                         />
                       </div>
                       <div class="row justify-end">
@@ -1018,7 +1017,7 @@
               outlined
               dense
               type="text"
-              :option="status_options"
+              :options="status_options"
             />
           </div>
           <div
@@ -1787,10 +1786,6 @@ export default {
 <style lang="scss" scoped>
 .tab {
   height: 50px;
-}
-
-.active_tab {
-  background-color: $primary;
 }
 
 .icon {

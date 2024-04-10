@@ -210,6 +210,7 @@ import BarChartVue from "src/components/charts/BarChart.vue";
 import LineChart from "src/components/charts/LineChart.vue";
 import ContributionsMixin from "src/mixins/ContributionsMixin.vue";
 import ExpenditureItemDetailMixinVue from "src/mixins/ExpenditureItemDetailMixin.vue";
+import CurrentYearMixin from "src/mixins/CurrentYearMixin.vue";
 import { LocalStorage } from "quasar";
 
 export default {
@@ -219,15 +220,9 @@ export default {
     UserSavingMixin,
     ContributionsMixin,
     ExpenditureItemDetailMixinVue,
+    CurrentYearMixin
   ],
   beforeCreate() {
-    const current_session =
-      LocalStorage.getItem("data") !== undefined &&
-      LocalStorage.getItem("data") !== null
-        ? LocalStorage.getItem("data").current_session
-        : {};
-    this.$store.commit("SET_CURRENT_YEAR", current_session);
-
     let payload = {
       status: "none",
       url: "/api/protected/organisation-info",
@@ -247,12 +242,7 @@ export default {
     this.$store.dispatch("getRequest", payload).then((res) => {});
   },
   beforeMount() {
-    const current_session =
-      LocalStorage.getItem("data") !== undefined &&
-      LocalStorage.getItem("data") !== null
-        ? LocalStorage.getItem("data").current_session
-        : {};
-    this.$store.commit("SET_CURRENT_YEAR", current_session);
+    this.fetchCurrentYear();
   },
 
   mounted() {

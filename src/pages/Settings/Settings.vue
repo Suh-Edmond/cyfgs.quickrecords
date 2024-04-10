@@ -379,12 +379,12 @@ export default {
       let payload = {
         url: `/api/protected/sessions`,
         data: { year: this.year },
-        msg: "Year added Successfully",
+        msg: this.$t('app.addSessionSuccessMsg'),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: "An Error occurred! Please try again",
+        error_msg: this.$t('app.defaultErrorMsg'),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -395,6 +395,10 @@ export default {
       };
       this.$store
         .dispatch("postRequest", payload)
+        .then(() => {
+
+
+        })
         .then(() => {
           this.getSessions();
           this.show_add_year = false;

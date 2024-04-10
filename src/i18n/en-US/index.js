@@ -517,6 +517,7 @@ export default {
     cantUpdatedIncomeAfterApprovalMsg:"Income Activity cannot be updated after been ",
     cantUpdateSavingMsg:"Saving cannot be updated after been ",
     cantUpdateSponsorshipMsg:"Sponsorship cannot be updated after been ",
-    notificationMarkReadMsg:"Notification mark as read"
+    notificationMarkReadMsg:"Notification mark as read",
+    allNotificationMarkReadMsg:"All notification marked as read"
    }
 };

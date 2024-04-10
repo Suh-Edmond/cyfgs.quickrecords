@@ -23,7 +23,7 @@
           >
             <q-badge
               floating
-              :color="notifications.length > 0 ? 'red' : ''"
+              :color="notifications.length > 0 ? 'info' : ''"
               rounded
             >
               <span v-if="notifications.length > 0">{{
@@ -39,7 +39,20 @@
               <q-list style="min-width: 450px">
                 <q-item>
                   <q-item-section>
-                    <label class="text-weight-medium">Notifications</label>
+                    <div class="flex justify-between">
+                      <label class="text-weight-medium text-h6">Notifications</label>
+                      <label class="text-weight-medium">
+                        <q-btn
+                          flat
+                          round
+                          color="primary"
+                          icon="card_giftcard"
+                          @click="markAllNotificationsRead(notifications)"
+                        >
+                          <q-tooltip> Mark all as read </q-tooltip>
+                        </q-btn>
+                      </label>
+                    </div>
                   </q-item-section>
                 </q-item>
 
@@ -49,6 +62,12 @@
                   @click="markNotificationRead(notification.id)"
                   v-for="notification in notifications"
                   :key="notification.id"
+                  :active="!notification.has_seen_notification"
+                  :active-class="
+                    !notification.has_seen_notification
+                      ? 'unread_notification'
+                      : ''
+                  "
                 >
                   <q-item-section avatar>
                     <q-avatar color="primary" text-color="white">{{
@@ -213,9 +232,10 @@ export default {
       (role) => role.name !== "MEMBER"
     ).name;
     this.auth_user_role = this.formatUserRole(welcome_title);
+    return this.getNotifications();
   },
   created() {
-    return this.getNotifications();
+    // return this.getNotifications();
   },
 
   props: {
@@ -527,7 +547,9 @@ export default {
         },
       };
       this.$store.dispatch("getRequest", payload).then((res) => {
-        this.notifications = res.data;
+        this.notifications = res.data.filter(
+          (notification) => !notification.has_seen_notification
+        );
       });
     },
 
@@ -541,33 +563,54 @@ export default {
       let millisec = Math.abs(
         currentDate.getTime() - notificationDate.getTime()
       );
-      console.log(millisec/mins);
-      if (Math.trunc(millisec / hour) < 1) {
-        // console.log(Math.trunc(millisec / mins));
+
+      if (Math.trunc(millisec / hour) > 24) {
         time =
-          Math.trunc(millisec / mins) > 1
-            ? Math.trunc(millisec / mins) + "mins ago"
-            : Math.trunc(millisec / mins) + "min ago";
+          Math.trunc(millisec / oneDay) == 1
+            ? Math.trunc(millisec / oneDay) + " day ago"
+            : Math.trunc(millisec / oneDay) + " days ago";
       } else if (
-        Math.trunc(millisec / hour) >= 1 ||
-        Math.trunc(millisec / hour) <= 59
+        Math.trunc(millisec / hour) >= 1 &&
+        Math.trunc(millisec / hour) <= 24
       ) {
-        // console.log(Math.trunc(millisec / hour));
         time =
-          Math.trunc(millisec / hour) > 1
-            ? Math.trunc(millisec / hour) + " hours ago"
-            : Math.trunc(millisec / hour) + " hour ago";
-      } else if (millisec >= 60 || millisec <= 1440) {
+          Math.trunc(millisec / hour) == 1
+            ? Math.trunc(millisec / hour) + " hour ago"
+            : Math.trunc(millisec / hour) + " hours ago";
+      } else if (Math.trunc(millisec / hour) < 1) {
         time =
-          Math.trunc(millisec / oneDay) > 1
-            ? Math.trunc(millisec / oneDay) + " days ago"
-            : Math.trunc(millisec / oneDay) + "day ago";
+          Math.trunc(millisec / mins) == 1
+            ? Math.trunc(millisec / mins) + " min ago"
+            : Math.trunc(millisec / mins) + " mins ago";
       }
       return time;
     },
 
     getRoleFirstName(role) {
       return role.substring(0, 1);
+    },
+
+    markAllNotificationsRead(notifications) {
+      let payload = {
+        url: `/api/protected/organisations/members/get_invitation_notifications/mark_all_as_read`,
+        data: notifications,
+        msg: this.$t("app.allNotificationMarkReadMsg"),
+        color: "default",
+        to_on_ok: "none",
+        to_on_fail: "none",
+        show_feedback: true,
+        error_msg: this.$t("app.defaultErrorMsg"),
+        has_commit: false,
+        commit: "none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.$store.dispatch("putRequest", payload).then((res) => {
+        this.getNotifications();
+      });
     },
   },
 };
@@ -640,5 +683,8 @@ export default {
 
 .tab {
   cursor: pointer;
+}
+.unread_notification {
+  background-color: lightgrey;
 }
 </style>

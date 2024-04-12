@@ -151,7 +151,8 @@ export default {
         this.sponsorship.payment_item_id == null || this.existSponsorship;
     },
     getSelectedSponsorship() {
-      return this.setFormField(this.$store.getters.getSelectedSponsorship);
+      this.setFormField(this.$store.getters.getSelectedSponsorship);
+      return this.$store.getters.getSelectedSponsorship;
     },
 
     existSponsorship() {
@@ -160,7 +161,8 @@ export default {
   },
   watch: {
     getSelectedSponsorship() {
-      return this.setFormField(this.$store.getters.getSelectedSponsorship);
+      this.setFormField(this.$store.getters.getSelectedSponsorship);
+      return this.$store.getters.getSelectedSponsorship;
     },
   },
 

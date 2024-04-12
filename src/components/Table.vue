@@ -170,7 +170,7 @@
                       @click="onInviteMember(props.row)"
                       :disabled="props.row.status == 'IN_ACTIVE'"
                       v-if="
-                        checkAdminPresidentRole() 
+                        checkAdminPresidentRole()
                       "
                     >
                       <q-item-section avatar>
@@ -791,24 +791,6 @@
                       <q-item-section>
                         <q-item-label class="edit">{{
                           $t("app.edit")
-                        }}</q-item-label>
-                      </q-item-section>
-                    </q-item>
-                    <!-- end of edit contribution -->
-                    <q-item
-                      clickable
-                      v-close-popup
-                      @click="onDeleteContribution(props.row)"
-                      v-if="show_member_contribution"
-                    >
-                      <q-item-section avatar class="q-mr-lg">
-                        <span>
-                          <q-icon name="delete" size="xs" color="red" />
-                        </span>
-                      </q-item-section>
-                      <q-item-section>
-                        <q-item-label class="text-red">{{
-                          $t("app.delete")
                         }}</q-item-label>
                       </q-item-section>
                     </q-item>

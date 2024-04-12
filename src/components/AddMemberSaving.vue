@@ -141,7 +141,8 @@ export default {
       return this.saving.user_id === null ? false : true;
     },
     getUpdateMemberSaving() {
-      return this.setFormFields(this.$store.getters.getUpdatedMemberSaving);
+      this.setFormFields(this.$store.getters.getUpdatedMemberSaving);
+      return this.$store.getters.getUpdatedMemberSaving;
     },
     onMemberSavingExist() {
       return this.$store.getters.getUpdatedMemberSaving !== null && this.$store.getters.getUpdatedMemberSaving.approve !== "PENDING";
@@ -150,7 +151,8 @@ export default {
 
   watch: {
     getUpdateMemberSaving() {
-      return this.setFormFields(this.$store.getters.getUpdatedMemberSaving);
+      this.setFormFields(this.$store.getters.getUpdatedMemberSaving);
+      return this.$store.getters.getUpdatedMemberSaving;
     },
   },
 

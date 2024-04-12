@@ -199,7 +199,8 @@ export default {
     },
 
     getIncomeActivity() {
-      return this.setFormFields(this.getUpdatedIncomeActivityFromState());
+      this.setFormFields(this.getUpdatedIncomeActivityFromState());
+      return this.getUpdatedIncomeActivityFromState();
     },
 
     existIncomeActivity() {
@@ -212,7 +213,8 @@ export default {
 
   watch: {
     getIncomeActivity() {
-      return this.setFormFields(this.getUpdatedIncomeActivityFromState());
+      this.setFormFields(this.getUpdatedIncomeActivityFromState());
+      return this.getUpdatedIncomeActivityFromState();
     },
   },
 

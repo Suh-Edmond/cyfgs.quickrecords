@@ -504,7 +504,6 @@ export default {
     },
 
     filterMemberContribution(data) {
-      console.log(data);
       this.transaction_status = data.transaction_status;
       this.payment_status = data.payment_status;
       this.getMemberContributionsByPaymentItem(

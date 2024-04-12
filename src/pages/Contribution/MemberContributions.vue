@@ -45,9 +45,7 @@
               >
             </div>
             <div class="row q-gutter-md q-mb-lg">
-              <div
-                class="col-md-3 col-sm-3 summary_label"
-              >
+              <div class="col-md-3 col-sm-3 summary_label">
                 <div class="q-mb-sm">
                   <label class="text-bold q-py-md detail_name"
                     >{{ $t("app.paymentItem") }}:</label
@@ -95,9 +93,7 @@
                   >
                 </div>
               </div>
-              <div
-                class="col-md-3 col-sm-3 summary_value"
-              >
+              <div class="col-md-3 col-sm-3 summary_value">
                 <div class="q-mb-sm">
                   <label class="text-bold q-py-md detail_name"
                     >{{ getPaymentItemName }}
@@ -202,7 +198,9 @@ export default {
       this.$router.currentRoute.params.item_id,
       this.$router.currentRoute.params.id,
       page,
-      per_page
+      per_page,
+      "",
+      ""
     );
   },
   data() {
@@ -271,6 +269,8 @@ export default {
         rowsNumber: 0,
       },
       table_loader: false,
+      transaction_status: "",
+      payment_status: "",
     };
   },
   computed: {
@@ -442,7 +442,9 @@ export default {
           data.payment_item_id,
           data.user_id,
           1,
-          10
+          10,
+          this.transaction_status,
+          this.payment_status
         );
       });
     },
@@ -451,11 +453,13 @@ export default {
       payment_item_id,
       user_id,
       page,
-      per_page
+      per_page,
+      transaction_status,
+      payment_status
     ) {
       let payload = {
         status: "none",
-        url: `/api/protected/contributions/payment-items/${payment_item_id}/users/${user_id}?page=${page}&per_page=${per_page}`,
+        url: `/api/protected/contributions/payment-items/${payment_item_id}/users/${user_id}?page=${page}&per_page=${per_page}&transaction_status=${transaction_status}&payment_status=${payment_status}`,
         has_path_val: true,
         show_feedback: false,
         show_spinner: true,
@@ -493,16 +497,23 @@ export default {
         params.item_id,
         params.id,
         page,
-        fetch_count
+        fetch_count,
+        this.transaction_status,
+        this.payment_status
       );
     },
 
-    filterMemberContribution() {
+    filterMemberContribution(data) {
+      console.log(data);
+      this.transaction_status = data.transaction_status;
+      this.payment_status = data.payment_status;
       this.getMemberContributionsByPaymentItem(
         this.$router.currentRoute.params.item_id,
         this.$router.currentRoute.params.id,
         1,
-        10
+        10,
+        this.transaction_status,
+        this.payment_status
       );
     },
   },

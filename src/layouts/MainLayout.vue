@@ -161,7 +161,7 @@
           @set-heading="setHeading"
         ></AddExpenditureItemDetail>
         <AddMemberSavingVue
-          v-if="current_tab == 'Savings'"
+          v-if="current_tab.includes('Savings')"
           @close-right-drawer="closeRightDrawer"
           @set-heading="setHeading"
         ></AddMemberSavingVue>
@@ -188,7 +188,7 @@
         >
         </ViewContribution>
         <AddContribution
-          v-if="current_tab == 'Contributions'"
+          v-if="current_tab.includes('Contributions') && current_tab != 'Search Members Contributions'"
           @close-right-drawer="closeRightDrawer"
           @set-heading="setHeading"
         ></AddContribution>

@@ -235,6 +235,7 @@ const routes = [
         name: "members_contributions",
         path: "/dashboard/contributions/payment-item",
         component: () => import("src/pages/Contribution/Contributions.vue"),
+        query: {t: new Date().getTime() },
         meta: {
           middleware: "auth",
           role: "MEMBER",

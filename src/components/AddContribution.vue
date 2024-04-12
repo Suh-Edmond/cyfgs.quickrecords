@@ -62,17 +62,87 @@
               </template>
             </q-select>
           </div>
-          <div class="q-mb-md">
-            <label for="credential" class="form_field">{{
-              $t("app.amountPayable")
-            }}</label>
-            <q-input
-              v-model="contribution.amount_payable"
-              outlined
-              dense
-              type="number"
-              readonly
-            />
+          <div
+            v-if="
+              hasSelectedPaymentItem &&
+              !start_filtering &&
+              !has_selected_payment_item
+            "
+          >
+            <div class="q-mb-md flex justify-between">
+              <label for="credential" class="form_field"
+                >{{ $t("app.nameLabel") }}:</label
+              >
+              <label for="credential" class="value">{{
+                selected_payment_item.label
+              }}</label>
+            </div>
+            <div class="q-mb-md flex justify-between">
+              <label for="credential" class="form_field"
+                >{{ $t("app.amountPayable") }}:</label
+              >
+              <label for="credential" class="value">{{
+                Number(selected_payment_item.amount).toString()
+              }}</label>
+            </div>
+            <div class="q-mb-md flex justify-between">
+              <label for="credential" class="form_field"
+                >{{ $t("app.frequency") }}:</label
+              >
+              <label for="credential" class="value">{{
+                selected_payment_item.frequency
+              }}</label>
+            </div>
+            <div class="q-mb-md flex justify-between">
+              <label for="credential" class="form_field"
+                >{{ $t("app.type") }}:</label
+              >
+              <label for="credential" class="value">{{
+                selected_payment_item.type
+              }}</label>
+            </div>
+            <div
+              class="q-mb-md flex"
+              v-if="selected_payment_item.frequency == 'MONTHLY'"
+            >
+              <label for="credential" class="form_field"
+                >{{ $t("app.selectMonth") }}:</label
+              >
+              <div
+                class="q-gutter-sm q-mt-sm q-ml-md"
+                v-if="selected_payment_item.payment_item_months.length > 0"
+              >
+                <q-chip
+                  color="primary"
+                  text-color="white"
+                  v-for="ref in selected_payment_item.payment_item_months"
+                  :key="ref.id"
+                  size="md"
+                  >{{ ref.name }}</q-chip
+                >
+              </div>
+            </div>
+            <div
+              class="q-mb-md flex"
+              v-if="selected_payment_item.frequency == 'QUARTERLY'"
+            >
+              <label for="credential" class="form_field"
+                >{{ $t("app.quarter") }}:</label
+              >
+              <div
+                class="q-gutter-sm q-mt-sm q-ml-md"
+                v-if="selected_payment_item.payment_item_quarters.length > 0"
+              >
+                <q-chip
+                  color="primary"
+                  text-color="white"
+                  v-for="ref in selected_payment_item.payment_item_quarters"
+                  :key="ref.id"
+                  size="md"
+                  >{{ ref.name }}</q-chip
+                >
+              </div>
+            </div>
           </div>
           <div class="row justify-end" v-show="!has_selected_payment_item">
             <q-btn
@@ -224,7 +294,9 @@
                 :disable="has_completed_payment"
               />
             </div>
-            <div :class="$q.platform.is.desktop ? 'flex q-mt-lg justify-end' : ''">
+            <div
+              :class="$q.platform.is.desktop ? 'flex q-mt-lg justify-end' : ''"
+            >
               <q-btn
                 class="form_button q-mr-lg"
                 :label="$t('app.reset')"
@@ -238,14 +310,14 @@
               </q-btn>
               <div>
                 <ButtonVue
-                class="form_button"
-                :label="$t('app.saveBtnLabel')"
-                :loading="loading"
-                :color="'primary'"
-                :disabled="validateForm"
-                :no_caps="true"
-              >
-              </ButtonVue>
+                  class="form_button"
+                  :label="$t('app.saveBtnLabel')"
+                  :loading="loading"
+                  :color="'primary'"
+                  :disabled="validateForm"
+                  :no_caps="true"
+                >
+                </ButtonVue>
               </div>
             </div>
           </div>
@@ -296,17 +368,91 @@
                       </template>
                     </q-select>
                   </div>
-                  <div class="q-mb-md">
-                    <label for="credential" class="form_field">{{
-                      $t("app.amountPayable")
-                    }}</label>
-                    <q-input
-                      v-model="contribution.amount_payable"
-                      outlined
-                      dense
-                      type="number"
-                      readonly
-                    />
+                  <div
+                    v-if="
+                      hasSelectedPaymentItem &&
+                      !start_filtering &&
+                      !has_selected_payment_item
+                    "
+                  >
+                    <div class="q-mb-md flex justify-between">
+                      <label for="credential" class="form_field"
+                        >{{ $t("app.nameLabel") }}:</label
+                      >
+                      <label for="credential" class="value">{{
+                        selected_payment_item.label
+                      }}</label>
+                    </div>
+                    <div class="q-mb-md flex justify-between">
+                      <label for="credential" class="form_field"
+                        >{{ $t("app.amountPayable") }}:</label
+                      >
+                      <label for="credential" class="value">{{
+                        Number(selected_payment_item.amount).toString()
+                      }}</label>
+                    </div>
+                    <div class="q-mb-md flex justify-between">
+                      <label for="credential" class="form_field"
+                        >{{ $t("app.frequency") }}:</label
+                      >
+                      <label for="credential" class="value">{{
+                        selected_payment_item.frequency
+                      }}</label>
+                    </div>
+                    <div class="q-mb-md flex justify-between">
+                      <label for="credential" class="form_field"
+                        >{{ $t("app.type") }}:</label
+                      >
+                      <label for="credential" class="value">{{
+                        selected_payment_item.type
+                      }}</label>
+                    </div>
+                    <div
+                      class="q-mb-md flex"
+                      v-if="selected_payment_item.frequency == 'MONTHLY'"
+                    >
+                      <label for="credential" class="form_field"
+                        >{{ $t("app.selectMonth") }}:</label
+                      >
+                      <div
+                        class="q-gutter-sm q-mt-sm q-ml-md"
+                        v-if="
+                          selected_payment_item.payment_item_months.length > 0
+                        "
+                      >
+                        <q-chip
+                          color="primary"
+                          text-color="white"
+                          v-for="ref in selected_payment_item.payment_item_months"
+                          :key="ref.id"
+                          size="md"
+                          >{{ ref.name }}</q-chip
+                        >
+                      </div>
+                    </div>
+                    <div
+                      class="q-mb-md flex"
+                      v-if="selected_payment_item.frequency == 'QUARTERLY'"
+                    >
+                      <label for="credential" class="form_field"
+                        >{{ $t("app.quarter") }}:</label
+                      >
+                      <div
+                        class="q-gutter-sm q-mt-sm q-ml-md"
+                        v-if="
+                          selected_payment_item.payment_item_quarters.length > 0
+                        "
+                      >
+                        <q-chip
+                          color="primary"
+                          text-color="white"
+                          v-for="ref in selected_payment_item.payment_item_quarters"
+                          :key="ref.id"
+                          size="md"
+                          >{{ ref.name }}</q-chip
+                        >
+                      </div>
+                    </div>
                   </div>
                   <div
                     class="row justify-end"
@@ -607,7 +753,8 @@ export default {
     },
 
     validateForm() {
-      return this.contribution.user_id === null ||
+      return (
+        this.contribution.user_id === null ||
         this.contribution.amount_deposited == 0 ||
         this.contribution.payment_item_id == null ||
         this.checkPaymentItemBal ||
@@ -616,6 +763,7 @@ export default {
         (this.valideteQuarterlyPaymentItemFrequency &&
           this.contribution.quarterly_name === "") ||
         this.checkAmountDepositedBasedOnSaving
+      );
     },
 
     validatePaymentItem() {
@@ -642,6 +790,10 @@ export default {
 
     getTotalSaving() {
       return parseFloat(this.contribution.total_saving);
+    },
+
+    hasSelectedPaymentItem() {
+      return this.selected_payment_item !== null;
     },
   },
   methods: {
@@ -704,7 +856,10 @@ export default {
               ? this.selected_payment_item.amount
               : 0;
         }
+      } else {
+        this.start_filtering = true;
       }
+      return this.start_filtering;
     },
 
     selectMember() {
@@ -861,6 +1016,7 @@ export default {
     },
 
     resetForm() {
+      this.start_filtering = false;
       this.has_selected_payment_item = false;
       this.has_completed_payment = false;
       this.contribution.user_id = null;
@@ -904,10 +1060,12 @@ export default {
             1,
             7
           );
+          this.$emit("close-right-drawer");
           this.resetForm();
+          this.start_filtering = false;
+          this.has_selected_payment_item = false;
         })
         .finally(() => {
-          this.$emit("close-right-drawer");
           this.loading = false;
         });
     },
@@ -1011,6 +1169,8 @@ export default {
               frequency: ele.frequency,
               payment_item_months: ele.payment_item_months,
               payment_item_quarters: ele.payment_item_quarters,
+              type: ele.type,
+              references: ele.references,
             });
           });
         }
@@ -1047,5 +1207,14 @@ export default {
 .info {
   color: $grey2;
   font-size: small;
+}
+
+.value {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.01em;
+  color: $grey8;
 }
 </style>

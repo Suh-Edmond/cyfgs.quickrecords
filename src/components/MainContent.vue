@@ -234,10 +234,6 @@ export default {
     this.auth_user_role = this.formatUserRole(welcome_title);
     return this.getNotifications();
   },
-  created() {
-    // return this.getNotifications();
-  },
-
   props: {
     item: {
       type: Object,

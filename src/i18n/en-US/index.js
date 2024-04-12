@@ -521,6 +521,7 @@ export default {
     allNotificationMarkReadMsg:"All notification marked as read",
     setSessionWarnimngMsg:"Do you want to continue",
     saveOrganisationSuccessMsg:"Organisation saved successfully",
-    addSessionSuccessMsg:"Session added Successfully"
+    addSessionSuccessMsg:"Session added Successfully",
+    quarter:"Quarter"
    }
 };

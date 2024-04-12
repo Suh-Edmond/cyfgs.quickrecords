@@ -193,7 +193,8 @@ export default {
     },
 
     getUpdatedExpenditureItem() {
-      return this.setFormFields(this.$store.getters.getUpdatedExpenditureItem);
+      this.setFormFields(this.$store.getters.getUpdatedExpenditureItem);
+      return this.$store.getters.getUpdatedExpenditureItem;
     },
 
     existExpenditureItem() {

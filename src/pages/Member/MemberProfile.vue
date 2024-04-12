@@ -554,10 +554,21 @@
                   :loading="getLoadingState"
                 >
                   <template v-slot:top-left>
-                    <div class="text-h6 contribution_item_header">
-                      {{ $t("app.paymentItemLabel") }}:
-                      {{ Number(due_amount).toLocaleString() }} XAF
-                    </div>
+                    <label for="title" class="text-h6 contribution_item_header"
+                      >{{ $t("app.paymentItemLabel") }}:
+                      {{ Number(due_amount).toLocaleString() }} XAF</label
+                    >
+                  </template>
+                  <template v-slot:top-right>
+                    <q-btn
+                      :label="$t('app.print')"
+                      color="positive"
+                      :disabled="validateDownloadUnPaidItems"
+                      no-caps
+                      icon-right="print"
+                      @click="downloadUnPaidItem"
+                      :loading="loading_upaid_download"
+                    ></q-btn>
                   </template>
                   <template v-slot:body="props">
                     <q-tr :props="props">
@@ -684,6 +695,17 @@
                       {{ $t("app.paidItem") }}:
                       {{ Number(amount_paid).toLocaleString() }} XAF
                     </div>
+                  </template>
+                  <template v-slot:top-right>
+                    <q-btn
+                      :label="$t('app.print')"
+                      color="positive"
+                      :disabled="validateDownloadPaidItems"
+                      no-caps
+                      icon-right="print"
+                      :loading="loading_paid_download"
+                      @click="downloadPaidItem"
+                    ></q-btn>
                   </template>
                   <template v-slot:body="props">
                     <q-tr :props="props">
@@ -1047,9 +1069,10 @@ import moment from "moment";
 import organisationMixin from "src/mixins/organisationMixin.vue";
 import memberMixin from "src/mixins/memberMixin.vue";
 import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
+import HelperMixinVue from "src/mixins/HelperMixin.vue";
 
 export default {
-  mixins: [organisationMixin, memberMixin, CurrentYearMixinVue],
+  mixins: [organisationMixin, memberMixin, CurrentYearMixinVue, HelperMixinVue],
 
   mounted() {
     this.getUserRoles(this.$route.params.id);
@@ -1208,6 +1231,8 @@ export default {
       available_roles: [],
       status_options: ["ACTIVE", "IN_ACTIVE"],
       showEditProfileDialog: false,
+      loading_upaid_download: false,
+      loading_paid_download: false,
     };
   },
   computed: {
@@ -1285,6 +1310,14 @@ export default {
         process.env.FILE_DOWNLOAD_PATH +
         this.getCurrentMember.picture
       );
+    },
+
+    validateDownloadUnPaidItems() {
+      return this.data.length < 0;
+    },
+
+    validateDownloadPaidItems() {
+      return this.data1.length < 0;
     },
   },
   watch: {
@@ -1774,6 +1807,27 @@ export default {
           this.is_fetching = false;
           this.$store.commit("SET_IS_FETCHING", false);
         });
+    },
+
+    downloadUnPaidItem() {
+      let id = this.$route.params.id;
+      let url = `/api/protected/contributions/members/debts/download?user_id=${id}&session_id=${this.current_year.id}`;
+      this.loading_upaid_download = this.downloadPdf(
+        url,
+        "Unpaid_PaymentItems.pdf"
+      );
+
+      return this.loading_upaid_download = false
+    },
+
+    downloadPaidItem() {
+      let id = this.$route.params.id;
+      let url = `/api/protected/contributions/members/paid_items/download?user_id=${id}&session_id=${this.current_year.id}`;
+      this.loading_paid_download = this.downloadPdf(
+        url,
+        "Paid_PaymentItem.pdf"
+      );
+      return this.loading_paid_download = false;
     },
   },
   components: {

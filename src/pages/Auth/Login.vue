@@ -5,7 +5,9 @@
       :class="$q.screen.lg ? 'q-pt-lg flex flex-center' : 'q-pt-sm'"
     >
       <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12">
-        <q-card :class="$q.screen.lg ? 'q-mt-lg' : 'q-mt-md q-mb-xl login-card'">
+        <q-card
+          :class="$q.screen.lg ? 'q-mt-lg' : 'q-mt-md q-mb-xl login-card'"
+        >
           <q-card-section>
             <div class="text_h6 text-center q-pt-sm q-pb-sm">
               {{ $t("app.signIn") }}
@@ -16,15 +18,15 @@
             <q-form @submit="onSubmit" class="q-gutter-md q-mt-lg q-px-md">
               <div>
                 <label for="credential" class="form_field"
-                  >{{ $t("app.telephoneLabel") }}
+                  >{{ $t("app.emailLabel") }}
                   <span class="text-red">*</span></label
                 >
-                <vue-tel-input
+                <q-input
                   v-model="user.credential"
-                  defaultCountry="cm"
-                  mode="international"
-                  class="q-pa-xs"
-                ></vue-tel-input>
+                  outlined
+                  dense
+                  type="email"
+                />
               </div>
               <div>
                 <label for="password" class="form_field"
@@ -74,13 +76,16 @@
               </div>
               <div class="row justify-center" v-if="$q.platform.is.mobile">
                 <div class="account_text">{{ $t("app.noAccountMsg") }}</div>
-                    <router-link to="/auth/register" class="sign_link"
-                    > &nbsp;<span @click="checkAccountExist('SIGN_UP')">{{
-                      $t("app.signUpLabel")
-                    }}</span></router-link
-                  >
+                <router-link to="/auth/register" class="sign_link">
+                  &nbsp;<span @click="checkAccountExist('SIGN_UP')">{{
+                    $t("app.signUpLabel")
+                  }}</span></router-link
+                >
               </div>
-              <div class="row justify-center q-mb-xl" v-if="$q.platform.is.mobile">
+              <div
+                class="row justify-center q-mb-xl"
+                v-if="$q.platform.is.mobile"
+              >
                 <router-link
                   to="/auth/password-reset/get-token"
                   class="sign_link"
@@ -148,7 +153,7 @@ export default {
       let payload = {
         url: "/api/public/auth/login",
         data: {
-          telephone: this.user.credential.replace(/\s+/g, ""),
+          email: this.user.credential,
           password: this.user.password,
         },
         msg: "Login Successful",
@@ -267,8 +272,7 @@ export default {
               });
           }
         })
-        .catch((error) => {
-        })
+        .catch((error) => {})
         .finally(() => {
           this.loading = false;
         });
@@ -296,7 +300,7 @@ export default {
     },
   },
   components: {
-    VueTelInput,
+
   },
 };
 </script>

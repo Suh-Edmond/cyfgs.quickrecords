@@ -9,38 +9,7 @@
           >{{ $t("app.nameTwo") }}
         </q-toolbar-title>
         <div class="header_note" v-show="$q.screen.lg">
-          <div
-            class="flex"
-            v-if="
-              this.$router.currentRoute.name == 'Login' &&
-              getOrganisation == null
-            "
-          >
-            <div class="account_text">{{ $t("app.noAccountMsg") }}</div>
-            <div class="account_text__signup">
-              <router-link to="/auth/register" class="sign_link"
-                ><span @click="checkAccountExist('SIGN_UP')">{{
-                  $t("app.signUpLabel")
-                }}</span></router-link
-              >
-            </div>
-          </div>
-          <div
-            class="flex"
-            v-if="
-              this.$router.currentRoute.name == 'Register' &&
-              getOrganisation == null
-            "
-          >
-            <div class="account_text">{{ $t("app.haveAccountMsg") }}</div>
-            <div class="account_text__signup">
-              <router-link to="/auth/login" class="sign_link"
-                ><span @click="checkAccountExist('SIGN_IN')">{{
-                  $t("app.signInLabel")
-                }}</span></router-link
-              >
-            </div>
-          </div>
+
           <div class="q-pa-md header_language">
             <q-btn-dropdown color="black" :label="getLocale" flat>
               <q-list>

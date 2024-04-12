@@ -177,8 +177,7 @@
             v-show="
               requires_add &&
               !checkTreasurerRole() &&
-              verifyRequiredAdd() &&
-              this.$route.name !== 'member_profile'
+              verifyRequiredAdd()
             "
             @click="showRightDrawer"
             class="q-pa-xs"
@@ -496,7 +495,7 @@ export default {
     },
 
     verifyRequiredAdd() {
-      return this.$route.name !== "member_account";
+      return this.$route.name !== "member_account" || this.$route.name !== 'member_profile';
     },
 
     onViewPaymentDetails(data) {

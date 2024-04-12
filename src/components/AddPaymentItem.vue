@@ -222,23 +222,35 @@
           v-model="payment_item.description"
           outlined
           dense
-          type="textarea"
+          autogrow
           :placeholder="$t('app.provideDescription')"
         />
       </div>
-      <div :class="
+      <div
+        :class="
           $q.platform.is.desktop
             ? 'flex q-mt-lg justify-end'
             : 'q-pt-xs q-mb-lg'
-        ">
-        <ButtonVue
-        :label="$t('app.saveBtnLabel')"
-        :loading="loading"
-        color="primary"
-        :disabled="validateForm"
-        :no_caps="true"
+        "
       >
-      </ButtonVue>
+        <q-btn
+          class="form_button q-mr-md"
+          :label="$t('app.reset')"
+          :color="'primary'"
+          :disabled="false"
+          no-caps
+          outline
+          @click="resetForm"
+        >
+        </q-btn>
+        <ButtonVue
+          :label="$t('app.saveBtnLabel')"
+          :loading="loading"
+          color="primary"
+          :disabled="validateForm"
+          :no_caps="true"
+        >
+        </ButtonVue>
       </div>
     </q-form>
   </div>
@@ -259,7 +271,7 @@ export default {
     this.$emit("set-heading", heading);
     this.resetForm();
     this.$store.commit("SET_MEMBERS", []);
-    this.setFormFields(this.$store.getters.getUpdatedPaymentItem)
+    this.setFormFields(this.$store.getters.getUpdatedPaymentItem);
   },
 
   beforeMount() {

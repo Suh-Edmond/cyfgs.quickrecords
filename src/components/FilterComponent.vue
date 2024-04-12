@@ -1050,7 +1050,7 @@ export default {
       month: "",
       start_month_filtering: false,
       monthsOptions: [],
-      transaction_statuses: ["INCOMPLETE", "COMPLETED", "ALL"],
+      transaction_statuses: ["INCOMPLETE", "COMPLETE", "ALL"],
       transaction_status: "",
       report_option: "",
       selected_option_label: "",

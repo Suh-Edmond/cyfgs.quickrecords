@@ -680,5 +680,4 @@ export default {
   font-weight: 700;
   font-size: medium;
 }
-
 </style>

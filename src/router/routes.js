@@ -38,9 +38,9 @@ const routes = [
         },
       },
       {
-        name:"PasswordReset",
-        path:"/auth/password-reset",
-        component:() => import("src/pages/Auth/ResetPassword.vue"),
+        name: "PasswordReset",
+        path: "/auth/password-reset",
+        component: () => import("src/pages/Auth/ResetPassword.vue"),
         meta: {
           middleware: "guest",
           enableSignUp: true,
@@ -235,6 +235,7 @@ const routes = [
         name: "members_contributions",
         path: "/dashboard/contributions/payment-item",
         component: () => import("src/pages/Contribution/Contributions.vue"),
+        query: { t: new Date().getTime() },
         meta: {
           middleware: "auth",
           role: "MEMBER",
@@ -246,6 +247,7 @@ const routes = [
         path: "/dashboard/contributions/payment-item/:item_id/members/:id",
         component: () =>
           import("src/pages/Contribution/MemberContributions.vue"),
+        query: { t: new Date().getTime() },
         meta: {
           middleware: "auth",
           role: "MEMBER",

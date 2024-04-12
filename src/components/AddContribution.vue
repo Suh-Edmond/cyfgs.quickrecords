@@ -109,16 +109,16 @@
                 >{{ $t("app.selectMonth") }}:</label
               >
               <div
-                class="q-gutter-sm q-mt-sm q-ml-md"
+                class="q-gutter-sm q-ml-md"
                 v-if="selected_payment_item.payment_item_months.length > 0"
               >
                 <q-chip
-                  color="primary"
+                  color="info"
                   text-color="white"
                   v-for="ref in selected_payment_item.payment_item_months"
                   :key="ref.id"
                   size="md"
-                  >{{ ref.name }}</q-chip
+                  >{{ ref }}</q-chip
                 >
               </div>
             </div>
@@ -134,12 +134,12 @@
                 v-if="selected_payment_item.payment_item_quarters.length > 0"
               >
                 <q-chip
-                  color="primary"
+                  color="info"
                   text-color="white"
                   v-for="ref in selected_payment_item.payment_item_quarters"
                   :key="ref.id"
                   size="md"
-                  >{{ ref.name }}</q-chip
+                  >{{ ref }}</q-chip
                 >
               </div>
             </div>
@@ -289,7 +289,7 @@
               <q-input
                 v-model="contribution.comment"
                 outlined
-                type="textarea"
+                autogrow
                 :placeholder="$t('app.commentContribution')"
                 :disable="has_completed_payment"
               />
@@ -421,7 +421,7 @@
                         "
                       >
                         <q-chip
-                          color="primary"
+                          color="info"
                           text-color="white"
                           v-for="ref in selected_payment_item.payment_item_months"
                           :key="ref.id"
@@ -444,7 +444,7 @@
                         "
                       >
                         <q-chip
-                          color="primary"
+                          color="info"
                           text-color="white"
                           v-for="ref in selected_payment_item.payment_item_quarters"
                           :key="ref.id"
@@ -635,7 +635,7 @@
                     <q-input
                       v-model="contribution.comment"
                       outlined
-                      type="textarea"
+                      autogrow
                       :placeholder="$t('app.contributionComment')"
                       :disable="has_completed_payment"
                     />
@@ -832,6 +832,7 @@ export default {
     },
 
     fetchPaymentItem() {
+      console.log(this.selected_payment_item);
       if (this.contribution.payment_item_id != null) {
         this.start_filtering = false;
         this.selected_payment_item = this.filtered_payment_items.find(
@@ -1031,6 +1032,7 @@ export default {
       this.contribution.month_name = "";
       this.contribution.quarterly_name = "";
       this.contribution.total_saving = 0;
+      this.selected_payment_item = null;
       LocalStorage.remove("saving");
 
       return this.contribution;
@@ -1064,6 +1066,7 @@ export default {
           this.resetForm();
           this.start_filtering = false;
           this.has_selected_payment_item = false;
+          this.selected_payment_item = null;
         })
         .finally(() => {
           this.loading = false;

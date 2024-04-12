@@ -222,7 +222,7 @@
           v-model="payment_item.description"
           outlined
           dense
-          type="textarea"
+          autogrow
           :placeholder="$t('app.provideDescription')"
         />
       </div>

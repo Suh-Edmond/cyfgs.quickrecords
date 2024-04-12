@@ -125,7 +125,7 @@
           v-model="income_activity.description"
           outlined
           dense
-          type="textarea"
+          autogrow
           :placeholder="$t('app.incomeDescription')"
           :readonly="existIncomeActivity"
         />

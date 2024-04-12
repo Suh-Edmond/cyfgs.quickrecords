@@ -70,7 +70,7 @@
           v-model="saving.comment"
           outlined
           dense
-          type="textarea"
+          autogrow
           :placeholder="$t('app.savingComment')"
           :readonly="onMemberSavingExist"
         />

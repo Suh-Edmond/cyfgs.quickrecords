@@ -77,7 +77,7 @@
           v-model="expenditure_item_detail.comment"
           dense
           class="text_color"
-          type="textarea"
+          autogrow
           outlined
           :placeholder="$t('app.provideCommentDetail')"
           :readonly="existExpenditureItemDetail"

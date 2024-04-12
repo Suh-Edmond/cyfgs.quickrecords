@@ -118,7 +118,7 @@
           outlined
           dense
           class="text_color"
-          type="textarea"
+          autogrow
           :placeholder="$t('app.expenditureComment')"
           :readonly="existExpenditureItem"
         />

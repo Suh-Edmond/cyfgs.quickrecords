@@ -152,7 +152,7 @@ export default {
   },
   methods: {
     getAllSponsorships(page, per_page, payment_item, status, is_filtering, session) {
-      let payment_item_id = payment_item !== "" ? payment_item.value : "";
+      let payment_item_id = payment_item !== "" && payment_item !== null ? payment_item.value : "";
       let status_value = status !== "" && status !== null ? status : "";
       let session_id = session !== "" && session !== null ? session.value : ""
       let payload = {

@@ -1394,7 +1394,7 @@ export default {
         payment_item_id: this.payment_item_id,
         month: this.month,
         status: this.payment_status,
-        year: this.year
+        year: this.year.value
       };
       this.$emit("filter-income-activity", payload_data);
     },

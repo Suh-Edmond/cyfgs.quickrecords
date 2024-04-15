@@ -53,7 +53,8 @@ export default {
     let per_page = 7;
     let payment_item_id = "";
     let status = "";
-    this.getAllSponsorships(page, per_page, payment_item_id, status);
+    let session_id = null
+    this.getAllSponsorships(page, per_page, payment_item_id, status, session_id);
   },
 
   data() {
@@ -90,6 +91,7 @@ export default {
       label: this.$t("app.delete"),
       message: this.$t("app.deleteSponsorshipWarningMsg"),
       loading_download: false,
+      session_id:null,
       payment_item_id: null,
     };
   },
@@ -149,12 +151,13 @@ export default {
     },
   },
   methods: {
-    getAllSponsorships(page, per_page, payment_item, status, is_filtering) {
+    getAllSponsorships(page, per_page, payment_item, status, is_filtering, session) {
       let payment_item_id = payment_item !== "" ? payment_item.value : "";
-      let status_value = status !== "" && status !== "" ? status : "";
+      let status_value = status !== "" && status !== null ? status : "";
+      let session_id = session !== "" && session !== null ? session.value : ""
       let payload = {
         status: "none",
-        url: `/api/protected/sponsorships?page=${page}&per_page=${per_page}&payment_item_id=${payment_item_id}&status=${status_value}`,
+        url: `/api/protected/sponsorships?page=${page}&per_page=${per_page}&payment_item_id=${payment_item_id}&status=${status_value}&session_id=${session_id}`,
         has_path_val: true,
         show_feedback: false,
         show_spinner: false,
@@ -200,19 +203,21 @@ export default {
         fetch_count,
         this.payment_item_id,
         this.status,
-        false
+        false,
+        this.session_id
       );
     },
 
     filterSponsorship(data) {
-      let payment_item_name =
-        data.payment_item_id !== "" ? data.payment_item_id.label : "";
+      let payment_item_name = data.payment_item_id !== "" && data.payment_item_id !== null ? data.payment_item_id.label : "";
+      let session_id = data.year !== "" && data.year !== null ? data.year.value:""
       this.$router.push({
-        path: `/dashboard/sponsorship?payment_item=${payment_item_name}&status=${data.payment_status}`,
+        path: `/dashboard/sponsorship?payment_item=${payment_item_name}&status=${data.payment_status}&session_id=${session_id}`,
         query: {
           payment_item: payment_item_name,
           status: data.payment_status,
           t: new Date().getTime(),
+          session_id:session_id
         },
       });
       this.setSearchVariables(data);
@@ -223,7 +228,8 @@ export default {
         per_page,
         data.payment_item_id,
         data.payment_status,
-        true
+        true,
+        data.year
       );
     },
 
@@ -256,6 +262,7 @@ export default {
     setSearchVariables(data) {
       this.payment_item_id = data.payment_item_id;
       this.status = data.payment_status;
+      this.session_id = data.year
     },
   },
   components: {

@@ -8,8 +8,33 @@
           $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
         "
       >
+      <q-select
+          class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+          v-model="year"
+          outlined
+          dense
+          :options="years"
+          :label="$t('app.searchYear')"
+          use-input
+          input-debounce="0"
+          clearable
+          @filter="filterYear"
+          @input="stopSearch"
+        >
+          <template v-slot:append v-if="start_filtering_year">
+            <q-spinner color="primary" size="1.2em" :thickness="3" />
+          </template>
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey">
+                {{ $t("app.noResults") }}
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
         <q-select
           class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+          :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
           v-model="expenditure_category_id"
           outlined
           dense
@@ -53,31 +78,6 @@
             <q-item>
               <q-item-section class="text-grey"
                 >{{ $t("app.noResults") }}
-              </q-item-section>
-            </q-item>
-          </template>
-        </q-select>
-        <q-select
-          class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
-          :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
-          v-model="year"
-          outlined
-          dense
-          :options="years"
-          :label="$t('app.searchYear')"
-          use-input
-          input-debounce="0"
-          clearable
-          @filter="filterYear"
-          @input="stopSearch"
-        >
-          <template v-slot:append v-if="start_filtering_year">
-            <q-spinner color="primary" size="1.2em" :thickness="3" />
-          </template>
-          <template v-slot:no-option>
-            <q-item>
-              <q-item-section class="text-grey">
-                {{ $t("app.noResults") }}
               </q-item-section>
             </q-item>
           </template>
@@ -235,10 +235,7 @@ export default {
   },
   computed: {
     validateFilter() {
-      return (
-        this.expenditure_category_id === null ||
-        this.expenditure_category_id === ""
-      );
+      return (this.year == null || this.year == "") || (this.expenditure_category_id === null || this.expenditure_category_id === "") ;
     },
 
     validateDownload() {
@@ -328,7 +325,7 @@ export default {
 
     getExpenditureCategoriesFromStore() {
       this.expenditure_categories = [];
-      if (this.$store.getters.getExpenditureCategories !== null) {
+      if (this.$store.getters.getExpenditureCategories != null) {
         this.$store.getters.getExpenditureCategories.forEach((element) => {
           this.expenditure_categories.push({
             label: element.name,
@@ -471,7 +468,7 @@ export default {
         page_count,
         this.expenditure_category_id,
         "",
-        ""
+        this.year
       );
     },
   },

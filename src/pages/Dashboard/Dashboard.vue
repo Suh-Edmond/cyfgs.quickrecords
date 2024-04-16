@@ -211,7 +211,6 @@ import LineChart from "src/components/charts/LineChart.vue";
 import ContributionsMixin from "src/mixins/ContributionsMixin.vue";
 import ExpenditureItemDetailMixinVue from "src/mixins/ExpenditureItemDetailMixin.vue";
 import CurrentYearMixin from "src/mixins/CurrentYearMixin.vue";
-import { LocalStorage } from "quasar";
 
 export default {
   mixins: [
@@ -490,8 +489,8 @@ export default {
       switch (type) {
         case "MEMBERSHIP":
           this.statistics_type = "MEMBERSHIP";
-          this.getUserByRegistrationStatus(organisation_id);
-          this.getUserByRegistration(organisation_id);
+          this.getUserByRegistrationStatus(organisation_id, current_session_id);
+          this.getUserByRegistration(organisation_id, current_session_id);
           this.getOrganisationMemberSavings(organisation_id, 1, 10);
           this.getTotalContributionByYear(current_session_id);
           this.getTotalYearlyExpenditures(current_session_id);
@@ -501,7 +500,7 @@ export default {
             1,
             10,
             "name",
-            current_session_id,
+            "",
             "",
             "",
             ""

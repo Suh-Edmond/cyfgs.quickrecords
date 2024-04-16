@@ -10,14 +10,13 @@
         <q-tabs
           v-model="tab"
           dense
-          class="text-primary bg-grey-2"
-          active-color="white"
+          class="text-primary"
+          active-color="primary"
           indicator-color="primary"
           align="justify"
           narrow-indicator
           inline-label
           shadow-2
-          active-class="active_tab"
         >
           <q-tab
             name="profile"
@@ -30,6 +29,7 @@
             :label="$t('app.contributionName')"
             class="tab"
             icon="payments"
+            v-if="!checkTresurerRole"
           />
         </q-tabs>
         <q-separator />
@@ -60,7 +60,7 @@
                         "
                       />
                     </q-avatar>
-                    <div class="camara">
+                    <div class="camara" v-if="!checkTresurerRole">
                       <input
                         type="file"
                         accept="image/x-png,image/jpg,image/jpeg"
@@ -200,6 +200,7 @@
                           color="primary"
                           class="edit_icon"
                           @click="showEditProfile"
+                          v-if="!checkTresurerRole"
                         >
                           <q-tooltip>{{ $t("app.editProfile") }}</q-tooltip>
                         </q-icon>
@@ -449,7 +450,7 @@
                           outlined
                           dense
                           type="text"
-                          :option="status_options"
+                          :options="status_options"
                         />
                       </div>
                       <div class="row justify-end">
@@ -540,7 +541,7 @@
           <!-------------------------------------------END OF MEMBER PROFILE TAB PANEL---------------------------------->
 
           <!-------------------------------------------MEMBER CONTRIBUTIONS TAB PANEL----------------------------------->
-          <q-tab-panel name="contributions">
+          <q-tab-panel name="contributions" v-if="!checkTresurerRole">
             <!-----------------------------------------PAYMENT ITEMS--------------------------------------------------->
             <div class="row">
               <div class="col-12 col-md-12 col-sm-12 col-xs-12">
@@ -555,10 +556,21 @@
                   :loading="getLoadingState"
                 >
                   <template v-slot:top-left>
-                    <div class="text-h6 contribution_item_header">
-                      {{ $t("app.paymentItemLabel") }}:
-                      {{ Number(due_amount).toLocaleString() }} XAF
-                    </div>
+                    <label for="title" class="text-h6 contribution_item_header"
+                      >{{ $t("app.paymentItemLabel") }}:
+                      {{ Number(due_amount).toLocaleString() }} XAF</label
+                    >
+                  </template>
+                  <template v-slot:top-right>
+                    <q-btn
+                      :label="$t('app.print')"
+                      color="positive"
+                      :disabled="validateDownloadUnPaidItems"
+                      no-caps
+                      icon-right="print"
+                      @click="downloadUnPaidItem"
+                      :loading="loading_upaid_download"
+                    ></q-btn>
                   </template>
                   <template v-slot:body="props">
                     <q-tr :props="props">
@@ -686,6 +698,17 @@
                       {{ Number(amount_paid).toLocaleString() }} XAF
                     </div>
                   </template>
+                  <template v-slot:top-right>
+                    <q-btn
+                      :label="$t('app.print')"
+                      color="positive"
+                      :disabled="validateDownloadPaidItems"
+                      no-caps
+                      icon-right="print"
+                      :loading="loading_paid_download"
+                      @click="downloadPaidItem"
+                    ></q-btn>
+                  </template>
                   <template v-slot:body="props">
                     <q-tr :props="props">
                       <q-td key="name" :props="props">
@@ -781,6 +804,7 @@
             </div>
             <!-----------------------------------------END OF PAID ITEMS--------------------------------------------->
           </q-tab-panel>
+
           <!-------------------------------------------END OF MEMBER CONTRIBUTIONS TAB PANEL--------------------------->
         </q-tab-panels>
       </div>
@@ -1018,7 +1042,7 @@
               outlined
               dense
               type="text"
-              :option="status_options"
+              :options="status_options"
             />
           </div>
           <div
@@ -1048,9 +1072,10 @@ import moment from "moment";
 import organisationMixin from "src/mixins/organisationMixin.vue";
 import memberMixin from "src/mixins/memberMixin.vue";
 import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
+import HelperMixinVue from "src/mixins/HelperMixin.vue";
 
 export default {
-  mixins: [organisationMixin, memberMixin, CurrentYearMixinVue],
+  mixins: [organisationMixin, memberMixin, CurrentYearMixinVue, HelperMixinVue],
 
   mounted() {
     this.getUserRoles(this.$route.params.id);
@@ -1209,6 +1234,8 @@ export default {
       available_roles: [],
       status_options: ["ACTIVE", "IN_ACTIVE"],
       showEditProfileDialog: false,
+      loading_upaid_download: false,
+      loading_paid_download: false,
     };
   },
   computed: {
@@ -1286,6 +1313,21 @@ export default {
         process.env.FILE_DOWNLOAD_PATH +
         this.getCurrentMember.picture
       );
+    },
+
+    validateDownloadUnPaidItems() {
+      return this.data.length < 0;
+    },
+
+    validateDownloadPaidItems() {
+      return this.data1.length < 0;
+    },
+
+    checkTresurerRole() {
+      const auth_user = LocalStorage.getItem("data").user_data.roles.find(
+        (role) => role.name === "TREASURER"
+      );
+      return auth_user !== undefined;
     },
   },
   watch: {
@@ -1776,6 +1818,27 @@ export default {
           this.$store.commit("SET_IS_FETCHING", false);
         });
     },
+
+    downloadUnPaidItem() {
+      let id = this.$route.params.id;
+      let url = `/api/protected/contributions/members/debts/download?user_id=${id}&session_id=${this.current_year.id}`;
+      this.loading_upaid_download = this.downloadPdf(
+        url,
+        "Unpaid_PaymentItems.pdf"
+      );
+
+      return (this.loading_upaid_download = false);
+    },
+
+    downloadPaidItem() {
+      let id = this.$route.params.id;
+      let url = `/api/protected/contributions/members/paid_items/download?user_id=${id}&session_id=${this.current_year.id}`;
+      this.loading_paid_download = this.downloadPdf(
+        url,
+        "Paid_PaymentItem.pdf"
+      );
+      return (this.loading_paid_download = false);
+    },
   },
   components: {
     ButtonVue,
@@ -1787,10 +1850,6 @@ export default {
 <style lang="scss" scoped>
 .tab {
   height: 50px;
-}
-
-.active_tab {
-  background-color: $primary;
 }
 
 .icon {
@@ -2044,4 +2103,6 @@ export default {
   padding-top: 0.1rem;
   padding-bottom: 0.1rem;
 }
+
+
 </style>

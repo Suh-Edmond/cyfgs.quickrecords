@@ -239,6 +239,7 @@ export default {
     },
 
     onCheckUserExist() {
+
       let payload = {
         url: "/api/public/auth/check-user",
         data: {
@@ -280,6 +281,7 @@ export default {
           credential: this.user.credential.replace(/\s+/g, ""),
           password: this.user.password,
           password_confirmation: this.user.password_confirmation,
+          role: this.$router.currentRoute.query.role
         },
         msg: this.$t("app.loginSuccess"),
         color: "default",

@@ -42,10 +42,24 @@ export default {
       page,
       per_page
     ) {
-
-      let validate_data = this.validateSearchData(data, state, session_id, con_month, con_date, date_range);
+      let validate_data = this.validateSearchData(
+        data,
+        state,
+        session_id,
+        con_month,
+        con_date,
+        date_range
+      );
       this.$store.commit("SET_IS_FETCHING", true);
-      this.setSearchRoute(data, validate_data.status, validate_data.year, validate_data.month, validate_data.date, validate_data.range, amount);
+      this.setSearchRoute(
+        data,
+        validate_data.status,
+        validate_data.year,
+        validate_data.month,
+        validate_data.date,
+        validate_data.range,
+        amount
+      );
       this.loading = true;
       let id =
         data.payment_item_id.value != undefined
@@ -68,7 +82,10 @@ export default {
           data: [],
         },
       };
-      this.$store.dispatch("setSearchContributionParams", this.setSearchedPayload(data));
+      this.$store.dispatch(
+        "setSearchContributionParams",
+        this.setSearchedPayload(data)
+      );
       this.$store.commit("SET_IS_FETCHING", true);
       this.$store
         .dispatch("getRequest", payload)
@@ -90,10 +107,15 @@ export default {
       return this.loading;
     },
 
-    getMemberContributionsByPaymentItem(payment_item_id, user_id) {
+    getMemberContributionsByPaymentItem(
+      payment_item_id,
+      user_id,
+      transaction_status,
+      payment_status
+    ) {
       let payload = {
         status: "none",
-        url: `/api/protected/contributions/payment-items/${payment_item_id}/users/${user_id}`,
+        url: `/api/protected/contributions/payment-items/${payment_item_id}/users/${user_id}&page=${page}&per_page=${per_page}&transaction_status=${transaction_status}&payment_status=${payment_status}`,
         has_path_val: true,
         show_feedback: false,
         show_spinner: true,
@@ -137,7 +159,7 @@ export default {
       return this.total_contributions;
     },
 
-    setSearchedPayload(data){
+    setSearchedPayload(data) {
       let search_payload = {
         item: data.payment_item_id,
         status: data.status,
@@ -150,19 +172,19 @@ export default {
       return search_payload;
     },
 
-    validateSearchData(data, state, session_id, month, date, range){
+    validateSearchData(data, state, session_id, month, date, range) {
       let validate_data = {
-        status : data.status != undefined ? data.status : state,
-       year : data.year != undefined ? data.year : session_id,
-       month : data.month != undefined ? data.month : month,
-       date : data.date != undefined ? data.date : date,
-       range : data.date_range != undefined ? data.date_range : range,
-      }
+        status: data.status != undefined ? data.status : state,
+        year: data.year != undefined ? data.year : session_id,
+        month: data.month != undefined ? data.month : month,
+        date: data.date != undefined ? data.date : date,
+        range: data.date_range != undefined ? data.date_range : range,
+      };
 
       return validate_data;
     },
 
-    setSearchRoute(data, status, year, month, date, range, amount){
+    setSearchRoute(data, status, year, month, date, range, amount) {
       this.$router.push({
         path: `/dashboard/contributions`,
         query: {
@@ -182,7 +204,7 @@ export default {
           t: new Date().getTime(),
         },
       });
-    }
+    },
   },
 };
 </script>

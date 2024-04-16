@@ -210,7 +210,7 @@ import BarChartVue from "src/components/charts/BarChart.vue";
 import LineChart from "src/components/charts/LineChart.vue";
 import ContributionsMixin from "src/mixins/ContributionsMixin.vue";
 import ExpenditureItemDetailMixinVue from "src/mixins/ExpenditureItemDetailMixin.vue";
-import { LocalStorage } from "quasar";
+import CurrentYearMixin from "src/mixins/CurrentYearMixin.vue";
 
 export default {
   mixins: [
@@ -219,15 +219,9 @@ export default {
     UserSavingMixin,
     ContributionsMixin,
     ExpenditureItemDetailMixinVue,
+    CurrentYearMixin
   ],
   beforeCreate() {
-    const current_session =
-      LocalStorage.getItem("data") !== undefined &&
-      LocalStorage.getItem("data") !== null
-        ? LocalStorage.getItem("data").current_session
-        : {};
-    this.$store.commit("SET_CURRENT_YEAR", current_session);
-
     let payload = {
       status: "none",
       url: "/api/protected/organisation-info",
@@ -247,12 +241,7 @@ export default {
     this.$store.dispatch("getRequest", payload).then((res) => {});
   },
   beforeMount() {
-    const current_session =
-      LocalStorage.getItem("data") !== undefined &&
-      LocalStorage.getItem("data") !== null
-        ? LocalStorage.getItem("data").current_session
-        : {};
-    this.$store.commit("SET_CURRENT_YEAR", current_session);
+    this.fetchCurrentYear();
   },
 
   mounted() {
@@ -500,8 +489,8 @@ export default {
       switch (type) {
         case "MEMBERSHIP":
           this.statistics_type = "MEMBERSHIP";
-          this.getUserByRegistrationStatus(organisation_id);
-          this.getUserByRegistration(organisation_id);
+          this.getUserByRegistrationStatus(organisation_id, current_session_id);
+          this.getUserByRegistration(organisation_id, current_session_id);
           this.getOrganisationMemberSavings(organisation_id, 1, 10);
           this.getTotalContributionByYear(current_session_id);
           this.getTotalYearlyExpenditures(current_session_id);
@@ -511,7 +500,7 @@ export default {
             1,
             10,
             "name",
-            current_session_id,
+            "",
             "",
             "",
             ""

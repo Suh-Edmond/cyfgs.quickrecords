@@ -107,30 +107,10 @@
       "
       v-if="show_categories"
     >
-      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
-        <q-select
-          v-model="year"
-          outlined
-          dense
-          :options="getSessionsFromState"
-          clearable
-          :label="$t('app.selectYearLabel')"
-        />
-      </div>
       <div
-        class="row col-md-9 col-lg-9 col-xs-12 col-sm-12"
+        class="row col-md-12 col-lg-12 col-xs-12 col-sm-12"
         :class="$q.platform.is.mobile ? 'row q-pt-md' : 'q-pl-md'"
       >
-        <q-btn
-          :label="$t('app.filter')"
-          color="primary"
-          :disabled="validateFilterCategories"
-          @click="filterCategories"
-          no-caps
-          icon-right="filter_list"
-          :size="$q.platform.is.mobile ? 'sm' : 'md'"
-        >
-        </q-btn>
         <q-space />
         <q-btn
           :label="$t('app.print')"
@@ -156,6 +136,26 @@
     >
       <div class="col">
         <q-select
+          v-model="year"
+          outlined
+          dense
+          :options="getSessionsFromState"
+          :label="$t('app.searchYear')"
+          use-input
+          input-debounce="0"
+          clearable
+        >
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey"
+                >{{ $t("app.notResults") }}
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
+      </div>
+      <div class="col" :class="$q.platform.is.desktop ? 'q-ml-sm' : ''">
+        <q-select
           v-model="is_compulsory"
           outlined
           dense
@@ -164,7 +164,7 @@
           clearable
         />
       </div>
-      <div class="col" :class="$q.platform.is.desktop ? 'q-ml-xs' : ''">
+      <div class="col" :class="$q.platform.is.desktop ? 'q-ml-sm' : ''">
         <q-select
           v-model="type"
           outlined
@@ -174,7 +174,7 @@
           clearable
         />
       </div>
-      <div class="col" :class="$q.platform.is.desktop ? 'q-ml-xs' : ''">
+      <div class="col" :class="$q.platform.is.desktop ? 'q-ml-sm' : ''">
         <q-select
           v-model="frequency"
           outlined
@@ -184,7 +184,7 @@
           clearable
         />
       </div>
-      <div class="col" :class="$q.platform.is.desktop ? 'q-ml-xs' : ''">
+      <div class="col" :class="$q.platform.is.desktop ? 'q-ml-sm' : ''">
         <q-select
           v-model="state"
           outlined
@@ -196,7 +196,7 @@
       </div>
       <div
         class="col-4 col-md-4 col-lg-4 col-xs-12 col-sm-12 flex"
-        :class="$q.platform.is.desktop ? 'q-ml-xs' : ''"
+        :class="$q.platform.is.desktop ? 'q-ml-sm' : ''"
       >
         <q-btn
           :label="$t('app.filter')"
@@ -233,20 +233,15 @@
     >
       <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
         <q-select
-          v-model="payment_item_id"
+          v-model="year"
           outlined
           dense
-          :options="filtered_payment_items"
-          :label="$t('app.searchPaymentItem')"
-          input-debounce="0"
+          :options="getSessionsFromState"
+          :label="$t('app.searchYear')"
           use-input
+          input-debounce="0"
           clearable
-          @filter="searchPaymentItems"
-          @input="stopSelectInputSearch"
         >
-          <template v-slot:append v-if="start_payment_item_select_filtering">
-            <q-spinner color="primary" size="1.2em" :thickness="3" />
-          </template>
           <template v-slot:no-option>
             <q-item>
               <q-item-section class="text-grey"
@@ -261,15 +256,20 @@
         :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
       >
         <q-select
-          v-model="year"
+          v-model="payment_item_id"
           outlined
           dense
-          :options="getSessionsFromState"
-          :label="$t('app.searchYear')"
-          use-input
+          :options="filtered_payment_items"
+          :label="$t('app.searchPaymentItem')"
           input-debounce="0"
+          use-input
           clearable
+          @filter="searchPaymentItems"
+          @input="stopSelectInputSearch"
         >
+          <template v-slot:append v-if="start_payment_item_select_filtering">
+            <q-spinner color="primary" size="1.2em" :thickness="3" />
+          </template>
           <template v-slot:no-option>
             <q-item>
               <q-item-section class="text-grey"
@@ -574,6 +574,26 @@
       v-if="show_income_activity"
     >
       <q-select
+        v-model="year"
+        outlined
+        dense
+        :options="getSessionsFromState"
+        :label="$t('app.searchYear')"
+        use-input
+        input-debounce="0"
+        clearable
+        class="col-md-2 col-lg-2 col-xs-12 col-sm-12"
+        :class="$q.platform.is.desktop ? 'q-pr-sm' : ''"
+      >
+        <template v-slot:no-option>
+          <q-item>
+            <q-item-section class="text-grey"
+              >{{ $t("app.notResults") }}
+            </q-item-section>
+          </q-item>
+        </template>
+      </q-select>
+      <q-select
         v-model="payment_item_id"
         outlined
         dense
@@ -584,7 +604,7 @@
         clearable
         @filter="searchPaymentItems"
         @input="stopSelectInputSearch"
-        class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+        class="col-md-2 col-lg-2 col-xs-12 col-sm-12 text-wrap"
       >
         <template v-slot:append v-if="start_payment_item_select_filtering">
           <q-spinner color="primary" size="1.2em" :thickness="3" />
@@ -608,7 +628,7 @@
         @input="stopSelectInputSearch"
         use-input
         clearable
-        class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+        class="col-md-2 col-lg-2 col-xs-12 col-sm-12"
         :class="$q.platform.is.desktop ? 'q-pl-sm' : ''"
       >
         <template v-slot:append v-if="start_month_filtering">
@@ -629,7 +649,7 @@
         :options="payment_statuses"
         clearable
         :label="$t('app.selectStatusLabel')"
-        class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+        class="col-md-2 col-lg-2 col-xs-12 col-sm-12"
         :class="$q.platform.is.desktop ? 'q-pl-sm' : ''"
       >
         <template v-slot:no-option>
@@ -641,7 +661,7 @@
         </template>
       </q-select>
       <div
-        class="col-md-3 col-lg-3 col-xs-12 col-sm-12 flex"
+        class="col-md-4 col-lg-4 col-xs-12 col-sm-12 flex"
         :class="$q.platform.is.desktop ? 'q-pl-sm' : ''"
       >
         <q-btn
@@ -752,6 +772,26 @@
       v-if="show_sponsorship"
     >
       <q-select
+        v-model="year"
+        outlined
+        dense
+        :options="getSessionsFromState"
+        :label="$t('app.searchYear')"
+        use-input
+        input-debounce="0"
+        clearable
+        class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+        :class="$q.platform.is.desktop ? 'q-pr-sm' : ''"
+      >
+        <template v-slot:no-option>
+          <q-item>
+            <q-item-section class="text-grey"
+              >{{ $t("app.notResults") }}
+            </q-item-section>
+          </q-item>
+        </template>
+      </q-select>
+      <q-select
         v-model="payment_item_id"
         outlined
         dense
@@ -794,7 +834,7 @@
         </template>
       </q-select>
       <div
-        class="col-md-6 col-lg-6 col-xs-12 col-sm-12 flex"
+        class="col-md-3 col-lg-3 col-xs-12 col-sm-12 flex"
         :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
       >
         <q-btn
@@ -1049,7 +1089,7 @@ export default {
       month: "",
       start_month_filtering: false,
       monthsOptions: [],
-      transaction_statuses: ["INCOMPLETE", "COMPLETED", "ALL"],
+      transaction_statuses: ["INCOMPLETE", "COMPLETE", "ALL"],
       transaction_status: "",
       report_option: "",
       selected_option_label: "",
@@ -1098,6 +1138,7 @@ export default {
 
     validateFilterPaymentItem() {
       return (
+        this.year == "" &&
         this.is_compulsory === "" &&
         this.frequency === "" &&
         this.type === "" &&
@@ -1106,7 +1147,11 @@ export default {
     },
 
     validateFilterExpenditureItems() {
-      return this.payment_item_id === null || this.payment_item_id === "";
+      return (
+        this.payment_item_id == "" &&
+        this.year == "" &&
+        this.payment_status == ""
+      );
     },
 
     validateFilterExpenditureItem() {
@@ -1125,7 +1170,10 @@ export default {
     },
 
     validateFilterIncomeActivity() {
-      return this.payment_item_id === null;
+      return (
+        (this.payment_item_id == "" || this.payment_item_id == null) &&
+        (this.year == "" || this.year == null)
+      );
     },
 
     validateFilterMemberContribution() {
@@ -1136,7 +1184,10 @@ export default {
     },
 
     validateFilterSponsorship() {
-      return this.payment_item_id === null;
+      return (
+        (this.payment_item_id == "" || this.payment_item_id == null) &&
+        (this.year == "" || this.year == null)
+      );
     },
 
     getReportGenerationOptions() {
@@ -1203,6 +1254,8 @@ export default {
             : "",
         type: this.type !== null && this.type !== "" ? this.type : "",
         state: this.state !== null && this.state !== "" ? this.state : "",
+        session_id:
+          this.year !== null && this.year !== "" ? this.year.value : "",
       };
 
       this.$emit("filter-payment-items", payload);
@@ -1370,6 +1423,7 @@ export default {
         payment_item_id: this.payment_item_id,
         month: this.month,
         status: this.payment_status,
+        year: this.year.value,
       };
       this.$emit("filter-income-activity", payload_data);
     },
@@ -1406,6 +1460,7 @@ export default {
       let payload_data = {
         payment_item_id: this.payment_item_id,
         payment_status: this.payment_status,
+        year: this.year
       };
 
       this.$emit("filter-sponsorship", payload_data);

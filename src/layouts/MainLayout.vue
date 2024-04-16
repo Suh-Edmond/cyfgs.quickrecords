@@ -161,7 +161,7 @@
           @set-heading="setHeading"
         ></AddExpenditureItemDetail>
         <AddMemberSavingVue
-          v-if="current_tab == 'Savings'"
+          v-if="current_tab.includes('Savings') && current_tab != 'Search Savings'"
           @close-right-drawer="closeRightDrawer"
           @set-heading="setHeading"
         ></AddMemberSavingVue>
@@ -188,7 +188,7 @@
         >
         </ViewContribution>
         <AddContribution
-          v-if="current_tab == 'Contributions'"
+          v-if="current_tab.includes('Contributions') && current_tab != 'Search Members Contributions'"
           @close-right-drawer="closeRightDrawer"
           @set-heading="setHeading"
         ></AddContribution>
@@ -374,7 +374,10 @@ export default {
           data: [],
         },
       };
-      this.$store.dispatch("logoutUser", payload);
+      this.$store.dispatch("logoutUser", payload).then(() => {
+        this.$store.dispatch("SET_MEMBERS", null);
+        this.$store.dispatch("SET_BAR_CHART_DATA", []);
+      });
     },
 
     goBack() {
@@ -528,9 +531,9 @@ export default {
 
     getRoleGroups() {
       const storage_data =
-        LocalStorage.getItem("data") !== undefined
+        LocalStorage.getItem("data") !== "undefined" && LocalStorage.getItem("data") !== null
           ? LocalStorage.getItem("data").user_data
-          : {};
+          : [];
       return storage_data.roles.map((ele) => ele.name);
     },
 
@@ -680,5 +683,4 @@ export default {
   font-weight: 700;
   font-size: medium;
 }
-
 </style>

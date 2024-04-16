@@ -228,8 +228,8 @@ export default {
       has_register,
       gender
     ) {
-      let year_value =
-        this.year !== null && this.year !== "" ? this.year.value : "";
+      let year_value = this.year !== null && this.year !== "" ? this.year.value : "";
+      console.log(year_value);
       this.filterOrganisationMembers(
         id,
         false,
@@ -248,6 +248,7 @@ export default {
     },
 
     filterMembers(data) {
+      console.log(data);
       this.setFilterVariables(data);
       this.$router.push({
         path: "/dashboard/members",
@@ -273,7 +274,7 @@ export default {
       this.setFilterVariables(data);
       let year_value =
         this.year !== null && this.year !== "" ? this.year.value : "";
-      let url = `/api/protected/organisations/download-users?organisation_id=${this.organisation_id}&has_register=${this.has_register}&gender=${this.gender}&year=${year_value}?page=&per_page=`;
+      let url = `/api/protected/organisations/download-users?organisation_id=${this.organisation_id}&has_register=${this.has_register}&gender=${this.gender}&year=${year_value}&page=&per_page=`;
       let file_name = "Organisation_Members.pdf";
       this.loading_download = this.downloadPdf(url, file_name);
     },

@@ -187,9 +187,9 @@ export default {
             id,
             false,
             1,
-            7,
+            10,
             "name",
-            this.$store.getters.getCurrentYear.id,
+            "",
             "",
             "",
             ""

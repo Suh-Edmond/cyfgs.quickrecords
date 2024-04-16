@@ -118,7 +118,7 @@
           outlined
           dense
           class="text_color"
-          type="textarea"
+          autogrow
           :placeholder="$t('app.expenditureComment')"
           :readonly="existExpenditureItem"
         />
@@ -193,7 +193,8 @@ export default {
     },
 
     getUpdatedExpenditureItem() {
-      return this.setFormFields(this.$store.getters.getUpdatedExpenditureItem);
+      this.setFormFields(this.$store.getters.getUpdatedExpenditureItem);
+      return this.$store.getters.getUpdatedExpenditureItem;
     },
 
     existExpenditureItem() {

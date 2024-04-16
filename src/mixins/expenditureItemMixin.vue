@@ -128,7 +128,7 @@ export default {
       let session =
         year !== null && year !== ""
           ? year.value
-          : this.$store.getters.getCurrentYear.id;
+          : '';
 
       let payload = {
         status: "none",

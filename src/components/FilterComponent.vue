@@ -231,10 +231,7 @@
       "
       v-if="show_filter_expenditure_items"
     >
-      <div
-        class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
-
-      >
+      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
         <q-select
           v-model="year"
           outlined
@@ -254,8 +251,10 @@
           </template>
         </q-select>
       </div>
-      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
-      :class="$q.platform.is.desktop ? 'q-pl-md' : ''">
+      <div
+        class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+        :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
+      >
         <q-select
           v-model="payment_item_id"
           outlined
@@ -575,6 +574,26 @@
       v-if="show_income_activity"
     >
       <q-select
+        v-model="year"
+        outlined
+        dense
+        :options="getSessionsFromState"
+        :label="$t('app.searchYear')"
+        use-input
+        input-debounce="0"
+        clearable
+        class="col-md-2 col-lg-2 col-xs-12 col-sm-12"
+        :class="$q.platform.is.desktop ? 'q-pr-sm' : ''"
+      >
+        <template v-slot:no-option>
+          <q-item>
+            <q-item-section class="text-grey"
+              >{{ $t("app.notResults") }}
+            </q-item-section>
+          </q-item>
+        </template>
+      </q-select>
+      <q-select
         v-model="payment_item_id"
         outlined
         dense
@@ -585,7 +604,7 @@
         clearable
         @filter="searchPaymentItems"
         @input="stopSelectInputSearch"
-        class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+        class="col-md-2 col-lg-2 col-xs-12 col-sm-12 text-wrap"
       >
         <template v-slot:append v-if="start_payment_item_select_filtering">
           <q-spinner color="primary" size="1.2em" :thickness="3" />
@@ -609,7 +628,7 @@
         @input="stopSelectInputSearch"
         use-input
         clearable
-        class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+        class="col-md-2 col-lg-2 col-xs-12 col-sm-12"
         :class="$q.platform.is.desktop ? 'q-pl-sm' : ''"
       >
         <template v-slot:append v-if="start_month_filtering">
@@ -630,7 +649,7 @@
         :options="payment_statuses"
         clearable
         :label="$t('app.selectStatusLabel')"
-        class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+        class="col-md-2 col-lg-2 col-xs-12 col-sm-12"
         :class="$q.platform.is.desktop ? 'q-pl-sm' : ''"
       >
         <template v-slot:no-option>
@@ -642,7 +661,7 @@
         </template>
       </q-select>
       <div
-        class="col-md-3 col-lg-3 col-xs-12 col-sm-12 flex"
+        class="col-md-4 col-lg-4 col-xs-12 col-sm-12 flex"
         :class="$q.platform.is.desktop ? 'q-pl-sm' : ''"
       >
         <q-btn
@@ -753,6 +772,26 @@
       v-if="show_sponsorship"
     >
       <q-select
+        v-model="year"
+        outlined
+        dense
+        :options="getSessionsFromState"
+        :label="$t('app.searchYear')"
+        use-input
+        input-debounce="0"
+        clearable
+        class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+        :class="$q.platform.is.desktop ? 'q-pr-sm' : ''"
+      >
+        <template v-slot:no-option>
+          <q-item>
+            <q-item-section class="text-grey"
+              >{{ $t("app.notResults") }}
+            </q-item-section>
+          </q-item>
+        </template>
+      </q-select>
+      <q-select
         v-model="payment_item_id"
         outlined
         dense
@@ -795,7 +834,7 @@
         </template>
       </q-select>
       <div
-        class="col-md-6 col-lg-6 col-xs-12 col-sm-12 flex"
+        class="col-md-3 col-lg-3 col-xs-12 col-sm-12 flex"
         :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
       >
         <q-btn
@@ -1108,7 +1147,11 @@ export default {
     },
 
     validateFilterExpenditureItems() {
-      return this.payment_item_id == "" && this.year == "" && this.payment_status == "";
+      return (
+        this.payment_item_id == "" &&
+        this.year == "" &&
+        this.payment_status == ""
+      );
     },
 
     validateFilterExpenditureItem() {
@@ -1127,7 +1170,10 @@ export default {
     },
 
     validateFilterIncomeActivity() {
-      return this.payment_item_id === null;
+      return (
+        (this.payment_item_id == "" || this.payment_item_id == null) &&
+        (this.year == "" || this.year == null)
+      );
     },
 
     validateFilterMemberContribution() {
@@ -1138,7 +1184,10 @@ export default {
     },
 
     validateFilterSponsorship() {
-      return this.payment_item_id === null;
+      return (
+        (this.payment_item_id == "" || this.payment_item_id == null) &&
+        (this.year == "" || this.year == null)
+      );
     },
 
     getReportGenerationOptions() {
@@ -1374,6 +1423,7 @@ export default {
         payment_item_id: this.payment_item_id,
         month: this.month,
         status: this.payment_status,
+        year: this.year.value,
       };
       this.$emit("filter-income-activity", payload_data);
     },
@@ -1410,6 +1460,7 @@ export default {
       let payload_data = {
         payment_item_id: this.payment_item_id,
         payment_status: this.payment_status,
+        year: this.year
       };
 
       this.$emit("filter-sponsorship", payload_data);

@@ -231,7 +231,9 @@ export default {
       (role) => role.name !== "MEMBER"
     ).name;
     this.auth_user_role = this.formatUserRole(welcome_title);
-    return this.getNotifications();
+    if(this.auth_user.roles.includes(["ADMIN", "PRESIDENT"])){
+      this.getNotifications();
+    }
   },
   props: {
     item: {

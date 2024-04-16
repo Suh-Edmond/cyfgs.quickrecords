@@ -294,7 +294,6 @@ export default {
     },
 
     getSelectedContribution() {
-      console.log(this.$store.getters.getSelectedContribution);
       return this.$store.getters.getSelectedContribution;
     },
 

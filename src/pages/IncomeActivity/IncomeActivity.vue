@@ -116,6 +116,7 @@ export default {
       label: this.$t("app.delete"),
       message: this.$t("app.deleteIncomeActvityWarningMsg"),
       loading_download: false,
+      session_id: "",
     };
   },
   computed: {
@@ -212,12 +213,15 @@ export default {
     },
 
     filterIncomeActivity(payload_data, page, per_page) {
-      this.payment_item_id =
-        payload_data.payment_item_id !== null &&
-        payload_data.payment_item_id !== ""
-          ? payload_data.payment_item_id
+      this.payment_item_id = payload_data.payment_item_id;
+      let item_id =
+        this.payment_item_id !== null && this.payment_item_id !== ""
+          ? this.payment_item_id.value
           : "";
-
+      this.session_id =
+        payload_data.year !== null && payload_data.year !== ""
+          ? payload_data.year
+          : "";
       this.month = payload_data.month;
       let month_value = this.month !== "" ? this.month.value : "";
       let month_label = this.month !== "" ? this.month.label : "";
@@ -226,18 +230,14 @@ export default {
           ? payload_data.status
           : "";
       let page_num =
-        payload_data.payment_item_id !== null &&
-        payload_data.payment_item_id !== ""
-          ? 1
-          : page;
+        this.payment_item_id !== null || this.payment_item_id !== "" ? 1 : page;
       let num_rows =
-        payload_data.payment_item_id !== null &&
-        payload_data.payment_item_id !== ""
+        this.payment_item_id !== null || this.payment_item_id !== ""
           ? 7
           : per_page;
 
       this.$router.push({
-        path: `/dashboard/income-activities?payment_item=${this.payment_item_id.value}&month=${month_label}&status=${this.status}`,
+        path: `/dashboard/income-activities?payment_item=${item_id}&month=${month_label}&status=${this.status}&session_id=${this.session_id}`,
         query: {
           payment_item: this.payment_item_id.label,
           month: month_label,
@@ -247,7 +247,7 @@ export default {
       });
       let payload = {
         status: "none",
-        url: `/api/protected/organisations/income-activities/search?organisation_id=${this.organisation_id}&month=${month_value}&payment_item_id=${this.payment_item_id.value}&status=${this.status}&page=${page_num}&per_page=${num_rows}`,
+        url: `/api/protected/organisations/income-activities/search?organisation_id=${this.organisation_id}&month=${month_value}&payment_item_id=${item_id}&session_id=${this.session_id}&status=${this.status}&page=${page_num}&per_page=${num_rows}`,
         has_path_val: true,
         show_feedback: false,
         show_spinner: false,

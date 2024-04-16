@@ -29,6 +29,7 @@
             :label="$t('app.contributionName')"
             class="tab"
             icon="payments"
+            v-if="!checkTresurerRole"
           />
         </q-tabs>
         <q-separator />
@@ -59,7 +60,7 @@
                         "
                       />
                     </q-avatar>
-                    <div class="camara">
+                    <div class="camara" v-if="!checkTresurerRole">
                       <input
                         type="file"
                         accept="image/x-png,image/jpg,image/jpeg"
@@ -199,6 +200,7 @@
                           color="primary"
                           class="edit_icon"
                           @click="showEditProfile"
+                          v-if="!checkTresurerRole"
                         >
                           <q-tooltip>{{ $t("app.editProfile") }}</q-tooltip>
                         </q-icon>
@@ -539,7 +541,7 @@
           <!-------------------------------------------END OF MEMBER PROFILE TAB PANEL---------------------------------->
 
           <!-------------------------------------------MEMBER CONTRIBUTIONS TAB PANEL----------------------------------->
-          <q-tab-panel name="contributions">
+          <q-tab-panel name="contributions" v-if="!checkTresurerRole">
             <!-----------------------------------------PAYMENT ITEMS--------------------------------------------------->
             <div class="row">
               <div class="col-12 col-md-12 col-sm-12 col-xs-12">
@@ -802,6 +804,7 @@
             </div>
             <!-----------------------------------------END OF PAID ITEMS--------------------------------------------->
           </q-tab-panel>
+
           <!-------------------------------------------END OF MEMBER CONTRIBUTIONS TAB PANEL--------------------------->
         </q-tab-panels>
       </div>
@@ -1319,6 +1322,13 @@ export default {
     validateDownloadPaidItems() {
       return this.data1.length < 0;
     },
+
+    checkTresurerRole() {
+      const auth_user = LocalStorage.getItem("data").user_data.roles.find(
+        (role) => role.name === "TREASURER"
+      );
+      return auth_user !== undefined;
+    },
   },
   watch: {
     getFormField() {
@@ -1817,7 +1827,7 @@ export default {
         "Unpaid_PaymentItems.pdf"
       );
 
-      return this.loading_upaid_download = false
+      return (this.loading_upaid_download = false);
     },
 
     downloadPaidItem() {
@@ -1827,7 +1837,7 @@ export default {
         url,
         "Paid_PaymentItem.pdf"
       );
-      return this.loading_paid_download = false;
+      return (this.loading_paid_download = false);
     },
   },
   components: {
@@ -2093,4 +2103,6 @@ export default {
   padding-top: 0.1rem;
   padding-bottom: 0.1rem;
 }
+
+
 </style>

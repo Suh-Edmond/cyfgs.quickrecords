@@ -330,7 +330,7 @@ export default {
 
     getExpenditureCategoriesFromStore() {
       this.expenditure_categories = [];
-      if (this.$store.getters.getExpenditureCategories != null) {
+      if (this.$store.getters.getExpenditureCategories != null && this.$store.getters.getExpenditureCategories != "undefined") {
         this.$store.getters.getExpenditureCategories.forEach((element) => {
           this.expenditure_categories.push({
             label: element.name,

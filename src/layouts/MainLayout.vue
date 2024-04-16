@@ -584,7 +584,7 @@ export default {
 
 .content {
   background-color: $grey1;
-  overflow: hidden;
+  // overflow: hidden;
 }
 
 .drop_down_text {

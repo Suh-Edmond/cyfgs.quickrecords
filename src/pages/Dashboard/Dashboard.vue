@@ -1,8 +1,8 @@
 <template>
   <q-page>
-    <div class="row">
+    <div class="row q-gutter-x-xs q-gutter-y-lg">
       <q-card
-        class="col-6 col-md-3"
+        class="col"
         :class="statistics_type == 'MEMBERSHIP' ? 'members_card' : 'card'"
         bordered
         @click="showStatistics('MEMBERSHIP')"
@@ -39,7 +39,7 @@
         </q-card-actions>
       </q-card>
       <q-card
-        class="col-6 col-md-3"
+        class="col-3"
         :class="statistics_type == 'SAVINGS' ? 'saving_card' : 'card'"
         bordered
         @click="showStatistics('SAVINGS')"
@@ -71,7 +71,7 @@
         </q-card-actions>
       </q-card>
       <q-card
-        class="col-6 col-md-3"
+        class="col-3"
         :class="
           statistics_type == 'CONTRIBUTIONS' ? 'contribution_card' : 'card'
         "
@@ -112,7 +112,7 @@
         </q-card-actions>
       </q-card>
       <q-card
-        class="col-6 col-md-3"
+        class="col-3"
         :class="
           statistics_type == 'EXPENDITURES' ? 'expenditures_card' : 'card'
         "

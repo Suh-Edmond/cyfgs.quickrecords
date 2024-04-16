@@ -8,7 +8,7 @@
           $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
         "
       >
-      <q-select
+        <q-select
           class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
           v-model="year"
           outlined
@@ -235,7 +235,12 @@ export default {
   },
   computed: {
     validateFilter() {
-      return (this.year == null || this.year == "") || (this.expenditure_category_id === null || this.expenditure_category_id === "") ;
+      return (
+        this.year == null ||
+        this.year == "" ||
+        this.expenditure_category_id === null ||
+        this.expenditure_category_id === ""
+      );
     },
 
     validateDownload() {

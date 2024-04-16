@@ -111,15 +111,6 @@
           </q-td>
 
           <q-td key="action" :props="props">
-            <!-- buttons for approve and decline row data -->
-            <q-btn
-              class="decline_btn_saving"
-              :label="$t('app.decline')"
-              no-caps
-              dense
-              @click="onDeclineRecord(props.row, 'Decline')"
-              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
-            />
 
             <q-btn
               class="approve_btn"
@@ -129,6 +120,52 @@
               @click="onApprovedRecord(props.row, 'Approve')"
               v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
             />
+            
+            <!-- buttons for approve and decline row data -->
+            <q-btn
+              class="decline_btn_saving"
+              :label="$t('app.decline')"
+              no-caps
+              dense
+              @click="onDeclineRecord(props.row, 'Decline')"
+              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
+            />
+            <!-- button to handle edit, view and delete, invite and register  a member -->
+            <q-btn flat round v-if="checkTreasurerRole()">
+              <q-icon
+                name="menu"
+                size="xs"
+                color="primary"
+                class="menu_icon"
+                clickable
+              >
+                <q-menu>
+                  <q-list bordered separator style="width: 210px">
+                    <!-- view member profile -->
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="onViewMember(props.row)"
+                    >
+                      <q-item-section avatar>
+                        <span>
+                          <q-icon
+                            name="account_circle"
+                            size="xs"
+                            class="edit"
+                          />
+                        </span>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="edit">{{
+                          $t("app.viewProfile")
+                        }}</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                  </q-list>
+                </q-menu>
+              </q-icon>
+            </q-btn>
 
             <!-- button to handle edit, view and delete, invite and register  a member -->
             <q-btn flat round v-if="!checkTreasurerRole()">
@@ -229,7 +266,7 @@
             </q-btn>
           </q-td>
         </q-tr>
-        <!---------------------------------------------END BODE FOR MEMBERS-->
+        <!---------------------------------------------END BODE FOR MEMBERS------------------------------------------------------------------------------------->
 
         <!---------------------------------------------------START OF SAVINGS FOR ALL MEMBER TO BE VIEW BY USER WITH UNTREASUERER ROLE------------------------->
         <q-tr :props="props" v-if="show_savings && !checkTreasurerRole()">

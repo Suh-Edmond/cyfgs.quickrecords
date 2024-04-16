@@ -94,10 +94,10 @@ export default {
         .catch((e) => {});
     },
 
-    getUserByRegistrationStatus(organisation_id) {
+    getUserByRegistrationStatus(organisation_id, session_id) {
       let payload = {
         status: "none",
-        url: `/api/protected/organisations/registered_users?organisation_id=${organisation_id}`,
+        url: `/api/protected/organisations/registered_users?organisation_id=${organisation_id}&session_id=${session_id}`,
         has_path_val: true,
         show_feedback: false,
         msg: "none",
@@ -114,10 +114,10 @@ export default {
       this.$store.dispatch("getRequest", payload).then(() => {});
     },
 
-    getUserByRegistration(organisation_id) {
+    getUserByRegistration(organisation_id, session_id) {
       let payload = {
         status: "none",
-        url: `/api/protected/organisations/users?organisation_id=${organisation_id}`,
+        url: `/api/protected/organisations/users?organisation_id=${organisation_id}&session_id=${session_id}`,
         has_path_val: true,
         show_feedback: false,
         msg: "none",

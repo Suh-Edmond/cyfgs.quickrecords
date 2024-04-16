@@ -236,10 +236,10 @@ export default {
   computed: {
     validateFilter() {
       return (
-        this.year == null ||
-        this.year == "" ||
-        this.expenditure_category_id === null ||
-        this.expenditure_category_id === ""
+        (this.year == null ||
+        this.year == "" ) &&
+        (this.expenditure_category_id === null ||
+        this.expenditure_category_id === "")
       );
     },
 

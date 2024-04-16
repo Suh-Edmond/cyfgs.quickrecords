@@ -374,7 +374,10 @@ export default {
           data: [],
         },
       };
-      this.$store.dispatch("logoutUser", payload);
+      this.$store.dispatch("logoutUser", payload).then(() => {
+        this.$store.dispatch("SET_MEMBERS", null);
+        this.$store.dispatch("SET_BAR_CHART_DATA", []);
+      });
     },
 
     goBack() {
@@ -528,7 +531,7 @@ export default {
 
     getRoleGroups() {
       const storage_data =
-        LocalStorage.getItem("data") !== undefined && LocalStorage.getItem("data") !== null
+        LocalStorage.getItem("data") !== "undefined" && LocalStorage.getItem("data") !== null
           ? LocalStorage.getItem("data").user_data
           : [];
       return storage_data.roles.map((ele) => ele.name);

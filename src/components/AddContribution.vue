@@ -267,7 +267,7 @@
                 outlined
                 dense
                 type="number"
-                @keyup="setPaymentItemBalance"
+                @input="setPaymentItemBalance"
                 :disable="has_completed_payment"
               >
               </q-input>
@@ -607,7 +607,7 @@
                       outlined
                       dense
                       type="number"
-                      @keyup="setPaymentItemBalance"
+                      @input="setPaymentItemBalance"
                       :disable="has_completed_payment"
                     >
                     </q-input>

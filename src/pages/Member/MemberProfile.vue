@@ -554,6 +554,7 @@
                     color: '#FFFFFF',
                   }"
                   :loading="getLoadingState"
+                  flat
                 >
                   <template v-slot:top-left>
                     <label for="title" class="text-h6 contribution_item_header"
@@ -690,6 +691,7 @@
                     backgroundColor: '#213c65',
                     color: '#FFFFFF',
                   }"
+                  flat
                   :loading="getLoadingState"
                 >
                   <template v-slot:top-left>

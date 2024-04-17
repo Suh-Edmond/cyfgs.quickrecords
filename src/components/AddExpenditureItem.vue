@@ -1,5 +1,5 @@
 <template>
-  <div class="q-mb-md">
+  <div class="q-mb-md q-mx-md">
     <q-banner
       inline-actions
       rounded
@@ -16,12 +16,12 @@
       </template>
     </q-banner>
     <div class="q-mt-md">
-      <label class="text-muted q-pl-lg"
+      <label class="text-muted info"
         >{{ $t("app.warningField") }} <span class="text-red">*</span>
         {{ $t("app.fields") }}</label
       >
     </div>
-    <q-form @submit="onAddExpenditureItem" class="q-gutter-md q-mt-xs q-mx-sm">
+    <q-form @submit="onAddExpenditureItem" class="q-gutter-md q-mt-xs">
       <div class="q-mb-md">
         <label for="name" class="form_field"
           >{{ $t("app.paymentItem") }} <span class="text-red">*</span>

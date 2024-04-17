@@ -10,7 +10,7 @@
       content-class="bg-grey-3"
     >
       <div>
-        <div class="bg-white left_drawer">
+        <div class=" left_drawer">
           <div class="bg-transparent q-pa-sm flex flex-center">
             <q-avatar size="90px" v-if="getOrganisation != null">
               <q-img :src="getOrganisationLogo"> </q-img>

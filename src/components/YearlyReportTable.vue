@@ -281,52 +281,56 @@
 
             <!-----------------------------------------START OF ACTIVITIES UNDER A CATEGORY--------------------------------->
             <div v-for="(value, index) in expenditures.items" :key="index">
-              <div class="row">
-                <div class="col-md-1 column_details text-bold">
-                  {{ expenditures.code }}.{{ value.code }}
-                </div>
-                <div
-                  class="col-md-5 column_details"
-                  style="font-weight: bold; text-align: left"
-                >
-                  {{ value.name }}
-                </div>
-                <div class="col-md-2 column_details"></div>
-                <div class="col-md-2 column_details"></div>
-                <div class="col-md-2 column_details_end"></div>
-              </div>
-
-              <!------------------------------------------START OF ITEMS UNDER AN ACTICITY------------------------------------------->
-              <div v-for="(item, index) in value.items" :key="index">
+              <div v-if="value.items.length > 0">
                 <div class="row">
                   <div class="col-md-1 column_details text-bold">
-                    {{ expenditures.code }}.{{ value.code }}.{{ index + 1 }}
+                    {{ expenditures.code }}.{{ value.code }}
                   </div>
-                  <div class="col-md-5 column_details">
-                    {{ item.name }}
+                  <div
+                    class="col-md-5 column_details"
+                    style="font-weight: bold; text-align: left"
+                  >
+                    {{ value.name }}
                   </div>
-                  <div class="col-md-2 column_details">
-                    {{ Number(item.amount_spent).toLocaleString() }}
-                  </div>
+                  <div class="col-md-2 column_details"></div>
                   <div class="col-md-2 column_details"></div>
                   <div class="col-md-2 column_details_end"></div>
                 </div>
-              </div>
-              <!-----------------------------------------------END OF ITEMS UNDER AN ACTIVITY--------------------------------------------->
 
-              <!---------------------------------------------START OF ACTIVITY SUB-TOTAL------------------------------------------------->
-              <div class="row">
-                <div class="col-md-1 column_details text-bold">
-                  {{ expenditures.code }}.{{ value.code }}
+                <!------------------------------------------START OF ITEMS UNDER AN ACTICITY------------------------------------------->
+                <div v-for="(item, index) in value.items" :key="index">
+                  <div class="row">
+                    <div class="col-md-1 column_details text-bold">
+                      {{ expenditures.code }}.{{ value.code }}.{{ index + 1 }}
+                    </div>
+                    <div class="col-md-5 column_details">
+                      {{ item.name }}
+                    </div>
+                    <div class="col-md-2 column_details">
+                      {{ Number(item.amount_spent).toLocaleString() }}
+                    </div>
+                    <div class="col-md-2 column_details"></div>
+                    <div class="col-md-2 column_details_end"></div>
+                  </div>
                 </div>
-                <div class="col-md-5 column_details text-left text-bold"></div>
-                <div class="col-md-2 column_details"></div>
-                <div class="col-md-2 column_details text-bold">
-                  {{ Number(value.total).toLocaleString() }}
+                <!-----------------------------------------------END OF ITEMS UNDER AN ACTIVITY--------------------------------------------->
+
+                <!---------------------------------------------START OF ACTIVITY SUB-TOTAL------------------------------------------------->
+                <div class="row">
+                  <div class="col-md-1 column_details text-bold">
+                    {{ expenditures.code }}.{{ value.code }}
+                  </div>
+                  <div
+                    class="col-md-5 column_details text-left text-bold"
+                  ></div>
+                  <div class="col-md-2 column_details"></div>
+                  <div class="col-md-2 column_details text-bold">
+                    {{ Number(value.total).toLocaleString() }}
+                  </div>
+                  <div class="col-md-2 column_details_end"></div>
                 </div>
-                <div class="col-md-2 column_details_end"></div>
+                <!--------------------------------------------END OF ACTIVITY SUB-TOTAL--------------------------------------------------->
               </div>
-              <!--------------------------------------------END OF ACTIVITY SUB-TOTAL--------------------------------------------------->
             </div>
             <!----------------------------------------------END OF ACTIVITIES UNDER A CATEGORY------------------------------------------>
             <div class="row" v-if="expenditures.items.length > 0">
@@ -337,9 +341,7 @@
                 {{ $t("app.total") }}
               </div>
               <div class="col-md-2 column_details"></div>
-              <div class="col-md-2 column_details text-bold">
-                <!-- {{ Number(getTotalExpenditure).toLocaleString() }} -->
-              </div>
+              <div class="col-md-2 column_details text-bold"></div>
               <div class="col-md-2 column_details_end text-bold">
                 {{ Number(expenditures.total).toLocaleString() }}
               </div>
@@ -356,9 +358,7 @@
               {{ $t("app.totalExpenditure") }}
             </div>
             <div class="col-md-2 column_details"></div>
-            <div class="col-md-2 column_details text-bold">
-              <!-- {{ Number(getTotalExpenditure).toLocaleString() }} -->
-            </div>
+            <div class="col-md-2 column_details text-bold"></div>
             <div class="col-md-2 column_details_end text-bold">
               {{ Number(getTotalExpenditure).toLocaleString() }}
             </div>
@@ -678,6 +678,6 @@ export default {
 }
 
 .admin_title {
-text-decoration: underline;
+  text-decoration: underline;
 }
 </style>

@@ -682,7 +682,7 @@ export default {
 }
 
 .content_header {
-  background-color: $white2;
+  background-color: $grey6;
   height: 8vh;
 }
 

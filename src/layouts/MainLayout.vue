@@ -567,7 +567,6 @@ export default {
 
 .content {
   background-color: $grey1;
-  // overflow: hidden;
   height: 100vh;
 }
 

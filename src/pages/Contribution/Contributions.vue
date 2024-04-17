@@ -55,15 +55,15 @@
       >
       </TableVue>
 
-      <div class="q-mx-sm q-mt-md" v-if="getTableData.length > 0">
-        <q-card>
+      <div class="q-mx-sm" v-if="getTableData.length > 0">
+        <q-card flat>
           <div class="row q-pa-sm">
             <label
               class="q-py-sm text-bold summary text-capitalize text-underline"
               >{{ $t("app.expenditureSummaryLabel") }}</label
             >
           </div>
-          <div class="row q-mb-lg q-gutter-md q-px-sm q-pb-lg">
+          <div class="row q-mb-lg q-gutter-md q-px-sm">
             <div class="col-md-3">
               <div class="q-mb-xs">
                 <label class="text-bold q-py-md detail_name"

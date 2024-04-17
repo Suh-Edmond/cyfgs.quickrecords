@@ -1,6 +1,6 @@
 <template>
   <q-page>
-    <div class="row q-gutter-x-xs q-gutter-y-lg">
+    <div class="row q-gutter-x-sm q-gutter-y-lg q-mb-md">
       <q-card
         class="col"
         :class="statistics_type == 'MEMBERSHIP' ? 'members_card' : 'card'"

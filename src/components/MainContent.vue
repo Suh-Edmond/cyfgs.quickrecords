@@ -40,7 +40,9 @@
                 <q-item>
                   <q-item-section>
                     <div class="flex justify-between">
-                      <label class="text-weight-medium text-h6">Notifications</label>
+                      <label class="text-weight-medium text-h6"
+                        >Notifications</label
+                      >
                       <label class="text-weight-medium">
                         <q-btn
                           flat
@@ -138,7 +140,10 @@
       </q-toolbar>
     </q-header>
     <div class="main_content">
-      <q-card class="header_section">
+      <q-card
+        class="card"
+        :style="$q.platform.is.mobile ? 'width: 100vw;' : ''"
+      >
         <q-card-section class="row content_header">
           <q-btn
             round
@@ -175,20 +180,13 @@
             dense
             no-caps
             v-show="
-              requires_add &&
-              !checkTreasurerRole() &&
-              verifyRequiredAdd()
+              requires_add && !checkTreasurerRole() && verifyRequiredAdd()
             "
             @click="showRightDrawer"
             class="q-pa-xs"
           />
         </q-card-section>
-      </q-card>
-      <q-scroll-area style="height: 90vh">
-        <q-card
-          class="card"
-          :style="$q.platform.is.mobile ? 'width: 100vw;' : ''"
-        >
+        <q-card-section>
           <router-view
             @start-loading="startLoading"
             @update-payment-category="updatePaymentCategory"
@@ -214,8 +212,8 @@
             @search-contribution="searchContribution"
             @view-payment-details="onViewPaymentDetails"
           />
-        </q-card>
-      </q-scroll-area>
+        </q-card-section>
+      </q-card>
     </div>
   </q-page>
 </template>
@@ -231,7 +229,7 @@ export default {
       (role) => role.name !== "MEMBER"
     ).name;
     this.auth_user_role = this.formatUserRole(welcome_title);
-    if(this.auth_user.roles.includes(["ADMIN", "PRESIDENT"])){
+    if (this.auth_user.roles.includes(["ADMIN", "PRESIDENT"])) {
       this.getNotifications();
     }
   },
@@ -497,7 +495,10 @@ export default {
     },
 
     verifyRequiredAdd() {
-      return this.$route.name !== "member_account" || this.$route.name !== 'member_profile';
+      return (
+        this.$route.name !== "member_account" ||
+        this.$route.name !== "member_profile"
+      );
     },
 
     onViewPaymentDetails(data) {
@@ -618,6 +619,7 @@ export default {
   position: relative;
   z-index: 2000;
   margin-top: -70px;
+  margin-left: 10px;
 }
 
 .header_section {
@@ -627,10 +629,10 @@ export default {
 }
 
 .card {
-  height: 100vh;
   border-bottom-left-radius: 0;
   border-top-right-radius: 0;
   border-top-left-radius: 0;
+  height: 100vh;
 }
 
 .toolbar_title {
@@ -647,6 +649,7 @@ export default {
 
 .header {
   height: 130px;
+  border-bottom-left-radius: 10px;
 }
 
 .content {
@@ -682,6 +685,6 @@ export default {
   cursor: pointer;
 }
 .unread_notification {
-  background-color: #D9D7D7;
+  background-color: #d9d7d7;
 }
 </style>

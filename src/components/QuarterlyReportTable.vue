@@ -47,7 +47,7 @@
           <!----------------------------START OF AMOUNT BROUGHT FORWARD------------->
           <div class="row">
             <div class="col-1 col-md-1 column_details text-bold">BBF</div>
-            <div class="col-md-5 column_details text-bold text-center">
+            <div class="col-md-5 column_details text-bold text-left">
               {{$t('app.balanceBrought')}}
             </div>
             <div class="col-md-2 column_details"></div>
@@ -63,7 +63,7 @@
               <div class="col-md-1 column_details text-bold">
                 {{ income.code }}
               </div>
-              <div class="col-md-5 column_details text-bold text-center">
+              <div class="col-md-5 column_details text-bold text-left">
                 {{ income.name }}
               </div>
               <div class="col-md-2 column_details"></div>
@@ -168,7 +168,7 @@
               <div class="col-md-1 column_details text-bold">
                 {{ income.code }}
               </div>
-              <div class="col-md-5 column_details text-bold text-center">
+              <div class="col-md-5 column_details text-bold text-left">
                 {{$t('app.total')}}
               </div>
               <div class="col-md-2 column_details"></div>
@@ -183,7 +183,7 @@
           <!-------------------------------------------------------START OF INCOME TALLY----------------------------------------------------->
           <div class="row">
             <div class="col-md-1 column_details"></div>
-            <div class="col-md-5 column_details text-bold text-center text-uppercase">
+            <div class="col-md-5 column_details text-bold text-left text-uppercase">
               {{$t('app.totalIncome')}}
             </div>
             <div class="col-md-2 column_details"></div>
@@ -218,7 +218,7 @@
             <div class="col-1 col-md-1 columns text-bold">
               {{$t('app.sn')}}
             </div>
-            <div class="col-5 col-md-5 columns text-bold text-center">
+            <div class="col-5 col-md-5 columns text-bold text-left">
               {{$t('app.descriptionActivity')}}
             </div>
             <div class="col-2 col-md-2 columns text-bold">
@@ -239,7 +239,7 @@
               <div class="col-md-1 column_details text-bold">
                 {{ expenditures.code }}
               </div>
-              <div class="col-md-5 column_details" style="font-weight: bold; text-align: center">
+              <div class="col-md-5 column_details" style="font-weight: bold; text-align: left">
                 {{ expenditures.name }}
               </div>
               <div class="col-md-2 column_details"></div>
@@ -300,7 +300,7 @@
               <div class="col-md-1 column_details text-bold">
                 {{ expenditures.code }}
               </div>
-              <div class="col-md-5 column_details text-bold text-center">
+              <div class="col-md-5 column_details text-bold text-left">
                 {{$t('app.total')}}
               </div>
               <div class="col-md-2 column_details"></div>
@@ -315,7 +315,7 @@
           <!-------------------------------------------------------START OF EXPENDITURES TALLY----------------------------------------------------->
           <div class="row">
             <div class="col-md-1 column_details"></div>
-            <div class="col-md-5 column_details text-center text-bold text-uppercase">
+            <div class="col-md-5 column_details text-left text-bold text-uppercase">
               {{$t('app.totalExpenditure')}}
             </div>
             <div class="col-md-2 column_details"></div>
@@ -343,20 +343,20 @@
           <label for="income" class="summary">{{$t('app.summary')}} (XAF)</label>
         </div>
         <div class="row table_header">
-            <div class="col-1 col-md-1 columns text-bold text-center">
+            <div class="col-1 col-md-1 columns text-bold text-left">
               {{$t('app.sn')}}
             </div>
-            <div class="col-7 col-md-7 columns text-bold text-center">
+            <div class="col-7 col-md-7 columns text-bold text-left">
               {{$t('app.description')}}
             </div>
-            <div class="col-4 col-md-4 columns text-bold text-center">
+            <div class="col-4 col-md-4 columns text-bold text-left">
               {{$t('app.total')}}
             </div>
 
           </div>
         <div class="row summary_row_first">
           <div class="col-md-1 summary_column_details text-bold">S1</div>
-          <div class="col-md-7 summary_column_details text-bold text-center text-uppercase">
+          <div class="col-md-7 summary_column_details text-bold text-left text-uppercase">
             {{$t('app.totalIncome')}}
           </div>
           <div class="col-md-4 summary_column_details text-bold">
@@ -365,7 +365,7 @@
         </div>
         <div class="row summary_row">
           <div class="col-md-1 summary_column_details text-bold">S3</div>
-          <div class="col-md-7 summary_column_details text-bold text-center text-uppercase">
+          <div class="col-md-7 summary_column_details text-bold text-left text-uppercase">
             {{$t('app.totalExpenditure')}}
           </div>
           <div class="col-md-4 summary_column_details text-bold">
@@ -374,7 +374,7 @@
         </div>
         <div class="row summary_row">
           <div class="col-md-1 summary_column_details text-bold">S3</div>
-          <div class="col-md-7 summary_column_details text-bold text-center text-uppercase">
+          <div class="col-md-7 summary_column_details text-bold text-left text-uppercase">
             {{$t('app.totalBalance')}}
           </div>
           <div class="col-md-4 summary_column_details text-bold">
@@ -396,8 +396,13 @@
         <div class="flex justify-between">
           <div class="col-md-6 text-bold text-center text-uppercase admin_details">
             <div>
-              <label for="name">{{$t('app.finSec')}} </label><br/>
-              <span class="admin_name" v-if="getFinancialSecretary !== null">{{getFinancialSecretary.name}}</span>
+              <label for="name" class="admin_title">{{ $t("app.finSec") }} </label><br />
+              <span
+                class="admin_name"
+                v-for="fin_sec in getFinancialSecretary"
+                :key="fin_sec.index"
+                >{{ fin_sec.name }}<br
+              /></span>
             </div>
             <br/>
             <div>
@@ -407,8 +412,15 @@
           </div>
           <div class="col-md-6 text-bold text-center text-uppercase admin_details">
             <div>
-              <label for="name">{{$t('app.treasurer')}}</label><br/>
-              <span class="admin_name" v-if="getTreasurer !== null">{{getTreasurer.name}}</span>
+              <label for="name" class="admin_title">{{ $t("app.treasurer") }}</label
+              ><br />
+              <span
+                class="admin_name"
+                v-for="treasurer in getTreasurer"
+                :key="treasurer.index"
+              >
+                {{ treasurer.name }}<br
+              /></span>
             </div>
             <br/>
             <div>
@@ -421,8 +433,15 @@
         <div class="flex justify-center">
           <div class="col-md-12 text-bold text-center text-uppercase admin_details">
             <div>
-              <label for="name">{{$t('app.president')}}</label><br/>
-              <span class="admin_name" v-if="getPresident !== null">{{getPresident.name}}</span>
+              <label for="name" class="admin_title">{{ $t("app.president") }}</label
+              ><br />
+              <span
+                class="admin_name"
+                v-for="president in getPresident"
+                :key="president.index"
+              >
+                {{ president.name }}<br />
+              </span>
             </div>
             <br/>
             <div>
@@ -547,7 +566,7 @@ import ReportHead from "./ReportHead.vue";
 }
 
 .columns {
-  padding: 12px;
+  padding: 5px;
   border-top: 1px solid black;
   border-bottom: 1px solid black;
   border-left: 1px solid black;
@@ -556,7 +575,7 @@ import ReportHead from "./ReportHead.vue";
 }
 
 .column_details_end {
-  padding: 8px;
+  padding: 5px;
   border-bottom: 2px solid black;
   border-left: 2px solid black;
   border-color: $dark;
@@ -564,7 +583,7 @@ import ReportHead from "./ReportHead.vue";
 }
 
 .column_details {
-  padding: 8px;
+  padding: 5px;
   border-bottom: 2px solid black;
   border-left: 2px solid black;
   border-color: $dark;
@@ -594,14 +613,17 @@ import ReportHead from "./ReportHead.vue";
 .summary_column_details{
   border-left: 1px solid #000;
   border-right: 1px solid #000;
-  padding: 8px;
+  padding: 4px;
 }
 
 .admin_name {
-  text-decoration: underline;
   min-width: 25%;
 }
 .admin_details{
   min-width: 25%;
+}
+
+.admin_title {
+text-decoration: underline;
 }
 </style>

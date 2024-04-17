@@ -1,5 +1,5 @@
 <template>
-  <q-card class="q-pr-sm">
+  <q-card class="q-pr-sm" flat>
     <LineChartGenerator
       :chart-options="chartOptions"
       :chart-data="chartData"

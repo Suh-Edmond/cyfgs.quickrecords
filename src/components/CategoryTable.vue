@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="q-mb-xl">
     <!---------------------------------------------------MAIN TABLE COMPONENT------------------------------>
     <q-table
       :data="data"

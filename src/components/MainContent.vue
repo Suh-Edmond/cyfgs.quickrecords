@@ -187,7 +187,8 @@
           />
         </q-card-section>
         <q-card-section>
-          <router-view
+          <div class="data_content">
+            <router-view
             @start-loading="startLoading"
             @update-payment-category="updatePaymentCategory"
             @update-payment-item="updatePaymentItem"
@@ -212,6 +213,7 @@
             @search-contribution="searchContribution"
             @view-payment-details="onViewPaymentDetails"
           />
+          </div>
         </q-card-section>
       </q-card>
     </div>
@@ -620,6 +622,8 @@ export default {
   z-index: 2000;
   margin-top: -70px;
   margin-left: 10px;
+  margin-right:10px;
+
 }
 
 .header_section {
@@ -632,7 +636,26 @@ export default {
   border-bottom-left-radius: 0;
   border-top-right-radius: 0;
   border-top-left-radius: 0;
-  height: 100vh;
+  height:90vh;
+  max-height: 90vh;
+}
+
+.data_content {
+  overflow: scroll;
+  height:80vh;
+  max-height:80vh;
+}
+
+.data_content::-webkit-scrollbar {
+  width:7px;
+}
+
+.data_content::-webkit-scrollbar-track {
+  background: white;
+}
+
+.data_content::-webkit-scrollbar-thumb {
+  background: grey;
 }
 
 .toolbar_title {
@@ -650,6 +673,7 @@ export default {
 .header {
   height: 130px;
   border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
 }
 
 .content {

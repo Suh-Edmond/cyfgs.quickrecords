@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="q-mb-xl" >
     <q-table
       :data="data"
       :columns="columns"
@@ -120,7 +120,7 @@
               @click="onApprovedRecord(props.row, 'Approve')"
               v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
             />
-            
+
             <!-- buttons for approve and decline row data -->
             <q-btn
               class="decline_btn_saving"

@@ -57,23 +57,6 @@
         </div>
       </div>
     </q-drawer>
-    <!-- <q-scroll-area
-      style="height: 100vh; max-width: 100vw"
-      :bar-style="{ width: '0px' }"
-      :thumb-style="{ width: '0px' }"
-    >
-    <q-page-container class="content">
-      <MainContent
-        :item="item"
-        :requires_add="requires_add"
-        @show-right-drawer="updateRightDrawer"
-        @show-left-drawer="updateLeftDrawer"
-        @search-contribution="searchContribution"
-      >
-        <router-view />
-      </MainContent>
-    </q-page-container>
-    </q-scroll-area> -->
     <q-page-container class="content">
       <MainContent
         :item="item"
@@ -585,6 +568,7 @@ export default {
 .content {
   background-color: $grey1;
   // overflow: hidden;
+  height: 100vh;
 }
 
 .drop_down_text {

@@ -10,6 +10,7 @@
       :pagination.sync="getPagination"
       @request="onRequest"
       binary-state-sort
+      flat
     >
       <template v-slot:top-left>
         <div

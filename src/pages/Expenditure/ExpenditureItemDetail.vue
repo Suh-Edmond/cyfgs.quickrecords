@@ -39,15 +39,15 @@
       >
       </CategoryTable>
 
-      <div class="q-mt-xs q-mx-lg" v-if="getExpenditureItemDetails.length > 0">
-        <q-card>
+      <div class="q-mt-xs" v-if="getExpenditureItemDetails.length > 0">
+        <q-card flat>
           <q-card-section>
-            <div class="row q-ml-md">
+            <div class="row">
               <label class="q-py-lg text-bold summary text-capitalize">{{
                 $t("app.expenditureSummaryLabel")
               }}</label>
             </div>
-            <div class="row q-ml-md">
+            <div class="row">
               <div class="col-4 col-md-4 col-lg-4 col-xs-12 col-sm-4">
                 <div class="q-mb-xs">
                   <label class="text-bold q-py-md detail_name"

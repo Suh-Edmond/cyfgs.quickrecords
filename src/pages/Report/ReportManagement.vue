@@ -1,7 +1,7 @@
 <template>
   <div class="q-px-sm">
     <div
-      class="row flex justify-between q-pa-sm q-mx-sm q-my-md"
+      class="row flex justify-between q-pa-sm q-mb-md"
       :style="
         $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
       "

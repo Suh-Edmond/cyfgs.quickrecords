@@ -35,8 +35,8 @@
       >
       </TableVue>
 
-      <div class="q-mt-md" v-if="getMemberContributions.length > 0">
-        <q-card>
+      <div v-if="getMemberContributions.length > 0">
+        <q-card flat>
           <q-card-section>
             <div class="row">
               <label

@@ -12,6 +12,7 @@
       :pagination.sync="getPagination"
       @request="onRequest"
       binary-state-sort
+      flat
     >
       <template v-slot:loading>
         <q-inner-loading showing color="primary" />

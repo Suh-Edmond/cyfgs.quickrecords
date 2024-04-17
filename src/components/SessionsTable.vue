@@ -11,6 +11,7 @@
           color: '#FFFFFF',
         }"
         :loading="table_loading"
+        flat
       >
         <template v-slot:top-left>
           <div>

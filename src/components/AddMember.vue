@@ -1,5 +1,5 @@
 <template>
-  <div :class="$q.platform.is.desktop?'q-pa-sm':''">
+  <div>
     <div>
       <q-tabs
         v-model="tab"

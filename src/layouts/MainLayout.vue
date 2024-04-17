@@ -10,7 +10,7 @@
       content-class="bg-grey-3"
     >
       <div>
-        <div class="bg-white left_drawer">
+        <div class=" left_drawer">
           <div class="bg-transparent q-pa-sm flex flex-center">
             <q-avatar size="90px" v-if="getOrganisation != null">
               <q-img :src="getOrganisationLogo"> </q-img>
@@ -57,23 +57,6 @@
         </div>
       </div>
     </q-drawer>
-    <!-- <q-scroll-area
-      style="height: 100vh; max-width: 100vw"
-      :bar-style="{ width: '0px' }"
-      :thumb-style="{ width: '0px' }"
-    >
-    <q-page-container class="content">
-      <MainContent
-        :item="item"
-        :requires_add="requires_add"
-        @show-right-drawer="updateRightDrawer"
-        @show-left-drawer="updateLeftDrawer"
-        @search-contribution="searchContribution"
-      >
-        <router-view />
-      </MainContent>
-    </q-page-container>
-    </q-scroll-area> -->
     <q-page-container class="content">
       <MainContent
         :item="item"
@@ -584,7 +567,7 @@ export default {
 
 .content {
   background-color: $grey1;
-  // overflow: hidden;
+  height: 100vh;
 }
 
 .drop_down_text {

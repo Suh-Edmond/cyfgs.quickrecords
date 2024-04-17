@@ -1,167 +1,165 @@
 <template>
-  <div class="q-px-lg">
-    <div>
-      <div class="q-my-md">
-        <label for="heading" class="text">{{ $t("app.filterMsg") }} </label>
-      </div>
-      <div class="q-mb-lg row">
-        <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 q-mt-sm">
-          <q-select
-            v-model="param.payment_item_id"
-            outlined
-            dense
-            :options="filtered_payment_items"
-            :label="$t('app.searchPaymentItem')"
-            input-debounce="0"
-            use-input
-            clearable
-            @filter="filterPaymentItems"
-            @input="stopSearch"
-          >
-            <template v-slot:append v-if="start_filter_payment_item">
-              <q-spinner color="primary" size="1.2em" :thickness="3" />
-            </template>
-            <template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey">
-                  {{ $t("app.noResults") }}
-                </q-item-section>
-              </q-item>
-            </template>
-          </q-select>
-        </div>
-      </div>
-
-      <!-- filter by status of contributions -->
-      <div class="q-my-md">
-        <label for="heading" class="text">{{ $t("app.filterStatus") }}</label>
-      </div>
-      <div class="q-mb-lg row">
-        <div
-          class="col-md-4 col-lg-4"
-          v-for="status in statuses"
-          :key="status.index"
+  <div class="q-mx-md">
+    <div class="q-my-md">
+      <label for="heading" class="text">{{ $t("app.filterMsg") }} </label>
+    </div>
+    <div class="q-mb-lg row">
+      <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 q-mt-sm">
+        <q-select
+          v-model="param.payment_item_id"
+          outlined
+          dense
+          :options="filtered_payment_items"
+          :label="$t('app.searchPaymentItem')"
+          input-debounce="0"
+          use-input
+          clearable
+          @filter="filterPaymentItems"
+          @input="stopSearch"
         >
-          <q-chip
-            color="primary"
-            text-color="white"
-            clickable
-            class="q-pa-md"
-            :disable="validateForm"
-            @click="filterByDuration(status.name)"
-          >
-            {{ status.name }}
-          </q-chip>
-        </div>
+          <template v-slot:append v-if="start_filter_payment_item">
+            <q-spinner color="primary" size="1.2em" :thickness="3" />
+          </template>
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey">
+                {{ $t("app.noResults") }}
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
       </div>
+    </div>
 
-      <!-- filter by duration -->
-      <hr class="separator" />
-      <div class="q-my-md">
-        <label for="heading" class="text">{{ $t("app.filterDelay") }}</label>
+    <!-- filter by status of contributions -->
+    <div class="q-my-md">
+      <label for="heading" class="text">{{ $t("app.filterStatus") }}</label>
+    </div>
+    <div class="q-mb-lg row">
+      <div
+        class="col-md-4 col-lg-4"
+        v-for="status in statuses"
+        :key="status.index"
+      >
+        <q-chip
+          color="primary"
+          text-color="white"
+          clickable
+          class="q-pa-md"
+          :disable="validateForm"
+          @click="filterByDuration(status.name)"
+        >
+          {{ status.name }}
+        </q-chip>
       </div>
-      <!-- by year -->
-      <div class="q-mb-md row">
-        <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
-          <q-select
-            v-model="param.year"
-            outlined
-            dense
-            :label="$t('app.searchYear')"
-            :options="years"
-            input-debounce="0"
-            use-input
-            clearable
-            @filter="filterYears"
-            @input="stopSearch"
-          >
-            <template v-slot:append v-if="start_filter_year">
-              <q-spinner color="primary" size="1.2em" :thickness="3" />
-            </template>
-            <template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey">
-                  {{ $t("app.noResults") }}
-                </q-item-section>
-              </q-item>
-            </template>
-          </q-select>
-        </div>
-      </div>
-      <!--  by month -->
-      <div class="q-mb-md row">
-        <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
-          <q-select
-            v-model="param.month"
-            outlined
-            dense
-            :options="monthsOptions"
-            :label="$t('app.searchMonth')"
-            input-debounce="0"
-            use-input
-            clearable
-            @filter="filterMonths"
-            @input="stopSearch"
-          >
-            <template v-slot:append v-if="start_filter_month">
-              <q-spinner color="primary" size="1.2em" :thickness="3" />
-            </template>
-            <template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey"
-                  >{{ $t("app.noResults") }}
-                </q-item-section>
-              </q-item>
-            </template>
-          </q-select>
-        </div>
-      </div>
+    </div>
 
-      <!-- filter by date -->
-      <div class="row q-mb-md">
-        <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
-          <q-input
-            dense
-            v-model="param.date"
-            mask="date"
-            outlined
-            :placeholder="$t('app.selectDate')"
-          >
-            <template v-slot:append>
-              <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy
-                  ref="qDateProxy"
-                  transition-show="scale"
-                  transition-hide="scale"
-                >
-                  <q-date v-model="param.date">
-                    <div class="row items-center justify-end">
-                      <q-btn v-close-popup label="Close" color="primary" flat />
-                    </div>
-                  </q-date>
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-          </q-input>
-        </div>
+    <!-- filter by duration -->
+    <hr class="separator" />
+    <div class="q-my-md">
+      <label for="heading" class="text">{{ $t("app.filterDelay") }}</label>
+    </div>
+    <!-- by year -->
+    <div class="q-mb-md row">
+      <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+        <q-select
+          v-model="param.year"
+          outlined
+          dense
+          :label="$t('app.searchYear')"
+          :options="years"
+          input-debounce="0"
+          use-input
+          clearable
+          @filter="filterYears"
+          @input="stopSearch"
+        >
+          <template v-slot:append v-if="start_filter_year">
+            <q-spinner color="primary" size="1.2em" :thickness="3" />
+          </template>
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey">
+                {{ $t("app.noResults") }}
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
       </div>
-      <div class="flex justify-end q-mt-lg">
-        <div class="q-mr-xl">
-          <q-btn label="Reset" color="primary" no-caps outline @click="reset()">
-          </q-btn>
-        </div>
-        <div>
-          <q-btn
-            class="filter_btn"
-            :label="$t('app.filter')"
-            :loading="loading"
-            :color="'primary'"
-            :disabled="validateForm"
-            no-caps
-            @click="filterByDuration(null)"
-          >
-          </q-btn>
-        </div>
+    </div>
+    <!--  by month -->
+    <div class="q-mb-md row">
+      <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+        <q-select
+          v-model="param.month"
+          outlined
+          dense
+          :options="monthsOptions"
+          :label="$t('app.searchMonth')"
+          input-debounce="0"
+          use-input
+          clearable
+          @filter="filterMonths"
+          @input="stopSearch"
+        >
+          <template v-slot:append v-if="start_filter_month">
+            <q-spinner color="primary" size="1.2em" :thickness="3" />
+          </template>
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey"
+                >{{ $t("app.noResults") }}
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
+      </div>
+    </div>
+
+    <!-- filter by date -->
+    <div class="row q-mb-md">
+      <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+        <q-input
+          dense
+          v-model="param.date"
+          mask="date"
+          outlined
+          :placeholder="$t('app.selectDate')"
+        >
+          <template v-slot:append>
+            <q-icon name="event" class="cursor-pointer">
+              <q-popup-proxy
+                ref="qDateProxy"
+                transition-show="scale"
+                transition-hide="scale"
+              >
+                <q-date v-model="param.date">
+                  <div class="row items-center justify-end">
+                    <q-btn v-close-popup label="Close" color="primary" flat />
+                  </div>
+                </q-date>
+              </q-popup-proxy>
+            </q-icon>
+          </template>
+        </q-input>
+      </div>
+    </div>
+    <div class="flex justify-end q-mt-lg">
+      <div class="q-mr-xl">
+        <q-btn label="Reset" color="primary" no-caps outline @click="reset()">
+        </q-btn>
+      </div>
+      <div>
+        <q-btn
+          class="filter_btn"
+          :label="$t('app.filter')"
+          :loading="loading"
+          :color="'primary'"
+          :disabled="validateForm"
+          no-caps
+          @click="filterByDuration(null)"
+        >
+        </q-btn>
       </div>
     </div>
   </div>
@@ -240,7 +238,7 @@ export default {
       start_filter_payment_item: false,
       start_filter_month: false,
       start_filter_year: false,
-      current_session_id: LocalStorage.getItem("data").current_session.id
+      current_session_id: LocalStorage.getItem("data").current_session.id,
     };
   },
   computed: {
@@ -277,8 +275,8 @@ export default {
               label: ele.name,
               value: ele.id,
               amount: ele.amount,
-              frequency:ele.frequency,
-              created_at:ele.created_at
+              frequency: ele.frequency,
+              created_at: ele.created_at,
             });
           });
         }
@@ -309,7 +307,7 @@ export default {
             ? this.param.date_range
             : "",
         amount: this.param.payment_item_id.amount,
-        frequency: this.param.payment_item_id.frequency
+        frequency: this.param.payment_item_id.frequency,
       };
       this.loading = this.filterMembersContributions(
         payload,

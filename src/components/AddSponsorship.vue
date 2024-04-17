@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="q-mb-md q-mx-md">
     <q-banner
       inline-actions
       rounded
@@ -15,13 +15,13 @@
         <q-btn flat icon="close" size="sm" />
       </template>
     </q-banner>
-    <div class="q-mt-md">
-      <label class="instruction_info q-pl-md"
+    <div class="text-left q-my-md">
+      <label  class="text-muted info"
         >{{ $t("app.warningField") }} <span class="text-red">*</span>
         {{ $t("app.fields") }}</label
       >
     </div>
-    <q-form @submit="onAddSponsorship" class="q-gutter-sm q-mx-sm q-mt-sm">
+    <q-form @submit="onAddSponsorship" class="q-gutter-sm q-mt-sm">
       <div>
         <div class="q-mb-md">
           <label for="name" class="form_field"
@@ -300,7 +300,8 @@ export default {
   color: $grey2;
 }
 
-.instruction_info {
+
+.info {
   color: $grey2;
   font-size: small;
 }

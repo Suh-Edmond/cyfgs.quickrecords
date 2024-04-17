@@ -186,7 +186,7 @@
       <LineChart class="col-6 col-md-6 col-xs-12 col-sm-12" :chartData="lineChartData4"></LineChart>
     </div>
 
-    <div class="row" v-if="statistics_type == 'CONTRIBUTIONS'">
+    <div class="row q-my-lg" v-if="statistics_type == 'CONTRIBUTIONS'">
       <BarChartVue class="col-6 col-md-6 col-xs-12 col-sm-12" :chartData="barChartData1"></BarChartVue>
       <BarChartVue class="col-6 col-md-6 col-xs-12 col-sm-12" :chartData="barChartData2"></BarChartVue>
     </div>

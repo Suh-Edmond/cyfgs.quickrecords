@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-md">
+  <div class="q-ma-md">
     <div class="q-ml-sm q-mb-lg">
       <label class="text-muted info"
         >{{ $t("app.warningField") }}<span class="text-red">*</span

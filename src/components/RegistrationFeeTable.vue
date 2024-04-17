@@ -10,6 +10,7 @@
           color: '#FFFFFF',
         }"
         :loading="loading"
+        flat
       >
         <template v-slot:top-left>
           <div>

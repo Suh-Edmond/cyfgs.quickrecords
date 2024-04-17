@@ -1,12 +1,12 @@
 <template>
-  <div class="q-mb-md">
-    <div class="text-left q-pl-md q-mb-md q-mt-md">
-      <label class="text-muted q-pl-sm info"
+  <div class="q-mb-md q-mx-md">
+    <div class="text-left q-my-md">
+      <label class="text-muted info"
         >{{ $t("app.warningField") }}<span class="text-red">*</span
         >{{ $t("app.fields") }}</label
       >
     </div>
-    <q-form @submit="onAddPaymentItem" class="q-gutter-md q-mt-sm q-mx-sm">
+    <q-form @submit="onAddPaymentItem" class="q-gutter-md q-mt-sm">
       <div>
         <label for="credential" class="form_field"
           >{{ $t("app.nameLabel") }} <span class="text-red">*</span></label

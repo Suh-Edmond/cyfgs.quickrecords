@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div  class="q-mx-md">
     <q-banner
       inline-actions
       rounded
@@ -15,8 +15,8 @@
         <q-btn flat icon="close" size="sm" />
       </template>
     </q-banner>
-    <div class="q-ml-sm q-mb-md">
-      <label class="text-muted q-ml-sm info"
+    <div class="q-my-md">
+      <label class="text-muted info"
         >{{ $t("app.warningField") }}<span class="text-red">*</span
         >{{ $t("app.fields") }}</label
       >
@@ -24,7 +24,7 @@
 
     <q-form
       @submit="onAddExpenditureItemDetail"
-      class="q-gutter-sm q-mt-xs q-mx-sm"
+      class="q-gutter-sm q-mt-xs"
     >
       <div class="q-mb-md">
         <label for="credential" class="form_field"

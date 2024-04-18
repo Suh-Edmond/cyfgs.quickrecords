@@ -189,30 +189,30 @@
         <q-card-section>
           <div class="data_content">
             <router-view
-            @start-loading="startLoading"
-            @update-payment-category="updatePaymentCategory"
-            @update-payment-item="updatePaymentItem"
-            @view-payment-item="viewPaymentItem"
-            @update-expenditure-category="updateExpenditureCategory"
-            @edit-expenditure-item="editExpenditureItem"
-            @view-expenditure-item="viewExpenditureItem"
-            @edit-expenditure-item-detail="editExpenditureItemDetail"
-            @view-expenditure-item-detail="viewExpenditureItemDetail"
-            @edit-member-saving="editMemberSaving"
-            @view-member-saving="viewMemberSaving"
-            @edit-income-activity="editIncomeActivity"
-            @view-income-activity="viewIncomeActivity"
-            @view-contribution="viewContribution"
-            @edit-contribution="editContribution"
-            @search-member-saving="searchMemberSaving"
-            @search-members-contribution="searchMemberContribution"
-            @report-generation="reportGeneration"
-            @view-sponsorship="viewSponsorship"
-            @edit-sponsorship="editSponsorship"
-            @register-member="registerMember"
-            @search-contribution="searchContribution"
-            @view-payment-details="onViewPaymentDetails"
-          />
+              @start-loading="startLoading"
+              @update-payment-category="updatePaymentCategory"
+              @update-payment-item="updatePaymentItem"
+              @view-payment-item="viewPaymentItem"
+              @update-expenditure-category="updateExpenditureCategory"
+              @edit-expenditure-item="editExpenditureItem"
+              @view-expenditure-item="viewExpenditureItem"
+              @edit-expenditure-item-detail="editExpenditureItemDetail"
+              @view-expenditure-item-detail="viewExpenditureItemDetail"
+              @edit-member-saving="editMemberSaving"
+              @view-member-saving="viewMemberSaving"
+              @edit-income-activity="editIncomeActivity"
+              @view-income-activity="viewIncomeActivity"
+              @view-contribution="viewContribution"
+              @edit-contribution="editContribution"
+              @search-member-saving="searchMemberSaving"
+              @search-members-contribution="searchMemberContribution"
+              @report-generation="reportGeneration"
+              @view-sponsorship="viewSponsorship"
+              @edit-sponsorship="editSponsorship"
+              @register-member="registerMember"
+              @search-contribution="searchContribution"
+              @view-payment-details="onViewPaymentDetails"
+            />
           </div>
         </q-card-section>
       </q-card>
@@ -498,8 +498,8 @@ export default {
 
     verifyRequiredAdd() {
       return (
-        this.$route.name !== "member_account" ||
-        this.$route.name !== "member_profile"
+        this.$route.name != "member_account" &&
+        this.$route.name != "member_profile"
       );
     },
 
@@ -622,8 +622,7 @@ export default {
   z-index: 2000;
   margin-top: -70px;
   margin-left: 10px;
-  margin-right:10px;
-
+  margin-right: 10px;
 }
 
 .header_section {
@@ -636,18 +635,18 @@ export default {
   border-bottom-left-radius: 0;
   border-top-right-radius: 0;
   border-top-left-radius: 0;
-  height:90vh;
+  height: 90vh;
   max-height: 90vh;
 }
 
 .data_content {
   overflow: scroll;
-  height:80vh;
-  max-height:80vh;
+  height: 80vh;
+  max-height: 80vh;
 }
 
 .data_content::-webkit-scrollbar {
-  width:7px;
+  width: 7px;
 }
 
 .data_content::-webkit-scrollbar-track {

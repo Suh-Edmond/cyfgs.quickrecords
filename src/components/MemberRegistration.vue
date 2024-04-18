@@ -1,9 +1,9 @@
 <template>
-  <div class="q-pa-sm">
+  <div class="q-mx-md">
     <q-banner
       inline-actions
       rounded
-      class="bg-secondary text-white q-mb-lg q-mx-md q-mt-sm"
+      class="bg-secondary text-white q-mb-lg  q-mt-sm"
       dense
       v-if="checkUserHasRegister"
     >

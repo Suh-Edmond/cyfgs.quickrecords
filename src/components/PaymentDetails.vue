@@ -1,6 +1,5 @@
 <template>
-  <div class="q-pa-md">
-    <div class="q-px-md">
+   <div class="q-mx-md q-mt-md">
       <div class="flex justify-between q-pb-md">
         <div>
           <label for="name" class="label"
@@ -259,7 +258,6 @@
       </div>
       <div class="value_comment">{{ getPaymentDetails.details.comment }}</div>
     </div>
-  </div>
 </template>
 
 <script>

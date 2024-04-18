@@ -266,6 +266,7 @@
           clearable
           @filter="searchPaymentItems"
           @input="stopSelectInputSearch"
+          class="payment_item_select_field"
         >
           <template v-slot:append v-if="start_payment_item_select_filtering">
             <q-spinner color="primary" size="1.2em" :thickness="3" />
@@ -593,7 +594,8 @@
           </q-item>
         </template>
       </q-select>
-      <q-select
+      <div  class="col-md-2 col-lg-2 col-xs-12 col-sm-12">
+        <q-select
         v-model="payment_item_id"
         outlined
         dense
@@ -604,7 +606,7 @@
         clearable
         @filter="searchPaymentItems"
         @input="stopSelectInputSearch"
-        class="col-md-2 col-lg-2 col-xs-12 col-sm-12 text-wrap"
+
       >
         <template v-slot:append v-if="start_payment_item_select_filtering">
           <q-spinner color="primary" size="1.2em" :thickness="3" />
@@ -617,6 +619,7 @@
           </q-item>
         </template>
       </q-select>
+      </div>
       <q-select
         v-model="month"
         outlined
@@ -1460,7 +1463,7 @@ export default {
       let payload_data = {
         payment_item_id: this.payment_item_id,
         payment_status: this.payment_status,
-        year: this.year
+        year: this.year,
       };
 
       this.$emit("filter-sponsorship", payload_data);
@@ -1564,4 +1567,6 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+
+</style>

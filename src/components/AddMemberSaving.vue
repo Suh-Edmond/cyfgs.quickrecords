@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <div class="q-mx-md" >
     <q-banner
       inline-actions
       rounded
-      class="bg-warning text-white q-mx-md q-mt-sm q-mb-sm"
+      class="bg-info text-white q-mt-sm q-mb-sm"
       dense
       v-if="onMemberSavingExist"
     >
@@ -16,12 +16,12 @@
       </template>
     </q-banner>
     <div class="q-mt-md">
-      <label class="text-muted q-pl-md instruction_info"
+      <label class="text-muted  instruction_info"
         >{{ $t("app.warningField") }}<span class="text-red">*</span>
         {{ $t("app.fields") }}</label
       >
     </div>
-    <q-form @submit="onAddSaving" class="q-gutter-sm q-mx-sm q-mt-md">
+    <q-form @submit="onAddSaving" class="q-gutter-sm  q-mt-md">
       <div>
         <label for="name" class="form_field"
           >{{ $t("app.memberName") }}<span class="text-red">*</span>

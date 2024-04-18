@@ -3,7 +3,7 @@
     <q-banner
       inline-actions
       rounded
-      class="bg-warning text-white q-mx-md q-mt-sm q-mb-sm"
+      class="bg-info text-white q-mt-sm q-mb-sm"
       dense
       v-if="existSponsorship"
     >

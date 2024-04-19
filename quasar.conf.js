@@ -51,7 +51,7 @@ module.exports = function (ctx) {
         REDIRECT_URL: ctx.dev ? "http://127.0.0.1:7000/auth/invite-member" : "financial-assistant.com/auth/invite-member",
         FILE_API_URL: ctx.dev ? "http://127.0.0.1:9000/api/v1/protected": "file-storage-web-api",
         APP_NAME : "FINANCIAL_ASSISTANT_APP",
-        FILE_CATEGORY : "IMAGES",
+        FILE_CATEGORY : "LOGOS",
         BASE_FOLDER : "LOGOS",
         PROFILE_PICTURES:"PROFILE_PICTURES",
         FILE_DOWNLOAD_PATH: "/downloadFile?directory=",

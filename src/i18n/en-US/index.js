@@ -522,6 +522,10 @@ export default {
     setSessionWarnimngMsg:"Do you want to continue",
     saveOrganisationSuccessMsg:"Organisation saved successfully",
     addSessionSuccessMsg:"Session added Successfully",
-    quarter:"Quarter"
+    quarter:"Quarter",
+    profilePicUploadSuccessMsg:"Picture uploaded successfully",
+    passwordUpdateSuccessMsg:"Password Updated Successfully",
+    passwordUpdateFailMsg:"Old password did not match saved password! Please try again",
+    uploadLogoSuccessMsg:"Logo uploaded successfully"
    }
 };

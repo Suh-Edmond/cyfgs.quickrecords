@@ -217,6 +217,7 @@
         </q-card-section>
       </q-card>
     </div>
+
   </q-page>
 </template>
 
@@ -276,9 +277,7 @@ export default {
 
     getLoggedInUserProfilePic() {
       return (
-        process.env.FILE_API_URL +
-        process.env.FILE_DOWNLOAD_PATH +
-        LocalStorage.getItem("data").user_data.picture
+        process.env.API_BASE_URL + LocalStorage.getItem("data").user_data.picture
       );
     },
 

@@ -297,11 +297,7 @@ export default {
       return this.$store.getters.getOrganisation;
     },
     getOrganisationLogo() {
-      return (
-        process.env.FILE_API_URL +
-        process.env.FILE_DOWNLOAD_PATH +
-        this.getOrganisation.logo
-      );
+      return  process.env.API_BASE_URL + this.getOrganisation.logo;
     },
   },
   watch: {},

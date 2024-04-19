@@ -10,7 +10,7 @@
     >
     </FilterComponentVue>
     <TableVue
-      :class="$q.platform.is.desktop?'q-pt-sm q-px-sm':' q-px-sm q-pt-lg'"
+      :class="$q.platform.is.desktop ? 'q-pt-sm q-px-sm' : ' q-px-sm q-pt-lg'"
       :columns="columns"
       :data="getMembers"
       :label="label"
@@ -228,8 +228,8 @@ export default {
       has_register,
       gender
     ) {
-      let year_value = this.year !== null && this.year !== "" ? this.year.value : "";
-      console.log(year_value);
+      let year_value =
+        this.year !== null && this.year !== "" ? this.year.value : "";
       this.filterOrganisationMembers(
         id,
         false,
@@ -248,7 +248,6 @@ export default {
     },
 
     filterMembers(data) {
-      console.log(data);
       this.setFilterVariables(data);
       this.$router.push({
         path: "/dashboard/members",

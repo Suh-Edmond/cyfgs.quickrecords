@@ -128,7 +128,7 @@
                   </span>
                 </q-item-section>
                 <q-item-section
-                  class="text-center drop_down_text"
+                  class="text-center drop_down_text text-red"
                   @click="logoutUser"
                 >
                   <q-item-label>{{ $t("app.logoutLabel") }}</q-item-label>

@@ -1,5 +1,11 @@
 <template>
   <q-page class="q-pa-xs">
+    <q-linear-progress
+      rounded
+      indeterminate
+      color="primary"
+      v-show="show_loading"
+    />
     <div v-if="!exist_organisation">
       <div class="flex flex-center q-mb-md">
         <label for="title" class="title">{{
@@ -328,7 +334,11 @@
                 <span class="q-pl-sm text-body1 text-weight-medium"
                   >{{ organisation.telephone }}
                 </span>
-                <span v-if="organisation.telephone2 !== ''" class="q-pl-sm text-body1 text-weight-medium">/ {{ organisation.telephone2 }}</span>
+                <span
+                  v-if="organisation.telephone2 !== ''"
+                  class="q-pl-sm text-body1 text-weight-medium"
+                  >/ {{ organisation.telephone2 }}</span
+                >
               </p>
               <p>
                 <q-icon name="location_on" size="sm"></q-icon>
@@ -387,18 +397,19 @@ export default {
       show_loading: false,
       color: "primary",
       show_telephone2: false,
-      directory: "LOGOS",
       updatedTelephone: "",
     };
   },
   computed: {
     validateForm() {
-      return this.organisation.name == "" ||
+      return (
+        this.organisation.name == "" ||
         this.organisation.email == "" ||
         this.organisation.telephone == "" ||
         this.organisation.address == "" ||
         this.organisation.description == "" ||
-        this.organisation.region == "";
+        this.organisation.region == ""
+      );
     },
 
     checkIfOrganisationExist() {
@@ -407,15 +418,13 @@ export default {
 
     getOrganisationLogo() {
       return (
-        process.env.FILE_API_URL +
-        process.env.FILE_DOWNLOAD_PATH +
-        this.$store.getters.getOrganisation.logo
+        process.env.API_BASE_URL + this.$store.getters.getOrganisation.logo
       );
     },
 
-    canShowTelephoneField(){
+    canShowTelephoneField() {
       return this.organisation.telephone2 === "";
-    }
+    },
   },
   methods: {
     onSubmit() {
@@ -423,7 +432,11 @@ export default {
         data: {
           name: this.organisation.name,
           email: this.organisation.email,
-          telephone: this.setTelephone(this.show_telephone2, this.organisation.telephone, this.organisation.telephone2),
+          telephone: this.setTelephone(
+            this.show_telephone2,
+            this.organisation.telephone,
+            this.organisation.telephone2
+          ),
           address: this.organisation.address,
           description: this.organisation.description,
           box_number: this.organisation.box_number,
@@ -435,7 +448,7 @@ export default {
               : this.$store.getters.getOrganisation.id,
         },
         url: "/api/protected/organisations",
-        msg: this.$t('app.saveOrganisationSuccessMsg'),
+        msg: this.$t("app.saveOrganisationSuccessMsg"),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
@@ -502,7 +515,8 @@ export default {
         this.organisation.name = data.name;
         this.organisation.email = data.email;
         this.organisation.telephone = telephoneString[0];
-        this.organisation.telephone2 = telephoneString[1] != undefined? telephoneString[1]: ""
+        this.organisation.telephone2 =
+          telephoneString[1] != undefined ? telephoneString[1] : "";
         this.organisation.salutation = data.salutation;
         this.organisation.description = data.description;
         this.organisation.box_number = data.box_number;
@@ -517,75 +531,69 @@ export default {
       this.exist_organisation = false;
     },
 
-
     showDetail() {
       this.exist_organisation = !this.exist_organisation;
     },
 
-    showAddTelephone(){
-      return this.show_telephone2 = true;
+    showAddTelephone() {
+      return (this.show_telephone2 = true);
     },
 
     removeAddTelephone() {
       this.organisation.telephone2 = "";
-      return this.show_telephone2 = false;
+      return (this.show_telephone2 = false);
     },
 
     setTelephone(show_telephone2, telephone, telephone2) {
       let finalTelephone = "";
-      if(show_telephone2 && this.organisation.telephone2 !== undefined || this.organisation.telephone2 != ""){
-        finalTelephone = telephone + "/"+telephone2;
-      }else {
-        finalTelephone = telephone
+      if (
+        (show_telephone2 && this.organisation.telephone2 !== undefined) ||
+        this.organisation.telephone2 != ""
+      ) {
+        finalTelephone = telephone + "/" + telephone2;
+      } else {
+        finalTelephone = telephone;
       }
 
       return finalTelephone;
     },
 
-
     openFileUpload() {
       document.getElementById("logo").click();
     },
 
-
     onFileChanged(e) {
+      this.show_loading = true;
       const formData = new FormData();
-      formData.append("file", e.target.files[0]);
-      let directory =
-        `${process.env.APP_NAME}/` +
-        this.organisation.name +
-        `/${process.env.BASE_FOLDER}`;
+      formData.append("image", e.target.files[0]);
       let payload = {
-        url: `/upload-file?directory=${directory}&fileCategory=${process.env.FILE_CATEGORY}`,
+        url: `/api/protected/upload_file?requester=ORGANISATION&file_category=${process.env.FILE_CATEGORY}`,
         data: formData,
-        status: "none",
-        show_feedback: true,
-        msg: "Logo uploaded successfully",
+        msg: this.$t("app.uploadLogoSuccessMsg"),
         color: "default",
-        error_msg: "default",
-        commit: "none",
+        to_on_ok: "none",
+        to_on_fail: "none",
+        show_feedback: true,
+        error_msg: this.$t("app.defaultErrorMsg"),
         has_commit: false,
+        commit: "none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
       };
-      this.$store.dispatch("uploadImageRequest", payload).then((response) => {
-        if (response.status == 200) {
-          this.organisation.logo = response.data.fileDownloadUri.split(
-            process.env.FILE_SEPARATOR_KEY
-          )[1];
-          let update_organisation = {
-            url: `/api/protected/organisations/${this.$store.getters.getOrganisation.id}`,
-            data: {
-              logo: response.data.fileDownloadUri.split(
-                process.env.FILE_SEPARATOR_KEY
-              )[1],
-            },
-            status: "none",
-            show_feedback: false,
-          };
-          this.$store.dispatch("putRequest", update_organisation).then(() => {
-            this.getOrganisationInfo();
-          });
-        }
-      });
+      this.$store
+        .dispatch("uploadImageRequest", payload)
+        .then((response) => {
+          if (response.status == 200) {
+            this.organisation.logo = response.data.data;
+            this.$store.dispatch("setOrganisation", this.organisation);
+          }
+        })
+        .finally(() => {
+          this.show_loading = false;
+        });
     },
   },
   components: {

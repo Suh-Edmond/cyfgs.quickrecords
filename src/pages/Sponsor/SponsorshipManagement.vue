@@ -152,9 +152,9 @@ export default {
   },
   methods: {
     getAllSponsorships(page, per_page, payment_item, status, is_filtering, session) {
-      let payment_item_id = payment_item !== "" && payment_item !== null ? payment_item.value : "";
-      let status_value = status !== "" && status !== null ? status : "";
-      let session_id = session !== "" && session !== null ? session.value : ""
+      let payment_item_id = payment_item != "" && payment_item != null ? payment_item.value : "";
+      let status_value = status != "" && status != null ? status : "";
+      let session_id = session != "" && session != null ? session.value : ""
       let payload = {
         status: "none",
         url: `/api/protected/sponsorships?page=${page}&per_page=${per_page}&payment_item_id=${payment_item_id}&status=${status_value}&session_id=${session_id}`,
@@ -209,8 +209,8 @@ export default {
     },
 
     filterSponsorship(data) {
-      let payment_item_name = data.payment_item_id !== "" && data.payment_item_id !== null ? data.payment_item_id.label : "";
-      let session_id = data.year !== "" && data.year !== null ? data.year.value:""
+      let payment_item_name = data.payment_item_id != "" && data.payment_item_id != null ? data.payment_item_id.label : "";
+      let session_id = data.year != "" && data.year != null ? data.year.value:""
       this.$router.push({
         path: `/dashboard/sponsorship?payment_item=${payment_item_name}&status=${data.payment_status}&session_id=${session_id}`,
         query: {
@@ -235,15 +235,15 @@ export default {
 
     downloadSponsorship(data) {
       let payment_item_value =
-        data.payment_item_id !== null && data.payment_item_id !== ""
+        data.payment_item_id != null && data.payment_item_id != ""
           ? data.payment_item_id.value
           : "";
       let payment_item_name =
-        data.payment_item_id !== null && data.payment_item_id !== ""
+        data.payment_item_id != null && data.payment_item_id != ""
           ? data.payment_item_id.label
           : "";
       let status_value =
-        data.payment_status !== null && data.payment_status !== ""
+        data.payment_status != null && data.payment_status != ""
           ? data.payment_status
           : "";
       let url = `/api/protected/sponsorships/download?payment_item_id=${payment_item_value}&status=${status_value}&per_page=&payment_item_label=${payment_item_name}`;

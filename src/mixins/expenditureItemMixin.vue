@@ -69,16 +69,20 @@ export default {
       per_page,
       year_value,
       status,
-      payment_item_value
+      payment_item_value,
+      filter
     ) {
       let category = this.$store.getters.getCurrentExpenditureCategory;
+      console.log(this.$store.getters.getCurrentYear.id);
+      console.log(year_value);
       let session_value =
-        year_value == ""
+        year_value === ""
           ? this.$store.getters.getCurrentYear.id
           : year_value.value;
       let payload = {
         status: "none",
-        url: `/api/protected/expenditure-categories/${category.id}/expenditure-items?status=${status}&session_id=${session_value}&payment_item_id=${payment_item_value}&page=${page}&per_page=${per_page}`,
+        url: `/api/protected/expenditure-categories/${category.id}/expenditure-items?status=${status}&session_id=${session_value}
+        &payment_item_id=${payment_item_value}&page=${page}&per_page=${per_page}&filter=${filter}`,
         has_path_val: true,
         show_feedback: false,
         show_spinner: false,
@@ -117,22 +121,23 @@ export default {
       fetch_count,
       expenditure_category_id,
       payment_item_id,
-      year
+      year,
+      filter
     ) {
       let selected_expenditure_cat =
-        expenditure_category_id != null && expenditure_category_id !== "" ? expenditure_category_id.value : "";
+        expenditure_category_id != null && expenditure_category_id !== ""
+          ? expenditure_category_id.value
+          : "";
       let selected_payment_item =
         payment_item_id !== null && payment_item_id !== ""
           ? payment_item_id.value
           : "";
-      let session =
-        year !== null && year !== ""
-          ? year.value
-          : '';
+      let session = year !== null && year !== "" ? year.value : "";
 
       let payload = {
         status: "none",
-        url: `/api/protected/expenditure_categories/expenditure_items/filter?expenditure_category_id=${selected_expenditure_cat}&payment_item_id=${selected_payment_item}&session_id=${session}&page=${page}&per_page=${fetch_count}`,
+        url: `/api/protected/expenditure_categories/expenditure_items/filter?expenditure_category_id=${selected_expenditure_cat}&payment_item_id=${selected_payment_item}
+        &session_id=${session}&page=${page}&per_page=${fetch_count}&filter=${filter}`,
         has_path_val: true,
         show_feedback: false,
         show_spinner: false,

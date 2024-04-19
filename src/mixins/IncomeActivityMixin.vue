@@ -26,9 +26,9 @@ export default {
     //   });
     // },
 
-    getOrganisationIncomeActivities(organisation_id, page, per_page) {
+    getOrganisationIncomeActivities(organisation_id, page, per_page, filter) {
       let payload = {
-        url: `/api/protected/organisations/${organisation_id}/income-activities?page=${page}&per_page=${per_page}`,
+        url: `/api/protected/organisations/${organisation_id}/income-activities?page=${page}&per_page=${per_page}&filter=${filter}`,
         msg: "none",
         color: "default",
         status: "none",

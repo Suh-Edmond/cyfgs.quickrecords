@@ -61,7 +61,8 @@ export default {
     this.getOrganisationIncomeActivities(
       this.$store.getters.getOrganisation.id,
       page,
-      per_page
+      per_page,
+      ""
     );
   },
 
@@ -188,11 +189,13 @@ export default {
       const { page, rowsPerPage } = props.pagination;
       const fetch_count =
         rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
+      const filter = props.filter;
       if (this.payment_item_id === null || "") {
         this.getOrganisationIncomeActivities(
           this.organisation_id,
           page,
-          fetch_count
+          fetch_count,
+          filter
         );
       } else {
         let payload = {
@@ -200,7 +203,7 @@ export default {
           month: this.month,
           status: this.payment_status,
         };
-        this.filterIncomeActivity(payload, page, fetch_count);
+        this.filterIncomeActivity(payload, page, fetch_count, filter);
       }
     },
 
@@ -212,27 +215,29 @@ export default {
       this.$emit("view-income-activity", data);
     },
 
-    filterIncomeActivity(payload_data, page, per_page) {
+    filterIncomeActivity(payload_data, page, per_page, filter) {
       this.payment_item_id = payload_data.payment_item_id;
       let item_id =
-        this.payment_item_id !== null && this.payment_item_id !== ""
+        this.payment_item_id != null && this.payment_item_id != ""
           ? this.payment_item_id.value
           : "";
       this.session_id =
-        payload_data.year !== null && payload_data.year !== ""
+        payload_data.year != null && payload_data.year != ""
           ? payload_data.year
           : "";
+      let search_filter = filter != null && filter !="undefined" ? filter: ""
       this.month = payload_data.month;
-      let month_value = this.month !== "" ? this.month.value : "";
-      let month_label = this.month !== "" ? this.month.label : "";
+      let month_value = this.month !== "" && this.month != null ? this.month.value : "";
+      console.log(month_value);
+      let month_label = this.month != "" ? this.month.label : "";
       this.status =
         payload_data.status !== "" && payload_data.status !== null
           ? payload_data.status
           : "";
       let page_num =
-        this.payment_item_id !== null || this.payment_item_id !== "" ? 1 : page;
+        this.payment_item_id != null || this.payment_item_id != "" ? 1 : page;
       let num_rows =
-        this.payment_item_id !== null || this.payment_item_id !== ""
+        this.payment_item_id != null || this.payment_item_id != ""
           ? 7
           : per_page;
 
@@ -247,7 +252,8 @@ export default {
       });
       let payload = {
         status: "none",
-        url: `/api/protected/organisations/income-activities/search?organisation_id=${this.organisation_id}&month=${month_value}&payment_item_id=${item_id}&session_id=${this.session_id}&status=${this.status}&page=${page_num}&per_page=${num_rows}`,
+        url: `/api/protected/organisations/income-activities/search?organisation_id=${this.organisation_id}&month=${month_value}
+        &payment_item_id=${item_id}&session_id=${this.session_id}&status=${this.status}&page=${page_num}&per_page=${num_rows}&filter=${search_filter}`,
         has_path_val: true,
         show_feedback: false,
         show_spinner: false,
@@ -318,7 +324,7 @@ export default {
         },
       };
       this.$store.dispatch("deleteRequest", payload).then(() => {
-        this.getOrganisationIncomeActivities(data.organisation_id, 1, 3);
+        this.getOrganisationIncomeActivities(data.organisation_id, 1, 3, "");
       });
     },
   },
@@ -329,5 +335,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

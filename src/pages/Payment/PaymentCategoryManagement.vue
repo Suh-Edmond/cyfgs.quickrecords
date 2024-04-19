@@ -12,23 +12,23 @@
       >
       </FilterComponentVue>
       <CategoryTable
-          :class="$q.platform.is.desktop?'q-pt-sm q-px-sm':' q-px-sm q-pt-md'"
-            :columns="columns"
-            :data="getData"
-            :label="label"
-            :message="message"
-            :show_payment_category="true"
-            :show_payment_item="false"
-            :show_expenditure_category="false"
-            :show_expenditure_item="false"
-            :pagination="getPagination"
-            :table_loading="getLoadingState"
-            @delete-row="deleteRow"
-            @show-payment-items="showPaymentItems"
-            @update-payment-category="updatePaymentCategory"
-            @onRequest="onRequest"
-          >
-          </CategoryTable>
+        :class="$q.platform.is.desktop ? 'q-pt-sm q-px-sm' : ' q-px-sm q-pt-md'"
+        :columns="columns"
+        :data="getData"
+        :label="label"
+        :message="message"
+        :show_payment_category="true"
+        :show_payment_item="false"
+        :show_expenditure_category="false"
+        :show_expenditure_item="false"
+        :pagination="getPagination"
+        :table_loading="getLoadingState"
+        @delete-row="deleteRow"
+        @show-payment-items="showPaymentItems"
+        @update-payment-category="updatePaymentCategory"
+        @onRequest="onRequest"
+      >
+      </CategoryTable>
     </div>
   </q-page>
 </template>
@@ -42,7 +42,7 @@ import FilterComponentVue from "src/components/FilterComponent.vue";
 
 export default {
   mixins: [PaymentCategoryMixinVue, HelperMixinVue, CurrentYearMixin],
-  beforeMount(){
+  beforeMount() {
     this.$store.commit("SET_PAGINATION", {
       sortBy: "name",
       descending: false,
@@ -53,7 +53,7 @@ export default {
   },
 
   mounted() {
-    this.fetchOrganisationCategories(this.organisation_id, 1, 7, "name", "");
+    this.fetchOrganisationCategories(this.organisation_id, 1, 7, "name", "", "");
   },
   data() {
     return {
@@ -145,12 +145,14 @@ export default {
       const { page, rowsPerPage, sortBy } = props.pagination;
       const fetch_count =
         rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
+      const filter = props.filter;
       this.fetchOrganisationCategories(
         this.organisation_id,
         page,
         fetch_count,
         sortBy,
-        ""
+        "",
+        filter
       );
     },
 
@@ -190,12 +192,14 @@ export default {
         1,
         7,
         "name",
-        data.year.label
+        data.year.label,
+        ""
       );
     },
 
     downloadPaymentCategory(data) {
-      let year_label = data.year !== "" && data.year !== "" ? data.year.label: ""
+      let year_label =
+        data.year !== "" && data.year !== "" ? data.year.label : "";
       let url = `/api/protected/download-payment-categories?organisation_id=${this.organisation_id}&year=${year_label}&sort_by=name`;
       let file_name = "Organisation_Payment_Categories.pdf";
       this.loading = this.downloadPdf(url, file_name);
@@ -224,6 +228,7 @@ export default {
           1,
           7,
           "name",
+          "",
           ""
         );
       });

@@ -391,6 +391,7 @@ export default {
       const { page, rowsPerPage } = props.pagination;
       const fetch_count =
         rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
+        const filter = props.filter;
       const search_params = this.$store.getters.getSearchContributionParams;
       this.filterContributions(
         search_params.item.value,
@@ -400,7 +401,8 @@ export default {
         search_params.date,
         search_params.range,
         page,
-        fetch_count
+        fetch_count,
+        filter
       );
     },
 
@@ -437,11 +439,13 @@ export default {
       date,
       date_range,
       page,
-      per_page
+      per_page,
+      filter
     ) {
       let payload = {
         status: "none",
-        url: `/api/protected/organisations/contributions/search?payment_item_id=${payment_item_id}&month=${month}&year=${year}&status=${status}&date=${date}&range=${date_range}&page=${page}&per_page=${per_page}`,
+        url: `/api/protected/organisations/contributions/search?payment_item_id=${payment_item_id}&month=${month}&year=${year}
+        &status=${status}&date=${date}&range=${date_range}&page=${page}&per_page=${per_page}&filter=${filter}`,
         has_path_val: true,
         show_feedback: false,
         show_spinner: false,

@@ -128,7 +128,7 @@
                   </span>
                 </q-item-section>
                 <q-item-section
-                  class="text-center drop_down_text"
+                  class="text-center drop_down_text text-red"
                   @click="logoutUser"
                 >
                   <q-item-label>{{ $t("app.logoutLabel") }}</q-item-label>
@@ -153,7 +153,7 @@
             dense
             @click="goBack(null)"
           />
-          <div class="q-pa-xs" v-show="verifyRequiredAdd()">
+          <div class="q-pa-xs">
             <span class="q-pl-sm title tab" @click="goBack(item.name)">{{
               item.name
             }}</span>
@@ -285,7 +285,8 @@ export default {
       return (
         this.auth_user !== undefined &&
         this.auth_user.picture !== null &&
-        this.auth_user.picture !== undefined
+        this.auth_user.picture !== undefined &&
+        this.auth_user.picture != ""
       );
     },
   },

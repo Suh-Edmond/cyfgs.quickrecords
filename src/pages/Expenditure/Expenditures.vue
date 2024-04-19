@@ -458,12 +458,14 @@ export default {
       const { page, rowsPerPage } = props.pagination;
       const fetch_count =
         rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
+        const filter = props.filter;
       this.filterExpenditureItems(
         page,
         fetch_count,
         this.expenditure_category_id,
         this.payment_item_id,
-        this.year
+        this.year,
+        filter
       );
     },
 
@@ -473,7 +475,8 @@ export default {
         page_count,
         this.expenditure_category_id,
         "",
-        this.year
+        this.year,
+        ""
       );
     },
   },

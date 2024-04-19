@@ -60,6 +60,7 @@ export default {
       1,
       7,
       "name",
+      "",
       ""
     );
   },
@@ -153,12 +154,14 @@ export default {
       const { page, rowsPerPage, sortBy } = props.pagination;
       const fetch_count =
         rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
+        const filter = props.filter;
       this.fetchOrganisationExpenditureCategories(
         this.organisation_id,
         page,
         fetch_count,
         sortBy,
-        ""
+        "",
+        filter
       );
     },
 
@@ -197,7 +200,8 @@ export default {
         1,
         7,
         "name",
-        data.year.value
+        data.year.value,
+        ""
       );
     },
 
@@ -232,6 +236,7 @@ export default {
           1,
           7,
           "name",
+          "",
           ""
         );
       });

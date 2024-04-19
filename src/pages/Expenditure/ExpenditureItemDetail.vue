@@ -161,7 +161,7 @@ export default {
   },
 
   mounted() {
-    this.getExpenditureDetailsByItemId(1, 7, false);
+    this.getExpenditureDetailsByItemId(1, 7, false, "");
   },
 
   data() {
@@ -294,10 +294,10 @@ export default {
   },
 
   methods: {
-    getExpenditureDetailsByItemId(page, per_page) {
+    getExpenditureDetailsByItemId(page, per_page, type, filter) {
       let expenditure_item = this.$store.getters.getCurrentExpenditureItem;
       let payload = {
-        url: `/api/protected/expenditure-items/${expenditure_item.id}/details?page=${page}&per_page=${per_page}&status=${this.status}`,
+        url: `/api/protected/expenditure-items/${expenditure_item.id}/details?page=${page}&per_page=${per_page}&status=${this.status}&filter=${filter}`,
         msg: "none",
         color: "default",
         status: "none",
@@ -339,7 +339,8 @@ export default {
       const { page, rowsPerPage } = props.pagination;
       const fetch_count =
         rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
-      this.getExpenditureDetailsByItemId(page, fetch_count, false);
+        const filter = props.filter;
+      this.getExpenditureDetailsByItemId(page, fetch_count, false, filter);
     },
 
     editExpenditureItemDetail(data) {
@@ -373,7 +374,7 @@ export default {
         query: { status: data.payment_status, t: new Date().getTime() },
       });
 
-      this.getExpenditureDetailsByItemId(1, 7);
+      this.getExpenditureDetailsByItemId(1, 7,false, "");
     },
 
     onDeleteRow(data) {
@@ -394,7 +395,7 @@ export default {
         },
       };
       this.$store.dispatch("deleteRequest", payload).then(() => {
-        this.getExpenditureDetailsByItemId(1, 7, false);
+        this.getExpenditureDetailsByItemId(1, 7, false, "");
       });
     },
   },

@@ -54,8 +54,6 @@ module.exports = function (ctx) {
         FILE_CATEGORY : "LOGOS",
         BASE_FOLDER : "LOGOS",
         PROFILE_PICTURES:"PROFILE_PICTURES",
-        FILE_DOWNLOAD_PATH: "/downloadFile?directory=",
-        FILE_SEPARATOR_KEY: "?directory="
       },
       // env: envparser(),
       // transpile: false,

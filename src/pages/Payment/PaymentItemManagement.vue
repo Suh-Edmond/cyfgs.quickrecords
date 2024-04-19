@@ -136,7 +136,7 @@ export default {
   },
 
   mounted() {
-    this.fetchPaymentItems(false, 1, 10, "name");
+    this.fetchPaymentItems(false, 1, 10, "name", "");
   },
   data() {
     return {
@@ -275,7 +275,7 @@ export default {
   },
 
   methods: {
-    fetchPaymentItems(is_filtering, page, per_page, sort_by) {
+    fetchPaymentItems(is_filtering, page, per_page, sort_by, filter) {
       let is_compulsory_value =
         this.is_compulsory !== null && this.is_compulsory !== ""
           ? this.is_compulsory.value
@@ -286,7 +286,8 @@ export default {
       let type_value = this.type !== null && this.type !== "" ? this.type : "";
       let payload = {
         status: "none",
-        url: `/api/protected/filter-payment-items?payment_category_id=${payment_category_id}&is_compulsory=${is_compulsory_value}&type=${type_value}&frequency=${this.frequency}&state=${state_value}&page=${page}&per_page=${per_page}&sort_by=${sort_by}&session_id=${this.session_id}`,
+        url: `/api/protected/filter-payment-items?payment_category_id=${payment_category_id}&is_compulsory=${is_compulsory_value}&type=${type_value}
+        &frequency=${this.frequency}&state=${state_value}&page=${page}&per_page=${per_page}&sort_by=${sort_by}&session_id=${this.session_id}&filter=${filter}`,
         has_path_val: true,
         show_feedback: false,
         show_spinner: false,
@@ -326,7 +327,8 @@ export default {
       const { page, rowsPerPage, sortBy } = props.pagination;
       const fetch_count =
         rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
-      this.fetchPaymentItems(false, page, fetch_count, sortBy);
+      const filter = props.filter;
+      this.fetchPaymentItems(false, page, fetch_count, sortBy, filter);
     },
 
     updatePaymentCategory(data) {
@@ -365,7 +367,7 @@ export default {
           t: new Date().getTime(),
         },
       });
-      this.fetchPaymentItems(true, 1, 10, "name");
+      this.fetchPaymentItems(true, 1, 10, "name", "");
     },
 
     deleteRow(data) {
@@ -386,7 +388,7 @@ export default {
         },
       };
       this.$store.dispatch("deleteRequest", payload).then(() => {
-        this.fetchPaymentItems(false, 1, 10, "name");
+        this.fetchPaymentItems(false, 1, 10, "name", "");
       });
     },
 

@@ -63,7 +63,7 @@ export default {
   },
 
   mounted() {
-    this.fetchExpenditureItems(1, 7, "", this.status, "");
+    this.fetchExpenditureItems(1, 7, "", this.status, "", "");
   },
   data() {
     return {
@@ -186,12 +186,14 @@ export default {
         this.payment_item_id !== "" && this.payment_item_id !== null
           ? this.payment_item_id.value
           : "";
+      const filter = props.filter;
       this.fetchExpenditureItems(
         page,
         fetch_count,
         "",
         this.status,
-        payment_item_value
+        payment_item_value,
+        filter
       );
     },
 
@@ -264,7 +266,8 @@ export default {
         7,
         data.year,
         this.status,
-        payment_item_value
+        payment_item_value,
+        ""
       );
     },
 
@@ -290,7 +293,7 @@ export default {
           this.payment_item_id !== "" && this.payment_item_id !== null
             ? this.payment_item_id.value
             : "";
-        this.fetchExpenditureItems(1, 7, "", this.status, payment_item_value);
+        this.fetchExpenditureItems(1, 7, "", this.status, payment_item_value, "");
       });
     },
 

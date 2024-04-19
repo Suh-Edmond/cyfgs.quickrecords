@@ -11,19 +11,15 @@
         <div class="col col-md-4 col-sm-12 col-xs-12">
           <q-card-section>
             <div class="text-center">
-              <q-avatar size="190px">
-                <q-icon
-                  name="account_circle"
-                  size="190px"
-                  class="icon"
-                  v-if="user.picture == null"
-                >
-                </q-icon>
-                <img
-                  :src="getProfilePicture"
-                  :alt="$t('app.profilePicAlt')"
-                  v-if="user.picture != null"
-                />
+              <q-avatar size="190px" v-if="canShowProfilePic">
+                <img :src="getProfilePicture" :alt="$t('app.profilePicAlt')" />
+              </q-avatar>
+              <q-avatar
+                size="150px"
+                font-size="52px"
+                color="grey-3"
+                v-if="!canShowProfilePic"
+              >
               </q-avatar>
               <div>
                 <input
@@ -708,6 +704,10 @@ export default {
     };
   },
   computed: {
+    canShowProfilePic() {
+      return this.user.picture != "" && this.user.picture != null && this.user.picture != undefined;
+    },
+
     getFormatedCreatedDate() {
       return moment(LocalStorage.getItem("data").user_data.created_at).format(
         "MMMM Do YYYY"
@@ -817,7 +817,7 @@ export default {
       let payload = {
         url: `/api/protected/user/profile/password/update`,
         data: this.security,
-        msg: this.$t('app.passwordUpdateSuccessMsg'),
+        msg: this.$t("app.passwordUpdateSuccessMsg"),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",

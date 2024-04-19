@@ -40,27 +40,27 @@
               <div class="row">
                 <div class="col-md-4 col-sm-12 col-xs-12">
                   <div class="text-center">
-                    <q-avatar size="190px">
-                      <q-icon
-                        name="account_circle"
-                        size="190px"
-                        class="icon"
-                        v-if="
-                          getCurrentMember != null &&
-                          getCurrentMember.picture == null
-                        "
-                      >
-                      </q-icon>
+                    <q-avatar
+                      size="190px"
+                      v-if="getCurrentMember.picture != ''"
+                    >
                       <img
                         :src="getProfilePicture"
                         :alt="$t('app.profilePicAlt')"
-                        v-if="
-                          getCurrentMember != null &&
-                          getCurrentMember.picture != null
-                        "
                       />
                     </q-avatar>
-                    <div class="camara" v-if="!checkTresurerRole">
+                    <q-avatar
+                      size="150px"
+                      font-size="52px"
+                      color="grey-3"
+                      v-if="
+                        getCurrentMember.picture == '' ||
+                        getCurrentMember.picture == null ||
+                        getCurrentMember.picture == 'undefined'
+                      "
+                    >
+                    </q-avatar>
+                    <div class="camara">
                       <input
                         type="file"
                         accept="image/x-png,image/jpg,image/jpeg"
@@ -1310,11 +1310,7 @@ export default {
     },
 
     getProfilePicture() {
-      return (
-        process.env.FILE_API_URL +
-        process.env.FILE_DOWNLOAD_PATH +
-        this.getCurrentMember.picture
-      );
+      return process.env.API_BASE_URL + this.getCurrentMember.picture;
     },
 
     validateDownloadUnPaidItems() {
@@ -1436,31 +1432,28 @@ export default {
     },
 
     onFileChanged(e) {
+      this.is_fetching = true;
       const formData = new FormData();
-      formData.append("file", e.target.files[0]);
+      formData.append("image", e.target.files[0]);
 
-      let organisation = this.$store.getters.getOrganisation;
-      let directory = `${process.env.APP_NAME}/${organisation.name}/${process.env.PROFILE_PICTURES}`;
       let payload = {
-        url: `/upload-file?directory=${directory}&fileCategory=${process.env.FILE_CATEGORY}`,
+        url: `/api/protected/upload_file?requester=MEMBER&file_category=${process.env.PROFILE_PICTURES}`,
         data: formData,
         status: "none",
         show_feedback: true,
-        msg: "Picture uploaded successfully",
+        msg: this.$t("app.profilePicUploadSuccessMsg"),
         color: "default",
-        error_msg: "default",
+        error_msg: this.$t("app.defaultErrorMsg"),
         commit: "none",
         has_commit: false,
       };
       this.$store
         .dispatch("uploadImageRequest", payload)
         .then((response) => {
+          console.log(response);
           let user = this.$store.getters.getCurrentMember;
           if (response.status == 200) {
-            user.picture = response.data.fileDownloadUri.split(
-              process.env.FILE_SEPARATOR_KEY
-            )[1];
-
+            user.picture = response.data.data;
             return user;
           }
         })
@@ -1474,10 +1467,26 @@ export default {
             data: {
               picture: user.picture,
             },
-            status: "none",
-            show_feedback: false,
+            msg: this.$t("app.profilePicUploadSuccessMsg"),
+            color: "default",
+            to_on_ok: "none",
+            to_on_fail: "none",
+            show_feedback: true,
+            error_msg: this.$t("app.defaultErrorMsg"),
+            has_commit: false,
+            commit: "none",
+            to_be_store_data: {
+              required: false,
+              has_value: false,
+              data: [],
+            },
           };
-          this.$store.dispatch("putRequest", update_user).then(() => {});
+          this.$store
+            .dispatch("putRequest", update_user)
+            .then(() => {})
+            .finally(() => {
+              this.is_fetching = false;
+            });
         });
     },
 
@@ -2105,6 +2114,4 @@ export default {
   padding-top: 0.1rem;
   padding-bottom: 0.1rem;
 }
-
-
 </style>

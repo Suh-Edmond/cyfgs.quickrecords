@@ -42,7 +42,7 @@
                   <div class="text-center">
                     <q-avatar
                       size="190px"
-                      v-if="getCurrentMember.picture != ''"
+                      v-if="getCurrentMember.picture != '' && getCurrentMember.picture != null && getCurrentMember.picture != 'undefined'"
                     >
                       <img
                         :src="getProfilePicture"
@@ -54,13 +54,13 @@
                       font-size="52px"
                       color="grey-3"
                       v-if="
-                        getCurrentMember.picture == '' ||
+                        getCurrentMember.picture === '' ||
                         getCurrentMember.picture == null ||
                         getCurrentMember.picture == 'undefined'
                       "
                     >
                     </q-avatar>
-                    <div class="camara">
+                    <div class="camara" v-if="!checkTresurerRole">
                       <input
                         type="file"
                         accept="image/x-png,image/jpg,image/jpeg"
@@ -1450,7 +1450,6 @@ export default {
       this.$store
         .dispatch("uploadImageRequest", payload)
         .then((response) => {
-          console.log(response);
           let user = this.$store.getters.getCurrentMember;
           if (response.status == 200) {
             user.picture = response.data.data;

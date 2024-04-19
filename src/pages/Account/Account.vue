@@ -744,11 +744,7 @@ export default {
     },
 
     getProfilePicture() {
-      return (
-        process.env.FILE_API_URL +
-        process.env.FILE_DOWNLOAD_PATH +
-        this.user.picture
-      );
+      return process.env.API_BASE_URL + this.user.picture;
     },
   },
   methods: {
@@ -804,8 +800,8 @@ export default {
       return (this.showEditProfileDialog = false);
     },
 
-    closeEditPasswordDialog(){
-      return this.showEditPasswordDialog = false;
+    closeEditPasswordDialog() {
+      return (this.showEditPasswordDialog = false);
     },
 
     showEditPassword() {
@@ -821,13 +817,12 @@ export default {
       let payload = {
         url: `/api/protected/user/profile/password/update`,
         data: this.security,
-        msg: "Password Updated Successfully",
+        msg: this.$t('app.passwordUpdateSuccessMsg'),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg:
-          "Old password did not match saved password! Please try again",
+        error_msg: this.$t("app.passwordUpdateFailMsg"),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -868,17 +863,15 @@ export default {
     onFileChanged(e) {
       this.is_fetch_picture = true;
       const formData = new FormData();
-      formData.append("file", e.target.files[0]);
-
+      formData.append("image", e.target.files[0]);
       let user = LocalStorage.getItem("data").user_data;
-      let organisation = this.$store.getters.getOrganisation;
-      let directory = `${process.env.APP_NAME}/${organisation.name}/${process.env.PROFILE_PICTURES}`;
+
       let payload = {
-        url: `/upload-file?directory=${directory}&fileCategory=${process.env.FILE_CATEGORY}`,
+        url: `/api/protected/upload_file?requester=MEMBER&file_category=${process.env.PROFILE_PICTURES}`,
         data: formData,
         status: "none",
         show_feedback: true,
-        msg: "Picture uploaded successfully",
+        msg: this.$t("app.profilePicUploadSuccessMsg"),
         color: "default",
         error_msg: "default",
         commit: "none",
@@ -889,21 +882,36 @@ export default {
         .dispatch("uploadImageRequest", payload)
         .then((response) => {
           if (response.status == 200) {
-            this.user.picture = response.data.fileDownloadUri.split(
-              process.env.FILE_SEPARATOR_KEY
-            )[1];
+            this.user.picture = response.data.data;
             let update_user = {
               url: `/api/protected/users/${user.id}`,
               data: {
                 picture: this.user.picture,
               },
-              status: "none",
-              show_feedback: false,
+              msg: this.$t("app.profilePicUploadSuccessMsg"),
+              color: "default",
+              to_on_ok: "none",
+              to_on_fail: "none",
+              show_feedback: true,
+              error_msg: this.$t("app.defaultErrorMsg"),
+              has_commit: false,
+              commit: "none",
+              to_be_store_data: {
+                required: false,
+                has_value: false,
+                data: [],
+              },
             };
             this.$store.dispatch("putRequest", update_user).then(() => {
-              this.user.picture = response.data.fileDownloadUri.split(
-                process.env.FILE_SEPARATOR_KEY
-              )[1];
+              const current_session =
+                LocalStorage.getItem("data").current_session;
+              let user_data = LocalStorage.getItem("data").user_data;
+              user_data.picture = this.user.picture;
+              LocalStorage.remove("data");
+              LocalStorage.set("data", {
+                user_data: user_data,
+                current_session: current_session,
+              });
             });
           }
         })

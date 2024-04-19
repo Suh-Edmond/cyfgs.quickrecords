@@ -3,9 +3,7 @@ import { axios } from "src/boot/axios";
 
 const API_URL = process.env.API_BASE_URL;
 
-const FILE_API_URL = process.env.FILE_API_URL;
-
-export function handleRequestResponse({  }, payload) {
+export function handleRequestResponse({}, payload) {
   if (payload.status == "success" && payload.show_feedback) {
     if (payload.msg == "default") {
       Notify.create({
@@ -218,6 +216,7 @@ export function putRequest({ dispatch, commit }, payload) {
         commit(payload.commit, res.data.data);
       }
       dispatch("handleRequestResponse", handle_response_payload);
+
       return res.data;
     })
     .catch((error) => {
@@ -277,7 +276,7 @@ export function deleteRequest({ dispatch }, payload) {
         to_be_store_data: {
           has_value: payload.to_be_store_data.has_value,
           required: payload.to_be_store_data.required,
-          data:{},
+          data: {},
         },
       };
       dispatch("handleRequestResponse", handle_fail_res_payload);
@@ -307,7 +306,7 @@ export function downloadPdf({}, payload) {
 //upload any other files being used in the system
 export async function uploadImageRequest({ commit, dispatch }, payload) {
   return axios
-    .post(FILE_API_URL + payload.url, payload.data, {
+    .post(API_URL + payload.url, payload.data, {
       withCredentials: false,
     })
     .then((res) => {
@@ -330,9 +329,7 @@ export async function uploadImageRequest({ commit, dispatch }, payload) {
           to_on_fail: "none",
           show_feedback: payload.show_feedback,
           fail_msg:
-            payload.error_msg != "default"
-              ? payload.error_msg
-              : error.response.data.message,
+            payload.error_msg != "default" ? payload.error_msg : "error mesg",
           status_code: 404,
         };
         dispatch("handleRequestResponse", handle_error_payload);
@@ -342,7 +339,7 @@ export async function uploadImageRequest({ commit, dispatch }, payload) {
 
 //fetch uploaded files
 export async function fetchUploadedImageRequest({}, payload) {
-  const res = await axios.get(FILE_API_URL + payload.url, {
+  const res = await axios.get(API_URL + payload.url, {
     withCredentials: false,
   });
   return res;
@@ -524,6 +521,6 @@ export function setCurrentYear({ commit }, data) {
   commit("SET_CURRENT_YEAR", data);
 }
 
-export function setSearchContributionParams({commit}, data) {
+export function setSearchContributionParams({ commit }, data) {
   commit("SET_SEARCH_CONTRIBUTION_PARAMS", data);
 }

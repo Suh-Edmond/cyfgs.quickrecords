@@ -101,7 +101,8 @@ export default {
       1,
       10,
       "",
-      this.session_id
+      this.session_id,
+      ""
     );
     this.getSessions();
   },
@@ -149,6 +150,7 @@ export default {
       organisation_id: LocalStorage.getItem("data").user_data.organisation_id,
       session_id: LocalStorage.getItem("data").current_session.id,
       loading_download: false,
+      search_param:"",
     };
   },
   computed: {
@@ -214,6 +216,8 @@ export default {
       const { page, rowsPerPage } = props.pagination;
       const fetch_count =
         rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
+        const filter = props.filter;
+        this.search_param = props.filter;
       this.table_loader = true;
       if (this.year === "" || null) {
         this.getPaginatedOrganisationMemberSavings(
@@ -221,7 +225,8 @@ export default {
           page,
           fetch_count,
           "",
-          this.session_id
+          this.session_id,
+          filter
         );
       } else {
         this.filterSavings();
@@ -280,7 +285,8 @@ export default {
         1,
         10,
         month,
-        session
+        session,
+        this.search_param
       );
     },
 

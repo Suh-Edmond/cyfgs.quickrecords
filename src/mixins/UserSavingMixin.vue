@@ -93,9 +93,10 @@ export default {
       per_page,
       month,
       session_id,
+      filter
     ) {
       let payload = {
-        url: `/api/protected/user-savings?organisation_id=${id}&session_id=${session_id}&page=${page}&per_page=${per_page}&month=${month}`,
+        url: `/api/protected/user-savings?organisation_id=${id}&session_id=${session_id}&page=${page}&per_page=${per_page}&month=${month}&filter=${filter}`,
         msg: "none",
         color: "default",
         status: "none",

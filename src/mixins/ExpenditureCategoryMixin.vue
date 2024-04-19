@@ -31,9 +31,9 @@ export default {
       });
     },
 
-    fetchOrganisationExpenditureCategories(organisation_id, page, per_page, sort_by, year) {
+    fetchOrganisationExpenditureCategories(organisation_id, page, per_page, sort_by, year, filter) {
       let payload = {
-        url: `/api/protected/organisations/${organisation_id}/expenditure-categories?year=${year}&page=${page}&per_page=${per_page}&sort_by=${sort_by}`,
+        url: `/api/protected/organisations/${organisation_id}/expenditure-categories?year=${year}&page=${page}&per_page=${per_page}&sort_by=${sort_by}&filter=${filter}`,
         msg: "none",
         color: "default",
         status: "none",

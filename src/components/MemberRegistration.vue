@@ -1,13 +1,25 @@
 <template>
-  <div class="q-mx-md">
+  <div class="q-mx-md q-mt-lg">
     <q-banner
       inline-actions
       rounded
       class="bg-secondary text-white q-mb-lg  q-mt-sm"
       dense
-      v-if="checkUserHasRegister"
+      v-if="checkUserHasRegister && getMemberRegistrationStatus=='APPROVED'"
     >
-      {{ $t("app.memberHasRegister") }}
+      {{ $t("app.memberHasRegister") }}  {{getRegisterMember.year}}
+      <template v-slot:action>
+        <q-btn flat icon="close" size="sm" />
+      </template>
+    </q-banner>
+    <q-banner
+      inline-actions
+      rounded
+      class="bg-info text-white q-mb-lg  q-mt-sm"
+      dense
+      v-if="checkUserHasRegister && getMemberRegistrationStatus=='PENDING'"
+    >
+      {{ $t("app.memberPaidRegistrationMsg") }} {{getRegisterMember.year}}
       <template v-slot:action>
         <q-btn flat icon="close" size="sm" />
       </template>
@@ -81,6 +93,7 @@ import ButtonVue from "src/components/Button.vue";
 import memberMixinVue from "src/mixins/memberMixin.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import RegistrationAmountMixinVue from "src/mixins/RegistrationAmountMixin.vue";
+import CurrentYearMixin from "src/mixins/CurrentYearMixin";
 import { Notify, Platform } from "quasar";
 const months = [
   "January",
@@ -97,11 +110,15 @@ const months = [
   "December",
 ];
 export default {
-  mixins: [memberMixinVue, organisationMixinVue, RegistrationAmountMixinVue],
+  mixins: [memberMixinVue, organisationMixinVue, RegistrationAmountMixinVue, CurrentYearMixin],
   mounted() {
     let heading = this.$t("app.registerMemberHeading");
     this.$emit("set-heading", heading);
     this.getRegistrationAmount();
+    if(this.$store.getters.getCurrentYear == null || this.$store.getters.getCurrentYear == undefined){
+        this.fetchCurrentYear()
+    }
+
   },
   data() {
     return {
@@ -146,6 +163,10 @@ export default {
     checkUserHasRegister() {
       return this.$store.getters.getMemberToRegister.has_paid;
     },
+
+    getMemberRegistrationStatus(){
+      return this.$store.getters.getMemberToRegister.approve;
+    }
   },
   watch: {
     getRegisterMember() {

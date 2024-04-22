@@ -438,7 +438,7 @@ export default {
     secondQuarter:'April - June',
     thirdQuarter:'July - September',
     fourthQuarter:'October - December',
-    reportByPaymentItem:'By Activity/Event',
+    reportByPaymentItem:'By Payment Item',
     reportByQuarter:'Quaterly (3 months)',
     reportByYear:'Yearly (12 months)',
     passwordReset:'Forgot Password ?',

@@ -334,6 +334,9 @@ export default {
       };
       this.$store.dispatch("logoutUser", payload).then(() => {
         this.$store.dispatch("setOrganisation", null);
+      }).finally(() => {
+        SessionStorage.clear();
+        LocalStorage.clear()
       });
     },
     goBack(tab) {

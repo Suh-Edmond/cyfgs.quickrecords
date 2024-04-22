@@ -242,7 +242,7 @@ export default {
                   this.getOrganisationMemberSavings(
                     this.$store.getters.getOrganisation.id,
                     1,
-                    5
+                    10
                   );
                 }
                 return res;

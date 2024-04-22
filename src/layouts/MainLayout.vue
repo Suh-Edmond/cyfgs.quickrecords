@@ -280,7 +280,7 @@ export default {
       right: false,
       year: new Date().getFullYear(),
       item: {
-        name: SessionStorage.getItem("from_tab"),
+        name: 'Dashboard',
         selected: true,
       },
       requires_add: false,
@@ -510,7 +510,7 @@ export default {
 
     getRoleGroups() {
       const storage_data =
-        LocalStorage.getItem("data") !== "undefined" && LocalStorage.getItem("data") !== null
+        LocalStorage.getItem("data") != "undefined" && LocalStorage.getItem("data") != null
           ? LocalStorage.getItem("data").user_data
           : [];
       return storage_data.roles.map((ele) => ele.name);

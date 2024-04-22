@@ -126,11 +126,10 @@
 
 <script>
 import moment from "moment";
-import HelperMixin from "src/mixins/HelperMixin.vue";
 import SponsorshipMixin from "src/mixins/SponsorshipMixin.vue";
 
 export default {
-  mixins: [SponsorshipMixin, HelperMixin],
+  mixins: [SponsorshipMixin],
   mounted() {
     let heading = this.$t("app.sponsorshipHeading");
     this.$emit("set-heading", heading);

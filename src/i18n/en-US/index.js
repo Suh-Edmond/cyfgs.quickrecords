@@ -526,6 +526,7 @@ export default {
     profilePicUploadSuccessMsg:"Picture uploaded successfully",
     passwordUpdateSuccessMsg:"Password Updated Successfully",
     passwordUpdateFailMsg:"Old password did not match saved password! Please try again",
-    uploadLogoSuccessMsg:"Logo uploaded successfully"
+    uploadLogoSuccessMsg:"Logo uploaded successfully",
+    memberProfileUpdateSuccessMsg:"Profile Updated Successfully"
    }
 };

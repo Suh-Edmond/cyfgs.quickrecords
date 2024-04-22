@@ -67,7 +67,7 @@
         </div>
         <div class="detail-value wrap">
           <label class="value">
-            {{ getSelectedContribution.payment_item_frequency}}
+            {{ formatConstants(getSelectedContribution.payment_item_frequency)}}
           </label>
         </div>
       </div>
@@ -135,7 +135,7 @@
             {{ getSelectedContribution.month_name }}
           </label>
           <label class="value" v-else>
-            {{ getSelectedContribution.payment_item_frequency }}
+            {{ formatConstants(getSelectedContribution.payment_item_frequency) }}
           </label>
         </div>
       </div>

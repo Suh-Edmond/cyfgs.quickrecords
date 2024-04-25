@@ -160,7 +160,8 @@
     </div>
 
     <!------------------------------------------START DIALOG TO UPDATE ROLE------------------------------------------->
-    <q-dialog v-model="show_dialog">
+    <div v-if="show_dialog">
+      <q-dialog v-model="show_dialog">
       <q-card
         :style="$q.platform.is.mobile ? 'min-width: 350px' : 'min-width: 450px'"
         class="q-px-md q-pt-sm q-pb-md"
@@ -212,7 +213,7 @@
         </q-card-section>
       </q-card>
     </q-dialog>
-
+    </div>
     <!------------------------------------------------END OF DIALOG TO UPDATE ROLE------------------------------------------>
   </div>
 </template>

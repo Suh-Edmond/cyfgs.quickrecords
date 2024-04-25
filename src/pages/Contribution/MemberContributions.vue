@@ -93,7 +93,7 @@
                   >
                 </div>
               </div>
-              <div class="col-md-3 col-sm-3 summary_value">
+              <div class="col-md-6 col-sm-6 summary_value">
                 <div class="q-mb-sm">
                   <label class="text-bold q-py-md detail_name"
                     >{{ getPaymentItemName }}

@@ -68,7 +68,11 @@ import { LocalStorage } from "quasar";
 
 export default {
   mixins: [HelperMixin, CurrentYearMixinVue],
-  mounted() {},
+  mounted() {
+    if(this.$store.getters.getCurrentYear == null || this.$store.getters.getCurrentYear == undefined){
+        this.fetchCurrentYear()
+    }
+  },
 
   data() {
     return {
@@ -79,7 +83,7 @@ export default {
       group: null,
       options: [],
       label: this.$t("app.generateReport"),
-      year: LocalStorage.getItem("data").current_session.year,
+      year: this.$store.getters.getCurrentYear.year,
       heading: null,
       is_fetching: false,
       option: null,
@@ -129,7 +133,7 @@ export default {
 
     generateActivityReport(data) {
       this.heading =
-        this.$t("app.reportTitle") + `${data.group.label} ${this.year}`;
+        this.$t("app.reportTitle") + `${data.group.label}`;
       let payload = {
         status: "none",
         url: `/api/protected/activity/${data.group.value}/generate-report?organisation_id=${this.organisation_id}`,

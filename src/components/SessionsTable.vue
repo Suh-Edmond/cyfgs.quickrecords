@@ -33,7 +33,7 @@
           </q-btn>
         </template>
         <template v-slot:body="props">
-          <q-tr :props="props" class="text-bold">
+          <q-tr :props="props">
             <q-td key="year" :props="props">
               {{ props.row.year }}
             </q-td>
@@ -46,7 +46,7 @@
                   : 'status_in_active'
               "
             >
-              {{ props.row.status }}
+              {{ formatConstants(props.row.status) }}
             </q-td>
             <q-td key="updated_by" :props="props">
               {{ props.row.updated_by }}
@@ -168,7 +168,9 @@
 <script>
 import ButtonVue from "./Button.vue";
 import SessionStatusVue from "./Constants/SessionStatus.vue";
+import HelperMixin from "src/mixins/HelperMixin.vue";
 export default {
+  mixins:[HelperMixin],
   props: {
     data: {
       type: Array,

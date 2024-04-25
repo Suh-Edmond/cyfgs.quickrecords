@@ -40,8 +40,7 @@ export default {
 
     getOrganisationLogo() {
       return (
-        process.env.FILE_API_URL +
-        process.env.FILE_DOWNLOAD_PATH +
+        process.env.API_BASE_URL +
         this.$store.getters.getOrganisation.logo
       );
     },

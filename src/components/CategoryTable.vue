@@ -123,10 +123,10 @@
             {{ props.row.compulsory === 1 ? "YES" : "NO" }}
           </q-td>
           <q-td key="frequency" :props="props">
-            {{ props.row.frequency }}
+            {{ formatConstants(props.row.frequency) }}
           </q-td>
           <q-td key="payment_item_type" :props="props">
-            {{ props.row.payment_item_type }}
+            {{ formatConstants(props.row.payment_item_type) }}
           </q-td>
           <q-td key="reference" :props="props">
             <!-- button for view member -->
@@ -765,12 +765,14 @@ import expenditureItemMixinVue from "src/mixins/expenditureItemMixin.vue";
 import ExpenditureItemDetailMixinVue from "src/mixins/ExpenditureItemDetailMixin.vue";
 import moment from "moment";
 import ConfirmDialog from "./ConfirmDialog.vue";
+import HelperMixin from "src/mixins/HelperMixin.vue";
 
 export default {
   mixins: [
     PaymentCategoryMixinVue,
     expenditureItemMixinVue,
     ExpenditureItemDetailMixinVue,
+    HelperMixin
   ],
 
   props: {

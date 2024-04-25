@@ -284,7 +284,13 @@
                     >{{ $t("app.emailLabel") }}
                     <span class="text-red">*</span></label
                   >
-                  <q-input v-model="user.email" outlined dense type="email" />
+                  <q-input
+                    v-model="user.email"
+                    outlined
+                    dense
+                    type="email"
+                    disable
+                  />
                 </div>
                 <div>
                   <label for="credential" class="form_field">{{
@@ -295,7 +301,6 @@
                     outlined
                     dense
                     type="text"
-                    disable
                   />
                 </div>
                 <div>
@@ -705,7 +710,11 @@ export default {
   },
   computed: {
     canShowProfilePic() {
-      return this.user.picture != "" && this.user.picture != null && this.user.picture != undefined;
+      return (
+        this.user.picture != "" &&
+        this.user.picture != null &&
+        this.user.picture != undefined
+      );
     },
 
     getFormatedCreatedDate() {

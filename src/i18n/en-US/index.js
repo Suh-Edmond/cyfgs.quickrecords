@@ -438,7 +438,7 @@ export default {
     secondQuarter:'April - June',
     thirdQuarter:'July - September',
     fourthQuarter:'October - December',
-    reportByPaymentItem:'By Activity/Event',
+    reportByPaymentItem:'By Payment Item',
     reportByQuarter:'Quaterly (3 months)',
     reportByYear:'Yearly (12 months)',
     passwordReset:'Forgot Password ?',
@@ -507,7 +507,7 @@ export default {
     updateRoleSuccessMsg:"Role updated successfully",
     defaultRole:"Default role",
     termNotExpired:"Adminstrator has not completed the Term of office. Please check the Term of office",
-    memberHasRegister: "Member has already Register for this Year",
+    memberHasRegister: "Member has already register for this Year",
     expirationTermNotCompletedMsg:"Administrator has not completed the Term of Office for this role",
     warningPayments:"All Payment Items under this category will be lost",
     noSavingAvailableMsg:"Member does not have any Savings",
@@ -526,6 +526,8 @@ export default {
     profilePicUploadSuccessMsg:"Picture uploaded successfully",
     passwordUpdateSuccessMsg:"Password Updated Successfully",
     passwordUpdateFailMsg:"Old password did not match saved password! Please try again",
-    uploadLogoSuccessMsg:"Logo uploaded successfully"
+    uploadLogoSuccessMsg:"Logo uploaded successfully",
+    memberProfileUpdateSuccessMsg:"Profile Updated Successfully",
+    memberPaidRegistrationMsg:"Member has already paid registration for this year"
    }
 };

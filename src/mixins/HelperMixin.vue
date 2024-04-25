@@ -59,6 +59,10 @@ export default {
         total += ele.amount_deposited
       })
       return total;
+    },
+
+    formatConstants(data){
+      return data.replace("_", " ");
     }
   }
 }

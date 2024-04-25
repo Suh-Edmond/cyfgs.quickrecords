@@ -27,9 +27,9 @@
     <q-separator />
     <q-tab-panels v-model="tab" animated>
       <q-tab-panel name="Enter Contribution">
-        <div class="q-ml-sm q-mb-lg">
+        <div class="q-mb-md">
           <label class="text-muted info"
-            >{{ $t("app.warningField") }}<span class="text-red">*</span
+            >{{ $t("app.warningField") }}<span class="text-red">* </span
             >{{ $t("app.fields") }}</label
           >
         </div>

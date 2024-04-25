@@ -55,6 +55,7 @@ module.exports = function (ctx) {
         BASE_FOLDER : "LOGOS",
         PROFILE_PICTURES:"PROFILE_PICTURES",
       },
+      distDir: ctx.mode.spa ? 'public' : null,
       // env: envparser(),
       // transpile: false,
 

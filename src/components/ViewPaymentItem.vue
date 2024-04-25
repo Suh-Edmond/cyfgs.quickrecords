@@ -71,7 +71,7 @@
 
       <div class="detail-value wrap">
         <label class="value">
-          {{ getUpdatedPaymentItemFromState.frequency }}
+          {{ formatConstants(getUpdatedPaymentItemFromState.frequency) }}
         </label>
       </div>
     </div>
@@ -82,7 +82,7 @@
       </label>
       <div class="detail-value wrap">
         <label class="value">
-          {{ getUpdatedPaymentItemFromState.payment_item_type }}
+          {{ formatConstants(getUpdatedPaymentItemFromState.payment_item_type) }}
         </label>
       </div>
     </div>
@@ -203,9 +203,10 @@
 <script>
 import expenditureItemMixinVue from "src/mixins/expenditureItemMixin.vue";
 import moment from "moment";
+import HelperMixin from "src/mixins/HelperMixin.vue";
 
 export default {
-  mixins: [expenditureItemMixinVue],
+  mixins: [expenditureItemMixinVue, HelperMixin],
 
   created() {
     let heading = this.$t("app.paymentItemHeading");
@@ -215,6 +216,7 @@ export default {
     return {};
   },
   computed: {
+
     getUpdatedPaymentItemFromState() {
       return this.$store.getters.getUpdatedPaymentItem;
     },
@@ -256,12 +258,11 @@ export default {
 .no_member {
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 400;
+  font-weight: 600;
   font-size: 14px;
   line-height: 11px;
   letter-spacing: 0.01em;
-  color: $grey5;
-  padding-left: 1.6rem;
+  color: $grey8;
 }
 
 .value {

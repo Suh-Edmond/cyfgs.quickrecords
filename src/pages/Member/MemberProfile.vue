@@ -42,7 +42,11 @@
                   <div class="text-center">
                     <q-avatar
                       size="190px"
-                      v-if="getCurrentMember.picture != '' && getCurrentMember.picture != null && getCurrentMember.picture != 'undefined'"
+                      v-if="
+                        getCurrentMember.picture != '' &&
+                        getCurrentMember.picture != null &&
+                        getCurrentMember.picture != 'undefined'
+                      "
                     >
                       <img
                         :src="getProfilePicture"
@@ -402,19 +406,18 @@
                           outlined
                           dense
                           type="email"
+                          disable
                         />
                       </div>
                       <div>
                         <label for="credential" class="form_field"
                           >{{ $t("app.telephoneLabel") }}
                         </label>
-                        <q-input
+                        <vue-tel-input
                           v-model="user.telephone"
-                          outlined
-                          dense
-                          type="text"
-                          disable
-                        />
+                          defaultCountry="cm"
+                          mode="international"
+                        ></vue-tel-input>
                       </div>
                       <div>
                         <label for="credential" class="form_field"
@@ -1075,6 +1078,7 @@ import organisationMixin from "src/mixins/organisationMixin.vue";
 import memberMixin from "src/mixins/memberMixin.vue";
 import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
+import { VueTelInput } from "vue-tel-input";
 
 export default {
   mixins: [organisationMixin, memberMixin, CurrentYearMixinVue, HelperMixinVue],
@@ -1382,14 +1386,14 @@ export default {
     onUpdateMember() {
       this.loading = true;
       let payload = {
-        url: `/api/protected/user/profile/update`,
+        url: `/api/protected/user/member/profile/update`,
         data: this.user,
-        msg: "Profile Updated Successfully",
+        msg: this.$t("app.memberProfileUpdateSuccessMsg"),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: "An Error occurred! Please try again",
+        error_msg: this.$t('app.defaultErrorMsg'),
         has_commit: false,
         commit: "none",
         status: "success",
@@ -1852,6 +1856,7 @@ export default {
   },
   components: {
     ButtonVue,
+    VueTelInput,
   },
 };
 </script>

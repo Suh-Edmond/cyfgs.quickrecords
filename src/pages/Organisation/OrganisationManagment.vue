@@ -454,6 +454,8 @@ export default {
         to_on_fail: "none",
         show_feedback: true,
         error_msg: "default",
+        has_commit: false,
+        commit: "none",
         to_be_store_data: {
           required: false,
           has_value: false,

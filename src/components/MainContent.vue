@@ -20,6 +20,7 @@
             class="q-mr-xl q-mt-sm"
             flat
             v-if="canViewNotification()"
+            size='md'
           >
             <q-badge
               floating
@@ -40,8 +41,8 @@
                 <q-item>
                   <q-item-section>
                     <div class="flex justify-between">
-                      <label class="text-weight-medium text-h6"
-                        >Notifications</label
+                      <label class="text-weight-medium "
+                        >{{$t('app.settingsNotificationLabel')}}</label
                       >
                       <label class="text-weight-medium">
                         <q-btn
@@ -334,6 +335,9 @@ export default {
       };
       this.$store.dispatch("logoutUser", payload).then(() => {
         this.$store.dispatch("setOrganisation", null);
+      }).finally(() => {
+        SessionStorage.clear();
+        LocalStorage.clear()
       });
     },
     goBack(tab) {

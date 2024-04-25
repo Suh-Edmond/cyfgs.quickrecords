@@ -714,7 +714,7 @@
             :props="props"
             v-if="props.row.payment_item_frequency == 'ONE_TIME'"
           >
-            {{ props.row.payment_item_frequency }}
+            {{ formatConstants(props.row.payment_item_frequency) }}
           </q-td>
           <q-td
             key="quarterly_name"
@@ -1032,6 +1032,7 @@ import moment from "moment";
 import ContributionsMixinVue from "src/mixins/ContributionsMixin.vue";
 import memberMixin from "src/mixins/memberMixin.vue";
 import ConfirmDialogVue from "./ConfirmDialog.vue";
+import HelperMixin from "src/mixins/HelperMixin.vue";
 
 export default {
   mixins: [
@@ -1040,6 +1041,7 @@ export default {
     UserSavingMixinVue,
     ContributionsMixinVue,
     memberMixin,
+    HelperMixin
   ],
 
   mounted() {},

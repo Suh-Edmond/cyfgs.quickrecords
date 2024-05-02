@@ -16,7 +16,7 @@
       </template>
     </q-banner>
 
-    <div  class="text-left q-mt-md q-mb-lg">
+    <div class="text-left q-mt-md q-mb-lg">
       <label class="text-muted info"
         >{{ $t("app.warningField") }}<span class="text-red">*</span>
         {{ $t("app.fields") }}</label
@@ -133,6 +133,16 @@
       <div
         :class="$q.platform.is.desktop ? 'flex q-mt-md justify-end' : 'q-mb-xl'"
       >
+        <q-btn
+          class="form_button q-mr-lg"
+          :label="$t('app.reset')"
+          :color="'primary'"
+          no-caps
+          outline
+          @click="resetForm"
+          v-if="$q.platform.is.desktop"
+        >
+        </q-btn>
         <ButtonVue
           class="form_button"
           :label="$t('app.saveBtnLabel')"

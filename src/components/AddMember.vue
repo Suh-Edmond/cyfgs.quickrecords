@@ -28,116 +28,139 @@
 
       <q-tab-panels v-model="tab" animated>
         <q-tab-panel name="Add Member">
-          <q-form @submit="onAddMember" class="q-gutter-md" :class="$q.platform.is.mobile?'q-pl-sm':''">
-              <div class="text-subtitle2 text-left text-primary q-pt-xs">
-                {{ $t("app.personalInformationLabel") }}
-              </div>
-              <small class="hint"
-                >{{ $t("app.warningField") }}<span class="text-red">*</span
-                >{{ $t("app.fields") }}</small
+          <q-form
+            @submit="onAddMember"
+            class="q-gutter-md"
+            :class="$q.platform.is.mobile ? 'q-pl-sm' : ''"
+          >
+            <div class="text-subtitle2 text-left text-primary q-pt-xs">
+              {{ $t("app.personalInformationLabel") }}
+            </div>
+            <small class="hint"
+              >{{ $t("app.warningField") }}<span class="text-red">*</span
+              >{{ $t("app.fields") }}</small
+            >
+            <div>
+              <label for="credential" class="form_field"
+                >{{ $t("app.nameLabel") }}
+                <span class="text-red">*</span></label
               >
-              <div>
-                <label for="credential" class="form_field"
-                  >{{ $t("app.nameLabel") }}
-                  <span class="text-red">*</span></label
-                >
-                <q-input v-model="user.name" outlined dense type="text" />
-              </div>
-              <div>
-                <label for="credential" class="form_field"
-                  >{{ $t("app.gender") }} <span class="text-red">*</span></label
-                >
-                <q-select
-                  v-model="user.gender"
-                  outlined
-                  dense
-                  :options="gender_options"
-                />
-              </div>
-              <div>
-                <label for="credential" class="form_field"
-                  >{{ $t("app.emailLabel") }}
-                  <span class="text-red">*</span></label
-                >
-                <q-input v-model="user.email" outlined dense type="email" />
-              </div>
-              <div>
-                <label for="credential" class="form_field"
-                  >{{ $t("app.telephoneLabel") }}
-                  <span class="text-red">*</span></label
-                >
-                <vue-tel-input
-                  v-model="user.telephone"
-                  defaultCountry="cm"
-                  mode="international"
-                  class="q-pa-xs"
-                ></vue-tel-input>
-              </div>
-              <div>
-                <label for="credential" class="form_field"
-                  >{{ $t("app.addressLabel") }}
-                  <span class="text-red">*</span></label
-                >
-                <q-input v-model="user.address" outlined dense type="text" />
-              </div>
-              <div>
-                <label for="credential" class="form_field"
-                  >{{ $t("app.occupation") }}
-                  <span class="text-red">*</span></label
-                >
-                <q-input v-model="user.occupation" outlined dense type="text" />
-              </div>
-              <div :class="$q.platform.is.desktop?'flex q-mt-lg justify-end':'q-pt-xs q-mb-lg'">
-                  <ButtonVue
-                    :label="label_save"
-                    :loading="loading"
-                    :color="color"
-                    :disabled="validateForm"
-                    :no_caps="no_caps"
-                  >
-                  </ButtonVue>
-                </div>
-            </q-form>
+              <q-input v-model="user.name" outlined dense type="text" />
+            </div>
+            <div>
+              <label for="credential" class="form_field"
+                >{{ $t("app.gender") }} <span class="text-red">*</span></label
+              >
+              <q-select
+                v-model="user.gender"
+                outlined
+                dense
+                :options="gender_options"
+              />
+            </div>
+            <div>
+              <label for="credential" class="form_field"
+                >{{ $t("app.emailLabel") }}
+                <span class="text-red">*</span></label
+              >
+              <q-input v-model="user.email" outlined dense type="email" />
+            </div>
+            <div>
+              <label for="credential" class="form_field"
+                >{{ $t("app.telephoneLabel") }}
+                <span class="text-red">*</span></label
+              >
+              <vue-tel-input
+                v-model="user.telephone"
+                defaultCountry="cm"
+                mode="international"
+                class="q-pa-xs"
+              ></vue-tel-input>
+            </div>
+            <div>
+              <label for="credential" class="form_field"
+                >{{ $t("app.addressLabel") }}
+                <span class="text-red">*</span></label
+              >
+              <q-input v-model="user.address" outlined dense type="text" />
+            </div>
+            <div>
+              <label for="credential" class="form_field"
+                >{{ $t("app.occupation") }}
+                <span class="text-red">*</span></label
+              >
+              <q-input v-model="user.occupation" outlined dense type="text" />
+            </div>
+            <div
+              :class="
+                $q.platform.is.desktop
+                  ? 'flex q-mt-lg justify-end'
+                  : 'q-pt-xs q-mb-lg'
+              "
+            >
+              <q-btn
+                class="form_button q-mr-lg"
+                :label="$t('app.reset')"
+                :color="'primary'"
+                no-caps
+                outline
+                @click="resetForm"
+                v-if="$q.platform.is.desktop"
+              >
+              </q-btn>
+              <ButtonVue
+                :label="label_save"
+                :loading="loading"
+                :color="color"
+                :disabled="validateForm"
+                :no_caps="no_caps"
+              >
+              </ButtonVue>
+            </div>
+          </q-form>
         </q-tab-panel>
         <q-tab-panel name="Upload File">
-          <q-form @submit="uploadFile" :class="$q.platform.is.mobile?'q-pl-sm':''">
-              <div class="text-subtitle2 text-center text-primary">
-                {{ $t("app.importMemberMsg") }}
-                <span class="q-pl-md">
-                  <q-btn flat @click="openHelp">
-                    <q-icon name="help_outline" size="sm"> </q-icon>
-                    <q-tooltip> {{ $t("app.help") }} </q-tooltip>
-                  </q-btn>
-                </span>
+          <q-form
+            @submit="uploadFile"
+            :class="$q.platform.is.mobile ? 'q-pl-sm' : ''"
+          >
+            <div class="text-subtitle2 text-center text-primary">
+              {{ $t("app.importMemberMsg") }}
+              <span class="q-pl-md">
+                <q-btn flat @click="openHelp">
+                  <q-icon name="help_outline" size="sm"> </q-icon>
+                  <q-tooltip> {{ $t("app.help") }} </q-tooltip>
+                </q-btn>
+              </span>
+            </div>
+            <div class="row q-gutter-md flex flex-center q-pt-md">
+              <div class="col-md-8 col-sm-12 col-xs-12">
+                <q-file
+                  outlined
+                  v-model="file"
+                  dense
+                  label="Choose file"
+                  accept="xls, .xlsx, .xlsm, .csv"
+                  counter
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="attach_file" />
+                  </template>
+                </q-file>
               </div>
-              <div class="row q-gutter-md flex flex-center q-pt-md">
-                <div class="col-md-8 col-sm-12 col-xs-12">
-                  <q-file
-                    outlined
-                    v-model="file"
-                    dense
-                    label="Choose file"
-                    accept="xls, .xlsx, .xlsm, .csv"
-                    counter
-                  >
-                    <template v-slot:prepend>
-                      <q-icon name="attach_file" />
-                    </template>
-                  </q-file>
-                </div>
-                <div class="col-md-2 col-sm-12 col-xs-12 q-pb-md">
-                  <ButtonVue
-                    class="form_button"
-                    :label="label_upload"
-                    :loading="loading"
-                    :color="color"
-                    :disabled="validateFormUpload"
-                    :no_caps="no_caps"
-                  >
-                  </ButtonVue>
-                </div>
+              <div class="col-md-2 col-sm-12 col-xs-12 q-pb-md">
+                <ButtonVue
+                  class="form_button"
+                  :label="label_upload"
+                  :loading="loading"
+                  :color="color"
+                  :disabled="validateFormUpload"
+                  :no_caps="no_caps"
+                >
+                </ButtonVue>
               </div>
-            </q-form>
+            </div>
+          </q-form>
         </q-tab-panel>
       </q-tab-panels>
     </div>

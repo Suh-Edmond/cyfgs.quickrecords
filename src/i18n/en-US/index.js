@@ -12,6 +12,7 @@ export default {
     signUpCaptionMsg:'Sign up to get started with Quick Records',
     updateOrganisationHeading:"Update Organisation Information",
     telephoneLabel:'Telephone',
+
     passwordLabel:'Password',
     loginBtnLabel:'SIGN IN',
     forgotPasswordMsg:'Forgot Password ?',

@@ -90,6 +90,16 @@
             : 'q-pt-xs q-mb-lg'
         "
       >
+      <q-btn
+          class="form_button q-mr-lg"
+          :label="$t('app.reset')"
+          :color="'primary'"
+          no-caps
+          outline
+          @click="resetForm"
+          v-if="$q.platform.is.desktop"
+        >
+        </q-btn>
         <ButtonVue
           class="form_button"
           :label="$t('app.saveBtnLabel')"

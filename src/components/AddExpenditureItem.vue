@@ -126,6 +126,16 @@
       <div
         :class="$q.platform.is.desktop ? 'flex q-mt-md justify-end' : 'q-mb-lg'"
       >
+        <q-btn
+          class="form_button q-mr-lg"
+          :label="$t('app.reset')"
+          :color="'primary'"
+          no-caps
+          outline
+          @click="resetForm"
+          v-if="$q.platform.is.desktop"
+        >
+        </q-btn>
         <ButtonVue
           class="form_button"
           :label="$t('app.saveBtnLabel')"
@@ -198,7 +208,10 @@ export default {
     },
 
     existExpenditureItem() {
-      return this.$store.getters.getUpdatedExpenditureItem !== null && this.$store.getters.getUpdatedExpenditureItem.approve !== "PENDING";
+      return (
+        this.$store.getters.getUpdatedExpenditureItem !== null &&
+        this.$store.getters.getUpdatedExpenditureItem.approve !== "PENDING"
+      );
     },
   },
   watch: {

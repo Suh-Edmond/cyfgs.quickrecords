@@ -46,9 +46,9 @@ module.exports = function (ctx) {
     build: {
       vueRouterMode: "history", // available values: 'hash', 'history'
       env: {
-        API_BASE_URL: ctx.dev ? "http://127.0.0.1:8000" : "http://127.0.0.1:8000",
-        CLIENT_SERVER: ctx.dev ? "http://127.0.0.1:7000" : "http://127.0.0.1:7000",
-        REDIRECT_URL: ctx.dev ? "http://127.0.0.1:7000/auth/invite-member" : "financial-assistant.com/auth/invite-member",
+        API_BASE_URL: ctx.dev ? "http://138.197.122.12:8000" : "http://138.197.122.12:8000",
+        CLIENT_SERVER: ctx.dev ? "https://quickrecords.vercel.app" : "https://quickrecords.vercel.app",
+        REDIRECT_URL: ctx.dev ? "https://quickrecords.vercel.app/auth/invite-member" : "https://quickrecords.vercel.app/auth/invite-member",
         FILE_API_URL: ctx.dev ? "http://127.0.0.1:9000/api/v1/protected": "file-storage-web-api",
         APP_NAME : "FINANCIAL_ASSISTANT_APP",
         FILE_CATEGORY : "LOGOS",

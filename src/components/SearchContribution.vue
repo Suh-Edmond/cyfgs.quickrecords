@@ -1,10 +1,30 @@
 <template>
   <div class="q-mx-md">
+    <q-linear-progress indeterminate v-show="is_fetching_members" />
     <div class="q-my-md">
       <label for="heading" class="text">{{ $t("app.filterMsg") }} </label>
     </div>
     <div class="q-mb-lg row">
-      <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 q-mt-sm">
+      <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+        <q-select
+          v-model="year"
+          outlined
+          dense
+          :options="getSessionsFromState"
+          :label="$t('app.selectYearLabel')"
+          clearable
+          @input="getPaymentItems"
+        >
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey">
+                {{ $t("app.noResults") }}
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
+      </div>
+      <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 q-mt-md">
         <q-select
           v-model="param.payment_item_id"
           outlined
@@ -188,8 +208,6 @@ export default {
 
     this.$emit("set-heading", heading);
 
-    this.getPaymentItems();
-
     this.getSessions();
   },
 
@@ -239,6 +257,8 @@ export default {
       start_filter_month: false,
       start_filter_year: false,
       current_session_id: LocalStorage.getItem("data").current_session.id,
+      year:"",
+      is_fetching_members:false,
     };
   },
   computed: {
@@ -251,9 +271,13 @@ export default {
   methods: {
     getPaymentItems() {
       this.payment_items_by_category = [];
+      if(this.year == null || this.year == "" || this.year == "undefined"){
+        return;
+      }
+      this.is_fetching_members = true;
       let payload = {
         status: "none",
-        url: `/api/protected/payment-items`,
+        url: `/api/protected/payment-items?session_id=${this.year.value}`,
         has_path_val: true,
         show_feedback: false,
         show_spinner: false,
@@ -280,6 +304,7 @@ export default {
             });
           });
         }
+        this.is_fetching_members = false;
       });
 
       return this.payment_items_by_category;

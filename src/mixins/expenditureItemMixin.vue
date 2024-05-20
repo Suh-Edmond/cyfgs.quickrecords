@@ -73,8 +73,6 @@ export default {
       filter
     ) {
       let category = this.$store.getters.getCurrentExpenditureCategory;
-      console.log(this.$store.getters.getCurrentYear.id);
-      console.log(year_value);
       let session_value =
         year_value === ""
           ? this.$store.getters.getCurrentYear.id

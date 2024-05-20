@@ -594,31 +594,30 @@
           </q-item>
         </template>
       </q-select>
-      <div  class="col-md-2 col-lg-2 col-xs-12 col-sm-12">
+      <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12">
         <q-select
-        v-model="payment_item_id"
-        outlined
-        dense
-        :options="filtered_payment_items"
-        :label="$t('app.searchPaymentItem')"
-        input-debounce="0"
-        use-input
-        clearable
-        @filter="searchPaymentItems"
-        @input="stopSelectInputSearch"
-
-      >
-        <template v-slot:append v-if="start_payment_item_select_filtering">
-          <q-spinner color="primary" size="1.2em" :thickness="3" />
-        </template>
-        <template v-slot:no-option>
-          <q-item>
-            <q-item-section class="text-grey">
-              {{ $t("app.noResults") }}
-            </q-item-section>
-          </q-item>
-        </template>
-      </q-select>
+          v-model="payment_item_id"
+          outlined
+          dense
+          :options="filtered_payment_items"
+          :label="$t('app.searchPaymentItem')"
+          input-debounce="0"
+          use-input
+          clearable
+          @filter="searchPaymentItems"
+          @input="stopSelectInputSearch"
+        >
+          <template v-slot:append v-if="start_payment_item_select_filtering">
+            <q-spinner color="primary" size="1.2em" :thickness="3" />
+          </template>
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey">
+                {{ $t("app.noResults") }}
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
       </div>
       <q-select
         v-model="month"
@@ -952,6 +951,8 @@
 import CurrentYearMixin from "src/mixins/CurrentYearMixin.vue";
 import PaymentItemMixinVue from "src/mixins/PaymentItemMixin.vue";
 import MonthsMixinVue from "src/mixins/MonthsMixin.vue";
+import HelperMixin from "src/mixins/HelperMixin.vue";
+
 export default {
   props: {
     show_member_filters: {
@@ -1025,7 +1026,7 @@ export default {
     },
   },
 
-  mixins: [CurrentYearMixin, PaymentItemMixinVue, MonthsMixinVue],
+  mixins: [CurrentYearMixin, PaymentItemMixinVue, MonthsMixinVue, HelperMixin],
 
   mounted() {
     if (this.getSessionsFromState.length == 0) {
@@ -1042,57 +1043,41 @@ export default {
       year: "",
       has_register: "",
       gender: "",
-      genders: ["MALE", "FEMALE", "ALL", "OTHER"],
+      genders: ["Male", "Female", "All", "Other"],
       registrationStatuses: [
-        "REGISTERED",
-        "NOT_REGISTERED",
-        "PENDING",
-        "DECLINED",
-        "ALL",
-        "ACTIVE",
-        "IN_ACTIVE",
+        "Registered",
+        "Non-registered",
+        "Pending",
+        "Declined",
+        "All",
+        "Active",
+        "In-active",
       ],
       is_compulsory: "",
       type: "",
       frequency: "",
       state: "",
-      statuses: [
-        { label: this.$t("app.compulsory"), value: 1 },
-        { label: this.$t("app.notCompulsory"), value: 0 },
-        { label: this.$t("app.all"), value: "ALL" },
-      ],
-      states: [
-        {
-          label: this.$t("app.active"),
-          value: "active",
-        },
-        {
-          label: this.$t("app.expired"),
-          value: "expired",
-        },
-        {
-          label: this.$t("app.all"),
-          value: "ALL",
-        },
-      ],
+      statuses: ["Compulsory", "Not Compulsory", "All"],
+      states: ["Active", "Expired", "All"],
       payment_item_types: [
-        "ALL_MEMBERS",
-        "A_MEMBER",
-        "MEMBERS_WITH_ROLES",
-        "MEMBERS_WITHOUT_ROLES",
-        "GROUPED_MEMBERS",
-        "ALL",
+        "All Members",
+        "A Member",
+        "Members with roles",
+        "Members without roles",
+        "Grouped members",
+        "Executive Members",
+        "All",
       ],
-      frequencies: ["YEARLY", "MONTHLY", "ONE_TIME", "ALL"],
+      frequencies: ["Yearly", "Monthly", "One-time", "All"],
       payment_item_id: "",
       start_payment_item_select_filtering: false,
-      payment_statuses: ["PENDING", "APPROVED", "DECLINED", "ALL"],
+      payment_statuses: ["Pending", "Approved", "Declined", "All"],
       payment_status: "",
       filtered_payment_items: [],
       month: "",
       start_month_filtering: false,
       monthsOptions: [],
-      transaction_statuses: ["INCOMPLETE", "COMPLETE", "ALL"],
+      transaction_statuses: ["Incomplete", "Complete", "All"],
       transaction_status: "",
       report_option: "",
       selected_option_label: "",
@@ -1213,8 +1198,11 @@ export default {
     filterMembers() {
       let payload = {
         year: this.year !== null && this.year !== "" ? this.year : "",
-        has_register: this.has_register,
-        gender: this.gender !== null && this.gender !== "" ? this.gender : "",
+        has_register: this.indexRegistrationStatus(this.has_register),
+        gender:
+          this.gender !== null && this.gender !== ""
+            ? this.indexGender(this.gender)
+            : "",
       };
 
       this.$emit("filter-members", payload);
@@ -1222,8 +1210,11 @@ export default {
     downloadMembers() {
       let payload = {
         year: this.year !== null && this.year !== "" ? this.year : "",
-        has_register: this.has_register,
-        gender: this.gender !== null && this.gender !== "" ? this.gender : "",
+        has_register: this.indexRegistrationStatus(this.has_register),
+        gender:
+          this.gender !== null && this.gender !== ""
+            ? this.indexGender(this.gender)
+            : "",
       };
 
       this.$emit("download-members", payload);
@@ -1249,14 +1240,20 @@ export default {
       let payload = {
         is_compulsory:
           this.is_compulsory !== null && this.is_compulsory !== ""
-            ? this.is_compulsory
+            ? this.indexCompulsory(this.is_compulsory)
             : "",
         frequency:
           this.frequency !== null && this.frequency !== ""
-            ? this.frequency
+            ? this.indexPaymentFrequency(this.frequency)
             : "",
-        type: this.type !== null && this.type !== "" ? this.type : "",
-        state: this.state !== null && this.state !== "" ? this.state : "",
+        type:
+          this.type !== null && this.type !== ""
+            ? this.indexPaymentItemType(this.type)
+            : "",
+        state:
+          this.state !== null && this.state !== ""
+            ? this.indexPaymentItemStates(this.state)
+            : "",
         session_id:
           this.year !== null && this.year !== "" ? this.year.value : "",
       };
@@ -1282,14 +1279,20 @@ export default {
       let payload = {
         is_compulsory:
           this.is_compulsory !== null && this.is_compulsory !== ""
-            ? this.is_compulsory
+            ? this.is_compulsory(this.is_compulsory)
             : "",
         frequency:
           this.frequency !== null && this.frequency !== ""
-            ? this.frequency
+            ? this.indexPaymentFrequency(this.frequency)
             : "",
-        type: this.type !== null && this.type !== "" ? this.type : "",
-        state: this.state !== null && this.state !== "" ? this.state : "",
+        type:
+          this.type !== null && this.type !== ""
+            ? this.indexPaymentItemType(this.type)
+            : "",
+        state:
+          this.state !== null && this.state !== ""
+            ? this.indexPaymentItemStates(this.state)
+            : "",
       };
 
       this.$emit("download-payment-items", payload);
@@ -1304,7 +1307,7 @@ export default {
         year: this.year !== null && this.year !== "" ? this.year : "",
         payment_status:
           this.payment_status !== null && this.payment_status !== ""
-            ? this.payment_status
+            ? this.indexPaymentStatus(this.payment_status)
             : "",
       };
 
@@ -1358,7 +1361,7 @@ export default {
         year: this.year !== null && this.year !== "" ? this.year : "",
         payment_status:
           this.payment_status !== null && this.payment_status !== ""
-            ? this.payment_status
+            ? this.indexPaymentStatus(this.payment_status)
             : "",
       };
 
@@ -1367,13 +1370,13 @@ export default {
 
     filterItemDetails() {
       this.$emit("filter-expenditure-item-details", {
-        payment_status: this.payment_status,
+        payment_status: this.indexPaymentStatus(this.payment_status),
       });
     },
 
     downloadExpenditureItemDetails() {
       this.$emit("download-expenditure-item-details", {
-        payment_status: this.payment_status,
+        payment_status: this.indexPaymentStatus(this.payment_status),
       });
     },
 
@@ -1410,14 +1413,14 @@ export default {
     filterMemberSavings() {
       this.$emit("filter-member-savings", {
         month: this.month,
-        payment_status: this.payment_status,
+        payment_status: this.indexPaymentStatus(this.payment_status),
       });
     },
 
     downloadMemberSavings() {
       this.$emit("download-member-savings", {
         month: this.year,
-        payment_status: this.payment_status,
+        payment_status: this.indexPaymentStatus(this.payment_status),
       });
     },
 
@@ -1425,7 +1428,7 @@ export default {
       let payload_data = {
         payment_item_id: this.payment_item_id,
         month: this.month,
-        status: this.payment_status,
+        status: this.indexPaymentStatus(this.payment_status),
         year: this.year.value,
       };
       this.$emit("filter-income-activity", payload_data);
@@ -1435,7 +1438,7 @@ export default {
       let payload = {
         payment_item_id: this.payment_item_id,
         month: this.month,
-        status: this.payment_status,
+        status: this.indexPaymentStatus(this.payment_status),
       };
 
       this.$emit("download-income-activity", payload);
@@ -1443,8 +1446,10 @@ export default {
 
     filterMemberContribution() {
       let payload = {
-        payment_status: this.payment_status,
-        transaction_status: this.transaction_status,
+        payment_status: this.indexPaymentStatus(this.payment_status),
+        transaction_status: this.indexTransactionStatus(
+          this.transaction_status
+        ),
       };
 
       this.$emit("filter-member-contribution", payload);
@@ -1452,8 +1457,10 @@ export default {
 
     downloadMemberContribution() {
       let payload = {
-        payment_status: this.payment_status,
-        transaction_status: this.transaction_status,
+        payment_status: this.indexPaymentStatus(this.payment_status),
+        transaction_status: this.indexTransactionStatus(
+          this.transaction_status
+        ),
       };
 
       this.$emit("download-member-contribution", payload);
@@ -1462,7 +1469,7 @@ export default {
     filterSponsorship() {
       let payload_data = {
         payment_item_id: this.payment_item_id,
-        payment_status: this.payment_status,
+        payment_status: this.indexPaymentStatus(this.payment_status),
         year: this.year,
       };
 
@@ -1472,7 +1479,7 @@ export default {
     downloadSponsorship() {
       let payload_data = {
         payment_item_id: this.payment_item_id,
-        payment_status: this.payment_status,
+        payment_status: this.indexPaymentStatus(this.payment_status),
       };
 
       this.$emit("download-sponsorship", payload_data);
@@ -1567,6 +1574,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

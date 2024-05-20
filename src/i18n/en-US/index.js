@@ -194,7 +194,7 @@ export default {
     notFound:'No member found',
     selectMembers:'Select Members',
     selectedMembers:'Selected Members:',
-    provideDescription:'Please provide a description about the category',
+    provideDescription:'Provide a description',
     paymentItemHeading:'Payment Item Information',
     paymentItemSave:'Payment Item save Successfully',
     memberExist:'Member has already been selected',

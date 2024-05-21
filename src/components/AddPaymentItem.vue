@@ -305,6 +305,7 @@ export default {
         "MEMBERS_WITH_ROLES",
         "MEMBERS_WITHOUT_ROLES",
         "GROUPED_MEMBERS",
+        "EXCO_MEMBERS",
       ],
       frequencies: ["YEARLY", "MONTHLY", "ONE_TIME", "QUARTERLY"],
       members: [],

@@ -1,14 +1,62 @@
 <script>
-import { LocalStorage } from 'quasar';
+import { LocalStorage } from "quasar";
 export default {
   data() {
     return {
       loading_download: false,
-    }
+      registration_statuses: new Map([
+        ["Registered", "REGISTERED"],
+        ["Non-registered", "NOT_REGISTERED"],
+        ["Pending", "PENDING"],
+        ["Declined", "DECLINED"],
+        ["All", "ALL"],
+        ["Active", "ACTIVE"],
+        ["In-active", "IN_ACTIVE"],
+      ]),
+      payment_items_type: new Map([
+        ["All Members", "ALL_MEMBERS"],
+        ["A Member", "A_MEMBER"],
+        ["Members with roles", "MEMBERS_WITH_ROLES"],
+        ["Members without roles", "MEMBERS_WITHOUT_ROLES"],
+        ["Grouped members", "GROUPED_MEMBERS"],
+        ["All", "ALL"],
+      ]),
+      payment_frequencies: new Map([
+        ["Yearly", "YEARLY"],
+        ["Monthly", "MONTHLY"],
+        ["One-time", "ONE_TIME"],
+        ["All", "ALL"],
+      ]),
+      payment_states: new Map([
+        ["Pending", "PENDING"],
+        ["Approved", "APPROVED"],
+        ["Declined", "DECLINED"],
+        ["All", "ALL"],
+      ]),
+      transaction_statuses: new Map([
+        ["Incomplete", "INCOMPLETE"],
+        ["Complete", "COMPLETE"],
+        ["All", "ALL"],
+      ]),
+      genders_list: new Map([
+        ["Male", "MALE"],
+        ["Female", "FEMALE"],
+        ["All", "ALL"],
+        ["Other", "OTHER"],
+      ]),
+      payment_item_states: new Map([
+        ["Active", "active"],
+        ["Expired", "expired"],
+        ["All", "ALL"],
+      ]),
+      compulsory_list: new Map([
+        ["Compulsory", { name: "Compulsory", value: 1 }],
+        ["Not Compulsory", { name: "Not Compulsory", value: 0 }],
+        ["All", { name: "All", value: "ALL" }],
+      ]),
+    };
   },
-  computed: {
-
-  },
+  computed: {},
   methods: {
     downloadPdf(url, file_name) {
       let payload = {
@@ -19,7 +67,7 @@ export default {
         msg: "none",
         file_name: file_name,
         color: "default",
-        error_msg:this.$t('app.downloadFileErrorMsg'),
+        error_msg: this.$t("app.downloadFileErrorMsg"),
         commit: "none",
         has_commit: false,
         to_be_store_data: {
@@ -38,12 +86,12 @@ export default {
         .catch(() => {
           Notify.create({
             type: "info",
-            message: this.$t('app.downloadFileErrorMsg'),
+            message: this.$t("app.downloadFileErrorMsg"),
             position: Platform.is.mobile ? "bottom-left" : "top-right",
           });
         });
 
-      return this.loading_download
+      return this.loading_download;
     },
 
     checkTreasurerRole() {
@@ -56,14 +104,39 @@ export default {
     computeTotal(data) {
       let total = 0;
       data.forEach((ele) => {
-        total += ele.amount_deposited
-      })
+        total += ele.amount_deposited;
+      });
       return total;
     },
 
-    formatConstants(data){
-      return data.replace("_", " ");
-    }
-  }
-}
+    formatConstants(data) {
+      return data.replaceAll("_", " ");
+    },
+
+    indexRegistrationStatus(status) {
+      return this.registration_statuses.get(status);
+    },
+    indexPaymentItemType(type) {
+      return this.payment_items_type.get(type);
+    },
+    indexPaymentFrequency(frequency) {
+      return this.payment_frequencies.get(frequency);
+    },
+    indexPaymentStatus(status) {
+      return this.payment_states.get(status);
+    },
+    indexTransactionStatus(status) {
+      return this.transaction_statuses.get(status);
+    },
+    indexGender(sex) {
+      return this.genders_list.get(sex);
+    },
+    indexPaymentItemStates(state) {
+      return this.payment_item_states.get(state);
+    },
+    indexCompulsory(state) {
+      return this.compulsory_list.get(state);
+    },
+  },
+};
 </script>

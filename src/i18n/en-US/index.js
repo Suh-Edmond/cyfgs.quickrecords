@@ -194,7 +194,7 @@ export default {
     notFound:'No member found',
     selectMembers:'Select Members',
     selectedMembers:'Selected Members:',
-    provideDescription:'Please provide a description about the category',
+    provideDescription:'Provide a description',
     paymentItemHeading:'Payment Item Information',
     paymentItemSave:'Payment Item save Successfully',
     memberExist:'Member has already been selected',
@@ -472,7 +472,7 @@ export default {
     forTheMonthOf:" for the month of ",
     generateReportHint:"Please Select an Option to Generate Report for your Organisation",
     regFeeLabel:"Member's Registration Fee",
-    sessionLabel:"Sessions",
+    sessionsLabel:"Sessions",
     appTranslationLabel:"Please wait! Translating Application's Language.",
     uploadMemberSuccessMsg:"Members uploaded successfully",
     addMemberSuccessMsg:"Member added Successfully",
@@ -529,6 +529,10 @@ export default {
     passwordUpdateFailMsg:"Old password did not match saved password! Please try again",
     uploadLogoSuccessMsg:"Logo uploaded successfully",
     memberProfileUpdateSuccessMsg:"Profile Updated Successfully",
-    memberPaidRegistrationMsg:"Member has already paid registration for this year"
+    memberPaidRegistrationMsg:"Member has already paid registration for this year",
+    expectedContribution:"Expected Contribution",
+    percentage:"Percentage",
+    paymentDuration:"Payment Durations",
+    helpMsgExpectedContribution:"The Expected Contribution for a payment item is calculated by multiplying the Payment Item Amount by its Frequency and by the Number of Members associated with the payment item type.For a one-time payment item with an 'ALL_MEMBERS' type, the Expected Contribution is calculated as:(Payment Item Amount) x 1 x (Total number of active members)For payment items with monthly or quarterly frequencies, the Expected Contribution is calculated as:(Payment Item Amount) x (Number of Months/Quarters) x (Number of Members associated with the payment item type)"
    }
 };

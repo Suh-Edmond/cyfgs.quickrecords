@@ -73,8 +73,6 @@ export default {
       filter
     ) {
       let category = this.$store.getters.getCurrentExpenditureCategory;
-      console.log(this.$store.getters.getCurrentYear.id);
-      console.log(year_value);
       let session_value =
         year_value === ""
           ? this.$store.getters.getCurrentYear.id
@@ -125,19 +123,20 @@ export default {
       filter
     ) {
       let selected_expenditure_cat =
-        expenditure_category_id != null && expenditure_category_id !== ""
+        expenditure_category_id != null && expenditure_category_id != ""
           ? expenditure_category_id.value
           : "";
       let selected_payment_item =
         payment_item_id !== null && payment_item_id !== ""
           ? payment_item_id.value
           : "";
-      let session = year !== null && year !== "" ? year.value : "";
+      let session = year != null && year != "" ? year.value : "";
+      let search_filter = filter == undefined ? "" : filter;
 
       let payload = {
         status: "none",
         url: `/api/protected/expenditure_categories/expenditure_items/filter?expenditure_category_id=${selected_expenditure_cat}&payment_item_id=${selected_payment_item}
-        &session_id=${session}&page=${page}&per_page=${fetch_count}&filter=${filter}`,
+        &session_id=${session}&page=${page}&per_page=${fetch_count}&filter=${search_filter}`,
         has_path_val: true,
         show_feedback: false,
         show_spinner: false,

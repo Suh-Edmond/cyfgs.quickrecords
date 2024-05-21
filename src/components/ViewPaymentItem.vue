@@ -76,7 +76,7 @@
       </div>
     </div>
     <div class="flex justify-between q-mb-md">
-      <label for="amount" class="label"
+      <label for="type" class="label"
         ><span> <q-icon name="title" size="xs" class="q-pr-sm" /> </span
         >{{ $t("app.type") }}:
       </label>

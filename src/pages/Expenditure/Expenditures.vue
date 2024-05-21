@@ -236,10 +236,10 @@ export default {
   computed: {
     validateFilter() {
       return (
-        (this.year == null ||
-        this.year == "" ) &&
-        (this.expenditure_category_id === null ||
-        this.expenditure_category_id === "")
+        this.year == null ||
+        this.year == "" ||
+        this.expenditure_category_id == null ||
+        this.expenditure_category_id == ""
       );
     },
 
@@ -330,7 +330,10 @@ export default {
 
     getExpenditureCategoriesFromStore() {
       this.expenditure_categories = [];
-      if (this.$store.getters.getExpenditureCategories != null && this.$store.getters.getExpenditureCategories != "undefined") {
+      if (
+        this.$store.getters.getExpenditureCategories != null &&
+        this.$store.getters.getExpenditureCategories != "undefined"
+      ) {
         this.$store.getters.getExpenditureCategories.forEach((element) => {
           this.expenditure_categories.push({
             label: element.name,
@@ -458,7 +461,7 @@ export default {
       const { page, rowsPerPage } = props.pagination;
       const fetch_count =
         rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
-        const filter = props.filter;
+      const filter = props.filter;
       this.filterExpenditureItems(
         page,
         fetch_count,

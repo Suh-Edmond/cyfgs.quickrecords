@@ -129,10 +129,10 @@ export default {
 
     getTableTitle() {
       let month_name =
-        this.month !== "" || null
+        this.month != "" || null
           ? this.$t("app.forTheMonthOf") + this.month.label
           : "";
-      return this.payment_item_id !== null || ""
+      return this.payment_item_id != null || ""
         ? this.$t("app.incomeTitlePart") +
             `${this.payment_item_id.label}` +
             month_name
@@ -201,7 +201,7 @@ export default {
         let payload = {
           payment_item_id: this.payment_item_id,
           month: this.month,
-          status: this.payment_status,
+          status: "",
         };
         this.filterIncomeActivity(payload, page, fetch_count, filter);
       }
@@ -225,14 +225,15 @@ export default {
         payload_data.year != null && payload_data.year != ""
           ? payload_data.year
           : "";
-      let search_filter = filter != null && filter !="undefined" ? filter: ""
+      let search_filter = filter != null && filter != "undefined" ? filter : "";
       this.month = payload_data.month;
-      let month_value = this.month !== "" && this.month != null ? this.month.value : "";
-      console.log(month_value);
+      let month_value =
+        this.month != "" && this.month != null ? this.month.value : "";
+
       let month_label = this.month != "" ? this.month.label : "";
       this.status =
-        payload_data.status !== "" && payload_data.status !== null
-          ? payload_data.status
+        payload_data.status != "" && payload_data.status != null
+          ? this.indexPaymentStatus(payload_data.status)
           : "";
       let page_num =
         this.payment_item_id != null || this.payment_item_id != "" ? 1 : page;
@@ -244,7 +245,7 @@ export default {
       this.$router.push({
         path: `/dashboard/income-activities?payment_item=${item_id}&month=${month_label}&status=${this.status}&session_id=${this.session_id}`,
         query: {
-          payment_item: this.payment_item_id.label,
+          payment_item: item_id,
           month: month_label,
           status: this.status,
           t: new Date().getTime(),
@@ -297,7 +298,9 @@ export default {
       let month =
         data.month != null && data.month != "" ? data.month.value : "";
       let status =
-        data.status !== null && data.status !== "" ? data.status : "";
+        data.status !== null && data.status !== ""
+          ? this.indexPaymentStatus(data.status)
+          : "";
       let year = LocalStorage.getItem("data").current_session.year;
       let url = `/api/protected/organisations/income-activities/generate-pdf?organisation_id=${this.organisation_id}&month=${month}&payment_item_id=${payment_item_value}&status=${status}&payment_item_name=${payment_item_label}&year=${year}`;
 

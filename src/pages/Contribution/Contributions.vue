@@ -112,6 +112,10 @@
         @onRequest="onRequest"
       >
       </TableVue>
+
+      <div v-if="getFilteredContributions.length > 0">
+        <ContributionSummary :summary="getSummaryData" :is_expenditures="false"></ContributionSummary>
+      </div>
     </div>
     <!------------------------------------------CONTRIBUTIONS VIEW FOR MEMBERS WITH TREASURER ROLE----------------------------------- -->
   </div>

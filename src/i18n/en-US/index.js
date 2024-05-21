@@ -529,6 +529,9 @@ export default {
     passwordUpdateFailMsg:"Old password did not match saved password! Please try again",
     uploadLogoSuccessMsg:"Logo uploaded successfully",
     memberProfileUpdateSuccessMsg:"Profile Updated Successfully",
-    memberPaidRegistrationMsg:"Member has already paid registration for this year"
+    memberPaidRegistrationMsg:"Member has already paid registration for this year",
+    expectedContribution:"Expect Contribution",
+    percentage:"Percentage",
+    paymentDuration:"Payment Durations"
    }
 };

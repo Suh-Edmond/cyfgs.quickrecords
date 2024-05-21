@@ -6,9 +6,27 @@
           <div class="q-mb-md flex justify-between">
             <q-btn dense flat icon="monetization_on" size="sm" class="icon">
             </q-btn>
-            <label class="text-subtitle1 label">{{
-              $t("app.expectedContribution")
-            }}</label>
+            <label class="text-subtitle1 label"
+              >{{ $t("app.expectedContribution") }}
+              <span>
+                <q-btn color="primary" dense flat size="sm" icon="help">
+                  <q-tooltip anchor="bottom end" self="bottom end">
+                    The Expected Contribution for a payment item is calculated
+                    by multiplying the <br/> Payment Item Amount by its Frequency and
+                    by the Number of Members associated with the payment item
+                    type.<br />
+                    <br/>
+                    For a one-time payment item with an <strong>"ALL_MEMBERS" type</strong>, the
+                    Expected Contribution is calculated as: <br />
+                    <strong>(Payment Item Amount) x 1 x (Total number of active members)</strong><br />
+                    <br/>
+                    For payment items with monthly or quarterly frequencies, the
+                    Expected Contribution is calculated as:<br />
+                    <strong>(Payment Item Amount) x (Number of Months/Quarters) x
+                    (Number of Members associated with the payment item type)</strong><br />
+                  </q-tooltip>
+                </q-btn> </span
+            ></label>
           </div>
           <div class="text-center value">
             <label class="text-bold"
@@ -50,7 +68,7 @@
         </div>
         <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12 box q-pa-md">
           <div class="q-mb-md flex justify-between">
-            <q-btn dense flat icon="trending_up" size="sm" class="icon">
+            <q-btn dense flat icon="trending_up" size="md" class="icon">
             </q-btn>
             <label class="text-subtitle1 label">{{
               $t("app.percentage")
@@ -91,10 +109,7 @@
           </div>
           <div class="text-center value">
             <label class="text-bold"
-              >{{
-                Number(summary.amount_given).toLocaleString()
-              }}
-              XAF</label
+              >{{ Number(summary.amount_given).toLocaleString() }} XAF</label
             >
           </div>
         </div>
@@ -108,10 +123,7 @@
           </div>
           <div class="text-center value">
             <label class="text-bold"
-              >{{
-                Number(summary.amount_spent).toLocaleString()
-              }}
-              XAF</label
+              >{{ Number(summary.amount_spent).toLocaleString() }} XAF</label
             >
           </div>
         </div>
@@ -140,9 +152,9 @@ export default {
       required: true,
     },
     is_expenditures: {
-      type:Boolean,
-      required:true
-    }
+      type: Boolean,
+      required: true,
+    },
   },
 };
 </script>
@@ -154,14 +166,17 @@ export default {
 }
 
 .icon {
-  color: $grey5;
+  // color: $grey5;
+  color: $primary;
 }
 
 .label {
-  color: $grey2;
+  // color: $grey2;
+  color: $primary;
   font-size: small;
 }
 .value {
   font-size: large;
+  color: $primary;
 }
 </style>

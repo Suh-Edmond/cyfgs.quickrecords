@@ -97,6 +97,13 @@
       <!----------------------------------------------END OF MULTIPLE APPROVAL/DECLINE OF RECORDS----------------------->
     </div>
 
+    <div class="q-mt-sm" v-if="expenditure_item_details.length > 0">
+      <ContributionSummary
+        :summary="getSummaryData"
+        :is_expenditures="true"
+      ></ContributionSummary>
+    </div>
+
     <!-------------------------------------------DIALOG TO APPROVE/DECLINE PAYMENT------------------->
     <q-dialog v-model="show_payment_dialog">
       <q-card style="min-width: 600px" class="q-pa-xs">
@@ -189,6 +196,7 @@
 <script>
 import CategoryTable from "src/components/CategoryTable.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
+import ContributionSummary from "src/components/ContributionSummary.vue";
 
 export default {
   mixins: [HelperMixinVue],
@@ -258,7 +266,7 @@ export default {
       ],
       label: this.$t("app.delete"),
       message: "",
-      statuses: ["PENDING", "APPROVED", "DECLINED", "ALL"],
+      statuses: ["Pending", "Approved", "Declined", "All"],
       status: "",
       filtered_items: [],
       show_spinner: false,
@@ -313,7 +321,7 @@ export default {
 
     getTableTitle() {
       return this.expenditure_item_details.length > 0
-        ? this.$t("app.expensesFor") + this.expenditure_item_name
+        ? this.expenditure_item_name
         : "";
     },
 
@@ -336,8 +344,12 @@ export default {
       is_filtering,
       expenditure_item_id
     ) {
+      let payment_status =
+        this.status != "" && this.status != null
+          ? this.indexPaymentStatus(this.status)
+          : "";
       let payload = {
-        url: `/api/protected/expenditure-items/${expenditure_item_id}/details?page=${page}&per_page=${per_page}&status=${this.status}`,
+        url: `/api/protected/expenditure-items/${expenditure_item_id}/details?page=${page}&per_page=${per_page}&status=${payment_status}`,
         msg: "none",
         color: "default",
         status: "none",
@@ -411,7 +423,9 @@ export default {
 
     downloadExpenditureItemDetails() {
       let expenditure_item_id = this.$router.currentRoute.params.id;
-      let url = `/api/protected/expenditure-item-details/download?expenditure_item_id=${expenditure_item_id}&status=${this.status}`;
+      let url = `/api/protected/expenditure-item-details/download?expenditure_item_id=${expenditure_item_id}&status=${this.indexPaymentStatus(
+        this.status
+      )}`;
       let file_name = "Expenditure_Item_Details.pdf";
       this.loading_download = this.downloadPdf(url, file_name);
     },
@@ -553,6 +567,7 @@ export default {
   },
   components: {
     CategoryTable,
+    ContributionSummary,
   },
 };
 </script>

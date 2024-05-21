@@ -106,7 +106,7 @@
             <q-btn dense flat icon="monetization_on" size="sm" class="icon">
             </q-btn>
             <label class="text-subtitle1 label">{{
-              $t("app.amountGivenLabel")
+              $t("app.totalAmountGiven")
             }}</label>
           </div>
           <div class="text-center value">
@@ -120,7 +120,7 @@
             <q-btn dense flat icon="monetization_on" size="sm" class="icon">
             </q-btn>
             <label class="text-subtitle1 label">{{
-              $t("app.amountSpent")
+              $t("app.totalAmountSpent")
             }}</label>
           </div>
           <div class="text-center value">
@@ -133,7 +133,7 @@
           <div class="q-mb-md flex justify-between">
             <q-btn dense flat icon="monetization_on" size="sm" class="icon">
             </q-btn>
-            <label class="text-subtitle1 label">{{ $t("app.balance") }}</label>
+            <label class="text-subtitle1 label">{{ $t("app.totalBalance") }}</label>
           </div>
           <div class="text-center value">
             <label class="text-bold"

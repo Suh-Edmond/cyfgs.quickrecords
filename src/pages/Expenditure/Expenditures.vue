@@ -127,13 +127,6 @@
         @onRequest="onRequest"
       >
       </CategoryTable>
-
-      <div class="q-mt-sm" v-if="getExpenditures.length > 0">
-        <ContributionSummary
-          :summary="getSummaryData"
-          :is_expenditures="true"
-        ></ContributionSummary>
-      </div>
     </div>
   </q-page>
 </template>
@@ -147,7 +140,6 @@ import OrganisationMixin from "src/mixins/organisationMixin.vue";
 import expenditureItemMixinVue from "src/mixins/expenditureItemMixin.vue";
 import PaymentItemMixinVue from "src/mixins/PaymentItemMixin.vue";
 import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
-import ContributionSummary from "src/components/ContributionSummary.vue";
 
 export default {
   mixins: [
@@ -298,23 +290,6 @@ export default {
       };
 
       return paginate_object;
-    },
-
-    getSummaryData() {
-      const data =
-        this.$store.getters.getExpenditures.data.length > 0
-          ? this.$store.getters.getExpenditures.data[0]
-          : null;
-
-      let summary = {
-        estimated_amount: data.amount,
-        amount_given: data.total_amount_given,
-        amount_spent: data.total_amount_spent,
-        balance: data.total_balance,
-        net_balance: data.total_balance,
-      };
-
-      return summary;
     },
   },
   methods: {
@@ -510,7 +485,6 @@ export default {
   },
   components: {
     CategoryTable,
-    ContributionSummary,
   },
 };
 </script>

@@ -36,148 +36,7 @@
       </TableVue>
 
       <div v-if="getMemberContributions.length > 0">
-        <q-card flat>
-          <q-card-section>
-            <div class="row">
-              <label
-                class="q-py-md text-bold summary text-capitalize text-h6 text-underline"
-                >{{ $t("app.expenditureSummaryLabel") }}</label
-              >
-            </div>
-            <div class="row q-gutter-md q-mb-lg">
-              <div class="col-md-3 col-sm-3 summary_label">
-                <div class="q-mb-sm">
-                  <label class="text-bold q-py-md detail_name"
-                    >{{ $t("app.paymentItem") }}:</label
-                  >
-                </div>
-                <div class="q-mb-sm">
-                  <label class="text-bold q-py-md detail_name"
-                    >{{ $t("app.paymentItemAmount") }}:</label
-                  >
-                </div>
-                <div class="q-mb-sm">
-                  <label class="text-bold q-py-md detail_name"
-                    >{{ $t("app.totalAmountPayable") }}:</label
-                  >
-                </div>
-                <div class="q-mb-sm">
-                  <label class="text-bold q-py-md detail_name"
-                    >{{ $t("app.paymentItemFrequency") }}:</label
-                  >
-                </div>
-                <div class="q-mb-sm">
-                  <label class="text-bold q-py-md detail_name"
-                    >{{ $t("app.totalAmountContributed") }}:</label
-                  >
-                </div>
-                <div class="q-mb-sm">
-                  <label class="text-bold q-py-md detail_name"
-                    >{{ $t("app.balance") }}:</label
-                  >
-                </div>
-                <div
-                  class="q-mb-sm"
-                  v-if="getPaymentItemFrequency == 'QUARTERLY'"
-                >
-                  <label class="text-bold q-py-md detail_name"
-                    >{{ $t("app.unpaidQuarters") }}:</label
-                  >
-                </div>
-                <div
-                  class="q-mb-sm"
-                  v-if="getPaymentItemFrequency == 'MONTHLY'"
-                >
-                  <label class="text-bold q-py-md detail_name"
-                    >{{ $t("app.unpaidMonths") }}:</label
-                  >
-                </div>
-              </div>
-              <div class="col-md-6 col-sm-6 summary_value">
-                <div class="q-mb-sm">
-                  <label class="text-bold q-py-md detail_name"
-                    >{{ getPaymentItemName }}
-                  </label>
-                </div>
-                <div class="q-mb-sm">
-                  <label class="text-bold q-py-md detail_name"
-                    >{{
-                      Number(getPaymentItemAmount).toLocaleString()
-                    }}
-                    XAF</label
-                  >
-                </div>
-                <div class="q-mb-sm">
-                  <label class="text-bold q-py-md detail_name"
-                    >{{
-                      Number(getTotalAmountPayable).toLocaleString()
-                    }}
-                    XAF</label
-                  >
-                </div>
-                <div class="q-mb-sm">
-                  <label class="text-bold q-py-md detail_name"
-                    >{{ getPaymentItemFrequency }}
-                  </label>
-                </div>
-                <div class="q-mb-sm">
-                  <label class="text-bold q-py-md detail_name"
-                    >{{
-                      Number(getTotalMemberContribution).toLocaleString()
-                    }}
-                    XAF</label
-                  >
-                </div>
-                <div class="q-mb-sm">
-                  <label class="text-bold q-py-md detail_name"
-                    >{{ Number(getTotalBalance).toLocaleString() }} XAF</label
-                  >
-                </div>
-                <div class="q-mb-sm">
-                  <q-chip
-                    color="primary"
-                    text-color="white"
-                    v-for="duration in getUnPaidDurations"
-                    :key="duration"
-                    size="md"
-                    >{{ duration }}</q-chip
-                  >
-                </div>
-              </div>
-            </div>
-            <div class="row q-gutter-md q-mb-lg">
-              <span
-                v-if="
-                  getPaymentItemFrequency == 'QUARTERLY' ||
-                  getPaymentItemFrequency == 'MONTHLY'
-                "
-              >
-                <q-icon
-                  name="info"
-                  color="info"
-                  size="sm"
-                  class="q-pr-md"
-                ></q-icon>
-              </span>
-              <label
-                for="not_register"
-                class="text-bold text-info text-italic text-sm"
-                v-if="getPaymentItemFrequency == 'QUARTERLY'"
-                >{{
-                  $t("app.howToComputeTotalAmountPaymentForQuarterlyPayment")
-                }}</label
-              >
-              <label
-                for="not_register"
-                class="text-bold text-info text-italic"
-                v-if="getPaymentItemFrequency == 'MONTHLY'"
-                >{{
-                  $t("app.howToComputeTotalAmountPaymentForMonthlyPayment")
-                }}</label
-              >
-            </div>
-          </q-card-section>
-        </q-card>
+          <ContributionSummary :summary="getSummaryData"  :is_expenditures="false"></ContributionSummary>
       </div>
     </div>
   </div>
@@ -188,6 +47,7 @@ import TableVue from "src/components/Table.vue";
 import ContributionsMixin from "src/mixins/ContributionsMixin.vue";
 import HelperMixin from "src/mixins/HelperMixin.vue";
 import FilterComponentVue from "src/components/FilterComponent.vue";
+import ContributionSummary from "src/components/ContributionSummary.vue";
 export default {
   mixins: [ContributionsMixin, HelperMixin],
 
@@ -374,6 +234,19 @@ export default {
         ? this.$store.getters.getMemberContributions.unpaid_durations
         : "";
     },
+
+    getSummaryData(){
+      const data = (this.$store.getters.getMemberContributions);
+      let summary = {
+        expect_contribution: data.total_amount_payable,
+        amount_contributed:data.total_amount,
+        balance:data.total_balance,
+        percentage: data.percentage,
+        payment_durations:data.payment_durations
+      }
+
+      return summary;
+    }
   },
   methods: {
     viewContribution(data) {
@@ -520,6 +393,7 @@ export default {
   components: {
     TableVue,
     FilterComponentVue,
+    ContributionSummary
   },
 };
 </script>

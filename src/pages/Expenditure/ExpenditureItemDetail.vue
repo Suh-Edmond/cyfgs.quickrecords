@@ -40,103 +40,8 @@
       </CategoryTable>
 
       <div class="q-mt-xs" v-if="getExpenditureItemDetails.length > 0">
-        <q-card flat>
-          <q-card-section>
-            <div class="row">
-              <label class="q-py-lg text-bold summary text-capitalize">{{
-                $t("app.expenditureSummaryLabel")
-              }}</label>
-            </div>
-            <div class="row">
-              <div class="col-4 col-md-4 col-lg-4 col-xs-12 col-sm-4">
-                <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_name"
-                    >{{ $t("app.expenditureItemSummary") }}:</label
-                  >
-                </div>
-                <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_name"
-                    >{{ $t("app.estimatedAmount") }}:</label
-                  >
-                </div>
-                <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_name"
-                    >{{ $t("app.totalAmountGiven") }}:</label
-                  >
-                </div>
-                <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_name"
-                    >{{ $t("app.totalAmountSpent") }}:</label
-                  >
-                </div>
-                <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_name"
-                    >{{ $t("app.totalBalance") }}:</label
-                  >
-                </div>
-                <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_name"
-                    >{{ $t("app.netBalance") }}:<br />
-                    <small class="text-italic"
-                      >[ {{ $t("app.netBalance") }} =
-                      {{ $t("app.formular") }} ]</small
-                    >
-                    <br />
-                  </label>
-                </div>
-              </div>
-              <div class="col-4 col-md-4 col-lg-4 col-xs-12 col-sm-4">
-                <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_value"
-                    >{{ getExpenditureItemName }}
-                  </label>
-                </div>
-                <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_value"
-                    >{{ Number(total_item_amount).toLocaleString() }} XAF</label
-                  >
-                </div>
-                <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_value"
-                    >{{
-                      Number(getTotalAmountGiven).toLocaleString()
-                    }}
-                    XAF</label
-                  >
-                </div>
-                <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_value"
-                    >{{
-                      Number(getTotalAmountSpent).toLocaleString()
-                    }}
-                    XAF</label
-                  >
-                </div>
-                <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_value"
-                    >{{ Number(getBalance).toLocaleString() }} XAF</label
-                  >
-                </div>
-                <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_value"
-                    >{{ Number(getNetBalance).toLocaleString() }} XAF</label
-                  >
-                </div>
-              </div>
-            </div>
-            <div class="row q-mt-md q-mb-lg" v-if="total_balance < 0">
-              <q-icon
-                name="info"
-                color="warning"
-                size="sm"
-                class="q-pr-md"
-              ></q-icon>
-              <label class="text-orange text-subtitle2">
-                {{ $t("app.negativeExpenditureBalanceMsg") }}
-              </label>
-            </div>
-          </q-card-section>
-        </q-card>
+        <ContributionSummary :is_expenditures="true" :summary="getSummaryData"></ContributionSummary>
+
       </div>
     </div>
   </q-page>
@@ -147,6 +52,7 @@ import CategoryTable from "src/components/CategoryTable.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
 import ExpenditureItemDetailMixinVue from "src/mixins/ExpenditureItemDetailMixin.vue";
 import FilterComponentVue from "src/components/FilterComponent.vue";
+import ContributionSummary from "src/components/ContributionSummary.vue";
 
 export default {
   mixins: [HelperMixinVue, ExpenditureItemDetailMixinVue],
@@ -291,6 +197,18 @@ export default {
     getNetBalance() {
       return this.$store.getters.getExpenditureItemDetails.total_balance;
     },
+
+    getSummaryData () {
+      let summary = {
+        estimated_amount: this.total_item_amount,
+        amount_given: this.getTotalAmountGiven,
+        amount_spent: this.getTotalAmountSpent,
+        balance: this.getBalance,
+        net_balance: this.getNetBalance
+      }
+
+      return summary;
+    }
   },
 
   methods: {
@@ -402,6 +320,7 @@ export default {
   components: {
     CategoryTable,
     FilterComponentVue,
+    ContributionSummary
   },
 };
 </script>

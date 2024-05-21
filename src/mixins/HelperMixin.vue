@@ -19,7 +19,6 @@ export default {
         ["Members with roles", "MEMBERS_WITH_ROLES"],
         ["Members without roles", "MEMBERS_WITHOUT_ROLES"],
         ["Grouped members", "GROUPED_MEMBERS"],
-        ["Executive Members", "EXCO_MEMBERS"],
         ["All", "ALL"],
       ]),
       payment_frequencies: new Map([
@@ -28,7 +27,7 @@ export default {
         ["One-time", "ONE_TIME"],
         ["All", "ALL"],
       ]),
-      payment_statuses: new Map([
+      payment_states: new Map([
         ["Pending", "PENDING"],
         ["Approved", "APPROVED"],
         ["Declined", "DECLINED"],
@@ -124,7 +123,7 @@ export default {
       return this.payment_frequencies.get(frequency);
     },
     indexPaymentStatus(status) {
-      return this.payment_statuses.get(status);
+      return this.payment_states.get(status);
     },
     indexTransactionStatus(status) {
       return this.transaction_statuses.get(status);

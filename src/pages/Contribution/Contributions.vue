@@ -55,44 +55,8 @@
       >
       </TableVue>
 
-      <div class="q-mx-sm" v-if="getTableData.length > 0">
-        <q-card flat>
-          <div class="row q-pa-sm">
-            <label
-              class="q-py-sm text-bold summary text-capitalize text-underline"
-              >{{ $t("app.expenditureSummaryLabel") }}</label
-            >
-          </div>
-          <div class="row q-mb-lg q-gutter-md q-px-sm">
-            <div class="col-md-3">
-              <div class="q-mb-xs">
-                <label class="text-bold q-py-md detail_name"
-                  >{{ $t("app.paymentItem") }}:</label
-                >
-              </div>
-              <div class="q-mb-xs">
-                <label class="text-bold q-py-md detail_name"
-                  >{{ $t("app.amountContributed") }}:</label
-                >
-              </div>
-            </div>
-            <div class="col-md-3">
-              <div class="q-mb-xs">
-                <label class="text-bold q-py-md detail_name"
-                  >{{ getPaymentItemName }}
-                </label>
-              </div>
-              <div class="q-mb-xs">
-                <label class="text-bold q-py-md detail_name"
-                  >{{
-                    Number(computeTotalContributions).toLocaleString()
-                  }}
-                  XAF</label
-                >
-              </div>
-            </div>
-          </div>
-        </q-card>
+      <div v-if="getTableData.length > 0">
+        <ContributionSummary :summary="getSummaryData" :is_expenditures="false"></ContributionSummary>
       </div>
     </div>
     <!------------------------------------------END CONTRIBUTIONS VIEW FOR MEMBERS WITHOUT TREASURER ROLE----------------------------------- -->
@@ -160,6 +124,7 @@ import PaymentItemMixinVue from "src/mixins/PaymentItemMixin.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
 import { LocalStorage } from "quasar";
+import ContributionSummary from "src/components/ContributionSummary.vue";
 
 export default {
   mixins: [
@@ -228,6 +193,7 @@ export default {
     };
   },
   computed: {
+
     validateFilter() {
       return this.payment_item_id === null;
     },
@@ -382,6 +348,22 @@ export default {
 
       return paginate_object;
     },
+
+    getSummaryData(){
+      const data = (this.$store.getters.getFilteredContributions);
+      let summary = {
+        type: "ALL MEMBERS",
+        number_of_members: 80,
+        frequency:"ONE TIME",
+        expect_contribution: data.total_amount_payable,
+        amount_contributed:data.total_amount,
+        balance:data.total_balance,
+        percentage: data.percentage,
+        payment_durations:data.payment_durations
+      }
+
+      return summary;
+    }
   },
 
   watch: {},
@@ -529,6 +511,7 @@ export default {
   },
   components: {
     TableVue,
+    ContributionSummary
   },
 };
 </script>

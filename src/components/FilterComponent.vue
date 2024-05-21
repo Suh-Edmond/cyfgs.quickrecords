@@ -1065,7 +1065,6 @@ export default {
         "Members with roles",
         "Members without roles",
         "Grouped members",
-        "Executive Members",
         "All",
       ],
       frequencies: ["Yearly", "Monthly", "One-time", "All"],

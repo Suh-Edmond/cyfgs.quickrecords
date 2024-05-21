@@ -11,7 +11,8 @@
               <span>
                 <q-btn color="primary" dense flat size="sm" icon="help">
                   <q-tooltip anchor="bottom end" self="bottom end">
-                    The Expected Contribution for a payment item is calculated
+                    <p class="tooltipText">
+                      The Expected Contribution for a payment item is calculated
                     by multiplying the <br/> Payment Item Amount by its Frequency and
                     by the Number of Members associated with the payment item
                     type.<br />
@@ -24,6 +25,7 @@
                     Expected Contribution is calculated as:<br />
                     <strong>(Payment Item Amount) x (Number of Months/Quarters) x
                     (Number of Members associated with the payment item type)</strong><br />
+                    </p>
                   </q-tooltip>
                 </q-btn> </span
             ></label>
@@ -166,17 +168,19 @@ export default {
 }
 
 .icon {
-  // color: $grey5;
   color: $primary;
 }
 
 .label {
-  // color: $grey2;
   color: $primary;
   font-size: small;
 }
 .value {
   font-size: large;
   color: $primary;
+}
+
+.tooltipText {
+  font-size: small;
 }
 </style>

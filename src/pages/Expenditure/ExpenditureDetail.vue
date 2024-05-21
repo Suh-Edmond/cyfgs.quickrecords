@@ -17,7 +17,7 @@
           :label="$t('app.selectStatusLabel')"
         />
         <div
-          class="col-md-3 col-lg-3 col-xs-12 col-sm-12 flex"
+          class="col-md-9 col-lg-9 col-xs-12 col-sm-12 flex"
           :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
         >
           <q-btn
@@ -95,109 +95,7 @@
         </q-card-section>
       </q-card>
       <!----------------------------------------------END OF MULTIPLE APPROVAL/DECLINE OF RECORDS----------------------->
-
-      <!-----------------------------------------------SUMMARY FOR EXPENDITURE DETAILS ------------------------------------->
-      <div class="q-mt-sm" v-if="expenditure_item_details.length > 0">
-        <q-card>
-          <q-card-section>
-            <div class="row">
-              <label class="q-py-lg text-bold summary text-capitalize">{{
-                $t("app.expenditureSummaryLabel")
-              }}</label>
-            </div>
-            <div class="row">
-              <div class="col-6 col-md-6 col-lg-6 col-xs-6 col-sm-6">
-                <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_name"
-                    >{{ $t("app.expenditureItemSummary") }}:</label
-                  >
-                </div>
-                <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_name"
-                    >{{ $t("app.estimatedAmount") }}:</label
-                  >
-                </div>
-                <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_name"
-                    >{{ $t("app.totalAmountGiven") }}:</label
-                  >
-                </div>
-                <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_name"
-                    >{{ $t("app.totalAmountSpent") }}:</label
-                  >
-                </div>
-                <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_name"
-                    >{{ $t("app.totalBalance") }}:</label
-                  >
-                </div>
-                <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_name"
-                    >{{ $t("app.netBalance") }}:<br />
-                    <small class="text-italic"
-                      >[ {{ $t("app.netBalance") }} =
-                      {{ $t("app.formular") }} ]</small
-                    >
-                  </label>
-                </div>
-              </div>
-              <div class="col-6 col-md-6 col-lg-6 col-xs-6 col-sm-6">
-                <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_value"
-                    >{{ expenditure_item_name }}
-                  </label>
-                </div>
-                <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_value"
-                    >{{ Number(total_item_amount).toLocaleString() }} XAF</label
-                  >
-                </div>
-                <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_value"
-                    >{{
-                      Number(total_amount_given).toLocaleString()
-                    }}
-                    XAF</label
-                  >
-                </div>
-                <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_value"
-                    >{{
-                      Number(total_amount_spent).toLocaleString()
-                    }}
-                    XAF</label
-                  >
-                </div>
-                <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_value"
-                    >{{ Number(getBalance).toLocaleString() }} XAF</label
-                  >
-                </div>
-                <div class="q-mb-xs">
-                  <label class="text-bold q-py-md detail_value"
-                    >{{ Number(total_balance).toLocaleString() }} XAF</label
-                  >
-                </div>
-              </div>
-            </div>
-            <div class="row q-ml-md" v-if="total_balance < 0">
-              <q-icon
-                name="info"
-                color="warning"
-                size="sm"
-                class="q-pr-md"
-              ></q-icon>
-              <label class="text-orange text-subtitle2">
-                {{ $t("app.negativeExpenditureBalanceMsg") }}</label
-              >
-            </div>
-          </q-card-section>
-        </q-card>
-      </div>
-      <!-----------------------------------------------END OF SUMMARY OF EXPENDITURE DETAILS-------------------------------->
     </div>
-    <!--------------------------------------------------END OF TABLE FOR EXPENDITURE DETAILS--------------------------------->
 
     <!-------------------------------------------DIALOG TO APPROVE/DECLINE PAYMENT------------------->
     <q-dialog v-model="show_payment_dialog">
@@ -417,6 +315,18 @@ export default {
       return this.expenditure_item_details.length > 0
         ? this.$t("app.expensesFor") + this.expenditure_item_name
         : "";
+    },
+
+    getSummaryData() {
+      let summary = {
+        estimated_amount: this.total_item_amount,
+        amount_given: this.total_amount_given,
+        amount_spent: this.total_amount_spent,
+        balance: this.getBalance,
+        net_balance: this.getBalance,
+      };
+
+      return summary;
     },
   },
   methods: {

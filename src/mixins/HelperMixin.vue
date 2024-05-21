@@ -19,7 +19,6 @@ export default {
         ["Members with roles", "MEMBERS_WITH_ROLES"],
         ["Members without roles", "MEMBERS_WITHOUT_ROLES"],
         ["Grouped members", "GROUPED_MEMBERS"],
-        ["Executive Members", "EXCO_MEMBERS"],
         ["All", "ALL"],
       ]),
       payment_frequencies: new Map([

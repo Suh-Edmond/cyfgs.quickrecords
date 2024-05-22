@@ -514,6 +514,8 @@ export default {
     expectedContribution:"Contribution attendue",
     percentage:"Pourcentage",
     paymentDuration:"Délais de paiement",
-    helpMsgExpectedContribution:"La Contribution Attendue pour un objet de paiement est calculée en multipliant le Montant de l'Elément de Paiement par sa Fréquence et par le Nombre de Membres associés au type d'objet de paiement. Pour un objet de paiement ponctuel de type 'ALL_MEMBERS', la Contribution Attendue est calculée comme : (Montant de l'élément de paiement) x 1 x (Nombre total de membres actifs) Pour les éléments de paiement avec des fréquences mensuelles ou trimestrielles, la contribution attendue est calculée comme suit : (Montant de l'élément de paiement) x (Nombre de mois/trimestres) x (Nombre de membres associé au type d'objet de paiement)"
+    helpMsgExpectedContribution:"La Contribution Attendue pour un objet de paiement est calculée en multipliant le Montant de l'Elément de Paiement par sa Fréquence et par le Nombre de Membres associés au type d'objet de paiement. Pour un objet de paiement ponctuel de type 'ALL_MEMBERS', la Contribution Attendue est calculée comme : (Montant de l'élément de paiement) x 1 x (Nombre total de membres actifs) Pour les éléments de paiement avec des fréquences mensuelles ou trimestrielles, la contribution attendue est calculée comme suit : (Montant de l'élément de paiement) x (Nombre de mois/trimestres) x (Nombre de membres associé au type d'objet de paiement)",
+    provideEmailMsg: "Fournissez votre adresse e-mail",
+    invitationLinkExpiredMsg:"Le lien d'invitation a expiré. Veuillez en demander un nouveau"
   }
 };

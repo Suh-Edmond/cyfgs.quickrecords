@@ -1641,6 +1641,11 @@ export default {
         if (response.status == 200) {
           this.user_roles = [];
           this.getUserRoles(id);
+          Notify.create({
+            type: "info",
+            message: this.$t("app.roleRemoveSuccessMsg"),
+            position: Platform.is.mobile ? "bottom" : "top-right",
+          });
         } else if (response.status == 427) {
           Notify.create({
             type: "info",

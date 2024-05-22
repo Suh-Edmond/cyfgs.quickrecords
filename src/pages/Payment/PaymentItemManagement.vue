@@ -276,6 +276,7 @@ export default {
 
   methods: {
     fetchPaymentItems(is_filtering, page, per_page, sort_by, filter) {
+      let search_filter = filter == undefined ? "" : filter;
       let is_compulsory_value =
         this.is_compulsory !== null && this.is_compulsory !== ""
           ? this.is_compulsory.value
@@ -287,7 +288,7 @@ export default {
       let payload = {
         status: "none",
         url: `/api/protected/filter-payment-items?payment_category_id=${payment_category_id}&is_compulsory=${is_compulsory_value}&type=${type_value}
-        &frequency=${this.frequency}&state=${state_value}&page=${page}&per_page=${per_page}&sort_by=${sort_by}&session_id=${this.session_id}&filter=${filter}`,
+        &frequency=${this.frequency}&state=${state_value}&page=${page}&per_page=${per_page}&sort_by=${sort_by}&session_id=${this.session_id}&filter=${search_filter}`,
         has_path_val: true,
         show_feedback: false,
         show_spinner: false,

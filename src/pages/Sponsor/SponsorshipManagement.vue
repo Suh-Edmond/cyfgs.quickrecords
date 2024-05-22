@@ -171,9 +171,10 @@ export default {
         payment_item != "" && payment_item != null ? payment_item.value : "";
       let status_value = status != "" && status != null ? status : "";
       let session_id = session != "" && session != null ? session.value : "";
+      let search_filter = filter == undefined ? "" : filter;
       let payload = {
         status: "none",
-        url: `/api/protected/sponsorships?page=${page}&per_page=${per_page}&payment_item_id=${payment_item_id}&status=${status_value}&session_id=${session_id}&filter=${filter}`,
+        url: `/api/protected/sponsorships?page=${page}&per_page=${per_page}&payment_item_id=${payment_item_id}&status=${status_value}&session_id=${session_id}&filter=${search_filter}`,
         has_path_val: true,
         show_feedback: false,
         show_spinner: false,

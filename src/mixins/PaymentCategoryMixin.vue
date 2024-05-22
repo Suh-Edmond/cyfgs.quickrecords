@@ -55,9 +55,9 @@ export default {
       year,
       filter
     ) {
-
+      let search_filter = filter == undefined ? "" : filter;
       let payload = {
-        url: `/api/protected/organisation/payment-categories?organisation_id=${organisation_id}&year=${year}&page=${page}&per_page=${per_page}&sort_by=${sort_by}&filter=${filter}`,
+        url: `/api/protected/organisation/payment-categories?organisation_id=${organisation_id}&year=${year}&page=${page}&per_page=${per_page}&sort_by=${sort_by}&filter=${search_filter}`,
         msg: "none",
         color: "default",
         status: "none",

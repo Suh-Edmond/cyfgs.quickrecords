@@ -32,8 +32,9 @@ export default {
     },
 
     fetchOrganisationExpenditureCategories(organisation_id, page, per_page, sort_by, year, filter) {
+      let search_filter = filter == undefined ? "" : filter;
       let payload = {
-        url: `/api/protected/organisations/${organisation_id}/expenditure-categories?year=${year}&page=${page}&per_page=${per_page}&sort_by=${sort_by}&filter=${filter}`,
+        url: `/api/protected/organisations/${organisation_id}/expenditure-categories?year=${year}&page=${page}&per_page=${per_page}&sort_by=${sort_by}&filter=${search_filter}`,
         msg: "none",
         color: "default",
         status: "none",

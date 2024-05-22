@@ -39,22 +39,22 @@ module.exports = function (ctx) {
 
       "roboto-font", // optional, you are not bound to it
       "material-icons", // optional, you are not bound to it
-      'material-icons-outlined'
+      "material-icons-outlined",
     ],
 
     // Full list of options: https://v1.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
       vueRouterMode: "history", // available values: 'hash', 'history'
       env: {
-        API_BASE_URL: ctx.dev ? "https://www.quickrecords.net" : "https://www.quickrecords.net",
-        CLIENT_SERVER: ctx.dev ? "https://quickrecords.vercel.app" : "https://quickrecords.vercel.app",
-        REDIRECT_URL: ctx.dev ? "https://quickrecords.vercel.app/auth/invite-member" : "https://quickrecords.vercel.app/auth/invite-member",
-        APP_NAME : "Quick_Records",
-        FILE_CATEGORY : "LOGOS",
-        BASE_FOLDER : "LOGOS",
-        PROFILE_PICTURES:"PROFILE_PICTURES",
+        API_BASE_URL: "https://www.quickrecords.net",
+        CLIENT_SERVER: "https://quickrecords.vercel.app",
+        REDIRECT_URL: "https://quickrecords.vercel.app/auth/invite-member",
+        APP_NAME: "Quick_Records",
+        FILE_CATEGORY: "LOGOS",
+        BASE_FOLDER: "LOGOS",
+        PROFILE_PICTURES: "PROFILE_PICTURES",
       },
-      distDir: ctx.mode.spa ? 'public' : null,
+      distDir: ctx.mode.spa ? "public" : null,
       // env: envparser(),
       // transpile: false,
 
@@ -83,8 +83,7 @@ module.exports = function (ctx) {
       //       { loader: "yaml-loader" },
       //     ]);
       // },
-      extendWebpack(cfg) {
-      },
+      extendWebpack(cfg) {},
     },
 
     // Full list of options: https://v1.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-devServer
@@ -113,14 +112,18 @@ module.exports = function (ctx) {
       // directives: [],
 
       // Quasar plugins
-      plugins: ["Notify", "LocalStorage", "SessionStorage","Loading", "AddressbarColor"],
+      plugins: [
+        "Notify",
+        "LocalStorage",
+        "SessionStorage",
+        "Loading",
+        "AddressbarColor",
+      ],
       config: {
         notify: {
           /* look at QUASARCONFOPTIONS from the API card (bottom of page) */
         },
-        loading:{
-
-        }
+        loading: {},
       },
     },
 

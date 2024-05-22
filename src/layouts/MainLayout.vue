@@ -488,10 +488,9 @@ export default {
         roles: ["ADMIN", "PRESIDENT", "FINANCIAL_SECRETARY", "TREASURER"],
         name: "Sponsorship Management",
         label: this.$t("app.sponsorshipLabel"),
-        icon: "none",
+        icon: "monetization_on",
         disable: this.getOrganisation == null,
-        image_src: "images/sponsorship.png",
-        has_image: true,
+        has_image: false,
         requires_add: true,
       });
       menu_tabs.push({

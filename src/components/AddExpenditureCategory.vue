@@ -102,6 +102,7 @@ export default {
       `/api/protected/organisations/${id}/expenditure-categories/${this.getUpdatedExpenditureCategoryFromState().id}`
     },
     onAddExpenditureCategory() {
+      let current_session_id = this.$store.getters.getCurrentYear.id
       let payload = {
         url: this.setRequestUrl(),
         data: {
@@ -132,7 +133,7 @@ export default {
       this.$store
         .dispatch("postRequest", payload)
         .then(() => {
-          this.fetchOrganisationExpenditureCategories(this.$store.getters.getOrganisation.id, 1, 7, "name", null);
+          this.fetchOrganisationExpenditureCategories(this.$store.getters.getOrganisation.id, 1, 7, "name", current_session_id, "");
         })
         .finally(() => {
           this.loading = false;
@@ -143,7 +144,7 @@ export default {
       this.$store
         .dispatch("putRequest", payload)
         .then(() => {
-          this.fetchOrganisationExpenditureCategories(this.$store.getters.getOrganisation.id, 1, 7, "name", null);
+          this.fetchOrganisationExpenditureCategories(this.$store.getters.getOrganisation.id, 1, 7, "name", current_session_id, "");
         })
         .finally(() => {
           this.loading = false;

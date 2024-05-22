@@ -114,28 +114,44 @@ export default {
     },
 
     indexRegistrationStatus(status) {
-      return this.registration_statuses.get(status);
+      return status != "" && status != undefined && status != null
+        ? this.registration_statuses.get(status)
+        : "";
     },
     indexPaymentItemType(type) {
-      return this.payment_items_type.get(type);
+      return type != "" && type != undefined && type != null
+        ? this.payment_items_type.get(type)
+        : "";
     },
     indexPaymentFrequency(frequency) {
-      return this.payment_frequencies.get(frequency);
+      return frequency != "" && frequency != undefined && frequency != null
+        ? this.payment_frequencies.get(frequency)
+        : "";
     },
     indexPaymentStatus(status) {
-      return this.payment_states.get(status);
+      return status != "" && status != undefined && status != null
+        ? this.payment_states.get(status)
+        : "";
     },
     indexTransactionStatus(status) {
-      return this.transaction_statuses.get(status);
+      return status != "" && status != undefined && status != null
+        ? this.transaction_statuses.get(status)
+        : "";
     },
     indexGender(sex) {
-      return this.genders_list.get(sex);
+      return sex != "" && sex !== undefined && sex != null
+        ? this.genders_list.get(sex)
+        : "";
     },
     indexPaymentItemStates(state) {
-      return this.payment_item_states.get(state);
+      return state != "" && state != undefined && state != null
+        ? this.payment_item_states.get(state)
+        : "";
     },
     indexCompulsory(state) {
-      return this.compulsory_list.get(state);
+      return state != "" && state != undefined && state != null
+        ? this.compulsory_list.get(state)
+        : "";
     },
   },
 };

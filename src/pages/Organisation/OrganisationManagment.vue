@@ -591,6 +591,11 @@ export default {
           if (response.status == 200) {
             this.organisation.logo = response.data.data;
             this.$store.dispatch("setOrganisation", this.organisation);
+            Notify.create({
+            type: "positive",
+            message: this.$t("app.uploadLogoSuccessMsg"),
+            position: Platform.is.mobile ? "bottom" : "top-right",
+          });
           }
         })
         .finally(() => {

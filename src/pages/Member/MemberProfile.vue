@@ -1642,7 +1642,7 @@ export default {
           this.user_roles = [];
           this.getUserRoles(id);
           Notify.create({
-            type: "info",
+            type: "positive",
             message: this.$t("app.roleRemoveSuccessMsg"),
             position: Platform.is.mobile ? "bottom" : "top-right",
           });

@@ -456,7 +456,7 @@ export default {
     newPassword:'New Password',
     confirmPasword:'Confirm Password',
     invalidTokenMsg:'Invalid Password Reset Token',
-    successResetTokenMsg:'Success! Please provide a new  strong password for you account',
+    successResetTokenMsg:'Success! Please provide a new strong password for you account',
     resetPasswordMsg:'Reset Password',
     resetCap:'Please provide a new strong Password for your Account',
     successResetPasswordMsg:"Successfully reset account password",
@@ -534,6 +534,8 @@ export default {
     expectedContribution:"Expected Contribution",
     percentage:"Percentage",
     paymentDuration:"Payment Durations",
-    helpMsgExpectedContribution:"The Expected Contribution for a payment item is calculated by multiplying the Payment Item Amount by its Frequency and by the Number of Members associated with the payment item type.For a one-time payment item with an 'ALL_MEMBERS' type, the Expected Contribution is calculated as:(Payment Item Amount) x 1 x (Total number of active members)For payment items with monthly or quarterly frequencies, the Expected Contribution is calculated as:(Payment Item Amount) x (Number of Months/Quarters) x (Number of Members associated with the payment item type)"
-   }
+    helpMsgExpectedContribution:"The Expected Contribution for a payment item is calculated by multiplying the Payment Item Amount by its Frequency and by the Number of Members associated with the payment item type.For a one-time payment item with an 'ALL_MEMBERS' type, the Expected Contribution is calculated as:(Payment Item Amount) x 1 x (Total number of active members)For payment items with monthly or quarterly frequencies, the Expected Contribution is calculated as:(Payment Item Amount) x (Number of Months/Quarters) x (Number of Members associated with the payment item type)",
+    provideEmailMsg: "Provide your email address",
+    invitationLinkExpiredMsg: "The Invitation link has expired. Please request for a new one",
+  }
 };

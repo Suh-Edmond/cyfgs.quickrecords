@@ -30,15 +30,16 @@
             >
               <div>
                 <label for="credential" class="form_field"
-                  >{{ $t("app.telephoneLabel") }}
+                  >{{ $t("app.emailLabel") }}
                   <span class="text-red">*</span></label
                 >
-                <vue-tel-input
+                <q-input
                   v-model="check_user.credential"
-                  defaultCountry="cm"
-                  mode="international"
-                  class="q-pa-xs"
-                ></vue-tel-input>
+                  outlined
+                  dense
+                  type="email"
+                  :placeholder="$t('app.provideEmailMsg')"
+                />
               </div>
               <div>
                 <q-btn
@@ -75,15 +76,15 @@
             >
               <div>
                 <label for="credential" class="form_field"
-                  >{{ $t("app.telephoneLabel") }}
+                  >{{ $t("app.emailLabel") }}
                   <span class="text-red">*</span></label
                 >
-                <vue-tel-input
+                <q-input
                   v-model="user.credential"
-                  defaultCountry="cm"
-                  mode="international"
-                  class="q-pa-xs"
-                ></vue-tel-input>
+                  outlined
+                  dense
+                  type="email"
+                />
               </div>
               <div>
                 <label for="password" class="form_field"
@@ -178,7 +179,6 @@
 <script>
 import { LocalStorage, Notify, Platform, SessionStorage } from "quasar";
 import organisationMixin from "src/mixins/organisationMixin.vue";
-import { VueTelInput } from "vue-tel-input";
 import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
 import memberMixinVue from "src/mixins/memberMixin.vue";
 import ContributionsMixinVue from "src/mixins/ContributionsMixin.vue";
@@ -239,18 +239,17 @@ export default {
     },
 
     onCheckUserExist() {
-
       let payload = {
         url: "/api/public/auth/check-user",
         data: {
-          credential: this.check_user.credential.replace(/\s+/g, ""),
+          credential: this.check_user.credential,
         },
         msg: this.$t("app.inviteUserSuccessMsg"),
         color: "default",
-        show_feedback: true,
+        show_feedback: false,
         to_on_ok: "none",
         to_on_fail: "none",
-        error_msg: this.$t("app.inviteMemberFailMsg"),
+        error_msg: "none",
         to_be_store_data: {
           required: true,
           has_value: true,
@@ -267,6 +266,27 @@ export default {
           if (res.status == 200) {
             this.is_exist_user = true;
             this.user.credential = this.check_user.credential;
+
+            Notify.create({
+              color: "positive",
+              type: "positive",
+              message: this.$t("app.inviteUserSuccessMsg"),
+              position: Platform.is.mobile ? "bottom" : "top-right",
+            });
+          } else if (res.status == 403) {
+            Notify.create({
+              color: "info",
+              type: "info",
+              message: this.$t("app.invitationLinkExpiredMsg"),
+              position: Platform.is.mobile ? "bottom" : "top-right",
+            });
+          } else {
+            Notify.create({
+              color: "info",
+              type: "info",
+              message: this.$t("app.inviteMemberFailMsg"),
+              position: Platform.is.mobile ? "bottom" : "top-right",
+            });
           }
         })
         .catch((error) => {})
@@ -278,10 +298,10 @@ export default {
       let payload = {
         url: "/api/public/auth/set-password",
         data: {
-          credential: this.user.credential.replace(/\s+/g, ""),
+          credential: this.user.credential,
           password: this.user.password,
           password_confirmation: this.user.password_confirmation,
-          role: this.$router.currentRoute.query.role
+          role: this.$router.currentRoute.query.role,
         },
         msg: this.$t("app.loginSuccess"),
         color: "default",
@@ -380,9 +400,7 @@ export default {
         });
     },
   },
-  components: {
-    VueTelInput,
-  },
+  components: {},
 };
 </script>
 
@@ -435,7 +453,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 11px;
+  font-size: 12px;
   align-items: center;
   letter-spacing: 0.01em;
   color: $grey2;

@@ -266,8 +266,14 @@ export default {
           if (res.status == 200) {
             this.is_exist_user = true;
             this.user.credential = this.check_user.credential;
-          }
-          if (res.status == 403) {
+
+            Notify.create({
+              color: "positive",
+              type: "positive",
+              message: this.$t("app.inviteUserSuccessMsg"),
+              position: Platform.is.mobile ? "bottom" : "top-right",
+            });
+          } else if (res.status == 403) {
             Notify.create({
               color: "info",
               type: "info",
@@ -292,7 +298,7 @@ export default {
       let payload = {
         url: "/api/public/auth/set-password",
         data: {
-          credential: this.user.credential.replace(/\s+/g, ""),
+          credential: this.user.credential,
           password: this.user.password,
           password_confirmation: this.user.password_confirmation,
           role: this.$router.currentRoute.query.role,
@@ -447,7 +453,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 11px;
+  font-size: 12px;
   align-items: center;
   letter-spacing: 0.01em;
   color: $grey2;

@@ -456,7 +456,7 @@ export default {
     newPassword:'New Password',
     confirmPasword:'Confirm Password',
     invalidTokenMsg:'Invalid Password Reset Token',
-    successResetTokenMsg:'Success! Please provide a new  strong password for you account',
+    successResetTokenMsg:'Success! Please provide a new strong password for you account',
     resetPasswordMsg:'Reset Password',
     resetCap:'Please provide a new strong Password for your Account',
     successResetPasswordMsg:"Successfully reset account password",

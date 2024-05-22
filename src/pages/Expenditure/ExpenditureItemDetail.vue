@@ -213,9 +213,10 @@ export default {
 
   methods: {
     getExpenditureDetailsByItemId(page, per_page, type, filter) {
+      let search_filter = filter == undefined ? "" : filter;
       let expenditure_item = this.$store.getters.getCurrentExpenditureItem;
       let payload = {
-        url: `/api/protected/expenditure-items/${expenditure_item.id}/details?page=${page}&per_page=${per_page}&status=${this.status}&filter=${filter}`,
+        url: `/api/protected/expenditure-items/${expenditure_item.id}/details?page=${page}&per_page=${per_page}&status=${this.status}&filter=${search_filter}`,
         msg: "none",
         color: "default",
         status: "none",

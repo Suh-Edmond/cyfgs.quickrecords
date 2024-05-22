@@ -95,8 +95,9 @@ export default {
       session_id,
       filter
     ) {
+      let search_filter = filter == undefined ? "" : filter;
       let payload = {
-        url: `/api/protected/user-savings?organisation_id=${id}&session_id=${session_id}&page=${page}&per_page=${per_page}&month=${month}&filter=${filter}`,
+        url: `/api/protected/user-savings?organisation_id=${id}&session_id=${session_id}&page=${page}&per_page=${per_page}&month=${month}&filter=${search_filter}`,
         msg: "none",
         color: "default",
         status: "none",

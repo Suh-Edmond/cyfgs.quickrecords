@@ -27,8 +27,9 @@ export default {
     // },
 
     getOrganisationIncomeActivities(organisation_id, page, per_page, filter) {
+      let search_filter = filter == undefined ? "" : filter;
       let payload = {
-        url: `/api/protected/organisations/${organisation_id}/income-activities?page=${page}&per_page=${per_page}&filter=${filter}`,
+        url: `/api/protected/organisations/${organisation_id}/income-activities?page=${page}&per_page=${per_page}&filter=${search_filter}`,
         msg: "none",
         color: "default",
         status: "none",

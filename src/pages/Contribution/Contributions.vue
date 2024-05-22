@@ -428,10 +428,11 @@ export default {
       per_page,
       filter
     ) {
+      let search_filter = filter == undefined ? "" : filter;
       let payload = {
         status: "none",
         url: `/api/protected/organisations/contributions/search?payment_item_id=${payment_item_id}&month=${month}&year=${year}
-        &status=${status}&date=${date}&range=${date_range}&page=${page}&per_page=${per_page}&filter=${filter}`,
+        &status=${status}&date=${date}&range=${date_range}&page=${page}&per_page=${per_page}&filter=${search_filter}`,
         has_path_val: true,
         show_feedback: false,
         show_spinner: false,

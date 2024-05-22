@@ -72,6 +72,7 @@ export default {
       payment_item_value,
       filter
     ) {
+      let search_filter = filter == undefined ? "" : filter;
       let category = this.$store.getters.getCurrentExpenditureCategory;
       let session_value =
         year_value === ""
@@ -80,7 +81,7 @@ export default {
       let payload = {
         status: "none",
         url: `/api/protected/expenditure-categories/${category.id}/expenditure-items?status=${status}&session_id=${session_value}
-        &payment_item_id=${payment_item_value}&page=${page}&per_page=${per_page}&filter=${filter}`,
+        &payment_item_id=${payment_item_value}&page=${page}&per_page=${per_page}&filter=${search_filter}`,
         has_path_val: true,
         show_feedback: false,
         show_spinner: false,

@@ -4,6 +4,40 @@
       <div class="row q-mb-lg q-gutter-sm" v-if="!is_expenditures">
         <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12 box q-pa-md">
           <div class="q-mb-md flex justify-between">
+            <q-btn dense flat icon="trending_flat" size="sm" class="icon">
+            </q-btn>
+            <label class="text-subtitle1 label">{{
+              $t("app.frequency")
+            }}</label>
+          </div>
+          <div class="text-center value">
+            <label class="text-bold"
+              >{{
+                formatConstants(summary.frequency)
+              }}
+              </label
+            >
+          </div>
+        </div>
+        <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12 box q-pa-md">
+          <div class="q-mb-md flex justify-between">
+            <q-btn dense flat icon="group" size="sm" class="icon">
+            </q-btn>
+            <label class="text-subtitle1 label">{{
+              $t("app.memberSize")
+            }}</label>
+          </div>
+          <div class="text-center value">
+            <label class="text-bold"
+              >{{
+                summary.member_size
+              }}
+              </label
+            >
+          </div>
+        </div>
+        <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12 box q-pa-md">
+          <div class="q-mb-md flex justify-between">
             <q-btn dense flat icon="monetization_on" size="sm" class="icon">
             </q-btn>
             <label class="text-subtitle1 label"
@@ -146,8 +180,11 @@
   </div>
 </template>
 
+
 <script>
+import HelperMixin from 'src/mixins/HelperMixin.vue';
 export default {
+  mixins:[HelperMixin],
   props: {
     summary: {
       type: Object,
@@ -176,7 +213,7 @@ export default {
   font-size: small;
 }
 .value {
-  font-size: large;
+  font-size: small;
   color: $primary;
 }
 

@@ -36,7 +36,10 @@
       </TableVue>
 
       <div v-if="getMemberContributions.length > 0">
-          <ContributionSummary :summary="getSummaryData"  :is_expenditures="false"></ContributionSummary>
+        <ContributionSummary
+          :summary="getSummaryData"
+          :is_expenditures="false"
+        ></ContributionSummary>
       </div>
     </div>
   </div>
@@ -235,18 +238,20 @@ export default {
         : "";
     },
 
-    getSummaryData(){
-      const data = (this.$store.getters.getMemberContributions);
+    getSummaryData() {
+      const data = this.$store.getters.getMemberContributions;
       let summary = {
         expect_contribution: data.total_amount_payable,
-        amount_contributed:data.total_amount,
-        balance:data.total_balance,
+        amount_contributed: data.total_amount,
+        balance: data.total_balance,
         percentage: data.percentage,
-        payment_durations:data.payment_durations
-      }
+        payment_durations: data.payment_durations,
+        frequency: data.payment_item.frequency,
+        member_size: data.member_size,
+      };
 
       return summary;
-    }
+    },
   },
   methods: {
     viewContribution(data) {
@@ -393,7 +398,7 @@ export default {
   components: {
     TableVue,
     FilterComponentVue,
-    ContributionSummary
+    ContributionSummary,
   },
 };
 </script>

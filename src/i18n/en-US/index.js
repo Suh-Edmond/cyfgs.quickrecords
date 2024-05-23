@@ -537,5 +537,6 @@ export default {
     helpMsgExpectedContribution:"The Expected Contribution for a payment item is calculated by multiplying the Payment Item Amount by its Frequency and by the Number of Members associated with the payment item type.For a one-time payment item with an 'ALL_MEMBERS' type, the Expected Contribution is calculated as:(Payment Item Amount) x 1 x (Total number of active members)For payment items with monthly or quarterly frequencies, the Expected Contribution is calculated as:(Payment Item Amount) x (Number of Months/Quarters) x (Number of Members associated with the payment item type)",
     provideEmailMsg: "Provide your email address",
     invitationLinkExpiredMsg: "The Invitation link has expired. Please request for a new one",
+    memberSize:"Member Size"
   }
 };

@@ -216,6 +216,7 @@ export default {
     },
 
     filterIncomeActivity(payload_data, page, per_page, filter) {
+      console.log(payload_data.status);
       this.payment_item_id = payload_data.payment_item_id;
       let item_id =
         this.payment_item_id != null && this.payment_item_id != ""
@@ -231,10 +232,7 @@ export default {
         this.month != "" && this.month != null ? this.month.value : "";
 
       let month_label = this.month != "" ? this.month.label : "";
-      this.status =
-        payload_data.status != "" && payload_data.status != null
-          ? this.indexPaymentStatus(payload_data.status)
-          : "";
+      this.status = payload_data.status;
       let page_num =
         this.payment_item_id != null || this.payment_item_id != "" ? 1 : page;
       let num_rows =
@@ -297,10 +295,7 @@ export default {
           : "";
       let month =
         data.month != null && data.month != "" ? data.month.value : "";
-      let status =
-        data.status !== null && data.status !== ""
-          ? this.indexPaymentStatus(data.status)
-          : "";
+      let status = data.status;
       let year = LocalStorage.getItem("data").current_session.year;
       let url = `/api/protected/organisations/income-activities/generate-pdf?organisation_id=${this.organisation_id}&month=${month}&payment_item_id=${payment_item_value}&status=${status}&payment_item_name=${payment_item_label}&year=${year}`;
 

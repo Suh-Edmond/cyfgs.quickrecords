@@ -356,14 +356,14 @@ export default {
     getSummaryData(){
       const data = (this.$store.getters.getFilteredContributions);
       let summary = {
-        type: "ALL MEMBERS",
-        number_of_members: 80,
-        frequency:"ONE TIME",
+        type: data.payment_item.type,
+        frequency:data.payment_item.frequency,
         expect_contribution: data.total_amount_payable,
         amount_contributed:data.total_amount,
         balance:data.total_balance,
         percentage: data.percentage,
-        payment_durations:data.payment_durations
+        payment_durations:data.payment_durations,
+        member_size : data.member_size
       }
 
       return summary;

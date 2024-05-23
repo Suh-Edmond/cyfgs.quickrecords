@@ -1300,12 +1300,12 @@ export default {
     downloadExpenditureItems() {
       let payload = {
         payment_item_id:
-          this.payment_item_id !== null && this.payment_item_id !== ""
+          this.payment_item_id != null && this.payment_item_id != ""
             ? this.payment_item_id
             : "",
-        year: this.year !== null && this.year !== "" ? this.year : "",
+        year: this.year != null && this.year != "" ? this.year : "",
         payment_status:
-          this.payment_status !== null && this.payment_status !== ""
+          this.payment_status != null && this.payment_status != ""
             ? this.indexPaymentStatus(this.payment_status)
             : "",
       };
@@ -1359,7 +1359,7 @@ export default {
             : "",
         year: this.year !== null && this.year !== "" ? this.year : "",
         payment_status:
-          this.payment_status !== null && this.payment_status !== ""
+          this.payment_status != null && this.payment_status != ""
             ? this.indexPaymentStatus(this.payment_status)
             : "",
       };

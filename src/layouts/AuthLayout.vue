@@ -5,11 +5,18 @@
         <q-toolbar-title
           :class="$q.screen.lg ? 'header_title' : 'header_title_small'"
         >
-          <span class="app_name">{{ $t("app.nameOne") }}</span
+          <span
+            ><q-avatar size="75px" font-size="160px">
+              <img
+                src="../assets/App_Logo.jpeg"
+                alt=""
+                width="160"
+                height="160"
+              /> </q-avatar></span
+          ><span class="app_name">{{ $t("app.nameOne") }}</span
           >{{ $t("app.nameTwo") }}
         </q-toolbar-title>
         <div class="header_note" v-show="$q.screen.lg">
-
           <div class="q-pa-md header_language">
             <q-btn-dropdown color="black" :label="getLocale" flat>
               <q-list>
@@ -153,7 +160,7 @@ export default {
   color: $orange;
   font-weight: bold;
   padding: 0.6rem;
-  font-size: xx-large;
+  font-size: x-large;
   font-family: "Roboto";
   letter-spacing: 0.009em;
   display: block;

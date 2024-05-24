@@ -148,9 +148,7 @@ export default {
     getTableTitle() {
       let title = "";
       if (this.payment_item_id !== null && this.payment_item_id !== "") {
-        title =
-          this.$t("app.expenditureItemTitlePartName") +
-          `${this.payment_item_id.label}`;
+        title = `${this.payment_item_id.label}`;
       } else {
         title = this.$store.getters.getCurrentExpenditureCategory.name;
       }
@@ -293,7 +291,14 @@ export default {
           this.payment_item_id !== "" && this.payment_item_id !== null
             ? this.payment_item_id.value
             : "";
-        this.fetchExpenditureItems(1, 7, "", this.status, payment_item_value, "");
+        this.fetchExpenditureItems(
+          1,
+          7,
+          "",
+          this.status,
+          payment_item_value,
+          ""
+        );
       });
     },
 

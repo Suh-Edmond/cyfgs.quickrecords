@@ -119,17 +119,7 @@
 
             <!-- buttons for approve and decline row data -->
             <q-btn
-              class="decline_btn"
-              :label="$t('app.decline')"
-              no-caps
-              dense
-              unelevated
-              @click="onDeclineRecord(props.row, 'Decline')"
-              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
-            />
-
-            <q-btn
-              class="approve_btn q-mx-xl"
+              class="approve_btn"
               dense
               :label="$t('app.approve')"
               no-caps
@@ -138,6 +128,15 @@
               v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
             />
 
+            <q-btn
+              class="decline_btn q-mx-xl"
+              :label="$t('app.decline')"
+              no-caps
+              dense
+              unelevated
+              @click="onDeclineRecord(props.row, 'Decline')"
+              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
+            />
             <q-btn
               unelevated
               no-caps

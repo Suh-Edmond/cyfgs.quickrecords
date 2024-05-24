@@ -48,7 +48,7 @@
       <CategoryTable
         :class="$q.platform.is.desktop ? 'q-pt-sm q-px-sm' : ' q-px-sm q-pt-xl'"
         :columns="columns"
-        :data="expenditure_item_details"
+        :data="getExpenditureItemDetails"
         :label="label"
         :message="message"
         :title="getTableTitle"
@@ -182,7 +182,7 @@
               :color="type == 'Approve' ? 'secondary' : 'orange'"
               :disabled="false"
               no-caps
-              @click="onConfirmPayment"
+              @click="onConfirmBulkExpenditures"
             >
             </q-btn>
           </div>
@@ -336,6 +336,17 @@ export default {
 
       return summary;
     },
+
+    getExpenditureItemDetails() {
+      let details = [];
+      const data = this.$store.getters.getExpenditureItemDetails;
+      if (data != null) {
+        details = this.generateExpenditureItemDetailResponse(data);
+      } else {
+        details = this.expenditure_item_details;
+      }
+      return details;
+    },
   },
   methods: {
     getExpenditureDetailsByItemId(
@@ -407,6 +418,7 @@ export default {
           this.$store.commit("SET_IS_FETCHING", false);
           this.is_fetching = false;
         });
+      return this.expenditure_item_details;
     },
 
     onRequest(props) {
@@ -527,7 +539,7 @@ export default {
       return data;
     },
 
-    onConfirmPayment() {
+    onConfirmBulkExpenditures() {
       let payload = {
         url: `/api/protected/expenditure-details/bulk_approve`,
         msg: this.setApproveFeedbackMsg(),
@@ -556,6 +568,7 @@ export default {
               false,
               this.$route.params.id
             );
+            this.$store.commit("SET_EXPENDITURE_ITEM_DETAIL", null);
           }
         })
         .finally(() => {
@@ -563,6 +576,42 @@ export default {
           this.loading_payment = false;
           this.selectedRecords = new Set();
         });
+    },
+
+    generateExpenditureItemDetailResponse(response) {
+      this.expenditure_item_details = [];
+      response.data.forEach((ele) => {
+        this.expenditure_item_details.push({
+          counter: response.data.indexOf(ele) + 1,
+          name: ele.name,
+          amount_given: ele.amount_given,
+          amount_spent: ele.amount_spent,
+          balance: ele.balance,
+          type: "EXPENDITURE_DETAILS",
+          id: ele.id,
+          expenditure_item_id: ele.expenditure_item_id,
+          comment: ele.comment,
+          approve: ele.approve,
+          created_at: ele.created_at,
+          updated_at: ele.updated_at,
+          updated_by: ele.updated_by,
+          is_selected: ele.is_selected,
+        });
+      });
+      this.$store.commit("SET_PAGINATION", {
+        sortBy: "name",
+        descending: false,
+        page: response.current_page,
+        rowsPerPage: response.per_page,
+        rowsNumber: response.total,
+      });
+      this.total_amount_given = response.total_amount_given;
+      this.total_amount_spent = response.total_amount_spent;
+      this.total_item_amount = response.total_item_amount;
+      this.total_balance = response.total_balance;
+      this.expenditure_item_name = response.expenditure_item_name;
+
+      return this.expenditure_item_details;
     },
   },
   components: {

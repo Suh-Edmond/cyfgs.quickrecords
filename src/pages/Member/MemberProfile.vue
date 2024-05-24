@@ -588,7 +588,7 @@
                         {{ Number(props.row.balance).toLocaleString() }}
                       </q-td>
                       <q-td key="frequency" :props="props">
-                        {{ props.row.frequency }}
+                        {{ formatConstants(props.row.frequency) }}
                       </q-td>
                       <q-td key="month_name" :props="props">
                         {{
@@ -720,7 +720,7 @@
                         {{ props.row.name }}
                       </q-td>
                       <q-td key="frequency" :props="props">
-                        {{ props.row.frequency }}
+                        {{ formatConstants(props.row.frequency) }}
                       </q-td>
                       <q-td key="month_name" :props="props">
                         {{

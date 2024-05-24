@@ -46,7 +46,8 @@ module.exports = function (ctx) {
     build: {
       vueRouterMode: "history", // available values: 'hash', 'history'
       env: {
-        API_BASE_URL: "https://www.quickrecords.net",
+        // API_BASE_URL: "https://www.quickrecords.net",
+        API_BASE_URL:"http://localhost:8000",
         CLIENT_SERVER: "https://quickrecords.vercel.app",
         REDIRECT_URL: "https://quickrecords.vercel.app/auth/invite-member",
         APP_NAME: "Quick_Records",
@@ -150,27 +151,27 @@ module.exports = function (ctx) {
         theme_color: "#027be3",
         icons: [
           {
-            src: "/icons/favicon-128x128.png",
+            src: "icons/favicon-128x128.png",
             sizes: "128x128",
             type: "image/png",
           },
           {
-            src: "/icons/icon-192x192.png",
+            src: "icons/icon-192x192.png",
             sizes: "192x192",
             type: "image/png",
           },
           {
-            src: "/icons/icon-256x256.png",
+            src: "icons/icon-256x256.png",
             sizes: "256x256",
             type: "image/png",
           },
           {
-            src: "/icons/icon-384x384.png",
+            src: "icons/icon-384x384.png",
             sizes: "384x384",
             type: "image/png",
           },
           {
-            src: "/icons/icon-512x512.png",
+            src: "icons/icon-512x512.png",
             sizes: "512x512",
             type: "image/png",
           },

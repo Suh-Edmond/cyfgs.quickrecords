@@ -1358,10 +1358,7 @@ export default {
             ? this.payment_item_id
             : "",
         year: this.year !== null && this.year !== "" ? this.year : "",
-        payment_status:
-          this.payment_status != null && this.payment_status != ""
-            ? this.indexPaymentStatus(this.payment_status)
-            : "",
+        payment_status: this.indexPaymentStatus(this.payment_status),
       };
 
       this.$emit("filter-expenditure-items", payload);

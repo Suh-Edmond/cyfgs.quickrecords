@@ -515,20 +515,20 @@
           <q-td key="action" :props="props">
             <!-- buttons for approve and decline row data -->
             <q-btn
-              class="decline_btn_income_activity q-mx-xl"
-              :label="$t('app.decline')"
-              no-caps
-              unelevated
-              @click="onDeclineRecord(props.row, 'Decline')"
-              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
-            />
-
-            <q-btn
-              class="approve_btn_income_activity q-mr-sm"
+              class="approve_btn_income_activity q-mx-xl"
               :label="$t('app.approve')"
               no-caps
               unelevated
               @click="onApprovedRecord(props.row, 'Approve')"
+              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
+            />
+
+            <q-btn
+              class="decline_btn_income_activity q-mr-sm"
+              :label="$t('app.decline')"
+              no-caps
+              unelevated
+              @click="onDeclineRecord(props.row, 'Decline')"
               v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
             />
 

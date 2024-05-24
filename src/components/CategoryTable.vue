@@ -33,7 +33,7 @@
               color="primary"
               no-caps
               class="view_items"
-              :style="$q.platform.is.mobile?'width:200px':'width:200px'"
+              :style="$q.platform.is.mobile ? 'width:200px' : 'width:200px'"
               @click="showPaymentItems(props.row)"
               :to="{ name: 'payment_items', params: { id: props.row.id } }"
             >
@@ -135,7 +135,7 @@
               color="primary"
               no-caps
               class="view_items"
-              :style="$q.platform.is.mobile?'width:200px':'width:150px'"
+              :style="$q.platform.is.mobile ? 'width:200px' : 'width:150px'"
               @click="showReferences(props.row)"
               v-if="props.row.payment_item_type == 'A_MEMBER'"
             >
@@ -152,7 +152,7 @@
               no-caps
               class="view_items"
               @click="showReferences(props.row)"
-              :style="$q.platform.is.mobile?'width:200px':'width:150px'"
+              :style="$q.platform.is.mobile ? 'width:200px' : 'width:150px'"
               v-if="
                 props.row.payment_item_type == 'GROUPED_MEMBERS' ||
                 props.row.payment_item_type == 'MEMBERS_WITH_ROLES' ||
@@ -237,7 +237,6 @@
               color="primary"
               no-caps
               class="view_items"
-
               @click="onViewPaymentItem(props.row)"
               v-if="checkTreasurerRole()"
             >
@@ -264,7 +263,7 @@
               color="primary"
               no-caps
               class="view_items"
-              :style="$q.platform.is.mobile?'width:200px':'width:200px'"
+              :style="$q.platform.is.mobile ? 'width:200px' : 'width:200px'"
               @click="showExpenditureItems(props.row)"
               :to="{ name: 'expenditure_items', params: { id: props.row.id } }"
             >
@@ -375,7 +374,7 @@
               v-if="checkTreasurerRole()"
               class="view q-mr-md"
               @click="showDetails(props.row)"
-              :to="{ name: 'expenditure_detail', params: { id: props.row.id } }"
+              :to="{ name: 'expenditure_detail', params: { id: props.row.id, session_id: props.row.session.id } }"
             >
               <q-icon name="visibility" size="xs" class="q-pl-md"></q-icon>
             </q-btn>
@@ -520,6 +519,14 @@
           <q-td
             key="approve"
             :props="props"
+            v-if="props.row.approve == 'APPROVED'"
+            class="text-positive"
+          >
+            {{ props.row.approve }}
+          </q-td>
+          <q-td
+            key="approve"
+            :props="props"
             v-if="props.row.approve == 'PENDING'"
             class="text-info"
           >
@@ -530,14 +537,6 @@
             :props="props"
             v-if="props.row.approve == 'DECLINED'"
             class="text-orange"
-          >
-            {{ props.row.approve }}
-          </q-td>
-          <q-td
-            key="approve"
-            :props="props"
-            v-if="props.row.approve == 'APPROVED'"
-            class="text-positive"
           >
             {{ props.row.approve }}
           </q-td>
@@ -752,8 +751,6 @@
       </q-dialog>
     </div>
     <!--------------------------------------------------END OF CONFIRM APPROVE/DECLINE A RECORD-------------->
-
-
   </div>
 </template>
 <script>
@@ -770,7 +767,7 @@ export default {
     PaymentCategoryMixinVue,
     expenditureItemMixinVue,
     ExpenditureItemDetailMixinVue,
-    HelperMixin
+    HelperMixin,
   ],
 
   props: {
@@ -892,7 +889,7 @@ export default {
       const treasurer_role = LocalStorage.getItem("data").user_data.roles.find(
         (role) => role.name === "TREASURER"
       );
-       return treasurer_role != undefined;
+      return treasurer_role != undefined;
     },
 
     checkPresidentOrAdminRole() {
@@ -1134,12 +1131,12 @@ export default {
             10,
             { value: this.$store.getters.getCurrentExpenditureCategory.id },
             "",
+            "",
             ""
           );
           break;
         case "EXPENDITURE_DETAILS":
-          this.getExpenditureDetailsByItemId(data.expenditure_item_id, 1, 7);
-
+          this.getExpenditureDetailsByItemId(data.expenditure_item_id, 1, 10);
           break;
       }
     },
@@ -1252,7 +1249,7 @@ export default {
   font-size: 12px;
   align-items: center;
   text-transform: capitalize;
- }
+}
 
 .field_total {
   font-family: "Roboto";

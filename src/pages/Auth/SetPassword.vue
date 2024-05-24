@@ -5,7 +5,7 @@
       :class="$q.screen.lg ? 'q-pt-lg flex flex-center' : 'q-pt-sm'"
     >
       <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12">
-        <q-card :class="$q.screen.lg ? 'q-mt-lg' : 'q-mt-md q-mb-xl'">
+        <q-card :class="$q.screen.lg ? 'q-mt-lg' : 'q-mt-md'">
           <q-card-section>
             <div class="back_arrow_button" v-show="is_exist_user">
               <q-btn
@@ -430,11 +430,9 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 600;
-  font-size: 15px;
-  line-height: 24px;
+  font-size: 0.9em;
   align-items: center;
   text-align: center;
-  letter-spacing: 0.005em;
 }
 
 .text-subtitle2 {
@@ -442,26 +440,13 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 400;
-  font-size: 13px;
-  line-height: 18px;
+  font-size: 0.8rem;
   align-items: center;
   text-align: center;
-  letter-spacing: 0.01em;
-}
-
-.form_field {
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 12px;
-  align-items: center;
-  letter-spacing: 0.01em;
-  color: $grey2;
 }
 
 .form_button {
   width: 100%;
-  // margin-top: 0.2rem;
   margin-bottom: 0.1rem;
 }
 
@@ -471,9 +456,7 @@ export default {
   font-style: normal;
   font-weight: 700;
   font-size: 13px;
-  line-height: 24px;
   align-items: center;
-  letter-spacing: 0.005em;
   color: $primary;
   cursor: pointer;
   margin-top: 0.5rem;

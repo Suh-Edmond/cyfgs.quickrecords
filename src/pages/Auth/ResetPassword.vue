@@ -6,128 +6,132 @@
     >
       <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12">
         <q-card :class="$q.screen.lg ? 'q-mt-lg' : 'q-mt-md q-mb-xl'">
-
           <div v-if="!show_token_expire_msg">
             <!-------------------------PASSWORD RESET TOKEN-------------------------------->
-          <q-card-section v-if="show_new_password_form">
-            <div class="text_h6 text-center q-pt-sm q-pb-sm">
-              {{ $t("app.passwordResetToken") }}
-            </div>
-            <div class="text-subtitle2 text-center q-pb-xs">
-              {{ $t("app.passwordResetTokenCap") }}
-            </div>
+            <q-card-section v-if="show_new_password_form">
+              <div class="text_h6 text-center q-pt-sm q-pb-sm">
+                {{ $t("app.passwordResetToken") }}
+              </div>
+              <div class="text-subtitle2 text-center q-pb-xs">
+                {{ $t("app.passwordResetTokenCap") }}
+              </div>
 
-            <q-form
-              @submit="onSubmitPasswordResetToken"
-              class="q-gutter-md q-mt-md q-px-md"
-            >
-              <div>
-                <label for="credential" class="form_field"
-                  >{{ $t("app.token") }} <span class="text-red">*</span></label
-                >
-                <q-input v-model="token" outlined dense type="text" disable>
-                </q-input>
-              </div>
-              <div class="q-mb-xl q-mt-lg">
-                <q-btn
-                  class="form_button q-pa-xs"
-                  :label="label"
-                  :loading="loading"
-                  :color="'primary'"
-                  no-caps
-                  type="submit"
-                >
-                  <q-icon
-                    name="arrow_forward"
-                    size="xs"
-                    class="q-pl-lg"
-                  ></q-icon>
-                </q-btn>
-              </div>
-            </q-form>
-          </q-card-section>
-          <!------------------------------END OF PASSWORD RESET TOKEN FORM------------------------->
+              <q-form
+                @submit="onSubmitPasswordResetToken"
+                class="q-gutter-md q-mt-md q-px-md"
+              >
+                <div>
+                  <label for="credential" class="form_field"
+                    >{{ $t("app.token") }}
+                    <span class="text-red">*</span></label
+                  >
+                  <q-input v-model="token" outlined dense type="text" disable>
+                  </q-input>
+                </div>
+                <div class="q-mb-xl q-mt-lg">
+                  <q-btn
+                    class="form_button q-pa-xs"
+                    :label="label"
+                    :loading="loading"
+                    :color="'primary'"
+                    no-caps
+                    type="submit"
+                  >
+                    <q-icon
+                      name="arrow_forward"
+                      size="xs"
+                      class="q-pl-lg"
+                    ></q-icon>
+                  </q-btn>
+                </div>
+              </q-form>
+            </q-card-section>
+            <!------------------------------END OF PASSWORD RESET TOKEN FORM------------------------->
 
-          <!-------------------------NEW PASSWORD FORM-------------------------------->
-          <q-card-section v-if="!show_new_password_form">
-            <div class="text_h6 text-center q-pt-sm q-pb-sm">
-              {{ $t("app.resetPasswordMsg") }}
-            </div>
-            <div class="text-subtitle2 text-center q-pb-xs">
-              {{ $t("app.resetCap") }}
-            </div>
-            <q-form
-              @submit="onSubmitNewPassword"
-              class="q-gutter-md q-mt-md q-px-md"
-            >
-              <div>
-                <label for="credential" class="form_field"
-                  >{{ $t("app.newPassword") }}
-                  <span class="text-red">*</span></label
-                >
-                <q-input
-                  v-model="user.new_password"
-                  :type="isPwd ? 'password' : 'text'"
-                  outlined
-                  dense
-                  bottom-slots
-                >
-                  <template v-slot:append>
+            <!-------------------------NEW PASSWORD FORM-------------------------------->
+            <q-card-section v-if="!show_new_password_form">
+              <div class="text_h6 text-center q-pt-sm q-pb-sm">
+                {{ $t("app.resetPasswordMsg") }}
+              </div>
+              <div class="text-subtitle2 text-center q-pb-xs">
+                {{ $t("app.resetCap") }}
+              </div>
+              <q-form
+                @submit="onSubmitNewPassword"
+                class="q-gutter-md q-mt-md q-px-md"
+              >
+                <div>
+                  <label for="credential" class="form_field"
+                    >{{ $t("app.newPassword") }}
+                    <span class="text-red">*</span></label
+                  >
+                  <q-input
+                    v-model="user.new_password"
+                    :type="isPwd ? 'password' : 'text'"
+                    outlined
+                    dense
+                    bottom-slots
+                  >
+                    <template v-slot:append>
+                      <q-icon
+                        :name="isPwd ? 'visibility_off' : 'visibility'"
+                        class="cursor-pointer"
+                        @click="isPwd = !isPwd"
+                      />
+                    </template>
+                    <template v-slot:hint>
+                      <span class="text-red" v-show="validatePasswordSize">{{
+                        $t("app.newPasswordHintMsg")
+                      }}</span>
+                    </template>
+                  </q-input>
+                </div>
+                <div>
+                  <label for="credential" class="form_field"
+                    >{{ $t("app.confirmPasword") }}
+                    <span class="text-red">*</span></label
+                  >
+                  <q-input
+                    v-model="user.confirm_password"
+                    :type="isConfirmPwd ? 'password' : 'text'"
+                    outlined
+                    dense
+                    bottom-slots
+                  >
+                    <template v-slot:append>
+                      <q-icon
+                        :name="isConfirmPwd ? 'visibility_off' : 'visibility'"
+                        class="cursor-pointer"
+                        @click="isConfirmPwd = !isConfirmPwd"
+                      />
+                    </template>
+                    <template v-slot:hint>
+                      <span class="text-red" v-if="validatePasswordMatch">{{
+                        $t("app.passwordNotMatchMsg")
+                      }}</span>
+                    </template>
+                  </q-input>
+                </div>
+                <div class="q-mb-xl q-mt-lg">
+                  <q-btn
+                    class="form_button q-pa-xs"
+                    :label="this.$t('app.saveBtnLabel')"
+                    :loading="loading"
+                    :disabled="validatePassword"
+                    :color="'primary'"
+                    no-caps
+                    type="submit"
+                  >
                     <q-icon
-                      :name="isPwd ? 'visibility_off' : 'visibility'"
-                      class="cursor-pointer"
-                      @click="isPwd = !isPwd"
-                    />
-                  </template>
-                  <template v-slot:hint>
-                    <span class="text-red" v-show="validatePasswordSize">{{ $t('app.newPasswordHintMsg') }}</span>
-                  </template>
-                </q-input>
-              </div>
-              <div>
-                <label for="credential" class="form_field"
-                  >{{ $t("app.confirmPasword") }}
-                  <span class="text-red">*</span></label
-                >
-                <q-input
-                  v-model="user.confirm_password"
-                  :type="isConfirmPwd ? 'password' : 'text'"
-                  outlined
-                  dense
-                  bottom-slots
-                >
-                  <template v-slot:append>
-                    <q-icon
-                      :name="isConfirmPwd ? 'visibility_off' : 'visibility'"
-                      class="cursor-pointer"
-                      @click="isConfirmPwd = !isConfirmPwd"
-                    />
-                  </template>
-                  <template v-slot:hint >
-                    <span class="text-red" v-if="validatePasswordMatch">{{ $t('app.passwordNotMatchMsg') }}</span>
-                  </template>
-                </q-input>
-              </div>
-              <div class="q-mb-xl q-mt-lg">
-                <q-btn
-                  class="form_button q-pa-xs"
-                  :label="this.$t('app.saveBtnLabel')"
-                  :loading="loading"
-                  :disabled="validatePassword"
-                  :color="'primary'"
-                  no-caps
-                  type="submit"
-                >
-                  <q-icon
-                    name="arrow_forward"
-                    size="xs"
-                    class="q-pl-lg"
-                  ></q-icon>
-                </q-btn>
-              </div>
-            </q-form>
-          </q-card-section>
-          <!-------------------------END NEW PASSWORD FORM-------------------------------->
+                      name="arrow_forward"
+                      size="xs"
+                      class="q-pl-lg"
+                    ></q-icon>
+                  </q-btn>
+                </div>
+              </q-form>
+            </q-card-section>
+            <!-------------------------END NEW PASSWORD FORM-------------------------------->
           </div>
 
           <!-------------------------START PASSWORD RESET TOKEN EXPIRED-------------------------------->
@@ -136,13 +140,20 @@
               <q-icon name="hourglass_bottom" class="expired_icon"></q-icon>
             </div>
             <div class="q-pa-md">
-              <p class="tokenMsg">{{ $t('app.tokenExpireMsg') }}.
-
+              <p class="tokenMsg">{{ $t("app.tokenExpireMsg") }}.</p>
+              <p class="passwordCaption">
+                {{ $t("app.passwordTokenExpireCaption") }}.
               </p>
-              <p class="passwordCaption">{{ $t('app.passwordTokenExpireCaption') }}.</p>
             </div>
             <div class="text-center q-mb-xl">
-              <q-btn to="/" flat :label="$t('app.newPasswordResetTokenMsg')" @click="onRedirected" color="primary" no-caps />
+              <q-btn
+                to="/"
+                flat
+                :label="$t('app.newPasswordResetTokenMsg')"
+                @click="onRedirected"
+                color="primary"
+                no-caps
+              />
             </div>
           </q-card-section>
           <!-------------------------END PASSWORD RESET TOKEN EXPIRED-------------------------------->
@@ -153,7 +164,7 @@
 </template>
 
 <script>
-import { Notify, Platform } from 'quasar';
+import { Notify, Platform } from "quasar";
 
 export default {
   data() {
@@ -169,7 +180,7 @@ export default {
         new_password: null,
         user_id: "",
       },
-      show_token_expire_msg:false,
+      show_token_expire_msg: false,
     };
   },
   computed: {
@@ -182,12 +193,14 @@ export default {
         this.user.new_password !== this.user.confirm_password
       );
     },
-    validatePasswordSize(){
-      return this.user.new_password !== null && this.user.new_password.length < 8
+    validatePasswordSize() {
+      return (
+        this.user.new_password !== null && this.user.new_password.length < 8
+      );
     },
-    validatePasswordMatch(){
-      return this.user.new_password !== this.user.confirm_password
-    }
+    validatePasswordMatch() {
+      return this.user.new_password !== this.user.confirm_password;
+    },
   },
   methods: {
     onSubmitPasswordResetToken() {
@@ -212,17 +225,17 @@ export default {
       this.$store
         .dispatch("postRequest", payload)
         .then((res) => {
-           if(res.status == 200) {
+          if (res.status == 200) {
             this.user.user_id = res.data.data.user_id;
-            this.show_new_password_form = false
+            this.show_new_password_form = false;
           }
-          if(res.status == 403){
+          if (res.status == 403) {
             this.show_token_expire_msg = true;
             Notify.create({
               type: "info",
-              position:Platform.is.mobile ? 'bottom':'top-right',
-              message:this.$t('app.tokenExpireMsg')
-            })
+              position: Platform.is.mobile ? "bottom" : "top-right",
+              message: this.$t("app.tokenExpireMsg"),
+            });
           }
         })
         .catch((error) => {})
@@ -261,15 +274,14 @@ export default {
         });
     },
 
-    onRedirected(e, go){
-      e.preventDefault()
+    onRedirected(e, go) {
+      e.preventDefault();
       go({
-        to: '/auth/password-reset/get-token'
-      }).then(_vueRouterResult => {  })
-        .catch(_vueRouterError => {
-
-        })
-    }
+        to: "/auth/password-reset/get-token",
+      })
+        .then((_vueRouterResult) => {})
+        .catch((_vueRouterError) => {});
+    },
   },
   components: {},
 };
@@ -289,11 +301,9 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 600;
-  font-size: 15px;
-  line-height: 24px;
+  font-size: 0.9em;
   align-items: center;
   text-align: center;
-  letter-spacing: 0.005em;
 }
 
 .text-subtitle2 {
@@ -301,21 +311,9 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 400;
-  font-size: 13px;
-  line-height: 18px;
+  font-size: 0.8rem;
   align-items: center;
   text-align: center;
-  letter-spacing: 0.01em;
-}
-
-.form_field {
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 12px;
-  align-items: center;
-  letter-spacing: 0.01em;
-  color: $grey2;
 }
 
 .tokenMsg {
@@ -323,10 +321,9 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 600;
-  font-size: 17px;
+  font-size: 1px;
   align-items: center;
   text-align: center;
-  letter-spacing: 0.005em;
 }
 
 .form_button {
@@ -348,7 +345,7 @@ export default {
   text-align: center;
 }
 
-.expired_icon{
+.expired_icon {
   color: $red;
   font-size: 4rem;
 }

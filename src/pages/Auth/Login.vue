@@ -5,9 +5,7 @@
       :class="$q.screen.lg ? 'q-pt-lg flex flex-center' : 'q-pt-sm'"
     >
       <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12">
-        <q-card
-          :class="$q.screen.lg ? 'q-mt-lg' : 'q-mt-md q-mb-xl login-card'"
-        >
+        <q-card :class="$q.screen.lg ? 'q-mt-lg' : 'q-mt-md login-card'">
           <q-card-section>
             <div class="text_h6 text-center q-pt-sm q-pb-sm">
               {{ $t("app.signIn") }}
@@ -15,7 +13,11 @@
             <div class="text-subtitle2 text-center q-pb-xs">
               {{ $t("app.loginCaption") }}
             </div>
-            <q-form @submit="onSubmit" class="q-gutter-md q-mt-lg q-px-md">
+            <q-form
+              @submit="onSubmit"
+              class="q-gutter-md q-mt-lg"
+              :class="$q.screen.lg ? 'q-px-md' : ''"
+            >
               <div>
                 <label for="credential" class="form_field"
                   >{{ $t("app.emailLabel") }}
@@ -77,10 +79,7 @@
               <div class="row justify-center" v-if="$q.platform.is.mobile">
                 <div class="account_text">{{ $t("app.noAccountMsg") }}</div>
                 <router-link to="/auth/register" class="sign_link">
-                  &nbsp;<span @click="checkAccountExist('SIGN_UP')">{{
-                    $t("app.signUpLabel")
-                  }}</span></router-link
-                >
+                </router-link>
               </div>
               <div
                 class="row justify-center q-mb-xl"
@@ -109,7 +108,6 @@ import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
 import memberMixinVue from "src/mixins/memberMixin.vue";
 import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
 import ContributionsMixinVue from "src/mixins/ContributionsMixin.vue";
-import { VueTelInput } from "vue-tel-input";
 import { Notify, Platform, SessionStorage } from "quasar";
 
 export default {
@@ -259,11 +257,9 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 600;
-  font-size: 15px;
-  line-height: 24px;
+  font-size: 0.9em;
   align-items: center;
   text-align: center;
-  letter-spacing: 0.005em;
 }
 
 .text-subtitle2 {
@@ -271,21 +267,9 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 400;
-  font-size: 13px;
-  line-height: 18px;
+  font-size: 0.8rem;
   align-items: center;
   text-align: center;
-  letter-spacing: 0.01em;
-}
-
-.form_field {
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 12px;
-  align-items: center;
-  letter-spacing: 0.01em;
-  color: $grey2;
 }
 
 .form_button {
@@ -298,10 +282,8 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 700;
-  font-size: 13px;
-  line-height: 24px;
+  font-size: 0.7rem;
   align-items: center;
-  letter-spacing: 0.005em;
   color: $primary;
   cursor: pointer;
   margin-top: 0.5rem;
@@ -312,7 +294,6 @@ export default {
   text-decoration: none;
   color: $primary;
   font-weight: 600;
-  font-size: 14px;
 }
 
 .login-card {

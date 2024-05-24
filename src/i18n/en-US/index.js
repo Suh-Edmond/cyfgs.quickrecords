@@ -7,8 +7,8 @@ export default {
     english: "English",
     french: "French",
     continue: "CONTINUE",
-    loginCaption: "Sign in to continue to Quick Records",
-    signUpCaptionMsg: "Sign up to get started with Quick Records",
+    loginCaption: "Sign in to continue to QuickRecords",
+    signUpCaptionMsg: "Sign up to get started with QuickRecords",
     updateOrganisationHeading: "Update Organisation Information",
     telephoneLabel: "Telephone",
 

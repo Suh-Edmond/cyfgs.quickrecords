@@ -1,30 +1,62 @@
 <template>
   <q-page class="page">
-    <div class="row q-px-md" :class="$q.screen.lg ? 'q-pt-lg flex flex-center' : 'q-pt-sm'">
+    <div
+      class="row q-px-md"
+      :class="$q.screen.lg ? 'q-pt-lg flex flex-center' : 'q-pt-sm'"
+    >
       <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12">
         <q-card :class="$q.screen.lg ? 'q-mt-lg' : 'q-mt-md q-mb-xl'">
           <!-------------------------PASSWORD RESET TOKEN FORM -------------------------------->
           <q-card-section v-show="show_token_form">
             <div class="back_arrow_button">
-              <q-btn class="material-icons back_arrow" icon="arrow_back" @click="goBack" flat />
+              <q-btn
+                class="material-icons back_arrow"
+                icon="arrow_back"
+                @click="goBack"
+                flat
+              />
             </div>
-            <div class="text_h6 text-center q-pt-sm q-pb-sm">{{ $t('app.passwordReset') }}</div>
+            <div class="text_h6 text-center q-pt-sm q-pb-sm">
+              {{ $t("app.passwordReset") }}
+            </div>
             <div class="text-subtitle2 text-center q-pb-xs">
-              {{ $t('app.passwordResetCaption') }}
+              {{ $t("app.passwordResetCaption") }}
             </div>
 
             <!-- Form to get password reset token -->
-            <q-form @submit="onGetPasswordResetToken" class="q-gutter-md q-mt-md q-px-md">
+            <q-form
+              @submit="onGetPasswordResetToken"
+              class="q-gutter-md q-mt-md q-px-md"
+            >
               <div>
-                <label for="credential" class="form_field">{{ $t('app.emailLabel') }} <span
-                    class="text-red">*</span></label>
-                <q-input v-model="user.email" outlined dense type="email" bottom-slots>
+                <label for="credential" class="form_field"
+                  >{{ $t("app.emailLabel") }}
+                  <span class="text-red">*</span></label
+                >
+                <q-input
+                  v-model="user.email"
+                  outlined
+                  dense
+                  type="email"
+                  bottom-slots
+                >
                 </q-input>
               </div>
               <div class="q-mb-xl">
-                <q-btn class="form_button q-pa-xs" :label="label" :loading="loading" :disabled="validateEmail"
-                  :color="'primary'" no-caps type="submit">
-                  <q-icon name="arrow_forward" size="xs" class="q-pl-lg"></q-icon>
+                <q-btn
+                  class="form_button q-pa-xs"
+                  :label="label"
+                  :loading="loading"
+                  :disabled="validateEmail"
+                  :color="'primary'"
+                  no-caps
+                  type="submit"
+                >
+                  <q-icon
+                    name="arrow_forward"
+                    size="xs"
+                    class="q-pl-lg"
+                  ></q-icon>
                 </q-btn>
               </div>
             </q-form>
@@ -36,10 +68,12 @@
               <q-icon name="check" class="check_icon"></q-icon>
             </div>
             <div class="q-pa-md">
-              <p class="tokenMsg">{{ $t('app.passwordTokenSentSuccessMsg') }}.
-
+              <p class="tokenMsg">
+                {{ $t("app.passwordTokenSentSuccessMsg") }}.
               </p>
-              <p class="passwordCaption">{{ $t('app.passwordTokenCaption') }}.</p>
+              <p class="passwordCaption">
+                {{ $t("app.passwordTokenCaption") }}.
+              </p>
             </div>
           </q-card-section>
         </q-card>
@@ -49,18 +83,17 @@
 </template>
 
 <script>
-import { Notify, Platform } from 'quasar';
+import { Notify, Platform } from "quasar";
 
 export default {
-
   data() {
     return {
       user: {
         email: null,
       },
-      label: this.$t('app.getPasswordResetToken'),
+      label: this.$t("app.getPasswordResetToken"),
       loading: false,
-      show_token_form: true
+      show_token_form: true,
     };
   },
   computed: {
@@ -79,7 +112,7 @@ export default {
         data: {
           email: this.user.email,
         },
-        msg: this.$t('app.passwordResetTokenSuccessMsg'),
+        msg: this.$t("app.passwordResetTokenSuccessMsg"),
         color: "default",
         show_feedback: true,
         to_on_ok: "none",
@@ -88,47 +121,42 @@ export default {
         to_be_store_data: {
           required: false,
           has_value: false,
-          data: [
-          ],
+          data: [],
         },
       };
       this.loading = true;
       this.$store
         .dispatch("postRequest", payload)
         .then((res) => {
-          if(res.status == 200){
-            this.show_token_form = false
-          }
-          else if(res.status == 403) {
+          if (res.status == 200) {
+            this.show_token_form = false;
+          } else if (res.status == 403) {
             Notify.create({
-              type:'info',
-              message:this.$t('app.NonRoleUserEmailFailMsg'),
-              position:Platform.is.mobile ? 'bottom' :'top-right'
-            })
-          }else if (res.status == 404){
+              type: "info",
+              message: this.$t("app.NonRoleUserEmailFailMsg"),
+              position: Platform.is.mobile ? "bottom" : "top-right",
+            });
+          } else if (res.status == 404) {
             Notify.create({
-              type:'error',
-              message:this.$t('app.invalidEmailMsg'),
-              position:Platform.is.mobile ? 'bottom' :'top-right'
-            })
-          }else {
+              type: "info",
+              message: this.$t("app.invalidEmailMsg"),
+              position: Platform.is.mobile ? "bottom" : "top-right",
+            });
+          } else {
             Notify.create({
-              type:'info',
-              message:this.$t('app.notSendEmailMsg'),
-              position:Platform.is.mobile ? 'bottom' :'top-right'
-            })
+              type: "info",
+              message: this.$t("app.notSendEmailMsg"),
+              position: Platform.is.mobile ? "bottom" : "top-right",
+            });
           }
         })
-        .catch((error) => {
-        })
+        .catch((error) => {})
         .finally(() => {
           this.loading = false;
         });
     },
   },
-  components: {
-
-  },
+  components: {},
 };
 </script>
 
@@ -157,11 +185,9 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 600;
-  font-size: 15px;
-  line-height: 24px;
+  font-size: 0.9em;
   align-items: center;
   text-align: center;
-  letter-spacing: 0.005em;
 }
 
 .text-subtitle2 {
@@ -169,21 +195,9 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 400;
-  font-size: 13px;
-  line-height: 18px;
+  font-size: 0.8rem;
   align-items: center;
   text-align: center;
-  letter-spacing: 0.01em;
-}
-
-.form_field {
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 12px;
-  align-items: center;
-  letter-spacing: 0.01em;
-  color: $grey2;
 }
 
 .tokenMsg {

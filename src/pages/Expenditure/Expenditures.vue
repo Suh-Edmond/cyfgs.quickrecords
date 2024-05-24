@@ -269,6 +269,7 @@ export default {
             total_amount_spent: ele.total_amount_spent,
             total_balance: ele.total_balance,
             type: "EXPENDITURE_ITEMS",
+            session: ele.session,
             has_no_pending_details: ele.has_no_pending_details,
           });
         });
@@ -481,6 +482,17 @@ export default {
         this.year,
         ""
       );
+
+      this.$router.push({
+        path: `/dashboard/expenditures`,
+        query: {
+          expenditure_category_id: this.expenditure_category_id.value,
+          payment_item_id: null,
+          status: null,
+          session: this.year.value,
+          t: new Date().getTime(),
+        },
+      });
     },
   },
   components: {

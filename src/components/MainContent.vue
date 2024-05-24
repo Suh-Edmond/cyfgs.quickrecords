@@ -20,7 +20,7 @@
             class="q-mr-xl q-mt-sm"
             flat
             v-if="canViewNotification()"
-            size='md'
+            size="md"
           >
             <q-badge
               floating
@@ -41,9 +41,9 @@
                 <q-item>
                   <q-item-section>
                     <div class="flex justify-between">
-                      <label class="text-weight-medium "
-                        >{{$t('app.settingsNotificationLabel')}}</label
-                      >
+                      <label class="text-weight-medium">{{
+                        $t("app.settingsNotificationLabel")
+                      }}</label>
                       <label class="text-weight-medium">
                         <q-btn
                           flat
@@ -218,7 +218,6 @@
         </q-card-section>
       </q-card>
     </div>
-
   </q-page>
 </template>
 
@@ -278,7 +277,8 @@ export default {
 
     getLoggedInUserProfilePic() {
       return (
-        process.env.API_BASE_URL + LocalStorage.getItem("data").user_data.picture
+        process.env.API_BASE_URL +
+        LocalStorage.getItem("data").user_data.picture
       );
     },
 
@@ -333,12 +333,15 @@ export default {
           data: [],
         },
       };
-      this.$store.dispatch("logoutUser", payload).then(() => {
-        this.$store.dispatch("setOrganisation", null);
-      }).finally(() => {
-        SessionStorage.clear();
-        LocalStorage.clear()
-      });
+      this.$store
+        .dispatch("logoutUser", payload)
+        .then(() => {
+          this.$store.dispatch("setOrganisation", null);
+        })
+        .finally(() => {
+          SessionStorage.clear();
+          LocalStorage.clear();
+        });
     },
     goBack(tab) {
       history.back();
@@ -346,13 +349,13 @@ export default {
         this.$store.getters.getCurrentExpenditureCategory !== null
           ? this.$store.getters.getCurrentExpenditureCategory.id
           : { value: "" };
-      const route = Object.assign({}, this.$route);
-      if (route.name == "expenditure_detail") {
+      if (this.$route.name == "expenditure_detail") {
         this.filterExpenditureItems(
           1,
           10,
           { value: expenditure_category_id },
           "",
+          { value: this.$route.params.session_id },
           ""
         );
       }

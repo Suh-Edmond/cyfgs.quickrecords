@@ -193,7 +193,7 @@ const routes = [
       },
       {
         name: "expenditure_detail",
-        path: "/dashboard/expenditures/:id/details",
+        path: "/dashboard/expenditures/:id/details/sessions/:session_id",
         component: () => import("src/pages/Expenditure/ExpenditureDetail.vue"),
         meta: {
           middleware: "auth",

@@ -374,7 +374,7 @@
               v-if="checkTreasurerRole()"
               class="view q-mr-md"
               @click="showDetails(props.row)"
-              :to="{ name: 'expenditure_detail', params: { id: props.row.id } }"
+              :to="{ name: 'expenditure_detail', params: { id: props.row.id, session_id: props.row.session.id } }"
             >
               <q-icon name="visibility" size="xs" class="q-pl-md"></q-icon>
             </q-btn>
@@ -1136,7 +1136,7 @@ export default {
           );
           break;
         case "EXPENDITURE_DETAILS":
-          this.getExpenditureDetailsByItemId(data.expenditure_item_id, 1, 7);
+          this.getExpenditureDetailsByItemId(data.expenditure_item_id, 1, 10);
           break;
       }
     },

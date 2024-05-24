@@ -202,7 +202,7 @@ export default {
   mixins: [HelperMixinVue],
 
   mounted() {
-    this.getExpenditureDetailsByItemId(1, 7, false, this.$route.params.id);
+    this.getExpenditureDetailsByItemId(1, 10, false, this.$route.params.id);
   },
 
   data() {
@@ -448,7 +448,7 @@ export default {
         query: { status: this.status, t: new Date().getTime() },
       });
 
-      this.getExpenditureDetailsByItemId(1, 7, true, this.expenditure_item_id);
+      this.getExpenditureDetailsByItemId(1, 10, true, this.expenditure_item_id);
     },
 
     editExpenditureItemDetail(data) {
@@ -481,7 +481,7 @@ export default {
       this.$store.dispatch("deleteRequest", payload).then(() => {
         this.getExpenditureDetailsByItemId(
           1,
-          7,
+          10,
           false,
           this.expenditure_item_id
         );
@@ -564,7 +564,7 @@ export default {
           if (res.success) {
             this.getExpenditureDetailsByItemId(
               1,
-              7,
+              10,
               false,
               this.$route.params.id
             );

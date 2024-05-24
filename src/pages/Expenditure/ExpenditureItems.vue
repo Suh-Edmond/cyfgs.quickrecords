@@ -261,7 +261,7 @@ export default {
           : "";
       this.fetchExpenditureItems(
         1,
-        7,
+        10,
         data.year,
         this.status,
         payment_item_value,

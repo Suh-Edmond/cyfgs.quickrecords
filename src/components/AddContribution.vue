@@ -113,7 +113,7 @@
                 >{{ $t("app.frequency") }}:</label
               >
               <label for="credential" class="value">{{
-                selected_payment_item.frequency
+                formatConstants(selected_payment_item.frequency)
               }}</label>
             </div>
             <div class="q-mb-md flex justify-between">
@@ -121,7 +121,7 @@
                 >{{ $t("app.type") }}:</label
               >
               <label for="credential" class="value">{{
-                selected_payment_item.type
+                formatConstants(selected_payment_item.type)
               }}</label>
             </div>
             <div
@@ -703,6 +703,7 @@ import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import memberMixinVue from "src/mixins/memberMixin.vue";
 import ContributionsMixinVue from "src/mixins/ContributionsMixin.vue";
 import CurrentYearMixin from "src/mixins/CurrentYearMixin.vue";
+import HelperMixin from "src/mixins/HelperMixin.vue";
 
 import { LocalStorage, Notify, Platform } from "quasar";
 
@@ -713,6 +714,7 @@ export default {
     memberMixinVue,
     ContributionsMixinVue,
     CurrentYearMixin,
+    HelperMixin
   ],
 
   mounted() {
@@ -1206,8 +1208,6 @@ export default {
           });
         }
         this.is_fetching_members = false;
-      }).add(() => {
-
       });
       return this.payment_items_by_category;
     },

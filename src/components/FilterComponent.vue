@@ -10,7 +10,7 @@
       v-if="show_member_filters"
     >
       <div
-        class="col col-md-3 col-lg-3 col-xs-12 col-sm-12"
+        class="col col-md-3 col-lg-3"
         :class="$q.screen.lg ? 'q-pr-md' : ''"
       >
         <q-select
@@ -31,7 +31,7 @@
         </q-select>
       </div>
       <div
-        class="col col-md-3 col-lg-3 col-xs-12 col-sm-12"
+        class="col col-md-3 col-lg-3 "
         :class="$q.screen.lg ? 'q-pr-md' : ''"
       >
         <q-select
@@ -52,7 +52,7 @@
         </q-select>
       </div>
       <div
-        class="col col-md-3 col-lg-3 col-xs-12 col-sm-12"
+        class="col col-md-3 col-lg-3 "
         :class="$q.screen.lg ? 'q-pr-md' : ''"
       >
         <q-select
@@ -72,7 +72,7 @@
           </template>
         </q-select>
       </div>
-      <div class="flex col-md-3 col-lg-3 col-xs-12 col-sm-12">
+      <div class="flex col-md-3 col-lg-3 ">
         <q-btn
           :label="$t('app.filter')"
           color="primary"
@@ -108,7 +108,7 @@
       v-if="show_categories"
     >
       <div
-        class="row col-md-12 col-lg-12 col-xs-12 col-sm-12"
+        class="row col-md-12 col-lg-12 "
         :class="$q.platform.is.mobile ? 'row q-pt-md' : 'q-pl-md'"
       >
         <q-space />
@@ -195,7 +195,7 @@
         />
       </div>
       <div
-        class="col-4 col-md-4 col-lg-4 col-xs-12 col-sm-12 flex"
+        class="col-4 col-md-4 col-lg-4  flex"
         :class="$q.platform.is.desktop ? 'q-ml-sm' : ''"
       >
         <q-btn
@@ -231,7 +231,7 @@
       "
       v-if="show_filter_expenditure_items"
     >
-      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
+      <div class="col-md-3 col-lg-3 ">
         <q-select
           v-model="year"
           outlined
@@ -252,7 +252,7 @@
         </q-select>
       </div>
       <div
-        class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+        class="col-md-3 col-lg-3 "
         :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
       >
         <q-select
@@ -281,7 +281,7 @@
         </q-select>
       </div>
       <div
-        class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+        class="col-md-3 col-lg-3 "
         :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
       >
         <q-select
@@ -301,7 +301,7 @@
         </q-select>
       </div>
       <div
-        class="col-md-3 col-lg-3 col-xs-12 col-sm-12 flex"
+        class="col-md-3 col-lg-3  flex"
         :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
       >
         <q-btn
@@ -337,7 +337,7 @@
       "
       v-if="show_filter_expenditure_items_details"
     >
-      <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
+      <div class="col-md-3 col-lg-3 ">
         <q-select
           v-model="payment_status"
           outlined
@@ -347,7 +347,7 @@
         />
       </div>
       <div
-        class="col-md-9 col-lg-9 col-xs-12 col-sm-12 flex"
+        class="col-md-9 col-lg-9  flex"
         :class="$q.platform.is.desktop ? 'q-pl-sm' : ''"
       >
         <q-btn
@@ -392,7 +392,7 @@
         use-input
         input-debounce="0"
         clearable
-        class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+        class="col-md-3 col-lg-3 "
       >
         <template v-slot:no-option>
           <q-item>
@@ -413,7 +413,7 @@
         clearable
         @filter="filterMonths"
         @input="stopSelectInputSearch"
-        class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+        class="col-md-3 col-lg-3 "
         :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
       >
         <template v-slot:append v-if="start_month_filtering">
@@ -428,7 +428,7 @@
         </template>
       </q-select>
       <div
-        class="col-md-6 col-lg-6 col-xs-12 col-sm-12 flex"
+        class="col-md-6 col-lg-6  flex"
         :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
       >
         <q-btn
@@ -506,7 +506,7 @@
         clearable
         @filter="filterMonths"
         @input="stopSelectInputSearch"
-        class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+        class="col-md-3 col-lg-3 "
       >
         <template v-slot:append v-if="start_month_filtering">
           <q-spinner color="primary" size="1.2em" :thickness="3" />
@@ -526,7 +526,7 @@
         :options="payment_statuses"
         :label="$t('app.selectStatusLabel')"
         clearable
-        class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+        class="col-md-3 col-lg-3 "
         :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
       >
         <template v-slot:no-option>
@@ -538,7 +538,7 @@
         </template>
       </q-select>
       <div
-        class="col-md-6 col-lg-6 col-xs-12 col-sm-12 flex"
+        class="col-md-6 col-lg-6  flex"
         :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
       >
         <q-btn
@@ -583,7 +583,7 @@
         use-input
         input-debounce="0"
         clearable
-        class="col-md-2 col-lg-2 col-xs-12 col-sm-12"
+        class="col-md-2 col-lg-2 "
         :class="$q.platform.is.desktop ? 'q-pr-sm' : ''"
       >
         <template v-slot:no-option>
@@ -594,7 +594,7 @@
           </q-item>
         </template>
       </q-select>
-      <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12">
+      <div class="col-md-2 col-lg-2 ">
         <q-select
           v-model="payment_item_id"
           outlined
@@ -630,7 +630,7 @@
         @input="stopSelectInputSearch"
         use-input
         clearable
-        class="col-md-2 col-lg-2 col-xs-12 col-sm-12"
+        class="col-md-2 col-lg-2 "
         :class="$q.platform.is.desktop ? 'q-pl-sm' : ''"
       >
         <template v-slot:append v-if="start_month_filtering">
@@ -651,7 +651,7 @@
         :options="payment_statuses"
         clearable
         :label="$t('app.selectStatusLabel')"
-        class="col-md-2 col-lg-2 col-xs-12 col-sm-12"
+        class="col-md-2 col-lg-2 "
         :class="$q.platform.is.desktop ? 'q-pl-sm' : ''"
       >
         <template v-slot:no-option>
@@ -663,7 +663,7 @@
         </template>
       </q-select>
       <div
-        class="col-md-4 col-lg-4 col-xs-12 col-sm-12 flex"
+        class="col-md-4 col-lg-4  flex"
         :class="$q.platform.is.desktop ? 'q-pl-sm' : ''"
       >
         <q-btn
@@ -708,7 +708,7 @@
         use-input
         input-debounce="0"
         clearable
-        class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+        class="col-md-3 col-lg-3 "
       >
         <template v-slot:no-option>
           <q-item>
@@ -725,7 +725,7 @@
         :options="payment_statuses"
         :label="$t('app.searchTransactionStatus')"
         clearable
-        class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+        class="col-md-3 col-lg-3 "
         :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
       >
         <template v-slot:no-option>
@@ -737,7 +737,7 @@
         </template>
       </q-select>
       <div
-        class="col-md-6 col-lg-6 col-xs-12 col-sm-12 flex"
+        class="col-md-6 col-lg-6  flex"
         :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
       >
         <q-btn
@@ -782,7 +782,7 @@
         use-input
         input-debounce="0"
         clearable
-        class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+        class="col-md-3 col-lg-3 "
         :class="$q.platform.is.desktop ? 'q-pr-sm' : ''"
       >
         <template v-slot:no-option>
@@ -804,7 +804,7 @@
         clearable
         @filter="searchPaymentItems"
         @input="stopSelectInputSearch"
-        class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+        class="col-md-3 col-lg-3 "
       >
         <template v-slot:append v-if="start_payment_item_select_filtering">
           <q-spinner color="primary" size="1.2em" :thickness="3" />
@@ -824,7 +824,7 @@
         :options="payment_statuses"
         :label="$t('app.selectStatusLabel')"
         clearable
-        class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+        class="col-md-3 col-lg-3 "
         :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
       >
         <template v-slot:no-option>
@@ -836,7 +836,7 @@
         </template>
       </q-select>
       <div
-        class="col-md-3 col-lg-3 col-xs-12 col-sm-12 flex"
+        class="col-md-3 col-lg-3  flex"
         :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
       >
         <q-btn
@@ -873,7 +873,7 @@
       v-if="show_report"
     >
       <div
-        class="col-md-4 col-lg-4 col-xs-12 col-sm-12"
+        class="col-md-4 col-lg-4 "
         :class="$q.screen.lg ? 'q-pr-md' : ''"
       >
         <q-select
@@ -887,7 +887,7 @@
         />
       </div>
       <div
-        class="col-md-4 col-lg-4 col-xs-12 col-sm-12"
+        class="col-md-4 col-lg-4 "
         :class="$q.screen.lg ? 'q-pr-md' : ''"
       >
         <q-select
@@ -915,7 +915,7 @@
         </q-select>
       </div>
       <div
-        class="col-md-2 col-lg-2 col-xs-12 col-sm-12"
+        class="col-md-2 col-lg-2 "
         :class="$q.screen.lg ? 'q-pr-md' : ''"
       >
         <q-btn
@@ -930,7 +930,7 @@
         </q-btn>
       </div>
       <div
-        class="button q-pb-xs col-md-2 col-lg-2 col-xs-12 col-sm-12 flex justify-end"
+        class="button q-pb-xs col-md-2 col-lg-2  flex justify-end"
       >
         <q-btn
           :label="$t('app.print')"

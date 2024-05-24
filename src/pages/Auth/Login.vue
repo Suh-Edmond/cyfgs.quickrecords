@@ -193,83 +193,24 @@ export default {
                 data: null,
               },
             };
-            this.$store
-              .dispatch("getRequest", payload)
-              .then((res) => {
-                if (res.success) {
-                  this.$router.push({
-                    name: "dashboard",
-                  });
-                  SessionStorage.set("to_tab", "Dashboard");
-                } else {
-                  this.$router.push({
-                    name: "create_organisation",
-                  });
-                  Notify.create({
-                    type: "info",
-                    message: this.$t("app.createOrganisationCaption"),
-                    position: Platform.is.mobile ? "bottom" : "top-right",
-                  });
-                }
-                return res;
-              })
-              .then(async (res) => {
-                if (res.success) {
-                  this.getTotalYearlyExpenditures(
-                    this.$store.getters.getCurrentYear.id
-                  );
-                }
-                return res;
-              })
-              .then(async (res) => {
-                if (res.success) {
-                  this.getUserByRegistration(
-                    this.$store.getters.getOrganisation.id
-                  );
-                }
-                return res;
-              })
-              .then(async (res) => {
-                if (res.success) {
-                  this.getUserByRegistrationStatus(
-                    this.$store.getters.getOrganisation.id
-                  );
-                }
-                return res;
-              })
-              .then(async (res) => {
-                if (res.success) {
-                  this.getOrganisationMemberSavings(
-                    this.$store.getters.getOrganisation.id,
-                    1,
-                    10
-                  );
-                }
-                return res;
-              })
-              .then(async (res) => {
-                if (res.success) {
-                  this.filterOrganisationMembers(
-                    this.$store.getters.getOrganisation.id,
-                    false,
-                    1,
-                    10,
-                    "name",
-                    this.$store.getters.getCurrentYear.id,
-                    "",
-                    "",
-                    ""
-                  );
-                }
-                return res;
-              })
-              .then(async (res) => {
-                if (res.success) {
-                  this.getTotalContributionByYear(
-                    this.$store.getters.getCurrentYear.id
-                  );
-                }
-              });
+            this.$store.dispatch("getRequest", payload).then((res) => {
+              if (res.success) {
+                this.$router.push({
+                  name: "dashboard",
+                });
+                SessionStorage.set("to_tab", "Dashboard");
+              } else {
+                this.$router.push({
+                  name: "create_organisation",
+                });
+                Notify.create({
+                  type: "info",
+                  message: this.$t("app.createOrganisationCaption"),
+                  position: Platform.is.mobile ? "bottom" : "top-right",
+                });
+              }
+              return res;
+            });
           }
         })
         .catch((error) => {})
@@ -299,9 +240,7 @@ export default {
       this.$store.dispatch("getRequest", payload).then(() => {});
     },
   },
-  components: {
-
-  },
+  components: {},
 };
 </script>
 

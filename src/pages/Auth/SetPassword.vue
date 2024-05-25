@@ -43,12 +43,12 @@
               </div>
               <div>
                 <q-btn
-                  class="form_button q-mt-md q-pa-xs"
+                  class="form_button q-mt-md"
                   :label="label_continue"
                   :loading="loading"
                   :disabled="validatePhone"
                   :color="color"
-                  :no_caps="no_caps"
+                  no-caps
                   type="submit"
                 >
                   <q-icon
@@ -128,11 +128,11 @@
               </div>
               <div>
                 <q-btn
-                  class="form_button q-pa-xs"
+                  class="form_button"
                   :label="label_sigin"
                   :loading="loading"
                   :color="color"
-                  :disabled="validatePasswordMatch"
+                  :disabled="validateLogin"
                   :no_caps="no_caps"
                   type="submit"
                 >
@@ -199,10 +199,15 @@ export default {
       return this.check_user.credential === "";
     },
     validatePasswordMatch() {
-      return this.user.password !== this.user.password_confirmation;
+      return this.user.password != this.user.password_confirmation;
     },
     validateLogin() {
-      return this.user.credential === "" || this.user.password === "";
+      return (
+        this.user.password == "" ||
+        this.validatePhone ||
+        (this.user.password != "" &&
+          this.user.password != this.user.password_confirmation)
+      );
     },
   },
   methods: {

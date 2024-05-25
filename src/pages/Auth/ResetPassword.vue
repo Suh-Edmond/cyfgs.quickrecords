@@ -31,7 +31,7 @@
                 </div>
                 <div class="q-mb-xl q-mt-lg">
                   <q-btn
-                    class="form_button q-pa-xs"
+                    class="form_button"
                     :label="label"
                     :loading="loading"
                     :color="'primary'"
@@ -116,7 +116,7 @@
                 </div>
                 <div class="q-mb-xl">
                   <q-btn
-                    class="form_button q-pa-xs"
+                    class="form_button"
                     :label="this.$t('app.saveBtnLabel')"
                     :loading="loading"
                     :disabled="validatePassword"

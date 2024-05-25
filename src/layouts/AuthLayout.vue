@@ -6,7 +6,7 @@
           :class="$q.screen.lg ? 'header_title' : 'header_title_small'"
         >
           <span
-            ><q-avatar size="4rem">
+            ><q-avatar :size="$q.screen.lg ? '4rem' : '3rem'">
               <img
                 src="../assets/App_Logo.jpeg"
                 alt="app logo"
@@ -61,8 +61,8 @@
       <q-toolbar>
         <q-toolbar-title>
           <p class="footer_text">
-            <span class="material-icons copy_right"> copyright </span
-            >{{ $t("app.copyright") }} {{ year }}
+            <span class="material-icons copy_right"> copyright </span>
+            {{ year }}
             <span class="appName"
               >{{ $t("app.nameOne") }}{{ $t("app.nameTwo") }}</span
             >.{{ $t("app.allRightsReserved") }}
@@ -188,7 +188,7 @@ export default {
 }
 
 .lang {
-  font-size: 0.7rem;
+  font-size: 0.6rem;
 }
 
 .appName {

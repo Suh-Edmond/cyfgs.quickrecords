@@ -45,7 +45,7 @@
               </div>
               <div class="q-mb-xl">
                 <q-btn
-                  class="form_button q-pa-xs"
+                  class="form_button"
                   :label="label"
                   :loading="loading"
                   :disabled="validateEmail"

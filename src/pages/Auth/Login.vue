@@ -52,7 +52,7 @@
               </div>
               <div class="q-mt-lg q-mb-lg">
                 <q-btn
-                  class="form_button q-pa-xs"
+                  class="form_button"
                   :label="label_sigin"
                   :loading="loading"
                   :disabled="validateLogin"

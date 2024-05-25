@@ -4,7 +4,10 @@
       class="row q-px-sm"
       :class="$q.screen.lg ? 'q-pt-lg flex flex-center' : 'q-pt-sm'"
     >
-      <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12">
+      <div
+        class="col-md-4 col-lg-4 col-sm-12 col-xs-12"
+        v-if="!show_invitation_link_expire_msg"
+      >
         <q-card :class="$q.screen.lg ? 'q-mt-lg q-pb-xl' : 'q-mt-md q-pb-xl'">
           <q-card-section>
             <div class="back_arrow_button" v-show="is_exist_user">
@@ -147,6 +150,27 @@
           </q-card-section>
         </q-card>
       </div>
+
+      <div
+        class="col-md-4 col-lg-4 col-sm-12 col-xs-12"
+        v-if="show_invitation_link_expire_msg"
+      >
+        <q-card :class="$q.screen.lg ? 'q-mt-lg q-pb-xl' : 'q-mt-md q-pb-xl'">
+          <!-------------------------START PASSWORD RESET TOKEN EXPIRED-------------------------------->
+          <q-card-section>
+            <div class="text-center">
+              <q-icon name="hourglass_bottom" class="expired_icon"></q-icon>
+            </div>
+            <div class="q-pa-md">
+              <p class="tokenMsg">{{ $t("app.invitationLinkExpired") }}.</p>
+              <p class="passwordCaption">
+                {{ $t("app.invitationLinkExpiredMsg") }}.
+              </p>
+            </div>
+          </q-card-section>
+          <!-------------------------END PASSWORD RESET TOKEN EXPIRED-------------------------------->
+        </q-card>
+      </div>
     </div>
   </q-page>
 </template>
@@ -192,6 +216,7 @@ export default {
       is_exist_user: false,
       color: "primary",
       no_caps: true,
+      show_invitation_link_expire_msg: false,
     };
   },
   computed: {
@@ -223,6 +248,7 @@ export default {
         url: "/api/public/auth/check-user",
         data: {
           credential: this.check_user.credential,
+          invitation_token: this.$router.currentRoute.query.key,
         },
         msg: this.$t("app.inviteUserSuccessMsg"),
         color: "default",
@@ -253,18 +279,20 @@ export default {
               message: this.$t("app.inviteUserSuccessMsg"),
               position: Platform.is.mobile ? "bottom" : "top-right",
             });
-          } else if (res.status == 403) {
-            Notify.create({
-              color: "info",
-              type: "info",
-              message: this.$t("app.invitationLinkExpiredMsg"),
-              position: Platform.is.mobile ? "bottom" : "top-right",
-            });
-          } else {
+          } else if (res.status == 400) {
+            this.show_invitation_link_expire_msg = true;
+          } else if (res.status == 404) {
             Notify.create({
               color: "info",
               type: "info",
               message: this.$t("app.inviteMemberFailMsg"),
+              position: Platform.is.mobile ? "bottom" : "top-right",
+            });
+          } else {
+            Notify.create({
+              color: "negative",
+              type: "negative",
+              message: this.$t("app.invalidInvitationLinkMgs"),
               position: Platform.is.mobile ? "bottom" : "top-right",
             });
           }
@@ -282,6 +310,7 @@ export default {
           password: this.user.password,
           password_confirmation: this.user.password_confirmation,
           role: this.$router.currentRoute.query.role,
+          invitation_token: this.$router.currentRoute.query.key,
         },
         msg: this.$t("app.loginSuccess"),
         color: "default",

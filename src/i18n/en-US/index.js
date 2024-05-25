@@ -480,7 +480,7 @@ export default {
     passwordReset: "Forgot Password ?",
     passwordResetCaption:
       "Enter your email address to get Password Reset Instructions",
-    getPasswordResetToken: "Send",
+    getPasswordResetToken: "CONTINUE",
     passwordResetTokenSuccessMsg:
       "Password Reset Instructions sent successfully",
     passwordTokenSentSuccessMsg: "Password Reset Token Sent Successfully",
@@ -511,7 +511,7 @@ export default {
     NonRoleUserEmailFailMsg:
       "Unauthorized! Please you don't the role to carry out this action",
     notSendEmailMsg:
-      "Could not send  password email. Please check you connection",
+      "Could not send Password Reset Email. Please check you connection",
     invalidDeadline:
       "Invalid deadline! Deadline must be greater than today's date",
     forTheMonthOf: " for the month of ",
@@ -596,5 +596,9 @@ export default {
     invitationLinkExpiredMsg:
       "The Invitation link has expired. Please request for a new one",
     memberSize: "Member Size",
+     passwordResetTokenFailMsg:
+      "Password Reset Instructions Failed",
+    passwordResetFailCaption:
+      "An Error occurred, we could not send Password Reset Instructions. Please try again!",
   },
 };

@@ -272,6 +272,15 @@ export default {
   text-align: center;
 }
 
+.form_field {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 0.7rem;
+  align-items: center;
+  color: $grey5;
+}
+
 .form_button {
   width: 100%;
   margin-bottom: 0.1rem;

@@ -5,7 +5,7 @@
       :class="$q.screen.lg ? 'q-pt-lg flex flex-center' : 'q-pt-sm'"
     >
       <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12">
-        <q-card :class="$q.screen.lg ? 'q-mt-lg' : 'q-mt-md q-mb-xl'">
+        <q-card :class="$q.screen.lg ? 'q-mt-lg' : 'q-mt-md'">
           <!-------------------------PASSWORD RESET TOKEN FORM -------------------------------->
           <q-card-section v-show="show_token_form">
             <div class="back_arrow_button">
@@ -26,7 +26,8 @@
             <!-- Form to get password reset token -->
             <q-form
               @submit="onGetPasswordResetToken"
-              class="q-gutter-md q-mt-md q-px-md"
+              class="q-gutter-md q-mt-md"
+              :class="$q.screen.lg ? 'q-px-md' : ''"
             >
               <div>
                 <label for="credential" class="form_field"
@@ -63,16 +64,31 @@
           </q-card-section>
           <!------------------------------END OF PASSWORD RESET TOKEN FORM------------------------->
 
-          <q-card-section v-show="!show_token_form">
+          <q-card-section v-show="!show_token_form && emailSentSuccessfully">
             <div class="text-center">
               <q-icon name="check" class="check_icon"></q-icon>
             </div>
             <div class="q-pa-md">
               <p class="tokenMsg">
-                {{ $t("app.passwordTokenSentSuccessMsg") }}.
+                {{ $t("app.passwordResetTokenSuccessMsg") }}.
               </p>
               <p class="passwordCaption">
                 {{ $t("app.passwordTokenCaption") }}.
+              </p>
+            </div>
+          </q-card-section>
+
+          <q-card-section v-show="!show_token_form && !emailSentSuccessfully">
+            <div class="text-center">
+              <q-icon
+                name="close"
+                :class="emailSentSuccessfully ? 'check_icon' : 'close_icon'"
+              ></q-icon>
+            </div>
+            <div class="q-pa-md">
+              <p class="tokenMsg">{{ $t("app.passwordResetTokenFailMsg") }}.</p>
+              <p class="passwordCaption">
+                {{ $t("app.passwordResetFailCaption") }}
               </p>
             </div>
           </q-card-section>
@@ -94,6 +110,7 @@ export default {
       label: this.$t("app.getPasswordResetToken"),
       loading: false,
       show_token_form: true,
+      emailSentSuccessfully: true,
     };
   },
   computed: {
@@ -128,21 +145,26 @@ export default {
       this.$store
         .dispatch("postRequest", payload)
         .then((res) => {
+          console.log(res);
           if (res.status == 200) {
             this.show_token_form = false;
+            this.emailSentSuccessfully = true;
           } else if (res.status == 403) {
+            this.emailSentSuccessfully = false;
             Notify.create({
               type: "info",
               message: this.$t("app.NonRoleUserEmailFailMsg"),
               position: Platform.is.mobile ? "bottom" : "top-right",
             });
           } else if (res.status == 404) {
+            this.emailSentSuccessfully = false;
             Notify.create({
               type: "info",
               message: this.$t("app.invalidEmailMsg"),
               position: Platform.is.mobile ? "bottom" : "top-right",
             });
           } else {
+            this.emailSentSuccessfully = false;
             Notify.create({
               type: "info",
               message: this.$t("app.notSendEmailMsg"),
@@ -200,15 +222,23 @@ export default {
   text-align: center;
 }
 
+.form_field {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 0.7rem;
+  align-items: center;
+  color: $grey5;
+}
+
 .tokenMsg {
   color: $dark;
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 600;
-  font-size: 17px;
+  font-weight: 500;
+  font-size: 1rem;
   align-items: center;
   text-align: center;
-  letter-spacing: 0.005em;
 }
 
 .form_button {
@@ -221,12 +251,17 @@ export default {
   color: $positive;
 }
 
+.close_icon {
+  font-size: 4rem;
+  color: $red;
+}
+
 .passwordCaption {
   color: $grey2;
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 14px;
+  font-size: 0.8rem;
   text-align: center;
 }
 </style>

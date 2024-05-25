@@ -136,7 +136,7 @@
                   :loading="loading"
                   :color="color"
                   :disabled="validateLogin"
-                  :no_caps="no_caps"
+                  no-caps
                   type="submit"
                 >
                   <q-icon

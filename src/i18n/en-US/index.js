@@ -3,17 +3,17 @@
 
 export default {
   app: {
-    signIn: "SIGN IN",
+    signIn: "LOGIN",
     english: "English",
     french: "French",
     continue: "Continue",
-    loginCaption: "Sign in to continue to QuickRecords",
+    loginCaption: "Login to continue to QuickRecords",
     signUpCaptionMsg: "Sign up to get started with QuickRecords",
     updateOrganisationHeading: "Update Organisation Information",
     telephoneLabel: "Telephone",
 
     passwordLabel: "Password",
-    loginBtnLabel: "SIGN IN",
+    loginBtnLabel: "Login",
     forgotPasswordMsg: "Forgot Password ?",
     nameOne: "Quick",
     nameTwo: "Records",

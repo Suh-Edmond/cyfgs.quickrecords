@@ -57,7 +57,7 @@
                   :loading="loading"
                   :disabled="validateLogin"
                   :color="color"
-                  :no_caps="no_caps"
+                  no-caps
                   type="submit"
                 >
                   <q-icon
@@ -127,7 +127,7 @@ export default {
         credential: null,
       },
       isPwd: true,
-      label_sigin: this.$t("app.signIn"),
+      label_sigin: this.$t("app.loginBtnLabel"),
       loading: false,
       color: "primary",
       no_caps: true,

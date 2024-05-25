@@ -6,19 +6,17 @@
           :class="$q.screen.lg ? 'header_title' : 'header_title_small'"
         >
           <span
-            ><q-avatar size="75px" font-size="160px">
+            ><q-avatar :size="$q.screen.lg ? '4rem' : '3rem'">
               <img
                 src="../assets/App_Logo.jpeg"
-                alt=""
-                width="160"
-                height="160"
+                alt="app logo"
               /> </q-avatar></span
           ><span class="app_name">{{ $t("app.nameOne") }}</span
           >{{ $t("app.nameTwo") }}
         </q-toolbar-title>
         <div class="header_note" v-show="$q.screen.lg">
           <div class="q-pa-md header_language">
-            <q-btn-dropdown color="black" :label="getLocale" flat>
+            <q-btn-dropdown color="black" :label="getLocale" flat class="lang">
               <q-list>
                 <q-item clickable v-close-popup @click="onItemClick('en-US')">
                   <q-item-section class="text-center">
@@ -37,10 +35,10 @@
         </div>
         <div class="header_note" v-show="!$q.screen.lg">
           <div class="q-pa-md header_language">
-            <q-btn-dropdown color="black" :label="getLocale" flat>
+            <q-btn-dropdown color="black" :label="getLocale" flat class="lang">
               <q-list>
                 <q-item clickable v-close-popup @click="onItemClick('en-US')">
-                  <q-item-section class="text-center">
+                  <q-item-section class="text-center lang">
                     <q-item-label>{{ $t("app.english") }}</q-item-label>
                   </q-item-section>
                 </q-item>
@@ -63,8 +61,8 @@
       <q-toolbar>
         <q-toolbar-title>
           <p class="footer_text">
-            <span class="material-icons copy_right"> copyright </span
-            >{{ $t("app.copyright") }} {{ year }}
+            <span class="material-icons copy_right"> copyright </span>
+            {{ year }}
             <span class="appName"
               >{{ $t("app.nameOne") }}{{ $t("app.nameTwo") }}</span
             >.{{ $t("app.allRightsReserved") }}
@@ -159,10 +157,8 @@ export default {
   text-transform: capitalize;
   color: $orange;
   font-weight: bold;
-  padding: 0.6rem;
-  font-size: x-large;
+  font-size: 1.2rem;
   font-family: "Roboto";
-  letter-spacing: 0.009em;
   display: block;
 }
 
@@ -173,18 +169,7 @@ export default {
   padding: 0.6rem;
   font-size: large;
   font-family: "Roboto";
-  letter-spacing: 0.009em;
   display: block;
-}
-
-.logo {
-  width: 50px;
-  height: 50px;
-}
-
-.header_logo {
-  background-color: $dark;
-  margin-right: 0.5rem;
 }
 
 .header_note {
@@ -193,36 +178,17 @@ export default {
   justify-content: space-between;
 }
 
-.account_text {
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: bold;
-  font-size: 13px;
-  color: $dark;
-  margin-right: 0.5rem;
-  text-transform: uppercase;
-  line-height: 37px;
-}
-
 .sign_link {
   text-decoration: none;
   color: $primary;
 }
 
-.account_text__signup {
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: bold;
-  font-size: 13px;
-  align-items: center;
-  color: $primary;
-  cursor: pointer;
-  line-height: 37px;
-  margin-right: 7rem;
-}
-
 .header_language {
   margin-right: 0.5rem;
+}
+
+.lang {
+  font-size: 0.6rem;
 }
 
 .appName {
@@ -231,17 +197,16 @@ export default {
   text-transform: capitalize;
   color: $dark;
   font-weight: 700;
-  font-size: medium;
+  font-size: 0.7rem;
 }
 
 .footer_text {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 400;
-  font-size: 13px;
+  font-size: 0.6rem;
   align-items: center;
   text-align: center;
-  letter-spacing: 0.005em;
   padding-bottom: 1rem;
 }
 

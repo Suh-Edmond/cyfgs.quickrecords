@@ -4,8 +4,11 @@
       class="row q-px-sm"
       :class="$q.screen.lg ? 'q-pt-lg flex flex-center' : 'q-pt-sm'"
     >
-      <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12">
-        <q-card :class="$q.screen.lg ? 'q-mt-lg' : 'q-mt-md q-mb-xl'">
+      <div
+        class="col-md-4 col-lg-4 col-sm-12 col-xs-12"
+        v-if="!show_invitation_link_expire_msg"
+      >
+        <q-card :class="$q.screen.lg ? 'q-mt-lg q-pb-xl' : 'q-mt-md q-pb-xl'">
           <q-card-section>
             <div class="back_arrow_button" v-show="is_exist_user">
               <q-btn
@@ -25,7 +28,7 @@
             <!-- form to check invited member exist -->
             <q-form
               @submit="onCheckUserExist"
-              class="q-gutter-md q-mt-md q-px-xs"
+              class="q-gutter-md q-mt-md"
               v-show="!is_exist_user"
             >
               <div>
@@ -43,12 +46,12 @@
               </div>
               <div>
                 <q-btn
-                  class="form_button q-mt-md q-pa-xs"
+                  class="form_button q-mt-md"
                   :label="label_continue"
                   :loading="loading"
                   :disabled="validatePhone"
                   :color="color"
-                  :no_caps="no_caps"
+                  no-caps
                   type="submit"
                 >
                   <q-icon
@@ -57,21 +60,14 @@
                     class="q-pl-lg"
                   ></q-icon>
                 </q-btn>
-                <div class="row q-mb-xl justify-end">
-                  <span class="account_text" v-if="!$q.screen.lg"
-                    >{{ $t("app.noAccountMsg") }}
-                    <router-link to="/auth/register" class="sign_link">
-                      <span>{{ $t("app.signUpLabel") }}</span>
-                    </router-link>
-                  </span>
-                </div>
               </div>
             </q-form>
 
             <!-- form to set password for invited members -->
             <q-form
               @submit="onSetPassword"
-              class="q-gutter-md q-mt-md q-px-md"
+              class="q-gutter-md q-mt-md"
+              :class="$q.screen.lg ? 'q-px-md' : ''"
               v-show="is_exist_user"
             >
               <div>
@@ -84,6 +80,7 @@
                   outlined
                   dense
                   type="email"
+                  disable
                 />
               </div>
               <div>
@@ -108,8 +105,8 @@
               </div>
               <div>
                 <label for="password_confirmation" class="form_field"
-                  >{{ $t("app.confirmPasswordLabel")
-                  }}<span class="text-red">*</span></label
+                  >{{ $t("app.confirmPasswordLabel") }}
+                  <span class="text-red">*</span></label
                 >
                 <q-input
                   v-model="user.password_confirmation"
@@ -134,11 +131,11 @@
               </div>
               <div>
                 <q-btn
-                  class="form_button q-pa-xs"
+                  class="form_button"
                   :label="label_sigin"
                   :loading="loading"
                   :color="color"
-                  :disabled="validatePasswordMatch"
+                  :disabled="validateLogin"
                   :no_caps="no_caps"
                   type="submit"
                 >
@@ -148,28 +145,30 @@
                     class="q-pl-lg"
                   ></q-icon>
                 </q-btn>
-                <div
-                  class="row q-mb-xl"
-                  :class="!$q.screen.lg ? 'justify-evenly' : 'justify-end'"
-                >
-                  <span class="account_text" v-if="!$q.screen.lg"
-                    >{{ $t("app.noAccountMsg") }}
-                    <router-link to="/auth/register" class="sign_link">
-                      <span>{{ $t("app.signUpLabel") }}</span>
-                    </router-link>
-                  </span>
-                  <router-link
-                    to="/auth/password-reset/get-token"
-                    class="sign_link"
-                  >
-                    <span class="forgot_password">{{
-                      $t("app.forgotPasswordMsg")
-                    }}</span>
-                  </router-link>
-                </div>
               </div>
             </q-form>
           </q-card-section>
+        </q-card>
+      </div>
+
+      <div
+        class="col-md-4 col-lg-4 col-sm-12 col-xs-12"
+        v-if="show_invitation_link_expire_msg"
+      >
+        <q-card :class="$q.screen.lg ? 'q-mt-lg q-pb-xl' : 'q-mt-md q-pb-xl'">
+          <!-------------------------START PASSWORD RESET TOKEN EXPIRED-------------------------------->
+          <q-card-section>
+            <div class="text-center">
+              <q-icon name="hourglass_bottom" class="expired_icon"></q-icon>
+            </div>
+            <div class="q-pa-md">
+              <p class="tokenMsg">{{ $t("app.invitationLinkExpired") }}.</p>
+              <p class="passwordCaption">
+                {{ $t("app.invitationLinkExpiredMsg") }}.
+              </p>
+            </div>
+          </q-card-section>
+          <!-------------------------END PASSWORD RESET TOKEN EXPIRED-------------------------------->
         </q-card>
       </div>
     </div>
@@ -217,6 +216,7 @@ export default {
       is_exist_user: false,
       color: "primary",
       no_caps: true,
+      show_invitation_link_expire_msg: false,
     };
   },
   computed: {
@@ -224,10 +224,15 @@ export default {
       return this.check_user.credential === "";
     },
     validatePasswordMatch() {
-      return this.user.password !== this.user.password_confirmation;
+      return this.user.password != this.user.password_confirmation;
     },
     validateLogin() {
-      return this.user.credential === "" || this.user.password === "";
+      return (
+        this.user.password == "" ||
+        this.validatePhone ||
+        (this.user.password != "" &&
+          this.user.password != this.user.password_confirmation)
+      );
     },
   },
   methods: {
@@ -243,6 +248,7 @@ export default {
         url: "/api/public/auth/check-user",
         data: {
           credential: this.check_user.credential,
+          invitation_token: this.$router.currentRoute.query.key,
         },
         msg: this.$t("app.inviteUserSuccessMsg"),
         color: "default",
@@ -273,18 +279,20 @@ export default {
               message: this.$t("app.inviteUserSuccessMsg"),
               position: Platform.is.mobile ? "bottom" : "top-right",
             });
-          } else if (res.status == 403) {
-            Notify.create({
-              color: "info",
-              type: "info",
-              message: this.$t("app.invitationLinkExpiredMsg"),
-              position: Platform.is.mobile ? "bottom" : "top-right",
-            });
-          } else {
+          } else if (res.status == 400) {
+            this.show_invitation_link_expire_msg = true;
+          } else if (res.status == 404) {
             Notify.create({
               color: "info",
               type: "info",
               message: this.$t("app.inviteMemberFailMsg"),
+              position: Platform.is.mobile ? "bottom" : "top-right",
+            });
+          } else {
+            Notify.create({
+              color: "negative",
+              type: "negative",
+              message: this.$t("app.invalidInvitationLinkMgs"),
               position: Platform.is.mobile ? "bottom" : "top-right",
             });
           }
@@ -302,6 +310,7 @@ export default {
           password: this.user.password,
           password_confirmation: this.user.password_confirmation,
           role: this.$router.currentRoute.query.role,
+          invitation_token: this.$router.currentRoute.query.key,
         },
         msg: this.$t("app.loginSuccess"),
         color: "default",
@@ -430,11 +439,9 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 600;
-  font-size: 15px;
-  line-height: 24px;
+  font-size: 0.9em;
   align-items: center;
   text-align: center;
-  letter-spacing: 0.005em;
 }
 
 .text-subtitle2 {
@@ -442,57 +449,21 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 400;
-  font-size: 13px;
-  line-height: 18px;
+  font-size: 0.8rem;
   align-items: center;
   text-align: center;
-  letter-spacing: 0.01em;
 }
 
 .form_field {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 12px;
+  font-size: 0.7rem;
   align-items: center;
-  letter-spacing: 0.01em;
-  color: $grey2;
+  color: $grey5;
 }
 
 .form_button {
   width: 100%;
-  // margin-top: 0.2rem;
-  margin-bottom: 0.1rem;
-}
-
-.forgot_password {
-  display: block;
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 700;
-  font-size: 13px;
-  line-height: 24px;
-  align-items: center;
-  letter-spacing: 0.005em;
-  color: $primary;
-  cursor: pointer;
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-}
-
-.sign_link {
-  text-decoration: none;
-  color: $primary;
-}
-
-.account_text {
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 10px;
-  color: $dark;
-  text-transform: uppercase;
-  line-height: 37px;
-  float: right;
 }
 </style>

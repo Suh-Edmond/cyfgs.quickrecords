@@ -6,7 +6,7 @@ export default {
     signIn: "SIGN IN",
     english: "English",
     french: "French",
-    continue: "CONTINUE",
+    continue: "Continue",
     loginCaption: "Sign in to continue to QuickRecords",
     signUpCaptionMsg: "Sign up to get started with QuickRecords",
     updateOrganisationHeading: "Update Organisation Information",
@@ -480,7 +480,7 @@ export default {
     passwordReset: "Forgot Password ?",
     passwordResetCaption:
       "Enter your email address to get Password Reset Instructions",
-    getPasswordResetToken: "CONTINUE",
+    getPasswordResetToken: "Submit",
     passwordResetTokenSuccessMsg:
       "Password Reset Instructions sent successfully",
     passwordTokenSentSuccessMsg: "Password Reset Token Sent Successfully",

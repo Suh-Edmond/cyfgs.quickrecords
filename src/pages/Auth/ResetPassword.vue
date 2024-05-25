@@ -5,7 +5,7 @@
       :class="$q.screen.lg ? 'q-pt-lg flex flex-center' : 'q-pt-sm'"
     >
       <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12">
-        <q-card :class="$q.screen.lg ? 'q-mt-lg' : 'q-mt-md q-mb-xl'">
+        <q-card :class="$q.screen.lg ? 'q-mt-lg' : 'q-mt-md'">
           <div v-if="!show_token_expire_msg">
             <!-------------------------PASSWORD RESET TOKEN-------------------------------->
             <q-card-section v-if="show_new_password_form">
@@ -18,7 +18,8 @@
 
               <q-form
                 @submit="onSubmitPasswordResetToken"
-                class="q-gutter-md q-mt-md q-px-md"
+                class="q-gutter-md q-mt-md"
+                :class="$q.screen.lg ? 'q-px-md' : ''"
               >
                 <div>
                   <label for="credential" class="form_field"
@@ -58,7 +59,8 @@
               </div>
               <q-form
                 @submit="onSubmitNewPassword"
-                class="q-gutter-md q-mt-md q-px-md"
+                class="q-gutter-xs q-mt-md"
+                :class="$q.screen.lg ? 'q-px-md' : ''"
               >
                 <div>
                   <label for="credential" class="form_field"
@@ -112,7 +114,7 @@
                     </template>
                   </q-input>
                 </div>
-                <div class="q-mb-xl q-mt-lg">
+                <div class="q-mb-xl">
                   <q-btn
                     class="form_button q-pa-xs"
                     :label="this.$t('app.saveBtnLabel')"
@@ -316,19 +318,27 @@ export default {
   text-align: center;
 }
 
+.form_field {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 0.7rem;
+  align-items: center;
+  color: $grey5;
+}
+
 .tokenMsg {
   color: $dark;
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 600;
-  font-size: 1px;
+  font-weight: 500;
+  font-size: 1rem;
   align-items: center;
   text-align: center;
 }
 
 .form_button {
   width: 100%;
-  margin-bottom: 0.1rem;
 }
 
 .check_icon {
@@ -341,7 +351,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 14px;
+  font-size: 0.8rem;
   text-align: center;
 }
 

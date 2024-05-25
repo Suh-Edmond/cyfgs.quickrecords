@@ -3,17 +3,17 @@
 
 export default {
   app: {
-    signIn: "SIGN IN",
+    signIn: "LOGIN",
     english: "English",
     french: "French",
-    continue: "CONTINUE",
-    loginCaption: "Sign in to continue to Quick Records",
-    signUpCaptionMsg: "Sign up to get started with Quick Records",
+    continue: "Continue",
+    loginCaption: "Login to continue to QuickRecords",
+    signUpCaptionMsg: "Sign up to get started with QuickRecords",
     updateOrganisationHeading: "Update Organisation Information",
     telephoneLabel: "Telephone",
 
     passwordLabel: "Password",
-    loginBtnLabel: "SIGN IN",
+    loginBtnLabel: "Login",
     forgotPasswordMsg: "Forgot Password ?",
     nameOne: "Quick",
     nameTwo: "Records",
@@ -480,7 +480,7 @@ export default {
     passwordReset: "Forgot Password ?",
     passwordResetCaption:
       "Enter your email address to get Password Reset Instructions",
-    getPasswordResetToken: "Send",
+    getPasswordResetToken: "Submit",
     passwordResetTokenSuccessMsg:
       "Password Reset Instructions sent successfully",
     passwordTokenSentSuccessMsg: "Password Reset Token Sent Successfully",
@@ -511,7 +511,7 @@ export default {
     NonRoleUserEmailFailMsg:
       "Unauthorized! Please you don't the role to carry out this action",
     notSendEmailMsg:
-      "Could not send  password email. Please check you connection",
+      "Could not send Password Reset Email. Please check you connection",
     invalidDeadline:
       "Invalid deadline! Deadline must be greater than today's date",
     forTheMonthOf: " for the month of ",
@@ -594,7 +594,13 @@ export default {
       "The Expected Contribution for a payment item is calculated by multiplying the Payment Item Amount by its Frequency and by the Number of Members associated with the payment item type.For a one-time payment item with an 'ALL_MEMBERS' type, the Expected Contribution is calculated as:(Payment Item Amount) x 1 x (Total number of active members)For payment items with monthly or quarterly frequencies, the Expected Contribution is calculated as:(Payment Item Amount) x (Number of Months/Quarters) x (Number of Members associated with the payment item type)",
     provideEmailMsg: "Provide your email address",
     invitationLinkExpiredMsg:
-      "The Invitation link has expired. Please request for a new one",
+      "Oops! This Invitation link has expired. Kindly request for a new link",
     memberSize: "Member Size",
+     passwordResetTokenFailMsg:
+      "Password Reset Instructions Failed",
+    passwordResetFailCaption:
+      "An Error occurred, we could not send Password Reset Instructions. Please try again!",
+    invitationLinkExpired:"Invitation Link Expired!",
+    invalidInvitationLinkMgs:"Invalid Invitation Link"
   },
 };

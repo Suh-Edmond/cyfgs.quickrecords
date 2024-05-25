@@ -145,7 +145,6 @@ export default {
       this.$store
         .dispatch("postRequest", payload)
         .then((res) => {
-          console.log(res);
           if (res.status == 200) {
             this.show_token_form = false;
             this.emailSentSuccessfully = true;

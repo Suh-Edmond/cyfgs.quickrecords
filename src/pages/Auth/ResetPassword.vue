@@ -26,7 +26,7 @@
                     >{{ $t("app.token") }}
                     <span class="text-red">*</span></label
                   >
-                  <q-input v-model="token" outlined dense type="text" disable>
+                  <q-input v-model="token" outlined dense type="text">
                   </q-input>
                 </div>
                 <div class="q-mb-xl q-mt-lg">
@@ -171,7 +171,7 @@ import { Notify, Platform } from "quasar";
 export default {
   data() {
     return {
-      token: this.$route.query.token,
+      token: "",
       label: this.$t("app.submit"),
       loading: false,
       show_new_password_form: true,
@@ -231,12 +231,19 @@ export default {
             this.user.user_id = res.data.data.user_id;
             this.show_new_password_form = false;
           }
-          if (res.status == 403) {
+          if (res.status == 400) {
             this.show_token_expire_msg = true;
             Notify.create({
               type: "info",
               position: Platform.is.mobile ? "bottom" : "top-right",
               message: this.$t("app.tokenExpireMsg"),
+            });
+          }
+          if (res.status == 403) {
+            Notify.create({
+              type: "info",
+              position: Platform.is.mobile ? "bottom" : "top-right",
+              message: this.$t("app.invalidTokenMsg"),
             });
           }
         })

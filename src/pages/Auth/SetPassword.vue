@@ -5,7 +5,7 @@
       :class="$q.screen.lg ? 'q-pt-lg flex flex-center' : 'q-pt-sm'"
     >
       <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12">
-        <q-card :class="$q.screen.lg ? 'q-mt-lg' : 'q-mt-md'">
+        <q-card :class="$q.screen.lg ? 'q-mt-lg q-pb-xl' : 'q-mt-md q-pb-xl'">
           <q-card-section>
             <div class="back_arrow_button" v-show="is_exist_user">
               <q-btn
@@ -25,7 +25,7 @@
             <!-- form to check invited member exist -->
             <q-form
               @submit="onCheckUserExist"
-              class="q-gutter-md q-mt-md q-px-xs"
+              class="q-gutter-md q-mt-md"
               v-show="!is_exist_user"
             >
               <div>
@@ -57,21 +57,14 @@
                     class="q-pl-lg"
                   ></q-icon>
                 </q-btn>
-                <div class="row q-mb-xl justify-end">
-                  <span class="account_text" v-if="!$q.screen.lg"
-                    >{{ $t("app.noAccountMsg") }}
-                    <router-link to="/auth/register" class="sign_link">
-                      <span>{{ $t("app.signUpLabel") }}</span>
-                    </router-link>
-                  </span>
-                </div>
               </div>
             </q-form>
 
             <!-- form to set password for invited members -->
             <q-form
               @submit="onSetPassword"
-              class="q-gutter-md q-mt-md q-px-md"
+              class="q-gutter-md q-mt-md"
+              :class="$q.screen.lg ? 'q-px-md' : ''"
               v-show="is_exist_user"
             >
               <div>
@@ -84,6 +77,7 @@
                   outlined
                   dense
                   type="email"
+                  disable
                 />
               </div>
               <div>
@@ -108,8 +102,8 @@
               </div>
               <div>
                 <label for="password_confirmation" class="form_field"
-                  >{{ $t("app.confirmPasswordLabel")
-                  }}<span class="text-red">*</span></label
+                  >{{ $t("app.confirmPasswordLabel") }}
+                  <span class="text-red">*</span></label
                 >
                 <q-input
                   v-model="user.password_confirmation"
@@ -148,25 +142,6 @@
                     class="q-pl-lg"
                   ></q-icon>
                 </q-btn>
-                <div
-                  class="row q-mb-xl"
-                  :class="!$q.screen.lg ? 'justify-evenly' : 'justify-end'"
-                >
-                  <span class="account_text" v-if="!$q.screen.lg"
-                    >{{ $t("app.noAccountMsg") }}
-                    <router-link to="/auth/register" class="sign_link">
-                      <span>{{ $t("app.signUpLabel") }}</span>
-                    </router-link>
-                  </span>
-                  <router-link
-                    to="/auth/password-reset/get-token"
-                    class="sign_link"
-                  >
-                    <span class="forgot_password">{{
-                      $t("app.forgotPasswordMsg")
-                    }}</span>
-                  </router-link>
-                </div>
               </div>
             </q-form>
           </q-card-section>
@@ -445,37 +420,16 @@ export default {
   text-align: center;
 }
 
-.form_button {
-  width: 100%;
-  margin-bottom: 0.1rem;
-}
-
-.forgot_password {
-  display: block;
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 700;
-  font-size: 13px;
-  align-items: center;
-  color: $primary;
-  cursor: pointer;
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-}
-
-.sign_link {
-  text-decoration: none;
-  color: $primary;
-}
-
-.account_text {
+.form_field {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 10px;
-  color: $dark;
-  text-transform: uppercase;
-  line-height: 37px;
-  float: right;
+  font-size: 0.7rem;
+  align-items: center;
+  color: $grey5;
+}
+
+.form_button {
+  width: 100%;
 }
 </style>

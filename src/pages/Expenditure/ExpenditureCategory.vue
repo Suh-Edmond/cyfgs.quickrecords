@@ -49,7 +49,7 @@ export default {
       sortBy: "name",
       descending: false,
       page: 1,
-      rowsPerPage: 7,
+      rowsPerPage: 10,
       rowsNumber: 0,
     });
   },
@@ -58,7 +58,7 @@ export default {
     this.fetchOrganisationExpenditureCategories(
       this.organisation_id,
       1,
-      7,
+      10,
       "name",
       "",
       ""
@@ -198,7 +198,7 @@ export default {
       this.fetchOrganisationExpenditureCategories(
         this.organisation_id,
         1,
-        7,
+        10,
         "name",
         data.year.value,
         ""

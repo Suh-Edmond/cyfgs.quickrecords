@@ -2,30 +2,37 @@
   <div class="q-ma-md">
     <div class="q-ml-sm q-mb-lg">
       <label class="text-muted info"
-        >{{$t('app.warningField')}}<span class="text-red">*</span>{{$t('app.fields')}}</label
+        >{{ $t("app.warningField") }}<span class="text-red">*</span
+        >{{ $t("app.fields") }}</label
       >
     </div>
     <div class="q-mt-lg q-mx-sm">
       <q-form @submit="onAddExpenditureCategory" class="q-gutter-md">
         <div>
           <label for="credential" class="form_field"
-            >{{$t('app.nameLabel')}} <span class="text-red">*</span></label
+            >{{ $t("app.nameLabel") }} <span class="text-red">*</span></label
           >
           <q-input v-model="expenditure.name" outlined dense type="text" />
         </div>
         <div>
           <label for="credential" class="form_field"
-            >{{$t('app.codeLabel')}} <span class="text-red">*</span></label
+            >{{ $t("app.codeLabel") }} <span class="text-red">*</span></label
           >
-          <q-input v-model="expenditure.code" outlined bottom-slots dense type="text" >
+          <q-input
+            v-model="expenditure.code"
+            outlined
+            bottom-slots
+            dense
+            type="text"
+          >
             <template v-slot:hint>
-          {{$t('app.codeHintCategory')}}
-        </template>
+              {{ $t("app.codeHintCategory") }}
+            </template>
           </q-input>
         </div>
         <div>
           <label for="credential" class="form_field"
-            >{{$t('app.description')}} <span class="text-red">*</span></label
+            >{{ $t("app.description") }} <span class="text-red">*</span></label
           >
           <q-input
             v-model="expenditure.description"
@@ -60,19 +67,19 @@ import ExpenditureCategoryMixinVue from "src/mixins/ExpenditureCategoryMixin.vue
 export default {
   mixins: [organisationMixinVue, ExpenditureCategoryMixinVue],
   created() {
-    let heading = this.$t('app.expenditureCategoryHeading');
+    let heading = this.$t("app.expenditureCategoryHeading");
     this.$emit("set-heading", heading);
   },
   data() {
     return {
-      label_save: this.$t('app.saveBtnLabel'),
+      label_save: this.$t("app.saveBtnLabel"),
       loading: false,
       color: "primary",
       expenditure: {
         name: null,
         description: null,
         id: null,
-        code:null,
+        code: null,
       },
       position: "right",
       dialog: false,
@@ -98,11 +105,14 @@ export default {
   methods: {
     setRequestUrl() {
       let id = this.getOrganisationId;
-      return this.getUpdatedExpenditureCategoryFromState() === null ? `/api/protected/organisations/${id}/expenditure-categories` :
-      `/api/protected/organisations/${id}/expenditure-categories/${this.getUpdatedExpenditureCategoryFromState().id}`
+      return this.getUpdatedExpenditureCategoryFromState() === null
+        ? `/api/protected/organisations/${id}/expenditure-categories`
+        : `/api/protected/organisations/${id}/expenditure-categories/${
+            this.getUpdatedExpenditureCategoryFromState().id
+          }`;
     },
     onAddExpenditureCategory() {
-      let current_session_id = this.$store.getters.getCurrentYear.id
+      let current_session_id = this.$store.getters.getCurrentYear.id;
       let payload = {
         url: this.setRequestUrl(),
         data: {
@@ -112,14 +122,14 @@ export default {
             this.getUpdatedExpenditureCategoryFromState() == null
               ? null
               : this.getUpdatedExpenditureCategoryFromState().id,
-          code :this.expenditure.code,
+          code: this.expenditure.code,
         },
-        msg: this.$t('app.expenditureCategorySuccessMsg'),
+        msg: this.$t("app.expenditureCategorySuccessMsg"),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: this.$t('app.defaultErrorMsg'),
+        error_msg: this.$t("app.defaultErrorMsg"),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -129,29 +139,43 @@ export default {
         },
       };
       this.loading = true;
-     if(this.getUpdatedExpenditureCategoryFromState() == null) {
-      this.$store
-        .dispatch("postRequest", payload)
-        .then(() => {
-          this.fetchOrganisationExpenditureCategories(this.$store.getters.getOrganisation.id, 1, 7, "name", current_session_id, "");
-        })
-        .finally(() => {
-          this.loading = false;
-          this.resetForm();
-          this.$emit("close-right-drawer");
-        });
-     }else {
-      this.$store
-        .dispatch("putRequest", payload)
-        .then(() => {
-          this.fetchOrganisationExpenditureCategories(this.$store.getters.getOrganisation.id, 1, 7, "name", current_session_id, "");
-        })
-        .finally(() => {
-          this.loading = false;
-          this.resetForm();
-          this.$emit("close-right-drawer");
-        });
-     }
+      if (this.getUpdatedExpenditureCategoryFromState() == null) {
+        this.$store
+          .dispatch("postRequest", payload)
+          .then(() => {
+            this.fetchOrganisationExpenditureCategories(
+              this.$store.getters.getOrganisation.id,
+              1,
+              10,
+              "name",
+              "",
+              ""
+            );
+          })
+          .finally(() => {
+            this.loading = false;
+            this.resetForm();
+            this.$emit("close-right-drawer");
+          });
+      } else {
+        this.$store
+          .dispatch("putRequest", payload)
+          .then(() => {
+            this.fetchOrganisationExpenditureCategories(
+              this.$store.getters.getOrganisation.id,
+              1,
+              10,
+              "name",
+              "",
+              ""
+            );
+          })
+          .finally(() => {
+            this.loading = false;
+            this.resetForm();
+            this.$emit("close-right-drawer");
+          });
+      }
     },
     resetForm() {
       this.expenditure.description = null;
@@ -169,7 +193,7 @@ export default {
       (this.expenditure.name = data == null ? null : data.name),
         (this.expenditure.description = data == null ? null : data.description),
         (this.id = data == null ? null : data.id);
-        this.expenditure.code = data == null ? null : data.code;
+      this.expenditure.code = data == null ? null : data.code;
 
       return this.expenditure;
     },
@@ -222,7 +246,6 @@ export default {
   align-items: center;
   letter-spacing: 0.01em;
 }
-
 
 .info {
   color: $grey2;

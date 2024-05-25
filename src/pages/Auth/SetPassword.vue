@@ -466,4 +466,28 @@ export default {
 .form_button {
   width: 100%;
 }
+
+.passwordCaption {
+  color: $grey2;
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+.expired_icon {
+  color: $red;
+  font-size: 4rem;
+}
+
+.tokenMsg {
+  color: $dark;
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 1rem;
+  align-items: center;
+  text-align: center;
+}
 </style>

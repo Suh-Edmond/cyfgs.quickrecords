@@ -92,6 +92,17 @@
                       >{{ $t("app.rolesName") }}
                     </label>
                     <q-space />
+
+                    <label for="role" class="role_heading"
+                      ><q-icon
+                        name="add"
+                        class="role_icon"
+                        @click="showAddRole"
+                        v-if="canEditUserRole"
+                      ></q-icon>
+
+                      <q-tooltip> {{ $t("app.addRoleLabel") }} </q-tooltip>
+                    </label>
                   </div>
                   <q-list>
                     <q-item
@@ -176,7 +187,11 @@
                           flat
                           round
                           @click="showRemoveRoleDialog(role)"
-                          v-if="role.name !== 'MEMBER' && canEditUserRole"
+                          v-if="
+                            role.name !== 'MEMBER' &&
+                            role.name !== 'ADMIN' &&
+                            canEditUserRole
+                          "
                         >
                           <q-icon name="delete" color="negative" size="xs">
                             <q-tooltip>{{ $t("app.removeRole") }}</q-tooltip>
@@ -1287,8 +1302,6 @@ export default {
           (role) =>
             role.name == "TREASURER" ||
             role.name == "FINANCIAL_SECRETARY" ||
-            role.name == "AUDITOR" ||
-            role.name == "ADMIN" ||
             role.name == "PRESIDENT"
         )
         .forEach((role) => {
@@ -1393,7 +1406,7 @@ export default {
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: this.$t('app.defaultErrorMsg'),
+        error_msg: this.$t("app.defaultErrorMsg"),
         has_commit: false,
         commit: "none",
         status: "success",
@@ -1561,8 +1574,8 @@ export default {
       this.$store
         .dispatch("postRequest", payload)
         .then((response) => {
+          this.loading = false;
           if (response.status == 200) {
-            this.loading = false;
             this.role = null;
             this.getUserRoles(user_id);
           } else if (response.status == 427) {
@@ -1581,6 +1594,7 @@ export default {
         })
         .finally(() => {
           this.show_add_role_dialog = false;
+          this.role = null;
         });
     },
 
@@ -1909,7 +1923,8 @@ export default {
   font-size: 1.4rem;
 }
 .role_icon {
-  font-size: 1.4rem;
+  font-size: 1rem;
+  cursor: pointer;
 }
 
 .gender_icon {

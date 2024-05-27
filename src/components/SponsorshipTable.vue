@@ -48,8 +48,29 @@
           </q-td>
 
           <q-td key="action" :props="props">
+             <!-- buttons for approve and decline row data -->
+            <q-btn
+              class="approve_btn"
+              dense
+              :label="$t('app.approve')"
+              no-caps
+              unelevated
+              @click="onApprovedRecord(props.row, 'Approve')"
+              v-if="canValidateTransaction() && props.row.approve == 'PENDING'"
+            />
+
+            <q-btn
+              class="decline_btn q-mx-xl"
+              :label="$t('app.decline')"
+              no-caps
+              dense
+              unelevated
+              @click="onDeclineRecord(props.row, 'Decline')"
+              v-if="canValidateTransaction() && props.row.approve == 'PENDING'"
+            />
+            
             <!-- button to handle edit, view and delete of row data  q-px-sm -->
-            <q-btn flat round v-if="!checkTreasurerRole()">
+            <q-btn flat round v-if="!checkTreasurerRoleOnly()">
               <q-icon
                 name="menu"
                 size="xs"
@@ -77,8 +98,8 @@
                       </q-item-section>
                     </q-item>
 
-                     <!-- edit support -->
-                     <q-item
+                    <!-- edit support -->
+                    <q-item
                       clickable
                       v-close-popup
                       @click="onEditSupport(props.row)"
@@ -117,26 +138,7 @@
               </q-icon>
             </q-btn>
 
-            <!-- buttons for approve and decline row data -->
-            <q-btn
-              class="approve_btn"
-              dense
-              :label="$t('app.approve')"
-              no-caps
-              unelevated
-              @click="onApprovedRecord(props.row, 'Approve')"
-              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
-            />
 
-            <q-btn
-              class="decline_btn q-mx-xl"
-              :label="$t('app.decline')"
-              no-caps
-              dense
-              unelevated
-              @click="onDeclineRecord(props.row, 'Decline')"
-              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
-            />
             <q-btn
               unelevated
               no-caps
@@ -145,7 +147,7 @@
               class="view_income"
               :label="$t('app.view')"
               @click="onViewSupport(props.row)"
-              v-if="checkTreasurerRole()"
+              v-if="checkTreasurerRoleOnly()"
             >
               <q-icon name="visibility" size="xs" class="q-pl-md"></q-icon>
             </q-btn>
@@ -156,7 +158,11 @@
       <!-- slot for table headings -->
       <template v-slot:top-left>
         <div class="text-h6 title" v-if="title !== ''">
-          {{ title }},  <span> {{ $t("app.total") }} : {{ Number(total).toLocaleString() }} XAF</span>
+          {{ title }},
+          <span>
+            {{ $t("app.total") }} :
+            {{ Number(total).toLocaleString() }} XAF</span
+          >
         </div>
       </template>
 
@@ -172,7 +178,7 @@
               ? 'row text-h6-sm'
               : 'text-h6-sm q-mb-lg q-mt-lg full-width'
           "
-          :style="$q.platform.is.mobile?'width:88vw':''"
+          :style="$q.platform.is.mobile ? 'width:88vw' : ''"
         >
           <template v-slot:append>
             <q-icon name="search" />
@@ -291,10 +297,11 @@
 </template>
 <script>
 import { LocalStorage } from "quasar";
+import HelperMixin from "src/mixins/HelperMixin.vue";
 import SponsorshipMixin from "src/mixins/SponsorshipMixin.vue";
 
 export default {
-  mixins: [SponsorshipMixin],
+  mixins: [SponsorshipMixin, HelperMixin],
   props: {
     columns: {
       type: Array,
@@ -404,13 +411,6 @@ export default {
       this.supporter = row.supporter;
       this.approve_msg =
         this.$t("app.sponsorshipPart") + `${row.payment_item.name} ?`;
-    },
-
-    checkTreasurerRole() {
-      const treasurer_role = LocalStorage.getItem("data").user_data.roles.find(
-        (role) => role.name == "TREASURER"
-      );
-      return treasurer_role != undefined;
     },
 
     deleteRow(data) {

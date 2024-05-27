@@ -94,11 +94,23 @@ export default {
       return this.loading_download;
     },
 
-    checkTreasurerRole() {
-      const treasurer_role = LocalStorage.getItem("data").roles.find(
-        (role) => role.name == "TREASURER"
-      );
-      return treasurer_role != undefined;
+    checkTreasurerRoleOnly() {
+      const auth_role = LocalStorage.getItem("data").user_data.roles;
+      const istreasurer_only = LocalStorage.getItem("data")
+        .user_data.roles.map((role) => role.name)
+        .filter(
+          (role) =>
+            (role == "MEMBER" || role == "TREASURER") &&
+            (role != "ADMIN" || role != "FINANCIAL_SECRETARY")
+        );
+      return istreasurer_only.length == auth_role.length;
+    },
+
+    canValidateTransaction() {
+      const istreasurer = LocalStorage.getItem("data")
+        .user_data.roles.map((role) => role.name)
+        .find((role) => role == "TREASURER");
+      return istreasurer != undefined;
     },
 
     computeTotal(data) {

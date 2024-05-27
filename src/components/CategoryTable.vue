@@ -45,7 +45,7 @@
           </q-td>
           <q-td key="action" :props="props">
             <!-- buttons for edit, view and delete table data row -->
-            <q-btn flat round v-if="!checkTreasurerRole()">
+            <q-btn flat round v-if="!checkTreasurerRoleOnly()">
               <q-icon
                 name="menu"
                 size="xs"
@@ -100,7 +100,7 @@
               no-caps
               class="view_payment_category"
               @click="onViewPaymentCategory(props.row)"
-              v-if="checkTreasurerRole()"
+              v-if="checkTreasurerRoleOnly()"
             >
               {{ $t("app.view") }}
               <span class="q-pl-md"
@@ -167,7 +167,7 @@
           </q-td>
           <q-td key="action" :props="props">
             <!-- buttons for edit, view and delete table data row -->
-            <q-btn flat round v-if="!checkTreasurerRole()">
+            <q-btn flat round v-if="!checkTreasurerRoleOnly()">
               <q-icon
                 name="menu"
                 size="xs"
@@ -238,7 +238,7 @@
               no-caps
               class="view_items"
               @click="onViewPaymentItem(props.row)"
-              v-if="checkTreasurerRole()"
+              v-if="checkTreasurerRoleOnly()"
             >
               {{ $t("app.view") }}
               <span class="q-pl-md"
@@ -275,7 +275,7 @@
           </q-td>
           <q-td key="action" :props="props">
             <!-- buttons for edit, view and delete table data row -->
-            <q-btn flat round v-if="!checkTreasurerRole()">
+            <q-btn flat round v-if="!checkTreasurerRoleOnly()">
               <q-icon
                 name="menu"
                 size="xs"
@@ -365,19 +365,6 @@
             {{ props.row.approve }}
           </q-td>
           <q-td key="action" :props="props">
-            <q-btn
-              no-caps
-              dense
-              unelevated
-              color="primary"
-              :label="$t('app.details')"
-              v-if="checkTreasurerRole()"
-              class="view q-mr-md"
-              @click="showDetails(props.row)"
-              :to="{ name: 'expenditure_detail', params: { id: props.row.id, session_id: props.row.session.id } }"
-            >
-              <q-icon name="visibility" size="xs" class="q-pl-md"></q-icon>
-            </q-btn>
             <!-- approved btn for expenditure items -->
             <q-btn
               class="approve_btn"
@@ -387,8 +374,8 @@
               unelevated
               @click="onApprovedRecord(props.row, 'Approve')"
               v-if="
-                checkTreasurerRole() &&
-                props.row.approve == 'PENDING' &&
+                canValidateTransaction() &&
+                props.row.approve === 'PENDING' &&
                 props.row.has_no_pending_details
               "
             />
@@ -401,14 +388,30 @@
               no-caps
               @click="onDeclineRecord(props.row, 'Decline')"
               v-if="
-                checkTreasurerRole() &&
-                props.row.approve == 'PENDING' &&
+                canValidateTransaction() &&
+                props.row.approve === 'PENDING' &&
                 props.row.has_no_pending_details
               "
             />
+            <q-btn
+              no-caps
+              dense
+              unelevated
+              color="primary"
+              :label="$t('app.details')"
+              v-if="checkTreasurerRoleOnly()"
+              class="view q-mr-md"
+              @click="showDetails(props.row)"
+              :to="{
+                name: 'expenditure_detail',
+                params: { id: props.row.id, session_id: props.row.session.id },
+              }"
+            >
+              <q-icon name="visibility" size="xs" class="q-pl-md"></q-icon>
+            </q-btn>
 
             <!-- buttons for edit, view and delete table data row -->
-            <q-btn flat round v-if="!checkTreasurerRole()">
+            <q-btn flat round v-if="!checkTreasurerRoleOnly()">
               <q-icon
                 name="menu"
                 size="xs"
@@ -541,8 +544,44 @@
             {{ props.row.approve }}
           </q-td>
           <q-td key="action" :props="props">
+            <!-- decline btn for expenditure item details -->
+            <q-btn
+              class="approve_btn q-mx-md"
+              dense
+              :label="$t('app.approve')"
+              no-caps
+              unelevated
+              @click="onApprovedRecord(props.row, 'Approve')"
+              v-if="canValidateTransaction() && props.row.approve == 'PENDING'"
+            />
+
+            <!-- approved btn for expenditure item details -->
+            <q-btn
+              class="decline_btn"
+              dense
+              :label="$t('app.decline')"
+              unelevated
+              no-caps
+              @click="onDeclineRecord(props.row, 'Decline')"
+              v-if="canValidateTransaction() && props.row.approve == 'PENDING'"
+            />
+
+            <!-- view expenditure item details -->
+            <q-btn
+              color="primary"
+              class="viewPending"
+              dense
+              :label="$t('app.view')"
+              no-caps
+              unelevated
+              @click="onViewExpenditureDetail(props.row)"
+              v-if="checkTreasurerRoleOnly()"
+            >
+              <q-icon name="visibility" size="xs" class="q-pl-md"></q-icon>
+            </q-btn>
+
             <!-- buttons for edit, view and delete table data row -->
-            <q-btn flat round v-if="!checkTreasurerRole()">
+            <q-btn flat round v-if="!checkTreasurerRoleOnly()">
               <q-icon
                 name="menu"
                 size="xs"
@@ -606,42 +645,6 @@
                 </q-menu>
               </q-icon>
             </q-btn>
-
-            <!-- view expenditure item details -->
-            <q-btn
-              color="primary"
-              class="viewPending"
-              dense
-              :label="$t('app.view')"
-              no-caps
-              unelevated
-              @click="onViewExpenditureDetail(props.row)"
-              v-if="checkTreasurerRole()"
-            >
-              <q-icon name="visibility" size="xs" class="q-pl-md"></q-icon>
-            </q-btn>
-
-            <!-- decline btn for expenditure item details -->
-            <q-btn
-              class="approve_btn q-mx-md"
-              dense
-              :label="$t('app.approve')"
-              no-caps
-              unelevated
-              @click="onApprovedRecord(props.row, 'Approve')"
-              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
-            />
-
-            <!-- approved btn for expenditure item details -->
-            <q-btn
-              class="decline_btn"
-              dense
-              :label="$t('app.decline')"
-              unelevated
-              no-caps
-              @click="onDeclineRecord(props.row, 'Decline')"
-              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
-            />
           </q-td>
         </q-tr>
         <!-- end of table body for expenditure item details -->
@@ -885,13 +888,6 @@ export default {
       return moment(date).format("MMMM Do YYYY");
     },
 
-    checkTreasurerRole() {
-      const treasurer_role = LocalStorage.getItem("data").user_data.roles.find(
-        (role) => role.name === "TREASURER"
-      );
-      return treasurer_role != undefined;
-    },
-
     checkPresidentOrAdminRole() {
       let req_roles = ["ADMIN", "PRESIDENT"];
       const user_roles = LocalStorage.getItem("data").user_data.roles.map(
@@ -1126,10 +1122,10 @@ export default {
     callFetchDataAfterApproveAction(data) {
       switch (data.type) {
         case "EXPENDITURE_ITEMS":
-          this.filterExpenditureItems(
+          this.fetchExpenditureItems(
             1,
             10,
-            { value: this.$store.getters.getCurrentExpenditureCategory.id },
+            { value: data.session.id },
             "",
             "",
             ""

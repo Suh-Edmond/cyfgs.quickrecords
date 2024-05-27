@@ -98,6 +98,7 @@
                         name="add"
                         class="role_icon"
                         @click="showAddRole"
+                        v-if="canEditUserRole"
                       ></q-icon>
 
                       <q-tooltip> {{ $t("app.addRoleLabel") }} </q-tooltip>
@@ -187,7 +188,8 @@
                           round
                           @click="showRemoveRoleDialog(role)"
                           v-if="
-                            (role.name !== 'MEMBER' && role.name !== 'ADMIN') &&
+                            role.name !== 'MEMBER' &&
+                            role.name !== 'ADMIN' &&
                             canEditUserRole
                           "
                         >

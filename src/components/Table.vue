@@ -1,5 +1,5 @@
 <template>
-  <div class="q-mb-xl" >
+  <div class="q-mb-xl">
     <q-table
       :data="data"
       :columns="columns"
@@ -112,14 +112,13 @@
           </q-td>
 
           <q-td key="action" :props="props">
-
             <q-btn
               class="approve_btn"
               :label="$t('app.approve')"
               no-caps
               dense
               @click="onApprovedRecord(props.row, 'Approve')"
-              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
+              v-if="canValidateTransaction() && props.row.approve == 'PENDING'"
             />
 
             <!-- buttons for approve and decline row data -->
@@ -129,10 +128,10 @@
               no-caps
               dense
               @click="onDeclineRecord(props.row, 'Decline')"
-              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
+              v-if="canValidateTransaction() && props.row.approve == 'PENDING'"
             />
             <!-- button to handle edit, view and delete, invite and register  a member -->
-            <q-btn flat round v-if="checkTreasurerRole()">
+            <q-btn flat round v-if="checkTreasurerRoleOnly()">
               <q-icon
                 name="menu"
                 size="xs"
@@ -169,7 +168,7 @@
             </q-btn>
 
             <!-- button to handle edit, view and delete, invite and register  a member -->
-            <q-btn flat round v-if="!checkTreasurerRole()">
+            <q-btn flat round v-if="!checkTreasurerRoleOnly()">
               <q-icon
                 name="menu"
                 size="xs"
@@ -207,9 +206,7 @@
                       v-close-popup
                       @click="onInviteMember(props.row)"
                       :disabled="props.row.status == 'IN_ACTIVE'"
-                      v-if="
-                        checkAdminPresidentRole()
-                      "
+                      v-if="checkAdminPresidentRole()"
                     >
                       <q-item-section avatar>
                         <span>
@@ -270,7 +267,7 @@
         <!---------------------------------------------END BODE FOR MEMBERS------------------------------------------------------------------------------------->
 
         <!---------------------------------------------------START OF SAVINGS FOR ALL MEMBER TO BE VIEW BY USER WITH UNTREASUERER ROLE------------------------->
-        <q-tr :props="props" v-if="show_savings && !checkTreasurerRole()">
+        <q-tr :props="props" v-if="show_savings && !checkTreasurerRoleOnly()">
           <q-td key="user_name" :props="props">
             {{ props.row.user_name }}
           </q-td>
@@ -312,7 +309,7 @@
         <!----------------------------------------------------END F SAVINGS FOR ALL MEMBER TO BE VIEW BY USER WITH UNTREASUERER ROLE---------------------------------------------->
 
         <!----------------------------------------------------END OF MEMBER SAVINGS TO BE VIEW BY THE TREASUERER--------------------------------------------->
-        <q-tr :props="props" v-if="show_savings && checkTreasurerRole()">
+        <q-tr :props="props" v-if="show_savings && checkTreasurerRoleOnly()">
           <q-td key="user_name" :props="props">
             {{ props.row.user_name }}
           </q-td>
@@ -388,9 +385,41 @@
           <q-td key="date" :props="props">
             {{ getDate(props.row.date) }}
           </q-td>
-          <q-td key="action" :props="props" v-if="!checkTreasurerRole()">
+          <q-td key="action" :props="props">
+            <q-btn
+              class="approve_btn"
+              :label="$t('app.approve')"
+              no-caps
+              unelevated
+              dense
+              @click="onApprovedRecord(props.row, 'Approve')"
+              v-if="props.row.approve == 'PENDING' && canValidateTransaction()"
+            />
+
+            <q-btn
+              class="decline_btn_saving"
+              :label="$t('app.decline')"
+              no-caps
+              unelevated
+              dense
+              @click="onDeclineRecord(props.row, 'Decline')"
+              v-if="props.row.approve == 'PENDING' && canValidateTransaction()"
+            />
+
+            <q-btn
+              unelevated
+              no-caps
+              dense
+              color="primary"
+              class="view_income q-px-sm q-mr-md"
+              :label="$t('app.view')"
+              @click="onViewMemberSaving(props.row)"
+              v-if="checkTreasurerRoleOnly()"
+            >
+              <q-icon name="visibility" size="xs" class="q-pl-md"></q-icon>
+            </q-btn>
             <!-- menu to handle edit and view details of a single saving -->
-            <q-btn flat round>
+            <q-btn flat round v-if="!checkTreasurerRoleOnly()">
               <q-icon
                 name="menu"
                 size="xs"
@@ -435,40 +464,6 @@
                   </q-list>
                 </q-menu>
               </q-icon>
-            </q-btn>
-          </q-td>
-
-          <q-td key="action" :props="props" v-if="checkTreasurerRole()">
-            <q-btn
-              class="approve_btn"
-              :label="$t('app.approve')"
-              no-caps
-              unelevated
-              dense
-              @click="onApprovedRecord(props.row, 'Approve')"
-              v-if="props.row.approve == 'PENDING'"
-            />
-
-            <q-btn
-              class="decline_btn_saving"
-              :label="$t('app.decline')"
-              no-caps
-              unelevated
-              dense
-              @click="onDeclineRecord(props.row, 'Decline')"
-              v-if="props.row.approve == 'PENDING'"
-            />
-
-            <q-btn
-              unelevated
-              no-caps
-              dense
-              color="primary"
-              class="view_income q-px-sm q-mr-md"
-              :label="$t('app.view')"
-              @click="onViewMemberSaving(props.row)"
-            >
-              <q-icon name="visibility" size="xs" class="q-pl-md"></q-icon>
             </q-btn>
           </q-td>
         </q-tr>
@@ -520,7 +515,7 @@
               no-caps
               unelevated
               @click="onApprovedRecord(props.row, 'Approve')"
-              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
+              v-if="canValidateTransaction() && props.row.approve == 'PENDING'"
             />
 
             <q-btn
@@ -529,7 +524,7 @@
               no-caps
               unelevated
               @click="onDeclineRecord(props.row, 'Decline')"
-              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
+              v-if="canValidateTransaction() && props.row.approve == 'PENDING'"
             />
 
             <!-- button to handle view all activity -->
@@ -541,13 +536,13 @@
               class="view_income q-px-sm q-ml-xl"
               :label="$t('app.view')"
               @click="onViewIncomeActivity(props.row)"
-              v-if="show_income_activity && checkTreasurerRole()"
+              v-if="show_income_activity && checkTreasurerRoleOnly()"
             >
               <q-icon name="visibility" size="xs" class="q-pl-sm"></q-icon>
             </q-btn>
 
             <!-- menu to handle edit and view details of a single show_income_activity -->
-            <q-btn flat round v-if="!checkTreasurerRole()">
+            <q-btn flat round v-if="!checkTreasurerRoleOnly()">
               <q-icon
                 name="menu"
                 size="xs"
@@ -653,22 +648,22 @@
           </q-td>
           <q-td key="action" :props="props">
             <q-btn
-              class="approve_btn_income_activity "
+              class="approve_btn_income_activity"
               :label="$t('app.approve')"
               no-caps
               unelevated
               @click="onApprovedRecord(props.row, 'Approve')"
-              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
+              v-if="canValidateTransaction() && props.row.approve == 'PENDING'"
             />
 
-             <!-- buttons for approve and decline row data -->
-             <q-btn
+            <!-- buttons for approve and decline row data -->
+            <q-btn
               class="decline_btn_income_activity q-mx-xl"
               :label="$t('app.decline')"
               no-caps
               unelevated
               @click="onDeclineRecord(props.row, 'Decline')"
-              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
+              v-if="canValidateTransaction() && props.row.approve == 'PENDING'"
             />
 
             <!-- menu to handle edit and view details of a single contributions -->
@@ -781,12 +776,12 @@
               class="view_contribution q-mr-md"
               :label="$t('app.view')"
               @click="onViewContribution(props.row)"
-              v-if="checkTreasurerRole()"
+              v-if="checkTreasurerRoleOnly()"
             >
               <q-icon name="visibility" size="xs" class="q-pl-md"></q-icon>
             </q-btn>
             <!-- menu to handle edit and view details of a single member contribution -->
-            <q-btn flat round v-if="!checkTreasurerRole()">
+            <q-btn flat round v-if="!checkTreasurerRoleOnly()">
               <q-icon
                 name="menu"
                 size="xs"
@@ -1041,7 +1036,7 @@ export default {
     UserSavingMixinVue,
     ContributionsMixinVue,
     memberMixin,
-    HelperMixin
+    HelperMixin,
   ],
 
   mounted() {},
@@ -1317,13 +1312,6 @@ export default {
 
     deleteRow() {
       this.$emit("delete-row", this.deleted_row);
-    },
-
-    checkTreasurerRole() {
-      const treasurer_role = LocalStorage.getItem("data").user_data.roles.find(
-        (role) => role.name == "TREASURER"
-      );
-      return treasurer_role != undefined;
     },
 
     checkPresidentTreasurerRole() {

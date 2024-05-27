@@ -99,6 +99,13 @@ export default {
           sortable: true,
         },
         {
+          name: "approve",
+          align: "left",
+          label: "Transaction Status",
+          field: "approve",
+          sortable: true,
+        },
+        {
           name: "action",
           label: "Action",
           field: "action",
@@ -139,6 +146,8 @@ export default {
             total_balance: ele.total_balance,
             type: "EXPENDITURE_ITEMS",
             payment_item: ele.payment_item,
+            has_no_pending_details: ele.has_no_pending_details,
+            session: ele.session,
           });
         });
       }
@@ -293,7 +302,7 @@ export default {
             : "";
         this.fetchExpenditureItems(
           1,
-          7,
+          10,
           "",
           this.status,
           payment_item_value,

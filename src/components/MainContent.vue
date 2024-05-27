@@ -181,7 +181,7 @@
             dense
             no-caps
             v-show="
-              requires_add && !checkTreasurerRole() && verifyRequiredAdd()
+              requires_add && !checkTreasurerRoleOnly() && verifyRequiredAdd()
             "
             @click="showRightDrawer"
             class="q-pa-xs"
@@ -223,9 +223,10 @@
 
 <script>
 import { LocalStorage, SessionStorage } from "quasar";
+import HelperMixin from "src/mixins/HelperMixin.vue";
 import expenditureItemMixin from "src/mixins/expenditureItemMixin.vue";
 export default {
-  mixins: [expenditureItemMixin],
+  mixins: [expenditureItemMixin, HelperMixin],
   mounted() {
     this.auth_user = LocalStorage.getItem("data").user_data;
     const welcome_title = this.auth_user.roles.find(
@@ -468,13 +469,6 @@ export default {
 
     searchMemberSaving(data) {
       this.updateDrawer(data);
-    },
-
-    checkTreasurerRole() {
-      const treasurer_role = LocalStorage.getItem("data").user_data.roles.find(
-        (role) => role.name == "TREASURER"
-      );
-      return treasurer_role != undefined;
     },
 
     searchMemberContribution(data) {

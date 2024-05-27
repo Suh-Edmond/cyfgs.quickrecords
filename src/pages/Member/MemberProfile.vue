@@ -29,7 +29,7 @@
             :label="$t('app.contributionName')"
             class="tab"
             icon="payments"
-            v-if="!checkTresurerRole"
+            v-if="!checkTreasurerRoleOnly()"
           />
         </q-tabs>
         <q-separator />
@@ -64,7 +64,7 @@
                       "
                     >
                     </q-avatar>
-                    <div class="camara" v-if="!checkTresurerRole">
+                    <div class="camara" v-if="!checkTreasurerRoleOnly()">
                       <input
                         type="file"
                         accept="image/x-png,image/jpg,image/jpeg"
@@ -219,7 +219,7 @@
                           color="primary"
                           class="edit_icon"
                           @click="showEditProfile"
-                          v-if="!checkTresurerRole"
+                          v-if="!checkTreasurerRoleOnly()"
                         >
                           <q-tooltip>{{ $t("app.editProfile") }}</q-tooltip>
                         </q-icon>
@@ -559,7 +559,7 @@
           <!-------------------------------------------END OF MEMBER PROFILE TAB PANEL---------------------------------->
 
           <!-------------------------------------------MEMBER CONTRIBUTIONS TAB PANEL----------------------------------->
-          <q-tab-panel name="contributions" v-if="!checkTresurerRole">
+          <q-tab-panel name="contributions" v-if="!checkTreasurerRoleOnly()">
             <!-----------------------------------------PAYMENT ITEMS--------------------------------------------------->
             <div class="row">
               <div class="col-12 col-md-12 col-sm-12 col-xs-12">
@@ -1336,13 +1336,6 @@ export default {
 
     validateDownloadPaidItems() {
       return this.data1.length < 0;
-    },
-
-    checkTresurerRole() {
-      const auth_user = LocalStorage.getItem("data").user_data.roles.find(
-        (role) => role.name === "TREASURER"
-      );
-      return auth_user !== undefined;
     },
   },
   watch: {

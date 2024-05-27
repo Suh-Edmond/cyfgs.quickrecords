@@ -186,7 +186,10 @@
                           flat
                           round
                           @click="showRemoveRoleDialog(role)"
-                          v-if="role.name !== 'MEMBER' && canEditUserRole"
+                          v-if="
+                            (role.name !== 'MEMBER' && role.name !== 'ADMIN') &&
+                            canEditUserRole
+                          "
                         >
                           <q-icon name="delete" color="negative" size="xs">
                             <q-tooltip>{{ $t("app.removeRole") }}</q-tooltip>

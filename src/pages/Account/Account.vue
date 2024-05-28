@@ -260,12 +260,13 @@
                   <label for="credential" class="form_field">{{
                     $t("app.telephoneLabel")
                   }}</label>
-                  <q-input
+
+                  <vue-tel-input
                     v-model="user.telephone"
-                    outlined
-                    dense
-                    type="text"
-                  />
+                    defaultCountry="cm"
+                    mode="international"
+                    class="q-pa-xs"
+                  ></vue-tel-input>
                 </div>
                 <div>
                   <label for="credential" class="form_field"
@@ -487,13 +488,12 @@
             <label for="credential" class="form_field">{{
               $t("app.telephoneLabel")
             }}</label>
-            <q-input
+            <vue-tel-input
               v-model="user.telephone"
-              outlined
-              dense
-              type="text"
-              disable
-            />
+              defaultCountry="cm"
+              mode="international"
+              class="q-pa-xs"
+            ></vue-tel-input>
           </div>
           <div>
             <label for="credential" class="form_field"
@@ -634,6 +634,7 @@ import { LocalStorage, Platform } from "quasar";
 import ButtonVue from "src/components/Button.vue";
 import moment from "moment";
 import organisationMixin from "src/mixins/organisationMixin.vue";
+import { VueTelInput } from "vue-tel-input";
 
 export default {
   mixins: [organisationMixin],
@@ -897,6 +898,7 @@ export default {
   },
   components: {
     ButtonVue,
+    VueTelInput,
   },
 };
 </script>

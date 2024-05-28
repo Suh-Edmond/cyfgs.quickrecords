@@ -82,7 +82,7 @@
     >
       <q-page>
         <q-card class="bar" flat>
-          <div class="flex justify-center">
+          <div class="flex justify-center q-pa-sm">
             <q-btn
               dense
               color="white"
@@ -95,7 +95,7 @@
             </q-btn>
             <label
               for="heading"
-              class="text-white q-ml-lg"
+              class="text-white q-ml-sm"
               :class="$q.platform.is.desktop ? 'text_h6' : 'side-bar-heading'"
               >{{ heading }}</label
             >
@@ -292,7 +292,7 @@ export default {
       },
       requires_add: false,
       right_drawer_width_mobile: 0,
-      right_drawer_width_desktop: 400,
+      right_drawer_width_desktop: 450,
       current_tab: "",
       right_drawer_tab: "",
       data: null,
@@ -635,5 +635,12 @@ export default {
 .sponsorship_icon {
   color: $grey2;
   width: 1.13rem;
+}
+
+.text_h6 {
+  color: $dark;
+  font-family: "Roboto";
+  font-style: normal;
+  font-size: 0.76rem;
 }
 </style>

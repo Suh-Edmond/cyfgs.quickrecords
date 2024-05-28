@@ -40,7 +40,7 @@
               </div>
             </div>
             <!-- member roles -->
-            <div class="flex">
+            <div class="flex q-px-md">
               <div>
                 <label for="role" class="role_heading"
                   ><span
@@ -51,8 +51,6 @@
                   >{{ $t("app.rolesName") }}
                 </label>
               </div>
-              <q-space />
-              <div></div>
             </div>
             <q-list class="q-mt-md">
               <q-item
@@ -89,7 +87,9 @@
                   </q-avatar>
                 </q-item-section>
                 <q-item-section>
-                  <q-item-label class="role_name">{{ role.name }}</q-item-label>
+                  <q-item-label class="role_name">{{
+                    formatConstants(role.name)
+                  }}</q-item-label>
                   <q-item-label caption class="text-xs role_update_date"
                     >{{ $t("app.updatedBy") }}:
                     <span> {{ role.updated_by }}</span></q-item-label
@@ -723,6 +723,9 @@ export default {
     },
   },
   methods: {
+    formatConstants(role) {
+      return role.replaceAll("_", " ");
+    },
     formDateTime(date) {
       return moment(date).format("MMMM Do YYYY");
     },
@@ -921,9 +924,7 @@ export default {
   align-items: center;
   color: $grey5;
 }
-.gender {
-  padding-left: 2.5rem;
-}
+
 .text_h6 {
   color: $dark;
   font-family: "Roboto";
@@ -936,34 +937,13 @@ export default {
 .profile_icon {
   font-size: 1.1rem;
 }
-.gender_icon {
-  font-size: 1.4rem;
-}
-.email {
-  padding-left: 3.5rem;
-}
+
 .camara {
   position: relative;
   left: 10%;
   top: -45px;
   cursor: pointer;
   color: $grey8;
-}
-
-.phone {
-  padding-left: 2rem;
-}
-
-.address {
-  padding-left: 2.6rem;
-}
-
-.occupation {
-  padding-left: 1.4rem;
-}
-
-.date {
-  padding-left: 1rem;
 }
 
 .label {
@@ -1035,6 +1015,6 @@ export default {
 
 .hint {
   color: $grey2;
-  font-size: small;
+  font-size: smaller;
 }
 </style>

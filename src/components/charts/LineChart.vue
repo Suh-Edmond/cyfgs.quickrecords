@@ -10,6 +10,8 @@
       :styles="styles"
       :width="width"
       :height="height"
+      fill="true"
+      backgroundColor="rgba(0, 0, 0, 0.1)"
     />
   </q-card>
 </template>

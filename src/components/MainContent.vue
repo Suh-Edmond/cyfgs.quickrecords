@@ -652,6 +652,7 @@ export default {
 
 .data_content::-webkit-scrollbar {
   width: 7px;
+  height:5px;
 }
 
 .data_content::-webkit-scrollbar-track {

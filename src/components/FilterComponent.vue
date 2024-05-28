@@ -227,7 +227,7 @@
       "
       v-if="show_filter_expenditure_items"
     >
-      <div class="col-md-3 col-lg-3">
+      <div class="col-12 col-md">
         <q-select
           v-model="year"
           outlined
@@ -248,7 +248,7 @@
         </q-select>
       </div>
       <div
-        class="col-md-3 col-lg-3"
+        class="col-12 col-md"
         :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
       >
         <q-select
@@ -277,7 +277,7 @@
         </q-select>
       </div>
       <div
-        class="col-md-3 col-lg-3"
+        class="col-12 col-md"
         :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
       >
         <q-select
@@ -297,7 +297,7 @@
         </q-select>
       </div>
       <div
-        class="col-md-3 col-lg-3 flex"
+        class="col-12 col-md flex"
         :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
       >
         <q-btn
@@ -333,7 +333,7 @@
       "
       v-if="show_filter_expenditure_items_details"
     >
-      <div class="col-md-3 col-lg-3">
+      <div class="col-12 col-md">
         <q-select
           v-model="payment_status"
           outlined
@@ -373,7 +373,7 @@
 
     <!--------------------------------------------FILTER HEADER FOR MEMBERS SAVINGS NON TREASURER------------------------------------------------->
     <div
-      :class="$q.screen.lg ? 'row q-pa-sm' : 'col q-gutter-sm q-px-sm'"
+      class="row q-gutter-sm q-pa-sm"
       :style="
         $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
       "
@@ -388,7 +388,8 @@
         use-input
         input-debounce="0"
         clearable
-        class="col-md-3 col-lg-3"
+        class="col-12 col-md"
+        hide-bottom-space
       >
         <template v-slot:no-option>
           <q-item>
@@ -409,8 +410,8 @@
         clearable
         @filter="filterMonths"
         @input="stopSelectInputSearch"
-        class="col-md-3 col-lg-3"
-        :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
+        class="col-12 col-md"
+        hide-bottom-space
       >
         <template v-slot:append v-if="start_month_filtering">
           <q-spinner color="primary" size="1.2em" :thickness="3" />
@@ -423,10 +424,7 @@
           </q-item>
         </template>
       </q-select>
-      <div
-        class="col-md-6 col-lg-6 flex"
-        :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
-      >
+      <div class="col-md-6 col-lg-6 flex">
         <q-btn
           :label="$t('app.filter')"
           :color="'primary'"
@@ -434,7 +432,9 @@
           no-caps
           icon-right="filter_list"
           @click="filterAllSavings"
-          :size="$q.platform.is.mobile ? 'sm' : 'md'"
+          size="sm"
+          dense
+          padding="none xs"
         >
         </q-btn>
         <q-space />
@@ -446,7 +446,9 @@
           no-caps
           icon-right="download"
           @click="downloadMembersSavings"
-          :size="$q.platform.is.mobile ? 'sm' : 'md'"
+          size="sm"
+          dense
+          padding="none xs"
         ></q-btn>
       </div>
     </div>
@@ -454,7 +456,7 @@
 
     <!----------------------------------------------FILTER HEADER FOR MEMBERS SAVINGS TREASURER--------------------------------------------------->
     <div
-      :class="$q.screen.lg ? 'row q-pa-sm' : 'row q-gutter-sm q-px-sm'"
+      class="row q-gutter-sm q-pa-sm"
       :style="
         $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
       "
@@ -467,7 +469,9 @@
         no-caps
         icon-right="filter_list"
         @click="searchSavings()"
-        :size="$q.platform.is.mobile ? 'sm' : 'md'"
+        size="sm"
+        dense
+        padding="none xs"
       >
       </q-btn>
       <q-space />
@@ -479,13 +483,15 @@
         no-caps
         icon-right="download"
         @click="downloadMembersSavings"
-        :size="$q.platform.is.mobile ? 'sm' : 'md'"
+        size="sm"
+        dense
+        padding="none xs"
       ></q-btn>
     </div>
     <!---------------------------------------------END OF FILTER FOR MEMBERS SAVINGS TREASURER---------------------------------------------------->
     <!----------------------------------------------FILTER HEADER FOR MEMBER SAVINGS-------------------------------------------------------------->
     <div
-      :class="$q.screen.lg ? 'row q-pa-sm' : 'col q-gutter-sm q-px-sm'"
+      class="row q-gutter-sm q-pa-sm"
       :style="
         $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
       "
@@ -502,7 +508,8 @@
         clearable
         @filter="filterMonths"
         @input="stopSelectInputSearch"
-        class="col-md-3 col-lg-3"
+        class="col-12 col-md"
+        hide-bottom-space
       >
         <template v-slot:append v-if="start_month_filtering">
           <q-spinner color="primary" size="1.2em" :thickness="3" />
@@ -522,7 +529,7 @@
         :options="payment_statuses"
         :label="$t('app.selectStatusLabel')"
         clearable
-        class="col-md-3 col-lg-3"
+        class="col-12 col-md"
         :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
       >
         <template v-slot:no-option>
@@ -564,7 +571,7 @@
 
     <!----------------------------------------------FILTER HEADER FOR INCOME ACTIVITIES----------------------------------------------------------->
     <div
-      :class="$q.screen.lg ? 'row q-pa-sm' : 'col q-gutter-sm q-px-sm'"
+      class="row q-pa-sm"
       :style="
         $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
       "
@@ -579,8 +586,9 @@
         use-input
         input-debounce="0"
         clearable
-        class="col-md-2 col-lg-2"
+        class="col-12 col-md"
         :class="$q.platform.is.desktop ? 'q-pr-sm' : ''"
+        hide-bottom-space
       >
         <template v-slot:no-option>
           <q-item>
@@ -590,31 +598,31 @@
           </q-item>
         </template>
       </q-select>
-      <div class="col-md-2 col-lg-2">
-        <q-select
-          v-model="payment_item_id"
-          outlined
-          dense
-          :options="filtered_payment_items"
-          :label="$t('app.searchPaymentItem')"
-          input-debounce="0"
-          use-input
-          clearable
-          @filter="searchPaymentItems"
-          @input="stopSelectInputSearch"
-        >
-          <template v-slot:append v-if="start_payment_item_select_filtering">
-            <q-spinner color="primary" size="1.2em" :thickness="3" />
-          </template>
-          <template v-slot:no-option>
-            <q-item>
-              <q-item-section class="text-grey">
-                {{ $t("app.noResults") }}
-              </q-item-section>
-            </q-item>
-          </template>
-        </q-select>
-      </div>
+      <q-select
+        v-model="payment_item_id"
+        outlined
+        dense
+        :options="filtered_payment_items"
+        :label="$t('app.searchPaymentItem')"
+        input-debounce="0"
+        use-input
+        clearable
+        @filter="searchPaymentItems"
+        @input="stopSelectInputSearch"
+        class="col-12 col-md"
+        hide-bottom-space
+      >
+        <template v-slot:append v-if="start_payment_item_select_filtering">
+          <q-spinner color="primary" size="1.2em" :thickness="3" />
+        </template>
+        <template v-slot:no-option>
+          <q-item>
+            <q-item-section class="text-grey">
+              {{ $t("app.noResults") }}
+            </q-item-section>
+          </q-item>
+        </template>
+      </q-select>
       <q-select
         v-model="month"
         outlined
@@ -626,8 +634,9 @@
         @input="stopSelectInputSearch"
         use-input
         clearable
-        class="col-md-2 col-lg-2"
+        class="col-12 col-md"
         :class="$q.platform.is.desktop ? 'q-pl-sm' : ''"
+        hide-bottom-space
       >
         <template v-slot:append v-if="start_month_filtering">
           <q-spinner color="primary" size="1.2em" :thickness="3" />
@@ -647,8 +656,9 @@
         :options="payment_statuses"
         clearable
         :label="$t('app.selectStatusLabel')"
-        class="col-md-2 col-lg-2"
+        class="col-12 col-md"
         :class="$q.platform.is.desktop ? 'q-pl-sm' : ''"
+        hide-bottom-space
       >
         <template v-slot:no-option>
           <q-item>
@@ -659,7 +669,7 @@
         </template>
       </q-select>
       <div
-        class="col-md-4 col-lg-4 flex"
+        class="col-12 col-md flex"
         :class="$q.platform.is.desktop ? 'q-pl-sm' : ''"
       >
         <q-btn
@@ -669,7 +679,9 @@
           no-caps
           icon-right="filter_list"
           @click="filterIncomeActivity"
-          :size="$q.platform.is.mobile ? 'sm' : 'md'"
+          size="sm"
+          dense
+          padding="none xs"
         >
         </q-btn>
         <q-space />
@@ -681,7 +693,9 @@
           no-caps
           icon-right="download"
           @click="downloadIncomeActivity"
-          :size="$q.platform.is.mobile ? 'sm' : 'md'"
+          size="sm"
+          dense
+          padding="none xs"
         ></q-btn>
       </div>
     </div>
@@ -704,7 +718,7 @@
         use-input
         input-debounce="0"
         clearable
-        class="col-md-3 col-lg-3"
+        class="col-12 col-md"
       >
         <template v-slot:no-option>
           <q-item>
@@ -721,7 +735,7 @@
         :options="payment_statuses"
         :label="$t('app.searchTransactionStatus')"
         clearable
-        class="col-md-3 col-lg-3"
+        class="col-12 col-md"
         :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
       >
         <template v-slot:no-option>
@@ -778,7 +792,7 @@
         use-input
         input-debounce="0"
         clearable
-        class="col-md-3 col-lg-3"
+        class="col-12 col-md"
         :class="$q.platform.is.desktop ? 'q-pr-sm' : ''"
       >
         <template v-slot:no-option>
@@ -800,7 +814,7 @@
         clearable
         @filter="searchPaymentItems"
         @input="stopSelectInputSearch"
-        class="col-md-3 col-lg-3"
+        class="col-12 col-md"
       >
         <template v-slot:append v-if="start_payment_item_select_filtering">
           <q-spinner color="primary" size="1.2em" :thickness="3" />
@@ -820,7 +834,7 @@
         :options="payment_statuses"
         :label="$t('app.selectStatusLabel')"
         clearable
-        class="col-md-3 col-lg-3"
+        class="col-12 col-md"
         :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
       >
         <template v-slot:no-option>
@@ -832,7 +846,7 @@
         </template>
       </q-select>
       <div
-        class="col-md-3 col-lg-3 flex"
+        class="col-12 col-md flex"
         :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
       >
         <q-btn

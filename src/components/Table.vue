@@ -476,23 +476,23 @@
 
         <!----------------------------------------------------------------------INCOME ACTIVITIES----------------------------------------------------------->
         <q-tr :props="props" v-if="show_income_activity">
-          <q-td key="name" :props="props">
+          <q-td key="name" :props="props" class="table_value">
             {{ props.row.name }}
           </q-td>
-          <q-td key="amount" :props="props">
+          <q-td key="amount" :props="props" class="table_value">
             {{ Number(props.row.amount).toLocaleString() }}
           </q-td>
-          <q-td key="date" :props="props">
+          <q-td key="date" :props="props" class="table_value">
             {{ getDate(props.row.date) }}
           </q-td>
-          <q-td key="venue" :props="props">
+          <q-td key="venue" :props="props" class="table_value">
             {{ props.row.venue }}
           </q-td>
           <q-td
             key="approve"
             :props="props"
             v-if="props.row.approve == 'PENDING'"
-            class="text-info"
+            class="text-info table_value"
           >
             {{ props.row.approve }}
           </q-td>
@@ -500,7 +500,7 @@
             key="approve"
             :props="props"
             v-if="props.row.approve == 'APPROVED'"
-            class="registered"
+            class="registered table_value"
           >
             {{ props.row.approve }}
           </q-td>
@@ -508,7 +508,7 @@
             key="approve"
             :props="props"
             v-if="props.row.approve == 'DECLINED'"
-            class="not_registered"
+            class="not_registered table_value"
           >
             {{ props.row.approve }}
           </q-td>
@@ -603,7 +603,7 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="text-red">{{
+                        <q-item-label class="text-red delete_text">{{
                           $t("app.delete")
                         }}</q-item-label>
                       </q-item-section>
@@ -942,7 +942,7 @@
 
     <!-- confirmation dialog for approve and decline row data -->
     <q-dialog v-model="show_approve_dialog" v-if="show_approve_dialog">
-      <q-card class="approve_card q-pa-sm">
+      <q-card class=" q-pa-sm">
         <q-card-section>
           <div class="row">
             <div class="col-md-12">

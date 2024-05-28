@@ -109,7 +109,7 @@ export default {
     canValidateTransaction() {
       const istreasurer = LocalStorage.getItem("data")
         .user_data.roles.map((role) => role.name)
-        .find((role) => role == "TREASURER");
+        .find((role) => role == "TREASURER" || role == "ADMIN");
       return istreasurer != undefined;
     },
 

@@ -111,7 +111,7 @@
           </q-avatar>
           <span class="q-pl-sm account_name">{{ auth_user.name }}</span>
           <q-btn-dropdown flat size="xs" rounded>
-            <q-list dense>
+            <q-list>
               <q-item clickable v-close-popup :to="{ name: 'member_account' }">
                 <q-item-section avatar>
                   <span>
@@ -652,7 +652,7 @@ export default {
 
 .data_content::-webkit-scrollbar {
   width: 7px;
-  height:5px;
+  height: 5px;
 }
 
 .data_content::-webkit-scrollbar-track {

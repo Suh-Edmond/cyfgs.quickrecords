@@ -7,8 +7,10 @@
       dense
       v-if="existIncomeActivity"
     >
-      {{ $t("app.cantUpdatedIncomeAfterApprovalMsg") }}
-      <span class="text-lowercase">{{
+      <span class="registration_text">
+        {{ $t("app.cantUpdatedIncomeAfterApprovalMsg") }}</span
+      >
+      <span class="text-lowercase registration_text">{{
         getUpdatedIncomeActivityFromState().approve
       }}</span>
       <template v-slot:action>
@@ -39,6 +41,7 @@
           @filter="filterPaymentItems"
           @input="stopSearch"
           :readonly="existIncomeActivity"
+          hide-bottom-space
         >
           <template v-slot:append v-if="start_filtering">
             <q-spinner color="primary" size="1.2em" :thickness="5" />
@@ -64,6 +67,7 @@
           dense
           type="text"
           :readonly="existIncomeActivity"
+          hide-bottom-space
         />
       </div>
       <div class="q-mb-md">
@@ -76,6 +80,7 @@
           dense
           type="number"
           :readonly="existIncomeActivity"
+          hide-bottom-space
         />
       </div>
       <div class="q-mb-md">
@@ -88,6 +93,7 @@
           dense
           type="text"
           :readonly="existIncomeActivity"
+          hide-bottom-space
         />
       </div>
       <div class="q-mb-md">
@@ -128,6 +134,7 @@
           autogrow
           :placeholder="$t('app.incomeDescription')"
           :readonly="existIncomeActivity"
+          hide-bottom-space
         />
       </div>
       <div
@@ -140,6 +147,7 @@
           no-caps
           outline
           @click="resetForm"
+          :disable="existIncomeActivity"
           v-if="$q.platform.is.desktop"
         >
         </q-btn>
@@ -391,14 +399,17 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 12px;
+  font-size: 0.7rem;
   align-items: center;
-  letter-spacing: 0.01em;
-  color: $grey2;
+  color: $grey5;
 }
 
 .info {
   color: $grey2;
-  font-size: small;
+  font-size: smaller;
+}
+
+.registration_text {
+  font-size: 0.7rem;
 }
 </style>

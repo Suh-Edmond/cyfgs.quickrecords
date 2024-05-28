@@ -530,7 +530,6 @@
         :label="$t('app.selectStatusLabel')"
         clearable
         class="col-12 col-md"
-        :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
       >
         <template v-slot:no-option>
           <q-item>
@@ -540,10 +539,7 @@
           </q-item>
         </template>
       </q-select>
-      <div
-        class="col-md-6 col-lg-6 flex"
-        :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
-      >
+      <div class="col-md-6 col-lg-6 flex">
         <q-btn
           :label="$t('app.filter')"
           :color="'primary'"
@@ -551,7 +547,9 @@
           no-caps
           icon-right="filter_list"
           @click="filterMemberSavings"
-          :size="$q.platform.is.mobile ? 'sm' : 'md'"
+          size="sm"
+          padding="none xs"
+          dense
         >
         </q-btn>
         <q-space />
@@ -563,7 +561,9 @@
           no-caps
           icon-right="download"
           @click="downloadMemberSavings"
-          :size="$q.platform.is.mobile ? 'sm' : 'md'"
+          size="sm"
+          padding="none xs"
+          dense
         ></q-btn>
       </div>
     </div>

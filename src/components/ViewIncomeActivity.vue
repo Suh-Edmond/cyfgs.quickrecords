@@ -195,13 +195,4 @@ export default {
 .detail-value {
   max-width: 250px;
 }
-.value_comment {
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 14px;
-  letter-spacing: 0.01em;
-  color: $dark;
-  margin-left: 1.8rem;
-}
 </style>

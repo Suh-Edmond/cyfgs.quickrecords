@@ -173,7 +173,7 @@
           "
           class="q-px-sm q-pt-sm q-pb-md"
         >
-          <q-card-section class="row q-pb-lg">
+          <q-card-section class="row q-pb-sm">
             <div class="text-h6">{{ $t("app.editRole") }}</div>
             <q-space />
             <q-btn icon="close" flat round dense v-close-popup />
@@ -363,7 +363,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .text-h6 {
-  color: $grey5;
+  color: $primary;
   font-family: "Roboto";
   font-style: normal;
   font-weight: 600;

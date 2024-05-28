@@ -601,6 +601,8 @@ export default {
     passwordResetFailCaption:
       "An Error occurred, we could not send Password Reset Instructions. Please try again!",
     invitationLinkExpired:"Invitation Link Expired!",
-    invalidInvitationLinkMgs:"Invalid Invitation Link"
+    invalidInvitationLinkMgs:"Invalid Invitation Link",
+    newPlatformUserMsg:"New Platform Administrator",
+    newPlatformUserCaption:"Recently join the platform as the"
   },
 };

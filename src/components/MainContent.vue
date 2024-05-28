@@ -17,10 +17,10 @@
           <q-btn
             round
             icon="notifications"
-            class="q-mr-xl q-mt-sm"
+            class="q-mr-xl"
             flat
             v-if="canViewNotification()"
-            size="md"
+            size="sm"
           >
             <q-badge
               floating
@@ -41,13 +41,14 @@
                 <q-item>
                   <q-item-section>
                     <div class="flex justify-between">
-                      <label class="text-weight-medium">{{
+                      <label class="text-weight-medium notification">{{
                         $t("app.settingsNotificationLabel")
                       }}</label>
                       <label class="text-weight-medium">
                         <q-btn
                           flat
                           round
+                          size="sm"
                           color="primary"
                           icon="card_giftcard"
                           @click="markAllNotificationsRead(notifications)"
@@ -73,20 +74,20 @@
                   "
                 >
                   <q-item-section avatar>
-                    <q-avatar color="primary" text-color="white">{{
+                    <q-avatar color="primary" text-color="white" size="md">{{
                       getRoleFirstName(notification.role)
                     }}</q-avatar>
                   </q-item-section>
 
                   <q-item-section>
-                    <q-item-label lines="1" class="text-subtitle2"
-                      >New Platform Administrator</q-item-label
-                    >
-                    <q-item-label caption lines="2">
+                    <q-item-label lines="1" class="text-subtitle2">{{
+                      $t("app.newPlatformUserMsg")
+                    }}</q-item-label>
+                    <q-item-label caption lines="2" class="text-subtitle3">
                       <span class="text-weight-medium">{{
                         notification.name
                       }}</span>
-                      -- Recently join the platform as the
+                      -- {{ $t("app.newPlatformUserCaption") }}
                       <span>{{ notification.role }}</span>
                     </q-item-label>
                   </q-item-section>
@@ -108,13 +109,13 @@
           <q-avatar size="sm" v-if="hasProfilePic">
             <img :src="getLoggedInUserProfilePic" alt="Profile Picture" />
           </q-avatar>
-          {{ auth_user.name }}
-          <q-btn-dropdown flat>
-            <q-list>
+          <span class="q-pl-sm account_name">{{ auth_user.name }}</span>
+          <q-btn-dropdown flat size="xs" rounded>
+            <q-list dense>
               <q-item clickable v-close-popup :to="{ name: 'member_account' }">
                 <q-item-section avatar>
                   <span>
-                    <q-icon name="person" size="sm" />
+                    <q-icon name="person" size="xs" />
                   </span>
                 </q-item-section>
                 <q-item-section class="text-center drop_down_text">
@@ -125,7 +126,7 @@
               <q-item clickable v-close-popup>
                 <q-item-section avatar>
                   <span>
-                    <q-icon name="logout" size="sm" color="red" />
+                    <q-icon name="logout" size="xs" color="red" />
                   </span>
                 </q-item-section>
                 <q-item-section
@@ -145,39 +146,44 @@
         class="card"
         :style="$q.platform.is.mobile ? 'width: 100vw;' : ''"
       >
-        <q-card-section class="row content_header">
-          <q-btn
-            round
-            color="primary"
-            icon="arrow_back"
-            flat
-            dense
-            @click="goBack(null)"
-          />
-          <div class="q-pa-xs">
-            <span class="q-pl-sm title tab" @click="goBack(item.name)">{{
-              item.name
-            }}</span>
+        <q-card-section class="flex content_header">
+          <div class="flex">
+            <label>
+              <span>
+                <q-btn
+                  round
+                  color="primary"
+                  icon="arrow_back"
+                  flat
+                  dense
+                  @click="goBack(null)"
+                  size="sm"
+                />
+              </span>
+              <span class="title tab" @click="goBack(item.name)">{{
+                item.name
+              }}</span>
 
-            <span v-if="getIntermediateTabs.length > 0">
-              <span
-                class="q-pl-sm tab"
-                v-for="tab in getIntermediateTabs"
-                :key="tab.index"
-                @click="goBack(null)"
-              >
-                <q-icon size="1.5em" name="chevron_right" color="primary" />
-                <span class="q-pl-sm title">{{ tab.name }}</span></span
-              >
-            </span>
+              <span v-if="getIntermediateTabs.length > 0">
+                <span
+                  class="q-pl-sm tab"
+                  v-for="tab in getIntermediateTabs"
+                  :key="tab.index"
+                  @click="goBack(null)"
+                >
+                  <q-icon size="1rem" name="chevron_right" color="primary" />
+                  <span class="title">{{ tab.name }}</span></span
+                >
+              </span>
+            </label>
           </div>
           <q-space />
           <q-btn
             color="primary"
             icon-right="add"
-            label="Add"
+            :label="$t('app.addLabel')"
             push
-            :size="$q.platform.is.mobile ? 'sm' : 'md'"
+            :size="$q.platform.is.mobile ? 'sm' : 'sm'"
             dense
             no-caps
             v-show="
@@ -233,9 +239,7 @@ export default {
       (role) => role.name !== "MEMBER"
     ).name;
     this.auth_user_role = this.formatUserRole(welcome_title);
-    if (this.auth_user.roles.includes(["ADMIN", "PRESIDENT"])) {
-      this.getNotifications();
-    }
+    this.getNotifications();
   },
   props: {
     item: {
@@ -662,21 +666,14 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 400;
-  font-size: 13px;
-  line-height: 29px;
+  font-size: 0.6rem;
   display: flex;
   align-items: center;
   text-align: center;
-  letter-spacing: 0.005em;
 }
 
 .header {
-  height: 130px;
-}
-
-.content {
-  background-color: $white1;
-  padding-bottom: 4rem;
+  height: 7.5rem;
 }
 
 .content_header {
@@ -687,11 +684,10 @@ export default {
 .title {
   font-family: "Roboto";
   font-style: normal;
-  letter-spacing: 0.01em;
   text-transform: uppercase;
   color: $primary;
   font-weight: 500;
-  font-size: smaller;
+  font-size: 0.6rem;
 }
 
 .appName {
@@ -708,5 +704,28 @@ export default {
 }
 .unread_notification {
   background-color: #d9d7d7;
+}
+
+.account_name {
+  font-family: "Roboto";
+  font-style: normal;
+  text-transform: capitalize;
+  font-weight: 500;
+  font-size: 0.69rem;
+}
+
+.drop_down_text {
+  font-size: 0.7rem;
+}
+
+.text-subtitle2 {
+  font-size: 0.7rem;
+}
+
+.text-subtitle3 {
+  font-size: 0.6rem;
+}
+.notification {
+  font-size: 0.8rem;
 }
 </style>

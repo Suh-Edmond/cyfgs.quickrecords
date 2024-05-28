@@ -703,7 +703,7 @@
 
     <!--------------------------------------------FILTER HEADER FOR VIEW MEMBER CONTRIBUTIONS---------------------------------------------------->
     <div
-      :class="$q.screen.lg ? 'row q-pa-sm' : 'col q-gutter-sm q-px-xs'"
+      class="row q-gutter-sm q-pb-sm"
       :style="
         $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
       "
@@ -719,6 +719,7 @@
         input-debounce="0"
         clearable
         class="col-12 col-md"
+        hide-bottom-space
       >
         <template v-slot:no-option>
           <q-item>
@@ -736,7 +737,7 @@
         :label="$t('app.searchTransactionStatus')"
         clearable
         class="col-12 col-md"
-        :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
+        hide-bottom-space
       >
         <template v-slot:no-option>
           <q-item>
@@ -746,10 +747,7 @@
           </q-item>
         </template>
       </q-select>
-      <div
-        class="col-md-6 col-lg-6 flex"
-        :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
-      >
+      <div class="col-12 col-md flex">
         <q-btn
           :label="$t('app.filter')"
           :color="'primary'"
@@ -757,7 +755,9 @@
           no-caps
           icon-right="filter_list"
           @click="filterMemberContribution"
-          :size="$q.platform.is.mobile ? 'sm' : 'md'"
+          size="sm"
+          dense
+          padding="none xs"
         >
         </q-btn>
         <q-space />
@@ -769,7 +769,9 @@
           no-caps
           icon-right="download"
           @click="downloadMemberContribution"
-          :size="$q.platform.is.mobile ? 'sm' : 'md'"
+          size="sm"
+          dense
+          padding="none xs"
         ></q-btn>
       </div>
     </div>

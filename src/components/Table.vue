@@ -618,20 +618,20 @@
 
         <!--------------------------------------------------------------------CONTRIBUTION-------------------------------------->
         <q-tr :props="props" v-if="show_contribution">
-          <q-td key="user_name" :props="props">
+          <q-td key="user_name" :props="props" class="table_value">
             {{ props.row.user_name }}
           </q-td>
-          <q-td key="total_amount_deposited" :props="props">
+          <q-td key="total_amount_deposited" :props="props" class="table_value">
             {{ Number(props.row.total_amount_deposited).toLocaleString() }}
           </q-td>
-          <q-td key="balance" :props="props">
+          <q-td key="balance" :props="props" class="table_value">
             {{ Number(props.row.balance).toLocaleString() }}
           </q-td>
           <q-td
             key="approve"
             :props="props"
             v-if="props.row.approve == 'PENDING'"
-            class="text-info"
+            class="text-info table_value"
           >
             {{ props.row.approve }}
           </q-td>
@@ -639,7 +639,7 @@
             key="approve"
             :props="props"
             v-if="props.row.approve == 'APPROVED'"
-            class="registered"
+            class="registered table_value"
           >
             {{ props.row.approve }}
           </q-td>
@@ -647,7 +647,7 @@
             key="approve"
             :props="props"
             v-if="props.row.approve == 'DECLINED'"
-            class="not_registered"
+            class="not_registered table_value"
           >
             {{ props.row.approve }}
           </q-td>
@@ -679,6 +679,7 @@
               no-caps
               class="view_items q-mr-md"
               icon-right="visibility"
+              size="sm"
               @click="onViewAllMemberContributions(props.row)"
               :to="{
                 name: 'member_contributions',
@@ -699,6 +700,7 @@
             key="quarterly_name"
             :props="props"
             v-if="props.row.payment_item_frequency == 'QUARTERLY'"
+            class="table_value"
           >
             {{ props.row.quarterly_name }}
           </q-td>
@@ -706,6 +708,7 @@
             key="quarterly_name"
             :props="props"
             v-if="props.row.payment_item_frequency == 'MONTHLY'"
+            class="table_value"
           >
             {{ props.row.month_name }}
           </q-td>
@@ -713,6 +716,7 @@
             key="quarterly_name"
             :props="props"
             v-if="props.row.payment_item_frequency == 'ONE_TIME'"
+            class="table_value"
           >
             {{ formatConstants(props.row.payment_item_frequency) }}
           </q-td>
@@ -720,19 +724,20 @@
             key="quarterly_name"
             :props="props"
             v-if="props.row.payment_item_frequency == 'YEARLY'"
+            class="table_value"
           >
             {{ props.row.payment_item_frequency }}
           </q-td>
-          <q-td key="amount_deposited" :props="props">
+          <q-td key="amount_deposited" :props="props" class="table_value">
             {{ Number(props.row.amount_deposited).toLocaleString() }}
           </q-td>
-          <q-td key="balance" :props="props">
+          <q-td key="balance" :props="props" class="table_value">
             {{ Number(props.row.balance).toLocaleString() }}
           </q-td>
           <q-td
             key="status"
             :props="props"
-            class="registered"
+            class="registered table_value"
             v-if="props.row.status == 'COMPLETE'"
           >
             {{ props.row.status }}
@@ -740,19 +745,19 @@
           <q-td
             key="status"
             :props="props"
-            class="not_registered"
+            class="not_registered table_value"
             v-if="props.row.status == 'INCOMPLETE'"
           >
             {{ props.row.status }}
           </q-td>
-          <q-td key="date" :props="props">
+          <q-td key="date" :props="props" class="table_value">
             {{ getDate(props.row.created_at) }}
           </q-td>
           <q-td
             key="approve"
             :props="props"
             v-if="props.row.approve == 'PENDING'"
-            class="text-info"
+            class="text-info table_value"
           >
             {{ props.row.approve }}
           </q-td>
@@ -760,7 +765,7 @@
             key="approve"
             :props="props"
             v-if="props.row.approve == 'APPROVED'"
-            class="registered"
+            class="registered table_value"
           >
             {{ props.row.approve }}
           </q-td>
@@ -768,7 +773,7 @@
             key="approve"
             :props="props"
             v-if="props.row.approve == 'DECLINED'"
-            class="not_registered"
+            class="not_registered table_value"
           >
             {{ props.row.approve }}
           </q-td>

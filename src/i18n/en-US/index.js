@@ -605,5 +605,6 @@ export default {
     newPlatformUserMsg:"New Platform Administrator",
     newPlatformUserCaption:"Recently join the platform as the",
     updatePasswordMsg:"Update Password",
+    availableRoleLabel:"Available Roles"
   },
 };

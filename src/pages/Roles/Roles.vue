@@ -4,7 +4,9 @@
       <q-spinner color="primary" size="2.5em" />
     </div>
     <div class="row" v-if="!getLoadingState">
-      <label for="title" class="q-pb-md title">Available Roles:</label>
+      <label for="title" class="q-pb-md title">{{
+        $t("app.availableRoleLabel")
+      }}</label>
     </div>
     <div class="row" v-if="!getLoadingState">
       <div class="col-3 col-sm-12 col-md-3 col-lg-3 col-xs-12">
@@ -37,7 +39,10 @@
         </q-list>
       </div>
       <div class="col-1 col-sm-12 col-xs-12 col-lg-1 col-md-1"></div>
-      <div class="col-6 col-sm-12 col-xs-12 col-lg-6 col-md-1" :class="$q.platform.is.mobile?'q-px-md':''">
+      <div
+        class="col-6 col-sm-12 col-xs-12 col-lg-6 col-md-1"
+        :class="$q.platform.is.mobile ? 'q-px-md' : ''"
+      >
         <div
           class="flex justify-between"
           :class="$q.platform.is.mobile ? 'q-pt-md' : ''"
@@ -62,9 +67,9 @@
         </div>
         <div class="flex justify-between q-mt-lg">
           <label for=""
-            ><span class="label text-weight-meduim"
-              >{{ $t("app.nameLabel") }}:</span
-            >
+            ><span class="label text-weight-meduim">{{
+              $t("app.nameLabel")
+            }}</span>
           </label>
           <label
             class="value text-weight-bold"
@@ -72,9 +77,9 @@
             >{{ getSelectedRole.name }}</label
           >
         </div>
-        <div class="flex justify-between q-mt-md">
+        <div class="flex justify-between q-mt-sm">
           <label for=""
-            ><span class="label text-weight-meduim">{{ $t("app.term") }}:</span>
+            ><span class="label text-weight-meduim">{{ $t("app.term") }}</span>
           </label>
           <label
             class="value text-weight-bold"
@@ -83,11 +88,11 @@
           >
           <label class="value text-weight-bold" v-else> 0</label>
         </div>
-        <div class="flex justify-between q-mt-md">
+        <div class="flex justify-between q-mt-sm">
           <label for=""
-            ><span class="label text-weight-meduim"
-              >{{ $t("app.memberCountLabel") }}:</span
-            >
+            ><span class="label text-weight-meduim">{{
+              $t("app.memberCountLabel")
+            }}</span>
           </label>
           <label
             class="value text-weight-bold"
@@ -98,41 +103,41 @@
             $t("app.all")
           }}</label>
         </div>
-        <div class="flex justify-between q-mt-md">
+        <div class="flex justify-between q-mt-sm">
           <label for=""
-            ><span class="label text-weight-meduim"
-              >{{ $t("app.createdDate") }}:</span
-            >
+            ><span class="label text-weight-meduim">{{
+              $t("app.createdDate")
+            }}</span>
           </label>
           <label class="value text-weight-bold">{{
             getFormatedDate(getSelectedRole.created_at)
           }}</label>
         </div>
-        <div class="flex justify-between q-mt-md">
+        <div class="flex justify-between q-mt-sm">
           <label for=""
-            ><span class="label text-weight-meduim"
-              >{{ $t("app.updatedDate") }}:</span
-            >
+            ><span class="label text-weight-meduim">{{
+              $t("app.updatedDate")
+            }}</span>
           </label>
           <label class="value text-weight-bold">{{
             getFormatedDate(getSelectedRole.updated_at)
           }}</label>
         </div>
-        <div class="flex justify-between q-mt-md">
+        <div class="flex justify-between q-mt-sm">
           <label for=""
-            ><span class="label text-weight-meduim"
-              >{{ $t("app.updatedBy") }}:</span
-            >
+            ><span class="label text-weight-meduim">{{
+              $t("app.updatedBy")
+            }}</span>
           </label>
           <label class="value text-weight-bold">{{
             getSelectedRole.updated_by
           }}</label>
         </div>
-        <div class="flex justify-between q-mt-md">
+        <div class="flex justify-between q-mt-sm">
           <label for=""
-            ><span class="label text-weight-meduim"
-              >{{ $t("app.defaultRole") }}:</span
-            >
+            ><span class="label text-weight-meduim">{{
+              $t("app.defaultRole")
+            }}</span>
           </label>
           <label
             class="value text-weight-bold"
@@ -146,7 +151,7 @@
         <div class="q-mt-lg">
           <label class="title">Privileges</label>
         </div>
-        <div class="q-gutter-xs q-mt-md">
+        <div class="q-gutter-x-xs q-mt-md">
           <q-chip
             color="teal"
             text-color="white"
@@ -162,42 +167,45 @@
     <!------------------------------------------START DIALOG TO UPDATE ROLE------------------------------------------->
     <div v-if="show_dialog">
       <q-dialog v-model="show_dialog">
-      <q-card
-        :style="$q.platform.is.mobile ? 'min-width: 350px' : 'min-width: 450px'"
-        class="q-px-md q-pt-sm q-pb-md"
-      >
-        <q-card-section class="row items-center q-pb-lg">
-          <div class="text-h6 add_year">{{ $t("app.editRole") }}</div>
-          <q-space />
-          <q-btn icon="close" flat round dense v-close-popup />
-        </q-card-section>
-        <q-card-section class="q-pt-none">
-          <q-form @submit="onUpdateRole" class="q-gutter-md">
-            <div>
-              <label for="">{{ $t("app.nameLabel") }}</label>
-              <q-input v-model="role.name" outlined dense disable> </q-input>
-            </div>
-            <div>
-              <label for="">{{ $t("app.term") }}</label>
-              <q-input
-                v-model="role.term"
-                outlined
-                dense
-                type="number"
-              ></q-input>
-            </div>
-            <div>
-              <label for="">{{ $t("app.memberCountLabel") }}</label>
-              <q-input
-                v-model="role.number_of_members"
-                outlined
-                dense
-                type="number"
-              >
-              </q-input>
-            </div>
-            <div class="q-mt-lg flex justify-end">
-              <div class="q-mt-xs">
+        <q-card
+          :style="
+            $q.platform.is.mobile ? 'min-width: 350px' : 'min-width: 450px'
+          "
+          class="q-px-sm q-pt-sm q-pb-md"
+        >
+          <q-card-section class="row q-pb-lg">
+            <div class="text-h6">{{ $t("app.editRole") }}</div>
+            <q-space />
+            <q-btn icon="close" flat round dense v-close-popup />
+          </q-card-section>
+          <q-card-section class="q-pt-none">
+            <q-form @submit="onUpdateRole" class="q-gutter-md">
+              <div>
+                <label class="form_field">{{ $t("app.nameLabel") }}</label>
+                <q-input v-model="role.name" outlined dense disable> </q-input>
+              </div>
+              <div>
+                <label class="form_field">{{ $t("app.term") }}</label>
+                <q-input
+                  v-model="role.term"
+                  outlined
+                  dense
+                  type="number"
+                ></q-input>
+              </div>
+              <div>
+                <label class="form_field">{{
+                  $t("app.memberCountLabel")
+                }}</label>
+                <q-input
+                  v-model="role.number_of_members"
+                  outlined
+                  dense
+                  type="number"
+                >
+                </q-input>
+              </div>
+              <div class="q-mt-lg flex justify-end">
                 <ButtonVue
                   class="form_button"
                   :label="$t('app.saveBtnLabel')"
@@ -208,11 +216,10 @@
                 >
                 </ButtonVue>
               </div>
-            </div>
-          </q-form>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
+            </q-form>
+          </q-card-section>
+        </q-card>
+      </q-dialog>
     </div>
     <!------------------------------------------------END OF DIALOG TO UPDATE ROLE------------------------------------------>
   </div>
@@ -355,11 +362,20 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.text-h6 {
+  color: $grey5;
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 0.9rem;
+  align-items: center;
+  text-align: center;
+}
 .title {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 18px;
+  font-size: 0.9rem;
   align-items: center;
   color: $grey8;
 }
@@ -368,21 +384,33 @@ export default {
   font-family: "Roboto";
   font-weight: 500;
   color: $grey8;
-  font-size: 13px;
+  font-size: 0.7rem;
 }
 
 .active_item {
   background-color: $primary2;
   color: $white1;
+  font-size: 0.7rem;
 }
 .value {
   color: $grey8;
+  font-size: 0.8rem;
 }
 .label {
   color: $grey5;
+  font-size: 0.8rem;
 }
 
 .inactive_caption_text {
   color: $grey8;
+}
+
+.form_field {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 0.7rem;
+  align-items: center;
+  color: $grey5;
 }
 </style>

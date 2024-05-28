@@ -559,7 +559,7 @@
           <!-------------------------------------------END OF MEMBER PROFILE TAB PANEL---------------------------------->
 
           <!-------------------------------------------MEMBER CONTRIBUTIONS TAB PANEL----------------------------------->
-          <q-tab-panel name="contributions" v-if="!checkTreasurerRoleOnly()">
+          <q-tab-panel name="contributions" v-if="!checkTreasurerRoleOnly">
             <!-----------------------------------------PAYMENT ITEMS--------------------------------------------------->
             <div class="row">
               <div class="col-12 col-md-12 col-sm-12 col-xs-12">

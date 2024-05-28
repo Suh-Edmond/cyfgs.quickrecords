@@ -603,6 +603,7 @@ export default {
     invitationLinkExpired:"Invitation Link Expired!",
     invalidInvitationLinkMgs:"Invalid Invitation Link",
     newPlatformUserMsg:"New Platform Administrator",
-    newPlatformUserCaption:"Recently join the platform as the"
+    newPlatformUserCaption:"Recently join the platform as the",
+    updatePasswordMsg:"Update Password",
   },
 };

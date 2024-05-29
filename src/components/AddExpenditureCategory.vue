@@ -1,12 +1,12 @@
 <template>
   <div class="q-ma-md">
-    <div class="q-ml-sm q-mb-lg">
+    <div class="q-mb-md">
       <label class="text-muted info"
         >{{ $t("app.warningField") }}<span class="text-red">*</span
         >{{ $t("app.fields") }}</label
       >
     </div>
-    <div class="q-mt-lg q-mx-sm">
+    <div class="q-mt-md">
       <q-form @submit="onAddExpenditureCategory" class="q-gutter-md">
         <div>
           <label for="credential" class="form_field"
@@ -205,19 +205,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.add_member_title {
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 29px;
-  align-items: center;
-  text-align: center;
-  letter-spacing: 0.01em;
-  color: #5384ae;
-  text-transform: capitalize;
-}
-
 .button {
   width: 100%;
 }
@@ -226,29 +213,13 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 12px;
+  font-size: 0.7rem;
   align-items: center;
-  letter-spacing: 0.01em;
-  color: $grey2;
-}
-
-.or_option {
-  font-weight: bolder;
-}
-
-.help_text {
-  color: $dark;
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 13px;
-  text-align: center;
-  align-items: center;
-  letter-spacing: 0.01em;
+  color: $grey5;
 }
 
 .info {
   color: $grey2;
-  font-size: small;
+  font-size: smaller;
 }
 </style>

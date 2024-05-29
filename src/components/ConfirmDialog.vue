@@ -130,13 +130,13 @@
           <!-- end of Expenditure Item -->
 
           <!-- Expenditure Item details -->
-          <div v-if="show_expenditure_item_detail">
+          <div v-if="show_expenditure_item_detail" class="q-mt-md">
             <div class="text-weight-bold text-left text-red record_label">
               {{ $t("app.nameLabel") }}:
               <span class="frequency">{{ data.name }}</span>
             </div>
             <div class="text-weight-bold text-left text-red record_value">
-              {{ $t("app.amountGiven") }}:
+              {{ $t("app.amountGivenLabel") }}:
               <span class="amount"
                 >{{ Number(data.amount_given).toLocaleString() }} XAF</span
               >

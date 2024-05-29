@@ -28,19 +28,23 @@
             icon-right="filter_list"
             @click="filterItems"
             :loading="is_fetching"
-            :size="$q.platform.is.mobile ? 'sm' : 'md'"
+            size="sm"
+            dense
+            padding="none xs"
           >
           </q-btn>
           <q-space />
           <q-btn
-            :label="$t('app.print')"
+            :label="$t('app.download')"
             :loading="loading_download"
             :color="'positive'"
             :disabled="false"
             no-caps
-            icon-right="print"
+            icon-right="download"
             @click="downloadExpenditureItemDetails"
-            :size="$q.platform.is.mobile ? 'sm' : 'md'"
+            size="sm"
+            dense
+            padding="none xs"
           ></q-btn>
         </div>
       </div>
@@ -75,17 +79,16 @@
       <!----------------------------------------------MULTIPLE APPROVAL/DECLINE OF RECORDS------------------------------->
       <q-card v-if="canShowBulkApproval" class="q-my-md q-mx-md">
         <q-card-section>
-          <div class="flex justify-end">
+          <div class="flex justify-end q-gutter-x-md">
             <q-btn
-              class="approve_btn q-mx-md q-pa-xs"
-              dense
+              class="approve_btn"
               :label="$t('app.approveAll')"
               no-caps
               @click="onShowSelectedRecordsDialog('Approve')"
             />
 
             <q-btn
-              class="decline_btn q-pa-xs q-mr-xl"
+              class="decline_btn q-px-md"
               dense
               :label="$t('app.declineAll')"
               no-caps
@@ -106,16 +109,13 @@
 
     <!-------------------------------------------DIALOG TO APPROVE/DECLINE PAYMENT------------------->
     <q-dialog v-model="show_payment_dialog">
-      <q-card style="min-width: 600px" class="q-pa-xs">
-        <q-card-section class="row items-center q-pb-sm">
-          <div
-            class="text-h6 confirm_payment_title"
-            :class="type == 'Approve' ? 'text-secondary' : 'text-orange'"
-          >
+      <q-card class="q-pa-sm">
+        <q-card-section class="row">
+          <div class="text-primary confirm_payment_title">
             {{ type }} {{ $t("app.partConfirmationMsg") }}
           </div>
           <q-space />
-          <q-btn icon="close" flat round dense v-close-popup />
+          <q-btn icon="close" flat round dense v-close-popup size="sm" />
         </q-card-section>
         <q-card-section>
           <div>
@@ -173,19 +173,18 @@
           </div>
         </q-card-section>
 
-        <q-card-section class="q-mb-md">
-          <div class="flex justify-end">
-            <q-btn
-              class="form_button"
-              :label="type == 'Approve' ? $t('app.approve') : $t('app.decline')"
-              :loading="loading_payment"
-              :color="type == 'Approve' ? 'secondary' : 'orange'"
-              :disabled="false"
-              no-caps
-              @click="onConfirmBulkExpenditures"
-            >
-            </q-btn>
-          </div>
+        <q-card-section class="q-mb-md flex justify-end">
+          <q-btn
+            class="form_button"
+            :label="type == 'Approve' ? $t('app.approve') : $t('app.decline')"
+            :loading="loading_payment"
+            :color="type == 'Approve' ? 'secondary' : 'orange'"
+            :disabled="false"
+            no-caps
+            size="sm"
+            @click="onConfirmBulkExpenditures"
+          >
+          </q-btn>
         </q-card-section>
       </q-card>
     </q-dialog>
@@ -622,46 +621,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.tableHead {
-  background-color: "#5384ae";
-  color: "#FFFFFF";
-}
-
-.viewExpenditureItem {
-  width: 5.5rem;
-  margin-left: 1rem;
-}
-
-.viewPending {
-  width: 5.5rem;
-}
-
 .approve_btn {
   background-color: $secondary;
   color: white;
-  width: 6rem;
+  font-size: 0.7rem;
 }
 
 .decline_btn {
   background-color: $orange;
   color: white;
-  width: 6.5rem;
-}
-
-.detail_name {
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 14px;
-  color: $grey5;
-}
-
-.detail_value {
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 14px;
-  color: $grey8;
+  font-size: 0.7rem;
 }
 
 .summary {
@@ -675,14 +644,7 @@ export default {
 }
 
 .confirm_payment_title {
-  font-family: "Roboto";
-  font-style: normal;
+  font-size: 0.9rem;
   font-weight: 500;
-  font-size: 17px;
-  line-height: 24px;
-  align-items: center;
-  text-align: center;
-  letter-spacing: 0.005em;
-  // color: $primary;
 }
 </style>

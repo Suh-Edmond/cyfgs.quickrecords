@@ -142,14 +142,14 @@
               unelevated
               no-caps
               dense
+              :style="$q.platform.is.mobile ? 'width:100px' : 'width:100px'"
               color="primary"
               class="view_income"
               :label="$t('app.view')"
               @click="onViewSupport(props.row)"
               v-if="checkTreasurerRoleOnly()"
-              size="sm"
             >
-              <q-icon name="visibility" size="xs" class="q-pl-md"></q-icon>
+              <q-icon name="visibility" class="q-pl-md eye_icon"></q-icon>
             </q-btn>
           </q-td>
         </q-tr>
@@ -546,12 +546,9 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 13px;
-  line-height: 25px;
-  letter-spacing: 0.01em;
+  font-size: 12px;
+  align-items: center;
   text-transform: capitalize;
-  color: $primary;
-  width: 5.5rem;
 }
 
 .not_registered {
@@ -579,5 +576,9 @@ export default {
 .record_label {
   font-size: 0.8rem;
   font-weight: 500;
+}
+
+.eye_icon {
+  font-size: 0.8rem;
 }
 </style>

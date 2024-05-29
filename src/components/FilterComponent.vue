@@ -227,7 +227,7 @@
 
     <!-----------------------------------------------HEADER FILTER FOR EXPENDITURE ITEMS------------------------------------------->
     <div
-      :class="$q.screen.lg ? 'row q-pa-sm' : 'col q-gutter-sm q-px-sm'"
+      class="row q-gutter-sm q-pa-sm"
       :style="
         $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
       "
@@ -243,6 +243,7 @@
           use-input
           input-debounce="0"
           clearable
+          hide-bottom-space
         >
           <template v-slot:no-option>
             <q-item>
@@ -253,10 +254,7 @@
           </template>
         </q-select>
       </div>
-      <div
-        class="col-12 col-md"
-        :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
-      >
+      <div class="col-12 col-md">
         <q-select
           v-model="payment_item_id"
           outlined
@@ -269,6 +267,7 @@
           @filter="searchPaymentItems"
           @input="stopSelectInputSearch"
           class="payment_item_select_field"
+          hide-bottom-space
         >
           <template v-slot:append v-if="start_payment_item_select_filtering">
             <q-spinner color="primary" size="1.2em" :thickness="3" />
@@ -282,16 +281,14 @@
           </template>
         </q-select>
       </div>
-      <div
-        class="col-12 col-md"
-        :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
-      >
+      <div class="col-12 col-md">
         <q-select
           v-model="payment_status"
           outlined
           dense
           :options="payment_statuses"
           :label="$t('app.selectStatusLabel')"
+          hide-bottom-space
         >
           <template v-slot:no-option>
             <q-item>
@@ -302,10 +299,7 @@
           </template>
         </q-select>
       </div>
-      <div
-        class="col-12 col-md flex"
-        :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
-      >
+      <div class="col-12 col-md flex">
         <q-btn
           :label="$t('app.filter')"
           color="primary"
@@ -313,7 +307,9 @@
           no-caps
           icon-right="filter_list"
           @click="filterExpenditureItems"
-          :size="$q.platform.is.mobile ? 'sm' : 'md'"
+          size="sm"
+          dense
+          padding="none xs"
         >
         </q-btn>
         <q-space />
@@ -325,7 +321,9 @@
           no-caps
           icon-right="download"
           @click="downloadExpenditureItems"
-          :size="$q.platform.is.mobile ? 'sm' : 'md'"
+          size="sm"
+          dense
+          padding="none xs"
         ></q-btn>
       </div>
     </div>
@@ -333,7 +331,7 @@
 
     <!----------------------------------------------HEADER FILTER FOR EXPENDITURE ITEM DETAILS-------------------------------------->
     <div
-      :class="$q.screen.lg ? 'row q-pa-sm' : 'q-gutter-sm q-px-sm'"
+      class="row q-gutter-sm q-pa-sm"
       :style="
         $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
       "
@@ -346,12 +344,10 @@
           dense
           :options="payment_statuses"
           :label="$t('app.selectStatusLabel')"
+          hide-bottom-space
         />
       </div>
-      <div
-        class="col-md-9 col-lg-9 flex"
-        :class="$q.platform.is.desktop ? 'q-pl-sm' : ''"
-      >
+      <div class="col-md-9 col-lg-9 flex">
         <q-btn
           :label="$t('app.filter')"
           color="primary"
@@ -359,7 +355,9 @@
           no-caps
           icon-right="filter_list"
           @click="filterItemDetails"
-          :size="$q.platform.is.mobile ? 'sm' : 'md'"
+          size="sm"
+          dense
+          padding="none xs"
         >
         </q-btn>
         <q-space />
@@ -370,7 +368,9 @@
           :disabled="getDisableDownloadBtn"
           no-caps
           icon-right="download"
-          :size="$q.platform.is.mobile ? 'sm' : 'md'"
+          size="sm"
+          dense
+          padding="none xs"
           @click="downloadExpenditureItemDetails"
         ></q-btn>
       </div>

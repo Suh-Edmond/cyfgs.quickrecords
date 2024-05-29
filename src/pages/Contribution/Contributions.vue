@@ -66,7 +66,7 @@
     <!------------------------------------------CONTRIBUTIONS VIEW FOR MEMBERS WITH TREASURER ROLE----------------------------------- -->
     <div v-if="checkTreasurerRole()">
       <div
-        :class="$q.screen.lg ? 'row q-pa-sm' : 'col q-gutter-sm q-px-sm'"
+        class="row q-pa-sm justify-between"
         :style="
           $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
         "
@@ -83,12 +83,12 @@
         </q-btn>
         <q-space />
         <q-btn
-          :label="$t('app.print')"
+          :label="$t('app.download')"
           :loading="loading_download"
           :color="'positive'"
           :disabled="getFilteredContributions.length == 0"
           no-caps
-          icon-right="print"
+          icon-right="download"
           @click="downloadContributions()"
           :size="$q.platform.is.mobile ? 'sm' : 'sm'"
         ></q-btn>

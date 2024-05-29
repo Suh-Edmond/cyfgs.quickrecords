@@ -73,9 +73,8 @@
           @click="filterMembers"
           no-caps
           icon-right="filter_list"
+          class="q-my-xs"
           size="sm"
-          dense
-          padding="none xs"
         >
         </q-btn>
         <q-space />
@@ -87,9 +86,8 @@
           no-caps
           icon-right="download"
           @click="downloadMembers"
+          class="q-my-xs"
           size="sm"
-          dense
-          padding="none xs"
         ></q-btn>
       </div>
     </div>
@@ -203,9 +201,8 @@
           @click="filterPaymentItems"
           no-caps
           icon-right="filter_list"
+          class="q-my-xs"
           size="sm"
-          dense
-          padding="none xs"
         >
         </q-btn>
         <q-space />
@@ -217,9 +214,8 @@
           no-caps
           icon-right="download"
           @click="downloadPaymentItems"
+          class="q-my-xs"
           size="sm"
-          dense
-          padding="none xs"
         ></q-btn>
       </div>
     </div>
@@ -307,9 +303,8 @@
           no-caps
           icon-right="filter_list"
           @click="filterExpenditureItems"
+          class="q-my-xs"
           size="sm"
-          dense
-          padding="none xs"
         >
         </q-btn>
         <q-space />
@@ -321,9 +316,8 @@
           no-caps
           icon-right="download"
           @click="downloadExpenditureItems"
+          class="q-my-xs"
           size="sm"
-          dense
-          padding="none xs"
         ></q-btn>
       </div>
     </div>
@@ -355,9 +349,8 @@
           no-caps
           icon-right="filter_list"
           @click="filterItemDetails"
+          class="q-my-xs"
           size="sm"
-          dense
-          padding="none xs"
         >
         </q-btn>
         <q-space />
@@ -368,9 +361,8 @@
           :disabled="getDisableDownloadBtn"
           no-caps
           icon-right="download"
+          class="q-my-xs"
           size="sm"
-          dense
-          padding="none xs"
           @click="downloadExpenditureItemDetails"
         ></q-btn>
       </div>
@@ -438,9 +430,8 @@
           no-caps
           icon-right="filter_list"
           @click="filterAllSavings"
+          class="q-my-xs"
           size="sm"
-          dense
-          padding="none xs"
         >
         </q-btn>
         <q-space />
@@ -452,9 +443,8 @@
           no-caps
           icon-right="download"
           @click="downloadMembersSavings"
+          class="q-my-xs"
           size="sm"
-          dense
-          padding="none xs"
         ></q-btn>
       </div>
     </div>
@@ -681,9 +671,8 @@
           no-caps
           icon-right="filter_list"
           @click="filterIncomeActivity"
+          class="q-my-xs"
           size="sm"
-          dense
-          padding="none xs"
         >
         </q-btn>
         <q-space />
@@ -695,9 +684,8 @@
           no-caps
           icon-right="download"
           @click="downloadIncomeActivity"
+          class="q-my-xs"
           size="sm"
-          dense
-          padding="none xs"
         ></q-btn>
       </div>
     </div>
@@ -757,9 +745,8 @@
           no-caps
           icon-right="filter_list"
           @click="filterMemberContribution"
+          class="q-my-xs"
           size="sm"
-          dense
-          padding="none xs"
         >
         </q-btn>
         <q-space />
@@ -771,9 +758,8 @@
           no-caps
           icon-right="download"
           @click="downloadMemberContribution"
+          class="q-my-xs"
           size="sm"
-          dense
-          padding="none xs"
         ></q-btn>
       </div>
     </div>
@@ -858,9 +844,8 @@
           no-caps
           icon-right="filter_list"
           @click="filterSponsorship"
+          class="q-my-xs"
           size="sm"
-          dense
-          padding="none xs"
         >
         </q-btn>
         <q-space />
@@ -872,9 +857,8 @@
           no-caps
           icon-right="download"
           @click="downloadSponsorship"
+          class="q-my-xs"
           size="sm"
-          dense
-          padding="none xs"
         ></q-btn>
       </div>
     </div>
@@ -1582,7 +1566,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.select_input {
-  font-size: 0.7rem;
+.view_savings {
+  height: 1rem;
 }
 </style>

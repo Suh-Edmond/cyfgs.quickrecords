@@ -89,9 +89,8 @@
             :loading="loading_filter"
             icon-right="filter_list"
             @click="filterItems(1, 7)"
+            class="q-my-xs"
             size="sm"
-            dense
-            padding="none xs"
           >
           </q-btn>
           <q-space />
@@ -103,9 +102,8 @@
             no-caps
             icon-right="download"
             @click="downloadExpenditureItems"
+            class="q-my-xs"
             size="sm"
-            dense
-            padding="none xs"
           ></q-btn>
         </div>
       </div>

@@ -16,17 +16,17 @@
     >
       <template v-slot:body="props">
         <q-tr :props="props">
-          <q-td key="supporter" :props="props">
+          <q-td key="supporter" :props="props" class="table_value">
             {{ props.row.supporter }}
           </q-td>
-          <q-td key="amount_deposited" :props="props">
+          <q-td key="amount_deposited" :props="props" class="table_value">
             {{ Number(props.row.amount_deposited).toLocaleString() }}
           </q-td>
           <q-td
             key="approve"
             :props="props"
             v-if="props.row.approve == 'PENDING'"
-            class="text-info"
+            class="text-info table_value"
           >
             {{ props.row.approve }}
           </q-td>
@@ -34,7 +34,7 @@
             key="approve"
             :props="props"
             v-if="props.row.approve == 'APPROVED'"
-            class="registered"
+            class="registered table_value"
           >
             {{ props.row.approve }}
           </q-td>
@@ -42,13 +42,13 @@
             key="approve"
             :props="props"
             v-if="props.row.approve == 'DECLINED'"
-            class="not_registered"
+            class="not_registered table_value"
           >
             {{ props.row.approve }}
           </q-td>
 
           <q-td key="action" :props="props">
-             <!-- buttons for approve and decline row data -->
+            <!-- buttons for approve and decline row data -->
             <q-btn
               class="approve_btn"
               dense
@@ -68,7 +68,7 @@
               @click="onDeclineRecord(props.row, 'Decline')"
               v-if="canValidateTransaction() && props.row.approve == 'PENDING'"
             />
-            
+
             <!-- button to handle edit, view and delete of row data  q-px-sm -->
             <q-btn flat round v-if="!checkTreasurerRoleOnly()">
               <q-icon
@@ -128,7 +128,7 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="text-red">{{
+                        <q-item-label class="text-red delete_text">{{
                           $t("app.delete")
                         }}</q-item-label>
                       </q-item-section>
@@ -137,7 +137,6 @@
                 </q-menu>
               </q-icon>
             </q-btn>
-
 
             <q-btn
               unelevated
@@ -148,6 +147,7 @@
               :label="$t('app.view')"
               @click="onViewSupport(props.row)"
               v-if="checkTreasurerRoleOnly()"
+              size="sm"
             >
               <q-icon name="visibility" size="xs" class="q-pl-md"></q-icon>
             </q-btn>
@@ -174,9 +174,7 @@
           v-model="filter"
           :placeholder="$t('app.tableSearch')"
           :class="
-            $q.platform.is.mobile
-              ? 'row text-h6-sm'
-              : 'text-h6-sm q-mb-lg q-mt-lg full-width'
+            $q.platform.is.mobile ? 'row text-h6-sm' : 'text-h6-sm full-width'
           "
           :style="$q.platform.is.mobile ? 'width:88vw' : ''"
         >
@@ -193,20 +191,18 @@
 
     <!-- confirmation dialog for delete -->
     <q-dialog v-model="dialog" v-if="dialog">
-      <q-card>
-        <q-card-section class="q-pa-lg">
-          <div class="q-mb-md">
-            <label class="text-dark message">{{ message }}</label
+      <q-card class="q-pa-sm">
+        <q-card-section>
+          <div class="row">
+            <label class="text-dark message text-primary">{{ message }}</label
             ><br />
-            <small class="warning_caption">{{
-              $t("app.actionUndoneMsg")
-            }}</small>
           </div>
-          <div class="text-weight-bold text-left text-red">
+          <label class="warning_caption">{{ $t("app.actionUndoneMsg") }}</label>
+          <div class="text-red q-mt-md record_label">
             {{ $t("app.sponsor") }}:
             <span class="q-pl-md">{{ deleted_row.supporter }}</span>
           </div>
-          <div class="text-weight-bold text-left text-red">
+          <div class="text-red record_value">
             {{ $t("app.amount") }}:
             <span class="q-pl-md"
               >{{
@@ -226,6 +222,7 @@
             class="dialog_button"
             v-close-popup
             no-caps
+            size="md"
           ></q-btn>
           <q-btn
             :label="$t('app.delete')"
@@ -237,6 +234,7 @@
             no-caps
             v-close-popup
             @click="deleteRow(deleted_row)"
+            size="md"
           ></q-btn>
         </q-card-actions>
       </q-card>
@@ -244,7 +242,7 @@
 
     <!-- confirmation dialog for approve and decline row data -->
     <q-dialog v-model="show_approve_dialog" v-if="show_approve_dialog">
-      <q-card class="approve_card">
+      <q-card class="q-pa-sm">
         <q-card-section>
           <div class="row">
             <div class="col-md-12">
@@ -484,9 +482,11 @@ export default {
 
 <style lang="scss" scoped>
 .title {
-  font-size: 15px;
+  color: $primary;
+  font-family: "Roboto";
+  font-style: normal;
   font-weight: 500;
-  color: $grey8;
+  font-size: 0.9rem;
 }
 
 .menu_icon {
@@ -495,6 +495,7 @@ export default {
 
 .edit {
   color: $primary;
+  font-size: 0.8rem;
 }
 
 .dialog_button {
@@ -506,28 +507,25 @@ export default {
 .approve_btn {
   background-color: $secondary;
   color: white;
-  width: 5.5rem;
-}
-
-.approve_card {
-  width: 24rem;
-  // padding: 0.7rem;
+  margin-right: 2.5rem;
+  width: 4.2rem;
+  font-size: 0.8rem;
 }
 
 .decline_btn {
   background-color: $orange;
   color: white;
-  width: 5.5rem;
+  margin-right: 2.5rem;
+  font-size: 0.8rem;
+  width: 4.2rem;
 }
 
 .message {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 15px;
-  align-items: center;
-  letter-spacing: 0.01em;
-  color: $grey2;
+  font-size: 0.9rem;
+  color: $primary;
 }
 
 .approve {
@@ -538,19 +536,10 @@ export default {
   color: $orange;
 }
 
-.total {
-  font-size: 15px;
-}
-
-.total_given {
-  padding-left: 3rem;
-  font-size: 13px;
-}
-
 .warning_caption {
   color: $grey2;
-  font-weight: 500;
-  font-size: 13px;
+  font-weight: 400;
+  font-size: 0.7rem;
 }
 
 .view_income {
@@ -571,5 +560,24 @@ export default {
 
 .registered {
   color: $secondary;
+}
+
+.table_value {
+  font-size: 0.7rem;
+  font-weight: 500;
+}
+
+.delete_text {
+  font-size: 0.8rem;
+}
+
+.record_value {
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.record_label {
+  font-size: 0.8rem;
+  font-weight: 500;
 }
 </style>

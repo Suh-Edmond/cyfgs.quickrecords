@@ -852,7 +852,7 @@
           v-model="filter"
           :placeholder="$t('app.tableSearch')"
           :class="
-            $q.platform.is.mobile ? 'row -sm' : '-sm q-mb-lg q-mt-lg full-width'
+            $q.platform.is.mobile ? 'row text-h6-sm' : 'text-h6-sm  full-width'
           "
           :style="$q.platform.is.mobile ? 'width:88vw' : ''"
         >
@@ -1673,10 +1673,6 @@ export default {
   color: $dark;
 }
 
-.warning_image {
-  color: yellow;
-}
-
 .view_savings {
   font-family: "Roboto";
   font-style: normal;
@@ -1793,15 +1789,6 @@ export default {
 .total_value {
   padding-left: 2rem;
   font-size: 13px;
-}
-
-.total_contribution_balance {
-  padding-left: 4.2rem;
-}
-
-.whatsapp_icon {
-  width: 2rem;
-  padding-right: 0.5rem;
 }
 
 .not_registered {

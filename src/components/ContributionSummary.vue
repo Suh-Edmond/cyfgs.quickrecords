@@ -1,7 +1,7 @@
 <template>
   <div>
     <q-card flat>
-      <div class="row q-my-xl q-gutter-xs" v-if="!is_expenditures">
+      <div class="row q-my-xl q-gutter-xs wrap" v-if="!is_expenditures">
         <div class="col-12 col-md box">
           <div class="q-mb-md flex justify-between">
             <q-btn dense flat icon="trending_flat" size="sm" class="icon">

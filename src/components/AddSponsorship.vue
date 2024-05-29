@@ -3,20 +3,22 @@
     <q-banner
       inline-actions
       rounded
-      class="bg-info text-white q-mt-sm q-mb-sm"
+      class="bg-info text-white q-my-sm"
       dense
       v-if="existSponsorship"
     >
-      {{ $t("app.cantUpdateSponsorshipMsg") }}
-      <span class="text-lowercase">{{
+      <span class="registration_text">{{
+        $t("app.cantUpdateSponsorshipMsg")
+      }}</span>
+      <span class="text-lowercase registration_text">{{
         getSelectedSponsorship.approve
       }}</span>
       <template v-slot:action>
         <q-btn flat icon="close" size="sm" />
       </template>
     </q-banner>
-    <div class="text-left q-my-md">
-      <label  class="text-muted info"
+    <div class="text-left q-my-sm">
+      <label class="text-muted info"
         >{{ $t("app.warningField") }} <span class="text-red">*</span>
         {{ $t("app.fields") }}</label
       >
@@ -40,6 +42,7 @@
             @input="stopSearch"
             class="text_color"
             :readonly="existSponsorship"
+            hide-bottom-space
           >
             <template v-slot:append v-if="start_filtering">
               <q-spinner color="primary" size="1.2em" :thickness="3" />
@@ -64,6 +67,7 @@
               v-model="sponsorship.supporter"
               class="text_color"
               :readonly="existSponsorship"
+              hide-bottom-space
             >
             </q-input>
           </div>
@@ -79,6 +83,7 @@
               type="number"
               class="text_color"
               :readonly="existSponsorship"
+              hide-bottom-space
             >
             </q-input>
           </div>
@@ -94,23 +99,25 @@
               autogrow
               placeholder="Provide any comment about this sponsorship"
               :readonly="existSponsorship"
+              hide-bottom-space
             />
           </div>
           <div
             :class="
-              $q.platform.is.desktop ? 'flex q-mt-md justify-end' : 'q-mb-xl'
+              $q.platform.is.desktop ? 'flex q-mt-lg justify-end' : 'q-mb-xl'
             "
           >
-          <q-btn
-                class="form_button q-mr-lg"
-                :label="$t('app.reset')"
-                :color="'primary'"
-                no-caps
-                outline
-                @click="resetForm"
-                v-if="$q.platform.is.desktop"
-              >
-              </q-btn>
+            <q-btn
+              class="form_button q-mr-lg"
+              :label="$t('app.reset')"
+              :color="'primary'"
+              no-caps
+              outline
+              @click="resetForm"
+              v-if="$q.platform.is.desktop"
+              :disable="existSponsorship"
+            >
+            </q-btn>
             <ButtonVue
               class="form_button"
               :label="$t('app.saveBtnLabel')"
@@ -156,9 +163,12 @@ export default {
   },
   computed: {
     validateForm() {
-      return this.sponsorship.supporter === null ||
+      return (
+        this.sponsorship.supporter === null ||
         this.sponsorship.amount_deposited == 0 ||
-        this.sponsorship.payment_item_id == null || this.existSponsorship;
+        this.sponsorship.payment_item_id == null ||
+        this.existSponsorship
+      );
     },
     getSelectedSponsorship() {
       this.setFormField(this.$store.getters.getSelectedSponsorship);
@@ -166,8 +176,11 @@ export default {
     },
 
     existSponsorship() {
-      return this.$store.getters.getSelectedSponsorship !== null && this.$store.getters.getSelectedSponsorship.approve != "PENDING";
-    }
+      return (
+        this.$store.getters.getSelectedSponsorship !== null &&
+        this.$store.getters.getSelectedSponsorship.approve != "PENDING"
+      );
+    },
   },
   watch: {
     getSelectedSponsorship() {
@@ -304,19 +317,17 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 12px;
+  font-size: 0.7rem;
   align-items: center;
-  letter-spacing: 0.01em;
-  color: $grey2;
+  color: $grey5;
 }
-
 
 .info {
   color: $grey2;
-  font-size: small;
+  font-size: smaller;
 }
 
-.text_color {
-  color: $grey2;
+.registration_text {
+  font-size: 0.7rem;
 }
 </style>

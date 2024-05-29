@@ -779,7 +779,7 @@
 
     <!--------------------------------------------FILTER HEADER FOR SPONSORSHIP----------------------------------------------------------------->
     <div
-      :class="$q.screen.lg ? 'row q-pa-sm' : 'col q-gutter-sm q-px-sm'"
+      class="row q-gutter-sm q-pa-sm"
       :style="
         $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
       "
@@ -795,7 +795,7 @@
         input-debounce="0"
         clearable
         class="col-12 col-md"
-        :class="$q.platform.is.desktop ? 'q-pr-sm' : ''"
+        hide-bottom-space
       >
         <template v-slot:no-option>
           <q-item>
@@ -817,6 +817,7 @@
         @filter="searchPaymentItems"
         @input="stopSelectInputSearch"
         class="col-12 col-md"
+        hide-bottom-space
       >
         <template v-slot:append v-if="start_payment_item_select_filtering">
           <q-spinner color="primary" size="1.2em" :thickness="3" />
@@ -837,7 +838,7 @@
         :label="$t('app.selectStatusLabel')"
         clearable
         class="col-12 col-md"
-        :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
+        hide-bottom-space
       >
         <template v-slot:no-option>
           <q-item>
@@ -847,10 +848,7 @@
           </q-item>
         </template>
       </q-select>
-      <div
-        class="col-12 col-md flex"
-        :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
-      >
+      <div class="col-12 col-md flex">
         <q-btn
           :label="$t('app.filter')"
           color="primary"
@@ -858,7 +856,9 @@
           no-caps
           icon-right="filter_list"
           @click="filterSponsorship"
-          :size="$q.platform.is.mobile ? 'sm' : 'md'"
+          size="sm"
+          dense
+          padding="none xs"
         >
         </q-btn>
         <q-space />
@@ -870,7 +870,9 @@
           no-caps
           icon-right="download"
           @click="downloadSponsorship"
-          :size="$q.platform.is.mobile ? 'sm' : 'md'"
+          size="sm"
+          dense
+          padding="none xs"
         ></q-btn>
       </div>
     </div>

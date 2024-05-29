@@ -545,7 +545,7 @@
                   </template>
                   <template v-slot:top-right>
                     <q-btn
-                      :label="$t('app.print')"
+                      :label="$t('app.download')"
                       color="positive"
                       :disabled="validateDownloadUnPaidItems"
                       no-caps
@@ -677,7 +677,7 @@
                   </template>
                   <template v-slot:top-right>
                     <q-btn
-                      :label="$t('app.print')"
+                      :label="$t('app.download')"
                       color="positive"
                       :disabled="validateDownloadPaidItems"
                       no-caps
@@ -777,8 +777,7 @@
                         >
                           <q-icon
                             name="visibility"
-                            size="xs"
-                            class="q-pl-xs"
+                            class="q-pl-xs eye_icon"
                           ></q-icon>
                         </q-btn>
                       </q-td>
@@ -2098,5 +2097,9 @@ export default {
 
 .record_label {
   font-size: 0.8rem;
+}
+
+.eye_icon {
+  font-size: 0.7rem;
 }
 </style>

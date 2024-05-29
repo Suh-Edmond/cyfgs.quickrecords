@@ -39,7 +39,7 @@
             >
               {{ props.row.item }}
               <span class="q-pl-md"
-                ><q-icon name="visibility" size="xs"></q-icon
+                ><q-icon name="visibility" class="eye_icon"></q-icon
               ></span>
             </q-btn>
           </q-td>
@@ -63,7 +63,7 @@
                     >
                       <q-item-section avatar>
                         <span>
-                          <q-icon name="visibility" size="xs" class="details" />
+                          <q-icon name="visibility" class="details eye_icon" />
                         </span>
                       </q-item-section>
                       <q-item-section>
@@ -104,7 +104,7 @@
             >
               {{ $t("app.view") }}
               <span class="q-pl-md"
-                ><q-icon name="visibility" size="xs"></q-icon
+                ><q-icon name="visibility" class="eye_icon"></q-icon
               ></span>
             </q-btn>
           </q-td>
@@ -142,7 +142,7 @@
             >
               {{ $t("app.viewMember") }}
               <span class="q-pl-md"
-                ><q-icon name="visibility" size="xs"></q-icon
+                ><q-icon name="visibility" class="eye_icon"></q-icon
               ></span>
             </q-btn>
 
@@ -163,7 +163,7 @@
             >
               {{ $t("app.viewMembers") }}
               <span class="q-pl-md"
-                ><q-icon name="visibility" size="xs"></q-icon
+                ><q-icon name="visibility" class="eye_icon"></q-icon
               ></span>
             </q-btn>
           </q-td>
@@ -239,12 +239,14 @@
               color="primary"
               no-caps
               class="view_items"
+              dense
               @click="onViewPaymentItem(props.row)"
               v-if="checkTreasurerRoleOnly()"
+              :style="$q.platform.is.mobile ? 'width:80px' : 'width:80px'"
             >
               {{ $t("app.view") }}
               <span class="q-pl-md"
-                ><q-icon name="visibility" size="xs"></q-icon
+                ><q-icon name="visibility" class="eye_icon"></q-icon
               ></span>
             </q-btn>
           </q-td>

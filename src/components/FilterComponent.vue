@@ -476,8 +476,6 @@
         icon-right="filter_list"
         @click="searchSavings()"
         size="sm"
-        dense
-        padding="none xs"
       >
       </q-btn>
       <q-space />
@@ -490,8 +488,6 @@
         icon-right="download"
         @click="downloadMembersSavings"
         size="sm"
-        dense
-        padding="none xs"
       ></q-btn>
     </div>
     <!---------------------------------------------END OF FILTER FOR MEMBERS SAVINGS TREASURER---------------------------------------------------->

@@ -306,8 +306,9 @@
               :label="$t('app.allSavings')"
               @click="showMemberSavings(props.row)"
               :to="{ name: 'user_savings', params: { id: props.row.user_id } }"
+              :style="$q.platform.is.mobile ? 'width:100px' : 'width:100px'"
             >
-              <q-icon name="visibility" size="xs" class="q-pl-sm"></q-icon>
+              <q-icon name="visibility" class="q-pl-sm eye_icon"></q-icon>
             </q-btn>
           </q-td>
         </q-tr>
@@ -348,8 +349,9 @@
               :label="$t('app.allSavings')"
               @click="showMemberSavings(props.row)"
               :to="{ name: 'user_savings', params: { id: props.row.user_id } }"
+              :style="$q.platform.is.mobile ? 'width:100px' : 'width:100px'"
             >
-              <q-icon name="visibility" size="xs" class="q-pl-sm"></q-icon>
+              <q-icon name="visibility" class="q-pl-sm eye_icon"></q-icon>
             </q-btn>
           </q-td>
         </q-tr>
@@ -416,12 +418,12 @@
               no-caps
               dense
               color="primary"
-              class="view_income q-px-sm q-mr-md"
+              class="view_income"
               :label="$t('app.view')"
               @click="onViewMemberSaving(props.row)"
               v-if="checkTreasurerRoleOnly()"
             >
-              <q-icon name="visibility" size="xs" class="q-pl-md"></q-icon>
+              <q-icon name="visibility" class="q-pl-md eye_icon"></q-icon>
             </q-btn>
             <!-- menu to handle edit and view details of a single saving -->
             <q-btn flat round v-if="!checkTreasurerRoleOnly()">
@@ -538,12 +540,12 @@
               no-caps
               dense
               color="primary"
-              class="view_income q-px-sm q-ml-xl"
+              class="view_income"
               :label="$t('app.view')"
               @click="onViewIncomeActivity(props.row)"
               v-if="show_income_activity && checkTreasurerRoleOnly()"
             >
-              <q-icon name="visibility" size="xs" class="q-pl-sm"></q-icon>
+              <q-icon name="visibility" class="q-pl-sm eye_icon"></q-icon>
             </q-btn>
 
             <!-- menu to handle edit and view details of a single show_income_activity -->
@@ -677,10 +679,9 @@
               color="primary"
               :label="$t('app.details')"
               no-caps
-              class="view_items q-mr-md"
-              icon-right="visibility"
-              size="sm"
+              class="view_savings"
               @click="onViewAllMemberContributions(props.row)"
+              :style="$q.platform.is.mobile ? 'width:100px' : 'width:100px'"
               :to="{
                 name: 'member_contributions',
                 params: {
@@ -689,6 +690,7 @@
                 },
               }"
             >
+              <q-icon name="visibility" class="q-pl-sm eye_icon"></q-icon>
             </q-btn>
           </q-td>
         </q-tr>
@@ -783,12 +785,13 @@
               no-caps
               dense
               color="primary"
-              class="view_contribution q-mr-md"
+              class="view_savings"
               :label="$t('app.view')"
               @click="onViewContribution(props.row)"
               v-if="checkTreasurerRoleOnly()"
+              :style="$q.platform.is.mobile ? 'width:100px' : 'width:100px'"
             >
-              <q-icon name="visibility" size="xs" class="q-pl-md"></q-icon>
+              <q-icon name="visibility" class="q-pl-md eye_icon"></q-icon>
             </q-btn>
             <!-- menu to handle edit and view details of a single member contribution -->
             <q-btn flat round v-if="!checkTreasurerRoleOnly()">
@@ -1650,10 +1653,10 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 12px;
+  font-size: 0.9rem;
   align-items: center;
   text-transform: capitalize;
-  width: 120px;
+  width: 8rem;
 }
 
 .button {
@@ -1677,19 +1680,16 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 12px;
+  font-size: 0.7rem;
   align-items: center;
   text-transform: capitalize;
-  width: 8rem;
-  padding-top: 0.1rem;
-  padding-bottom: 0.1rem;
 }
 
 .view_income {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 13px;
+  font-size: 0.7rem;
   text-transform: capitalize;
   color: $primary;
   width: 5.5rem;
@@ -1840,5 +1840,9 @@ export default {
 
 .record_label {
   font-size: 0.8rem;
+}
+
+.eye_icon {
+  font-size: 0.7rem;
 }
 </style>

@@ -4,10 +4,10 @@
       <div>
         <label for="expenditure_item" class="label"
           ><span> <q-icon name="category" size="xs" class="q-pr-sm" /> </span
-          >{{ $t("app.category") }}:
+          >{{ $t("app.category") }}
         </label>
       </div>
-      <div class="detail-value wrap">
+      <div>
         <label class="value">
           {{ getUpdatedPaymentItemFromState.payment_category_name }}
         </label>
@@ -17,10 +17,10 @@
       <div>
         <label for="expenditure_item" class="label"
           ><span> <q-icon name="category" size="xs" class="q-pr-sm" /> </span
-          >{{ $t("app.paymentItem") }}:
+          >{{ $t("app.paymentItem") }}
         </label>
       </div>
-      <div class="detail-value wrap">
+      <div>
         <label class="value">
           {{ getUpdatedPaymentItemFromState.name }}
         </label>
@@ -31,10 +31,10 @@
         <label for="complusory" class="label"
           ><span>
             <q-icon name="priority_high" size="xs" class="q-pr-sm" /> </span
-          >{{ $t("app.compulsoryLabel") }}:
+          >{{ $t("app.compulsoryLabel") }}
         </label>
       </div>
-      <div class="detail-value wrap">
+      <div>
         <label
           class="value"
           v-if="getUpdatedPaymentItemFromState.compulsory == '1'"
@@ -51,10 +51,10 @@
         <label for="amount" class="label"
           ><span>
             <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
-          >{{ $t("app.amount") }}:
+          >{{ $t("app.amount") }}
         </label>
       </div>
-      <div class="detail-value wrap">
+      <div>
         <label class="value">
           {{ Number(getUpdatedPaymentItemFromState.amount).toLocaleString() }}
           XAF
@@ -64,12 +64,13 @@
     <div class="flex justify-between q-mb-md">
       <div>
         <label for="amount" class="label"
-          ><span> <q-icon name="trending_flat" size="xs" class="q-pr-sm" /> </span
-          >{{ $t("app.frequency") }}:
+          ><span>
+            <q-icon name="trending_flat" size="xs" class="q-pr-sm" /> </span
+          >{{ $t("app.frequency") }}
         </label>
       </div>
 
-      <div class="detail-value wrap">
+      <div>
         <label class="value">
           {{ formatConstants(getUpdatedPaymentItemFromState.frequency) }}
         </label>
@@ -78,11 +79,13 @@
     <div class="flex justify-between q-mb-md">
       <label for="type" class="label"
         ><span> <q-icon name="title" size="xs" class="q-pr-sm" /> </span
-        >{{ $t("app.type") }}:
+        >{{ $t("app.type") }}
       </label>
-      <div class="detail-value wrap">
+      <div>
         <label class="value">
-          {{ formatConstants(getUpdatedPaymentItemFromState.payment_item_type) }}
+          {{
+            formatConstants(getUpdatedPaymentItemFromState.payment_item_type)
+          }}
         </label>
       </div>
     </div>
@@ -91,10 +94,10 @@
         <label for="deadline" class="label"
           ><span>
             <q-icon name="hourglass_top" size="xs" class="q-pr-sm" /> </span
-          >{{ $t("app.deadline") }}:
+          >{{ $t("app.deadline") }}
         </label>
       </div>
-      <div class="detail-value wrap">
+      <div>
         <label class="value">
           {{ getFormatedDeadline }}
         </label>
@@ -105,10 +108,10 @@
         <label for="deadline" class="label"
           ><span>
             <q-icon name="hourglass_top" size="xs" class="q-pr-sm" /> </span
-          >{{ $t("app.status") }}:
+          >{{ $t("app.status") }}
         </label>
       </div>
-      <div class="detail-value wrap">
+      <div>
         <label
           class="value unapproved_color"
           v-show="getUpdatedPaymentItemFromState.deadline_state == 'EXPIRED'"
@@ -127,10 +130,10 @@
       <div>
         <label for="amount" class="label"
           ><span> <q-icon name="person" size="xs" class="q-pr-sm" /> </span
-          >{{ $t("app.createdAt") }}:
+          >{{ $t("app.createdAt") }}
         </label>
       </div>
-      <div class="detail-value wrap">
+      <div>
         <label class="value">
           {{ getFormatedCreatedDate }}
         </label>
@@ -140,10 +143,10 @@
       <div>
         <label for="amount" class="label"
           ><span> <q-icon name="person" size="xs" class="q-pr-sm" /> </span
-          >{{ $t("app.updatedBy") }}:
+          >{{ $t("app.updatedBy") }}
         </label>
       </div>
-      <div class="detail-value wrap">
+      <div>
         <label class="value">
           {{ getUpdatedPaymentItemFromState.updated_by }}
         </label>
@@ -153,25 +156,21 @@
       <div>
         <label for="amount" class="label"
           ><span> <q-icon name="people" size="xs" class="q-pr-sm" /> </span
-          >{{ $t("app.members") }}:
+          >{{ $t("app.members") }}
         </label>
       </div>
       <div
-        class="detail-value wrap"
         v-if="
           getUpdatedPaymentItemFromState.payment_item_type !== 'ALL_MEMBERS'
         "
       >
-        <div
-          class="q-gutter-sm q-mt-sm q-ml-md"
-          v-if="getReferences.length > 0"
-        >
+        <div class="q-gutter-xs q-ml-md" v-if="getReferences.length > 0">
           <q-chip
-            color="primary"
+            color="teal"
             text-color="white"
             v-for="ref in getReferences"
             :key="ref.id"
-            size="md"
+            size="sm"
             >{{ ref.name }}</q-chip
           >
         </div>
@@ -183,20 +182,14 @@
     <div class="row q-mb-md">
       <label for="comment" class="label"
         ><span> <q-icon name="description" size="xs" class="q-pr-sm" /> </span
-        >{{ $t("app.comment") }}:</label
+        >{{ $t("app.comment") }}</label
       >
-    </div>
-    <div
-      class="value_comment"
-      v-show="getUpdatedPaymentItemFromState.description !== null"
-    >
-      {{ getUpdatedPaymentItemFromState.description }}
-    </div>
-    <div
-      class="value_comment"
-      v-show="getUpdatedPaymentItemFromState.description === null"
-    >
-      {{ $t("app.none") }}
+      <div
+        class="value detail-value wrap"
+        v-show="getUpdatedPaymentItemFromState.description !== null"
+      >
+        {{ getUpdatedPaymentItemFromState.description }}
+      </div>
     </div>
   </div>
 </template>
@@ -216,7 +209,6 @@ export default {
     return {};
   },
   computed: {
-
     getUpdatedPaymentItemFromState() {
       return this.$store.getters.getUpdatedPaymentItem;
     },
@@ -249,57 +241,30 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 400;
-  font-size: 14px;
-  line-height: 11px;
-  letter-spacing: 0.01em;
+  font-size: 0.7rem;
   color: $grey5;
-}
-
-.no_member {
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 600;
-  font-size: 14px;
-  line-height: 11px;
-  letter-spacing: 0.01em;
-  color: $grey8;
 }
 
 .value {
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 600;
-  font-size: 14px;
-  letter-spacing: 0.01em;
+  font-weight: 500;
+  font-size: 0.7rem;
   color: $grey8;
 }
 
-.value_comment {
+.no_member {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 14px;
-  letter-spacing: 0.01em;
-  color: $dark;
-  margin-left: 1.8rem;
+  font-size: 0.7rem;
+  color: $grey8;
 }
 
 .unapproved_color {
-  color: #f2994a;
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 600;
-  font-size: 14px;
-  line-height: 11px;
-  letter-spacing: 0.01em;
+  color: $orange;
 }
 .approved_color {
-  color: #27ae60;
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 600;
-  font-size: 14px;
-  line-height: 11;
-  letter-spacing: 0.01em;
+  color: $secondary;
 }
 </style>

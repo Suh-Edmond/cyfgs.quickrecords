@@ -5,10 +5,10 @@
         <div>
           <label for="expenditure_item" class="label"
             ><span> <q-icon name="category" size="xs" class="q-pr-sm" /> </span
-            >{{ $t("app.nameLabel") }}:
+            >{{ $t("app.nameLabel") }}
           </label>
         </div>
-        <div class="detail-value">
+        <div>
           <label class="value">
             {{ getUpdatedExpenditureItemDetailFromState.name }}
           </label>
@@ -19,10 +19,10 @@
           <label for="venue" class="label"
             ><span>
               <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
-            >{{ $t("app.amountGivenLabel") }}:
+            >{{ $t("app.amountGivenLabel") }}
           </label>
         </div>
-        <div class="detail-value">
+        <div>
           <label class="value">
             {{
               Number(
@@ -38,10 +38,10 @@
           <label for="date" class="label"
             ><span>
               <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
-            >{{ $t("app.amountSpent") }}:</label
+            >{{ $t("app.amountSpent") }}</label
           >
         </div>
-        <div class="detail-value">
+        <div>
           <label class="value">
             {{
               Number(
@@ -57,10 +57,10 @@
           <label for="amount" class="label"
             ><span>
               <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
-            >{{ $t("app.balance") }}:
+            >{{ $t("app.balance") }}
           </label>
         </div>
-        <div class="detail-value">
+        <div>
           <label class="value">
             {{
               Number(
@@ -76,10 +76,10 @@
           <label for="status" class="label"
             ><span>
               <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span
-            >{{ $t("app.transactionStatus") }}:
+            >{{ $t("app.transactionStatus") }}
           </label>
         </div>
-        <div class="detail-value">
+        <div>
           <label
             class="value text-info"
             v-show="
@@ -111,11 +111,11 @@
         <div>
           <label for="amount" class="label"
             ><span> <q-icon name="schedule" size="xs" class="q-pr-sm" /> </span
-            >{{ $t("app.createdDate") }}:
+            >{{ $t("app.createdDate") }}
           </label>
         </div>
 
-        <div class="detail-value">
+        <div>
           <label class="value">
             {{ getFormatDetailCreatedDate }}
           </label>
@@ -125,10 +125,10 @@
         <div>
           <label for="amount" class="label"
             ><span> <q-icon name="person" size="xs" class="q-pr-sm" /> </span
-            >{{ $t("app.createdBy") }}:
+            >{{ $t("app.createdBy") }}
           </label>
         </div>
-        <div class="detail-value">
+        <div>
           <label class="value">
             {{ getUpdatedExpenditureItemDetailFromState.updated_by }}
           </label>
@@ -137,20 +137,14 @@
       <div class="flex justify-between q-mb-md">
         <label for="comment" class="label"
           ><span> <q-icon name="description" size="xs" class="q-pr-sm" /> </span
-          >{{ $t("app.comment") }}:</label
+          >{{ $t("app.comment") }}</label
         >
-      </div>
-      <div
-        class="value_comment"
-        v-show="getUpdatedExpenditureItemDetailFromState.comment !== null"
-      >
-        {{ getUpdatedExpenditureItemDetailFromState.comment }}
-      </div>
-      <div
-        class="value_comment"
-        v-show="getUpdatedExpenditureItemDetailFromState.comment === null"
-      >
-        {{ $t("app.none") }}
+        <div
+          class="value detail-value wrap"
+          v-show="getUpdatedExpenditureItemDetailFromState.comment !== null"
+        >
+          {{ getUpdatedExpenditureItemDetailFromState.comment }}
+        </div>
       </div>
     </div>
   </div>
@@ -186,36 +180,23 @@ export default {
 </script>
 
 <style scoped lang="scss">
-
 .label {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 400;
-  font-size: 14px;
-  line-height: 11px;
-  letter-spacing: 0.01em;
+  font-size: 0.7rem;
   color: $grey5;
 }
 
 .value {
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 600;
-  font-size: 14px;
-  letter-spacing: 0.01em;
+  font-weight: 500;
+  font-size: 0.7rem;
   color: $grey8;
 }
 
 .detail-value {
   max-width: 250px;
-}
-.value_comment {
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 14px;
-  letter-spacing: 0.01em;
-  color: $dark;
-  margin-left: 1.8rem;
 }
 </style>

@@ -1,13 +1,15 @@
 <template>
-  <div class="q-mx-md q-mt-lg">
+  <div class="q-mx-md q-mt-sm">
     <q-banner
       inline-actions
       rounded
-      class="bg-secondary text-white q-mb-lg  q-mt-sm"
+      class="bg-secondary text-white q-mb-md"
       dense
-      v-if="checkUserHasRegister && getMemberRegistrationStatus=='APPROVED'"
+      v-if="checkUserHasRegister && getMemberRegistrationStatus == 'APPROVED'"
     >
-      {{ $t("app.memberHasRegister") }}  {{getRegisterMember.year}}
+      <span class="registration_text">
+        {{ $t("app.memberHasRegister") }} {{ getRegisterMember.year }}
+      </span>
       <template v-slot:action>
         <q-btn flat icon="close" size="sm" />
       </template>
@@ -15,18 +17,21 @@
     <q-banner
       inline-actions
       rounded
-      class="bg-info text-white q-mb-lg  q-mt-sm"
+      class="bg-info text-white q-mb-md registration_text"
       dense
-      v-if="checkUserHasRegister && getMemberRegistrationStatus=='PENDING'"
+      v-if="checkUserHasRegister && getMemberRegistrationStatus == 'PENDING'"
     >
-      {{ $t("app.memberPaidRegistrationMsg") }} {{getRegisterMember.year}}
+      <span class="registration_text"
+        >{{ $t("app.memberPaidRegistrationMsg") }}
+        {{ getRegisterMember.year }}</span
+      >
       <template v-slot:action>
         <q-btn flat icon="close" size="sm" />
       </template>
     </q-banner>
     <q-form
       @submit="onRegisterMember"
-      class="q-gutter-sm"
+      class="q-gutter-sm q-mt-md"
       :class="$q.platform.is.mobile ? 'q-pl-sm' : ''"
     >
       <div>
@@ -37,13 +42,20 @@
       </div>
       <div>
         <label for="credential" class="form_field">{{ $t("app.year") }}</label>
-        <q-input v-model="user.year" outlined dense disable />
+        <q-input v-model="user.year" outlined dense disable hide-bottom-space />
       </div>
       <div>
         <label for="credential" class="form_field"
           >{{ $t("app.amount") }}
         </label>
-        <q-input v-model="user.amount" outlined dense type="number" disable />
+        <q-input
+          v-model="user.amount"
+          outlined
+          dense
+          type="number"
+          disable
+          hide-bottom-space
+        />
       </div>
       <div v-if="isMonthlyRegFrequency">
         <label for="month" class="form_field"
@@ -59,6 +71,7 @@
           input-debounce="0"
           clearable
           @filter="filterMonths"
+          hide-bottom-space
         >
           <template v-slot:no-option>
             <q-item>
@@ -110,15 +123,22 @@ const months = [
   "December",
 ];
 export default {
-  mixins: [memberMixinVue, organisationMixinVue, RegistrationAmountMixinVue, CurrentYearMixin],
+  mixins: [
+    memberMixinVue,
+    organisationMixinVue,
+    RegistrationAmountMixinVue,
+    CurrentYearMixin,
+  ],
   mounted() {
     let heading = this.$t("app.registerMemberHeading");
     this.$emit("set-heading", heading);
     this.getRegistrationAmount();
-    if(this.$store.getters.getCurrentYear == null || this.$store.getters.getCurrentYear == undefined){
-        this.fetchCurrentYear()
+    if (
+      this.$store.getters.getCurrentYear == null ||
+      this.$store.getters.getCurrentYear == undefined
+    ) {
+      this.fetchCurrentYear();
     }
-
   },
   data() {
     return {
@@ -164,9 +184,9 @@ export default {
       return this.$store.getters.getMemberToRegister.has_paid;
     },
 
-    getMemberRegistrationStatus(){
+    getMemberRegistrationStatus() {
       return this.$store.getters.getMemberToRegister.approve;
-    }
+    },
   },
   watch: {
     getRegisterMember() {
@@ -261,18 +281,16 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.hint {
-  color: $grey2;
-  font-size: small;
-}
-
 .form_field {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 12px;
+  font-size: 0.7rem;
   align-items: center;
-  letter-spacing: 0.01em;
-  color: $grey2;
+  color: $grey5;
+}
+
+.registration_text {
+  font-size: 0.7rem;
 }
 </style>

@@ -40,7 +40,7 @@
               </div>
             </div>
             <!-- member roles -->
-            <div class="flex q-mt-md q-px-md">
+            <div class="flex q-px-md">
               <div>
                 <label for="role" class="role_heading"
                   ><span
@@ -48,11 +48,9 @@
                       name="military_tech"
                       class="role_icon"
                     ></q-icon></span
-                  >{{ $t("app.rolesName") }}:
+                  >{{ $t("app.rolesName") }}
                 </label>
               </div>
-              <q-space />
-              <div></div>
             </div>
             <q-list class="q-mt-md">
               <q-item
@@ -61,12 +59,12 @@
                 class="q-mb-md"
               >
                 <q-item-section avatar v-if="role.name == 'MEMBER'">
-                  <q-avatar color="primary" text-color="white" size="35px">
+                  <q-avatar color="primary" text-color="white" size="md">
                     M</q-avatar
                   >
                 </q-item-section>
                 <q-item-section avatar v-if="role.name == 'PRESIDENT'">
-                  <q-avatar color="primary" text-color="white" size="35px">
+                  <q-avatar color="primary" text-color="white" size="md">
                     PP
                   </q-avatar>
                 </q-item-section>
@@ -74,23 +72,25 @@
                   avatar
                   v-if="role.name == 'FINANCIAL_SECRETARY'"
                 >
-                  <q-avatar color="primary" text-color="white" size="35px">
+                  <q-avatar color="primary" text-color="white" size="md">
                     FS
                   </q-avatar>
                 </q-item-section>
                 <q-item-section avatar v-if="role.name == 'TREASURER'">
-                  <q-avatar color="primary" text-color="white" size="35px">
+                  <q-avatar color="primary" text-color="white" size="md">
                     TR
                   </q-avatar>
                 </q-item-section>
                 <q-item-section avatar v-if="role.name == 'ADMIN'">
-                  <q-avatar color="primary" text-color="white" size="35px">
+                  <q-avatar color="primary" text-color="white" size="md">
                     A
                   </q-avatar>
                 </q-item-section>
                 <q-item-section>
-                  <q-item-label class="role_name">{{ role.name }}</q-item-label>
-                  <q-item-label caption class="text-sm role_update_date"
+                  <q-item-label class="role_name">{{
+                    formatConstants(role.name)
+                  }}</q-item-label>
+                  <q-item-label caption class="text-xs role_update_date"
                     >{{ $t("app.updatedBy") }}:
                     <span> {{ role.updated_by }}</span></q-item-label
                   >
@@ -111,8 +111,8 @@
         <div class="col col-md-6 col-sm-12 col-xs-12">
           <q-card-section>
             <!-- personal infomation -->
-            <div class="q-pa-sm" v-if="!edit_profile">
-              <div class="q-pa-sm row">
+            <div v-if="!edit_profile" class="q-mb-xl">
+              <div class="q-mb-xl row">
                 <div>
                   <label for="info" class="info">{{
                     $t("app.personalInformationLabel")
@@ -133,127 +133,91 @@
               </div>
               <div class="flex q-pb-md">
                 <label for="name" class="label"
-                  ><span
-                    ><q-icon name="person" class="q-pr-xs person_icon"></q-icon
-                  ></span>
-                  {{ $t("app.nameLabel") }}:
-                  <span class="value q-pl-xl value_code">{{
-                    user.name
-                  }}</span></label
-                >
+                  ><q-icon name="person" class="profile_icon"></q-icon>
+                  {{ $t("app.nameLabel") }}
+                </label>
+                <q-space />
+                <label class="value">
+                  {{ user.name }}
+                </label>
               </div>
               <div class="flex q-pb-md">
                 <label for="name" class="label"
-                  ><span
-                    ><q-icon
-                      name="female"
-                      v-if="user.gender == 'FEMALE'"
-                      class="q-pr-xs gender_icon"
-                    ></q-icon
-                  ></span>
-                  <span
-                    ><q-icon
-                      name="male"
-                      v-if="user.gender == 'MALE'"
-                      class="q-pr-xs gender_icon"
-                    ></q-icon
-                  ></span>
-                  <span class="q-pr-xs"></span>
-                  {{ $t("app.gender") }}:
-                  <span class="value value_code gender">{{ user.gender }}</span>
-                  <span
-                    class="value value_code q-pl-lg"
-                    v-if="user.gender == null"
-                    >{{ $t("app.notSet") }}</span
-                  >
+                  ><q-icon
+                    name="female"
+                    v-if="user.gender == 'FEMALE'"
+                    class="profile_icon"
+                  ></q-icon>
+                  <q-icon
+                    name="male"
+                    v-if="user.gender == 'MALE'"
+                    class="profile_icon"
+                  ></q-icon>
+
+                  {{ $t("app.gender") }}
+                </label>
+                <q-space />
+                <label class="value">
+                  {{ user.gender }}
+                </label>
+                <label class="value" v-if="user.gender == null">
+                  {{ $t("app.notSet") }}
                 </label>
               </div>
-              <div class="flex q-pb-lg">
-                <label for="name" class="label"
-                  ><span
-                    ><q-icon
-                      name="email"
-                      size="xs"
-                      class="q-pr-sm"
-                    ></q-icon></span
-                  >{{ $t("app.emailLabel") }}:
-                  <span class="value value_code email">{{
-                    user.email
-                  }}</span></label
-                >
+              <div class="flex q-pb-md">
+                <label for="name" class="label">
+                  <q-icon name="email" class="profile_icon"></q-icon
+                  >{{ $t("app.emailLabel") }}
+                </label>
+                <q-space />
+                <label class="value">
+                  {{ user.email }}
+                </label>
               </div>
-              <div class="flex q-pb-lg">
+              <div class="flex q-pb-md">
                 <label for="name" class="label"
-                  ><span
-                    ><q-icon
-                      name="phone"
-                      size="xs"
-                      class="q-pr-xs"
-                    ></q-icon></span
-                  >{{ $t("app.telephoneLabel") }}:
-                  <span class="value phone value_code">{{
-                    user.telephone
-                  }}</span></label
-                >
+                  ><q-icon name="phone" class="profile_icon"></q-icon
+                  >{{ $t("app.telephoneLabel") }}
+                </label>
+                <q-space />
+                <label class="value">{{ user.telephone }}</label>
               </div>
-              <div class="flex q-pb-lg">
+              <div class="flex q-pb-md">
                 <label for="name" class="label"
-                  ><span
-                    ><q-icon
-                      name="location_on"
-                      size="xs"
-                      class="q-pr-xs"
-                    ></q-icon
-                  ></span>
-                  {{ $t("app.addressLabel") }}:
-                  <span class="value address value_code">{{
-                    user.address
-                  }}</span></label
-                >
+                  ><q-icon name="location_on" class="profile_icon"></q-icon>
+                  {{ $t("app.addressLabel") }}
+                </label>
+                <q-space />
+                <label class="value">{{ user.address }}</label>
               </div>
-              <div class="flex q-pb-lg">
+              <div class="flex q-pb-md">
                 <label for="name" class="label"
-                  ><span
-                    ><q-icon name="work" size="xs" class="q-pr-xs"></q-icon
-                  ></span>
-                  {{ $t("app.occupation") }}:
-                  <span class="value occupation value_code">{{
-                    user.occupation
-                  }}</span></label
-                >
+                  ><q-icon name="work" class="profile_icon"></q-icon>
+                  {{ $t("app.occupation") }}
+                </label>
+                <q-space />
+                <label class="value">{{ user.occupation }}</label>
               </div>
-              <div class="flex q-pb-lg">
-                <label for="name" class="label"
-                  ><span
-                    ><q-icon
-                      name="verified_user"
-                      size="xs"
-                      class="q-pr-xs"
-                    ></q-icon></span
-                  >{{ $t("app.createdDate") }}:
-                  <span class="value date value_code">{{
-                    getFormatedCreatedDate
-                  }}</span></label
-                >
+              <div class="flex q-pb-md">
+                <label for="name" class="label">
+                  <q-icon name="verified_user" class="profile_icon"></q-icon>
+                  {{ $t("app.createdDate") }}
+                </label>
+                <q-space />
+                <label class="value">{{ getFormatedCreatedDate }}</label>
               </div>
-              <div class="flex q-pb-lg">
+              <div class="flex q-pb-md">
                 <label for="name" class="label"
-                  ><span
-                    ><q-icon
-                      name="verified_user"
-                      size="xs"
-                      class="q-pr-xs"
-                    ></q-icon></span
-                  >{{ $t("app.updatedDate") }}:
-                  <span class="value date value_code">{{
-                    getFormatedUpdatedDate
-                  }}</span></label
-                >
+                  ><q-icon name="verified_user" class="profile_icon"></q-icon
+                  >{{ $t("app.updatedDate") }}
+                </label>
+                <q-space />
+                <label class="value">{{ getFormatedUpdatedDate }}</label>
               </div>
             </div>
 
             <!-- edit personal information -->
-            <div class="q-pa-sm q-mb-lg" v-if="edit_profile">
+            <div class="q-mb-xl" v-if="edit_profile">
               <q-form @submit="onUpdateProfile" class="q-gutter-md">
                 <div class="info2 q-pb-md">{{ $t("app.editProfile") }}</div>
                 <small class="hint"
@@ -296,12 +260,13 @@
                   <label for="credential" class="form_field">{{
                     $t("app.telephoneLabel")
                   }}</label>
-                  <q-input
+
+                  <vue-tel-input
                     v-model="user.telephone"
-                    outlined
-                    dense
-                    type="text"
-                  />
+                    defaultCountry="cm"
+                    mode="international"
+                    class="q-pa-xs"
+                  ></vue-tel-input>
                 </div>
                 <div>
                   <label for="credential" class="form_field"
@@ -345,8 +310,8 @@
             </div>
 
             <!-- security of profile -->
-            <div class="q-pa-xs" v-if="!edit_password">
-              <div class="q-pa-sm row">
+            <div v-if="!edit_password">
+              <div class="q-mb-md row">
                 <div>
                   <label for="info" class="security">{{
                     $t("app.security")
@@ -361,19 +326,17 @@
                     class="edit_icon"
                     @click="showEditPassword"
                   >
-                    <q-tooltip>{{ $t("app.editProfile") }}</q-tooltip>
+                    <q-tooltip>{{ $t("app.updatePasswordMsg") }}</q-tooltip>
                   </q-icon>
                 </div>
               </div>
               <div class="flex q-pb-md">
                 <label for="name" class="label"
                   ><span
-                    ><q-icon name="key" class="q-pr-xs person_icon"></q-icon
+                    ><q-icon name="key" class="profile_icon"></q-icon
                   ></span>
-                  {{ $t("app.passwordLabel") }}:
-                  <span class="value password value_code"
-                    >***********</span
-                  ></label
+                  {{ $t("app.passwordLabel") }}
+                  <span class="value password">***********</span></label
                 >
               </div>
             </div>
@@ -387,9 +350,10 @@
                   >{{ $t("app.fields") }}</small
                 >
                 <div>
-                  <label for="password" class="form_field">{{
-                    $t("app.oldPassword")
-                  }}</label>
+                  <label for="password" class="form_field"
+                    >{{ $t("app.oldPassword") }}
+                    <span class="text-red">*</span></label
+                  >
                   <q-input
                     v-model="security.old_password"
                     :type="is_pwd ? 'password' : 'text'"
@@ -406,9 +370,10 @@
                   </q-input>
                 </div>
                 <div>
-                  <label for="password" class="form_field">{{
-                    $t("app.newPassword")
-                  }}</label>
+                  <label for="password" class="form_field"
+                    >{{ $t("app.newPassword") }}
+                    <span class="text-red">*</span></label
+                  >
                   <q-input
                     v-model="security.password"
                     :type="is_old_pwd ? 'password' : 'text'"
@@ -425,9 +390,10 @@
                   </q-input>
                 </div>
                 <div>
-                  <label for="confirm_password" class="form_field">{{
-                    $t("app.confirmPasswordLabel")
-                  }}</label>
+                  <label for="confirm_password" class="form_field"
+                    >{{ $t("app.confirmPasswordLabel") }}
+                    <span class="text-red">*</span></label
+                  >
                   <q-input
                     v-model="security.password_confirmation"
                     :type="is_confirm_pwd ? 'password' : 'text'"
@@ -522,13 +488,12 @@
             <label for="credential" class="form_field">{{
               $t("app.telephoneLabel")
             }}</label>
-            <q-input
+            <vue-tel-input
               v-model="user.telephone"
-              outlined
-              dense
-              type="text"
-              disable
-            />
+              defaultCountry="cm"
+              mode="international"
+              class="q-pa-xs"
+            ></vue-tel-input>
           </div>
           <div>
             <label for="credential" class="form_field"
@@ -669,6 +634,7 @@ import { LocalStorage, Platform } from "quasar";
 import ButtonVue from "src/components/Button.vue";
 import moment from "moment";
 import organisationMixin from "src/mixins/organisationMixin.vue";
+import { VueTelInput } from "vue-tel-input";
 
 export default {
   mixins: [organisationMixin],
@@ -757,6 +723,9 @@ export default {
     },
   },
   methods: {
+    formatConstants(role) {
+      return role.replaceAll("_", " ");
+    },
     formDateTime(date) {
       return moment(date).format("MMMM Do YYYY");
     },
@@ -850,6 +819,7 @@ export default {
         .catch((error) => {})
         .finally(() => {
           this.loading = false;
+          this.edit_password = false;
           this.resetForm();
           if (Platform.is.mobile) {
             this.showEditPasswordDialog = false;
@@ -931,6 +901,7 @@ export default {
   },
   components: {
     ButtonVue,
+    VueTelInput,
   },
 };
 </script>
@@ -949,34 +920,24 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 12px;
+  font-size: 0.7rem;
   align-items: center;
-  letter-spacing: 0.01em;
-  color: $grey2;
+  color: $grey5;
 }
-.gender {
-  padding-left: 2.5rem;
-}
+
 .text_h6 {
   color: $dark;
   font-family: "Roboto";
   font-style: normal;
   font-weight: 600;
-  font-size: 18px;
-  line-height: 24px;
+  font-size: 0.9em;
   align-items: center;
   text-align: center;
-  letter-spacing: 0.005em;
 }
-.person_icon {
-  font-size: 1.4rem;
+.profile_icon {
+  font-size: 1.1rem;
 }
-.gender_icon {
-  font-size: 1.4rem;
-}
-.email {
-  padding-left: 3.5rem;
-}
+
 .camara {
   position: relative;
   left: 10%;
@@ -985,29 +946,11 @@ export default {
   color: $grey8;
 }
 
-.phone {
-  padding-left: 2rem;
-}
-
-.address {
-  padding-left: 2.6rem;
-}
-
-.occupation {
-  padding-left: 1.4rem;
-}
-
-.date {
-  padding-left: 1rem;
-}
-
 .label {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 400;
-  font-size: 14px;
-  line-height: 11px;
-  letter-spacing: 0.01em;
+  font-size: 0.7rem;
   color: $grey5;
 }
 .info {
@@ -1024,9 +967,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 16px;
-  line-height: 11px;
-  letter-spacing: 0.01em;
+  font-size: 0.9rem;
   color: $primary;
 }
 
@@ -1047,9 +988,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 15px;
-  line-height: 27px;
-  letter-spacing: 0.005em;
+  font-size: 0.8rem;
   color: $dark;
 }
 
@@ -1057,9 +996,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 16px;
-  line-height: 11px;
-  letter-spacing: 0.01em;
+  font-size: 0.8rem;
   color: $primary;
 }
 
@@ -1067,18 +1004,17 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 12.5px;
-  line-height: 11px;
-  letter-spacing: 0.01em;
+  font-size: 0.7rem;
   color: $grey8;
 }
 
 .role_update_date {
   font-weight: 500;
+  font-size: 0.6rem;
 }
 
 .hint {
   color: $grey2;
-  font-size: small;
+  font-size: smaller;
 }
 </style>

@@ -104,7 +104,7 @@
           </q-item-section>
           <q-item-section side>
             <q-btn-dropdown :label="getLocale" flat class="labelText">
-              <q-list>
+              <q-list dense>
                 <q-item
                   clickable
                   v-close-popup
@@ -153,8 +153,8 @@
 
     <!-- add new year dialog -->
     <q-dialog v-model="show_add_year">
-      <q-card style="min-width: 400px" class="q-px-md q-pt-sm q-pb-md">
-        <q-card-section class="row items-center q-pb-lg">
+      <q-card style="min-width: 400px" class="row q-pb-sm">
+        <q-card-section class="row">
           <div class="text-h6 add_year">
             {{ $t("app.settingsAddSessionLabel") }}
           </div>
@@ -162,23 +162,21 @@
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
 
-        <q-card-section class="q-pt-none">
+        <q-card-section>
           <q-form @submit="onAddYear" class="q-gutter-md">
             <div>
               <q-input v-model="year" outlined dense> </q-input>
             </div>
             <div class="q-mt-lg flex justify-end">
-              <div class="q-mt-xs">
-                <ButtonVue
-                  class="form_button"
-                  :label="saveBtnLabel"
-                  :loading="is_fetching"
-                  color="primary"
-                  :disabled="validateForm"
-                  :no_caps="true"
-                >
-                </ButtonVue>
-              </div>
+              <ButtonVue
+                class="form_button"
+                :label="saveBtnLabel"
+                :loading="is_fetching"
+                color="primary"
+                :disabled="validateForm"
+                :no_caps="true"
+              >
+              </ButtonVue>
             </div>
           </q-form>
         </q-card-section>
@@ -187,22 +185,22 @@
 
     <!--update year dialog -->
     <q-dialog v-model="show_edit_year">
-      <q-card style="min-width: 400px" class="q-px-md q-pt-sm q-pb-sm">
-        <q-card-section class="row items-center q-pb-lg">
+      <q-card style="min-width: 400px">
+        <q-card-section class="row q-pb-sm">
           <div class="text-h6 add_year">
             {{ $t("app.settingsUpdateSessionLabel") }}
           </div>
           <q-space />
-          <q-btn icon="close" flat round dense v-close-popup />
+          <q-btn icon="close" flat round dense v-close-popup size="sm" />
         </q-card-section>
 
-        <q-card-section class="q-pt-none">
+        <q-card-section>
           <q-form @submit="onUpdateYear" class="q-gutter-md">
             <div>
               <q-input v-model="updated_year.year" outlined disable dense>
               </q-input>
             </div>
-            <div class="q-mt-lg">
+            <div>
               <q-select
                 v-model="updated_year.status"
                 outlined
@@ -212,17 +210,15 @@
               />
             </div>
             <div class="flex q-mt-lg justify-end">
-              <div class="q-mt-xs">
-                <ButtonVue
-                  class="form_button"
-                  :label="saveBtnLabel"
-                  :loading="is_fetching"
-                  color="primary"
-                  :no_caps="true"
-                  :disabled="false"
-                >
-                </ButtonVue>
-              </div>
+              <ButtonVue
+                class="form_button"
+                :label="saveBtnLabel"
+                :loading="is_fetching"
+                color="primary"
+                :no_caps="true"
+                :disabled="false"
+              >
+              </ButtonVue>
             </div>
           </q-form>
         </q-card-section>
@@ -277,7 +273,7 @@ export default {
           label: "Created Date",
           field: "created_at",
           align: "left",
-        }
+        },
       ],
       data: [],
       tag: "Session",
@@ -379,12 +375,12 @@ export default {
       let payload = {
         url: `/api/protected/sessions`,
         data: { year: this.year },
-        msg: this.$t('app.addSessionSuccessMsg'),
+        msg: this.$t("app.addSessionSuccessMsg"),
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
         show_feedback: true,
-        error_msg: this.$t('app.defaultErrorMsg'),
+        error_msg: this.$t("app.defaultErrorMsg"),
         has_commit: false,
         commit: "none",
         to_be_store_data: {
@@ -395,10 +391,7 @@ export default {
       };
       this.$store
         .dispatch("postRequest", payload)
-        .then(() => {
-
-
-        })
+        .then(() => {})
         .then(() => {
           this.getSessions();
           this.show_add_year = false;
@@ -577,9 +570,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  line-height: 24px;
   font-size: medium;
-  letter-spacing: 0.005em;
 }
 .alert {
   color: $grey5;
@@ -590,8 +581,6 @@ export default {
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
-  line-height: 24px;
-  letter-spacing: 0.005em;
 }
 
 .setting_title {
@@ -599,10 +588,8 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 14px;
-  line-height: 24px;
+  font-size: 0.8rem;
   text-align: left;
-  letter-spacing: 0.005em;
 }
 
 .active_item {
@@ -614,26 +601,25 @@ export default {
   color: $white1;
   font-weight: 500;
   font-family: "Roboto";
-  font-style: normal;
-  font-size: 14px;
-  line-height: 24px;
+  font-size: 0.7rem;
 }
 
 .text_header_in_active {
   color: $dark;
   font-weight: normal;
   font-family: "Roboto";
-  font-style: normal;
-  font-size: 14px;
-  line-height: 24px;
+  font-size: 0.7rem;
+  font-weight: 500;
 }
 
 .text_in_active {
   color: $grey2;
+  font-size: 0.7rem;
 }
 
 .text_active {
   color: $white1;
+  font-size: 0.7rem;
 }
 
 .icon_color_active {
@@ -652,9 +638,8 @@ export default {
   font-weight: normal;
   color: $dark;
   font-family: "Roboto";
-  font-style: normal;
-  font-size: 14px;
-  line-height: 24px;
+  font-size: 0.7rem;
+  font-weight: 500;
 }
 
 .lang_text {
@@ -662,12 +647,13 @@ export default {
 }
 
 .labelText {
-  font-size: small;
+  font-size: 0.6rem;
   color: $grey8;
 }
 
 .caption_text_general {
   color: $grey2;
+  font-size: 0.7rem;
 }
 
 .edit_year {
@@ -692,7 +678,6 @@ export default {
   font-style: normal;
   font-weight: bold;
   align-items: center;
-  letter-spacing: 0.01em;
 }
 
 .message {

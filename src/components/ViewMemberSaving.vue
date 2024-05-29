@@ -4,11 +4,11 @@
       <div>
         <label for="name" class="label"
           ><span> <q-icon name="person" size="xs" class="q-pr-sm" /> </span
-          >{{ $t("app.memberName") }}:
+          >{{ $t("app.memberName") }}
         </label>
       </div>
 
-      <div class="detail-value wrap">
+      <div>
         <label class="value">
           {{ getCurrentMemberSaving.user_name }}
         </label>
@@ -18,10 +18,10 @@
       <div>
         <label for="email" class="label"
           ><span> <q-icon name="email" size="xs" class="q-pr-sm" /> </span
-          >{{ $t("app.emailLabel") }}:
+          >{{ $t("app.emailLabel") }}
         </label>
       </div>
-      <div class="detail-value wrap">
+      <div>
         <label class="value">
           {{ getCurrentMemberSaving.email }}
         </label>
@@ -30,9 +30,9 @@
     <div class="flex justify-between q-mb-md">
       <label for="telephone" class="label"
         ><span> <q-icon name="phone" size="xs" class="q-pr-sm" /> </span
-        >{{ $t("app.telephoneLabel") }}:
+        >{{ $t("app.telephoneLabel") }}
       </label>
-      <div class="detail-value wrap">
+      <div>
         <label class="value">
           {{ getCurrentMemberSaving.telephone }}
         </label>
@@ -42,9 +42,9 @@
       <label for="amount" class="label"
         ><span>
           <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
-        >{{ $t("app.amountDeposited") }}:
+        >{{ $t("app.amountDeposited") }}
       </label>
-      <div class="detail-value wrap">
+      <div>
         <label class="value">
           {{ Number(getCurrentMemberSaving.amount_deposited).toLocaleString() }}
           XAF
@@ -55,9 +55,9 @@
       <label for="amount" class="label"
         ><span>
           <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
-        >{{ $t("app.amountUsed") }}:
+        >{{ $t("app.amountUsed") }}
       </label>
-      <div class="detail-value wrap">
+      <div>
         <label class="value">
           {{ Number(getCurrentMemberSaving.amount_used).toLocaleString() }}
           XAF
@@ -69,10 +69,10 @@
         <label for="status" class="label"
           ><span>
             <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span
-          >{{ $t("app.transactionStatus") }}:
+          >{{ $t("app.transactionStatus") }}
         </label>
       </div>
-      <div class="detail-value wrap">
+      <div>
         <label
           class="value text-info"
           v-show="getCurrentMemberSaving.approve == 'PENDING'"
@@ -97,10 +97,10 @@
       <div>
         <label for="amount" class="label"
           ><span> <q-icon name="schedule" size="xs" class="q-pr-sm" /> </span
-          >{{ $t("app.createdDate") }}:
+          >{{ $t("app.createdDate") }}
         </label>
       </div>
-      <div class="detail-value wrap">
+      <div>
         <label class="value">
           {{ getFormatSavingCreatedDate }}
         </label>
@@ -111,26 +111,26 @@
       <div>
         <label for="amount" class="label"
           ><span> <q-icon name="person" size="xs" class="q-pr-sm" /> </span
-          >{{ $t("app.createdBy") }}:
+          >{{ $t("app.createdBy") }}
         </label>
       </div>
-      <div class="detail-value wrap">
+      <div>
         <label class="value">
           {{ getCurrentMemberSaving.updated_by }}
         </label>
       </div>
     </div>
-    <div class="row q-mb-md">
+    <div class="row q-mb-md detail-value wrap">
       <label for="comment" class="label"
         ><span> <q-icon name="description" size="xs" class="q-pr-sm" /> </span
-        >{{ $t("app.comment") }}:</label
+        >{{ $t("app.comment") }}</label
       >
-    </div>
-    <div class="value_comment" v-show="getCurrentMemberSaving.comment !== null">
-      {{ getCurrentMemberSaving.comment }}
-    </div>
-    <div class="value_comment" v-show="getCurrentMemberSaving.comment === null">
-      {{ $t("app.none") }}
+      <div
+        class="value detail-value wrap"
+        v-show="getCurrentMemberSaving.comment !== null"
+      >
+        {{ getCurrentMemberSaving.comment }}
+      </div>
     </div>
   </div>
 </template>
@@ -172,29 +172,19 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 400;
-  font-size: 14px;
-  line-height: 11px;
-  letter-spacing: 0.01em;
+  font-size: 0.7rem;
   color: $grey5;
 }
+
 .value {
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 600;
-  font-size: 14px;
-  letter-spacing: 0.01em;
+  font-weight: 500;
+  font-size: 0.7rem;
   color: $grey8;
 }
 .detail-value {
   max-width: 250px;
 }
-.value_comment {
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 14px;
-  letter-spacing: 0.01em;
-  color: $dark;
-  margin-left: 1.8rem;
-}
+ 
 </style>

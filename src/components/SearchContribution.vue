@@ -24,7 +24,7 @@
           </template>
         </q-select>
       </div>
-      <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 q-mt-md">
+      <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 q-mt-sm">
         <q-select
           v-model="param.payment_item_id"
           outlined
@@ -56,18 +56,15 @@
       <label for="heading" class="text">{{ $t("app.filterStatus") }}</label>
     </div>
     <div class="q-mb-lg row">
-      <div
-        class="col-md-4 col-lg-4"
-        v-for="status in statuses"
-        :key="status.index"
-      >
+      <div v-for="status in statuses" :key="status.index">
         <q-chip
           color="primary"
           text-color="white"
           clickable
-          class="q-pa-md"
+          size="sm"
           :disable="validateForm"
           @click="filterByDuration(status.name)"
+          no-caps
         >
           {{ status.name }}
         </q-chip>
@@ -80,8 +77,8 @@
       <label for="heading" class="text">{{ $t("app.filterDelay") }}</label>
     </div>
     <!-- by year -->
-    <div class="q-mb-md row">
-      <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+    <div class="q-mb-sm row">
+      <div class="col-12 col-md">
         <q-select
           v-model="param.year"
           outlined
@@ -93,6 +90,7 @@
           clearable
           @filter="filterYears"
           @input="stopSearch"
+          hide-bottom-space
         >
           <template v-slot:append v-if="start_filter_year">
             <q-spinner color="primary" size="1.2em" :thickness="3" />
@@ -108,8 +106,8 @@
       </div>
     </div>
     <!--  by month -->
-    <div class="q-mb-md row">
-      <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+    <div class="q-mb-sm row">
+      <div class="col-12 col-md">
         <q-select
           v-model="param.month"
           outlined
@@ -121,6 +119,7 @@
           clearable
           @filter="filterMonths"
           @input="stopSearch"
+          hide-bottom-space
         >
           <template v-slot:append v-if="start_filter_month">
             <q-spinner color="primary" size="1.2em" :thickness="3" />
@@ -137,14 +136,15 @@
     </div>
 
     <!-- filter by date -->
-    <div class="row q-mb-md">
-      <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+    <div class="row q-mb-sm">
+      <div class="col-12 col-md">
         <q-input
           dense
           v-model="param.date"
           mask="date"
           outlined
           :placeholder="$t('app.selectDate')"
+          hide-bottom-space
         >
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
@@ -164,14 +164,13 @@
         </q-input>
       </div>
     </div>
-    <div class="flex justify-end q-mt-lg">
+    <div class="flex justify-end q-mt-md">
       <div class="q-mr-xl">
         <q-btn label="Reset" color="primary" no-caps outline @click="reset()">
         </q-btn>
       </div>
       <div>
         <q-btn
-          class="filter_btn"
           :label="$t('app.filter')"
           :loading="loading"
           :color="'primary'"
@@ -257,8 +256,8 @@ export default {
       start_filter_month: false,
       start_filter_year: false,
       current_session_id: LocalStorage.getItem("data").current_session.id,
-      year:"",
-      is_fetching_members:false,
+      year: "",
+      is_fetching_members: false,
     };
   },
   computed: {
@@ -271,7 +270,7 @@ export default {
   methods: {
     getPaymentItems() {
       this.payment_items_by_category = [];
-      if(this.year == null || this.year == "" || this.year == "undefined"){
+      if (this.year == null || this.year == "" || this.year == "undefined") {
         return;
       }
       this.is_fetching_members = true;
@@ -453,25 +452,15 @@ export default {
 .text {
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 600;
-  font-size: 14px;
-  align-items: center;
-  letter-spacing: 0.1em;
+  font-weight: 500;
+  font-size: 0.8rem;
   color: $grey5;
 }
 
 .separator {
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 600;
-  font-size: 14px;
-  align-items: center;
-  letter-spacing: 0.1em;
+  font-weight: 500;
   color: $grey5;
-}
-
-.filter_btn {
-  letter-spacing: 0.1em;
-  width: 100%;
 }
 </style>

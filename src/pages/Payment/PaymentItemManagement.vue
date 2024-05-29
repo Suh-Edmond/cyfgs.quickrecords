@@ -41,7 +41,7 @@
     <div v-if="show_reference_dialog">
       <q-dialog v-model="show_reference_dialog">
         <q-card style="width: 400px">
-          <q-card-section class="bg-primary">
+          <q-card-section class="bg-primary" dense>
             <label
               class="text-white toolbar_title"
               v-if="selected_payment_item.type !== 'A_MEMBER'"
@@ -65,23 +65,27 @@
                   v-ripple
                 >
                   <q-item-section avatar>
-                    <q-avatar color="primary" text-color="white">
+                    <q-avatar color="primary" text-color="white" size="sm">
                       {{ getFirstLetter(reference.name) }}
                     </q-avatar>
                   </q-item-section>
 
-                  <q-item-section>
-                    <q-item-label>{{ reference.name }}</q-item-label>
-                    <q-item-label caption lines="1">{{
-                      reference.telephone
+                  <q-item-section class="selected_member">
+                    <q-item-label class="text-weight-bold">{{
+                      reference.name
                     }}</q-item-label>
+                    <q-item-label
+                      caption
+                      lines="1"
+                      class="text-weight-meduim"
+                      >{{ reference.telephone }}</q-item-label
+                    >
                   </q-item-section>
 
                   <q-item-section side>
                     <q-icon
                       name="delete"
                       color="red"
-                      size="xs"
                       @click="removeReference(reference)"
                       class="remove_reference_icon"
                     />
@@ -96,6 +100,7 @@
               v-close-popup
               color="primary"
               size="md"
+              flat
             />
           </q-card-actions>
         </q-card>
@@ -511,12 +516,17 @@ export default {
 .toolbar_title {
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 400;
-  font-size: large;
-  letter-spacing: 0.01em;
+  font-weight: 500;
+  font-size: 0.8rem;
+  align-items: center;
 }
 
 .remove_reference_icon {
   cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.selected_member {
+  font-size: 0.7rem;
 }
 </style>

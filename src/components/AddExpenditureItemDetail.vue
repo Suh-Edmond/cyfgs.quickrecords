@@ -1,31 +1,30 @@
 <template>
-  <div  class="q-mx-md">
+  <div class="q-mx-md">
     <q-banner
       inline-actions
       rounded
-      class="bg-info text-white q-mt-sm q-mb-sm"
+      class="bg-info text-white q-mt-sm"
       dense
       v-if="existExpenditureItemDetail"
     >
-      {{ $t("app.cantUpdatedExpenditureItemDetailAfterApprovalMsg") }}
-      <span class="text-lowercase">{{
+      <span class="registration_text">{{
+        $t("app.cantUpdatedExpenditureItemDetailAfterApprovalMsg")
+      }}</span>
+      <span class="text-lowercase registration_text">{{
         getUpdatedExpenditureItemDetailFromState.approve
       }}</span>
       <template v-slot:action>
         <q-btn flat icon="close" size="sm" />
       </template>
     </q-banner>
-    <div class="q-my-md">
+    <div class="q-my-xs">
       <label class="text-muted info"
         >{{ $t("app.warningField") }}<span class="text-red">*</span
         >{{ $t("app.fields") }}</label
       >
     </div>
 
-    <q-form
-      @submit="onAddExpenditureItemDetail"
-      class="q-gutter-sm q-mt-xs"
-    >
+    <q-form @submit="onAddExpenditureItemDetail" class="q-gutter-sm q-mt-xs">
       <div class="q-mb-md">
         <label for="credential" class="form_field"
           >{{ $t("app.nameLabel") }} <span class="text-red">*</span></label
@@ -90,7 +89,7 @@
             : 'q-pt-xs q-mb-lg'
         "
       >
-      <q-btn
+        <q-btn
           class="form_button q-mr-lg"
           :label="$t('app.reset')"
           :color="'primary'"
@@ -98,6 +97,7 @@
           outline
           @click="resetForm"
           v-if="$q.platform.is.desktop"
+          :disable="existExpenditureItemDetail"
         >
         </q-btn>
         <ButtonVue
@@ -168,7 +168,11 @@ export default {
     },
 
     existExpenditureItemDetail() {
-      return this.$store.getters.getUpdatedExpenditureItemDetail !== null && this.$store.getters.getUpdatedExpenditureItemDetail.approve !== "PENDING";
+      return (
+        this.$store.getters.getUpdatedExpenditureItemDetail !== null &&
+        this.$store.getters.getUpdatedExpenditureItemDetail.approve !==
+          "PENDING"
+      );
     },
   },
   watch: {
@@ -293,59 +297,13 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 12px;
+  font-size: 0.7rem;
   align-items: center;
-  letter-spacing: 0.01em;
-  color: $grey2;
-}
-
-.field {
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 11px;
-
-  letter-spacing: 0.01em;
   color: $grey5;
-}
-
-.field_value {
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 15px;
-  line-height: 27px;
-  letter-spacing: 0.005em;
-  color: $dark;
 }
 
 .detail_name {
   padding-left: 0.6rem;
-}
-
-.item_amount {
-  padding-left: 2.5rem;
-}
-
-.detail_amount {
-  padding-left: 2.3rem;
-}
-
-.item_bal {
-  padding-left: 4.8rem;
-}
-
-.detail_date {
-  padding-left: 3rem;
-}
-
-.detail_created_by {
-  padding-left: 3.7rem;
-}
-
-.item_statue {
-  padding: 5.5rem;
 }
 
 .unapproved_color {
@@ -358,6 +316,10 @@ export default {
 
 .info {
   color: $grey2;
-  font-size: small;
+  font-size: smaller;
+}
+
+.registration_text {
+  font-size: 0.7rem;
 }
 </style>

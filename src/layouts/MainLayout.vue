@@ -12,12 +12,12 @@
       <div>
         <div class="left_drawer">
           <div class="bg-transparent q-pa-sm flex flex-center">
-            <q-avatar size="90px" v-if="getOrganisation != null">
+            <q-avatar size="5rem" v-if="getOrganisation != null">
               <q-img :src="getOrganisationLogo"> </q-img>
             </q-avatar>
           </div>
           <div
-            class="text-weight-bold text-center organisation_name q-mb-md q-pa-xs"
+            class="text-weight-bold text-center organisation_name"
             v-if="getOrganisation != null"
           >
             {{ getOrganisation.name }}
@@ -41,7 +41,7 @@
                 avatar
                 :class="item.name == tab.name ? 'item_icon' : 'item_text'"
               >
-                <q-icon :name="tab.icon" size="xs" v-if="!tab.has_image" />
+                <q-icon :name="tab.icon" size=".9rem" v-if="!tab.has_image" />
                 <img
                   v-if="tab.has_image"
                   :src="tab.image_src"
@@ -78,10 +78,11 @@
           ? right_drawer_width_mobile
           : right_drawer_width_desktop
       "
+      :breakpoint="500"
     >
       <q-page>
         <q-card class="bar" flat>
-          <div class="flex q-pa-xs">
+          <div class="flex justify-center q-pa-sm">
             <q-btn
               dense
               color="white"
@@ -94,7 +95,7 @@
             </q-btn>
             <label
               for="heading"
-              class="text-white q-ml-lg"
+              class="text-white q-ml-sm"
               :class="$q.platform.is.desktop ? 'text_h6' : 'side-bar-heading'"
               >{{ heading }}</label
             >
@@ -290,8 +291,8 @@ export default {
         selected: true,
       },
       requires_add: false,
-      right_drawer_width_mobile: 400,
-      right_drawer_width_desktop: 480,
+      right_drawer_width_mobile: 0,
+      right_drawer_width_desktop: 450,
       current_tab: "",
       right_drawer_tab: "",
       data: null,
@@ -591,34 +592,20 @@ export default {
   height: 100vh;
 }
 
-.drop_down_text {
-  font-family: "Roboto";
-  font-style: normal;
-  line-height: 29px;
-  display: flex;
-  align-items: center;
-  text-align: center;
-  letter-spacing: 0.01em;
-  text-transform: capitalize;
-  color: $dark;
-}
-
 .organisation_name {
   color: $primary;
   font-family: "Roboto";
   font-style: normal;
-  letter-spacing: 0.01em;
   font-weight: 700;
-  font-size: medium;
+  font-size: 0.8rem;
 }
 
 .left_drawer {
-  height: 160px;
+  height: 8rem;
 }
 
 .item_icon {
   color: $white1;
-  font-size: 0.8rem;
 }
 
 .item {
@@ -631,7 +618,7 @@ export default {
 }
 
 .item_name {
-  font-size: 0.8rem;
+  font-size: 0.7rem;
 }
 
 .bar {
@@ -650,41 +637,10 @@ export default {
   width: 1.13rem;
 }
 
-.logout {
-  position: absolute;
-  top: 91%;
-}
-
-.expand {
-  color: red;
-}
-
-.footer_text {
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 400;
-  font-size: 13px;
-  align-items: center;
-  text-align: center;
-  letter-spacing: 0.005em;
-}
-
-.copy_right {
-  font-size: large;
-}
-
-.footer {
-  height: 2rem;
-  background-color: $white1;
-  margin-left: 1rem;
-}
-
-.appName {
-  font-family: "Roboto";
-  font-style: normal;
-  text-transform: capitalize;
+.text_h6 {
   color: $dark;
-  font-weight: 700;
-  font-size: medium;
+  font-family: "Roboto";
+  font-style: normal;
+  font-size: 0.76rem;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="row">
-      <div class="col-md-12 col-xs-12 col-sm-12 col-lg-12">
+      <div class="col-md col-12">
         <!-------------------------------------------LOADING INDICATOR------------------------------------------------->
         <div class="flex justify-center q-mb-md" v-if="is_fetching">
           <q-spinner color="primary" size="2.5em" />
@@ -41,7 +41,7 @@
                 <div class="col-md-4 col-sm-12 col-xs-12">
                   <div class="text-center">
                     <q-avatar
-                      size="190px"
+                      size="150px"
                       v-if="
                         getCurrentMember.picture != '' &&
                         getCurrentMember.picture != null &&
@@ -82,7 +82,7 @@
                     </div>
                   </div>
                   <!-- member roles -->
-                  <div class="flex q-px-sm">
+                  <div class="flex q-px-md q-pb-md">
                     <label for="role" class="role_heading"
                       ><span
                         ><q-icon
@@ -96,9 +96,10 @@
                     <label for="role" class="role_heading"
                       ><q-icon
                         name="add"
-                        class="role_icon"
+                        class="role_icon q-mr-md"
                         @click="showAddRole"
                         v-if="canEditUserRole"
+                        size="xs"
                       ></q-icon>
 
                       <q-tooltip> {{ $t("app.addRoleLabel") }} </q-tooltip>
@@ -111,29 +112,17 @@
                       class="q-mb-md"
                     >
                       <q-item-section avatar v-if="role.name == 'MEMBER'">
-                        <q-avatar
-                          color="primary"
-                          text-color="white"
-                          size="35px"
-                        >
+                        <q-avatar color="primary" text-color="white" size="md">
                           M</q-avatar
                         >
                       </q-item-section>
                       <q-item-section avatar v-if="role.name == 'ADMIN'">
-                        <q-avatar
-                          color="primary"
-                          text-color="white"
-                          size="35px"
-                        >
+                        <q-avatar color="primary" text-color="white" size="md">
                           AD
                         </q-avatar>
                       </q-item-section>
                       <q-item-section avatar v-if="role.name == 'PRESIDENT'">
-                        <q-avatar
-                          color="primary"
-                          text-color="white"
-                          size="35px"
-                        >
+                        <q-avatar color="primary" text-color="white" size="md">
                           PP
                         </q-avatar>
                       </q-item-section>
@@ -141,35 +130,23 @@
                         avatar
                         v-if="role.name == 'FINANCIAL_SECRETARY'"
                       >
-                        <q-avatar
-                          color="primary"
-                          text-color="white"
-                          size="35px"
-                        >
+                        <q-avatar color="primary" text-color="white" size="md">
                           FS
                         </q-avatar>
                       </q-item-section>
                       <q-item-section avatar v-if="role.name == 'TREASURER'">
-                        <q-avatar
-                          color="primary"
-                          text-color="white"
-                          size="35px"
-                        >
+                        <q-avatar color="primary" text-color="white" size="md">
                           TR
                         </q-avatar>
                       </q-item-section>
                       <q-item-section avatar v-if="role.name == 'AUDITOR'">
-                        <q-avatar
-                          color="primary"
-                          text-color="white"
-                          size="35px"
-                        >
+                        <q-avatar color="primary" text-color="white" size="md">
                           AU
                         </q-avatar>
                       </q-item-section>
                       <q-item-section>
                         <q-item-label class="role_name">{{
-                          role.name
+                          formatConstants(role.name)
                         }}</q-item-label>
                         <q-item-label caption class="text-sm role_update_date"
                           >{{ $t("app.updatedBy") }}:
@@ -204,9 +181,9 @@
                 <div class="col-md-2 col-sm-12 col-xs-12"></div>
                 <div class="col-md-6 col-sm-12 col-xs-12">
                   <!----------------------------------------MEMBER  PROFILE DETAILS------------------------------------->
-                  <div class="q-pa-sm" v-if="!edit_profile">
+                  <div v-if="!edit_profile">
                     <div class="row">
-                      <div class="q-pb-md">
+                      <div class="q-pb-lg">
                         <label for="info" class="personal_info">{{
                           $t("app.personalInformationLabel")
                         }}</label>
@@ -227,159 +204,127 @@
                     </div>
                     <div class="flex q-pb-md">
                       <label for="name" class="label"
-                        ><span
-                          ><q-icon
-                            name="person"
-                            class="q-pr-xs person_icon"
-                          ></q-icon
-                        ></span>
-                        {{ $t("app.nameLabel") }}:
-                        <span class="value q-pl-xl">{{
-                          getCurrentMember.name
-                        }}</span></label
-                      >
+                        ><q-icon name="person" class="person_icon"></q-icon>
+                        {{ $t("app.nameLabel") }} </label
+                      ><q-space />
+                      <label class="value">{{ getCurrentMember.name }}</label>
                     </div>
                     <div class="flex q-pb-md">
                       <label for="name" class="label"
-                        ><span
-                          ><q-icon
-                            name="female"
-                            v-if="getCurrentMember.gender == 'FEMALE'"
-                            class="q-pr-xs gender_icon"
-                          ></q-icon
-                        ></span>
-                        <span
-                          ><q-icon
-                            name="male"
-                            v-if="getCurrentMember.gender == 'MALE'"
-                            class="q-pr-xs gender_icon"
-                          ></q-icon
-                        ></span>
-                        <span class="q-pr-xs"></span>
-                        {{ $t("app.gender") }}:
-                        <span class="value gender">{{
-                          getCurrentMember.gender
-                        }}</span>
-                        <span
-                          class="value q-pl-lg"
-                          v-if="getCurrentMember.gender == null"
-                          >{{ $t("app.notSet") }}</span
-                        >
+                        ><q-icon
+                          name="female"
+                          v-if="getCurrentMember.gender == 'FEMALE'"
+                          class="person_icon"
+                        ></q-icon>
+                        <q-icon
+                          name="male"
+                          v-if="getCurrentMember.gender == 'MALE'"
+                          class="person_icon"
+                        ></q-icon>
+                        {{ $t("app.gender") }}
                       </label>
-                    </div>
-                    <div class="flex q-pb-lg">
-                      <label for="name" class="label"
-                        ><span
-                          ><q-icon
-                            name="email"
-                            size="xs"
-                            class="q-pr-sm"
-                          ></q-icon></span
-                        >{{ $t("app.emailLabel") }}:
-                        <span class="value email">{{
-                          getCurrentMember.email
-                        }}</span></label
+                      <q-space />
+
+                      <label
+                        class="value"
+                        v-if="getCurrentMember.gender != null"
+                        >{{ getCurrentMember.gender }}</label
                       >
-                    </div>
-                    <div class="flex q-pb-lg">
-                      <label for="name" class="label"
-                        ><span
-                          ><q-icon
-                            name="phone"
-                            size="xs"
-                            class="q-pr-xs"
-                          ></q-icon></span
-                        >{{ $t("app.telephoneLabel") }}:
-                        <span class="value phone">{{
-                          getCurrentMember.telephone
-                        }}</span></label
-                      >
-                    </div>
-                    <div class="flex q-pb-lg">
-                      <label for="name" class="label"
-                        ><span
-                          ><q-icon
-                            name="location_on"
-                            size="xs"
-                            class="q-pr-xs"
-                          ></q-icon
-                        ></span>
-                        {{ $t("app.addressLabel") }}:
-                        <span class="value address">{{
-                          getCurrentMember.address
-                        }}</span></label
-                      >
-                    </div>
-                    <div class="flex q-pb-lg">
-                      <label for="name" class="label"
-                        ><span
-                          ><q-icon
-                            name="work"
-                            size="xs"
-                            class="q-pr-xs"
-                          ></q-icon
-                        ></span>
-                        {{ $t("app.occupation") }}:
-                        <span class="value occupation">{{
-                          getCurrentMember.occupation
-                        }}</span></label
-                      >
-                    </div>
-                    <div class="flex q-pb-lg">
-                      <label for="name" class="label"
-                        ><span
-                          ><q-icon
-                            name="verified_user"
-                            size="xs"
-                            class="q-pr-xs"
-                          ></q-icon></span
-                        >{{ $t("app.createdDate") }}:
-                        <span class="value date">{{
-                          getFormatedCreatedDate
-                        }}</span></label
-                      >
-                    </div>
-                    <div class="flex q-pb-lg">
-                      <label for="name" class="label"
-                        ><span
-                          ><q-icon
-                            name="verified_user"
-                            size="xs"
-                            class="q-pr-xs"
-                          ></q-icon></span
-                        >{{ $t("app.updatedDate") }}:
-                        <span class="value date">{{
-                          getFormatedUpdatedDate
-                        }}</span></label
+                      <label
+                        class="value"
+                        v-if="getCurrentMember.gender == null"
+                        >{{ $t("app.notSet") }}</label
                       >
                     </div>
                     <div class="flex q-pb-md">
                       <label for="name" class="label"
-                        ><span
-                          ><q-icon
-                            name="hourglass_top"
-                            size="xs"
-                            class="q-pr-xs"
-                          ></q-icon></span
-                        >{{ $t("app.status") }}:
-                        <span
-                          class="status"
-                          :class="
-                            getCurrentMember.status == 'ACTIVE'
-                              ? 'active_text_color'
-                              : 'in_active_text_color'
-                          "
-                          >{{ getCurrentMember.status }}</span
-                        ></label
+                        ><q-icon name="email" class="person_icon"></q-icon
+                        >{{ $t("app.emailLabel") }}
+                      </label>
+                      <q-space />
+                      <label class="value">{{ getCurrentMember.email }}</label>
+                    </div>
+                    <div class="flex q-pb-md">
+                      <label for="name" class="label"
+                        ><q-icon name="phone" class="person_icon"></q-icon
+                        >{{ $t("app.telephoneLabel") }}
+                      </label>
+                      <q-space />
+                      <label class="value">{{
+                        getCurrentMember.telephone
+                      }}</label>
+                    </div>
+                    <div class="flex q-pb-md">
+                      <label for="name" class="label"
+                        ><q-icon
+                          name="location_on"
+                          size="xs"
+                          class="person_icon"
+                        ></q-icon>
+                        {{ $t("app.addressLabel") }}
+                      </label>
+                      <q-space />
+                      <label class="value">{{
+                        getCurrentMember.address
+                      }}</label>
+                    </div>
+                    <div class="flex q-pb-md">
+                      <label for="name" class="label"
+                        ><q-icon name="work" class="person_icon"></q-icon>
+                        {{ $t("app.occupation") }}:
+                      </label>
+                      <q-space />
+                      <label class="value">{{
+                        getCurrentMember.occupation
+                      }}</label>
+                    </div>
+                    <div class="flex q-pb-md">
+                      <label for="name" class="label"
+                        ><q-icon
+                          name="verified_user"
+                          class="person_icon"
+                        ></q-icon
+                        >{{ $t("app.createdDate") }}
+                      </label>
+                      <q-space />
+                      <label class="value">{{ getFormatedCreatedDate }}</label>
+                    </div>
+                    <div class="flex q-pb-md">
+                      <label for="name" class="label"
+                        ><q-icon
+                          name="verified_user"
+                          class="person_icon"
+                        ></q-icon
+                        >{{ $t("app.updatedDate") }}
+                      </label>
+                      <q-space />
+                      <label class="value">{{ getFormatedUpdatedDate }}</label>
+                    </div>
+                    <div class="flex q-pb-md">
+                      <label for="name" class="label"
+                        ><q-icon
+                          name="hourglass_top"
+                          class="person_icon"
+                        ></q-icon
+                        >{{ $t("app.status") }}
+                      </label>
+                      <q-space />
+                      <label
+                        :class="
+                          getCurrentMember.status == 'ACTIVE'
+                            ? 'active_text_color'
+                            : 'in_active_text_color'
+                        "
+                        >{{ getCurrentMember.status }}</label
                       >
                     </div>
                   </div>
                   <!----------------------------------------------END OF MEMBER PROFILE------------------------------------------>
 
                   <!-----------------------------------------EDIT MEMBER PROFILE FORM------------------------------------------>
-                  <div class="q-pa-sm q-mb-lg" v-if="edit_profile">
+                  <div class="q-pa-sm" v-if="edit_profile">
                     <q-form @submit="onUpdateMember" class="q-gutter-md">
-                      <div class="update_profile q-pb-md">
+                      <div class="personal_info q-pb-md">
                         {{ $t("app.editProfile") }}
                       </div>
                       <small class="hint"
@@ -397,6 +342,7 @@
                           outlined
                           dense
                           type="text"
+                          hide-bottom-space
                         />
                       </div>
                       <div>
@@ -409,6 +355,7 @@
                           outlined
                           dense
                           :options="gender_options"
+                          hide-bottom-space
                         />
                       </div>
                       <div>
@@ -422,6 +369,7 @@
                           dense
                           type="email"
                           disable
+                          hide-bottom-space
                         />
                       </div>
                       <div>
@@ -432,6 +380,7 @@
                           v-model="user.telephone"
                           defaultCountry="cm"
                           mode="international"
+                          hide-bottom-space
                         ></vue-tel-input>
                       </div>
                       <div>
@@ -444,6 +393,7 @@
                           outlined
                           dense
                           type="text"
+                          hide-bottom-space
                         />
                       </div>
                       <div>
@@ -456,6 +406,7 @@
                           outlined
                           dense
                           type="text"
+                          hide-bottom-space
                         />
                       </div>
                       <div>
@@ -469,6 +420,7 @@
                           dense
                           type="text"
                           :options="status_options"
+                          hide-bottom-space
                         />
                       </div>
                       <div class="row justify-end">
@@ -496,10 +448,11 @@
 
                   <!---------------------------------------------START OF ALERT OF MEMBER'S REGISTRATION STATUS------------------>
                   <div
-                    class="q-ml-sm q-mb-xl"
+                    class="q-mb-xl"
                     v-if="
                       getCurrentMember.has_register == 'NOT_REGISTERED' &&
-                      !getCurrentMember.has_paid
+                      !getCurrentMember.has_paid &&
+                      !edit_profile
                     "
                   >
                     <span>
@@ -507,36 +460,44 @@
                         name="info"
                         color="warning"
                         size="sm"
-                        class="q-pr-md"
+                        class="q-mr-sm"
                       ></q-icon>
                     </span>
-                    <label for="not_register" class="text-bold text-warning"
+                    <label
+                      for="not_register"
+                      class="text-bold text-warning registration_status_msg"
                       >{{ $t("app.notCompletedRegistration") }}:
                       {{ getCurrentYear.year }}</label
                     >
                   </div>
                   <div
-                    class="q-ml-sm q-mb-xl"
-                    v-if="getCurrentMember.has_register == 'REGISTERED'"
+                    class="q-mb-xl"
+                    v-if="
+                      getCurrentMember.has_register == 'REGISTERED' &&
+                      !edit_profile
+                    "
                   >
                     <span>
                       <q-icon
                         name="info"
                         color="secondary"
                         size="sm"
-                        class="q-pr-md"
+                        class="q-mr-sm"
                       ></q-icon>
                     </span>
-                    <label for="register" class="text-bold text-secondary"
+                    <label
+                      for="register"
+                      class="text-bold text-secondary registration_status_msg"
                       >{{ $t("app.hasCompletedRegistration") }}:
                       {{ getCurrentYear.year }}</label
                     >
                   </div>
                   <div
-                    class="q-ml-sm q-mb-xl"
+                    class="q-mb-xl"
                     v-if="
                       getCurrentMember.has_paid &&
-                      getCurrentMember.approve == 'PENDING'
+                      getCurrentMember.approve == 'PENDING' &&
+                      !edit_profile
                     "
                   >
                     <span>
@@ -544,12 +505,14 @@
                         name="info"
                         color="info"
                         size="sm"
-                        class="q-pr-md"
+                        class="q-mr-sm"
                       ></q-icon>
                     </span>
-                    <label for="pending" class="text-bold text-info">{{
-                      $t("app.registrationPending")
-                    }}</label>
+                    <label
+                      for="pending"
+                      class="text-bold text-info registration_status_msg"
+                      >{{ $t("app.registrationPending") }}</label
+                    >
                   </div>
                   <!---------------------------------------END OF ALERT FOR MEMBER'S REGISTRATION STATUS---------------------->
                 </div>
@@ -575,58 +538,65 @@
                   flat
                 >
                   <template v-slot:top-left>
-                    <label for="title" class="text-h6 contribution_item_header"
+                    <label for="title" class="contribution_item_header"
                       >{{ $t("app.paymentItemLabel") }}:
                       {{ Number(due_amount).toLocaleString() }} XAF</label
                     >
                   </template>
                   <template v-slot:top-right>
                     <q-btn
-                      :label="$t('app.print')"
+                      :label="$t('app.download')"
                       color="positive"
                       :disabled="validateDownloadUnPaidItems"
                       no-caps
-                      icon-right="print"
+                      icon-right="download"
+                      size="sm"
+                      dense
+                      padding="sm"
                       @click="downloadUnPaidItem"
                       :loading="loading_upaid_download"
                     ></q-btn>
                   </template>
                   <template v-slot:body="props">
                     <q-tr :props="props">
-                      <q-td key="counter" :props="props">
+                      <q-td key="counter" :props="props" class="table_value">
                         {{ props.row.counter }}
                       </q-td>
-                      <q-td key="name" :props="props">
+                      <q-td key="name" :props="props" class="table_value">
                         {{ props.row.name }}
                       </q-td>
-                      <q-td key="balance" :props="props">
+                      <q-td key="balance" :props="props" class="table_value">
                         {{ Number(props.row.balance).toLocaleString() }}
                       </q-td>
-                      <q-td key="frequency" :props="props">
+                      <q-td key="frequency" :props="props" class="table_value">
                         {{ formatConstants(props.row.frequency) }}
                       </q-td>
-                      <q-td key="month_name" :props="props">
+                      <q-td key="month_name" :props="props" class="table_value">
                         {{
                           props.row.month_name == null
                             ? "N/A"
                             : props.row.month_name
                         }}
                       </q-td>
-                      <q-td key="quarterly_name" :props="props">
+                      <q-td
+                        key="quarterly_name"
+                        :props="props"
+                        class="table_value"
+                      >
                         {{
                           props.row.frequency == "QUARTERLY"
                             ? props.row.quarterly_name
                             : "N/A"
                         }}
                       </q-td>
-                      <q-td key="year" :props="props">
+                      <q-td key="year" :props="props" class="table_value">
                         {{
                           props.row.frequency == "YEARLY"
                             ? props.row.session.year
                             : current_year.year
                         }}
                       </q-td>
-                      <q-td key="has_pay" :props="props">
+                      <q-td key="has_pay" :props="props" class="table_value">
                         <q-checkbox
                           v-model="props.row.has_pay"
                           dense
@@ -646,23 +616,13 @@
               class="row q-my-lg justify-center"
               :class="$q.platform.is.mobile ? 'q-gutter-sm' : ''"
             >
-              <div
-                :class="
-                  $q.platform.is.mobile
-                    ? 'col-4 col-md-4 col-xs-12 col-sm-12'
-                    : ''
-                "
-              >
+              <div :class="$q.platform.is.mobile ? 'col-12 col-md' : ''">
                 <label for="total" class="amount_payable_title">{{
                   $t("app.totalAmountPayable")
                 }}</label>
               </div>
               <div
-                :class="
-                  $q.platform.is.desktop
-                    ? 'q-pl-lg'
-                    : 'col-4 col-md-4 col-xs-12 col-sm-12'
-                "
+                :class="$q.platform.is.desktop ? 'q-pl-lg' : 'col-12 col-md'"
               >
                 <q-input
                   disable
@@ -673,24 +633,21 @@
                 ></q-input>
               </div>
               <div
-                :class="
-                  $q.platform.is.desktop
-                    ? 'q-pl-lg'
-                    : 'col-4 col-md-4 col-xs-12 col-sm-12'
-                "
+                :class="$q.platform.is.desktop ? 'q-pl-lg' : 'col-12 col-md'"
               >
                 <q-btn
                   :label="$t('app.makePaymentBtnLabel')"
                   color="primary"
                   :disabled="validatePayment"
                   no-caps
+                  size="md"
                   @click="showPaymentDialog"
                   :class="$q.platform.is.mobile ? 'full-width' : ''"
                 >
                   <q-icon
                     size="xs"
                     name="arrow_forward"
-                    class="q-pl-md"
+                    class="q-pl-sm"
                   ></q-icon>
                 </q-btn>
               </div>
@@ -713,55 +670,62 @@
                   :loading="getLoadingState"
                 >
                   <template v-slot:top-left>
-                    <div class="text-h6 contribution_item_header">
+                    <div class="contribution_item_header">
                       {{ $t("app.paidItem") }}:
                       {{ Number(amount_paid).toLocaleString() }} XAF
                     </div>
                   </template>
                   <template v-slot:top-right>
                     <q-btn
-                      :label="$t('app.print')"
+                      :label="$t('app.download')"
                       color="positive"
                       :disabled="validateDownloadPaidItems"
                       no-caps
-                      icon-right="print"
+                      icon-right="download"
+                      size="sm"
+                      dense
+                      padding="sm"
                       :loading="loading_paid_download"
                       @click="downloadPaidItem"
                     ></q-btn>
                   </template>
                   <template v-slot:body="props">
                     <q-tr :props="props">
-                      <q-td key="name" :props="props">
+                      <q-td key="name" :props="props" class="table_value">
                         {{ props.row.name }}
                       </q-td>
-                      <q-td key="frequency" :props="props">
+                      <q-td key="frequency" :props="props" class="table_value">
                         {{ formatConstants(props.row.frequency) }}
                       </q-td>
-                      <q-td key="month_name" :props="props">
+                      <q-td key="month_name" :props="props" class="table_value">
                         {{
                           props.row.month_name == null
                             ? "N/A"
                             : props.row.month_name
                         }}
                       </q-td>
-                      <q-td key="quarterly_name" :props="props">
+                      <q-td
+                        key="quarterly_name"
+                        :props="props"
+                        class="table_value"
+                      >
                         {{
                           props.row.quarterly_name == null
                             ? "N/A"
                             : props.row.quarterly_name
                         }}
                       </q-td>
-                      <q-td key="amount" :props="props">
+                      <q-td key="amount" :props="props" class="table_value">
                         {{ Number(props.row.amount).toLocaleString() }}
                       </q-td>
-                      <q-td key="balance" :props="props">
+                      <q-td key="balance" :props="props" class="table_value">
                         {{ Number(props.row.balance).toLocaleString() }}
                       </q-td>
                       <q-td
                         key="payment_status"
                         :props="props"
                         v-if="props.row.payment_status == 'COMPLETE'"
-                        class="status_approve_completed"
+                        class="status_approve_completed table_value"
                       >
                         {{ props.row.payment_status }}
                       </q-td>
@@ -769,14 +733,14 @@
                         key="payment_status"
                         :props="props"
                         v-if="props.row.payment_status == 'INCOMPLETE'"
-                        class="status_decline_not_completed"
+                        class="status_decline_not_completed table_value"
                       >
                         {{ props.row.payment_status }}
                       </q-td>
                       <q-td
                         key="approve"
                         :props="props"
-                        class="status_approve_completed"
+                        class="status_approve_completed table_value"
                         v-if="props.row.approve == 'APPROVED'"
                       >
                         {{ props.row.approve }}
@@ -784,7 +748,7 @@
                       <q-td
                         key="approve"
                         :props="props"
-                        class="status_pending"
+                        class="status_pending table_value"
                         v-if="props.row.approve == 'PENDING'"
                       >
                         {{ props.row.approve }}
@@ -792,12 +756,12 @@
                       <q-td
                         key="approve"
                         :props="props"
-                        class="status_decline_not_completed"
+                        class="status_decline_not_completed table_value"
                         v-if="props.row.approve == 'DECLINED'"
                       >
                         {{ props.row.approve }}
                       </q-td>
-                      <q-td key="created_at" :props="props">
+                      <q-td key="created_at" :props="props" class="table_value">
                         {{ props.row.created_at }}
                       </q-td>
                       <q-td key="action" :props="props">
@@ -808,12 +772,12 @@
                           color="primary"
                           class="view_details"
                           :label="$t('app.view')"
+                          size="sm"
                           @click="viewDetails(props.row)"
                         >
                           <q-icon
                             name="visibility"
-                            size="xs"
-                            class="q-pl-sm"
+                            class="q-pl-xs eye_icon"
                           ></q-icon>
                         </q-btn>
                       </q-td>
@@ -881,17 +845,17 @@
         class="q-pa-xs"
       >
         <q-card-section>
-          <div class="text-center q-pb-xs">
-            <label class="text-dark message text-bold">{{
+          <div class="text-start">
+            <label class="text-dark warning_msg text-bold text-primary">{{
               $t("app.removeRoleWarningMsg")
             }}</label>
           </div>
           <div
-            class="text-weight-medium text-center text-red"
+            class="text-weight-medium text-start text-red"
             v-if="show_remove_role_dialog"
           >
-            {{ $t("app.role") }}:
-            <span class="q-pl-md">{{ role_deleted.name }}</span>
+            <label class="record_label">{{ $t("app.role") }}:</label>
+            <label class="q-pl-md record_value">{{ role_deleted.name }}</label>
           </div>
         </q-card-section>
         <q-card-actions align="right">
@@ -925,12 +889,12 @@
         :style="$q.platform.is.mobile ? 'min-width: 370px' : 'min-width: 600px'"
         class="q-pa-xs"
       >
-        <q-card-section class="row items-center q-pb-sm">
+        <q-card-section class="row q-pb-sm">
           <div class="text-h6 confirm_payment_title">
             {{ $t("app.confirmPaymentLabel") }}
           </div>
           <q-space />
-          <q-btn icon="close" flat round dense v-close-popup />
+          <q-btn icon="close" flat round dense v-close-popup size="sm" />
         </q-card-section>
         <q-card-section>
           <div>
@@ -966,20 +930,20 @@
           </div>
         </q-card-section>
 
-        <q-card-section class="q-mb-md">
-          <div class="flex justify-end">
-            <q-btn
-              icon-right="check"
-              :class="$q.platform.is.mobile ? 'full-width' : ''"
-              :label="$t('app.confirm')"
-              :loading="loading_payment"
-              color="primary"
-              :disabled="false"
-              no-caps
-              @click="onConfirmPayment"
-            >
-            </q-btn>
-          </div>
+        <q-card-section class="q-mb-md flex justify-end">
+          <q-btn
+            icon-right="check"
+            :class="$q.platform.is.mobile ? 'full-width' : ''"
+            :label="$t('app.confirm')"
+            :loading="loading_payment"
+            color="primary"
+            :disabled="false"
+            no-caps
+            size="md"
+            @click="onConfirmPayment"
+            padding="q-xs"
+          >
+          </q-btn>
         </q-card-section>
       </q-card>
     </q-dialog>
@@ -989,7 +953,7 @@
     <q-dialog v-model="showEditProfileDialog" persistent>
       <q-card style="min-width: 360px">
         <q-form @submit="onUpdateMember" class="q-pa-md">
-          <div class="flex update_profile q-pb-md">
+          <div class="flex personal_info q-pb-md">
             {{ $t("app.editProfile") }}
             <q-space />
             <span
@@ -1892,10 +1856,9 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 13px;
+  font-size: 0.7rem;
   align-items: center;
-  letter-spacing: 0.01em;
-  color: $grey8;
+  color: $grey5;
 }
 
 .gender {
@@ -1913,19 +1876,11 @@ export default {
 }
 
 .person_icon {
-  font-size: 1.4rem;
+  font-size: 1rem;
 }
 .role_icon {
   font-size: 1rem;
   cursor: pointer;
-}
-
-.gender_icon {
-  font-size: 1.4rem;
-}
-
-.email {
-  padding-left: 3.5rem;
 }
 
 .camara {
@@ -1936,42 +1891,20 @@ export default {
   color: $grey8;
 }
 
-.phone {
-  padding-left: 2rem;
-}
-
-.address {
-  padding-left: 2.6rem;
-}
-
-.occupation {
-  padding-left: 1.4rem;
-}
-
-.date {
-  padding-left: 1rem;
-}
-
-.status {
-  padding-left: 4rem;
-}
-
 .active_text_color {
+  color: $secondary;
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 15px;
-  line-height: 27px;
-  color: $secondary;
+  font-size: 0.8rem;
 }
 
 .in_active_text_color {
+  color: $orange;
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 15px;
-  line-height: 27px;
-  color: $orange;
+  font-size: 0.8rem;
 }
 
 .label {
@@ -1986,10 +1919,8 @@ export default {
 .personal_info {
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 700;
-  font-size: 16px;
-  line-height: 11px;
-  letter-spacing: 0.01em;
+  font-weight: 500;
+  font-size: 0.9rem;
   color: $primary;
 }
 
@@ -1997,12 +1928,11 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 15px;
-  line-height: 27px;
+  font-size: 0.8rem;
   color: $dark;
 }
 
-.update_profile {
+.personal_info {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
@@ -2013,16 +1943,15 @@ export default {
 }
 
 .hint {
-  font-size: small;
+  color: $grey2;
+  font-size: smaller;
 }
 
 .role_heading {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 16px;
-  line-height: 11px;
-  letter-spacing: 0.01em;
+  font-size: 0.8rem;
   color: $primary;
 }
 
@@ -2030,16 +1959,14 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 12.5px;
-  line-height: 11px;
-  letter-spacing: 0.01em;
+  font-size: 0.7rem;
   color: $grey8;
 }
 
 .role_update_date {
   font-weight: 500;
+  font-size: 0.6rem;
 }
-
 .add_role_title {
   color: $primary;
   font-family: "Roboto";
@@ -2083,11 +2010,11 @@ export default {
 }
 
 .contribution_item_header {
-  color: $dark;
+  color: $primary;
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 16px;
+  font-size: 0.9rem;
 }
 
 .status_decline_not_completed {
@@ -2107,7 +2034,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 15px;
+  font-size: 0.8rem;
 }
 
 .confirm_payment_title {
@@ -2115,9 +2042,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 18px;
-  align-items: center;
-  text-align: center;
+  font-size: 0.8rem;
 }
 
 .view_details {
@@ -2130,5 +2055,51 @@ export default {
   width: 5rem;
   padding-top: 0.1rem;
   padding-bottom: 0.1rem;
+}
+
+.profile_icon {
+  font-size: 1.1rem;
+}
+
+.label {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 0.7rem;
+  color: $grey5;
+}
+
+.value {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 0.8rem;
+  color: $dark;
+}
+
+.registration_status_msg {
+  font-size: 0.8rem;
+}
+
+.table_value {
+  font-size: 0.7rem;
+  font-weight: 500;
+}
+
+.warning_msg {
+  font-size: 0.9rem;
+  color: $primary;
+}
+
+.record_value {
+  font-size: 0.8rem;
+}
+
+.record_label {
+  font-size: 0.8rem;
+}
+
+.eye_icon {
+  font-size: 0.7rem;
 }
 </style>

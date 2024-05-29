@@ -33,11 +33,11 @@
             class="q-gutter-md"
             :class="$q.platform.is.mobile ? 'q-pl-sm' : ''"
           >
-            <div class="text-subtitle2 text-left text-primary q-pt-xs">
+            <div class="text-subtitle2 text-left text-primary q-py-xs">
               {{ $t("app.personalInformationLabel") }}
             </div>
             <small class="hint"
-              >{{ $t("app.warningField") }}<span class="text-red">*</span
+              >{{ $t("app.warningField") }}<span class="text-red">* </span
               >{{ $t("app.fields") }}</small
             >
             <div>
@@ -45,7 +45,13 @@
                 >{{ $t("app.nameLabel") }}
                 <span class="text-red">*</span></label
               >
-              <q-input v-model="user.name" outlined dense type="text" />
+              <q-input
+                v-model="user.name"
+                outlined
+                dense
+                type="text"
+                hide-bottom-space
+              />
             </div>
             <div>
               <label for="credential" class="form_field"
@@ -56,6 +62,7 @@
                 outlined
                 dense
                 :options="gender_options"
+                hide-bottom-space
               />
             </div>
             <div>
@@ -63,7 +70,13 @@
                 >{{ $t("app.emailLabel") }}
                 <span class="text-red">*</span></label
               >
-              <q-input v-model="user.email" outlined dense type="email" />
+              <q-input
+                v-model="user.email"
+                outlined
+                dense
+                type="email"
+                hide-bottom-space
+              />
             </div>
             <div>
               <label for="credential" class="form_field"
@@ -75,6 +88,7 @@
                 defaultCountry="cm"
                 mode="international"
                 class="q-pa-xs"
+                hide-bottom-space
               ></vue-tel-input>
             </div>
             <div>
@@ -82,14 +96,26 @@
                 >{{ $t("app.addressLabel") }}
                 <span class="text-red">*</span></label
               >
-              <q-input v-model="user.address" outlined dense type="text" />
+              <q-input
+                v-model="user.address"
+                outlined
+                dense
+                type="text"
+                hide-bottom-space
+              />
             </div>
             <div>
               <label for="credential" class="form_field"
                 >{{ $t("app.occupation") }}
                 <span class="text-red">*</span></label
               >
-              <q-input v-model="user.occupation" outlined dense type="text" />
+              <q-input
+                v-model="user.occupation"
+                outlined
+                dense
+                type="text"
+                hide-bottom-space
+              />
             </div>
             <div
               :class="
@@ -395,21 +421,16 @@ export default {
 
 .hint {
   color: $grey2;
-  font-size: small;
+  font-size: smaller;
 }
 
 .form_field {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 12px;
+  font-size: 0.7rem;
   align-items: center;
-  letter-spacing: 0.01em;
-  color: $grey2;
-}
-
-.or_option {
-  font-weight: bolder;
+  color: $grey5;
 }
 
 .help_text {
@@ -418,8 +439,15 @@ export default {
   font-style: normal;
   font-weight: 500;
   font-size: 12px;
-  text-align: center;
+}
+
+.text-subtitle2 {
+  color: $grey2;
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 0.8rem;
   align-items: center;
-  letter-spacing: 0.01em;
+  text-align: center;
 }
 </style>

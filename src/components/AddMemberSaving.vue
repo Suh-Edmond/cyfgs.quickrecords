@@ -1,5 +1,5 @@
 <template>
-  <div class="q-mx-md" >
+  <div class="q-mx-md">
     <q-banner
       inline-actions
       rounded
@@ -7,21 +7,21 @@
       dense
       v-if="onMemberSavingExist"
     >
-      {{ $t("app.cantUpdateSavingMsg") }}
-      <span class="text-lowercase">{{
+      <span class="registration_text">{{ $t("app.cantUpdateSavingMsg") }}</span>
+      <span class="text-lowercase registration_text">{{
         getUpdateMemberSaving.approve
       }}</span>
       <template v-slot:action>
         <q-btn flat icon="close" size="sm" />
       </template>
     </q-banner>
-    <div class="q-mt-md">
-      <label class="text-muted  instruction_info"
+    <div class="q-mt-sm">
+      <label class="text-muted instruction_info"
         >{{ $t("app.warningField") }}<span class="text-red">*</span>
         {{ $t("app.fields") }}</label
       >
     </div>
-    <q-form @submit="onAddSaving" class="q-gutter-sm  q-mt-md">
+    <q-form @submit="onAddSaving" class="q-gutter-sm q-mt-sm">
       <div>
         <label for="name" class="form_field"
           >{{ $t("app.memberName") }}<span class="text-red">*</span>
@@ -76,18 +76,23 @@
         />
       </div>
       <div
-        :class="$q.platform.is.desktop ? 'flex q-mt-md justify-end' : ' q-mt-md q-mb-xl'"
+        :class="
+          $q.platform.is.desktop
+            ? 'flex q-mt-md justify-end'
+            : ' q-mt-md q-mb-xl'
+        "
       >
-      <q-btn
-                class="form_button q-mr-lg"
-                :label="$t('app.reset')"
-                :color="'primary'"
-                no-caps
-                outline
-                @click="resetForm"
-                v-if="$q.platform.is.desktop"
-              >
-              </q-btn>
+        <q-btn
+          class="form_button q-mr-lg"
+          :label="$t('app.reset')"
+          :color="'primary'"
+          no-caps
+          outline
+          @click="resetForm"
+          v-if="$q.platform.is.desktop"
+          :disable="onMemberSavingExist"
+        >
+        </q-btn>
         <ButtonVue
           class="form_button"
           :label="$t('app.saveBtnLabel')"
@@ -138,7 +143,11 @@ export default {
   },
   computed: {
     validateForm() {
-      return this.saving.user_id == null || this.saving.amount_deposited == 0 || this.onMemberSavingExist;
+      return (
+        this.saving.user_id == null ||
+        this.saving.amount_deposited == 0 ||
+        this.onMemberSavingExist
+      );
     },
     isMemberExist() {
       return (
@@ -155,7 +164,10 @@ export default {
       return this.$store.getters.getUpdatedMemberSaving;
     },
     onMemberSavingExist() {
-      return this.$store.getters.getUpdatedMemberSaving !== null && this.$store.getters.getUpdatedMemberSaving.approve !== "PENDING";
+      return (
+        this.$store.getters.getUpdatedMemberSaving !== null &&
+        this.$store.getters.getUpdatedMemberSaving.approve !== "PENDING"
+      );
     },
   },
 
@@ -318,14 +330,17 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 12px;
+  font-size: 0.7rem;
   align-items: center;
-  letter-spacing: 0.01em;
-  color: $grey2;
+  color: $grey5;
 }
 
 .instruction_info {
   color: $grey2;
-  font-size: small;
+  font-size: smaller;
+}
+
+.registration_text {
+  font-size: 0.7rem;
 }
 </style>

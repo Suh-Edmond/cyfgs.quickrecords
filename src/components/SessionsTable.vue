@@ -34,7 +34,7 @@
         </template>
         <template v-slot:body="props">
           <q-tr :props="props">
-            <q-td key="year" :props="props">
+            <q-td key="year" :props="props" class="table_value">
               {{ props.row.year }}
             </q-td>
             <q-td
@@ -45,13 +45,14 @@
                   ? 'status_active'
                   : 'status_in_active'
               "
+              class="table_value"
             >
               {{ formatConstants(props.row.status) }}
             </q-td>
-            <q-td key="updated_by" :props="props">
+            <q-td key="updated_by" :props="props" class="table_value">
               {{ props.row.updated_by }}
             </q-td>
-            <q-td key="created_at" :props="props">
+            <q-td key="created_at" :props="props" class="table_value">
               {{ props.row.created_at }}
             </q-td>
           </q-tr>
@@ -68,9 +69,9 @@
     <q-dialog v-model="show_add_session">
       <q-card
         :style="$q.platform.is.mobile ? 'min-width: 350px' : 'min-width: 450px'"
-        class="q-px-md q-pt-sm q-pb-sm"
+        class="q-pa-sm"
       >
-        <q-card-section class="row items-center q-pb-lg">
+        <q-card-section class="row">
           <div class="text-h6 add_year" v-if="session.id == null">
             {{ $t("app.settingsAddSessionLabel") }}
           </div>
@@ -78,7 +79,15 @@
             {{ $t("app.updateSession") }}
           </div>
           <q-space />
-          <q-btn icon="close" flat round dense v-close-popup  @click="closeAddSessionDialog" />
+          <q-btn
+            icon="close"
+            flat
+            round
+            dense
+            v-close-popup
+            @click="closeAddSessionDialog"
+            size="sm"
+          />
         </q-card-section>
 
         <q-card-section class="q-pt-none">
@@ -139,8 +148,13 @@
               />
             </div>
             <div class="col-md-10">
-              <label class="text-left warning_msg"> {{$t('app.sessionWarningMsg')}} <b>{{ session.year }}</b></label><br/>
-              <label class="text-grey text-weight-medium"  >{{ $t('app.setSessionWarnimngMsg') }}?</label>
+              <label class="text-left warning_msg">
+                {{ $t("app.sessionWarningMsg") }}
+                <b>{{ session.year }}</b></label
+              ><br />
+              <label class="text-grey text-weight-medium"
+                >{{ $t("app.setSessionWarnimngMsg") }}?</label
+              >
             </div>
           </div>
         </q-card-section>
@@ -170,7 +184,7 @@ import ButtonVue from "./Button.vue";
 import SessionStatusVue from "./Constants/SessionStatus.vue";
 import HelperMixin from "src/mixins/HelperMixin.vue";
 export default {
-  mixins:[HelperMixin],
+  mixins: [HelperMixin],
   props: {
     data: {
       type: Array,
@@ -199,7 +213,7 @@ export default {
       },
       is_fetching: false,
       session_statuses: [SessionStatusVue.ACTIVE, SessionStatusVue.IN_ACTIVE],
-      show_warning:false,
+      show_warning: false,
     };
   },
   methods: {
@@ -212,10 +226,10 @@ export default {
 
     onSetSession() {
       this.show_add_session = false;
-     return this.show_warning = !this.show_warning;
+      return (this.show_warning = !this.show_warning);
     },
 
-    saveSession(){
+    saveSession() {
       let payload = {
         url: `/api/protected/sessions`,
         data: this.session,
@@ -251,7 +265,7 @@ export default {
       this.session.year = null;
       this.session.status = SessionStatusVue.ACTIVE;
       this.session.id = null;
-    }
+    },
   },
   components: {
     ButtonVue,
@@ -265,13 +279,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  line-height: 24px;
   font-size: medium;
-  letter-spacing: 0.005em;
-}
-
-.alert {
-  color: $grey5;
 }
 
 .title {
@@ -279,20 +287,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 14px;
-  line-height: 24px;
-  letter-spacing: 0.005em;
-}
-
-.setting_title {
-  color: $primary;
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 24px;
-  text-align: left;
-  letter-spacing: 0.005em;
+  font-size: 0.8rem;
 }
 
 .warning_msg {
@@ -302,62 +297,6 @@ export default {
   font-size: 16px;
   line-height: 24px;
   text-align: left;
-}
-
-.active_item {
-  background-color: $primary2;
-  color: $white1;
-}
-
-.text_header_active {
-  color: $white1;
-  font-weight: 500;
-  font-family: "Roboto";
-  font-style: normal;
-  font-size: 14px;
-  line-height: 24px;
-}
-
-.text_header_in_active {
-  color: $dark;
-  font-weight: normal;
-  font-family: "Roboto";
-  font-style: normal;
-  font-size: 14px;
-  line-height: 24px;
-}
-
-.text_in_active {
-  color: $grey2;
-}
-
-.text_active {
-  color: $white1;
-}
-
-.icon_color_active {
-  color: $white1;
-}
-
-.icon_color_in_active {
-  color: $grey2;
-}
-
-.icon_color_general {
-  color: $grey2;
-}
-
-.text_header_general {
-  font-weight: normal;
-  color: $dark;
-  font-family: "Roboto";
-  font-style: normal;
-  font-size: 14px;
-  line-height: 24px;
-}
-
-.caption_text_general {
-  color: $grey2;
 }
 
 .edit_fee {
@@ -381,28 +320,13 @@ export default {
 .form_field {
   font-family: "Roboto";
   font-style: normal;
-  font-weight: bold;
-  align-items: center;
-  letter-spacing: 0.01em;
-}
-
-.message {
-  font-size: 16px;
-}
-
-.form_field {
-  font-family: "Roboto";
-  font-style: normal;
   font-weight: 500;
-  font-size: 11px;
+  font-size: 0.7rem;
   align-items: center;
-  letter-spacing: 0.01em;
-  color: $grey2;
+  color: $grey5;
 }
-
-.warning_caption {
-  color: $orange;
+.table_value {
+  font-size: 0.7rem;
   font-weight: 500;
-  font-size: 13px;
 }
 </style>

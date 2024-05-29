@@ -16,17 +16,17 @@
     >
       <template v-slot:body="props">
         <q-tr :props="props">
-          <q-td key="supporter" :props="props">
+          <q-td key="supporter" :props="props" class="table_value">
             {{ props.row.supporter }}
           </q-td>
-          <q-td key="amount_deposited" :props="props">
+          <q-td key="amount_deposited" :props="props" class="table_value">
             {{ Number(props.row.amount_deposited).toLocaleString() }}
           </q-td>
           <q-td
             key="approve"
             :props="props"
             v-if="props.row.approve == 'PENDING'"
-            class="text-info"
+            class="text-info table_value"
           >
             {{ props.row.approve }}
           </q-td>
@@ -34,7 +34,7 @@
             key="approve"
             :props="props"
             v-if="props.row.approve == 'APPROVED'"
-            class="registered"
+            class="registered table_value"
           >
             {{ props.row.approve }}
           </q-td>
@@ -42,14 +42,35 @@
             key="approve"
             :props="props"
             v-if="props.row.approve == 'DECLINED'"
-            class="not_registered"
+            class="not_registered table_value"
           >
             {{ props.row.approve }}
           </q-td>
 
           <q-td key="action" :props="props">
+            <!-- buttons for approve and decline row data -->
+            <q-btn
+              class="approve_btn"
+              dense
+              :label="$t('app.approve')"
+              no-caps
+              unelevated
+              @click="onApprovedRecord(props.row, 'Approve')"
+              v-if="canValidateTransaction() && props.row.approve == 'PENDING'"
+            />
+
+            <q-btn
+              class="decline_btn q-mx-xl"
+              :label="$t('app.decline')"
+              no-caps
+              dense
+              unelevated
+              @click="onDeclineRecord(props.row, 'Decline')"
+              v-if="canValidateTransaction() && props.row.approve == 'PENDING'"
+            />
+
             <!-- button to handle edit, view and delete of row data  q-px-sm -->
-            <q-btn flat round v-if="!checkTreasurerRole()">
+            <q-btn flat round v-if="!checkTreasurerRoleOnly()">
               <q-icon
                 name="menu"
                 size="xs"
@@ -77,8 +98,8 @@
                       </q-item-section>
                     </q-item>
 
-                     <!-- edit support -->
-                     <q-item
+                    <!-- edit support -->
+                    <q-item
                       clickable
                       v-close-popup
                       @click="onEditSupport(props.row)"
@@ -107,7 +128,7 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="text-red">{{
+                        <q-item-label class="text-red delete_text">{{
                           $t("app.delete")
                         }}</q-item-label>
                       </q-item-section>
@@ -117,37 +138,18 @@
               </q-icon>
             </q-btn>
 
-            <!-- buttons for approve and decline row data -->
-            <q-btn
-              class="approve_btn"
-              dense
-              :label="$t('app.approve')"
-              no-caps
-              unelevated
-              @click="onApprovedRecord(props.row, 'Approve')"
-              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
-            />
-
-            <q-btn
-              class="decline_btn q-mx-xl"
-              :label="$t('app.decline')"
-              no-caps
-              dense
-              unelevated
-              @click="onDeclineRecord(props.row, 'Decline')"
-              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
-            />
             <q-btn
               unelevated
               no-caps
               dense
+              :style="$q.platform.is.mobile ? 'width:100px' : 'width:100px'"
               color="primary"
               class="view_income"
               :label="$t('app.view')"
               @click="onViewSupport(props.row)"
-              v-if="checkTreasurerRole()"
+              v-if="checkTreasurerRoleOnly()"
             >
-              <q-icon name="visibility" size="xs" class="q-pl-md"></q-icon>
+              <q-icon name="visibility" class="q-pl-md eye_icon"></q-icon>
             </q-btn>
           </q-td>
         </q-tr>
@@ -156,7 +158,11 @@
       <!-- slot for table headings -->
       <template v-slot:top-left>
         <div class="text-h6 title" v-if="title !== ''">
-          {{ title }},  <span> {{ $t("app.total") }} : {{ Number(total).toLocaleString() }} XAF</span>
+          {{ title }},
+          <span>
+            {{ $t("app.total") }} :
+            {{ Number(total).toLocaleString() }} XAF</span
+          >
         </div>
       </template>
 
@@ -168,11 +174,9 @@
           v-model="filter"
           :placeholder="$t('app.tableSearch')"
           :class="
-            $q.platform.is.mobile
-              ? 'row text-h6-sm'
-              : 'text-h6-sm q-mb-lg q-mt-lg full-width'
+            $q.platform.is.mobile ? 'row text-h6-sm' : 'text-h6-sm full-width'
           "
-          :style="$q.platform.is.mobile?'width:88vw':''"
+          :style="$q.platform.is.mobile ? 'width:88vw' : ''"
         >
           <template v-slot:append>
             <q-icon name="search" />
@@ -187,20 +191,18 @@
 
     <!-- confirmation dialog for delete -->
     <q-dialog v-model="dialog" v-if="dialog">
-      <q-card>
-        <q-card-section class="q-pa-lg">
-          <div class="q-mb-md">
-            <label class="text-dark message">{{ message }}</label
+      <q-card class="q-pa-sm">
+        <q-card-section>
+          <div class="row">
+            <label class="text-dark message text-primary">{{ message }}</label
             ><br />
-            <small class="warning_caption">{{
-              $t("app.actionUndoneMsg")
-            }}</small>
           </div>
-          <div class="text-weight-bold text-left text-red">
+          <label class="warning_caption">{{ $t("app.actionUndoneMsg") }}</label>
+          <div class="text-red q-mt-md record_label">
             {{ $t("app.sponsor") }}:
             <span class="q-pl-md">{{ deleted_row.supporter }}</span>
           </div>
-          <div class="text-weight-bold text-left text-red">
+          <div class="text-red record_value">
             {{ $t("app.amount") }}:
             <span class="q-pl-md"
               >{{
@@ -220,6 +222,7 @@
             class="dialog_button"
             v-close-popup
             no-caps
+            size="md"
           ></q-btn>
           <q-btn
             :label="$t('app.delete')"
@@ -231,6 +234,7 @@
             no-caps
             v-close-popup
             @click="deleteRow(deleted_row)"
+            size="md"
           ></q-btn>
         </q-card-actions>
       </q-card>
@@ -238,7 +242,7 @@
 
     <!-- confirmation dialog for approve and decline row data -->
     <q-dialog v-model="show_approve_dialog" v-if="show_approve_dialog">
-      <q-card class="approve_card">
+      <q-card class="q-pa-sm">
         <q-card-section>
           <div class="row">
             <div class="col-md-12">
@@ -291,10 +295,11 @@
 </template>
 <script>
 import { LocalStorage } from "quasar";
+import HelperMixin from "src/mixins/HelperMixin.vue";
 import SponsorshipMixin from "src/mixins/SponsorshipMixin.vue";
 
 export default {
-  mixins: [SponsorshipMixin],
+  mixins: [SponsorshipMixin, HelperMixin],
   props: {
     columns: {
       type: Array,
@@ -406,13 +411,6 @@ export default {
         this.$t("app.sponsorshipPart") + `${row.payment_item.name} ?`;
     },
 
-    checkTreasurerRole() {
-      const treasurer_role = LocalStorage.getItem("data").user_data.roles.find(
-        (role) => role.name == "TREASURER"
-      );
-      return treasurer_role != undefined;
-    },
-
     deleteRow(data) {
       let payload = {
         url: `/api/protected/sponsorships/${data.id}`,
@@ -484,9 +482,11 @@ export default {
 
 <style lang="scss" scoped>
 .title {
-  font-size: 15px;
+  color: $primary;
+  font-family: "Roboto";
+  font-style: normal;
   font-weight: 500;
-  color: $grey8;
+  font-size: 0.9rem;
 }
 
 .menu_icon {
@@ -495,6 +495,7 @@ export default {
 
 .edit {
   color: $primary;
+  font-size: 0.8rem;
 }
 
 .dialog_button {
@@ -506,28 +507,25 @@ export default {
 .approve_btn {
   background-color: $secondary;
   color: white;
-  width: 5.5rem;
-}
-
-.approve_card {
-  width: 24rem;
-  // padding: 0.7rem;
+  margin-right: 2.5rem;
+  width: 4.2rem;
+  font-size: 0.8rem;
 }
 
 .decline_btn {
   background-color: $orange;
   color: white;
-  width: 5.5rem;
+  margin-right: 2.5rem;
+  font-size: 0.8rem;
+  width: 4.2rem;
 }
 
 .message {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 15px;
-  align-items: center;
-  letter-spacing: 0.01em;
-  color: $grey2;
+  font-size: 0.9rem;
+  color: $primary;
 }
 
 .approve {
@@ -538,31 +536,19 @@ export default {
   color: $orange;
 }
 
-.total {
-  font-size: 15px;
-}
-
-.total_given {
-  padding-left: 3rem;
-  font-size: 13px;
-}
-
 .warning_caption {
   color: $grey2;
-  font-weight: 500;
-  font-size: 13px;
+  font-weight: 400;
+  font-size: 0.7rem;
 }
 
 .view_income {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 13px;
-  line-height: 25px;
-  letter-spacing: 0.01em;
+  font-size: 12px;
+  align-items: center;
   text-transform: capitalize;
-  color: $primary;
-  width: 5.5rem;
 }
 
 .not_registered {
@@ -571,5 +557,28 @@ export default {
 
 .registered {
   color: $secondary;
+}
+
+.table_value {
+  font-size: 0.7rem;
+  font-weight: 500;
+}
+
+.delete_text {
+  font-size: 0.8rem;
+}
+
+.record_value {
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.record_label {
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.eye_icon {
+  font-size: 0.8rem;
 }
 </style>

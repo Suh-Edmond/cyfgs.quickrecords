@@ -9,7 +9,7 @@
           </label>
         </div>
 
-        <div class="detail-value wrap">
+        <div>
           <label class="value">
             {{ getSelectedContribution.payment_item_name }}
           </label>
@@ -23,7 +23,7 @@
             >{{ $t("app.totalAmountPayable") }}:
           </label>
         </div>
-        <div class="detail-value wrap">
+        <div>
           <label class="value">
             {{
               Number(
@@ -37,12 +37,13 @@
       <div class="flex justify-between q-pb-md">
         <div>
           <label for="name" class="label"
-            ><span> <q-icon name="priority_high" size="xs" class="q-pr-sm" /> </span
+            ><span>
+              <q-icon name="priority_high" size="xs" class="q-pr-sm" /> </span
             >{{ $t("app.compulsoryLabel") }}:
           </label>
         </div>
 
-        <div class="detail-value wrap">
+        <div>
           <label
             class="value"
             v-if="getSelectedContribution.payment_item_complusory"
@@ -65,9 +66,11 @@
             >{{ $t("app.frequency") }}:
           </label>
         </div>
-        <div class="detail-value wrap">
+        <div>
           <label class="value">
-            {{ formatConstants(getSelectedContribution.payment_item_frequency)}}
+            {{
+              formatConstants(getSelectedContribution.payment_item_frequency)
+            }}
           </label>
         </div>
       </div>
@@ -79,7 +82,7 @@
           </label>
         </div>
 
-        <div class="detail-value wrap">
+        <div>
           <label class="value">
             {{ getSelectedContribution.user_name }}
           </label>
@@ -94,7 +97,7 @@
           </label>
         </div>
 
-        <div class="detail-value wrap">
+        <div>
           <label class="value">
             {{
               Number(getSelectedContribution.amount_deposited).toLocaleString()
@@ -112,7 +115,7 @@
           </label>
         </div>
 
-        <div class="detail-value wrap">
+        <div>
           <label class="value">
             {{ Number(getSelectedContribution.balance).toLocaleString() }}
             XAF
@@ -122,20 +125,27 @@
       <div class="flex justify-between q-pb-md">
         <div>
           <label for="name" class="label"
-            ><span>
-              <q-icon name="schedule" size="xs" class="q-pr-sm" /> </span
+            ><span> <q-icon name="schedule" size="xs" class="q-pr-sm" /> </span
             >{{ $t("app.quarterLabel") }}:
           </label>
         </div>
-        <div class="detail-value wrap">
-          <label class="value" v-if="getSelectedContribution.payment_item_frequency == 'QUARTERLY'">
+        <div>
+          <label
+            class="value"
+            v-if="getSelectedContribution.payment_item_frequency == 'QUARTERLY'"
+          >
             {{ getSelectedContribution.quarterly_name }}
           </label>
-          <label class="value" v-if="getSelectedContribution.payment_item_frequency == 'MONTHLY'">
+          <label
+            class="value"
+            v-if="getSelectedContribution.payment_item_frequency == 'MONTHLY'"
+          >
             {{ getSelectedContribution.month_name }}
           </label>
           <label class="value" v-else>
-            {{ formatConstants(getSelectedContribution.payment_item_frequency) }}
+            {{
+              formatConstants(getSelectedContribution.payment_item_frequency)
+            }}
           </label>
         </div>
       </div>
@@ -146,7 +156,7 @@
             >{{ $t("app.paymentDate") }}:
           </label>
         </div>
-        <div class="detail-value wrap">
+        <div>
           <label class="value">
             {{ getFormatedCreatedDate }}
           </label>
@@ -161,7 +171,7 @@
           </label>
         </div>
 
-        <div class="detail-value wrap">
+        <div>
           <label
             class="value text-info"
             v-show="getSelectedContribution.approve == 'PENDING'"
@@ -191,7 +201,7 @@
           </label>
         </div>
 
-        <div class="detail-value wrap">
+        <div>
           <label
             class="value text-warning"
             v-show="getSelectedContribution.status == 'INCOMPLETE'"
@@ -214,7 +224,7 @@
           </label>
         </div>
 
-        <div class="detail-value wrap">
+        <div>
           <label class="value">
             {{ getSelectedContribution.code }}
           </label>
@@ -227,13 +237,13 @@
             >{{ $t("app.createdBy") }}:
           </label>
         </div>
-        <div class="detail-value wrap">
+        <div>
           <label class="value">
             {{ getSelectedContribution.updated_by }}
           </label>
         </div>
       </div>
-      <div class="flex justify-start q-pb-md">
+      <div class="flex justify-between q-pb-md">
         <div>
           <label for="name" class="label"
             ><span>
@@ -241,9 +251,13 @@
             >{{ $t("app.comment") }}:
           </label>
         </div>
+        <div
+          class="value detail-value wrap"
+          v-show="getSelectedContribution.comment !== null"
+        >
+          {{ getSelectedContribution.comment }}
+        </div>
       </div>
-      <div class="value_comment" v-show="getSelectedContribution.comment !== null">{{ getSelectedContribution.comment }}</div>
-      <div class="value_comment" v-show="getSelectedContribution.comment === null">{{ $t('app.none') }}</div>
     </div>
   </div>
 </template>
@@ -328,28 +342,18 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 400;
-  font-size: 14px;
-  line-height: 11px;
-  letter-spacing: 0.01em;
+  font-size: 0.7rem;
   color: $grey5;
 }
+
 .value {
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 600;
-  font-size: 14px;
-  letter-spacing: 0.01em;
-  color: $grey8;}
+  font-weight: 500;
+  font-size: 0.7rem;
+  color: $grey8;
+}
 .detail-value {
   max-width: 250px;
-}
-.value_comment {
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 14px;
-  letter-spacing: 0.01em;
-  color: $dark;
-  margin-left: 1.8rem;
 }
 </style>

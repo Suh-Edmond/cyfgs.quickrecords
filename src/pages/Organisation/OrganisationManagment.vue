@@ -254,110 +254,111 @@
       </div>
     </div>
     <div v-if="exist_organisation">
-      <div class="row flex flex-center">
-        <div class="col-8 col-sm-12 col-xs-12 col-md-8">
-          <q-card class="card text-dark" flat>
-            <q-card-section class="flex flex-center">
-              <q-avatar
-                size="150px"
-                font-size="52px"
-                v-if="organisation.logo != null"
+      <div class="flex justify-center">
+        <q-card class="card text-dark" flat>
+          <q-card-section class="flex flex-center">
+            <q-avatar
+              size="150px"
+              font-size="52px"
+              v-if="organisation.logo != null"
+            >
+              <img :src="getOrganisationLogo" alt="" width="160px" />
+            </q-avatar>
+            <q-avatar
+              size="150px"
+              font-size="52px"
+              color="grey-3"
+              v-if="organisation.logo == null"
+            >
+            </q-avatar>
+            <div>
+              <input
+                type="file"
+                accept="image/x-png,image/jpg,image/jpeg"
+                style="display: none"
+                id="logo"
+                @change="onFileChanged"
+              />
+              <q-icon
+                name="add_a_photo"
+                size="sm"
+                class="camara"
+                @click="openFileUpload"
               >
-                <img :src="getOrganisationLogo" alt="" width="160px" />
-              </q-avatar>
-              <q-avatar
-                size="150px"
-                font-size="52px"
-                color="grey-3"
-                v-if="organisation.logo == null"
-              >
-              </q-avatar>
+                <q-tooltip>{{ $t("app.uploadLogo") }}</q-tooltip>
+              </q-icon>
+            </div>
+          </q-card-section>
+          <q-card-section>
+            <div class="flex">
+              <div class="text-h6 title">
+                {{ $t("app.organisationMgtHeading") }}
+              </div>
+              <q-space />
               <div>
-                <input
-                  type="file"
-                  accept="image/x-png,image/jpg,image/jpeg"
-                  style="display: none"
-                  id="logo"
-                  @change="onFileChanged"
-                />
-                <q-icon
-                  name="add_a_photo"
+                <q-btn
+                  dense
+                  flat
+                  color="primary"
+                  icon="edit"
+                  v-close-popup
+                  @click="editOrganisation()"
                   size="sm"
-                  class="camara"
-                  @click="openFileUpload"
                 >
-                  <q-tooltip>{{ $t("app.uploadLogo") }}</q-tooltip>
-                </q-icon>
+                  <q-tooltip>{{
+                    $t("app.updateOrganisationHeading")
+                  }}</q-tooltip>
+                </q-btn>
               </div>
-            </q-card-section>
-            <q-card-section>
-              <div class="flex">
-                <div class="text-h6 title">
-                  {{ $t("app.organisationMgtHeading") }}
-                </div>
-                <q-space />
-                <div>
-                  <q-btn
-                    dense
-                    flat
-                    color="primary"
-                    icon="edit"
-                    v-close-popup
-                    @click="editOrganisation()"
-                    size="sm"
-                  >
-                  </q-btn>
-                </div>
-              </div>
-            </q-card-section>
-            <q-card-section class="q-pt-none">
-              <p>
-                <q-icon name="diversity_3" size="sm"></q-icon>
-                <span class="q-pl-sm text-body1 text-weight-medium">{{
-                  organisation.name
-                }}</span>
-              </p>
-              <p v-if="organisation.salutation !== null">
-                <q-icon name="people" size="sm"></q-icon>
-                <span class="q-pl-sm text-body1 text-weight-medium">{{
-                  organisation.salutation
-                }}</span>
-              </p>
-              <p>
-                <q-icon name="email" size="sm"></q-icon>
-                <span class="q-pl-sm text-body1 text-weight-medium">{{
-                  organisation.email
-                }}</span>
-              </p>
-              <p>
-                <q-icon name="phone" size="sm"></q-icon>
-                <span class="q-pl-sm text-body1 text-weight-medium"
-                  >{{ organisation.telephone }}
-                </span>
-                <span
-                  v-if="organisation.telephone2 !== ''"
-                  class="q-pl-sm text-body1 text-weight-medium"
-                  >/ {{ organisation.telephone2 }}</span
-                >
-              </p>
-              <p>
-                <q-icon name="location_on" size="sm"></q-icon>
-                <span class="q-pl-sm text-body1 text-weight-medium"
-                  >{{ organisation.region }}, {{ organisation.address }},
-                  <span v-if="organisation.box_number !== null">{{
-                    organisation.box_number
-                  }}</span></span
-                >
-              </p>
-              <p>
-                <q-icon name="description" size="sm"></q-icon>
-                <span class="q-mx-md q-pl-sm text-body1 text-weight-medium"
-                  >{{ organisation.description }}
-                </span>
-              </p>
-            </q-card-section>
-          </q-card>
-        </div>
+            </div>
+          </q-card-section>
+          <q-card-section class="q-pt-none">
+            <p>
+              <q-icon name="diversity_3" size="xs"></q-icon>
+              <span class="q-pl-sm text-body1 text-weight-medium">{{
+                organisation.name
+              }}</span>
+            </p>
+            <p v-if="organisation.salutation !== null">
+              <q-icon name="people" size="xs"></q-icon>
+              <span class="q-pl-sm text-body1 text-weight-medium">{{
+                organisation.salutation
+              }}</span>
+            </p>
+            <p>
+              <q-icon name="email" size="xs"></q-icon>
+              <span class="q-pl-sm text-body1 text-weight-medium">{{
+                organisation.email
+              }}</span>
+            </p>
+            <p>
+              <q-icon name="phone" size="xs"></q-icon>
+              <span class="q-pl-sm text-body1 text-weight-medium"
+                >{{ organisation.telephone }}
+              </span>
+              <span
+                v-if="organisation.telephone2 !== ''"
+                class="q-pl-sm text-body1 text-weight-medium"
+                >/ {{ organisation.telephone2 }}</span
+              >
+            </p>
+            <p>
+              <q-icon name="location_on" size="xs"></q-icon>
+              <span class="q-pl-sm text-body1 text-weight-medium"
+                >{{ organisation.region }}, {{ organisation.address }},
+                <span v-if="organisation.box_number !== null">{{
+                  organisation.box_number
+                }}</span></span
+              >
+            </p>
+            <p>
+              <q-icon name="description" size="xs"></q-icon>
+              <span class="q-mx-md q-pl-sm text-body1 text-weight-medium"
+                >{{ organisation.description }}
+              </span>
+            </p>
+          </q-card-section>
+        </q-card>
       </div>
     </div>
   </q-page>
@@ -492,15 +493,8 @@ export default {
         },
       };
       this.$store.dispatch("getRequest", payload).then((res) => {
-        if (res !== undefined) {
+        if (res.success) {
           this.setOrganisationInfo();
-        } else {
-          Notify.create({
-            type: "info",
-            message:
-              "Organisation not yet created! Please fill the fields to add organisation",
-            position: !Platform.is.mobile ? "top-right" : "bottom",
-          });
         }
       });
     },
@@ -592,10 +586,10 @@ export default {
             this.organisation.logo = response.data.data;
             this.$store.dispatch("setOrganisation", this.organisation);
             Notify.create({
-            type: "positive",
-            message: this.$t("app.uploadLogoSuccessMsg"),
-            position: Platform.is.mobile ? "bottom" : "top-right",
-          });
+              type: "positive",
+              message: this.$t("app.uploadLogoSuccessMsg"),
+              position: Platform.is.mobile ? "bottom" : "top-right",
+            });
           }
         })
         .finally(() => {
@@ -614,51 +608,27 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 600;
-  font-size: 18px;
-  line-height: 29px;
-  display: flex;
+  font-size: 1.1rem;
   align-items: center;
   text-align: center;
-  letter-spacing: 0.01em;
   color: $primary;
 }
 
-.label {
-  font-family: "Roboto";
-  font-style: normal;
-  line-height: 29px;
-  font-weight: 500;
-  letter-spacing: 0.01em;
-  text-transform: capitalize;
-  color: $grey2;
-  font-size: larger;
+.text-body1 {
+  font-size: 0.9rem;
 }
 
 .icon {
   color: $grey2;
 }
 
-.control {
-  margin-right: 5rem;
-}
-
 .form_field {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 12px;
+  font-size: 0.7rem;
   align-items: center;
-  letter-spacing: 0.01em;
-  color: $grey2;
-}
-
-.card {
-  border-radius: 0.8rem;
-}
-
-.more {
-  color: blue;
-  cursor: pointer;
+  color: $grey5;
 }
 
 .add_telephone {
@@ -673,7 +643,7 @@ export default {
 .camara {
   position: absolute;
   top: 70%;
-  left: 55%;
+  left: 53%;
   cursor: pointer;
   color: $grey8;
 }

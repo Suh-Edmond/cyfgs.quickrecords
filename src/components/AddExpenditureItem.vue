@@ -7,15 +7,17 @@
       dense
       v-if="existExpenditureItem"
     >
-      {{ $t("app.cantUpdatedExpenditureItemAfterApprovalMsg") }}
-      <span class="text-lowercase">{{
+      <span class="registration_text">{{
+        $t("app.cantUpdatedExpenditureItemAfterApprovalMsg")
+      }}</span>
+      <span class="text-lowercase registration_text">{{
         getUpdatedExpenditureFromState.approve
       }}</span>
       <template v-slot:action>
         <q-btn flat icon="close" size="sm" />
       </template>
     </q-banner>
-    <div class="q-mt-md">
+    <div class="q-mt-xs">
       <label class="text-muted info"
         >{{ $t("app.warningField") }} <span class="text-red">*</span>
         {{ $t("app.fields") }}</label
@@ -38,6 +40,7 @@
           use-input
           @filter="filterPaymentItems"
           :readonly="existExpenditureItem"
+          hide-bottom-space
         >
         </q-select>
       </div>
@@ -52,6 +55,7 @@
           type="text"
           class="q-mb-md"
           :readonly="existExpenditureItem"
+          hide-bottom-space
         />
       </div>
       <div>
@@ -66,6 +70,7 @@
           type="number"
           class="q-mb-md"
           :readonly="existExpenditureItem"
+          hide-bottom-space
         />
       </div>
       <div>
@@ -79,6 +84,7 @@
           type="text"
           class="q-mb-md"
           :readonly="existExpenditureItem"
+          hide-bottom-space
         />
       </div>
       <div>
@@ -91,6 +97,7 @@
           dense
           class="q-mb-md"
           :readonly="existExpenditureItem"
+          hide-bottom-space
         >
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
@@ -121,6 +128,7 @@
           autogrow
           :placeholder="$t('app.expenditureComment')"
           :readonly="existExpenditureItem"
+          hide-bottom-space
         />
       </div>
       <div
@@ -134,6 +142,7 @@
           outline
           @click="resetForm"
           v-if="$q.platform.is.desktop"
+          :disable="existExpenditureItem"
         >
         </q-btn>
         <ButtonVue
@@ -358,48 +367,9 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 12px;
+  font-size: 0.7rem;
   align-items: center;
-  letter-spacing: 0.01em;
-  color: $grey2;
-}
-
-.field {
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 400;
-  font-size: 11px;
   color: $grey5;
-}
-
-.field_value {
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 15px;
-  line-height: 27px;
-  letter-spacing: 0.005em;
-  color: $dark;
-}
-
-.item_value {
-  padding-left: 2.8rem;
-}
-
-.item_venue {
-  padding-left: 7rem;
-}
-
-.item_date {
-  padding-left: 7.8rem;
-}
-
-.item_amount {
-  padding-left: 6.4rem;
-}
-
-.item_statue {
-  padding: 7.1rem;
 }
 
 .unapproved_color {
@@ -412,6 +382,10 @@ export default {
 
 .info {
   color: $grey2;
-  font-size: small;
+  font-size: smaller;
+}
+
+.registration_text {
+  font-size: 0.7rem;
 }
 </style>

@@ -3,13 +3,13 @@
     <div>
       <!-- header for filter categories -->
       <div
-        :class="$q.screen.lg ? 'row q-pa-sm' : 'col q-gutter-sm q-px-sm'"
+        class="row q-gutter-sm q-pa-sm"
         :style="
           $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
         "
       >
         <q-select
-          class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+          class="col-12 col-md"
           v-model="year"
           outlined
           dense
@@ -33,8 +33,7 @@
           </template>
         </q-select>
         <q-select
-          class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
-          :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
+          class="col-12 col-md"
           v-model="expenditure_category_id"
           outlined
           dense
@@ -58,8 +57,7 @@
           </template>
         </q-select>
         <q-select
-          class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
-          :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
+          class="col-12 col-md"
           v-model="payment_item_id"
           outlined
           dense
@@ -82,10 +80,7 @@
             </q-item>
           </template>
         </q-select>
-        <div
-          class="col-md-3 col-lg-3 col-xs-12 col-sm-12 flex"
-          :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
-        >
+        <div class="row col-12 col-md">
           <q-btn
             :label="$t('app.filter')"
             color="primary"
@@ -94,19 +89,21 @@
             :loading="loading_filter"
             icon-right="filter_list"
             @click="filterItems(1, 7)"
-            :size="$q.platform.is.mobile ? 'sm' : 'md'"
+            class="q-my-xs"
+            size="sm"
           >
           </q-btn>
           <q-space />
           <q-btn
-            :label="$t('app.print')"
+            :label="$t('app.download')"
             :loading="loading"
             :color="'positive'"
             :disabled="validateDownload"
             no-caps
-            icon-right="print"
+            icon-right="download"
             @click="downloadExpenditureItems"
-            :size="$q.platform.is.mobile ? 'sm' : 'md'"
+            class="q-my-xs"
+            size="sm"
           ></q-btn>
         </div>
       </div>

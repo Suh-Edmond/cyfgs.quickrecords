@@ -1,17 +1,24 @@
 <template>
   <div class="q-px-sm">
     <div
-      class="row flex justify-between q-pa-sm q-mb-md"
+      class="flex justify-between q-pa-xs q-mb-md"
       :style="
         $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
       "
       v-if="show_hint"
     >
-      <div class="hint_text_color q-pt-sm">
+      <div class="hint_text_color q-pt-sm q-pl-sm">
         {{ $t("app.generateReportHint") }}
       </div>
       <div>
-        <q-btn flat round class="close_color" icon="close" @click="closeHint" />
+        <q-btn
+          flat
+          round
+          class="close_color"
+          icon="close"
+          @click="closeHint"
+          size="sm"
+        />
       </div>
     </div>
     <!-- report details available -->
@@ -68,8 +75,11 @@ import FilterComponentVue from "src/components/FilterComponent.vue";
 export default {
   mixins: [HelperMixin, CurrentYearMixinVue],
   mounted() {
-    if(this.$store.getters.getCurrentYear == null || this.$store.getters.getCurrentYear == undefined){
-        this.fetchCurrentYear()
+    if (
+      this.$store.getters.getCurrentYear == null ||
+      this.$store.getters.getCurrentYear == undefined
+    ) {
+      this.fetchCurrentYear();
     }
   },
 
@@ -131,8 +141,7 @@ export default {
     },
 
     generateActivityReport(data) {
-      this.heading =
-        this.$t("app.reportTitle") + `${data.group.label}`;
+      this.heading = this.$t("app.reportTitle") + `${data.group.label}`;
       let payload = {
         status: "none",
         url: `/api/protected/activity/${data.group.value}/generate-report?organisation_id=${this.organisation_id}`,
@@ -292,6 +301,7 @@ export default {
 
 .hint_text_color {
   color: $grey8;
+  font-size: 0.8rem;
 }
 
 .close_color {

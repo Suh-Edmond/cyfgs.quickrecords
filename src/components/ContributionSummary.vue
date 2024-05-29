@@ -1,8 +1,8 @@
 <template>
   <div>
     <q-card flat>
-      <div class="row q-mb-lg q-gutter-sm" v-if="!is_expenditures">
-        <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12 box q-pa-md">
+      <div class="row q-my-xl q-gutter-xs wrap" v-if="!is_expenditures">
+        <div class="col-12 col-md box">
           <div class="q-mb-md flex justify-between">
             <q-btn dense flat icon="trending_flat" size="sm" class="icon">
             </q-btn>
@@ -12,31 +12,22 @@
           </div>
           <div class="text-center value">
             <label class="text-bold"
-              >{{
-                formatConstants(summary.frequency)
-              }}
-              </label
-            >
+              >{{ formatConstants(summary.frequency) }}
+            </label>
           </div>
         </div>
-        <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12 box q-pa-md">
+        <div class="col-12 col-md box">
           <div class="q-mb-md flex justify-between">
-            <q-btn dense flat icon="group" size="sm" class="icon">
-            </q-btn>
+            <q-btn dense flat icon="group" size="sm" class="icon"> </q-btn>
             <label class="text-subtitle1 label">{{
               $t("app.memberSize")
             }}</label>
           </div>
           <div class="text-center value">
-            <label class="text-bold"
-              >{{
-                summary.member_size
-              }}
-              </label
-            >
+            <label class="text-bold">{{ summary.member_size }} </label>
           </div>
         </div>
-        <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12 box q-pa-md">
+        <div class="col-12 col-md box">
           <div class="q-mb-md flex justify-between">
             <q-btn dense flat icon="monetization_on" size="sm" class="icon">
             </q-btn>
@@ -45,24 +36,13 @@
               <span>
                 <q-btn color="primary" dense flat size="sm" icon="help">
                   <q-tooltip anchor="bottom end" self="bottom end">
-                    <p class="tooltipText">
-                      The Expected Contribution for a payment item is calculated
-                    by multiplying the <br/> Payment Item Amount by its Frequency and
-                    by the Number of Members associated with the payment item
-                    type.<br />
-                    <br/>
-                    For a one-time payment item with an <strong>"ALL_MEMBERS" type</strong>, the
-                    Expected Contribution is calculated as: <br />
-                    <strong>(Payment Item Amount) x 1 x (Total number of active members)</strong><br />
-                    <br/>
-                    For payment items with monthly or quarterly frequencies, the
-                    Expected Contribution is calculated as:<br />
-                    <strong>(Payment Item Amount) x (Number of Months/Quarters) x
-                    (Number of Members associated with the payment item type)</strong><br />
+                    <p class="tooltipText wrap">
+                      {{ $t("app.helpMsgExpectedContribution") }}
                     </p>
                   </q-tooltip>
-                </q-btn> </span
-            ></label>
+                </q-btn>
+              </span></label
+            >
           </div>
           <div class="text-center value">
             <label class="text-bold"
@@ -73,7 +53,7 @@
             >
           </div>
         </div>
-        <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12 box q-pa-md">
+        <div class="col-12 col-md box">
           <div class="q-mb-md flex justify-between">
             <q-btn dense flat icon="monetization_on" size="sm" class="icon">
             </q-btn>
@@ -90,7 +70,7 @@
             >
           </div>
         </div>
-        <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12 box q-pa-md">
+        <div class="col-12 col-md box">
           <div class="q-mb-md flex justify-between">
             <q-btn dense flat icon="monetization_on" size="sm" class="icon">
             </q-btn>
@@ -102,7 +82,7 @@
             >
           </div>
         </div>
-        <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12 box q-pa-md">
+        <div class="col-12 col-md box">
           <div class="q-mb-md flex justify-between">
             <q-btn dense flat icon="trending_up" size="md" class="icon">
             </q-btn>
@@ -118,7 +98,7 @@
         </div>
       </div>
       <div class="row q-mb-lg q-gutter-sm" v-if="is_expenditures">
-        <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12 box q-pa-md">
+        <div class="col-12 col-md box">
           <div class="q-mb-md flex justify-between">
             <q-btn dense flat icon="monetization_on" size="sm" class="icon">
             </q-btn>
@@ -135,7 +115,7 @@
             >
           </div>
         </div>
-        <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12 box q-pa-md">
+        <div class="col-12 col-md box">
           <div class="q-mb-md flex justify-between">
             <q-btn dense flat icon="monetization_on" size="sm" class="icon">
             </q-btn>
@@ -149,7 +129,7 @@
             >
           </div>
         </div>
-        <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12 box q-pa-md">
+        <div class="col-12 col-md box">
           <div class="q-mb-md flex justify-between">
             <q-btn dense flat icon="monetization_on" size="sm" class="icon">
             </q-btn>
@@ -163,11 +143,13 @@
             >
           </div>
         </div>
-        <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12 box q-pa-md">
+        <div class="col-12 col-md box">
           <div class="q-mb-md flex justify-between">
             <q-btn dense flat icon="monetization_on" size="sm" class="icon">
             </q-btn>
-            <label class="text-subtitle1 label">{{ $t("app.totalBalance") }}</label>
+            <label class="text-subtitle1 label">{{
+              $t("app.totalBalance")
+            }}</label>
           </div>
           <div class="text-center value">
             <label class="text-bold"
@@ -180,11 +162,10 @@
   </div>
 </template>
 
-
 <script>
-import HelperMixin from 'src/mixins/HelperMixin.vue';
+import HelperMixin from "src/mixins/HelperMixin.vue";
 export default {
-  mixins:[HelperMixin],
+  mixins: [HelperMixin],
   props: {
     summary: {
       type: Object,
@@ -202,6 +183,7 @@ export default {
 .box {
   background-color: #f6f6f6;
   border-radius: 5px;
+  padding: 0.7rem;
 }
 
 .icon {
@@ -210,14 +192,16 @@ export default {
 
 .label {
   color: $primary;
-  font-size: small;
+  font-size: 0.7rem;
+  font-weight: 500;
 }
 .value {
-  font-size: small;
+  font-size: 0.8rem;
   color: $primary;
 }
 
 .tooltipText {
-  font-size: small;
+  font-size: 0.7rem;
+  width: 25rem;
 }
 </style>

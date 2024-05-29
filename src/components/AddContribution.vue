@@ -46,6 +46,7 @@
               :label="$t('app.selectYearLabel')"
               clearable
               @input="getPaymentItems"
+              hide-bottom-space
             >
               <template v-slot:no-option>
                 <q-item>
@@ -72,6 +73,7 @@
               clearable
               @filter="filterPaymentItems"
               @input="fetchPaymentItem"
+              hide-bottom-space
             >
               <template v-slot:append v-if="start_filtering">
                 <q-spinner color="primary" size="1.2em" :thickness="3" />
@@ -93,75 +95,78 @@
             "
           >
             <div class="q-mb-md flex justify-between">
-              <label for="credential" class="form_field"
-                >{{ $t("app.nameLabel") }}:</label
-              >
+              <label for="credential" class="form_field">{{
+                $t("app.nameLabel")
+              }}</label>
               <label for="credential" class="value">{{
                 selected_payment_item.label
               }}</label>
             </div>
             <div class="q-mb-md flex justify-between">
-              <label for="credential" class="form_field"
-                >{{ $t("app.amountPayable") }}:</label
-              >
-              <label for="credential" class="value">{{
-                Number(selected_payment_item.amount).toString()
+              <label for="credential" class="form_field">{{
+                $t("app.amountPayable")
               }}</label>
+              <label for="credential" class="value"
+                >{{
+                  Number(selected_payment_item.amount).toString()
+                }}
+                XAF</label
+              >
             </div>
             <div class="q-mb-md flex justify-between">
-              <label for="credential" class="form_field"
-                >{{ $t("app.frequency") }}:</label
-              >
+              <label for="credential" class="form_field">{{
+                $t("app.frequency")
+              }}</label>
               <label for="credential" class="value">{{
                 formatConstants(selected_payment_item.frequency)
               }}</label>
             </div>
             <div class="q-mb-md flex justify-between">
-              <label for="credential" class="form_field"
-                >{{ $t("app.type") }}:</label
-              >
+              <label for="credential" class="form_field">{{
+                $t("app.type")
+              }}</label>
               <label for="credential" class="value">{{
                 formatConstants(selected_payment_item.type)
               }}</label>
             </div>
             <div
-              class="q-mb-md flex"
+              class="q-mb-md flex justify-between"
               v-if="selected_payment_item.frequency == 'MONTHLY'"
             >
-              <label for="credential" class="form_field"
-                >{{ $t("app.selectMonth") }}:</label
-              >
+              <label for="credential" class="form_field">{{
+                $t("app.monthsLabel")
+              }}</label>
               <div
-                class="q-gutter-sm q-ml-md"
+                class="q-gutter-sm"
                 v-if="selected_payment_item.payment_item_months.length > 0"
               >
                 <q-chip
-                  color="info"
+                  color="teal"
                   text-color="white"
                   v-for="ref in selected_payment_item.payment_item_months"
                   :key="ref.id"
-                  size="md"
+                  size="sm"
                   >{{ ref }}</q-chip
                 >
               </div>
             </div>
             <div
-              class="q-mb-md flex"
+              class="q-mb-md flex justify-between"
               v-if="selected_payment_item.frequency == 'QUARTERLY'"
             >
-              <label for="credential" class="form_field"
-                >{{ $t("app.quarter") }}:</label
-              >
+              <label for="credential" class="form_field">{{
+                $t("app.quarter")
+              }}</label>
               <div
-                class="q-gutter-sm q-mt-sm q-ml-md"
+                class="q-gutter-sm q-mt-sm"
                 v-if="selected_payment_item.payment_item_quarters.length > 0"
               >
                 <q-chip
-                  color="info"
+                  color="teal"
                   text-color="white"
                   v-for="ref in selected_payment_item.payment_item_quarters"
                   :key="ref.id"
-                  size="md"
+                  size="sm"
                   >{{ ref }}</q-chip
                 >
               </div>
@@ -174,6 +179,7 @@
               :label="$t('app.next')"
               no-caps
               :disable="validatePaymentItem"
+              size="sm"
               ><q-icon name="arrow_forward" size="xs" class="q-pl-sm"></q-icon
             ></q-btn>
           </div>
@@ -194,6 +200,7 @@
                 use-input
                 clearable
                 @filter="filterMembers"
+                hide-bottom-space
               >
                 <template v-slot:append v-if="start_filter_members">
                   <q-spinner color="primary" size="1.2em" :thickness="5" />
@@ -222,6 +229,7 @@
                 input-debounce="0"
                 clearable
                 @input="getTotalMonthlyContributionByPaymentItem"
+                hide-bottom-space
               >
                 <template v-slot:no-option>
                   <q-item>
@@ -245,6 +253,7 @@
                 input-debounce="0"
                 clearable
                 @input="getTotalQuarterlyContributionByPaymentItem"
+                hide-bottom-space
               >
                 <template v-slot:no-option>
                   <q-item>
@@ -265,6 +274,7 @@
                 dense
                 type="number"
                 readonly
+                hide-bottom-space
               >
               </q-input>
             </div>
@@ -278,6 +288,7 @@
                 dense
                 type="number"
                 readonly
+                hide-bottom-space
               />
             </div>
             <div class="q-mb-md">
@@ -292,6 +303,7 @@
                 type="number"
                 @input="setPaymentItemBalance"
                 :disable="has_completed_payment"
+                hide-bottom-space
               >
               </q-input>
               <label v-if="checkPaymentItemBal" class="text-red">
@@ -315,6 +327,7 @@
                 autogrow
                 :placeholder="$t('app.commentContribution')"
                 :disable="has_completed_payment"
+                hide-bottom-space
               />
             </div>
             <div
@@ -348,7 +361,7 @@
       </q-tab-panel>
       <q-tab-panel name="Use Saving">
         <div>
-          <div class="q-ml-sm q-mb-lg">
+          <div class="q-mb-md">
             <label class="text-muted info"
               >{{ $t("app.warningField") }}<span class="text-red">*</span
               >{{ $t("app.fields") }}</label
@@ -368,6 +381,7 @@
                   :label="$t('app.selectYearLabel')"
                   clearable
                   @input="getPaymentItems"
+                  hide-bottom-space
                 >
                   <template v-slot:no-option>
                     <q-item>
@@ -394,6 +408,7 @@
                   use-input
                   clearable
                   @filter="filterPaymentItems"
+                  hide-bottom-space
                 >
                   <template v-slot:append v-if="start_filtering">
                     <q-spinner color="primary" size="1.2em" :thickness="3" />
@@ -415,33 +430,33 @@
                 "
               >
                 <div class="q-mb-md flex justify-between">
-                  <label for="credential" class="form_field"
-                    >{{ $t("app.nameLabel") }}:</label
-                  >
+                  <label for="credential" class="form_field">{{
+                    $t("app.nameLabel")
+                  }}</label>
                   <label for="credential" class="value">{{
                     selected_payment_item.label
                   }}</label>
                 </div>
                 <div class="q-mb-md flex justify-between">
-                  <label for="credential" class="form_field"
-                    >{{ $t("app.amountPayable") }}:</label
-                  >
+                  <label for="credential" class="form_field">{{
+                    $t("app.amountPayable")
+                  }}</label>
                   <label for="credential" class="value">{{
                     Number(selected_payment_item.amount).toString()
                   }}</label>
                 </div>
                 <div class="q-mb-md flex justify-between">
-                  <label for="credential" class="form_field"
-                    >{{ $t("app.frequency") }}:</label
-                  >
+                  <label for="credential" class="form_field">{{
+                    $t("app.frequency")
+                  }}</label>
                   <label for="credential" class="value">{{
                     selected_payment_item.frequency
                   }}</label>
                 </div>
                 <div class="q-mb-md flex justify-between">
-                  <label for="credential" class="form_field"
-                    >{{ $t("app.type") }}:</label
-                  >
+                  <label for="credential" class="form_field">{{
+                    $t("app.type")
+                  }}</label>
                   <label for="credential" class="value">{{
                     selected_payment_item.type
                   }}</label>
@@ -450,20 +465,20 @@
                   class="q-mb-md flex"
                   v-if="selected_payment_item.frequency == 'MONTHLY'"
                 >
-                  <label for="credential" class="form_field"
-                    >{{ $t("app.selectMonth") }}:</label
-                  >
+                  <label for="credential" class="form_field">{{
+                    $t("app.monthsLabel")
+                  }}</label>
                   <div
-                    class="q-gutter-sm q-mt-sm q-ml-md"
+                    class="q-gutter-xs"
                     v-if="selected_payment_item.payment_item_months.length > 0"
                   >
                     <q-chip
-                      color="info"
+                      color="teal"
                       text-color="white"
                       v-for="ref in selected_payment_item.payment_item_months"
                       :key="ref.id"
-                      size="md"
-                      >{{ ref.name }}</q-chip
+                      size="sm"
+                      >{{ ref }}</q-chip
                     >
                   </div>
                 </div>
@@ -475,18 +490,18 @@
                     >{{ $t("app.quarter") }}:</label
                   >
                   <div
-                    class="q-gutter-sm q-mt-sm q-ml-md"
+                    class="q-gutter-sm q-mt-sm"
                     v-if="
                       selected_payment_item.payment_item_quarters.length > 0
                     "
                   >
                     <q-chip
-                      color="info"
+                      color="teal"
                       text-color="white"
                       v-for="ref in selected_payment_item.payment_item_quarters"
                       :key="ref.id"
-                      size="md"
-                      >{{ ref.name }}</q-chip
+                      size="sm"
+                      >{{ ref }}</q-chip
                     >
                   </div>
                 </div>
@@ -498,6 +513,7 @@
                   :label="$t('app.next')"
                   no-caps
                   :disable="validatePaymentItem"
+                  size="sm"
                   ><q-icon
                     name="arrow_forward"
                     size="xs"
@@ -714,7 +730,7 @@ export default {
     memberMixinVue,
     ContributionsMixinVue,
     CurrentYearMixin,
-    HelperMixin
+    HelperMixin,
   ],
 
   mounted() {
@@ -1227,10 +1243,9 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 12px;
+  font-size: 0.7rem;
   align-items: center;
-  letter-spacing: 0.01em;
-  color: $grey2;
+  color: $grey5;
 }
 
 .noPaymentItems {
@@ -1239,15 +1254,14 @@ export default {
 
 .info {
   color: $grey2;
-  font-size: small;
+  font-size: smaller;
 }
 
 .value {
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 600;
-  font-size: 13px;
-  letter-spacing: 0.01em;
+  font-weight: 500;
+  font-size: 0.7rem;
   color: $grey8;
 }
 </style>

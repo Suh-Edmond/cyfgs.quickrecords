@@ -112,7 +112,7 @@ export default {
     logo: "Logo",
     delete: "Delete",
     deleteMemberWarningMsg: "Are you sure you want to delete this Member ?",
-    print: "Print",
+    download: "Print",
     filter: "Filter",
     selectGenderLabel: "Select gender",
     selectYearLabel: "Select year",
@@ -436,13 +436,13 @@ export default {
     totalMember: "Total Members",
     totalAmountSaved: "Total Amount Saved",
     totalMembersSavings: "Total Members Savings",
-    inviteMsg: "Invite Team Member to use Quick Records",
+    inviteMsg: "Invite Team Member to use QuickRecords",
     inviteVia: "Invite via email",
     inviteWhatsapp: "Invite via Whatsapp",
     contributor: "Contributor",
-    join: "Invitation to Join Quick Records",
+    join: "Invitation to Join QuickRecords",
     joinPartOne:
-      'Hello there! You have been invited to join Quick Records in order to better manage your financial transaction. "Click the link to join: ',
+      'Hello there! You have been invited to join QuickRecords in order to better manage your financial transaction. "Click the link to join: ',
     joinPartTwo:
       ".  If you don't recognize the sender, simply ignore this message.",
     memberProfile: "Member Profile",
@@ -601,6 +601,11 @@ export default {
     passwordResetFailCaption:
       "An Error occurred, we could not send Password Reset Instructions. Please try again!",
     invitationLinkExpired:"Invitation Link Expired!",
-    invalidInvitationLinkMgs:"Invalid Invitation Link"
+    invalidInvitationLinkMgs:"Invalid Invitation Link",
+    newPlatformUserMsg:"New Platform Administrator",
+    newPlatformUserCaption:"Recently join the platform as the",
+    updatePasswordMsg:"Update Password",
+    availableRoleLabel:"Available Roles",
+    monthsLabel:"Months",
   },
 };

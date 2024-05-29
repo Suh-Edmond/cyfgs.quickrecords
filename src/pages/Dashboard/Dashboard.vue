@@ -1,8 +1,8 @@
 <template>
   <q-page>
-    <div class="row q-gutter-x-sm q-gutter-y-lg q-mb-md">
+    <div class="row q-mb-md q-gutter-x-xs">
       <q-card
-        class="col"
+        class="col-12 col-md"
         :class="statistics_type == 'MEMBERSHIP' ? 'members_card' : 'card'"
         bordered
         @click="showStatistics('MEMBERSHIP')"
@@ -17,7 +17,7 @@
           </div>
         </q-card-section>
 
-        <q-card-actions align="around" class="q-pb-sm">
+        <q-card-actions align="around" class="">
           <div>
             <q-avatar
               color="positive"
@@ -39,7 +39,7 @@
         </q-card-actions>
       </q-card>
       <q-card
-        class="col-3"
+        class="col-12 col-md"
         :class="statistics_type == 'SAVINGS' ? 'saving_card' : 'card'"
         bordered
         @click="showStatistics('SAVINGS')"
@@ -71,7 +71,7 @@
         </q-card-actions>
       </q-card>
       <q-card
-        class="col-3"
+        class="col-12 col-md"
         :class="
           statistics_type == 'CONTRIBUTIONS' ? 'contribution_card' : 'card'
         "
@@ -112,7 +112,7 @@
         </q-card-actions>
       </q-card>
       <q-card
-        class="col-3"
+        class="col-12 col-md"
         :class="
           statistics_type == 'EXPENDITURES' ? 'expenditures_card' : 'card'
         "
@@ -156,7 +156,7 @@
 
     <!-- <div> -->
     <!-----------------------------------------------MEMBERSHIP STATISTICS--------------------------------------->
-    <div class="row q-mx-sm q-mt-sm" v-if="statistics_type == 'MEMBERSHIP'">
+    <div class="row" v-if="statistics_type == 'MEMBERSHIP'">
       <div class="col-4 col-md-4 col-sm-12 col-xs-12 col-lg-4">
         <PieChartsVue :chart-data="getChartData"></PieChartsVue>
       </div>
@@ -182,20 +182,38 @@
 
     <!-----------------------------------------------CONTRIBUTIONS STATISTICS--------------------------------------->
     <div class="row" v-if="statistics_type == 'CONTRIBUTIONS'">
-      <LineChart class="col-6 col-md-6 col-xs-12 col-sm-12" :chartData="lineChartData3"></LineChart>
-      <LineChart class="col-6 col-md-6 col-xs-12 col-sm-12" :chartData="lineChartData4"></LineChart>
+      <LineChart
+        class="col-6 col-md-6 col-xs-12 col-sm-12"
+        :chartData="lineChartData3"
+      ></LineChart>
+      <LineChart
+        class="col-6 col-md-6 col-xs-12 col-sm-12"
+        :chartData="lineChartData4"
+      ></LineChart>
     </div>
 
-    <div class="row q-my-lg" v-if="statistics_type == 'CONTRIBUTIONS'">
-      <BarChartVue class="col-6 col-md-6 col-xs-12 col-sm-12" :chartData="barChartData1"></BarChartVue>
-      <BarChartVue class="col-6 col-md-6 col-xs-12 col-sm-12" :chartData="barChartData2"></BarChartVue>
+    <div class="fit row wrap q-my-xl" v-if="statistics_type == 'CONTRIBUTIONS'">
+      <BarChartVue
+        class="col-4 col-md-4 col-xs-12 col-sm-12 q-pr-md"
+        :chartData="barChartData1"
+      ></BarChartVue>
+      <BarChartVue
+        class="col-8 col-md-8 col-xs-12 col-sm-12"
+        :chartData="barChartData2"
+      ></BarChartVue>
     </div>
     <!--------------------------------------------END OF CONTRIBUTIONS STATISTICS----------------------------------->
 
     <!-----------------------------------------------EXPENDITURES STATISTICS--------------------------------------->
     <div class="row" v-if="statistics_type == 'EXPENDITURES'">
-      <LineChart class="col-6 col-md-6 col-xs-12 col-sm-12" :chartData="expenditureLineChartData1"></LineChart>
-      <BarChartVue class="col-6 col-md-6 col-xs-12 col-sm-12" :chartData="expenditureBarChartData2"></BarChartVue>
+      <LineChart
+        class="col-6 col-md-6 col-xs-12 col-sm-12"
+        :chartData="expenditureLineChartData1"
+      ></LineChart>
+      <BarChartVue
+        class="col-6 col-md-6 col-xs-12 col-sm-12"
+        :chartData="expenditureBarChartData2"
+      ></BarChartVue>
     </div>
     <!--------------------------------------------END OF EXPENDITURES STATISTICS----------------------------------->
     <!-- </div> -->
@@ -219,7 +237,7 @@ export default {
     UserSavingMixin,
     ContributionsMixin,
     ExpenditureItemDetailMixinVue,
-    CurrentYearMixin
+    CurrentYearMixin,
   ],
   beforeCreate() {
     let payload = {
@@ -275,6 +293,7 @@ export default {
             backgroundColor: "",
             data: [],
           },
+          { fill: "origin" },
         ],
       },
       lineChartData2: {
@@ -285,6 +304,7 @@ export default {
             backgroundColor: "",
             data: [],
           },
+          { fill: "origin" },
         ],
       },
       pieChartData: {
@@ -324,6 +344,7 @@ export default {
             backgroundColor: "",
             data: [],
           },
+          { fill: "origin" },
         ],
       },
       lineChartData4: {
@@ -334,6 +355,7 @@ export default {
             backgroundColor: "",
             data: [],
           },
+          { fill: "origin" },
         ],
       },
       total_expenditures: 0,
@@ -770,22 +792,21 @@ export default {
 }
 
 .text-h6 {
+  color: $primary;
+  text-transform: capitalize;
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 17px;
-  line-height: 29px;
+  font-size: 1em;
+  align-items: center;
   text-align: center;
-  color: $primary;
-  text-transform: capitalize;
 }
 
 .text-h6-active {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 17px;
-  line-height: 29px;
+  font-size: 1em;
   text-align: center;
   color: $white1;
   text-transform: capitalize;
@@ -799,7 +820,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 18px;
+  font-size: 1em;
   text-align: center;
   color: $primary;
 }
@@ -808,55 +829,8 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 18px;
+  font-size: 1em;
   text-align: center;
   color: $white1;
-}
-
-.card_icon {
-  color: $grey5;
-}
-
-.card_statistics {
-  height: 57vh;
-}
-
-.card_statistics_header {
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 700;
-  font-size: 16px;
-  line-height: 29px;
-  letter-spacing: 0.005em;
-  color: #5384ae;
-}
-
-.card_statistics_info {
-  background-color: $blue1;
-  width: 3rem;
-  height: 50vh;
-}
-
-.amount {
-  font-family: "Inter";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 18px;
-  line-height: 22px;
-  letter-spacing: 0.005em;
-  color: #5384ae;
-}
-
-.chart_heading {
-  font-family: Arial, Helvetica, sans-serif;
-  font-weight: bolder;
-  font-size: 17px;
-  text-align: center;
-  color: $grey8;
-  text-decoration: underline;
-}
-
-.loading_label {
-  color: $primary;
 }
 </style>

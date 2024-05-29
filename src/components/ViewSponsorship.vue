@@ -4,10 +4,10 @@
       <div>
         <label for="name" class="label"
           ><span> <q-icon name="category" size="xs" class="q-pr-sm" /> </span
-          >{{ $t("app.paymentItem") }}:
+          >{{ $t("app.paymentItem") }}
         </label>
       </div>
-      <div class="detail-value wrap">
+      <div>
         <label class="value">
           {{ getSelectedSponsorship.payment_item.name }}
         </label>
@@ -17,10 +17,10 @@
       <div>
         <label for="name" class="label"
           ><span> <q-icon name="person" size="xs" class="q-pr-sm" /> </span
-          >{{ $t("app.sponsorNameLabel") }}:
+          >{{ $t("app.sponsorNameLabel") }}
         </label>
       </div>
-      <div class="detail-value wrap">
+      <div>
         <label class="value">
           {{ getSelectedSponsorship.supporter }}
         </label>
@@ -31,11 +31,11 @@
         <label for="name" class="label">
           <span>
             <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
-          >{{ $t("app.amount") }}:
+          >{{ $t("app.amount") }}
         </label>
       </div>
 
-      <div class="detail-value wrap">
+      <div>
         <label class="value">
           {{ Number(getSelectedSponsorship.amount_deposited).toLocaleString() }}
           XAF
@@ -45,9 +45,9 @@
     <div class="flex justify-between q-pb-md">
       <label for="name" class="label"
         ><span> <q-icon name="schedule" size="xs" class="q-pr-sm" /> </span
-        >{{ $t("app.paymentDate") }}:
+        >{{ $t("app.paymentDate") }}
       </label>
-      <div class="detail-value wrap">
+      <div>
         <label class="value">
           {{ getFormatedCreatedDate }}
         </label>
@@ -58,11 +58,11 @@
         <label for="status" class="label"
           ><span>
             <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span
-          >{{ $t("app.transactionStatus") }}:
+          >{{ $t("app.transactionStatus") }}
         </label>
       </div>
 
-      <div class="detail-value wrap">
+      <div>
         <label
           class="value text-secondary"
           v-show="getSelectedSponsorship.approve == 'APPROVED'"
@@ -86,10 +86,10 @@
     <div class="flex justify-between q-pb-md">
       <label for="name" class="label"
         ><span> <q-icon name="badge" size="xs" class="q-pr-sm" /> </span
-        >{{ $t("app.transactionCode") }}:</label
+        >{{ $t("app.transactionCode") }}</label
       >
 
-      <div class="detail-value wrap">
+      <div>
         <label class="value">
           {{ getSelectedSponsorship.code }}
         </label>
@@ -99,27 +99,27 @@
       <div>
         <label for="name" class="label"
           ><span> <q-icon name="person" size="xs" class="q-pr-sm" /> </span
-          >{{ $t("app.createdBy") }}:
+          >{{ $t("app.createdBy") }}
         </label>
       </div>
 
-      <div class="detail-value wrap">
+      <div>
         <label class="value">
           {{ getSelectedSponsorship.updated_by }}
         </label>
       </div>
     </div>
-    <div class="row q-pb-xs">
+    <div class="flex justify-between q-pb-xs">
       <label for="name" class="label"
         ><span> <q-icon name="description" size="xs" class="q-pr-sm" /> </span
-        >{{ $t("app.comment") }}:
+        >{{ $t("app.comment") }}
       </label>
-    </div>
-    <div class="value_comment" v-show="getSelectedSponsorship.comment !== null">
-      {{ getSelectedSponsorship.comment }}
-    </div>
-    <div class="value_comment" v-show="getSelectedSponsorship.comment === null">
-      {{ $t("app.none") }}
+      <div
+        class="value detail-value wrap"
+        v-show="getSelectedSponsorship.comment !== null"
+      >
+        {{ getSelectedSponsorship.comment }}
+      </div>
     </div>
   </div>
 </template>
@@ -178,63 +178,22 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.unapproved_color {
-  color: #f2994a;
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 11px;
-  letter-spacing: 0.01em;
-}
-.approved_color {
-  color: #27ae60;
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 11;
-  letter-spacing: 0.01em;
-}
 .label {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 400;
-  font-size: 14px;
-  line-height: 11px;
-  letter-spacing: 0.01em;
+  font-size: 0.7rem;
   color: $grey5;
 }
-
 .value {
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 600;
-  font-size: 14px;
-  letter-spacing: 0.01em;
+  font-weight: 500;
+  font-size: 0.7rem;
   color: $grey8;
 }
 
 .detail-value {
   max-width: 250px;
-}
-.value_comment {
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 14px;
-  letter-spacing: 0.01em;
-  color: $dark;
-  margin-left: 1.8rem;
-}
-
-.pending_color {
-  color: $info;
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 600;
-  font-size: 14px;
-  line-height: 11px;
-  letter-spacing: 0.01em;
 }
 </style>

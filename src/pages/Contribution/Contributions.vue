@@ -3,8 +3,7 @@
     <!------------------------------------------CONTRIBUTIONS VIEW FOR MEMBERS WITHOUT TREASURER ROLE----------------------------------- -->
     <div v-if="!checkTreasurerRole()">
       <div
-        class="row q-ml-xs q-pt-md justify-between"
-        :class="$q.screen.lg ? 'q-pa-md' : ''"
+        class="row q-pa-sm justify-between"
         :style="
           $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
         "
@@ -16,19 +15,19 @@
           no-caps
           icon-right="filter_list"
           @click="openSearchBar()"
-          :size="$q.platform.is.mobile ? 'sm' : 'md'"
+          :size="$q.platform.is.mobile ? 'sm' : 'sm'"
         >
         </q-btn>
         <q-space />
         <q-btn
-          :label="$t('app.print')"
+          :label="$t('app.download')"
           :loading="loading_download"
           :color="'positive'"
           :disabled="getTableData == 0"
           no-caps
-          icon-right="print"
+          icon-right="download"
           @click="downloadContributions()"
-          :size="$q.platform.is.mobile ? 'sm' : 'md'"
+          :size="$q.platform.is.mobile ? 'sm' : 'sm'"
         ></q-btn>
       </div>
       <!-- table for contributions -->
@@ -56,7 +55,10 @@
       </TableVue>
 
       <div v-if="getTableData.length > 0">
-        <ContributionSummary :summary="getSummaryData" :is_expenditures="false"></ContributionSummary>
+        <ContributionSummary
+          :summary="getSummaryData"
+          :is_expenditures="false"
+        ></ContributionSummary>
       </div>
     </div>
     <!------------------------------------------END CONTRIBUTIONS VIEW FOR MEMBERS WITHOUT TREASURER ROLE----------------------------------- -->
@@ -64,7 +66,7 @@
     <!------------------------------------------CONTRIBUTIONS VIEW FOR MEMBERS WITH TREASURER ROLE----------------------------------- -->
     <div v-if="checkTreasurerRole()">
       <div
-        :class="$q.screen.lg ? 'row q-pa-sm' : 'col q-gutter-sm q-px-sm'"
+        class="row q-pa-sm justify-between"
         :style="
           $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
         "
@@ -76,19 +78,19 @@
           no-caps
           icon-right="filter_list"
           @click="openSearchBar()"
-          :size="$q.platform.is.mobile ? 'sm' : 'md'"
+          :size="$q.platform.is.mobile ? 'sm' : 'sm'"
         >
         </q-btn>
         <q-space />
         <q-btn
-          :label="$t('app.print')"
+          :label="$t('app.download')"
           :loading="loading_download"
           :color="'positive'"
           :disabled="getFilteredContributions.length == 0"
           no-caps
-          icon-right="print"
+          icon-right="download"
           @click="downloadContributions()"
-          :size="$q.platform.is.mobile ? 'sm' : 'md'"
+          :size="$q.platform.is.mobile ? 'sm' : 'sm'"
         ></q-btn>
       </div>
 
@@ -114,7 +116,10 @@
       </TableVue>
 
       <div v-if="getFilteredContributions.length > 0">
-        <ContributionSummary :summary="getSummaryData" :is_expenditures="false"></ContributionSummary>
+        <ContributionSummary
+          :summary="getSummaryData"
+          :is_expenditures="false"
+        ></ContributionSummary>
       </div>
     </div>
     <!------------------------------------------CONTRIBUTIONS VIEW FOR MEMBERS WITH TREASURER ROLE----------------------------------- -->
@@ -197,7 +202,6 @@ export default {
     };
   },
   computed: {
-
     validateFilter() {
       return this.payment_item_id === null;
     },
@@ -353,21 +357,21 @@ export default {
       return paginate_object;
     },
 
-    getSummaryData(){
-      const data = (this.$store.getters.getFilteredContributions);
+    getSummaryData() {
+      const data = this.$store.getters.getFilteredContributions;
       let summary = {
         type: data.payment_item.type,
-        frequency:data.payment_item.frequency,
+        frequency: data.payment_item.frequency,
         expect_contribution: data.total_amount_payable,
-        amount_contributed:data.total_amount,
-        balance:data.total_balance,
+        amount_contributed: data.total_amount,
+        balance: data.total_balance,
         percentage: data.percentage,
-        payment_durations:data.payment_durations,
-        member_size : data.member_size
-      }
+        payment_durations: data.payment_durations,
+        member_size: data.member_size,
+      };
 
       return summary;
-    }
+    },
   },
 
   watch: {},
@@ -377,7 +381,7 @@ export default {
       const { page, rowsPerPage } = props.pagination;
       const fetch_count =
         rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
-        const filter = props.filter;
+      const filter = props.filter;
       const search_params = this.$store.getters.getSearchContributionParams;
       this.filterContributions(
         search_params.item.value,
@@ -516,7 +520,7 @@ export default {
   },
   components: {
     TableVue,
-    ContributionSummary
+    ContributionSummary,
   },
 };
 </script>

@@ -21,13 +21,13 @@
       <template v-slot:body="props">
         <!-- table body for payment category -->
         <q-tr :props="props" v-if="show_payment_category">
-          <q-td key="name" :props="props">
+          <q-td key="name" :props="props" class="table_value">
             {{ props.row.name }}
           </q-td>
-          <q-td key="code" :props="props">
+          <q-td key="code" :props="props" class="table_value">
             {{ props.row.code }}
           </q-td>
-          <q-td key="item" :props="props">
+          <q-td key="item" :props="props" class="table_value">
             <q-btn
               unelevated
               color="primary"
@@ -39,13 +39,13 @@
             >
               {{ props.row.item }}
               <span class="q-pl-md"
-                ><q-icon name="visibility" size="xs"></q-icon
+                ><q-icon name="visibility" class="eye_icon"></q-icon
               ></span>
             </q-btn>
           </q-td>
           <q-td key="action" :props="props">
             <!-- buttons for edit, view and delete table data row -->
-            <q-btn flat round v-if="!checkTreasurerRole()">
+            <q-btn flat round v-if="!checkTreasurerRoleOnly()">
               <q-icon
                 name="menu"
                 size="xs"
@@ -63,7 +63,7 @@
                     >
                       <q-item-section avatar>
                         <span>
-                          <q-icon name="visibility" size="xs" class="details" />
+                          <q-icon name="visibility" class="details eye_icon" />
                         </span>
                       </q-item-section>
                       <q-item-section>
@@ -85,7 +85,7 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="text-red q-pl-lg">{{
+                        <q-item-label class="text-red q-pl-lg delete_text">{{
                           $t("app.delete")
                         }}</q-item-label>
                       </q-item-section>
@@ -100,11 +100,11 @@
               no-caps
               class="view_payment_category"
               @click="onViewPaymentCategory(props.row)"
-              v-if="checkTreasurerRole()"
+              v-if="checkTreasurerRoleOnly()"
             >
               {{ $t("app.view") }}
               <span class="q-pl-md"
-                ><q-icon name="visibility" size="xs"></q-icon
+                ><q-icon name="visibility" class="eye_icon"></q-icon
               ></span>
             </q-btn>
           </q-td>
@@ -113,19 +113,19 @@
 
         <!-- table body for payment items -->
         <q-tr :props="props" v-if="show_payment_item">
-          <q-td key="name" :props="props">
+          <q-td key="name" :props="props" class="table_value">
             {{ props.row.name }}
           </q-td>
-          <q-td key="amount" :props="props">
+          <q-td key="amount" :props="props" class="table_value">
             {{ Number(props.row.amount).toLocaleString() }}
           </q-td>
-          <q-td key="compulsory" :props="props">
+          <q-td key="compulsory" :props="props" class="table_value">
             {{ props.row.compulsory === 1 ? "YES" : "NO" }}
           </q-td>
-          <q-td key="frequency" :props="props">
+          <q-td key="frequency" :props="props" class="table_value">
             {{ formatConstants(props.row.frequency) }}
           </q-td>
-          <q-td key="payment_item_type" :props="props">
+          <q-td key="payment_item_type" :props="props" class="table_value">
             {{ formatConstants(props.row.payment_item_type) }}
           </q-td>
           <q-td key="reference" :props="props">
@@ -135,13 +135,14 @@
               color="primary"
               no-caps
               class="view_items"
+              dense
               :style="$q.platform.is.mobile ? 'width:200px' : 'width:150px'"
               @click="showReferences(props.row)"
               v-if="props.row.payment_item_type == 'A_MEMBER'"
             >
               {{ $t("app.viewMember") }}
               <span class="q-pl-md"
-                ><q-icon name="visibility" size="xs"></q-icon
+                ><q-icon name="visibility" class="eye_icon"></q-icon
               ></span>
             </q-btn>
 
@@ -152,6 +153,7 @@
               no-caps
               class="view_items"
               @click="showReferences(props.row)"
+              dense
               :style="$q.platform.is.mobile ? 'width:200px' : 'width:150px'"
               v-if="
                 props.row.payment_item_type == 'GROUPED_MEMBERS' ||
@@ -161,13 +163,13 @@
             >
               {{ $t("app.viewMembers") }}
               <span class="q-pl-md"
-                ><q-icon name="visibility" size="xs"></q-icon
+                ><q-icon name="visibility" class="eye_icon"></q-icon
               ></span>
             </q-btn>
           </q-td>
           <q-td key="action" :props="props">
             <!-- buttons for edit, view and delete table data row -->
-            <q-btn flat round v-if="!checkTreasurerRole()">
+            <q-btn flat round v-if="!checkTreasurerRoleOnly()">
               <q-icon
                 name="menu"
                 size="xs"
@@ -223,7 +225,7 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="text-red">{{
+                        <q-item-label class="text-red delete_text">{{
                           $t("app.delete")
                         }}</q-item-label>
                       </q-item-section>
@@ -237,12 +239,14 @@
               color="primary"
               no-caps
               class="view_items"
+              dense
               @click="onViewPaymentItem(props.row)"
-              v-if="checkTreasurerRole()"
+              v-if="checkTreasurerRoleOnly()"
+              :style="$q.platform.is.mobile ? 'width:80px' : 'width:80px'"
             >
               {{ $t("app.view") }}
               <span class="q-pl-md"
-                ><q-icon name="visibility" size="xs"></q-icon
+                ><q-icon name="visibility" class="eye_icon"></q-icon
               ></span>
             </q-btn>
           </q-td>
@@ -251,10 +255,10 @@
 
         <!-- table body for expenditure category -->
         <q-tr :props="props" v-if="show_expenditure_category">
-          <q-td key="name" :props="props">
+          <q-td key="name" :props="props" class="table_value">
             {{ props.row.name }}
           </q-td>
-          <q-td key="code" :props="props">
+          <q-td key="code" :props="props" class="table_value">
             {{ props.row.code }}
           </q-td>
           <q-td key="expenditure_items" :props="props">
@@ -263,6 +267,7 @@
               color="primary"
               no-caps
               class="view_items"
+              dense
               :style="$q.platform.is.mobile ? 'width:200px' : 'width:200px'"
               @click="showExpenditureItems(props.row)"
               :to="{ name: 'expenditure_items', params: { id: props.row.id } }"
@@ -275,7 +280,7 @@
           </q-td>
           <q-td key="action" :props="props">
             <!-- buttons for edit, view and delete table data row -->
-            <q-btn flat round v-if="!checkTreasurerRole()">
+            <q-btn flat round v-if="!checkTreasurerRoleOnly()">
               <q-icon
                 name="menu"
                 size="xs"
@@ -313,7 +318,7 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="text-red q-pl-lg">{{
+                        <q-item-label class="text-red q-pl-lg delete_text">{{
                           $t("app.delete")
                         }}</q-item-label>
                       </q-item-section>
@@ -328,23 +333,23 @@
 
         <!-- table body for expenditure items -->
         <q-tr :props="props" v-if="show_expenditure_item">
-          <q-td key="name" :props="props">
+          <q-td key="name" :props="props" class="table_value">
             {{ props.row.name }}
           </q-td>
-          <q-td key="amount" :props="props">
+          <q-td key="amount" :props="props" class="table_value">
             {{ Number(props.row.amount).toLocaleString() }}
           </q-td>
-          <q-td key="venue" :props="props">
+          <q-td key="venue" :props="props" class="table_value">
             {{ props.row.venue }}
           </q-td>
-          <q-td key="date" :props="props">
+          <q-td key="date" :props="props" class="table_value">
             {{ getFormatedDate(props.row.date) }}
           </q-td>
           <q-td
             key="approve"
             :props="props"
             v-if="props.row.approve == 'PENDING'"
-            class="text-info"
+            class="text-info table_value"
           >
             {{ props.row.approve }}
           </q-td>
@@ -352,7 +357,7 @@
             key="approve"
             :props="props"
             v-if="props.row.approve == 'APPROVED'"
-            class="registered"
+            class="registered table_value"
           >
             {{ props.row.approve }}
           </q-td>
@@ -360,24 +365,11 @@
             key="approve"
             :props="props"
             v-if="props.row.approve == 'DECLINED'"
-            class="not_registered"
+            class="not_registered table_value"
           >
             {{ props.row.approve }}
           </q-td>
           <q-td key="action" :props="props">
-            <q-btn
-              no-caps
-              dense
-              unelevated
-              color="primary"
-              :label="$t('app.details')"
-              v-if="checkTreasurerRole()"
-              class="view q-mr-md"
-              @click="showDetails(props.row)"
-              :to="{ name: 'expenditure_detail', params: { id: props.row.id, session_id: props.row.session.id } }"
-            >
-              <q-icon name="visibility" size="xs" class="q-pl-md"></q-icon>
-            </q-btn>
             <!-- approved btn for expenditure items -->
             <q-btn
               class="approve_btn"
@@ -387,8 +379,8 @@
               unelevated
               @click="onApprovedRecord(props.row, 'Approve')"
               v-if="
-                checkTreasurerRole() &&
-                props.row.approve == 'PENDING' &&
+                canValidateTransaction() &&
+                props.row.approve === 'PENDING' &&
                 props.row.has_no_pending_details
               "
             />
@@ -401,14 +393,31 @@
               no-caps
               @click="onDeclineRecord(props.row, 'Decline')"
               v-if="
-                checkTreasurerRole() &&
-                props.row.approve == 'PENDING' &&
+                canValidateTransaction() &&
+                props.row.approve === 'PENDING' &&
                 props.row.has_no_pending_details
               "
             />
+            <q-btn
+              no-caps
+              dense
+              unelevated
+              color="primary"
+              :label="$t('app.details')"
+              v-if="checkTreasurerRoleOnly()"
+              :style="$q.platform.is.mobile ? 'width:100px' : 'width:100px'"
+              class="view_items q-mr-md"
+              @click="showDetails(props.row)"
+              :to="{
+                name: 'expenditure_detail',
+                params: { id: props.row.id, session_id: props.row.session.id },
+              }"
+            >
+              <q-icon name="visibility" class="q-pl-sm eye_icon"></q-icon>
+            </q-btn>
 
             <!-- buttons for edit, view and delete table data row -->
-            <q-btn flat round v-if="!checkTreasurerRole()">
+            <q-btn flat round v-if="!checkTreasurerRoleOnly()">
               <q-icon
                 name="menu"
                 size="xs"
@@ -480,7 +489,7 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="text-red">{{
+                        <q-item-label class="text-red delete_text">{{
                           $t("app.delete")
                         }}</q-item-label>
                       </q-item-section>
@@ -495,7 +504,7 @@
 
         <!-- table body for expenditure item details -->
         <q-tr :props="props" v-if="show_expenditure_item_detail">
-          <q-td key="is_selected" :props="props">
+          <q-td key="is_selected" :props="props" class="table_value">
             <q-checkbox
               v-model="props.row.is_selected"
               v-if="props.row.approve == 'PENDING'"
@@ -504,23 +513,23 @@
               @input="computeTotal(props.row, $event)"
             />
           </q-td>
-          <q-td key="name" :props="props">
+          <q-td key="name" :props="props" class="table_value">
             {{ props.row.name }}
           </q-td>
-          <q-td key="amount_given" :props="props">
+          <q-td key="amount_given" :props="props" class="table_value">
             {{ Number(props.row.amount_given).toLocaleString() }}
           </q-td>
-          <q-td key="amount_spent" :props="props">
+          <q-td key="amount_spent" :props="props" class="table_value">
             {{ Number(props.row.amount_spent).toLocaleString() }}
           </q-td>
-          <q-td key="balance" :props="props">
+          <q-td key="balance" :props="props" class="table_value">
             {{ Number(props.row.balance).toLocaleString() }}
           </q-td>
           <q-td
             key="approve"
             :props="props"
             v-if="props.row.approve == 'APPROVED'"
-            class="text-positive"
+            class="text-positive table_value"
           >
             {{ props.row.approve }}
           </q-td>
@@ -528,7 +537,7 @@
             key="approve"
             :props="props"
             v-if="props.row.approve == 'PENDING'"
-            class="text-info"
+            class="text-info table_value"
           >
             {{ props.row.approve }}
           </q-td>
@@ -536,13 +545,50 @@
             key="approve"
             :props="props"
             v-if="props.row.approve == 'DECLINED'"
-            class="text-orange"
+            class="text-orange table_value"
           >
             {{ props.row.approve }}
           </q-td>
           <q-td key="action" :props="props">
+            <!-- decline btn for expenditure item details -->
+            <q-btn
+              class="approve_btn q-mx-md"
+              dense
+              :label="$t('app.approve')"
+              no-caps
+              unelevated
+              @click="onApprovedRecord(props.row, 'Approve')"
+              v-if="canValidateTransaction() && props.row.approve == 'PENDING'"
+            />
+
+            <!-- approved btn for expenditure item details -->
+            <q-btn
+              class="decline_btn"
+              dense
+              :label="$t('app.decline')"
+              unelevated
+              no-caps
+              @click="onDeclineRecord(props.row, 'Decline')"
+              v-if="canValidateTransaction() && props.row.approve == 'PENDING'"
+            />
+
+            <!-- view expenditure item details -->
+            <q-btn
+              color="primary"
+              class="view_items"
+              dense
+              :style="$q.platform.is.mobile ? 'width:100px' : 'width:100px'"
+              :label="$t('app.view')"
+              no-caps
+              unelevated
+              @click="onViewExpenditureDetail(props.row)"
+              v-if="checkTreasurerRoleOnly()"
+            >
+              <q-icon name="visibility" class="q-pl-sm eye_icon"></q-icon>
+            </q-btn>
+
             <!-- buttons for edit, view and delete table data row -->
-            <q-btn flat round v-if="!checkTreasurerRole()">
+            <q-btn flat round v-if="!checkTreasurerRoleOnly()">
               <q-icon
                 name="menu"
                 size="xs"
@@ -597,7 +643,7 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="text-red">{{
+                        <q-item-label class="text-red delete_text">{{
                           $t("app.delete")
                         }}</q-item-label>
                       </q-item-section>
@@ -606,42 +652,6 @@
                 </q-menu>
               </q-icon>
             </q-btn>
-
-            <!-- view expenditure item details -->
-            <q-btn
-              color="primary"
-              class="viewPending"
-              dense
-              :label="$t('app.view')"
-              no-caps
-              unelevated
-              @click="onViewExpenditureDetail(props.row)"
-              v-if="checkTreasurerRole()"
-            >
-              <q-icon name="visibility" size="xs" class="q-pl-md"></q-icon>
-            </q-btn>
-
-            <!-- decline btn for expenditure item details -->
-            <q-btn
-              class="approve_btn q-mx-md"
-              dense
-              :label="$t('app.approve')"
-              no-caps
-              unelevated
-              @click="onApprovedRecord(props.row, 'Approve')"
-              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
-            />
-
-            <!-- approved btn for expenditure item details -->
-            <q-btn
-              class="decline_btn"
-              dense
-              :label="$t('app.decline')"
-              unelevated
-              no-caps
-              @click="onDeclineRecord(props.row, 'Decline')"
-              v-if="checkTreasurerRole() && props.row.approve == 'PENDING'"
-            />
           </q-td>
         </q-tr>
         <!-- end of table body for expenditure item details -->
@@ -675,11 +685,7 @@
         <q-input
           outlined
           dense
-          :class="
-            $q.screen.md
-              ? 'text-h6-sm q-mb-sm q-mt-sm full-width'
-              : 'text-h6-sm'
-          "
+          :class="$q.screen.md ? 'text-h6-sm full-width' : 'text-h6-sm'"
           v-model="filter"
           :placeholder="$t('app.tableSearch')"
           :style="$q.platform.is.mobile ? 'width:88vw' : ''"
@@ -712,11 +718,11 @@
     <!--------------------------------------------------CONFIRM APPROVE/DECLINE A RECORD--------------------->
     <div v-if="show_approve_dialog">
       <q-dialog v-model="show_approve_dialog">
-        <q-card class="approve_card q-px-md">
+        <q-card cclass="q-pa-sm">
           <q-card-section>
-            <div class="row q-pt-sm">
+            <div class="row">
               <div class="col-md-12">
-                <label for="msg">
+                <label for="msg" class="warning_msg">
                   <span class="text-weight-bold"
                     >{{ $t("app.doYouKnow") }} {{ chosen_state }}
                     {{ approve_msg }}</span
@@ -883,13 +889,6 @@ export default {
 
     getFormatedDate(date) {
       return moment(date).format("MMMM Do YYYY");
-    },
-
-    checkTreasurerRole() {
-      const treasurer_role = LocalStorage.getItem("data").user_data.roles.find(
-        (role) => role.name === "TREASURER"
-      );
-      return treasurer_role != undefined;
     },
 
     checkPresidentOrAdminRole() {
@@ -1126,10 +1125,10 @@ export default {
     callFetchDataAfterApproveAction(data) {
       switch (data.type) {
         case "EXPENDITURE_ITEMS":
-          this.filterExpenditureItems(
+          this.fetchExpenditureItems(
             1,
             10,
-            { value: this.$store.getters.getCurrentExpenditureCategory.id },
+            { value: data.session.id },
             "",
             "",
             ""
@@ -1222,15 +1221,13 @@ export default {
 }
 
 .edit {
-  color: $grey5;
+  color: $primary;
+  font-size: 0.8rem;
 }
 
 .details {
   color: $primary;
-}
-
-.warning_image {
-  color: yellow;
+  font-size: 0.8rem;
 }
 
 .view_items {
@@ -1251,44 +1248,28 @@ export default {
   text-transform: capitalize;
 }
 
-.field_total {
+.title {
+  color: $primary;
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 13px;
-  line-height: 25px;
-  align-items: center;
-  letter-spacing: 0.01em;
-  text-transform: capitalize;
-  color: $dark;
-}
-
-.title {
-  font-size: 15px;
-  font-weight: 500;
-  color: $grey8;
-}
-
-.dialog_button {
   font-size: 0.9rem;
-  font-weight: 500;
-  margin-bottom: 0.5rem;
 }
 
 .approve_btn {
   background-color: $secondary;
   color: white;
-  width: 5.5rem;
-}
-
-.approve_card {
-  width: 25rem;
+  margin-right: 2.5rem;
+  width: 4.2rem;
+  font-size: 0.8rem;
 }
 
 .decline_btn {
   background-color: $orange;
   color: white;
-  width: 5.5rem;
+  margin-right: 2.5rem;
+  font-size: 0.8rem;
+  width: 4.2rem;
 }
 
 .view {
@@ -1300,10 +1281,6 @@ export default {
   margin-left: 5rem;
 }
 
-.viewPending {
-  width: 5.5rem;
-}
-
 .approve {
   color: $secondary;
 }
@@ -1312,34 +1289,15 @@ export default {
   color: $orange;
 }
 
-.total_label {
-  font-size: 13px;
-  padding-left: 5.5rem;
-}
-
 .total {
   font-size: 13px;
   padding-left: 6rem;
-}
-
-.total_given {
-  font-size: 13px;
-  padding-left: 12rem;
 }
 
 .amount_given {
   font-size: 13px;
   padding-left: 7rem;
   padding-right: 250px;
-}
-
-.total_spent {
-  font-size: 13px;
-  padding-left: 15rem;
-}
-
-.summary {
-  font-size: 15px;
 }
 
 .amount_spent {
@@ -1356,26 +1314,8 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 15px;
-  align-items: center;
-  letter-spacing: 0.01em;
-  color: $grey2;
-}
-
-.delete_item_name {
-  padding-left: 1.8rem;
-}
-
-.detail_name {
-  padding-left: 4.3rem;
-}
-
-.net_balance {
-  margin-left: 4.6rem;
-}
-
-.expenditure_amount {
-  padding-left: 1rem;
+  font-size: 0.9rem;
+  color: $primary;
 }
 
 .not_registered {
@@ -1384,5 +1324,31 @@ export default {
 
 .registered {
   color: $secondary;
+}
+
+.table_value {
+  font-size: 0.7rem;
+  font-weight: 500;
+}
+
+.delete_text {
+  font-size: 0.8rem;
+}
+
+.warning_msg {
+  font-size: 0.9rem;
+  color: $primary;
+}
+
+.record_value {
+  font-size: 0.8rem;
+}
+
+.record_label {
+  font-size: 0.8rem;
+}
+
+.eye_icon {
+  font-size: 0.8rem;
 }
 </style>

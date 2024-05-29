@@ -59,13 +59,13 @@
         </div>
       </div>
       <hr class="separator" />
-      <div class="q-my-md">
+      <div class="q-my-sm">
         <label for="heading" class="text">{{ $t("app.filterStatus") }}</label>
       </div>
       <!-- filter by status of savings -->
-      <div class="q-mb-lg row q-gutter-xs">
+      <div class="row q-mb-md">
         <div
-          class="col-md-4 col-lg-4"
+          class="col-12 col-md"
           v-for="status in statuses"
           :key="status.index"
         >
@@ -73,7 +73,8 @@
             color="primary"
             text-color="white"
             clickable
-            class="q-pa-md"
+            size="sm"
+            no-caps
             @click="filterByStatus(status.name)"
           >
             {{ status.name }}
@@ -82,12 +83,12 @@
       </div>
 
       <hr class="separator" />
-      <div class="q-my-md">
+      <div class="q-my-sm">
         <label for="heading" class="text">{{ $t("app.filterDelay") }}</label>
       </div>
       <!-- search by year -->
       <div class="q-mb-md row">
-        <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+        <div class="col-12 col-md">
           <q-select
             v-model="param.year"
             outlined
@@ -115,7 +116,7 @@
       </div>
       <!-- search by month -->
       <div class="q-mb-md row">
-        <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+        <div class="col-12 col-md">
           <q-select
             v-model="param.month"
             outlined
@@ -142,7 +143,7 @@
 
       <!-- filter by date -->
       <div class="row q-mb-md">
-        <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+        <div class="col-12 col-md">
           <q-input
             dense
             v-model="param.date"
@@ -276,7 +277,7 @@ export default {
       return this.param.amount_deposited === 0;
     },
 
-    getAllMonths(){
+    getAllMonths() {
       return [
         { label: this.$t("app.januaryName"), value: 1 },
         { label: this.$t("app.februaryName"), value: 2 },
@@ -290,8 +291,8 @@ export default {
         { label: this.$t("app.octoberName"), value: 10 },
         { label: this.$t("app.novemberName"), value: 11 },
         { label: this.$t("app.decemberName"), value: 12 },
-      ]
-    }
+      ];
+    },
   },
   methods: {
     filterByUserInfo() {
@@ -304,7 +305,11 @@ export default {
           t: new Date().getTime(),
         },
       });
-      let url = `/api/protected/user-savings?organisation_id=${this.organisation_id}&name=${this.param.name}&session_id=${this.session_id}&page=${1}&per_page=${7}`;
+      let url = `/api/protected/user-savings?organisation_id=${
+        this.organisation_id
+      }&name=${this.param.name}&session_id=${
+        this.session_id
+      }&page=${1}&per_page=${7}`;
       this.loading_user_info = this.filterSaving(url);
     },
 
@@ -318,7 +323,11 @@ export default {
           t: new Date().getTime(),
         },
       });
-      let url = `/api/protected/user-savings?organisation_id=${this.organisation_id}&amount_deposited=${this.param.amount_deposited}&session_id=${this.session_id}&page=${1}&per_page=${7}`;
+      let url = `/api/protected/user-savings?organisation_id=${
+        this.organisation_id
+      }&amount_deposited=${this.param.amount_deposited}&session_id=${
+        this.session_id
+      }&page=${1}&per_page=${7}`;
       this.loading_save_amount = this.filterSaving(url);
     },
 
@@ -332,7 +341,9 @@ export default {
           t: new Date().getTime(),
         },
       });
-      let url = `/api/protected/user-savings?organisation_id=${this.organisation_id}&status=${status}&session_id=${this.session_id}&page=${1}&per_page=${7}`;
+      let url = `/api/protected/user-savings?organisation_id=${
+        this.organisation_id
+      }&status=${status}&session_id=${this.session_id}&page=${1}&per_page=${7}`;
       this.filterSaving(url);
     },
 
@@ -349,7 +360,11 @@ export default {
         },
       });
 
-      let url = `/api/protected/user-savings?organisation_id=${this.organisation_id}&session_id=${this.session_id}&month=${this.param.month}&date=${this.param.date}&range=${this.param.date_range}&page=${1}&per_page=${7}`;
+      let url = `/api/protected/user-savings?organisation_id=${
+        this.organisation_id
+      }&session_id=${this.session_id}&month=${this.param.month}&date=${
+        this.param.date
+      }&range=${this.param.date_range}&page=${1}&per_page=${7}`;
       this.loading = this.filterSaving(url);
     },
 
@@ -404,20 +419,15 @@ export default {
 .text {
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 600;
-  font-size: 14px;
-  align-items: center;
-  letter-spacing: 0.1em;
+  font-weight: 500;
+  font-size: 0.8rem;
   color: $grey5;
 }
 
 .separator {
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 600;
-  font-size: 14px;
-  align-items: center;
-  letter-spacing: 0.1em;
+  font-weight: 500;
   color: $grey5;
 }
 

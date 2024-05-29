@@ -10,14 +10,14 @@
       content-class="bg-grey-3"
     >
       <div>
-        <div class=" left_drawer">
+        <div class="left_drawer">
           <div class="bg-transparent q-pa-sm flex flex-center">
-            <q-avatar size="90px" v-if="getOrganisation != null">
+            <q-avatar size="5rem" v-if="getOrganisation != null">
               <q-img :src="getOrganisationLogo"> </q-img>
             </q-avatar>
           </div>
           <div
-            class="text-weight-bold text-center organisation_name q-mb-md q-pa-xs"
+            class="text-weight-bold text-center organisation_name"
             v-if="getOrganisation != null"
           >
             {{ getOrganisation.name }}
@@ -41,7 +41,7 @@
                 avatar
                 :class="item.name == tab.name ? 'item_icon' : 'item_text'"
               >
-                <q-icon :name="tab.icon" size="xs" v-if="!tab.has_image" />
+                <q-icon :name="tab.icon" size=".9rem" v-if="!tab.has_image" />
                 <img
                   v-if="tab.has_image"
                   :src="tab.image_src"
@@ -78,10 +78,11 @@
           ? right_drawer_width_mobile
           : right_drawer_width_desktop
       "
+      :breakpoint="500"
     >
       <q-page>
         <q-card class="bar" flat>
-          <div class="flex q-pa-xs">
+          <div class="flex justify-center q-pa-sm">
             <q-btn
               dense
               color="white"
@@ -94,7 +95,7 @@
             </q-btn>
             <label
               for="heading"
-              class="text-white q-ml-lg"
+              class="text-white q-ml-sm"
               :class="$q.platform.is.desktop ? 'text_h6' : 'side-bar-heading'"
               >{{ heading }}</label
             >
@@ -144,7 +145,9 @@
           @set-heading="setHeading"
         ></AddExpenditureItemDetail>
         <AddMemberSavingVue
-          v-if="current_tab.includes('Savings') && current_tab != 'Search Savings'"
+          v-if="
+            current_tab.includes('Savings') && current_tab != 'Search Savings'
+          "
           @close-right-drawer="closeRightDrawer"
           @set-heading="setHeading"
         ></AddMemberSavingVue>
@@ -171,7 +174,10 @@
         >
         </ViewContribution>
         <AddContribution
-          v-if="current_tab.includes('Contributions') && current_tab != 'Search Members Contributions'"
+          v-if="
+            current_tab.includes('Contributions') &&
+            current_tab != 'Search Members Contributions'
+          "
           @close-right-drawer="closeRightDrawer"
           @set-heading="setHeading"
         ></AddContribution>
@@ -267,9 +273,10 @@ import MemberRegistration from "src/components/MemberRegistration.vue";
 import ViewPaymentItem from "src/components/ViewPaymentItem.vue";
 import PaymentDetails from "src/components/PaymentDetails.vue";
 import CurrentYearMixin from "src/mixins/CurrentYearMixin.vue";
+import HelperMixin from "src/mixins/HelperMixin.vue";
 
 export default {
-  mixins: [organisationMixinVue, CurrentYearMixin],
+  mixins: [organisationMixinVue, CurrentYearMixin, HelperMixin],
   created() {
     this.getOrganisationInfo();
   },
@@ -280,12 +287,12 @@ export default {
       right: false,
       year: new Date().getFullYear(),
       item: {
-        name: 'Dashboard',
+        name: "Dashboard",
         selected: true,
       },
       requires_add: false,
-      right_drawer_width_mobile: 400,
-      right_drawer_width_desktop: 480,
+      right_drawer_width_mobile: 0,
+      right_drawer_width_desktop: 450,
       current_tab: "",
       right_drawer_tab: "",
       data: null,
@@ -297,7 +304,7 @@ export default {
       return this.$store.getters.getOrganisation;
     },
     getOrganisationLogo() {
-      return  process.env.API_BASE_URL + this.getOrganisation.logo;
+      return process.env.API_BASE_URL + this.getOrganisation.logo;
     },
   },
   watch: {},
@@ -382,6 +389,7 @@ export default {
         disable: false,
         has_image: false,
         requires_add: false,
+        treasurer_only: false,
       });
       menu_tabs.push({
         to: "organisation",
@@ -392,6 +400,7 @@ export default {
         disable: false,
         has_image: false,
         requires_add: false,
+        treasurer_only: false,
       });
       menu_tabs.push({
         to: "role_privilge",
@@ -402,6 +411,7 @@ export default {
         disable: this.getOrganisation == null,
         has_image: false,
         requires_add: false,
+        treasurer_only: false,
       }),
         menu_tabs.push({
           to: "settings",
@@ -412,6 +422,7 @@ export default {
           disable: this.getOrganisation == null,
           has_image: false,
           requires_add: false,
+          treasurer_only: false,
         });
       menu_tabs.push({
         to: "members",
@@ -422,6 +433,7 @@ export default {
         disable: this.getOrganisation == null,
         has_image: false,
         requires_add: true,
+        treasurer_only: false,
       });
       menu_tabs.push({
         to: "payment_category",
@@ -432,6 +444,7 @@ export default {
         disable: this.getOrganisation == null,
         has_image: false,
         requires_add: true,
+        treasurer_only: false,
       });
       menu_tabs.push({
         to: "expenditure_category",
@@ -442,6 +455,7 @@ export default {
         disable: this.getOrganisation == null,
         has_image: false,
         requires_add: true,
+        treasurer_only: false,
       });
       menu_tabs.push({
         to: "expenditures",
@@ -452,6 +466,7 @@ export default {
         disable: this.getOrganisation == null,
         has_image: false,
         requires_add: false,
+        treasurer_only: true,
       });
       menu_tabs.push({
         to: "income_activity",
@@ -462,6 +477,7 @@ export default {
         disable: this.getOrganisation == null,
         has_image: false,
         requires_add: true,
+        treasurer_only: false,
       });
       menu_tabs.push({
         to: "savings",
@@ -472,6 +488,7 @@ export default {
         disable: this.getOrganisation == null,
         has_image: false,
         requires_add: true,
+        treasurer_only: false,
       });
       menu_tabs.push({
         to: "members_contributions",
@@ -482,6 +499,7 @@ export default {
         disable: this.getOrganisation == null,
         has_image: false,
         requires_add: true,
+        treasurer_only: false,
       });
       menu_tabs.push({
         to: "sponsorship",
@@ -492,6 +510,7 @@ export default {
         disable: this.getOrganisation == null,
         has_image: false,
         requires_add: true,
+        treasurer_only: false,
       });
       menu_tabs.push({
         to: "report_generation",
@@ -502,6 +521,7 @@ export default {
         disable: this.getOrganisation == null,
         has_image: false,
         requires_add: false,
+        treasurer_only: false,
       });
 
       return menu_tabs;
@@ -509,18 +529,25 @@ export default {
 
     getRoleGroups() {
       const storage_data =
-        LocalStorage.getItem("data") != "undefined" && LocalStorage.getItem("data") != null
+        LocalStorage.getItem("data") != "undefined" &&
+        LocalStorage.getItem("data") != null
           ? LocalStorage.getItem("data").user_data
           : [];
       return storage_data.roles.map((ele) => ele.name);
     },
 
     getUserSideTabs() {
-      const tabs = [];
+      const tabs = new Set();
       this.getSidebarTabs().forEach((tab) => {
         this.getRoleGroups().forEach((role) => {
-          if (tab.roles.includes(role)) {
-            tabs.push(tab);
+          if (tab.roles.includes(role) && tab.name != "Expenditures") {
+            tabs.add(tab);
+          } else if (
+            this.checkTreasurerRoleOnly() &&
+            tab.roles.includes(role) &&
+            tab.name == "Expenditures"
+          ) {
+            tabs.add(tab);
           }
         });
       });
@@ -565,34 +592,20 @@ export default {
   height: 100vh;
 }
 
-.drop_down_text {
-  font-family: "Roboto";
-  font-style: normal;
-  line-height: 29px;
-  display: flex;
-  align-items: center;
-  text-align: center;
-  letter-spacing: 0.01em;
-  text-transform: capitalize;
-  color: $dark;
-}
-
 .organisation_name {
   color: $primary;
   font-family: "Roboto";
   font-style: normal;
-  letter-spacing: 0.01em;
   font-weight: 700;
-  font-size: medium;
+  font-size: 0.8rem;
 }
 
 .left_drawer {
-  height: 160px;
+  height: 8rem;
 }
 
 .item_icon {
   color: $white1;
-  font-size: 0.8rem;
 }
 
 .item {
@@ -605,7 +618,7 @@ export default {
 }
 
 .item_name {
-  font-size: 0.8rem;
+  font-size: 0.7rem;
 }
 
 .bar {
@@ -624,41 +637,10 @@ export default {
   width: 1.13rem;
 }
 
-.logout {
-  position: absolute;
-  top: 91%;
-}
-
-.expand {
-  color: red;
-}
-
-.footer_text {
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 400;
-  font-size: 13px;
-  align-items: center;
-  text-align: center;
-  letter-spacing: 0.005em;
-}
-
-.copy_right {
-  font-size: large;
-}
-
-.footer {
-  height: 2rem;
-  background-color: $white1;
-  margin-left: 1rem;
-}
-
-.appName {
-  font-family: "Roboto";
-  font-style: normal;
-  text-transform: capitalize;
+.text_h6 {
   color: $dark;
-  font-weight: 700;
-  font-size: medium;
+  font-family: "Roboto";
+  font-style: normal;
+  font-size: 0.76rem;
 }
 </style>

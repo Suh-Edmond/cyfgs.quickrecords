@@ -1,23 +1,35 @@
 <template>
   <div class="q-mb-md q-mx-md">
-    <div class="text-left q-my-md">
+    <div class="text-left q-mt-sm">
       <label class="text-muted info"
         >{{ $t("app.warningField") }}<span class="text-red">*</span
         >{{ $t("app.fields") }}</label
       >
     </div>
-    <q-form @submit="onAddPaymentItem" class="q-gutter-md q-mt-sm">
+    <q-form @submit="onAddPaymentItem" class="q-gutter-md q-mt-xs">
       <div>
         <label for="credential" class="form_field"
           >{{ $t("app.nameLabel") }} <span class="text-red">*</span></label
         >
-        <q-input v-model="payment_item.name" outlined dense type="text" />
+        <q-input
+          v-model="payment_item.name"
+          outlined
+          dense
+          type="text"
+          hide-bottom-space
+        />
       </div>
       <div>
         <label for="credential" class="form_field"
           >{{ $t("app.amount") }} <span class="text-red">*</span></label
         >
-        <q-input v-model="payment_item.amount" outlined dense type="number" />
+        <q-input
+          v-model="payment_item.amount"
+          outlined
+          dense
+          type="number"
+          hide-bottom-space
+        />
       </div>
       <div class="flex">
         <div>
@@ -52,6 +64,7 @@
           outlined
           v-model="payment_item.deadline"
           @input="validateDeadline()"
+          hide-bottom-space
         >
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
@@ -87,6 +100,7 @@
           :options="frequencies"
           :label="$t('app.selectFrequency')"
           :disable="validateDisableFrequency"
+          hide-bottom-space
         />
       </div>
       <div>
@@ -101,6 +115,7 @@
           :label="$t('app.selectType')"
           @input="handlePaymentItemType()"
           :disable="validateDisableType"
+          hide-bottom-space
         />
       </div>
 
@@ -112,18 +127,21 @@
           >
         </div>
         <div v-if="references.length > 0">
-          <label for="title" class="q-mt-sm form_field"
-            >{{ $t("app.selectedMember") }}:</label
-          >
-          <div class="q-gutter-sm q-mb-lg">
+          <label for="title" class="q-mt-sm form_field">{{
+            $t("app.selectedMember")
+          }}</label>
+          <div class="q-gutter-xs q-mb-lg">
             <q-btn
-              color="primary"
+              color="teal"
               class="ref_btn"
               v-for="ref in references"
               :key="ref.value"
               @click="removeSelectedReference(ref)"
+              size="sm"
+              dense
+              no-caps
               >{{ ref.label }}
-              <q-icon name="clear" class="q-pl-sm" size="xs"></q-icon>
+              <q-icon name="clear" class="q-pl-sm close_btn"></q-icon>
               <q-tooltip>{{ $t("app.removeMemberTip") }}</q-tooltip>
             </q-btn>
           </div>
@@ -170,15 +188,18 @@
           <label for="title" class="q-mt-sm form_field">{{
             $t("app.selectedMembers")
           }}</label>
-          <div class="q-gutter-sm q-mb-lg">
+          <div class="q-gutter-xs q-mb-lg">
             <q-btn
-              color="primary"
+              color="teal"
               class="ref_btn"
               v-for="ref in references"
               :key="ref.value"
               @click="removeSelectedReference(ref)"
+              size="sm"
+              dense
+              no-caps
               >{{ ref.label }}
-              <q-icon name="clear" class="q-pl-sm" size="xs"></q-icon>
+              <q-icon name="clear" class="q-pl-xs close_btn"></q-icon>
               <q-tooltip>{{ $t("app.removeMemberTip") }}</q-tooltip>
             </q-btn>
           </div>
@@ -636,18 +657,21 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 12px;
+  font-size: 0.7rem;
   align-items: center;
-  letter-spacing: 0.01em;
-  color: $grey2;
+  color: $grey5;
 }
 
 .info {
   color: $grey2;
-  font-size: small;
+  font-size: smaller;
 }
 
 .ref_btn {
   font-size: smaller;
+}
+
+.close_btn {
+  font-size: 0.7rem;
 }
 </style>

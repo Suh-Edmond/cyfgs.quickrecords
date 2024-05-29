@@ -23,7 +23,7 @@
                 show_expenditure_category ||
                 show_expenditure_item
               "
-            /><br />
+            />
           </div>
           <label class="warning_caption">{{ $t("app.actionUndoneMsg") }}</label>
 
@@ -110,7 +110,9 @@
 
           <!-- payment category -->
           <div v-if="show_payment_category || show_expenditure_category">
-            <div class="text-weight-bold text-left text-red record_value">
+            <div
+              class="text-weight-bold text-left text-red record_value q-mt-md"
+            >
               {{ $t("app.nameLabel") }}:
               <span class="amount">{{ data.name }} </span>
             </div>

@@ -21,13 +21,13 @@
       <template v-slot:body="props">
         <!-- table body for payment category -->
         <q-tr :props="props" v-if="show_payment_category">
-          <q-td key="name" :props="props">
+          <q-td key="name" :props="props" class="table_value">
             {{ props.row.name }}
           </q-td>
-          <q-td key="code" :props="props">
+          <q-td key="code" :props="props" class="table_value">
             {{ props.row.code }}
           </q-td>
-          <q-td key="item" :props="props">
+          <q-td key="item" :props="props" class="table_value">
             <q-btn
               unelevated
               color="primary"
@@ -85,7 +85,7 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="text-red q-pl-lg">{{
+                        <q-item-label class="text-red q-pl-lg delete_text">{{
                           $t("app.delete")
                         }}</q-item-label>
                       </q-item-section>
@@ -113,19 +113,19 @@
 
         <!-- table body for payment items -->
         <q-tr :props="props" v-if="show_payment_item">
-          <q-td key="name" :props="props">
+          <q-td key="name" :props="props" class="table_value">
             {{ props.row.name }}
           </q-td>
-          <q-td key="amount" :props="props">
+          <q-td key="amount" :props="props" class="table_value">
             {{ Number(props.row.amount).toLocaleString() }}
           </q-td>
-          <q-td key="compulsory" :props="props">
+          <q-td key="compulsory" :props="props" class="table_value">
             {{ props.row.compulsory === 1 ? "YES" : "NO" }}
           </q-td>
-          <q-td key="frequency" :props="props">
+          <q-td key="frequency" :props="props" class="table_value">
             {{ formatConstants(props.row.frequency) }}
           </q-td>
-          <q-td key="payment_item_type" :props="props">
+          <q-td key="payment_item_type" :props="props" class="table_value">
             {{ formatConstants(props.row.payment_item_type) }}
           </q-td>
           <q-td key="reference" :props="props">
@@ -135,6 +135,7 @@
               color="primary"
               no-caps
               class="view_items"
+              dense
               :style="$q.platform.is.mobile ? 'width:200px' : 'width:150px'"
               @click="showReferences(props.row)"
               v-if="props.row.payment_item_type == 'A_MEMBER'"
@@ -152,6 +153,7 @@
               no-caps
               class="view_items"
               @click="showReferences(props.row)"
+              dense
               :style="$q.platform.is.mobile ? 'width:200px' : 'width:150px'"
               v-if="
                 props.row.payment_item_type == 'GROUPED_MEMBERS' ||
@@ -223,7 +225,7 @@
                         </span>
                       </q-item-section>
                       <q-item-section>
-                        <q-item-label class="text-red">{{
+                        <q-item-label class="text-red delete_text">{{
                           $t("app.delete")
                         }}</q-item-label>
                       </q-item-section>
@@ -678,11 +680,7 @@
         <q-input
           outlined
           dense
-          :class="
-            $q.screen.md
-              ? 'text-h6-sm q-mb-sm q-mt-sm full-width'
-              : 'text-h6-sm'
-          "
+          :class="$q.screen.md ? 'text-h6-sm full-width' : 'text-h6-sm'"
           v-model="filter"
           :placeholder="$t('app.tableSearch')"
           :style="$q.platform.is.mobile ? 'width:88vw' : ''"
@@ -1218,15 +1216,13 @@ export default {
 }
 
 .edit {
-  color: $grey5;
+  color: $primary;
+  font-size: 0.8rem;
 }
 
 .details {
   color: $primary;
-}
-
-.warning_image {
-  color: yellow;
+  font-size: 0.8rem;
 }
 
 .view_items {
@@ -1247,44 +1243,28 @@ export default {
   text-transform: capitalize;
 }
 
-.field_total {
+.title {
+  color: $primary;
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 13px;
-  line-height: 25px;
-  align-items: center;
-  letter-spacing: 0.01em;
-  text-transform: capitalize;
-  color: $dark;
-}
-
-.title {
-  font-size: 15px;
-  font-weight: 500;
-  color: $grey8;
-}
-
-.dialog_button {
   font-size: 0.9rem;
-  font-weight: 500;
-  margin-bottom: 0.5rem;
 }
 
 .approve_btn {
   background-color: $secondary;
   color: white;
-  width: 5.5rem;
-}
-
-.approve_card {
-  width: 25rem;
+  margin-right: 2.5rem;
+  width: 4.2rem;
+  font-size: 0.8rem;
 }
 
 .decline_btn {
   background-color: $orange;
   color: white;
-  width: 5.5rem;
+  margin-right: 2.5rem;
+  font-size: 0.8rem;
+  width: 4.2rem;
 }
 
 .view {
@@ -1308,34 +1288,15 @@ export default {
   color: $orange;
 }
 
-.total_label {
-  font-size: 13px;
-  padding-left: 5.5rem;
-}
-
 .total {
   font-size: 13px;
   padding-left: 6rem;
-}
-
-.total_given {
-  font-size: 13px;
-  padding-left: 12rem;
 }
 
 .amount_given {
   font-size: 13px;
   padding-left: 7rem;
   padding-right: 250px;
-}
-
-.total_spent {
-  font-size: 13px;
-  padding-left: 15rem;
-}
-
-.summary {
-  font-size: 15px;
 }
 
 .amount_spent {
@@ -1352,26 +1313,8 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 15px;
-  align-items: center;
-  letter-spacing: 0.01em;
-  color: $grey2;
-}
-
-.delete_item_name {
-  padding-left: 1.8rem;
-}
-
-.detail_name {
-  padding-left: 4.3rem;
-}
-
-.net_balance {
-  margin-left: 4.6rem;
-}
-
-.expenditure_amount {
-  padding-left: 1rem;
+  font-size: 0.9rem;
+  color: $primary;
 }
 
 .not_registered {
@@ -1380,5 +1323,27 @@ export default {
 
 .registered {
   color: $secondary;
+}
+
+.table_value {
+  font-size: 0.7rem;
+  font-weight: 500;
+}
+
+.delete_text {
+  font-size: 0.8rem;
+}
+
+.warning_msg {
+  font-size: 0.9rem;
+  color: $primary;
+}
+
+.record_value {
+  font-size: 0.8rem;
+}
+
+.record_label {
+  font-size: 0.8rem;
 }
 </style>

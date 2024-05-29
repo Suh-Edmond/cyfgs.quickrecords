@@ -1755,10 +1755,8 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 15px;
-  align-items: center;
-  letter-spacing: 0.01em;
-  color: $grey2;
+  font-size: 0.9rem;
+  color: $primary;
 }
 
 .name {

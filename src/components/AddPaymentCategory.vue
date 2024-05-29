@@ -1,18 +1,24 @@
 <template>
   <div class="q-ma-md">
-    <div class="q-ml-sm q-mb-lg">
+    <div class="q-ml-sm">
       <label class="text-muted info"
         >{{ $t("app.warningField") }}<span class="text-red">*</span
         >{{ $t("app.fields") }}</label
       >
     </div>
-    <div class="q-mt-lg q-mx-sm">
+    <div class="q-mt-lg">
       <q-form @submit="onAddPaymentCategory" class="q-gutter-md">
         <div>
           <label for="credential" class="form_field"
             >{{ $t("app.nameLabel") }} <span class="text-red">*</span></label
           >
-          <q-input v-model="payment_category.name" outlined dense type="text" :readonly="checkTreasurerRole()" />
+          <q-input
+            v-model="payment_category.name"
+            outlined
+            dense
+            type="text"
+            :readonly="checkTreasurerRole()"
+          />
         </div>
         <div>
           <label for="credential" class="form_field"
@@ -44,7 +50,13 @@
             :readonly="checkTreasurerRole()"
           />
         </div>
-        <div   :class="$q.platform.is.desktop?'flex q-mt-lg justify-end':'q-pt-xs q-mb-lg'">
+        <div
+          :class="
+            $q.platform.is.desktop
+              ? 'flex q-mt-lg justify-end'
+              : 'q-pt-xs q-mb-lg'
+          "
+        >
           <div>
             <ButtonVue
               class="form_button"
@@ -92,7 +104,8 @@ export default {
     validateForm() {
       return (
         this.payment_category.name === null ||
-        this.payment_category.code === null || this.checkTreasurerRole()
+        this.payment_category.code === null ||
+        this.checkTreasurerRole()
       );
     },
     getUpdatedCategory() {
@@ -109,12 +122,15 @@ export default {
       const treasurer_role = LocalStorage.getItem("data").user_data.roles.find(
         (role) => role.name === "TREASURER"
       );
-       return treasurer_role != undefined;
+      return treasurer_role != undefined;
     },
 
-    setRequestUrl(){
-      return this.getUpdatedPaymentCategoryFromState() === null ? `/api/protected/organisations/${this.organisation_id}/payment-categories`:
-      `/api/protected/organisations/${this.organisation_id}/payment-categories/${this.getUpdatedPaymentCategoryFromState().id}`
+    setRequestUrl() {
+      return this.getUpdatedPaymentCategoryFromState() === null
+        ? `/api/protected/organisations/${this.organisation_id}/payment-categories`
+        : `/api/protected/organisations/${
+            this.organisation_id
+          }/payment-categories/${this.getUpdatedPaymentCategoryFromState().id}`;
     },
     onAddPaymentCategory() {
       let payload = {
@@ -143,40 +159,40 @@ export default {
         },
       };
       this.loading = true;
-      if(this.getUpdatedPaymentCategoryFromState() === null) {
+      if (this.getUpdatedPaymentCategoryFromState() === null) {
         this.$store
-        .dispatch("postRequest", payload)
-        .then(() => {
-          this.fetchOrganisationCategories(
-            this.organisation_id,
-            1,
-            10,
-            "name",
-            ""
-          );
-        })
-        .finally(() => {
-          this.loading = false;
-          this.resetForm();
-          this.$emit("close-right-drawer");
-        });
-      }else {
+          .dispatch("postRequest", payload)
+          .then(() => {
+            this.fetchOrganisationCategories(
+              this.organisation_id,
+              1,
+              10,
+              "name",
+              ""
+            );
+          })
+          .finally(() => {
+            this.loading = false;
+            this.resetForm();
+            this.$emit("close-right-drawer");
+          });
+      } else {
         this.$store
-        .dispatch("putRequest", payload)
-        .then(() => {
-          this.fetchOrganisationCategories(
-            this.organisation_id,
-            1,
-            10,
-            "name",
-            ""
-          );
-        })
-        .finally(() => {
-          this.loading = false;
-          this.resetForm();
-          this.$emit("close-right-drawer");
-        });
+          .dispatch("putRequest", payload)
+          .then(() => {
+            this.fetchOrganisationCategories(
+              this.organisation_id,
+              1,
+              10,
+              "name",
+              ""
+            );
+          })
+          .finally(() => {
+            this.loading = false;
+            this.resetForm();
+            this.$emit("close-right-drawer");
+          });
       }
     },
 
@@ -213,14 +229,13 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 12px;
+  font-size: 0.7rem;
   align-items: center;
-  letter-spacing: 0.01em;
-  color: $grey2;
+  color: $grey5;
 }
 
 .info {
   color: $grey2;
-  font-size: small;
+  font-size: smaller;
 }
 </style>

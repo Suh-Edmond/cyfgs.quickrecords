@@ -71,13 +71,9 @@
 
     <q-drawer
       v-model="right"
+      show-if-above
       side="right"
       bordered
-      :width="
-        $q.platform.is.mobile
-          ? right_drawer_width_mobile
-          : right_drawer_width_desktop
-      "
       :breakpoint="500"
     >
       <q-page>

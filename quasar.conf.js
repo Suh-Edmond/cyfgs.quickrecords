@@ -22,7 +22,7 @@ module.exports = function (ctx) {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://v1.quasar.dev/quasar-cli/boot-files
-    boot: ["i18n", "axios", "addressbar-color", "app-init"],
+    boot: ["i18n", "axios", "app-init"],
 
     // https://v1.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
     css: ["app.scss"],
@@ -46,8 +46,8 @@ module.exports = function (ctx) {
     build: {
       vueRouterMode: "history", // available values: 'hash', 'history'
       env: {
-        API_BASE_URL: "https://www.quickrecords.net",
-        // API_BASE_URL:"http://127.0.0.1:8000",
+        // API_BASE_URL: "https://www.quickrecords.net",
+        API_BASE_URL:"http://127.0.0.1:8000",
         CLIENT_SERVER: "https://quickrecords.vercel.app",
         REDIRECT_URL: "https://quickrecords.vercel.app/auquth/invite-member",
         APP_NAME: "Quick_Records",
@@ -118,7 +118,6 @@ module.exports = function (ctx) {
         "LocalStorage",
         "SessionStorage",
         "Loading",
-        "AddressbarColor",
       ],
       config: {
         notify: {

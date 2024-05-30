@@ -75,6 +75,7 @@
       side="right"
       bordered
       :breakpoint="500"
+      :width="400"
     >
       <q-page>
         <q-card class="bar" flat>
@@ -91,7 +92,7 @@
             </q-btn>
             <label
               for="heading"
-              class="text-white q-ml-sm"
+              class="text-white q-ml-sm q-mt-xs"
               :class="$q.platform.is.desktop ? 'text_h6' : 'side-bar-heading'"
               >{{ heading }}</label
             >
@@ -287,7 +288,7 @@ export default {
         selected: true,
       },
       requires_add: false,
-      right_drawer_width_mobile: 0,
+      right_drawer_width_mobile: 200,
       right_drawer_width_desktop: 450,
       current_tab: "",
       right_drawer_tab: "",

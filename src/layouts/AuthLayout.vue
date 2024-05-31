@@ -44,7 +44,7 @@
                 </q-item>
 
                 <q-item clickable v-close-popup @click="onItemClick('fr')">
-                  <q-item-section class="text-center">
+                  <q-item-section class="text-center lang">
                     <q-item-label>{{ $t("app.french") }}</q-item-label>
                   </q-item-section>
                 </q-item>

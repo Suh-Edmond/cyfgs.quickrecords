@@ -5,7 +5,7 @@
       :class="$q.screen.lg ? 'q-pt-lg flex flex-center' : 'q-pt-sm'"
     >
       <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12">
-        <q-card :class="$q.screen.lg ? 'q-mt-lg' : 'q-mt-md'">
+        <q-card :class="$q.screen.lg ? 'q-mt-lg card_lg' : 'q-mt-md card'">
           <!-------------------------PASSWORD RESET TOKEN FORM -------------------------------->
           <q-card-section v-show="show_token_form">
             <div class="back_arrow_button">
@@ -186,6 +186,13 @@ export default {
   box-sizing: border-box;
 }
 
+.card {
+  height: 25rem;
+}
+
+.card_lg {
+  height: 22rem;
+}
 .page {
   background-color: $grey1;
 }

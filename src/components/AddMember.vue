@@ -28,11 +28,7 @@
 
       <q-tab-panels v-model="tab" animated>
         <q-tab-panel name="Add Member">
-          <q-form
-            @submit="onAddMember"
-            class="q-gutter-md"
-            :class="$q.platform.is.mobile ? 'q-pl-sm' : ''"
-          >
+          <q-form @submit="onAddMember" class="q-gutter-sm">
             <div class="text-subtitle2 text-left text-primary q-py-xs">
               {{ $t("app.personalInformationLabel") }}
             </div>
@@ -146,10 +142,7 @@
           </q-form>
         </q-tab-panel>
         <q-tab-panel name="Upload File">
-          <q-form
-            @submit="uploadFile"
-            :class="$q.platform.is.mobile ? 'q-pl-sm' : ''"
-          >
+          <q-form @submit="uploadFile">
             <div class="text-subtitle2 text-center text-primary">
               {{ $t("app.importMemberMsg") }}
               <span class="q-pl-md">
@@ -159,7 +152,7 @@
                 </q-btn>
               </span>
             </div>
-            <div class="row q-gutter-md flex flex-center q-pt-md">
+            <div class="row q-gutter-md q-pt-md">
               <div class="col-md-8 col-sm-12 col-xs-12">
                 <q-file
                   outlined
@@ -176,12 +169,12 @@
               </div>
               <div class="col-md-2 col-sm-12 col-xs-12 q-pb-md">
                 <ButtonVue
-                  class="form_button"
                   :label="label_upload"
                   :loading="loading"
                   :color="color"
                   :disabled="validateFormUpload"
                   :no_caps="no_caps"
+                  class="full-width"
                 >
                 </ButtonVue>
               </div>
@@ -415,6 +408,9 @@ export default {
 
 <style src="vue-tel-input/dist/vue-tel-input.css"></style>
 <style scoped lang="scss">
+* {
+  box-sizing: border-box;
+}
 .csv_image_card {
   cursor: pointer;
 }

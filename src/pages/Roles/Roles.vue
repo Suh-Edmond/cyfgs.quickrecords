@@ -22,6 +22,7 @@
           >
             <q-item-section top avatar>
               <q-avatar
+                size="md"
                 :color="current_tag == role.name ? 'white' : 'primary'"
                 :text-color="current_tag == role.name ? 'grey' : 'white'"
               >
@@ -157,6 +158,7 @@
             text-color="white"
             v-for="permission in getSelectedRole.permissions"
             :key="permission.name"
+            size="md"
           >
             {{ permission.name }}
           </q-chip>

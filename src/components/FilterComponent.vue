@@ -111,6 +111,7 @@
           no-caps
           icon-right="download"
           @click="downloadCategories"
+          class="q-py-xs"
           size="sm"
         ></q-btn>
       </div>
@@ -422,7 +423,7 @@
           </q-item>
         </template>
       </q-select>
-      <div class="col-md-6 col-lg-6 flex">
+      <div class="col-12 col-md flex">
         <q-btn
           :label="$t('app.filter')"
           :color="'primary'"
@@ -465,6 +466,7 @@
         no-caps
         icon-right="filter_list"
         @click="searchSavings()"
+        class="q-py-xs"
         size="sm"
       >
       </q-btn>
@@ -477,10 +479,12 @@
         no-caps
         icon-right="download"
         @click="downloadMembersSavings"
+        class="q-py-xs"
         size="sm"
       ></q-btn>
     </div>
     <!---------------------------------------------END OF FILTER FOR MEMBERS SAVINGS TREASURER---------------------------------------------------->
+
     <!----------------------------------------------FILTER HEADER FOR MEMBER SAVINGS-------------------------------------------------------------->
     <div
       class="row q-gutter-sm q-pa-sm"
@@ -531,7 +535,7 @@
           </q-item>
         </template>
       </q-select>
-      <div class="col-md-6 col-lg-6 flex">
+      <div class="col-12 col-md flex">
         <q-btn
           :label="$t('app.filter')"
           :color="'primary'"
@@ -539,9 +543,8 @@
           no-caps
           icon-right="filter_list"
           @click="filterMemberSavings"
+          class="q-my-xs"
           size="sm"
-          padding="none xs"
-          dense
         >
         </q-btn>
         <q-space />
@@ -553,9 +556,8 @@
           no-caps
           icon-right="download"
           @click="downloadMemberSavings"
+          class="q-my-xs"
           size="sm"
-          padding="none xs"
-          dense
         ></q-btn>
       </div>
     </div>
@@ -911,7 +913,7 @@
           </template>
         </q-select>
       </div>
-      <div class="col-12 col-md">
+      <div class="col-12 col-md flex">
         <q-btn
           :label="$t('app.generateReport')"
           color="primary"
@@ -919,11 +921,11 @@
           no-caps
           :disabled="validateGenerateReport"
           :loading="false"
-          size="md"
+          class="q-my-xs"
+          size="sm"
         >
         </q-btn>
-      </div>
-      <div class="col-12 col-md flex justify-end">
+        <q-space />
         <q-btn
           :label="$t('app.download')"
           :loading="getDownloadLoadingState"
@@ -932,9 +934,8 @@
           no-caps
           icon-right="download"
           @click="downloadReport"
-          dense
+          class="q-my-xs"
           size="sm"
-          padding="none xs"
         ></q-btn>
       </div>
     </div>

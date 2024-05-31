@@ -1,7 +1,7 @@
 <template>
   <div class="q-pa-sm">
     <!------------------------------------------CONTRIBUTIONS VIEW FOR MEMBERS WITHOUT TREASURER ROLE----------------------------------- -->
-    <div v-if="!checkTreasurerRole()">
+    <div v-if="!checkTreasurerRoleOnly()">
       <div
         class="row q-pa-sm justify-between"
         :style="
@@ -15,7 +15,8 @@
           no-caps
           icon-right="filter_list"
           @click="openSearchBar()"
-          :size="$q.platform.is.mobile ? 'sm' : 'sm'"
+          class="q-py-xs"
+          size="sm"
         >
         </q-btn>
         <q-space />
@@ -27,7 +28,8 @@
           no-caps
           icon-right="download"
           @click="downloadContributions()"
-          :size="$q.platform.is.mobile ? 'sm' : 'sm'"
+          class="q-py-xs"
+          size="sm"
         ></q-btn>
       </div>
       <!-- table for contributions -->
@@ -64,7 +66,7 @@
     <!------------------------------------------END CONTRIBUTIONS VIEW FOR MEMBERS WITHOUT TREASURER ROLE----------------------------------- -->
 
     <!------------------------------------------CONTRIBUTIONS VIEW FOR MEMBERS WITH TREASURER ROLE----------------------------------- -->
-    <div v-if="checkTreasurerRole()">
+    <div v-if="checkTreasurerRoleOnly()">
       <div
         class="row q-pa-sm justify-between"
         :style="
@@ -79,6 +81,7 @@
           icon-right="filter_list"
           @click="openSearchBar()"
           :size="$q.platform.is.mobile ? 'sm' : 'sm'"
+          :class="$q.platform.is.mobile ? '' : 'q-py-xs'"
         >
         </q-btn>
         <q-space />
@@ -91,6 +94,7 @@
           icon-right="download"
           @click="downloadContributions()"
           :size="$q.platform.is.mobile ? 'sm' : 'sm'"
+          :class="$q.platform.is.mobile ? '' : 'q-py-xs'"
         ></q-btn>
       </div>
 

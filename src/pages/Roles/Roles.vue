@@ -152,7 +152,7 @@
         <div class="q-mt-lg">
           <label class="title">Privileges</label>
         </div>
-        <div class="q-gutter-x-xs q-mt-md">
+        <div class="q-gutter-x-xs q-mt-md q-mb-lg">
           <q-chip
             color="teal"
             text-color="white"

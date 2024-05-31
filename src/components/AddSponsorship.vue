@@ -106,6 +106,7 @@
             :class="
               $q.platform.is.desktop ? 'flex q-mt-lg justify-end' : 'q-mb-xl'
             "
+            v-if="$q.platform.is.desktop"
           >
             <q-btn
               class="form_button q-mr-lg"
@@ -119,7 +120,29 @@
             >
             </q-btn>
             <ButtonVue
-              class="form_button"
+              :label="$t('app.saveBtnLabel')"
+              :loading="loading"
+              :color="'primary'"
+              :disabled="validateForm"
+              :no_caps="no_caps"
+            >
+            </ButtonVue>
+          </div>
+
+          <div v-if="$q.platform.is.mobile" class="row">
+            <q-btn
+              class="full-width"
+              :label="$t('app.reset')"
+              :color="'primary'"
+              no-caps
+              outline
+              @click="resetForm"
+              v-if="$q.platform.is.desktop"
+              :disable="existSponsorship"
+            >
+            </q-btn>
+            <ButtonVue
+              class="full-wdith"
               :label="$t('app.saveBtnLabel')"
               :loading="loading"
               :color="'primary'"

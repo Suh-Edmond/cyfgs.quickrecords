@@ -552,9 +552,11 @@ export default {
         },
       };
       this.$store.dispatch("getRequest", payload).then((res) => {
-        this.notifications = res.data.filter(
-          (notification) => !notification.has_seen_notification
-        );
+        if (res.status == 200) {
+          this.notifications = res.data.filter(
+            (notification) => !notification.has_seen_notification
+          );
+        }
       });
     },
 

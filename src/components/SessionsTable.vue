@@ -68,8 +68,9 @@
     <!--add registration fee -->
     <q-dialog v-model="show_add_session">
       <q-card
-        :style="$q.platform.is.mobile ? 'min-width: 350px' : 'min-width: 450px'"
-        class="q-pa-sm"
+        :style="$q.platform.is.desktop ? 'width: 350px' : 'width: 450px'"
+        class="q-pt-sm q-pb-md"
+        :class="$q.platform.is.desktop ? 'q-px-sm' : ''"
       >
         <q-card-section class="row">
           <div class="text-h6 add_year" v-if="session.id == null">
@@ -116,18 +117,28 @@
                 disabled
               />
             </div>
-            <div class="flex q-mt-lg justify-end">
-              <div>
-                <ButtonVue
-                  class="form_button"
-                  :label="$t('app.addLabel')"
-                  :loading="is_fetching"
-                  :color="'primary'"
-                  :disabled="session.year == null"
-                  :no_caps="true"
-                >
-                </ButtonVue>
-              </div>
+            <div class="flex q-mt-lg justify-end" v-if="$q.platform.is.desktop">
+              <ButtonVue
+                class="form_button"
+                :label="$t('app.addLabel')"
+                :loading="is_fetching"
+                :color="'primary'"
+                :disabled="session.year == null"
+                :no_caps="true"
+              >
+              </ButtonVue>
+            </div>
+
+            <div class="flex q-mt-lg" v-if="$q.platform.is.mobile">
+              <ButtonVue
+                class="full-width"
+                :label="$t('app.addLabel')"
+                :loading="is_fetching"
+                :color="'primary'"
+                :disabled="session.year == null"
+                :no_caps="true"
+              >
+              </ButtonVue>
             </div>
           </q-form>
         </q-card-section>
@@ -136,7 +147,10 @@
     <!--end add registration fee -->
 
     <q-dialog v-model="show_warning">
-      <q-card style="width: 400px">
+      <q-card
+        :style="$q.platform.is.desktop ? 'width: 300px' : 'width: 400px'"
+        :class="$q.platform.is.desktop ? 'q-px-sm' : ''"
+      >
         <q-card-section>
           <div class="row">
             <div class="col-md-2">

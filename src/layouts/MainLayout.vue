@@ -70,12 +70,12 @@
     </q-page-container>
 
     <q-drawer
-      v-model="right"
+        v-model="right"
       show-if-above
       side="right"
       bordered
-      :breakpoint="500"
       :width="400"
+      v-if="right"
     >
       <q-page>
         <q-card class="bar" flat>
@@ -110,134 +110,136 @@
             </q-btn>
           </div>
         </q-card>
-        <AddMember
-          v-if="current_tab == 'Member Management'"
-          @close-right-drawer="closeRightDrawer"
-          @set-heading="setHeading"
-        ></AddMember>
-        <AddPaymentCategory
-          v-if="current_tab == 'Payment Categories'"
-          @close-right-drawer="closeRightDrawer"
-          @set-heading="setHeading"
-        >
-        </AddPaymentCategory>
-        <AddPaymentItem
-          v-if="current_tab == 'Payment Items'"
-          @close-right-drawer="closeRightDrawer"
-          @set-heading="setHeading"
-        ></AddPaymentItem>
-        <AddExpenditureCategory
-          v-if="current_tab == 'Expenditure Categories'"
-          @close-right-drawer="closeRightDrawer"
-          @set-heading="setHeading"
-        ></AddExpenditureCategory>
-        <AddExpenditureItem
-          v-if="current_tab == 'Expenditure Items'"
-          @close-right-drawer="closeRightDrawer"
-          @set-heading="setHeading"
-        ></AddExpenditureItem>
-        <AddExpenditureItemDetail
-          v-if="current_tab == 'Expenditure Item Details'"
-          @close-right-drawer="closeRightDrawer"
-          @set-heading="setHeading"
-        ></AddExpenditureItemDetail>
-        <AddMemberSavingVue
-          v-if="
-            current_tab.includes('Savings') && current_tab != 'Search Savings'
-          "
-          @close-right-drawer="closeRightDrawer"
-          @set-heading="setHeading"
-        ></AddMemberSavingVue>
-        <ViewMemberSaving
-          v-if="current_tab == 'View Member Saving'"
-          @close-right-drawer="closeRightDrawer"
-          @set-heading="setHeading"
-        >
-        </ViewMemberSaving>
-        <AddIncomeActivity
-          v-if="current_tab == 'Income Activities'"
-          @close-right-drawer="closeRightDrawer"
-          @set-heading="setHeading"
-        ></AddIncomeActivity>
-        <ViewIncomeActivity
-          v-if="current_tab == 'View Income Activity'"
-          @close-right-drawer="closeRightDrawer"
-          @set-heading="setHeading"
-        ></ViewIncomeActivity>
-        <ViewContribution
-          v-if="current_tab == 'View Contribution'"
-          @set-heading="setHeading"
-          @edit-contribution="updateRightDrawer"
-        >
-        </ViewContribution>
-        <AddContribution
-          v-if="
-            current_tab.includes('Contributions') &&
-            current_tab != 'Search Members Contributions'
-          "
-          @close-right-drawer="closeRightDrawer"
-          @set-heading="setHeading"
-        ></AddContribution>
-        <SearchSavings
-          v-if="current_tab == 'Search Savings'"
-          @close-right-drawer="closeRightDrawer"
-          @set-heading="setHeading"
-        >
-        </SearchSavings>
-        <SearchContribution
-          v-if="current_tab == 'Search Members Contributions'"
-          @close-right-drawer="closeRightDrawer"
-          @set-heading="setHeading"
-          @search-contribution="searchContribution"
-        >
-        </SearchContribution>
-        <EditMemberContribution
-          v-if="current_tab == 'Edit Member Contribution'"
-          @close-right-drawer="closeRightDrawer"
-          @set-heading="setHeading"
-        >
-        </EditMemberContribution>
-        <AddSponsorship
-          v-if="current_tab == 'Sponsorship Management'"
-          @close-right-drawer="closeRightDrawer"
-          @set-heading="setHeading"
-        ></AddSponsorship>
-        <ViewSponsorshipVue
-          v-if="current_tab == 'View Sponsorship'"
-          @close-right-drawer="closeRightDrawer"
-          @set-heading="setHeading"
-        >
-        </ViewSponsorshipVue>
-        <ViewExpenditureItemVue
-          v-if="current_tab == 'Expenditure Activity Information'"
-          @close-right-drawer="closeRightDrawer"
-          @set-heading="setHeading"
-        >
-        </ViewExpenditureItemVue>
-        <ViewExpenditureItemDetail
-          v-if="current_tab == 'Expenditure Item Detail Information'"
-          @close-right-drawer="closeRightDrawer"
-          @set-heading="setHeading"
-        >
-        </ViewExpenditureItemDetail>
-        <MemberRegistration
-          v-if="current_tab == 'Register Member'"
-          @close-right-drawer="closeRightDrawer"
-          @set-heading="setHeading"
-        >
-        </MemberRegistration>
-        <ViewPaymentItem
-          v-if="current_tab == 'View Payment Item'"
-          @close-right-drawer="closeRightDrawer"
-          @set-heading="setHeading"
-        >
-        </ViewPaymentItem>
-        <PaymentDetails
-          v-if="current_tab == 'Payment Details'"
-          :payment-details="data"
-          @close-right-drawer="closeRightDrawer"
-          @set-heading="setHeading"
-        ></PaymentDetails>
+        <div>
+          <AddMember
+            v-if="current_tab == 'Member Management'"
+            @close-right-drawer="closeRightDrawer"
+            @set-heading="setHeading"
+          ></AddMember>
+          <AddPaymentCategory
+            v-if="current_tab == 'Payment Categories'"
+            @close-right-drawer="closeRightDrawer"
+            @set-heading="setHeading"
+          >
+          </AddPaymentCategory>
+          <AddPaymentItem
+            v-if="current_tab == 'Payment Items'"
+            @close-right-drawer="closeRightDrawer"
+            @set-heading="setHeading"
+          ></AddPaymentItem>
+          <AddExpenditureCategory
+            v-if="current_tab == 'Expenditure Categories'"
+            @close-right-drawer="closeRightDrawer"
+            @set-heading="setHeading"
+          ></AddExpenditureCategory>
+          <AddExpenditureItem
+            v-if="current_tab == 'Expenditure Items'"
+            @close-right-drawer="closeRightDrawer"
+            @set-heading="setHeading"
+          ></AddExpenditureItem>
+          <AddExpenditureItemDetail
+            v-if="current_tab == 'Expenditure Item Details'"
+            @close-right-drawer="closeRightDrawer"
+            @set-heading="setHeading"
+          ></AddExpenditureItemDetail>
+          <AddMemberSavingVue
+            v-if="
+              current_tab.includes('Savings') && current_tab != 'Search Savings'
+            "
+            @close-right-drawer="closeRightDrawer"
+            @set-heading="setHeading"
+          ></AddMemberSavingVue>
+          <ViewMemberSaving
+            v-if="current_tab == 'View Member Saving'"
+            @close-right-drawer="closeRightDrawer"
+            @set-heading="setHeading"
+          >
+          </ViewMemberSaving>
+          <AddIncomeActivity
+            v-if="current_tab == 'Income Activities'"
+            @close-right-drawer="closeRightDrawer"
+            @set-heading="setHeading"
+          ></AddIncomeActivity>
+          <ViewIncomeActivity
+            v-if="current_tab == 'View Income Activity'"
+            @close-right-drawer="closeRightDrawer"
+            @set-heading="setHeading"
+          ></ViewIncomeActivity>
+          <ViewContribution
+            v-if="current_tab == 'View Contribution'"
+            @set-heading="setHeading"
+            @edit-contribution="updateRightDrawer"
+          >
+          </ViewContribution>
+          <AddContribution
+            v-if="
+              current_tab.includes('Contributions') &&
+              current_tab != 'Search Members Contributions'
+            "
+            @close-right-drawer="closeRightDrawer"
+            @set-heading="setHeading"
+          ></AddContribution>
+          <SearchSavings
+            v-if="current_tab == 'Search Savings'"
+            @close-right-drawer="closeRightDrawer"
+            @set-heading="setHeading"
+          >
+          </SearchSavings>
+          <SearchContribution
+            v-if="current_tab == 'Search Members Contributions'"
+            @close-right-drawer="closeRightDrawer"
+            @set-heading="setHeading"
+            @search-contribution="searchContribution"
+          >
+          </SearchContribution>
+          <EditMemberContribution
+            v-if="current_tab == 'Edit Member Contribution'"
+            @close-right-drawer="closeRightDrawer"
+            @set-heading="setHeading"
+          >
+          </EditMemberContribution>
+          <AddSponsorship
+            v-if="current_tab == 'Sponsorship Management'"
+            @close-right-drawer="closeRightDrawer"
+            @set-heading="setHeading"
+          ></AddSponsorship>
+          <ViewSponsorshipVue
+            v-if="current_tab == 'View Sponsorship'"
+            @close-right-drawer="closeRightDrawer"
+            @set-heading="setHeading"
+          >
+          </ViewSponsorshipVue>
+          <ViewExpenditureItemVue
+            v-if="current_tab == 'Expenditure Activity Information'"
+            @close-right-drawer="closeRightDrawer"
+            @set-heading="setHeading"
+          >
+          </ViewExpenditureItemVue>
+          <ViewExpenditureItemDetail
+            v-if="current_tab == 'Expenditure Item Detail Information'"
+            @close-right-drawer="closeRightDrawer"
+            @set-heading="setHeading"
+          >
+          </ViewExpenditureItemDetail>
+          <MemberRegistration
+            v-if="current_tab == 'Register Member'"
+            @close-right-drawer="closeRightDrawer"
+            @set-heading="setHeading"
+          >
+          </MemberRegistration>
+          <ViewPaymentItem
+            v-if="current_tab == 'View Payment Item'"
+            @close-right-drawer="closeRightDrawer"
+            @set-heading="setHeading"
+          >
+          </ViewPaymentItem>
+          <PaymentDetails
+            v-if="current_tab == 'Payment Details'"
+            :payment-details="data"
+            @close-right-drawer="closeRightDrawer"
+            @set-heading="setHeading"
+          ></PaymentDetails>
+        </div>
       </q-page>
     </q-drawer>
   </q-layout>
@@ -245,7 +247,7 @@
 
 <script>
 import MainContent from "src/components/MainContent.vue";
-import { LocalStorage, SessionStorage } from "quasar";
+import { LocalStorage, Platform, SessionStorage } from "quasar";
 import AddMember from "src/components/AddMember.vue";
 import AddPaymentCategory from "src/components/AddPaymentCategory.vue";
 import AddPaymentItem from "src/components/AddPaymentItem.vue";

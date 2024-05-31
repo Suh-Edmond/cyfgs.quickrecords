@@ -76,11 +76,7 @@
                   }}</span>
                 </router-link>
               </div>
-              <div class="row justify-center" v-if="$q.platform.is.mobile">
-                <div class="account_text">{{ $t("app.noAccountMsg") }}</div>
-                <router-link to="/auth/register" class="sign_link">
-                </router-link>
-              </div>
+
               <div
                 class="row justify-center q-mb-xl"
                 v-if="$q.platform.is.mobile"

@@ -1,5 +1,8 @@
 <template>
-  <div class="q-mb-md q-mx-md">
+  <div
+    class="q-mb-md"
+    :class="$q.platform.is.mobile ? 'q-ml-md q-mr-sm' : 'q-mx-md'"
+  >
     <q-banner
       inline-actions
       rounded
@@ -75,20 +78,6 @@
       </div>
       <div>
         <label for="credential" class="form_field"
-          >{{ $t("app.venue") }}
-        </label>
-        <q-input
-          v-model="expenditure_item.venue"
-          outlined
-          dense
-          type="text"
-          class="q-mb-md"
-          :readonly="existExpenditureItem"
-          hide-bottom-space
-        />
-      </div>
-      <div>
-        <label for="credential" class="form_field"
           >{{ $t("app.date") }} <span class="text-red">*</span></label
         >
         <q-input
@@ -118,6 +107,20 @@
       </div>
       <div>
         <label for="credential" class="form_field"
+          >{{ $t("app.venue") }}
+        </label>
+        <q-input
+          v-model="expenditure_item.venue"
+          outlined
+          dense
+          type="text"
+          class="q-mb-md"
+          :readonly="existExpenditureItem"
+          hide-bottom-space
+        />
+      </div>
+      <div>
+        <label for="credential" class="form_field"
           >{{ $t("app.comment") }}
         </label>
         <q-input
@@ -132,7 +135,8 @@
         />
       </div>
       <div
-        :class="$q.platform.is.desktop ? 'flex q-mt-md justify-end' : 'q-mb-lg'"
+        :class="$q.platform.is.desktop ? 'flex q-mt-lg justify-end' : 'q-mb-lg'"
+        v-if="$q.platform.is.desktop"
       >
         <q-btn
           class="form_button q-mr-lg"
@@ -154,6 +158,29 @@
           :no_caps="true"
         >
         </ButtonVue>
+      </div>
+
+      <div class="q-gutter-y-md q-mb-lg" v-if="$q.platform.is.mobile">
+        <ButtonVue
+          class="full-width"
+          :label="$t('app.saveBtnLabel')"
+          :loading="loading"
+          :color="'primary'"
+          :disabled="validateForm"
+          :no_caps="true"
+        >
+        </ButtonVue>
+        <q-btn
+          class="full-width"
+          :label="$t('app.reset')"
+          :color="'primary'"
+          no-caps
+          outline
+          @click="resetForm"
+          v-if="$q.platform.is.desktop"
+          :disable="existExpenditureItem"
+        >
+        </q-btn>
       </div>
     </q-form>
   </div>

@@ -128,29 +128,6 @@
             >
             </ButtonVue>
           </div>
-
-          <div v-if="$q.platform.is.mobile" class="row">
-            <q-btn
-              class="full-width"
-              :label="$t('app.reset')"
-              :color="'primary'"
-              no-caps
-              outline
-              @click="resetForm"
-              v-if="$q.platform.is.desktop"
-              :disable="existSponsorship"
-            >
-            </q-btn>
-            <ButtonVue
-              class="full-wdith"
-              :label="$t('app.saveBtnLabel')"
-              :loading="loading"
-              :color="'primary'"
-              :disabled="validateForm"
-              :no_caps="no_caps"
-            >
-            </ButtonVue>
-          </div>
         </div>
       </div>
     </q-form>

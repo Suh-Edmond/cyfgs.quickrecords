@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-sm">
+  <div>
     <!------------------------------------------CONTRIBUTIONS VIEW FOR MEMBERS WITHOUT TREASURER ROLE----------------------------------- -->
     <div v-if="!checkTreasurerRoleOnly()">
       <div
@@ -34,7 +34,6 @@
       </div>
       <!-- table for contributions -->
       <TableVue
-        :class="$q.platform.is.desktop ? 'q-pt-sm q-px-sm' : ' q-px-sm q-pt-lg'"
         :columns="columns"
         :data="getTableData"
         :label="label"

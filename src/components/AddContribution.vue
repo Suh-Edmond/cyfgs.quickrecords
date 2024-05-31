@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="q-mb-md"
-    ::class="$q.platform.is.mobile ? 'q-ml-xl q-mr-sm' : 'q-mx-md'"
-  >
+  <div class="q-mb-md" ::class="$q.platform.is.mobile ? 'q-mx-sm' : 'q-mx-md'">
     <q-linear-progress indeterminate v-show="is_fetching_members" />
     <q-tabs
       v-model="tab"
@@ -30,13 +27,17 @@
     <q-separator />
     <q-tab-panels v-model="tab" animated>
       <q-tab-panel name="Enter Contribution">
-        <div class="q-mb-md">
+        <div :class="$q.platform.is.mobile ? 'q-mb-md q-mx-sm' : ''">
           <label class="text-muted info"
             >{{ $t("app.warningField") }}<span class="text-red">* </span
             >{{ $t("app.fields") }}</label
           >
         </div>
-        <q-form @submit="onAddContribution" class="q-gutter-xs">
+        <q-form
+          @submit="onAddContribution"
+          class="q-gutter-xs"
+          :class="$q.platform.is.mobile ? 'q-ml-xs' : ''"
+        >
           <div v-if="!has_selected_payment_item">
             <div class="q-mb-md">
               <label for="name" class="form_field"
@@ -412,7 +413,7 @@
         </q-form>
       </q-tab-panel>
       <q-tab-panel name="Use Saving">
-        <div>
+        <div :class="$q.platform.is.desktop ? 'q-ml-sm' : ''">
           <div class="q-mb-md">
             <label class="text-muted info"
               >{{ $t("app.warningField") }}<span class="text-red">*</span
@@ -774,7 +775,7 @@
                 </div>
               </div>
 
-              <div class="q-gutter-y-lg q-mb-lg" v-if="$q.platform.is.desktop">
+              <div class="q-gutter-y-lg q-mb-lg" v-if="$q.platform.is.mobile">
                 <ButtonVue
                   class="full-width"
                   :label="$t('app.saveBtnLabel')"

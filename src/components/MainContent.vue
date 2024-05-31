@@ -173,10 +173,8 @@
               <span class="title tab" @click="goBack(item.name)">{{
                 item.name
               }}</span>
-            </label>
-            <div class="row wrap" v-if="getIntermediateTabs.length > 0">
               <span
-                class="col-12 col-md q-pl-sm tab"
+                class="q-pl-sm tab"
                 v-for="tab in getIntermediateTabs"
                 :key="tab.index"
                 @click="goBack(null)"
@@ -184,7 +182,7 @@
                 <q-icon size="1rem" name="chevron_right" color="primary" />
                 <span class="title">{{ tab.name }}</span></span
               >
-            </div>
+            </label>
           </div>
           <q-space />
           <q-btn

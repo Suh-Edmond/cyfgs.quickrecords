@@ -69,7 +69,14 @@
       </MainContent>
     </q-page-container>
 
-    <q-drawer v-model="right" show-if-above side="right" bordered :width="400">
+    <q-drawer
+      v-model="right"
+      show-if-above
+      side="right"
+      bordered
+      :width="400"
+      v-if="right"
+    >
       <q-page>
         <q-card class="bar" flat>
           <div class="flex justify-center q-pa-sm">

@@ -70,6 +70,7 @@
       <q-card
         :style="$q.platform.is.desktop ? 'width: 350px' : 'width: 450px'"
         class="q-pt-sm q-pb-md"
+        :class="$q.platform.is.desktop ? 'q-px-sm' : ''"
       >
         <q-card-section class="row">
           <div class="text-h6 add_year" v-if="session.id == null">
@@ -146,7 +147,10 @@
     <!--end add registration fee -->
 
     <q-dialog v-model="show_warning">
-      <q-card :style="$q.platform.is.desktop ? 'width: 300px' : 'width: 400px'">
+      <q-card
+        :style="$q.platform.is.desktop ? 'width: 300px' : 'width: 400px'"
+        :class="$q.platform.is.desktop ? 'q-px-sm' : ''"
+      >
         <q-card-section>
           <div class="row">
             <div class="col-md-2">

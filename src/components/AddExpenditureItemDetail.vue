@@ -1,5 +1,5 @@
 <template>
-  <div :class="$q.platform.is.mobile ? 'q-mx-lg' : 'q-mx-md'">
+  <div :class="$q.platform.is.mobile ? 'q-ml-lg q-mr-md' : 'q-mx-md'">
     <q-banner
       inline-actions
       rounded

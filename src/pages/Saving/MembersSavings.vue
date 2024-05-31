@@ -150,7 +150,7 @@ export default {
       organisation_id: LocalStorage.getItem("data").user_data.organisation_id,
       session_id: LocalStorage.getItem("data").current_session.id,
       loading_download: false,
-      search_param:"",
+      search_param: "",
     };
   },
   computed: {
@@ -216,8 +216,8 @@ export default {
       const { page, rowsPerPage } = props.pagination;
       const fetch_count =
         rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
-        const filter = props.filter;
-        this.search_param = props.filter;
+      const filter = props.filter;
+      this.search_param = props.filter;
       this.table_loader = true;
       if (this.year === "" || null) {
         this.getPaginatedOrganisationMemberSavings(

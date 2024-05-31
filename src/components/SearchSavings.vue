@@ -1,199 +1,204 @@
 <template>
-  <div class="q-pa-md">
-    <div>
-      <div class="q-mb-md">
-        <label for="heading" class="text">{{
-          $t("app.filterUserSaving")
-        }}</label>
-      </div>
-      <!-- search by name of member -->
-      <div class="q-mb-lg row q-gutter-md">
-        <div class="col-md-9 col-lg-9 col-sm-12 col-xs-12">
-          <q-input
-            v-model="param.name"
-            outlined
-            dense
-            type="text"
-            :placeholder="$t('app.filterName')"
-          />
-        </div>
-        <div class="col-md-2 col-lg-2 col-sm-12 col xs-12">
-          <q-btn
-            class="form_button"
-            :label="$t('app.filter')"
-            :loading="loading_user_info"
-            :color="'primary'"
-            :disabled="validateFilterByUserInfo"
-            no-caps
-            @click="filterByUserInfo()"
-          >
-          </q-btn>
-        </div>
-      </div>
-      <hr class="separator" />
-      <div class="q-my-md">
-        <label for="heading" class="text">{{ $t("app.filterAmount") }} </label>
-      </div>
-      <!-- search by amount deposited -->
-      <div class="q-mb-lg row q-gutter-md">
-        <div class="col-md-9 col-lg-9 col-sm-12 col-xs-12">
-          <q-input
-            v-model="param.amount_deposited"
-            outlined
-            dense
-            type="number"
-            placeholder="Search by amount"
-          />
-        </div>
-        <div class="col-md-2 col-lg-2 col-sm-12 col xs-12">
-          <q-btn
-            class="form_button"
-            :label="$t('app.filter')"
-            :loading="loading_save_amount"
-            :color="'primary'"
-            :disabled="validateAmount"
-            no-caps
-            @click="filterByAmount()"
-          >
-          </q-btn>
-        </div>
-      </div>
-      <hr class="separator" />
-      <div class="q-my-sm">
-        <label for="heading" class="text">{{ $t("app.filterStatus") }}</label>
-      </div>
-      <!-- filter by status of savings -->
-      <div class="row q-mb-md">
-        <div
-          class="col-12 col-md"
-          v-for="status in statuses"
-          :key="status.index"
+  <div
+    :class="$q.platform.is.desktop ? 'q-ml-md q-mr-sm' : 'q-mx-md'"
+    class="q-mt-md"
+  >
+    <div class="q-mb-md">
+      <label for="heading" class="text">{{ $t("app.filterUserSaving") }}</label>
+    </div>
+    <!-- search by name of member -->
+    <div class="q-mb-lg row q-gutter-x-md">
+      <q-input
+        v-model="param.name"
+        outlined
+        dense
+        type="text"
+        :placeholder="$t('app.filterName')"
+        class="col-9 col-md-9 col-lg-9 col-xs-9"
+      />
+      <q-btn
+        class="col-2 col-md-2 col-lg-2 col-xs-2"
+        :label="$t('app.filter')"
+        :loading="loading_user_info"
+        :color="'primary'"
+        :disabled="validateFilterByUserInfo"
+        no-caps
+        @click="filterByUserInfo()"
+      >
+      </q-btn>
+    </div>
+    <hr class="separator" />
+    <div class="q-my-md">
+      <label for="heading" class="text">{{ $t("app.filterAmount") }} </label>
+    </div>
+    <!-- search by amount deposited -->
+    <div class="q-mb-lg row q-gutter-x-md">
+      <q-input
+        v-model="param.amount_deposited"
+        outlined
+        dense
+        type="number"
+        placeholder="Search by amount"
+        class="col-9 col-md-9 col-lg-9 col-xs-9"
+      />
+      <q-btn
+        class="col-2 col-md-2 col-lg-2 col-xs-2"
+        :label="$t('app.filter')"
+        :loading="loading_save_amount"
+        :color="'primary'"
+        :disabled="validateAmount"
+        no-caps
+        @click="filterByAmount()"
+      >
+      </q-btn>
+    </div>
+    <hr class="separator" />
+    <div class="q-my-sm">
+      <label for="heading" class="text">{{ $t("app.filterStatus") }}</label>
+    </div>
+    <!-- filter by status of savings -->
+    <div class="row q-mb-md">
+      <div class="col-3 col-md" v-for="status in statuses" :key="status.index">
+        <q-chip
+          color="primary"
+          text-color="white"
+          clickable
+          size="sm"
+          no-caps
+          @click="filterByStatus(status.name)"
         >
-          <q-chip
-            color="primary"
-            text-color="white"
-            clickable
-            size="sm"
-            no-caps
-            @click="filterByStatus(status.name)"
-          >
-            {{ status.name }}
-          </q-chip>
-        </div>
+          {{ status.name }}
+        </q-chip>
       </div>
+    </div>
 
-      <hr class="separator" />
-      <div class="q-my-sm">
-        <label for="heading" class="text">{{ $t("app.filterDelay") }}</label>
+    <hr class="separator" />
+    <div class="q-my-sm">
+      <label for="heading" class="text">{{ $t("app.filterDelay") }}</label>
+    </div>
+    <!-- search by year -->
+    <div class="q-mb-md row">
+      <div class="col-12 col-md">
+        <q-select
+          v-model="param.year"
+          outlined
+          dense
+          :label="$t('app.searchYear')"
+          :options="years"
+          input-debounce="0"
+          use-input
+          clearable
+          @input="stopSearch"
+          @filter="filterYears"
+        >
+          <template v-slot:append v-if="start_filter_year">
+            <q-spinner color="primary" size="1.2em" :thickness="3" />
+          </template>
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey">
+                {{ $t("app.noResults") }}</q-item-section
+              >
+            </q-item>
+          </template>
+        </q-select>
       </div>
-      <!-- search by year -->
-      <div class="q-mb-md row">
-        <div class="col-12 col-md">
-          <q-select
-            v-model="param.year"
-            outlined
-            dense
-            :label="$t('app.searchYear')"
-            :options="years"
-            input-debounce="0"
-            use-input
-            clearable
-            @input="stopSearch"
-            @filter="filterYears"
-          >
-            <template v-slot:append v-if="start_filter_year">
-              <q-spinner color="primary" size="1.2em" :thickness="3" />
-            </template>
-            <template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey">
-                  {{ $t("app.noResults") }}</q-item-section
-                >
-              </q-item>
-            </template>
-          </q-select>
-        </div>
+    </div>
+    <!-- search by month -->
+    <div class="q-mb-md row">
+      <div class="col-12 col-md">
+        <q-select
+          v-model="param.month"
+          outlined
+          dense
+          :options="getAllMonths"
+          :label="$t('app.searchMonth')"
+          input-debounce="0"
+          use-input
+          clearable
+        >
+          <template v-slot:append v-if="start_filter_month">
+            <q-spinner color="primary" size="1.2em" :thickness="3" />
+          </template>
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey"
+                >{{ $t("app.noResults") }}
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
       </div>
-      <!-- search by month -->
-      <div class="q-mb-md row">
-        <div class="col-12 col-md">
-          <q-select
-            v-model="param.month"
-            outlined
-            dense
-            :options="getAllMonths"
-            :label="$t('app.searchMonth')"
-            input-debounce="0"
-            use-input
-            clearable
-          >
-            <template v-slot:append v-if="start_filter_month">
-              <q-spinner color="primary" size="1.2em" :thickness="3" />
-            </template>
-            <template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey"
-                  >{{ $t("app.noResults") }}
-                </q-item-section>
-              </q-item>
-            </template>
-          </q-select>
-        </div>
-      </div>
+    </div>
 
-      <!-- filter by date -->
-      <div class="row q-mb-md">
-        <div class="col-12 col-md">
-          <q-input
-            dense
-            v-model="param.date"
-            mask="date"
-            outlined
-            :placeholder="$t('app.selectDate')"
-          >
-            <template v-slot:append>
-              <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy
-                  ref="qDateProxy"
-                  transition-show="scale"
-                  transition-hide="scale"
-                >
-                  <q-date v-model="param.date">
-                    <div class="row items-center justify-end">
-                      <q-btn v-close-popup label="Close" color="primary" flat />
-                    </div>
-                  </q-date>
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-          </q-input>
-        </div>
+    <!-- filter by date -->
+    <div class="row q-mb-md">
+      <div class="col-12 col-md">
+        <q-input
+          dense
+          v-model="param.date"
+          mask="date"
+          outlined
+          :placeholder="$t('app.selectDate')"
+        >
+          <template v-slot:append>
+            <q-icon name="event" class="cursor-pointer">
+              <q-popup-proxy
+                ref="qDateProxy"
+                transition-show="scale"
+                transition-hide="scale"
+              >
+                <q-date v-model="param.date">
+                  <div class="row items-center justify-end">
+                    <q-btn v-close-popup label="Close" color="primary" flat />
+                  </div>
+                </q-date>
+              </q-popup-proxy>
+            </q-icon>
+          </template>
+        </q-input>
       </div>
-      <div class="flex justify-end q-mb-lg">
-        <div class="q-mr-xl">
-          <q-btn
-            :label="$t('app.reset')"
-            color="primary"
-            no-caps
-            outline
-            @click="resetForm()"
-          >
-          </q-btn>
-        </div>
-        <div>
-          <q-btn
-            class="filter_btn"
-            :label="$t('app.filter')"
-            :loading="loading"
-            :color="'primary'"
-            :disabled="validateForm"
-            no-caps
-            full-width
-            @click="filterByDuration()"
-          >
-          </q-btn>
-        </div>
-      </div>
+    </div>
+    <div class="flex justify-end q-mt-md" v-if="$q.platform.is.desktop">
+      <q-btn
+        :label="$t('app.reset')"
+        color="primary"
+        no-caps
+        outline
+        @click="resetForm()"
+        class="q-mr-md"
+      >
+      </q-btn>
+      <q-btn
+        :label="$t('app.filter')"
+        :loading="loading"
+        :color="'primary'"
+        :disabled="validateForm"
+        no-caps
+        @click="filterByDuration()"
+      >
+      </q-btn>
+    </div>
+    <div v-if="$q.platform.is.mobile" class="q-gutter-y-md q-my-md">
+      <q-btn
+        :label="$t('app.filter')"
+        :loading="loading"
+        :color="'primary'"
+        :disabled="validateForm"
+        no-caps
+        @click="filterByDuration()"
+        class="full-width"
+      >
+      </q-btn>
+      <q-btn
+        :label="$t('app.reset')"
+        color="primary"
+        no-caps
+        outline
+        @click="resetForm()"
+        class="full-width"
+      >
+      </q-btn>
     </div>
   </div>
 </template>
@@ -296,20 +301,19 @@ export default {
   },
   methods: {
     filterByUserInfo() {
+      let name = this.param != "undefined" ? this.param.name : "";
       this.$router.push({
         path: `/dashboard/members-savings`,
         query: {
           organisation_id: this.organisation_id,
-          name: this.param.name,
+          name: name,
           session_id: this.session_id,
           t: new Date().getTime(),
         },
       });
       let url = `/api/protected/user-savings?organisation_id=${
         this.organisation_id
-      }&name=${this.param.name}&session_id=${
-        this.session_id
-      }&page=${1}&per_page=${7}`;
+      }&name=${name}&session_id=${this.session_id}&page=${1}&per_page=${7}`;
       this.loading_user_info = this.filterSaving(url);
     },
 
@@ -429,9 +433,5 @@ export default {
   font-style: normal;
   font-weight: 500;
   color: $grey5;
-}
-
-.filter_btn {
-  width: 100%;
 }
 </style>

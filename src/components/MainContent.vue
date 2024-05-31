@@ -33,9 +33,9 @@
             </q-badge>
             <q-menu
               max-height="400px"
-              :max-width="$q.platform.is.desktop ? '450px' : '300px'"
+              :max-width="$q.platform.is.desktop ? '450px' : '330px'"
               :anchor="$q.platform.is.desktop ? 'top left' : 'top center'"
-              :self="$q.platform.is.desktop ? 'bottom start' : 'bottom start'"
+              :self="$q.platform.is.desktop ? 'bottom start' : 'bottom center'"
             >
               <q-list
                 :style="
@@ -173,19 +173,18 @@
               <span class="title tab" @click="goBack(item.name)">{{
                 item.name
               }}</span>
-
-              <span v-if="getIntermediateTabs.length > 0">
-                <span
-                  class="q-pl-sm tab"
-                  v-for="tab in getIntermediateTabs"
-                  :key="tab.index"
-                  @click="goBack(null)"
-                >
-                  <q-icon size="1rem" name="chevron_right" color="primary" />
-                  <span class="title">{{ tab.name }}</span></span
-                >
-              </span>
             </label>
+            <div class="row wrap" v-if="getIntermediateTabs.length > 0">
+              <span
+                class="col-12 col-md q-pl-sm tab"
+                v-for="tab in getIntermediateTabs"
+                :key="tab.index"
+                @click="goBack(null)"
+              >
+                <q-icon size="1rem" name="chevron_right" color="primary" />
+                <span class="title">{{ tab.name }}</span></span
+              >
+            </div>
           </div>
           <q-space />
           <q-btn

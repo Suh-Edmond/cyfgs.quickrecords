@@ -50,7 +50,7 @@
 
           <!-- members details -->
           <div
-            class="text-weight-bold text-left text-red q-mt-md record_value"
+            class="text-weight-bold text-left text-red q-mt-sm record_value"
             v-if="show_members"
           >
             {{ $t("app.nameLabel") }}:

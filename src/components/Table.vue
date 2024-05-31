@@ -884,12 +884,15 @@
 
     <!-- dialog for invite members. -->
     <q-dialog v-model="show_invite">
-      <q-card class="invite_card">
+      <q-card
+        class="q-pt-sm q-pb-md"
+        :class="$q.platform.is.desktop ? 'q-px-sm' : ''"
+      >
         <q-card-section>
-          <div class="q-px-md q-py-md heading text-center">
+          <div class="q-py-md heading text-center">
             {{ $t("app.inviteMsg") }}
           </div>
-          <div v-if="show_invite" class="q-px-md">
+          <div v-if="show_invite">
             <label for="name" class="form_field">{{
               $t("app.membersName")
             }}</label>
@@ -901,7 +904,7 @@
               hide-bottom-space
             />
           </div>
-          <div class="q-px-md q-pt-md">
+          <div class="q-pt-md">
             <label for="credential" class="form_field"
               >{{ $t("app.selectRole") }} <span class="text-red">*</span></label
             >
@@ -916,7 +919,7 @@
         </q-card-section>
 
         <q-card-section>
-          <div class="row q-px-md justify-center">
+          <div class="row justify-center">
             <q-btn
               icon-right="send"
               label="Send Invitation"

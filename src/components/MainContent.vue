@@ -150,7 +150,11 @@
     <div class="main_content">
       <q-card
         class="card"
-        :style="$q.platform.is.mobile ? 'width: 100vw;' : ''"
+        :style="
+          $q.platform.is.mobile
+            ? 'width: 100vw;height: 100vh;max-height: 100vh;'
+            : 'height: 90vh;max-height: 90vh;'
+        "
       >
         <q-card-section class="flex content_header">
           <div class="flex">
@@ -197,7 +201,7 @@
             "
             @click="showRightDrawer"
             class="q-pa-xs"
-            :class="$q.platform.is.mobile?'q-mr-sm':''"
+            :class="$q.platform.is.mobile ? 'q-mr-sm' : ''"
           />
         </q-card-section>
         <q-card-section>
@@ -649,8 +653,6 @@ export default {
   border-bottom-left-radius: 0;
   border-top-right-radius: 0;
   border-top-left-radius: 0;
-  height: 90vh;
-  max-height: 90vh;
 }
 
 .data_content {

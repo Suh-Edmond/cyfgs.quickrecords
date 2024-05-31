@@ -1425,6 +1425,7 @@ export default {
         msg =
           this.$t("app.memberReg") +
           `${this.chosen_state}` +
+          " " +
           this.$t("app.successfull");
       }
       return msg;

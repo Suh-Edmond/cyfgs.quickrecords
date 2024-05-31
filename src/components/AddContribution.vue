@@ -1,5 +1,8 @@
 <template>
-  <div class="q-mb-md" ::class="$q.platform.is.mobile ? 'q-mx-lg' : 'q-mx-md'">
+  <div
+    class="q-mb-md"
+    ::class="$q.platform.is.mobile ? 'q-ml-xl q-mr-sm' : 'q-mx-md'"
+  >
     <q-linear-progress indeterminate v-show="is_fetching_members" />
     <q-tabs
       v-model="tab"

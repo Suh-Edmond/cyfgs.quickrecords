@@ -183,7 +183,6 @@
           outline
           @click="resetForm"
           :disable="existIncomeActivity"
-          v-if="$q.platform.is.desktop"
         >
         </q-btn>
       </div>

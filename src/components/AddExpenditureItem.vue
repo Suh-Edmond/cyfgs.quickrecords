@@ -160,7 +160,7 @@
         </ButtonVue>
       </div>
 
-      <div class="q-gutter-y-lg q-mb-lg" v-if="$q.platform.is.mobile">
+      <div class="q-gutter-y-lg q-mb-lg q-mt-md" v-if="$q.platform.is.mobile">
         <ButtonVue
           class="full-width"
           :label="$t('app.saveBtnLabel')"
@@ -177,7 +177,6 @@
           no-caps
           outline
           @click="resetForm"
-          v-if="$q.platform.is.desktop"
           :disable="existExpenditureItem"
         >
         </q-btn>

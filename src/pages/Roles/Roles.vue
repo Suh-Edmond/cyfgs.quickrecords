@@ -227,7 +227,6 @@
                   color="primary"
                   :disabled="validateForm"
                   :no_caps="true"
-                  v-if="$q.platform.is.desktop"
                 >
                 </ButtonVue>
               </div>

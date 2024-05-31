@@ -119,7 +119,6 @@
           no-caps
           outline
           @click="resetForm"
-          v-if="$q.platform.is.desktop"
           :disable="onMemberSavingExist"
         >
         </q-btn>

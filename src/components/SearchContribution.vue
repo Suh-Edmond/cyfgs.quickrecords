@@ -1,5 +1,5 @@
 <template>
-  <div :class="$q.platform.is.desktop ? 'q-ml-md q-mr-sm' : 'q-mx-md'">
+  <div :class="$q.platform.is.desktop ? 'q-ml-lg q-mr-sm' : 'q-mx-md'">
     <q-linear-progress indeterminate v-show="is_fetching_members" />
     <div class="q-my-md">
       <label for="heading" class="text">{{ $t("app.filterMsg") }} </label>

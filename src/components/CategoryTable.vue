@@ -1179,11 +1179,13 @@ export default {
       const intermediate_tabs = Array.from(
         this.$store.getters.getIntermediateTabs
       );
-
-      intermediate_tabs.push({
-        name: this.$t("app.details"),
-        has_intermediate_tab: true,
-      });
+      const exist_tab = intermediate_tabs.find((tab) => tab.name === "Details");
+      if (exist_tab === undefined) {
+        intermediate_tabs.push({
+          name: "Details",
+          has_intermediate_tab: true,
+        });
+      }
 
       this.$store.dispatch("setIntermediateTabs", intermediate_tabs);
     },

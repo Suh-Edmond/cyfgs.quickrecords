@@ -1309,10 +1309,15 @@ export default {
         this.$store.getters.getIntermediateTabs
       );
 
-      intermediate_tabs.push({
-        name: this.$t("app.memberProfile"),
-        has_intermediate_tab: true,
-      });
+      const exist_tab = intermediate_tabs.find(
+        (tab) => tab.name === "Member Profile"
+      );
+      if (exist_tab === undefined) {
+        intermediate_tabs.push({
+          name: "Member Profile",
+          has_intermediate_tab: true,
+        });
+      }
 
       this.$store.dispatch("setIntermediateTabs", intermediate_tabs);
     },
@@ -1539,10 +1544,15 @@ export default {
         this.$store.getters.getIntermediateTabs
       );
 
-      intermediate_tabs.push({
-        name: data.user_name + " " + this.$t("app.savingtitle"),
-        has_intermediate_tab: true,
-      });
+      const exist_tab = intermediate_tabs.find(
+        (tab) => tab.name === data.user_name + " " + "Savings"
+      );
+      if (exist_tab === undefined) {
+        intermediate_tabs.push({
+          name: data.user_name + " " + "Savings",
+          has_intermediate_tab: true,
+        });
+      }
 
       this.$store.dispatch("setIntermediateTabs", intermediate_tabs);
     },
@@ -1589,11 +1599,15 @@ export default {
       const intermediate_tabs = Array.from(
         this.$store.getters.getIntermediateTabs
       );
-
-      intermediate_tabs.push({
-        name: data.user_name + " Contributions",
-        has_intermediate_tab: true,
-      });
+      const exist_tab = intermediate_tabs.find(
+        (tab) => tab.name === data.user_name + " Contributions"
+      );
+      if (exist_tab === undefined) {
+        intermediate_tabs.push({
+          name: data.user_name + " Contributions",
+          has_intermediate_tab: true,
+        });
+      }
 
       this.$store.dispatch("setIntermediateTabs", intermediate_tabs);
 

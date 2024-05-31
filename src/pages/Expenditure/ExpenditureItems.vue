@@ -222,10 +222,15 @@ export default {
         this.$store.getters.getIntermediateTabs
       );
 
-      intermediate_tabs.push({
-        name: this.$t("app.expenditureItemDetailLabel"),
-        has_intermediate_tab: true,
-      });
+      const exist_tab = intermediate_tabs.find(
+        (tab) => tab.name === "Expenditure Item Details"
+      );
+      if (exist_tab === undefined) {
+        intermediate_tabs.push({
+          name: "Expenditure Item Details",
+          has_intermediate_tab: true,
+        });
+      }
 
       this.$store.dispatch("setIntermediateTabs", intermediate_tabs);
 

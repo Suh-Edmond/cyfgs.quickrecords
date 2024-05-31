@@ -154,7 +154,7 @@ export default {
       const { page, rowsPerPage, sortBy } = props.pagination;
       const fetch_count =
         rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
-        const filter = props.filter;
+      const filter = props.filter;
       this.fetchOrganisationExpenditureCategories(
         this.organisation_id,
         page,
@@ -174,7 +174,7 @@ export default {
       let intermediate_tabs = [];
 
       intermediate_tabs.push({
-        name: this.$t("app.expenditureItemLabel"),
+        name: "Expenditure Items",
         has_intermediate_tab: true,
       });
 

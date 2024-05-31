@@ -1,5 +1,8 @@
 <template>
-  <div class="q-mb-md">
+  <div
+    class="q-mb-md"
+    ::class="$q.platform.is.mobile ? 'q-ml-md q-mr-sm' : 'q-mx-md'"
+  >
     <q-linear-progress indeterminate v-show="is_fetching_members" />
     <q-tabs
       v-model="tab"
@@ -34,141 +37,143 @@
           >
         </div>
         <q-form @submit="onAddContribution" class="q-gutter-xs">
-          <div class="q-mb-md">
-            <label for="name" class="form_field"
-              >{{ $t("app.sessionLabel") }}<span class="text-red">*</span>
-            </label>
-            <q-select
-              v-model="year"
-              outlined
-              dense
-              :options="getSessionsFromState"
-              :label="$t('app.selectYearLabel')"
-              clearable
-              @input="getPaymentItems"
-              hide-bottom-space
-            >
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    {{ $t("app.noResults") }}
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
-          </div>
-
-          <div class="q-mb-md">
-            <label for="name" class="form_field"
-              >{{ $t("app.paymentItem") }}<span class="text-red">*</span>
-            </label>
-            <q-select
-              v-model="contribution.payment_item_id"
-              outlined
-              dense
-              :options="filtered_payment_items"
-              :label="$t('app.searchPaymentItem')"
-              input-debounce="0"
-              use-input
-              clearable
-              @filter="filterPaymentItems"
-              @input="fetchPaymentItem"
-              hide-bottom-space
-            >
-              <template v-slot:append v-if="start_filtering">
-                <q-spinner color="primary" size="1.2em" :thickness="3" />
-              </template>
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    {{ $t("app.noResults") }}
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
-          </div>
-          <div
-            v-if="
-              hasSelectedPaymentItem &&
-              !start_filtering &&
-              !has_selected_payment_item
-            "
-          >
-            <div class="q-mb-md flex justify-between">
-              <label for="credential" class="form_field">{{
-                $t("app.nameLabel")
-              }}</label>
-              <label for="credential" class="value">{{
-                selected_payment_item.label
-              }}</label>
-            </div>
-            <div class="q-mb-md flex justify-between">
-              <label for="credential" class="form_field">{{
-                $t("app.amountPayable")
-              }}</label>
-              <label for="credential" class="value"
-                >{{
-                  Number(selected_payment_item.amount).toString()
-                }}
-                XAF</label
+          <div v-if="!has_selected_payment_item">
+            <div class="q-mb-md">
+              <label for="name" class="form_field"
+                >{{ $t("app.sessionLabel") }}<span class="text-red">*</span>
+              </label>
+              <q-select
+                v-model="year"
+                outlined
+                dense
+                :options="getSessionsFromState"
+                :label="$t('app.selectYearLabel')"
+                clearable
+                @input="getPaymentItems"
+                hide-bottom-space
               >
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      {{ $t("app.noResults") }}
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
             </div>
-            <div class="q-mb-md flex justify-between">
-              <label for="credential" class="form_field">{{
-                $t("app.frequency")
-              }}</label>
-              <label for="credential" class="value">{{
-                formatConstants(selected_payment_item.frequency)
-              }}</label>
-            </div>
-            <div class="q-mb-md flex justify-between">
-              <label for="credential" class="form_field">{{
-                $t("app.type")
-              }}</label>
-              <label for="credential" class="value">{{
-                formatConstants(selected_payment_item.type)
-              }}</label>
+
+            <div class="q-mb-md">
+              <label for="name" class="form_field"
+                >{{ $t("app.paymentItem") }}<span class="text-red">*</span>
+              </label>
+              <q-select
+                v-model="contribution.payment_item_id"
+                outlined
+                dense
+                :options="filtered_payment_items"
+                :label="$t('app.searchPaymentItem')"
+                input-debounce="0"
+                use-input
+                clearable
+                @filter="filterPaymentItems"
+                @input="fetchPaymentItem"
+                hide-bottom-space
+              >
+                <template v-slot:append v-if="start_filtering">
+                  <q-spinner color="primary" size="1.2em" :thickness="3" />
+                </template>
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      {{ $t("app.noResults") }}
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
             </div>
             <div
-              class="q-mb-md flex justify-between"
-              v-if="selected_payment_item.frequency == 'MONTHLY'"
+              v-if="
+                hasSelectedPaymentItem &&
+                !start_filtering &&
+                !has_selected_payment_item
+              "
             >
-              <label for="credential" class="form_field">{{
-                $t("app.monthsLabel")
-              }}</label>
-              <div
-                class="q-gutter-sm"
-                v-if="selected_payment_item.payment_item_months.length > 0"
-              >
-                <q-chip
-                  color="teal"
-                  text-color="white"
-                  v-for="ref in selected_payment_item.payment_item_months"
-                  :key="ref.id"
-                  size="sm"
-                  >{{ ref }}</q-chip
+              <div class="q-mb-md flex justify-between">
+                <label for="credential" class="form_field">{{
+                  $t("app.nameLabel")
+                }}</label>
+                <label for="credential" class="value">{{
+                  selected_payment_item.label
+                }}</label>
+              </div>
+              <div class="q-mb-md flex justify-between">
+                <label for="credential" class="form_field">{{
+                  $t("app.amountPayable")
+                }}</label>
+                <label for="credential" class="value"
+                  >{{
+                    Number(selected_payment_item.amount).toString()
+                  }}
+                  XAF</label
                 >
               </div>
-            </div>
-            <div
-              class="q-mb-md flex justify-between"
-              v-if="selected_payment_item.frequency == 'QUARTERLY'"
-            >
-              <label for="credential" class="form_field">{{
-                $t("app.quarter")
-              }}</label>
+              <div class="q-mb-md flex justify-between">
+                <label for="credential" class="form_field">{{
+                  $t("app.frequency")
+                }}</label>
+                <label for="credential" class="value">{{
+                  formatConstants(selected_payment_item.frequency)
+                }}</label>
+              </div>
+              <div class="q-mb-md flex justify-between">
+                <label for="credential" class="form_field">{{
+                  $t("app.type")
+                }}</label>
+                <label for="credential" class="value">{{
+                  formatConstants(selected_payment_item.type)
+                }}</label>
+              </div>
               <div
-                class="q-gutter-sm q-mt-sm"
-                v-if="selected_payment_item.payment_item_quarters.length > 0"
+                class="q-mb-md flex justify-between"
+                v-if="selected_payment_item.frequency == 'MONTHLY'"
               >
-                <q-chip
-                  color="teal"
-                  text-color="white"
-                  v-for="ref in selected_payment_item.payment_item_quarters"
-                  :key="ref.id"
-                  size="sm"
-                  >{{ ref }}</q-chip
+                <label for="credential" class="form_field">{{
+                  $t("app.monthsLabel")
+                }}</label>
+                <div
+                  class="q-gutter-sm"
+                  v-if="selected_payment_item.payment_item_months.length > 0"
                 >
+                  <q-chip
+                    color="teal"
+                    text-color="white"
+                    v-for="ref in selected_payment_item.payment_item_months"
+                    :key="ref.id"
+                    size="sm"
+                    >{{ ref }}</q-chip
+                  >
+                </div>
+              </div>
+              <div
+                class="q-mb-md flex justify-between"
+                v-if="selected_payment_item.frequency == 'QUARTERLY'"
+              >
+                <label for="credential" class="form_field">{{
+                  $t("app.quarter")
+                }}</label>
+                <div
+                  class="q-gutter-sm q-mt-sm"
+                  v-if="selected_payment_item.payment_item_quarters.length > 0"
+                >
+                  <q-chip
+                    color="teal"
+                    text-color="white"
+                    v-for="ref in selected_payment_item.payment_item_quarters"
+                    :key="ref.id"
+                    size="sm"
+                    >{{ ref }}</q-chip
+                  >
+                </div>
               </div>
             </div>
           </div>
@@ -180,6 +185,7 @@
               no-caps
               :disable="validatePaymentItem"
               size="sm"
+              class="q-py-xs"
               ><q-icon name="arrow_forward" size="xs" class="q-pl-sm"></q-icon
             ></q-btn>
           </div>
@@ -331,30 +337,74 @@
               />
             </div>
             <div
-              :class="$q.platform.is.desktop ? 'flex q-mt-lg justify-end' : ''"
+              :class="
+                $q.platform.is.desktop
+                  ? 'flex q-mt-md justify-between'
+                  : ' q-mt-md'
+              "
+              v-if="$q.platform.is.desktop"
             >
+              <div>
+                <q-btn
+                  :label="$t('app.back')"
+                  :color="'primary'"
+                  no-caps
+                  outline
+                  @click="goBack()"
+                >
+                </q-btn>
+              </div>
+              <div class="row q-gutter-x-lg">
+                <q-btn
+                  :label="$t('app.reset')"
+                  :color="'primary'"
+                  :disabled="!validateForm"
+                  no-caps
+                  outline
+                  @click="resetForm"
+                >
+                </q-btn>
+                <q-btn
+                  :label="$t('app.saveBtnLabel')"
+                  :color="'primary'"
+                  no-caps
+                  :loading="loading"
+                  :disabled="validateForm"
+                >
+                </q-btn>
+              </div>
+            </div>
+            <div class="q-gutter-y-md q-mb-lg" v-if="$q.platform.is.mobile">
+              <ButtonVue
+                class="full-width"
+                :label="$t('app.saveBtnLabel')"
+                :loading="loading"
+                :color="'primary'"
+                :disabled="validateForm"
+                :no_caps="true"
+              >
+              </ButtonVue>
+
               <q-btn
-                class="form_button q-mr-lg"
+                class="full-width"
+                :label="$t('app.back')"
+                :color="'primary'"
+                no-caps
+                outline
+                @click="goBack()"
+              >
+              </q-btn>
+
+              <q-btn
+                class="full-width"
                 :label="$t('app.reset')"
                 :color="'primary'"
                 :disabled="!validateForm"
                 no-caps
                 outline
                 @click="resetForm"
-                v-if="$q.platform.is.desktop"
               >
               </q-btn>
-              <div>
-                <ButtonVue
-                  class="form_button"
-                  :label="$t('app.saveBtnLabel')"
-                  :loading="loading"
-                  :color="'primary'"
-                  :disabled="validateForm"
-                  :no_caps="true"
-                >
-                </ButtonVue>
-              </div>
             </div>
           </div>
         </q-form>
@@ -368,7 +418,7 @@
             >
           </div>
           <q-form @submit="onAddContribution" class="q-gutter-md">
-            <div>
+            <div v-show="!has_selected_payment_item">
               <div class="q-mb-md">
                 <label for="name" class="form_field"
                   >{{ $t("app.sessionLabel") }}<span class="text-red">*</span>
@@ -506,7 +556,7 @@
                   </div>
                 </div>
               </div>
-              <div class="row justify-end" v-show="!has_selected_payment_item">
+              <div class="row justify-end">
                 <q-btn
                   @click="showNextForm()"
                   color="primary"
@@ -514,6 +564,7 @@
                   no-caps
                   :disable="validatePaymentItem"
                   size="sm"
+                  class="q-py-xs"
                   ><q-icon
                     name="arrow_forward"
                     size="xs"
@@ -680,8 +731,25 @@
                   :disable="has_completed_payment"
                 />
               </div>
-              <div class="flex q-mt-lg justify-end">
-                <div class="q-mr-lg">
+              <div
+                :class="
+                  $q.platform.is.desktop
+                    ? 'flex q-mt-md justify-between'
+                    : ' q-mt-md'
+                "
+                v-if="$q.platform.is.desktop"
+              >
+                <div>
+                  <q-btn
+                    :label="$t('app.back')"
+                    :color="'primary'"
+                    no-caps
+                    outline
+                    @click="goBack()"
+                  >
+                  </q-btn>
+                </div>
+                <div class="row q-gutter-x-lg">
                   <q-btn
                     class="form_button"
                     :label="$t('app.reset')"
@@ -692,18 +760,48 @@
                     @click="resetForm"
                   >
                   </q-btn>
-                </div>
-                <div>
-                  <ButtonVue
-                    class="form_button"
+                  <q-btn
                     :label="$t('app.saveBtnLabel')"
-                    :loading="loading"
                     :color="'primary'"
+                    no-caps
+                    :loading="loading"
                     :disabled="validateForm"
-                    :no_caps="true"
                   >
-                  </ButtonVue>
+                  </q-btn>
                 </div>
+              </div>
+
+              <div class="q-gutter-y-md q-mb-lg" v-if="$q.platform.is.desktop">
+                <ButtonVue
+                  class="full-width"
+                  :label="$t('app.saveBtnLabel')"
+                  :loading="loading"
+                  :color="'primary'"
+                  :disabled="validateForm"
+                  :no_caps="true"
+                >
+                </ButtonVue>
+
+                <q-btn
+                  class="full-width"
+                  :label="$t('app.back')"
+                  :color="'primary'"
+                  no-caps
+                  outline
+                  @click="goBack()"
+                >
+                </q-btn>
+
+                <q-btn
+                  class="full-width"
+                  :label="$t('app.reset')"
+                  :color="'primary'"
+                  :disabled="!validateForm"
+                  no-caps
+                  outline
+                  @click="resetForm"
+                >
+                </q-btn>
               </div>
             </div>
           </q-form>
@@ -1226,6 +1324,10 @@ export default {
         this.is_fetching_members = false;
       });
       return this.payment_items_by_category;
+    },
+
+    goBack() {
+      return (this.has_selected_payment_item = !this.has_selected_payment_item);
     },
   },
   components: {

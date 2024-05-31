@@ -516,6 +516,18 @@ export default {
     paymentDuration:"Délais de paiement",
     helpMsgExpectedContribution:"La Contribution Attendue pour un objet de paiement est calculée en multipliant le Montant de l'Elément de Paiement par sa Fréquence et par le Nombre de Membres associés au type d'objet de paiement. Pour un objet de paiement ponctuel de type 'ALL_MEMBERS', la Contribution Attendue est calculée comme : (Montant de l'élément de paiement) x 1 x (Nombre total de membres actifs) Pour les éléments de paiement avec des fréquences mensuelles ou trimestrielles, la contribution attendue est calculée comme suit : (Montant de l'élément de paiement) x (Nombre de mois/trimestres) x (Nombre de membres associé au type d'objet de paiement)",
     provideEmailMsg: "Fournissez votre adresse e-mail",
-    invitationLinkExpiredMsg:"Le lien d'invitation a expiré. Veuillez en demander un nouveau"
+    invitationLinkExpiredMsg:"Le lien d'invitation a expiré. Veuillez en demander un nouveau",
+    memberSize:"Taille des membres",
+    passwordResetTokenFailMsg:"Échec des instructions de réinitialisation du mot de passe",
+    passwordResetFailCaption:"Une erreur s'est produite, nous n'avons pas pu envoyer les instructions de réinitialisation du mot de passe. Veuillez réessayer!",
+    invitationLinkExpired:"Lien d'invitation expiré !",
+    invalidInvitationLinkMgs:"Lien d'invitation invalide",
+    newPlatformUserMsg:"Nouvel administrateur de plateforme",
+    newPlatformUserCaption:"A récemment rejoint la plateforme en tant que",
+    updatePasswordMsg:"Mettre à jour le mot de passe",
+    availableRoleLabel:"Rôles disponibles",
+    monthsLabel:"Mois",
+    back:"Dos",
+    roleDetails:"Détails du rôle",
   }
 };

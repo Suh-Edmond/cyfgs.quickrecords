@@ -1,5 +1,8 @@
 <template>
-  <div class="q-mb-md q-mx-md">
+  <div
+    class="q-mb-md"
+    :class="$q.platform.is.mobile ? 'q-ml-md q-mr-sm' : 'q-mx-md'"
+  >
     <q-banner
       inline-actions
       rounded
@@ -106,9 +109,10 @@
             :class="
               $q.platform.is.desktop ? 'flex q-mt-lg justify-end' : 'q-mb-xl'
             "
+            v-if="$q.platform.is.desktop"
           >
             <q-btn
-              class="form_button q-mr-lg"
+              class="q-mr-lg"
               :label="$t('app.reset')"
               :color="'primary'"
               no-caps
@@ -119,7 +123,6 @@
             >
             </q-btn>
             <ButtonVue
-              class="form_button"
               :label="$t('app.saveBtnLabel')"
               :loading="loading"
               :color="'primary'"
@@ -127,6 +130,29 @@
               :no_caps="no_caps"
             >
             </ButtonVue>
+          </div>
+          <div class="q-gutter-y-md" v-if="$q.platform.is.mobile">
+            <ButtonVue
+              :label="$t('app.saveBtnLabel')"
+              :loading="loading"
+              :color="'primary'"
+              :disabled="validateForm"
+              :no_caps="no_caps"
+              class="full-width"
+            >
+            </ButtonVue>
+
+            <q-btn
+              class="full-width"
+              :label="$t('app.reset')"
+              :color="'primary'"
+              no-caps
+              outline
+              @click="resetForm"
+              v-if="$q.platform.is.desktop"
+              :disable="existSponsorship"
+            >
+            </q-btn>
           </div>
         </div>
       </div>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div>
+    <div :class="$q.platform.is.mobile ? 'q-ml-sm' : ''">
       <q-tabs
         v-model="tab"
         dense
@@ -28,11 +28,7 @@
 
       <q-tab-panels v-model="tab" animated>
         <q-tab-panel name="Add Member">
-          <q-form
-            @submit="onAddMember"
-            class="q-gutter-md"
-            :class="$q.platform.is.mobile ? 'q-pl-sm' : ''"
-          >
+          <q-form @submit="onAddMember" class="q-gutter-sm">
             <div class="text-subtitle2 text-left text-primary q-py-xs">
               {{ $t("app.personalInformationLabel") }}
             </div>
@@ -123,15 +119,15 @@
                   ? 'flex q-mt-lg justify-end'
                   : 'q-pt-xs q-mb-lg'
               "
+              v-if="$q.platform.is.desktop"
             >
               <q-btn
-                class="form_button q-mr-lg"
+                class="q-mr-lg"
                 :label="$t('app.reset')"
                 :color="'primary'"
                 no-caps
                 outline
                 @click="resetForm"
-                v-if="$q.platform.is.desktop"
               >
               </q-btn>
               <ButtonVue
@@ -143,13 +139,31 @@
               >
               </ButtonVue>
             </div>
+            <div v-if="$q.platform.is.mobile" class="q-gutter-y-md q-mb-lg">
+              <ButtonVue
+                :label="label_save"
+                :loading="loading"
+                :color="color"
+                :disabled="validateForm"
+                :no_caps="no_caps"
+                class="full-width"
+              >
+              </ButtonVue>
+
+              <q-btn
+                class="full-width"
+                :label="$t('app.reset')"
+                :color="'primary'"
+                no-caps
+                outline
+                @click="resetForm"
+              >
+              </q-btn>
+            </div>
           </q-form>
         </q-tab-panel>
         <q-tab-panel name="Upload File">
-          <q-form
-            @submit="uploadFile"
-            :class="$q.platform.is.mobile ? 'q-pl-sm' : ''"
-          >
+          <q-form @submit="uploadFile">
             <div class="text-subtitle2 text-center text-primary">
               {{ $t("app.importMemberMsg") }}
               <span class="q-pl-md">
@@ -159,7 +173,10 @@
                 </q-btn>
               </span>
             </div>
-            <div class="row q-gutter-md flex flex-center q-pt-md">
+            <div
+              class="row q-gutter-md q-pt-md"
+              :class="$q.platform.is.mobile ? 'q-mr-md' : ''"
+            >
               <div class="col-md-8 col-sm-12 col-xs-12">
                 <q-file
                   outlined
@@ -176,12 +193,12 @@
               </div>
               <div class="col-md-2 col-sm-12 col-xs-12 q-pb-md">
                 <ButtonVue
-                  class="form_button"
                   :label="label_upload"
                   :loading="loading"
                   :color="color"
                   :disabled="validateFormUpload"
                   :no_caps="no_caps"
+                  class="full-width"
                 >
                 </ButtonVue>
               </div>
@@ -415,6 +432,9 @@ export default {
 
 <style src="vue-tel-input/dist/vue-tel-input.css"></style>
 <style scoped lang="scss">
+* {
+  box-sizing: border-box;
+}
 .csv_image_card {
   cursor: pointer;
 }

@@ -854,10 +854,6 @@
           dense
           v-model="filter"
           :placeholder="$t('app.tableSearch')"
-          :class="
-            $q.platform.is.mobile ? 'row text-h6-sm' : 'text-h6-sm  full-width'
-          "
-          :style="$q.platform.is.mobile ? 'width:88vw' : ''"
         >
           <template v-slot:append>
             <q-icon name="search" />

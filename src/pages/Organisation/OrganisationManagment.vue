@@ -219,41 +219,56 @@
             </div>
             <div class="col-md-1"></div>
           </div>
-          <div class="row q-mt-md q-pr-sm">
+          <div class="row q-mt-md q-pr-sm" v-if="$q.platform.is.mobile">
             <div class="col-md-3"></div>
             <div
               class="col-md-8 flex q-gutter-md justify-end"
               :class="$q.screen.lg ? 'q-px-lg' : ''"
             >
-              <div>
-                <q-btn
-                  outline
-                  color="primary"
-                  :label="$t('app.cancel')"
-                  no-caps
-                  @click="showDetail"
-                  class="q-pa-xs"
-                  :disable="checkIfOrganisationExist"
-                />
-              </div>
-              <div>
-                <ButtonVue
-                  :label="$t('app.saveBtnLabel')"
-                  :loading="loading"
-                  :disabled="validateForm"
-                  :color="color"
-                  :no_caps="true"
-                  class="q-pa-xs"
-                >
-                </ButtonVue>
-              </div>
+              <q-btn
+                outline
+                color="primary"
+                :label="$t('app.cancel')"
+                no-caps
+                @click="showDetail"
+                :disable="checkIfOrganisationExist"
+              />
+              <ButtonVue
+                :label="$t('app.saveBtnLabel')"
+                :loading="loading"
+                :disabled="validateForm"
+                :color="color"
+                :no_caps="true"
+              >
+              </ButtonVue>
             </div>
             <div class="col-md-1"></div>
+          </div>
+          <div class="row q-gutter-md q-mx-sm" v-if="$q.platform.is.desktop">
+            <ButtonVue
+              :label="$t('app.saveBtnLabel')"
+              :loading="loading"
+              :disabled="validateForm"
+              :color="color"
+              :no_caps="true"
+              class="full-width"
+            >
+            </ButtonVue>
+
+            <q-btn
+              outline
+              color="primary"
+              :label="$t('app.cancel')"
+              no-caps
+              @click="showDetail"
+              :disable="checkIfOrganisationExist"
+              class="full-width"
+            />
           </div>
         </q-form>
       </div>
     </div>
-    <div v-if="exist_organisation">
+    <div v-if="exist_organisation" class="q-mb-xl">
       <div class="flex justify-center">
         <q-card class="card text-dark" flat>
           <q-card-section class="flex flex-center">

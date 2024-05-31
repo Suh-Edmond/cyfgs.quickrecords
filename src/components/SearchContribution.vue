@@ -1,5 +1,5 @@
 <template>
-  <div class="q-mx-md">
+  <div :class="$q.platform.is.desktop ? 'q-ml-md q-mr-sm' : 'q-mx-md'">
     <q-linear-progress indeterminate v-show="is_fetching_members" />
     <div class="q-my-md">
       <label for="heading" class="text">{{ $t("app.filterMsg") }} </label>
@@ -164,22 +164,48 @@
         </q-input>
       </div>
     </div>
-    <div class="flex justify-end q-mt-md">
-      <div class="q-mr-xl">
-        <q-btn label="Reset" color="primary" no-caps outline @click="reset()">
-        </q-btn>
-      </div>
-      <div>
-        <q-btn
-          :label="$t('app.filter')"
-          :loading="loading"
-          :color="'primary'"
-          :disabled="validateForm"
-          no-caps
-          @click="filterByDuration(null)"
-        >
-        </q-btn>
-      </div>
+    <div class="flex justify-end q-mt-md" v-if="$q.platform.is.desktop">
+      <q-btn
+        label="Reset"
+        color="primary"
+        no-caps
+        outline
+        @click="reset()"
+        class="q-mr-md"
+      >
+      </q-btn>
+      <q-btn
+        :label="$t('app.filter')"
+        :loading="loading"
+        :color="'primary'"
+        :disabled="validateForm"
+        no-caps
+        @click="filterByDuration(null)"
+      >
+      </q-btn>
+    </div>
+
+    <div v-if="$q.platform.is.mobile" class="q-gutter-y-md q-mb-lg q-mt-md">
+      <q-btn
+        :label="$t('app.filter')"
+        :loading="loading"
+        :color="'primary'"
+        :disabled="validateForm"
+        no-caps
+        @click="filterByDuration(null)"
+        class="full-width"
+      >
+      </q-btn>
+
+      <q-btn
+        label="Reset"
+        color="primary"
+        no-caps
+        outline
+        @click="reset()"
+        class="full-width"
+      >
+      </q-btn>
     </div>
   </div>
 </template>

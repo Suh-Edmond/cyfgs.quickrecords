@@ -153,7 +153,10 @@
 
     <!-- add new year dialog -->
     <q-dialog v-model="show_add_year">
-      <q-card style="min-width: 400px" class="row q-pb-sm">
+      <q-card
+        :style="$q.platform.is.desktop ? 'width: 350px' : 'width: 450px'"
+        class="row q-pb-sm"
+      >
         <q-card-section class="row">
           <div class="text-h6 add_year">
             {{ $t("app.settingsAddSessionLabel") }}
@@ -185,7 +188,7 @@
 
     <!--update year dialog -->
     <q-dialog v-model="show_edit_year">
-      <q-card style="min-width: 400px">
+      <q-card :style="$q.platform.is.desktop ? 'width: 350px' : 'width: 450px'">
         <q-card-section class="row q-pb-sm">
           <div class="text-h6 add_year">
             {{ $t("app.settingsUpdateSessionLabel") }}
@@ -209,9 +212,20 @@
                 :label="yearLabel"
               />
             </div>
-            <div class="flex q-mt-lg justify-end">
+            <div class="flex q-mt-lg justify-end" v-if="$q.platform.is.desktop">
               <ButtonVue
                 class="form_button"
+                :label="saveBtnLabel"
+                :loading="is_fetching"
+                color="primary"
+                :no_caps="true"
+                :disabled="false"
+              >
+              </ButtonVue>
+            </div>
+            <div class="flex q-mt-lg" v-if="$q.platform.is.mobile">
+              <ButtonVue
+                class="full-width"
                 :label="saveBtnLabel"
                 :loading="is_fetching"
                 color="primary"

@@ -46,10 +46,10 @@
       >
         <div
           class="flex justify-between"
-          :class="$q.platform.is.mobile ? 'q-pt-md' : ''"
+          :class="$q.platform.is.mobile ? 'q-mt-md' : ''"
         >
           <div>
-            <label class="title">Role details</label>
+            <label class="title">{{ t("app.roleDetails") }}</label>
           </div>
           <div>
             <q-btn
@@ -152,7 +152,7 @@
         <div class="q-mt-lg">
           <label class="title">Privileges</label>
         </div>
-        <div class="q-gutter-x-xs q-mt-md q-mb-lg">
+        <div class="q-mt-md q-mb-lg">
           <q-chip
             color="teal"
             text-color="white"
@@ -170,10 +170,8 @@
     <div v-if="show_dialog">
       <q-dialog v-model="show_dialog">
         <q-card
-          :style="
-            $q.platform.is.mobile ? 'min-width: 350px' : 'min-width: 450px'
-          "
-          class="q-px-sm q-pt-sm q-pb-md"
+          :style="$q.platform.is.mobile ? 'width: 350px' : 'width: 450px'"
+          class="q-pt-sm q-pb-md"
         >
           <q-card-section class="row q-pb-sm">
             <div class="text-h6">{{ $t("app.editRole") }}</div>
@@ -207,7 +205,10 @@
                 >
                 </q-input>
               </div>
-              <div class="q-mt-lg flex justify-end">
+              <div
+                class="q-mt-lg flex justify-end"
+                v-if="$q.platform.is.desktop"
+              >
                 <ButtonVue
                   class="form_button"
                   :label="$t('app.saveBtnLabel')"
@@ -215,6 +216,18 @@
                   color="primary"
                   :disabled="validateForm"
                   :no_caps="true"
+                >
+                </ButtonVue>
+              </div>
+              <div class="q-mb-sm q-mt-md" v-if="$q.platform.is.mobile">
+                <ButtonVue
+                  class="full-width"
+                  :label="$t('app.saveBtnLabel')"
+                  :loading="loading"
+                  color="primary"
+                  :disabled="validateForm"
+                  :no_caps="true"
+                  v-if="$q.platform.is.desktop"
                 >
                 </ButtonVue>
               </div>

@@ -608,5 +608,6 @@ export default {
     availableRoleLabel:"Available Roles",
     monthsLabel:"Months",
     back:"Back",
+    roleDetails:"Role details",
   },
 };

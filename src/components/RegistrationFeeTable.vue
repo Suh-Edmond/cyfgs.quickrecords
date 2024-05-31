@@ -92,8 +92,8 @@
     <!--add registration fee -->
     <q-dialog v-model="show_add_fee">
       <q-card
-        :style="$q.platform.is.mobile ? 'min-width: 350px' : 'min-width: 450px'"
-        class="q-pa-sm"
+        :style="$q.platform.is.desktop ? 'width: 350px' : 'width: 450px'"
+        class="q-pt-sm q-pb-md"
       >
         <q-card-section class="row">
           <div class="text-h6 add_year" v-if="fee.id == null">
@@ -161,9 +161,20 @@
                 :options="frequencies"
               />
             </div>
-            <div class="flex q-mt-lg justify-end">
+            <div class="flex q-mt-lg justify-end" v-if="$q.platform.is.desktop">
               <ButtonVue
                 class="form_button"
+                :label="$t('app.saveBtnLabel')"
+                :loading="is_fetching"
+                :color="'primary'"
+                :disabled="fee.amount == 0"
+                :no_caps="true"
+              >
+              </ButtonVue>
+            </div>
+            <div class="q-mt-lg" v-if="$q.platform.is.mobile">
+              <ButtonVue
+                class="full-width"
                 :label="$t('app.saveBtnLabel')"
                 :loading="is_fetching"
                 :color="'primary'"

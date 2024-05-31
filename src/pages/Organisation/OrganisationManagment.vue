@@ -219,7 +219,7 @@
             </div>
             <div class="col-md-1"></div>
           </div>
-          <div class="row q-mt-md q-pr-sm" v-if="$q.platform.is.mobile">
+          <div class="row q-mt-md q-pr-sm" v-if="$q.platform.is.desktop">
             <div class="col-md-3"></div>
             <div
               class="col-md-8 flex q-gutter-md justify-end"
@@ -244,7 +244,7 @@
             </div>
             <div class="col-md-1"></div>
           </div>
-          <div class="row q-gutter-md q-mx-sm" v-if="$q.platform.is.desktop">
+          <div class="row q-gutter-md q-mx-sm" v-if="$q.platform.is.mobile">
             <ButtonVue
               :label="$t('app.saveBtnLabel')"
               :loading="loading"

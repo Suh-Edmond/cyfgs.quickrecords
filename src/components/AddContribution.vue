@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="q-mb-md"
-    ::class="$q.platform.is.mobile ? 'q-ml-md q-mr-sm' : 'q-mx-md'"
-  >
+  <div class="q-mb-md" ::class="$q.platform.is.mobile ? 'q-mx-lg' : 'q-mx-md'">
     <q-linear-progress indeterminate v-show="is_fetching_members" />
     <q-tabs
       v-model="tab"
@@ -370,11 +367,12 @@
                   no-caps
                   :loading="loading"
                   :disabled="validateForm"
+                  type="submit"
                 >
                 </q-btn>
               </div>
             </div>
-            <div class="q-gutter-y-md q-mb-lg" v-if="$q.platform.is.mobile">
+            <div class="q-gutter-y-lg q-mb-lg" v-if="$q.platform.is.mobile">
               <ButtonVue
                 class="full-width"
                 :label="$t('app.saveBtnLabel')"
@@ -382,6 +380,7 @@
                 :color="'primary'"
                 :disabled="validateForm"
                 :no_caps="true"
+                type="submit"
               >
               </ButtonVue>
 
@@ -766,12 +765,13 @@
                     no-caps
                     :loading="loading"
                     :disabled="validateForm"
+                    type="submit"
                   >
                   </q-btn>
                 </div>
               </div>
 
-              <div class="q-gutter-y-md q-mb-lg" v-if="$q.platform.is.desktop">
+              <div class="q-gutter-y-lg q-mb-lg" v-if="$q.platform.is.desktop">
                 <ButtonVue
                   class="full-width"
                   :label="$t('app.saveBtnLabel')"
@@ -779,6 +779,7 @@
                   :color="'primary'"
                   :disabled="validateForm"
                   :no_caps="true"
+                  type="submit"
                 >
                 </ButtonVue>
 

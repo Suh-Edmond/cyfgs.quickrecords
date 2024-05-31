@@ -1,7 +1,7 @@
 <template>
   <div
     class="q-mb-md q-ml-md"
-    :class="$q.platform.is.mobile ? 'q-mr-sm' : 'q-mr-md'"
+    :class="$q.platform.is.mobile ? 'q-mx-lg' : 'q-mr-md'"
   >
     <div class="text-left q-mt-sm">
       <label class="text-muted info"
@@ -278,7 +278,7 @@
         </ButtonVue>
       </div>
 
-      <div v-if="$q.platform.is.mobile" class="q-gutter-y-md q-mb-lg">
+      <div v-if="$q.platform.is.mobile" class="q-gutter-y-lg q-mb-lg">
         <ButtonVue
           :label="$t('app.saveBtnLabel')"
           :loading="loading"

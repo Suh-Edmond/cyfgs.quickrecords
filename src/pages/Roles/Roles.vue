@@ -49,7 +49,7 @@
           :class="$q.platform.is.mobile ? 'q-mt-md' : ''"
         >
           <div>
-            <label class="title">{{ t("app.roleDetails") }}</label>
+            <label class="title">{{ $t("app.roleDetails") }}</label>
           </div>
           <div>
             <q-btn

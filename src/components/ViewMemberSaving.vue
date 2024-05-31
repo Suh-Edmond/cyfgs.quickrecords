@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-md">
+  <div class="q-py-md q-px-lg">
     <div class="flex justify-between q-mb-md">
       <div>
         <label for="name" class="label"
@@ -186,5 +186,4 @@ export default {
 .detail-value {
   max-width: 250px;
 }
- 
 </style>

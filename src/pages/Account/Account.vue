@@ -217,7 +217,11 @@
             </div>
 
             <!-- edit personal information -->
-            <div class="q-mb-xl" v-if="edit_profile" :class="$q.platform.is.mobile?'q-pa-sm':''">
+            <div
+              class="q-mb-xl"
+              v-if="edit_profile"
+              :class="$q.platform.is.mobile ? 'q-pa-md' : ''"
+            >
               <q-form @submit="onUpdateProfile" class="q-gutter-md">
                 <div class="info2 q-pb-md">{{ $t("app.editProfile") }}</div>
                 <small class="hint"
@@ -310,7 +314,10 @@
             </div>
 
             <!-- security of profile -->
-            <div v-if="!edit_password" :class="$q.platform.is.mobile?'q-pa-sm':''">
+            <div
+              v-if="!edit_password"
+              :class="$q.platform.is.mobile ? 'q-pa-md' : ''"
+            >
               <div class="q-mb-md row">
                 <div>
                   <label for="info" class="security">{{

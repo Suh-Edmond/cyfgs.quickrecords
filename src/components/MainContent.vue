@@ -33,7 +33,7 @@
             </q-badge>
             <q-menu
               max-height="400px"
-              :max-width="$q.platform.is.desktop ? '450px' : '450px'"
+              :max-width="$q.platform.is.desktop ? '450px' : '300px'"
               :anchor="$q.platform.is.desktop ? 'top left' : 'top center'"
               :self="$q.platform.is.desktop ? 'bottom start' : 'bottom start'"
             >
@@ -41,7 +41,7 @@
                 :style="
                   $q.platform.is.desktop
                     ? 'min-width: 450px'
-                    : 'min-width: 450px'
+                    : 'min-width: 300px'
                 "
               >
                 <q-item>
@@ -201,7 +201,7 @@
             "
             @click="showRightDrawer"
             class="q-pa-xs"
-            :class="$q.platform.is.mobile ? 'q-mr-sm' : ''"
+            :class="$q.platform.is.mobile ? 'q-mr-xs' : ''"
           />
         </q-card-section>
         <q-card-section>

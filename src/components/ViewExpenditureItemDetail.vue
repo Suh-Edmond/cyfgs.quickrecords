@@ -1,5 +1,5 @@
 <template>
-  <div class="q-py-md q-px-lg">
+  <div class="q-py-md" :class="$q.platform.is.mobile ? 'q-px-lg' : 'q-px-md'">
     <div>
       <div class="flex justify-between q-mb-md">
         <div>

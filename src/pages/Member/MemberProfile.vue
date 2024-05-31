@@ -800,7 +800,7 @@
       <q-card
         :style="$q.platform.is.desktop ? 'width: 350px' : 'width: 450px'"
         class="q-pt-sm q-pb-md"
-        :class="$q.platform.is.desktop ? 'q-px-sm' : ''"
+        :class="$q.platform.is.desktop ? 'q-px-sm' : 'q-mb-md'"
       >
         <q-card-section class="row items-center q-pb-md">
           <div class="text-h6 add_role_title">{{ $t("app.addRoleLabel") }}</div>
@@ -856,7 +856,7 @@
       <q-card
         :style="$q.platform.is.desktop ? 'width: 350px' : 'width: 450px'"
         class="q-pt-sm q-pb-md"
-        :class="$q.platform.is.desktop ? 'q-px-sm' : ''"
+        :class="$q.platform.is.desktop ? 'q-px-sm' : 'q-mb-md'"
       >
         <q-card-section>
           <div class="text-start">
@@ -965,8 +965,12 @@
 
     <!-----------------------------------------------EDIT PROFILE DIALOG----------------------------------------->
     <q-dialog v-model="showEditProfileDialog" persistent>
-      <q-card style="min-width: 360px">
-        <q-form @submit="onUpdateMember" class="q-pa-lg">
+      <q-card style="min-width: 360px" class>
+        <q-form
+          @submit="onUpdateMember"
+          class="q-pa-lg"
+          :class="$q.platform.is.mobile ? 'q-my-sm' : ''"
+        >
           <div class="flex personal_info q-pb-md">
             {{ $t("app.editProfile") }}
             <q-space />

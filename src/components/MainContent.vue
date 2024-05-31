@@ -10,7 +10,7 @@
           @click="showLeftDrawer"
           v-if="$q.screen.lt.md"
         />
-        <q-toolbar-title class="toolbar_title">
+        <q-toolbar-title class="toolbar_title wrap">
           {{ $t("app.welcomeLabel") }} {{ auth_user_role }}
         </q-toolbar-title>
         <div>
@@ -33,11 +33,17 @@
             </q-badge>
             <q-menu
               max-height="400px"
-              max-width="450px"
-              anchor="top left"
-              self="bottom start"
+              :max-width="$q.platform.is.desktop ? '450px' : '450px'"
+              :anchor="$q.platform.is.desktop ? 'top left' : 'top center'"
+              :self="$q.platform.is.desktop ? 'bottom start' : 'bottom start'"
             >
-              <q-list style="min-width: 450px">
+              <q-list
+                :style="
+                  $q.platform.is.desktop
+                    ? 'min-width: 450px'
+                    : 'min-width: 450px'
+                "
+              >
                 <q-item>
                   <q-item-section>
                     <div class="flex justify-between">
@@ -191,6 +197,7 @@
             "
             @click="showRightDrawer"
             class="q-pa-xs"
+            :class="$q.platform.is.mobile?'q-mr-sm':''"
           />
         </q-card-section>
         <q-card-section>
@@ -671,8 +678,6 @@ export default {
   font-weight: 400;
   font-size: 0.6rem;
   display: flex;
-  align-items: center;
-  text-align: center;
 }
 
 .header {

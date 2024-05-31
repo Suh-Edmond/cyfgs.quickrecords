@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-md">
+  <div class="q-py-md q-px-lg">
     <div class="flex justify-between q-pb-md">
       <div>
         <label for="name" class="label"

@@ -17,6 +17,7 @@
           narrow-indicator
           inline-label
           shadow-2
+          no-caps
         >
           <q-tab
             name="profile"
@@ -322,7 +323,7 @@
                   <!----------------------------------------------END OF MEMBER PROFILE------------------------------------------>
 
                   <!-----------------------------------------EDIT MEMBER PROFILE FORM------------------------------------------>
-                  <div class="q-pa-sm" v-if="edit_profile">
+                  <div class="q-pa-md" v-if="edit_profile">
                     <q-form @submit="onUpdateMember" class="q-gutter-md">
                       <div class="personal_info q-pb-md">
                         {{ $t("app.editProfile") }}
@@ -796,7 +797,11 @@
 
     <!-------------------------------------------ADD ROLE DIALOG------------------------------>
     <q-dialog v-model="show_add_role_dialog">
-      <q-card style="min-width: 400px" class="q-pa-xs">
+      <q-card
+        :style="$q.platform.is.desktop ? 'width: 350px' : 'width: 450px'"
+        class="q-pt-sm q-pb-md"
+        :class="$q.platform.is.desktop ? 'q-px-sm' : ''"
+      >
         <q-card-section class="row items-center q-pb-md">
           <div class="text-h6 add_role_title">{{ $t("app.addRoleLabel") }}</div>
           <q-space />
@@ -817,18 +822,28 @@
                 dense
               />
             </div>
-            <div class="flex justify-end">
-              <div class="q-mt-xs">
-                <ButtonVue
-                  class="form_button"
-                  :label="$t('app.addLabel')"
-                  :loading="loading"
-                  color="primary"
-                  :disabled="validateAddRole"
-                  :no_caps="true"
-                >
-                </ButtonVue>
-              </div>
+            <div class="flex justify-end" v-if="$q.platform.is.desktop">
+              <ButtonVue
+                class="q-mt-xs"
+                :label="$t('app.addLabel')"
+                :loading="loading"
+                color="primary"
+                :disabled="validateAddRole"
+                :no_caps="true"
+              >
+              </ButtonVue>
+            </div>
+
+            <div v-if="$q.platform.is.mobile">
+              <ButtonVue
+                class="full-width"
+                :label="$t('app.addLabel')"
+                :loading="loading"
+                color="primary"
+                :disabled="validateAddRole"
+                :no_caps="true"
+              >
+              </ButtonVue>
             </div>
           </q-form>
         </q-card-section>
@@ -839,10 +854,9 @@
     <!-------------------------------------------REMOVE ROLE DIALOG--------------------------->
     <q-dialog v-model="show_remove_role_dialog">
       <q-card
-        :style="
-          $q.platform.is.desktop ? 'min-width: 400px' : 'min-width: 350px'
-        "
-        class="q-pa-xs"
+        :style="$q.platform.is.desktop ? 'width: 350px' : 'width: 450px'"
+        class="q-pt-sm q-pb-md"
+        :class="$q.platform.is.desktop ? 'q-px-sm' : ''"
       >
         <q-card-section>
           <div class="text-start">
@@ -952,7 +966,7 @@
     <!-----------------------------------------------EDIT PROFILE DIALOG----------------------------------------->
     <q-dialog v-model="showEditProfileDialog" persistent>
       <q-card style="min-width: 360px">
-        <q-form @submit="onUpdateMember" class="q-pa-md">
+        <q-form @submit="onUpdateMember" class="q-pa-lg">
           <div class="flex personal_info q-pb-md">
             {{ $t("app.editProfile") }}
             <q-space />

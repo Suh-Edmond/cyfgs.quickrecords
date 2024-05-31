@@ -854,6 +854,7 @@
           dense
           v-model="filter"
           :placeholder="$t('app.tableSearch')"
+          v-if="$q.platform.is.desktop"
         >
           <template v-slot:append>
             <q-icon name="search" />

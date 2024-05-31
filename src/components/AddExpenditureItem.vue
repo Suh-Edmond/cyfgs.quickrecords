@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="q-mb-md"
-    :class="$q.platform.is.mobile ? 'q-ml-md q-mr-sm' : 'q-mx-md'"
-  >
+  <div class="q-mb-md" :class="$q.platform.is.mobile ? 'q-mx-lg' : 'q-mx-md'">
     <q-banner
       inline-actions
       rounded
@@ -160,7 +157,7 @@
         </ButtonVue>
       </div>
 
-      <div class="q-gutter-y-md q-mb-lg" v-if="$q.platform.is.mobile">
+      <div class="q-gutter-y-lg q-mb-lg" v-if="$q.platform.is.mobile">
         <ButtonVue
           class="full-width"
           :label="$t('app.saveBtnLabel')"

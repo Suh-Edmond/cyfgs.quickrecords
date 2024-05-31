@@ -607,5 +607,6 @@ export default {
     updatePasswordMsg:"Update Password",
     availableRoleLabel:"Available Roles",
     monthsLabel:"Months",
+    back:"Back",
   },
 };

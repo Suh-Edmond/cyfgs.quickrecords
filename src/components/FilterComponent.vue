@@ -342,7 +342,7 @@
           hide-bottom-space
         />
       </div>
-      <div class="col-md-9 col-lg-9 flex">
+      <div class="col-12 col-md flex">
         <q-btn
           :label="$t('app.filter')"
           color="primary"
@@ -565,7 +565,7 @@
 
     <!----------------------------------------------FILTER HEADER FOR INCOME ACTIVITIES----------------------------------------------------------->
     <div
-      class="row q-pa-sm"
+      class="row q-gutter-xs q-pa-sm"
       :style="
         $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
       "
@@ -581,7 +581,6 @@
         input-debounce="0"
         clearable
         class="col-12 col-md"
-        :class="$q.platform.is.desktop ? 'q-pr-sm' : ''"
         hide-bottom-space
       >
         <template v-slot:no-option>
@@ -629,7 +628,6 @@
         use-input
         clearable
         class="col-12 col-md"
-        :class="$q.platform.is.desktop ? 'q-pl-sm' : ''"
         hide-bottom-space
       >
         <template v-slot:append v-if="start_month_filtering">
@@ -651,7 +649,6 @@
         clearable
         :label="$t('app.selectStatusLabel')"
         class="col-12 col-md"
-        :class="$q.platform.is.desktop ? 'q-pl-sm' : ''"
         hide-bottom-space
       >
         <template v-slot:no-option>
@@ -662,10 +659,7 @@
           </q-item>
         </template>
       </q-select>
-      <div
-        class="col-12 col-md flex"
-        :class="$q.platform.is.desktop ? 'q-pl-sm' : ''"
-      >
+      <div class="col-12 col-md flex">
         <q-btn
           :label="$t('app.filter')"
           color="primary"

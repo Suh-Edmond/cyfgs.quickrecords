@@ -1,5 +1,8 @@
 <template>
-  <div class="q-ma-md">
+  <div
+    class="q-my-md"
+    :class="$q.platform.is.mobile ? 'q-ml-md q-mr-sm' : 'q-mx-md'"
+  >
     <div class="q-ml-sm">
       <label class="text-muted info"
         >{{ $t("app.warningField") }}<span class="text-red">*</span

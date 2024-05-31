@@ -1,5 +1,8 @@
 <template>
-  <div class="q-mb-md q-mx-md">
+  <div
+    class="q-mb-md q-ml-md"
+    :class="$q.platform.is.mobile ? 'q-mr-sm' : 'q-mr-md'"
+  >
     <div class="text-left q-mt-sm">
       <label class="text-muted info"
         >{{ $t("app.warningField") }}<span class="text-red">*</span
@@ -253,6 +256,7 @@
             ? 'flex q-mt-lg justify-end'
             : 'q-pt-xs q-mb-lg'
         "
+        v-if="$q.platform.is.desktop"
       >
         <q-btn
           class="form_button q-mr-md"
@@ -272,6 +276,29 @@
           :no_caps="true"
         >
         </ButtonVue>
+      </div>
+
+      <div v-if="$q.platform.is.mobile" class="q-gutter-y-md q-mb-lg">
+        <ButtonVue
+          :label="$t('app.saveBtnLabel')"
+          :loading="loading"
+          color="primary"
+          :disabled="validateForm"
+          :no_caps="true"
+          class="full-width"
+        >
+        </ButtonVue>
+
+        <q-btn
+          class="full-width"
+          :label="$t('app.reset')"
+          :color="'primary'"
+          :disabled="false"
+          no-caps
+          outline
+          @click="resetForm"
+        >
+        </q-btn>
       </div>
     </q-form>
   </div>

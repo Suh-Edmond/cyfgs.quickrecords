@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div>
+    <div :class="$q.platform.is.mobile ? 'q-ml-sm' : ''">
       <q-tabs
         v-model="tab"
         dense
@@ -119,15 +119,15 @@
                   ? 'flex q-mt-lg justify-end'
                   : 'q-pt-xs q-mb-lg'
               "
+              v-if="$q.platform.is.desktop"
             >
               <q-btn
-                class="form_button q-mr-lg"
+                class="q-mr-lg"
                 :label="$t('app.reset')"
                 :color="'primary'"
                 no-caps
                 outline
                 @click="resetForm"
-                v-if="$q.platform.is.desktop"
               >
               </q-btn>
               <ButtonVue
@@ -138,6 +138,27 @@
                 :no_caps="no_caps"
               >
               </ButtonVue>
+            </div>
+            <div v-if="$q.platform.is.mobile" class="q-gutter-y-md q-mb-lg">
+              <ButtonVue
+                :label="label_save"
+                :loading="loading"
+                :color="color"
+                :disabled="validateForm"
+                :no_caps="no_caps"
+                class="full-width"
+              >
+              </ButtonVue>
+
+              <q-btn
+                class="full-width"
+                :label="$t('app.reset')"
+                :color="'primary'"
+                no-caps
+                outline
+                @click="resetForm"
+              >
+              </q-btn>
             </div>
           </q-form>
         </q-tab-panel>
@@ -152,7 +173,10 @@
                 </q-btn>
               </span>
             </div>
-            <div class="row q-gutter-md q-pt-md">
+            <div
+              class="row q-gutter-md q-pt-md"
+              :class="$q.platform.is.mobile ? 'q-mr-md' : ''"
+            >
               <div class="col-md-8 col-sm-12 col-xs-12">
                 <q-file
                   outlined

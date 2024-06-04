@@ -278,7 +278,7 @@
         </ButtonVue>
       </div>
 
-      <div v-if="$q.platform.is.mobile" class="q-gutter-y-lg q-mb-lg q-mt-md">
+      <div v-if="$q.platform.is.mobile" class="q-gutter-y-lg q-mb-lg q-mt-sm">
         <ButtonVue
           :label="$t('app.saveBtnLabel')"
           :loading="loading"

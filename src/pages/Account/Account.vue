@@ -489,7 +489,7 @@
             <label for="credential" class="form_field"
               >{{ $t("app.emailLabel") }} <span class="text-red">*</span></label
             >
-            <q-input v-model="user.email" outlined dense type="email" />
+            <q-input v-model="user.email" outlined dense type="email" disable/>
           </div>
           <div>
             <label for="credential" class="form_field">{{

@@ -128,11 +128,17 @@ export default {
           this.generateActivityReport(data);
           break;
         case 2:
+          console.log(data);
           this.show_activity_report = false;
           this.show_yearly_report = false;
           this.generateQuarterlyReport(data);
           break;
         case 3:
+          this.show_activity_report = false;
+          this.show_yearly_report = false;
+          this.generateQuarterlyReport(data);
+          break;
+        case 4:
           this.show_activity_report = false;
           this.show_quarterly_report = false;
           this.generatYearlyReport(data);
@@ -172,6 +178,12 @@ export default {
     },
 
     generateQuarterlyReport(data) {
+      // this.heading =
+      //   data.group.value == 6 || data.group.value == 12
+      //     ? this.$t("app.midYearReportTitle") +
+      //       `${data.group.label} ${this.year}`
+      //     : this.$t("app.quarterReportTitle") +
+      //       `${data.group.label} ${this.year}`;
       this.heading =
         this.$t("app.quarterReportTitle") + `${data.group.label} ${this.year}`;
       let payload = {

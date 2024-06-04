@@ -145,7 +145,6 @@
           no-caps
           outline
           @click="resetForm"
-          v-if="$q.platform.is.desktop"
           :disable="existExpenditureItem"
         >
         </q-btn>
@@ -160,7 +159,7 @@
         </ButtonVue>
       </div>
 
-      <div class="q-gutter-y-lg q-mb-lg q-mt-md" v-if="$q.platform.is.mobile">
+      <div class="q-gutter-y-lg q-mb-lg q-mt-sm" v-if="$q.platform.is.mobile">
         <ButtonVue
           class="full-width"
           :label="$t('app.saveBtnLabel')"
@@ -332,7 +331,7 @@ export default {
         this.$store
           .dispatch("postRequest", payload)
           .then(() => {
-            this.fetchExpenditureItems(1, 7, "", "", "");
+            this.fetchExpenditureItems(1, 10, "", "", "");
           })
           .finally(() => {
             this.$emit("close-right-drawer");
@@ -343,7 +342,7 @@ export default {
         this.$store
           .dispatch("putRequest", payload)
           .then(() => {
-            this.fetchExpenditureItems(1, 7, "", "", "");
+            this.fetchExpenditureItems(1, 10, "", "", "");
           })
           .finally(() => {
             this.$emit("close-right-drawer");

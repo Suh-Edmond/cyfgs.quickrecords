@@ -55,22 +55,19 @@
         </div>
         <div
           :class="
-            $q.platform.is.desktop
+            $q.platform.is.mobile
               ? 'flex q-mt-lg justify-end'
               : 'q-pt-xs q-mb-lg'
           "
         >
-          <div>
-            <ButtonVue
-              class="form_button"
-              :label="label_save"
-              :loading="loading"
-              :color="'primary'"
-              :disabled="validateForm"
-              :no_caps="no_caps"
-            >
-            </ButtonVue>
-          </div>
+          <ButtonVue
+            :label="label_save"
+            :loading="loading"
+            :color="'primary'"
+            :disabled="validateForm"
+            :no_caps="no_caps"
+          >
+          </ButtonVue>
         </div>
       </q-form>
     </div>

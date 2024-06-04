@@ -152,7 +152,6 @@
           outline
           @click="resetForm"
           :disable="existIncomeActivity"
-          v-if="$q.platform.is.desktop"
         >
         </q-btn>
         <ButtonVue
@@ -167,7 +166,7 @@
       </div>
       <div class="q-gutter-y-lg q-mb-lg" v-if="$q.platform.is.mobile">
         <ButtonVue
-          class="full-width"
+          class="full-width q-mt-lg"
           :label="$t('app.saveBtnLabel')"
           :loading="loading"
           color="primary"

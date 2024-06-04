@@ -5,7 +5,7 @@
       :class="$q.screen.lg ? 'q-pt-lg flex flex-center' : 'q-pt-sm'"
     >
       <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12">
-        <q-card :class="$q.screen.lg ? 'q-mt-lg' : 'q-mt-md login-card'">
+        <q-card :class="$q.screen.lg ? 'q-mt-lg' : 'q-mt-lg login-card'">
           <q-card-section>
             <div class="text_h6 text-center q-pt-sm q-pb-sm">
               {{ $t("app.signIn") }}
@@ -78,7 +78,7 @@
               </div>
 
               <div
-                class="row justify-center q-mb-xl"
+                class="row justify-center q-mb-lg"
                 v-if="$q.platform.is.mobile"
               >
                 <router-link

@@ -45,18 +45,21 @@
             :placeholder="$t('app.provideDescription')"
           />
         </div>
-        <div class="row q-mt-lg justify-end">
-          <div class="col-md-2 col-sm-2 col-xs-2">
-            <ButtonVue
-              class="form_button"
-              :label="label_save"
-              :loading="loading"
-              :color="color"
-              :disabled="validateForm"
-              :no_caps="no_caps"
-            >
-            </ButtonVue>
-          </div>
+        <div
+          :class="
+            $q.platform.is.desktop
+              ? 'flex q-mt-lg justify-end'
+              : 'q-pt-xs q-mb-lg'
+          "
+        >
+          <ButtonVue
+            :label="label_save"
+            :loading="loading"
+            :color="color"
+            :disabled="validateForm"
+            :no_caps="no_caps"
+          >
+          </ButtonVue>
         </div>
       </q-form>
     </div>

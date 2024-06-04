@@ -609,5 +609,6 @@ export default {
     monthsLabel:"Months",
     back:"Back",
     roleDetails:"Role details",
+    allMembers:"All Members"
   },
 };

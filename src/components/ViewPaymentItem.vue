@@ -176,7 +176,7 @@
         </div>
       </div>
       <div v-else>
-        <label class="no_member">{{ $t("app.noMember") }}</label>
+        <label class="no_member">{{ $t("app.allMembers") }}</label>
       </div>
     </div>
     <div class="row q-mb-md">

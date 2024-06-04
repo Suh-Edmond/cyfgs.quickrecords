@@ -376,7 +376,7 @@
                 </q-btn>
               </div>
             </div>
-            <div class="q-gutter-y-lg q-mb-lg" v-if="$q.platform.is.mobile">
+            <div class="q-gutter-y-lg q-mb-lg q-mt-sm" v-if="$q.platform.is.mobile">
               <ButtonVue
                 class="full-width"
                 :label="$t('app.saveBtnLabel')"
@@ -775,7 +775,7 @@
                 </div>
               </div>
 
-              <div class="q-gutter-y-lg q-mb-lg" v-if="$q.platform.is.mobile">
+              <div class="q-gutter-y-lg q-mb-lg q-mt-sm" v-if="$q.platform.is.mobile">
                 <ButtonVue
                   class="full-width"
                   :label="$t('app.saveBtnLabel')"

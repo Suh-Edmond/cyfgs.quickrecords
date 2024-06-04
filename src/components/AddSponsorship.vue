@@ -118,7 +118,6 @@
               no-caps
               outline
               @click="resetForm"
-              v-if="$q.platform.is.desktop"
               :disable="existSponsorship"
             >
             </q-btn>
@@ -131,7 +130,7 @@
             >
             </ButtonVue>
           </div>
-          <div class="q-gutter-y-lg" v-if="$q.platform.is.mobile">
+          <div class="q-gutter-y-lg q-mt-xs" v-if="$q.platform.is.mobile">
             <ButtonVue
               :label="$t('app.saveBtnLabel')"
               :loading="loading"

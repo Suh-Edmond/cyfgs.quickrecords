@@ -5,7 +5,7 @@
         <div>
           <label for="name" class="label"
             ><span> <q-icon name="category" size="xs" class="q-pr-sm" /> </span
-            >{{ $t("app.paymentItem") }}:
+            >{{ $t("app.paymentItem") }}
           </label>
         </div>
 
@@ -20,7 +20,7 @@
           <label for="name" class="label"
             ><span>
               <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
-            >{{ $t("app.totalAmountPayable") }}:
+            >{{ $t("app.totalAmountPayable") }}
           </label>
         </div>
         <div>
@@ -39,7 +39,7 @@
           <label for="name" class="label"
             ><span>
               <q-icon name="priority_high" size="xs" class="q-pr-sm" /> </span
-            >{{ $t("app.compulsoryLabel") }}:
+            >{{ $t("app.compulsoryLabel") }}
           </label>
         </div>
 
@@ -63,7 +63,7 @@
           <label for="name" class="label"
             ><span>
               <q-icon name="trending_flat" size="xs" class="q-pr-sm" /> </span
-            >{{ $t("app.frequency") }}:
+            >{{ $t("app.frequency") }}
           </label>
         </div>
         <div>
@@ -78,7 +78,7 @@
         <div>
           <label for="name" class="label"
             ><span> <q-icon name="person" size="xs" class="q-pr-sm" /> </span
-            >{{ $t("app.membersName") }}:
+            >{{ $t("app.membersName") }}
           </label>
         </div>
 
@@ -93,7 +93,7 @@
           <label for="name" class="label">
             <span>
               <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
-            >{{ $t("app.amountDeposited") }}:
+            >{{ $t("app.amountDeposited") }}
           </label>
         </div>
 
@@ -111,7 +111,7 @@
           <label for="name" class="label">
             <span>
               <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
-            >{{ $t("app.balance") }}:
+            >{{ $t("app.balance") }}
           </label>
         </div>
 
@@ -126,7 +126,7 @@
         <div>
           <label for="name" class="label"
             ><span> <q-icon name="schedule" size="xs" class="q-pr-sm" /> </span
-            >{{ $t("app.quarterLabel") }}:
+            >{{ $t("app.quarterLabel") }}
           </label>
         </div>
         <div>
@@ -153,7 +153,7 @@
         <div>
           <label for="name" class="label"
             ><span> <q-icon name="schedule" size="xs" class="q-pr-sm" /> </span
-            >{{ $t("app.paymentDate") }}:
+            >{{ $t("app.paymentDate") }}
           </label>
         </div>
         <div>
@@ -167,7 +167,7 @@
           <label for="status" class="label"
             ><span>
               <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span
-            >{{ $t("app.transactionStatus") }}:
+            >{{ $t("app.transactionStatus") }}
           </label>
         </div>
 
@@ -197,7 +197,7 @@
           <label for="name" class="label"
             ><span>
               <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span
-            >{{ $t("app.paymentStatus") }}:
+            >{{ $t("app.paymentStatus") }}
           </label>
         </div>
 
@@ -220,7 +220,7 @@
         <div>
           <label for="name" class="label"
             ><span> <q-icon name="badge" size="xs" class="q-pr-sm" /> </span
-            >{{ $t("app.transactionCode") }}:
+            >{{ $t("app.transactionCode") }}
           </label>
         </div>
 
@@ -234,7 +234,7 @@
         <div>
           <label for="name" class="label"
             ><span> <q-icon name="person" size="xs" class="q-pr-sm" /> </span
-            >{{ $t("app.createdBy") }}:
+            >{{ $t("app.createdBy") }}
           </label>
         </div>
         <div>
@@ -248,7 +248,7 @@
           <label for="name" class="label"
             ><span>
               <q-icon name="description" size="xs" class="q-pr-sm" /> </span
-            >{{ $t("app.comment") }}:
+            >{{ $t("app.comment") }}
           </label>
         </div>
         <div

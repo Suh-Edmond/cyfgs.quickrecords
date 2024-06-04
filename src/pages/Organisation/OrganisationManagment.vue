@@ -270,7 +270,7 @@
     </div>
     <div v-if="exist_organisation" class="q-mb-xl">
       <div class="flex justify-center">
-        <q-card class="card text-dark" flat>
+        <q-card class="text-dark" flat>
           <q-card-section class="flex flex-center">
             <q-avatar
               size="150px"

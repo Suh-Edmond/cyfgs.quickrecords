@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="$q.platform.is.desktop ? 'q-ml-md q-mr-sm' : 'q-mx-md'"
+    :class="$q.platform.is.desktop ? 'q-ml-md q-mr-sm' : 'q-ml-lg q-mr-sm'"
     class="q-mt-md"
   >
     <div class="q-mb-md">

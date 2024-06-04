@@ -1079,16 +1079,16 @@ export default {
       ],
       group: "",
       start_filtering: false,
+      mid_years: [
+        { label: this.$t("app.midYearOne"), value: "6" },
+        { label: this.$t("app.midYearTwo"), value: "12" },
+      ],
     };
   },
 
   computed: {
     validateFilterMembers() {
-      return (
-        (this.has_register === "" || this.has_register === null) &&
-        (this.year === "" || this.year === null) &&
-        (this.gender === "" || this.gender === null)
-      );
+      return this.year === "" || this.year === null;
     },
 
     validateFilterCategories() {
@@ -1172,7 +1172,8 @@ export default {
       data.push(
         { label: this.$t("app.reportByPaymentItem"), value: 1 },
         { label: this.$t("app.reportByQuarter"), value: 2 },
-        { label: this.$t("app.reportByYear"), value: 3 }
+        { label: this.$t("app.midYearReportLabel"), value: 3 },
+        { label: this.$t("app.reportByYear"), value: 4 }
       );
 
       return data;
@@ -1485,6 +1486,9 @@ export default {
             this.selected_option_label = this.$t("app.selectQuarter");
             break;
           case 3:
+            this.selected_option_label = this.$t("app.selectMidYear");
+            break;
+          case 4:
             this.selected_option_label = this.$t("app.selectYearLabel");
             break;
         }
@@ -1502,6 +1506,23 @@ export default {
       update(() => {
         this.start_filtering = true;
         this.report_options = this.quarters.filter((item) =>
+          item.label.toLowerCase().includes(val.toLowerCase())
+        );
+        return this.report_options;
+      });
+    },
+
+    filterMidYear(val, update, abort) {
+      this.report_options = [];
+      if (val < 1) {
+        abort();
+        this.start_filtering = false;
+        return;
+      }
+
+      update(() => {
+        this.start_filtering = true;
+        this.report_options = this.mid_years.filter((item) =>
           item.label.toLowerCase().includes(val.toLowerCase())
         );
         return this.report_options;
@@ -1535,6 +1556,9 @@ export default {
           this.filterQuarters(val, update, abort);
           break;
         case 3:
+          this.filterMidYear(val, update, abort);
+          break;
+        case 4:
           this.filterYears(val, update, abort);
           break;
       }

@@ -10,7 +10,7 @@
       :styles="styles"
       :width="width"
       :height="height"
-      fill="true"
+      fill
       backgroundColor="rgba(0, 0, 0, 0.1)"
     />
   </q-card>

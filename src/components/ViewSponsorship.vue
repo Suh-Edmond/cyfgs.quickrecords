@@ -158,7 +158,6 @@ export default {
       );
     },
     getFormatedCreatedDate() {
-      console.log(this.$store.getters.getSelectedSponsorship);
       return moment(this.getSelectedSponsorship.created_at).format(
         "MMMM Do YYYY"
       );

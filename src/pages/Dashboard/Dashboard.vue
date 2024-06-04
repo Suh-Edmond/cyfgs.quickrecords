@@ -154,9 +154,14 @@
       </q-card>
     </div>
 
-    <!-- <div> -->
+    <!-------------------------------------------LOADING INDICATOR------------------------------------------------->
+    <div class="flex justify-center q-mb-md" v-if="is_fetching">
+      <q-spinner color="primary" size="2.5em" />
+    </div>
+    <!-------------------------------------------END OF LOADING INDICATOR------------------------------------------>
+
     <!-----------------------------------------------MEMBERSHIP STATISTICS--------------------------------------->
-    <div class="row" v-if="statistics_type == 'MEMBERSHIP'">
+    <div class="row" v-if="statistics_type == 'MEMBERSHIP' && !is_fetching">
       <div class="col-4 col-md-4 col-sm-12 col-xs-12 col-lg-4">
         <PieChartsVue :chart-data="getChartData"></PieChartsVue>
       </div>
@@ -167,7 +172,7 @@
     <!--------------------------------------------END OF MEMBERSHIP STATISTICS----------------------------------->
 
     <!-----------------------------------------------SAVINGS STATISTICS--------------------------------------->
-    <div class="row" v-if="statistics_type == 'SAVINGS'">
+    <div class="row" v-if="statistics_type == 'SAVINGS' && !is_fetching">
       <div class="col-md-2 col-sm-12 col-xs-12 col-lg-2">
         <PieChartsVue :chart-data="pieChartData"></PieChartsVue>
       </div>
@@ -181,7 +186,7 @@
     <!--------------------------------------------END OF SAVINGS STATISTICS----------------------------------->
 
     <!-----------------------------------------------CONTRIBUTIONS STATISTICS--------------------------------------->
-    <div class="row" v-if="statistics_type == 'CONTRIBUTIONS'">
+    <div class="row" v-if="statistics_type == 'CONTRIBUTIONS' && !is_fetching">
       <LineChart
         class="col-6 col-md-6 col-xs-12 col-sm-12"
         :chartData="lineChartData3"
@@ -192,7 +197,10 @@
       ></LineChart>
     </div>
 
-    <div class="fit row wrap q-my-xl" v-if="statistics_type == 'CONTRIBUTIONS'">
+    <div
+      class="fit row wrap q-my-xl"
+      v-if="statistics_type == 'CONTRIBUTIONS' && !is_fetching"
+    >
       <BarChartVue
         class="col-4 col-md-4 col-xs-12 col-sm-12 q-pr-md"
         :chartData="barChartData1"
@@ -205,7 +213,7 @@
     <!--------------------------------------------END OF CONTRIBUTIONS STATISTICS----------------------------------->
 
     <!-----------------------------------------------EXPENDITURES STATISTICS--------------------------------------->
-    <div class="row" v-if="statistics_type == 'EXPENDITURES'">
+    <div class="row" v-if="statistics_type == 'EXPENDITURES' && !is_fetching">
       <LineChart
         class="col-6 col-md-6 col-xs-12 col-sm-12"
         :chartData="expenditureLineChartData1"
@@ -216,7 +224,6 @@
       ></BarChartVue>
     </div>
     <!--------------------------------------------END OF EXPENDITURES STATISTICS----------------------------------->
-    <!-- </div> -->
   </q-page>
 </template>
 <script>
@@ -293,7 +300,7 @@ export default {
             backgroundColor: "",
             data: [],
           },
-          { fill: "origin" },
+          { fill: "true" },
         ],
       },
       lineChartData2: {
@@ -392,6 +399,7 @@ export default {
           },
         ],
       },
+      is_fetching: false,
     };
   },
   computed: {
@@ -563,6 +571,7 @@ export default {
       this.lineChartData1.datasets[0].label = this.$t("app.monthlySavingsMsg");
       this.lineChartData1.datasets[0].backgroundColor = "#ff80ab";
       this.lineChartData1.datasets[0].data = monthly_savings;
+      this.lineChartData1.datasets[1].label = "Amounts";
 
       this.lineChartData2.labels = [];
       this.lineChartData2.datasets[0].data = [];
@@ -572,6 +581,7 @@ export default {
         this.lineChartData2.datasets[0].data.push(saving.amount);
         this.lineChartData2.labels.push(saving.year);
       });
+      this.lineChartData2.datasets[1].label = "Amount";
 
       this.pieChartData.labels = ["PENDING", "APPROVED", "DECLINED"];
       this.pieChartData.datasets[0].backgroundColor = [
@@ -584,6 +594,7 @@ export default {
 
     getSavingsStatistics() {
       let session_id = this.$store.getters.getCurrentYear.id;
+      this.is_fetching = true;
       let payload = {
         url: `/api/protected/savings/statistics?session_id=${session_id}`,
         msg: "none",
@@ -606,6 +617,7 @@ export default {
           res.data.yearly_stat,
           res.data.status_stat
         );
+        this.is_fetching = false;
       });
     },
 
@@ -614,7 +626,7 @@ export default {
         this.lineChartData3.labels = percentages[0].percentages_data.map(
           (ele) => ele.name
         );
-        this.lineChartData3.datasets[0].label = this.$t("app.numOfMembers");
+        this.lineChartData3.datasets[1].label = this.$t("app.paymentItemLabel");
         this.lineChartData3.datasets[0].backgroundColor = "#8c9eff";
         this.lineChartData3.datasets[0].data =
           percentages[0].percentages_data.map((ele) => ele.contributors);
@@ -622,6 +634,8 @@ export default {
         this.lineChartData4.labels = percentages[0].percentages_data.map(
           (ele) => ele.name
         );
+        this.lineChartData3.datasets[0].label = this.$t("app.numOfMembers");
+        this.lineChartData4.datasets[1].label = this.$t("app.paymentItemLabel");
         this.lineChartData4.datasets[0].label = this.$t(
           "app.amountContributedMsg"
         );
@@ -657,6 +671,7 @@ export default {
     },
 
     getPercentageContributionsBySession(session_id) {
+      this.is_fetching = true;
       let payload = {
         status: "none",
         url: `/api/protected/contributions_statistics?session_id=${session_id}`,
@@ -675,6 +690,7 @@ export default {
         },
       };
       this.$store.dispatch("getRequest", payload).then((res) => {
+        this.is_fetching = false;
         this.setContributionStatistics(res.data);
       });
     },
@@ -712,6 +728,7 @@ export default {
     },
 
     getYearlyExpenditureStatistics(id) {
+      this.is_fetching = true;
       let payload = {
         status: "none",
         url: `/api/protected/expenditure_statistics?session_id=${id}`,
@@ -730,11 +747,13 @@ export default {
         },
       };
       this.$store.dispatch("getRequest", payload).then((res) => {
+        this.is_fetching = false;
         this.setExpenditureStatistics(res.data);
       });
     },
 
     getTotalYearlyExpenditures(id) {
+      this.is_fetching = true;
       let payload = {
         url: `/api/protected/expenditures_total?session_id=${id}`,
         msg: "none",
@@ -752,7 +771,9 @@ export default {
           data: [],
         },
       };
-      this.$store.dispatch("getRequest", payload).then(() => {});
+      this.$store.dispatch("getRequest", payload).then(() => {
+        this.is_fetching = false;
+      });
     },
   },
   components: {

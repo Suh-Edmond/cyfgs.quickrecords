@@ -1237,8 +1237,7 @@ export default {
       available_roles: [],
       status_options: ["ACTIVE", "IN_ACTIVE"],
       showEditProfileDialog: false,
-      loading_upaid_download: false,
-      loading_paid_download: false,
+      loading_download: false,
     };
   },
   computed: {
@@ -1830,22 +1829,13 @@ export default {
     downloadUnPaidItem() {
       let id = this.$route.params.id;
       let url = `/api/protected/contributions/members/debts/download?user_id=${id}&session_id=${this.current_year.id}`;
-      this.loading_upaid_download = this.downloadPdf(
-        url,
-        "Unpaid_PaymentItems.pdf"
-      );
-
-      return (this.loading_upaid_download = false);
+      this.loading_download = this.downloadPdf(url, "Unpaid_PaymentItems.pdf");
     },
 
     downloadPaidItem() {
       let id = this.$route.params.id;
       let url = `/api/protected/contributions/members/paid_items/download?user_id=${id}&session_id=${this.current_year.id}`;
-      this.loading_paid_download = this.downloadPdf(
-        url,
-        "Paid_PaymentItem.pdf"
-      );
-      return (this.loading_paid_download = false);
+      this.loading_download = this.downloadPdf(url, "Paid_PaymentItem.pdf");
     },
   },
   components: {

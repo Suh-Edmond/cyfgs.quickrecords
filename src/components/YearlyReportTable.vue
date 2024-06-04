@@ -545,9 +545,7 @@ export default {
     },
 
     getTotalIncome() {
-      return (
-        this.$store.getters.getReportData[2].total_income + this.getBalanceBF
-      );
+      return this.$store.getters.getReportData[2].total_income;
     },
 
     getTotalExpenditure() {

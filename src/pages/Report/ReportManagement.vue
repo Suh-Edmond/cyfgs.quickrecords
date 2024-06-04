@@ -128,7 +128,6 @@ export default {
           this.generateActivityReport(data);
           break;
         case 2:
-          console.log(data);
           this.show_activity_report = false;
           this.show_yearly_report = false;
           this.generateQuarterlyReport(data);
@@ -178,14 +177,12 @@ export default {
     },
 
     generateQuarterlyReport(data) {
-      // this.heading =
-      //   data.group.value == 6 || data.group.value == 12
-      //     ? this.$t("app.midYearReportTitle") +
-      //       `${data.group.label} ${this.year}`
-      //     : this.$t("app.quarterReportTitle") +
-      //       `${data.group.label} ${this.year}`;
       this.heading =
-        this.$t("app.quarterReportTitle") + `${data.group.label} ${this.year}`;
+        data.group.value == 6 || data.group.value == 12
+          ? this.$t("app.midYearReportTitle") +
+            `${data.group.label} ${this.year}`
+          : this.$t("app.quarterReportTitle") +
+            `${data.group.label} ${this.year}`;
       let payload = {
         status: "none",
         url: `/api/protected/generate-quarterly-report?quarter=${data.group.value}&organisation_id=${this.organisation_id}`,
@@ -255,9 +252,15 @@ export default {
       if (data.report_option.value == 1) {
         url = `/api/protected/activity/${id}/report/download?payment_activity=${label}&year=${this.year}`;
         file_name = "Activity_Report.pdf";
-      } else if (data.report_option.value == 2) {
+      } else if (
+        data.report_option.value == 2 ||
+        data.report_option.value == 3
+      ) {
         url = `/api/protected/report/quarter/download?quarter=${data.group.value}&year=${this.year}&organisation_id=${this.organisation_id}`;
-        file_name = "Quarterly_Report.pdf";
+        file_name =
+          data.report_option.value == 2
+            ? "Quarterly_Report.pdf"
+            : "Mid_Year_Report.pdf";
       } else {
         url = `/api/protected/report/yearly/download?year_id=${data.group.value}&year_label=${data.group.label}&year=${this.year}&organisation_id=${this.organisation_id}`;
         file_name = "Yearly_Report.pdf";

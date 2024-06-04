@@ -1088,11 +1088,7 @@ export default {
 
   computed: {
     validateFilterMembers() {
-      return (
-        (this.has_register === "" || this.has_register === null) &&
-        (this.year === "" || this.year === null) &&
-        (this.gender === "" || this.gender === null)
-      );
+      return this.year === "" || this.year === null;
     },
 
     validateFilterCategories() {

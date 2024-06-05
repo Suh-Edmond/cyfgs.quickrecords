@@ -28,10 +28,10 @@ export default {
     pendingMembersMsg: "Pending Registrations",
     monthlyExpenditureMsg: "Monthly Expenditures",
     expenditureByPaymentType: "Expenditures By Payment Type",
-    numOfMembers: "NUMBER OF MEMBERS",
+    numOfMembers: "Number of Members",
     avgContributionFrequencyMsg: "Average Contributions By Payment Frequency",
     avgContributionsByPaymentTypeMsg: "Average Contributions By Payment Type",
-    amountContributedMsg: "AMOUNT CONTRIBUTED",
+    amountContributedMsg: "Amount Contributed",
     signUpLabel: "SIGN UP",
     haveAccountMsg: "Already Have an Account ?",
     signInLabel: "SIGN IN",
@@ -609,6 +609,11 @@ export default {
     monthsLabel:"Months",
     back:"Back",
     roleDetails:"Role details",
-    allMembers:"All Members"
+    allMembers:"All Members",
+    midYearReportLabel: "Mid-Year (6 months)",
+    selectMidYear: "Select Mid Year",
+    midYearOne:"January - June",
+    midYearTwo: "July - December",
+    midYearReportTitle: "Mid Year from "
   },
 };

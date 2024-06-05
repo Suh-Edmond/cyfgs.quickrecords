@@ -19,7 +19,9 @@
       <div class="col-1 col-md-1 col-sm-12 col-xs-12"></div>
       <div class="col-10 col-md-10 col-sm-12 col-xs-12">
         <div class="text-center q-pt-md">
-          <label for="income" class="income_heading">{{$t('app.income')}} (XAF)</label>
+          <label for="income" class="income_heading"
+            >{{ $t("app.income") }} (XAF)</label
+          >
         </div>
 
         <!---------------------------------------------------------------------START OF INCOME LIST---------------------------------------------------------->
@@ -27,19 +29,19 @@
           <!----------------------------TABLE TITLE----------------------------->
           <div class="row table_header">
             <div class="col-1 col-md-1 columns text-bold">
-             {{$t('app.sn')}}
+              {{ $t("app.sn") }}
             </div>
             <div class="col-5 col-md-5 columns text-bold text-center">
-              {{$t('app.descriptionActivity')}}
+              {{ $t("app.descriptionActivity") }}
             </div>
             <div class="col-2 col-md-2 columns text-bold">
-              {{$t('app.amount')}}
+              {{ $t("app.amount") }}
             </div>
             <div class="col-2 col-md-2 columns text-bold">
-              {{$t('app.subtotal')}}
+              {{ $t("app.subtotal") }}
             </div>
             <div class="col-2 col-md-2 columns text-bold">
-              {{$t('app.total')}}
+              {{ $t("app.total") }}
             </div>
           </div>
           <!----------------------------END OF TABLE TITLE-------------------------->
@@ -48,11 +50,13 @@
           <div class="row">
             <div class="col-1 col-md-1 column_details text-bold">BBF</div>
             <div class="col-md-5 column_details text-bold text-left">
-              {{$t('app.balanceBrought')}}
+              {{ $t("app.balanceBrought") }}
             </div>
             <div class="col-md-2 column_details"></div>
             <div class="col-md-2 column_details"></div>
-            <div class="col-md-2 column_details_end text-bold">{{ Number(getBalanceBF).toLocaleString() }}</div>
+            <div class="col-md-2 column_details_end text-bold">
+              {{ Number(getBalanceBF).toLocaleString() }}
+            </div>
           </div>
 
           <!-----------------------------END OF AMOUNT BROUGHT FORWARD----------------->
@@ -67,12 +71,17 @@
                 {{ income.name }}
               </div>
               <div class="col-md-2 column_details"></div>
-              <div class="col-md-2 column_details">
-              </div>
-              <div class="col-md-2 column_details_end text-bold" v-if="income.items.length == 0">
+              <div class="col-md-2 column_details"></div>
+              <div
+                class="col-md-2 column_details_end text-bold"
+                v-if="income.items.length == 0"
+              >
                 {{ Number(income.total).toLocaleString() }}
               </div>
-              <div class="col-md-2 column_details_end" v-if="income.items.length > 0"></div>
+              <div
+                class="col-md-2 column_details_end"
+                v-if="income.items.length > 0"
+              ></div>
             </div>
 
             <!-----------------------------------------START OF ACTIVITIES UNDER A CATEGORY--------------------------------->
@@ -92,10 +101,14 @@
               <!------------------------------------------START OF ITEMS UNDER AN ACTICITY------------------------------------------->
               <div v-for="(item, index) in value.items" :key="index">
                 <!-------------------------------------------START OF ITEMS WHOSE NAME AND AMOUNT ARE NOT NULL----------------------------------------->
-                <div class="row" v-if="item.name != getCurrentYear.year &&
-                  item.id != null &&
-                  item.year != null
-                  ">
+                <div
+                  class="row"
+                  v-if="
+                    item.name != getCurrentYear.year &&
+                    item.id != null &&
+                    item.year != null
+                  "
+                >
                   <div class="col-md-1 column_details text-bold">
                     {{ income.code }}.{{ value.code }}.{{ index + 1 }}
                   </div>
@@ -111,15 +124,19 @@
                 <!-------------------------------------------END OF ITEMS WHOSE NAME AND AMOUNT ARE NOT NULL----------------------------------------------->
 
                 <!-------------------------------------------START OF ITEMS WHOSE NAME HAS BEEN SET TO CURRENT YEAR FOR IDENTIFICATION PURPOSE-------------->
-                <div class="row" v-if="item.name == getCurrentYear.year &&
-                  item.id != null &&
-                  item.year != null
-                  ">
+                <div
+                  class="row"
+                  v-if="
+                    item.name == getCurrentYear.year &&
+                    item.id != null &&
+                    item.year != null
+                  "
+                >
                   <div class="col-md-1 column_details text-bold">
                     {{ income.code }}.{{ value.code }}.{{ index + 1 }}
                   </div>
                   <div class="col-md-5 column_details">
-                    {{$t('app.memberContributionMsg')}}
+                    {{ $t("app.memberContributionMsg") }}
                   </div>
                   <div class="col-md-2 column_details">
                     {{ Number(item.amount).toLocaleString() }}
@@ -130,13 +147,17 @@
                 <!-------------------------------------------END OF ITEMS WHOSE NAME HAS BEEN SET TO CURRENT YEAR FOR IDENTIFICATION PURPOSE-------------->
 
                 <!-------------------------------------------START OF ITEMS WHOSE AMOUNT IS NULLL------------------------------------->
-                <div class="row" v-if="item.name == null && item.id == null && item.year == null
-                  ">
+                <div
+                  class="row"
+                  v-if="
+                    item.name == null && item.id == null && item.year == null
+                  "
+                >
                   <div class="col-md-1 column_details text-bold">
                     {{ income.code }}.{{ value.code }}.{{ index + 1 }}
                   </div>
                   <div class="col-md-5 column_details">
-                    {{$t('app.memberContributionMsg')}}
+                    {{ $t("app.memberContributionMsg") }}
                   </div>
                   <div class="col-md-2 column_details">
                     {{ Number(item.amount).toLocaleString() }}
@@ -153,8 +174,7 @@
                 <div class="col-md-1 column_details text-bold">
                   {{ income.code }}.{{ value.code }}
                 </div>
-                <div class="col-md-5 column_details text-bold text-left">
-                </div>
+                <div class="col-md-5 column_details text-bold text-left"></div>
                 <div class="col-md-2 column_details"></div>
                 <div class="col-md-2 column_details text-bold">
                   {{ Number(value.total).toLocaleString() }}
@@ -169,13 +189,15 @@
                 {{ income.code }}
               </div>
               <div class="col-md-5 column_details text-bold text-left">
-                {{$t('app.total')}}
+                {{ $t("app.total") }}
               </div>
               <div class="col-md-2 column_details"></div>
               <div class="col-md-2 column_details text-bold">
                 <!-- {{ Number(income.total).toLocaleString() }} -->
               </div>
-              <div class="col-md-2 column_details_end text-bold"> {{ Number(income.total).toLocaleString() }}</div>
+              <div class="col-md-2 column_details_end text-bold">
+                {{ Number(income.total).toLocaleString() }}
+              </div>
             </div>
           </div>
           <!------------------------------------------------END OF CATEGORIES OF INCOME-------------------------------------------------->
@@ -183,8 +205,10 @@
           <!-------------------------------------------------------START OF INCOME TALLY----------------------------------------------------->
           <div class="row">
             <div class="col-md-1 column_details"></div>
-            <div class="col-md-5 column_details text-bold text-left text-uppercase">
-              {{$t('app.totalIncome')}}
+            <div
+              class="col-md-5 column_details text-bold text-left text-uppercase"
+            >
+              {{ $t("app.totalIncome") }}
             </div>
             <div class="col-md-2 column_details"></div>
             <div class="col-md-2 column_details text-bold">
@@ -208,7 +232,9 @@
       <div class="col-1 col-md-1 col-sm-12 col-xs-12"></div>
       <div class="col-10 col-md-10 col-sm-12 col-xs-12">
         <div class="text-center">
-          <label for="income" class="income_heading">{{$t('app.expenditures')}} (XAF)</label>
+          <label for="income" class="income_heading"
+            >{{ $t("app.expenditures") }} (XAF)</label
+          >
         </div>
 
         <!---------------------------------------------------------------------START OF EXPENDITURES LIST---------------------------------------------------------->
@@ -216,30 +242,36 @@
           <!----------------------------TABLE TITLE----------------------------->
           <div class="row table_header">
             <div class="col-1 col-md-1 columns text-bold">
-              {{$t('app.sn')}}
+              {{ $t("app.sn") }}
             </div>
             <div class="col-5 col-md-5 columns text-bold text-left">
-              {{$t('app.descriptionActivity')}}
+              {{ $t("app.descriptionActivity") }}
             </div>
             <div class="col-2 col-md-2 columns text-bold">
-              {{$t('app.amount')}}
+              {{ $t("app.amount") }}
             </div>
             <div class="col-2 col-md-2 columns text-bold">
-              {{$t('app.subtotal')}}
+              {{ $t("app.subtotal") }}
             </div>
             <div class="col-2 col-md-2 columns text-bold">
-              {{$t('app.total')}}
+              {{ $t("app.total") }}
             </div>
           </div>
           <!----------------------------END OF TABLE TITLE-------------------------->
 
           <!----------------------------------------------------------START OF CATEGORIES OF EXPENDITURES--------------------------------------------------->
-          <div v-for="(expenditures, index) in getQuarterlyExpenditure" :key="index">
+          <div
+            v-for="(expenditures, index) in getQuarterlyExpenditure"
+            :key="index"
+          >
             <div class="row">
               <div class="col-md-1 column_details text-bold">
                 {{ expenditures.code }}
               </div>
-              <div class="col-md-5 column_details" style="font-weight: bold; text-align: left">
+              <div
+                class="col-md-5 column_details"
+                style="font-weight: bold; text-align: left"
+              >
                 {{ expenditures.name }}
               </div>
               <div class="col-md-2 column_details"></div>
@@ -253,7 +285,10 @@
                 <div class="col-md-1 column_details text-bold">
                   {{ expenditures.code }}.{{ value.code }}
                 </div>
-                <div class="col-md-5 column_details" style="font-weight: bold; text-align: left">
+                <div
+                  class="col-md-5 column_details"
+                  style="font-weight: bold; text-align: left"
+                >
                   {{ value.name }}
                 </div>
                 <div class="col-md-2 column_details"></div>
@@ -284,9 +319,7 @@
                 <div class="col-md-1 column_details text-bold">
                   {{ expenditures.code }}.{{ value.code }}
                 </div>
-                <div class="col-md-5 column_details text-left text-bold">
-
-                </div>
+                <div class="col-md-5 column_details text-left text-bold"></div>
                 <div class="col-md-2 column_details"></div>
                 <div class="col-md-2 column_details text-bold">
                   {{ Number(value.total).toLocaleString() }}
@@ -301,13 +334,15 @@
                 {{ expenditures.code }}
               </div>
               <div class="col-md-5 column_details text-bold text-left">
-                {{$t('app.total')}}
+                {{ $t("app.total") }}
               </div>
               <div class="col-md-2 column_details"></div>
               <div class="col-md-2 column_details text-bold">
                 <!-- {{ Number(expenditures.total).toLocaleString() }} -->
               </div>
-              <div class="col-md-2 column_details_end text-bold"> {{ Number(expenditures.total).toLocaleString() }}</div>
+              <div class="col-md-2 column_details_end text-bold">
+                {{ Number(expenditures.total).toLocaleString() }}
+              </div>
             </div>
           </div>
           <!------------------------------------------------END OF CATEGORIES OF EXPENDITURES-------------------------------------------------->
@@ -315,8 +350,10 @@
           <!-------------------------------------------------------START OF EXPENDITURES TALLY----------------------------------------------------->
           <div class="row">
             <div class="col-md-1 column_details"></div>
-            <div class="col-md-5 column_details text-left text-bold text-uppercase">
-              {{$t('app.totalExpenditure')}}
+            <div
+              class="col-md-5 column_details text-left text-bold text-uppercase"
+            >
+              {{ $t("app.totalExpenditure") }}
             </div>
             <div class="col-md-2 column_details"></div>
             <div class="col-md-2 column_details text-bold">
@@ -340,24 +377,27 @@
       <div class="col-md-1 col-sm-1 col-xs-1"></div>
       <div class="col-md-10 col-xs-12 col-sm-12">
         <div class="q-my-md text-center">
-          <label for="income" class="summary">{{$t('app.summary')}} (XAF)</label>
+          <label for="income" class="summary"
+            >{{ $t("app.summary") }} (XAF)</label
+          >
         </div>
         <div class="row table_header">
-            <div class="col-1 col-md-1 columns text-bold text-left">
-              {{$t('app.sn')}}
-            </div>
-            <div class="col-7 col-md-7 columns text-bold text-left">
-              {{$t('app.description')}}
-            </div>
-            <div class="col-4 col-md-4 columns text-bold text-left">
-              {{$t('app.total')}}
-            </div>
-
+          <div class="col-1 col-md-1 columns text-bold text-left">
+            {{ $t("app.sn") }}
           </div>
+          <div class="col-7 col-md-7 columns text-bold text-left">
+            {{ $t("app.description") }}
+          </div>
+          <div class="col-4 col-md-4 columns text-bold text-left">
+            {{ $t("app.total") }}
+          </div>
+        </div>
         <div class="row summary_row_first">
           <div class="col-md-1 summary_column_details text-bold">S1</div>
-          <div class="col-md-7 summary_column_details text-bold text-left text-uppercase">
-            {{$t('app.totalIncome')}}
+          <div
+            class="col-md-7 summary_column_details text-bold text-left text-uppercase"
+          >
+            {{ $t("app.totalIncome") }}
           </div>
           <div class="col-md-4 summary_column_details text-bold">
             {{ Number(getTotalIncome).toLocaleString() }}
@@ -365,8 +405,10 @@
         </div>
         <div class="row summary_row">
           <div class="col-md-1 summary_column_details text-bold">S3</div>
-          <div class="col-md-7 summary_column_details text-bold text-left text-uppercase">
-            {{$t('app.totalExpenditure')}}
+          <div
+            class="col-md-7 summary_column_details text-bold text-left text-uppercase"
+          >
+            {{ $t("app.totalExpenditure") }}
           </div>
           <div class="col-md-4 summary_column_details text-bold">
             {{ Number(getTotalExpenditure).toLocaleString() }}
@@ -374,8 +416,10 @@
         </div>
         <div class="row summary_row">
           <div class="col-md-1 summary_column_details text-bold">S3</div>
-          <div class="col-md-7 summary_column_details text-bold text-left text-uppercase">
-            {{$t('app.totalBalance')}}
+          <div
+            class="col-md-7 summary_column_details text-bold text-left text-uppercase"
+          >
+            {{ $t("app.totalBalance") }}
           </div>
           <div class="col-md-4 summary_column_details text-bold">
             {{ Number(getTotalBalance).toLocaleString() }}
@@ -391,12 +435,18 @@
       <div class="col-md-1 col-sm-1 col-xs-1"></div>
       <div class="col-md-10 col-xs-12 col-sm-12">
         <div class="q-my-lg text-center">
-          <label for="income" class="summary text-uppercase">{{$t('app.presentedBy')}}:</label>
+          <label for="income" class="summary text-uppercase"
+            >{{ $t("app.presentedBy") }}:</label
+          >
         </div>
         <div class="flex justify-between">
-          <div class="col-md-6 text-bold text-center text-uppercase admin_details">
+          <div
+            class="col-md-6 text-bold text-center text-uppercase admin_details"
+          >
             <div>
-              <label for="name" class="admin_title">{{ $t("app.finSec") }} </label><br />
+              <label for="name" class="admin_title"
+                >{{ $t("app.finSec") }} </label
+              ><br />
               <span
                 class="admin_name"
                 v-for="fin_sec in getFinancialSecretary"
@@ -404,15 +454,19 @@
                 >{{ fin_sec.name }}<br
               /></span>
             </div>
-            <br/>
+            <br />
             <div>
-              <label for="name">{{$t('app.sign')}} </label>
-              <hr class="q-mt-lg"/>
+              <label for="name">{{ $t("app.sign") }} </label>
+              <hr class="q-mt-lg" />
             </div>
           </div>
-          <div class="col-md-6 text-bold text-center text-uppercase admin_details">
+          <div
+            class="col-md-6 text-bold text-center text-uppercase admin_details"
+          >
             <div>
-              <label for="name" class="admin_title">{{ $t("app.treasurer") }}</label
+              <label for="name" class="admin_title">{{
+                $t("app.treasurer")
+              }}</label
               ><br />
               <span
                 class="admin_name"
@@ -422,18 +476,22 @@
                 {{ treasurer.name }}<br
               /></span>
             </div>
-            <br/>
+            <br />
             <div>
-              <label for="name">{{$t('app.sign')}} </label>
-              <hr class="q-mt-lg"/>
+              <label for="name">{{ $t("app.sign") }} </label>
+              <hr class="q-mt-lg" />
             </div>
           </div>
         </div>
 
         <div class="flex justify-center">
-          <div class="col-md-12 text-bold text-center text-uppercase admin_details">
+          <div
+            class="col-md-12 text-bold text-center text-uppercase admin_details"
+          >
             <div>
-              <label for="name" class="admin_title">{{ $t("app.president") }}</label
+              <label for="name" class="admin_title">{{
+                $t("app.president")
+              }}</label
               ><br />
               <span
                 class="admin_name"
@@ -443,10 +501,10 @@
                 {{ president.name }}<br />
               </span>
             </div>
-            <br/>
+            <br />
             <div>
-              <label for="name">{{$t('app.sign')}} </label>
-              <hr class="q-mt-lg"/>
+              <label for="name">{{ $t("app.sign") }} </label>
+              <hr class="q-mt-lg" />
             </div>
           </div>
         </div>
@@ -454,22 +512,20 @@
       <div class="col-md-1 col-sm-1 col-xs-1"></div>
     </div>
     <!--------------------------------------------------------------------------END OF DETAILS OF PRESENTERS------------------------------------------------->
-
   </div>
 </template>
 <script>
 import { LocalStorage } from "quasar";
 import ReportHead from "./ReportHead.vue";
- export default {
-  mixins: [ ],
+export default {
+  mixins: [],
   props: {
     heading: {
       type: String,
       required: true,
     },
   },
-  mounted() {
-  },
+  mounted() {},
   data() {
     return {
       loading: false,
@@ -489,39 +545,42 @@ import ReportHead from "./ReportHead.vue";
     },
 
     getTotalIncome() {
-      return this.$store.getters.getReportData.length > 0 ?  this.$store.getters.getReportData[2].total_income : 0 + this.getBalanceBF;
+      return this.$store.getters.getReportData.length > 0
+        ? this.$store.getters.getReportData[2].total_income
+        : 0 + this.getBalanceBF;
     },
 
     getTotalExpenditure() {
-      console.log(this.$store.getters.getReportData);
-      return this.$store.getters.getReportData.length > 0 ? this.$store.getters.getReportData[3].total_expenditure : 0;
+      return this.$store.getters.getReportData.length > 0
+        ? this.$store.getters.getReportData[3].total_expenditure
+        : 0;
     },
 
     getBalanceBF() {
-      return this.$store.getters.getReportData.length > 0 ? this.$store.getters.getReportData[4].balance_brought_forward: 0;
+      return this.$store.getters.getReportData.length > 0
+        ? this.$store.getters.getReportData[4].balance_brought_forward
+        : 0;
     },
 
-    getTotalBalance(){
+    getTotalBalance() {
       return this.getTotalIncome - this.getTotalExpenditure;
     },
 
-    getPresident(){
-      console.log(this.$store.getters.getReportData);
+    getPresident() {
       return this.$store.getters.getReportData[5].president;
     },
 
-    getTreasurer(){
-      console.log(this.$store.getters.getReportData);
+    getTreasurer() {
       return this.$store.getters.getReportData[6].treasurer;
     },
 
-    getFinancialSecretary(){
+    getFinancialSecretary() {
       return this.$store.getters.getReportData[7].fin_sec;
     },
 
-    getCurrentYear(){
+    getCurrentYear() {
       return LocalStorage.getItem("data").current_session;
-    }
+    },
   },
   methods: {},
   components: {
@@ -599,7 +658,7 @@ import ReportHead from "./ReportHead.vue";
   border-bottom: 2px solid #000;
 }
 
-.summary_row{
+.summary_row {
   border-bottom: 2px solid black;
   border-left: 1px solid #000;
   border-right: 1px solid #000;
@@ -610,7 +669,7 @@ import ReportHead from "./ReportHead.vue";
   border-left: 1px solid #000;
   border-right: 1px solid #000;
 }
-.summary_column_details{
+.summary_column_details {
   border-left: 1px solid #000;
   border-right: 1px solid #000;
   padding: 4px;
@@ -619,11 +678,11 @@ import ReportHead from "./ReportHead.vue";
 .admin_name {
   min-width: 25%;
 }
-.admin_details{
+.admin_details {
   min-width: 25%;
 }
 
 .admin_title {
-text-decoration: underline;
+  text-decoration: underline;
 }
 </style>

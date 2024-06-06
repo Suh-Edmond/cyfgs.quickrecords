@@ -364,7 +364,7 @@ export default {
     approveLabel: "APPROVED",
     declineLabel: "DECLINED",
     recordWas: "Record was ",
-    successfull: "Successfully",
+    successfull: " Successfully",
     approveExpenditureItemPartMsg: " XAF Expenditure for ",
     on: " on the ",
     at: "at",

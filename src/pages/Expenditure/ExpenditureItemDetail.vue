@@ -15,7 +15,7 @@
       <!-- table for categories -->
       <CategoryTable
         :class="$q.platform.is.desktop ? 'q-pt-sm q-px-sm' : ' q-px-sm q-pt-xl'"
-        :columns="columns"
+        :columns="getTableColumns"
         :data="getExpenditureItemDetails"
         :label="label"
         :message="message"
@@ -36,12 +36,15 @@
         @view-expenditure-item-detail="viewExpenditureItemDetail"
         @delete-row="onDeleteRow"
         @onRequest="onRequest"
+        @fetch-expenditure-details="fetchExpenditureDetailsUponBulkValidation"
       >
       </CategoryTable>
 
-      <div class="q-mt-xs" v-if="getExpenditureItemDetails.length > 0">
-        <ContributionSummary :is_expenditures="true" :summary="getSummaryData"></ContributionSummary>
-
+      <div class="q-mt-xs" v-if="expenditure_item_details.length > 0">
+        <ContributionSummary
+          :is_expenditures="true"
+          :summary="getSummaryData"
+        ></ContributionSummary>
       </div>
     </div>
   </q-page>
@@ -53,6 +56,7 @@ import HelperMixinVue from "src/mixins/HelperMixin.vue";
 import ExpenditureItemDetailMixinVue from "src/mixins/ExpenditureItemDetailMixin.vue";
 import FilterComponentVue from "src/components/FilterComponent.vue";
 import ContributionSummary from "src/components/ContributionSummary.vue";
+import { LocalStorage } from "quasar";
 
 export default {
   mixins: [HelperMixinVue, ExpenditureItemDetailMixinVue],
@@ -61,13 +65,13 @@ export default {
       sortBy: "name",
       descending: false,
       page: 1,
-      rowsPerPage: 7,
+      rowsPerPage: 10,
       rowsNumber: 0,
     });
   },
 
   mounted() {
-    this.getExpenditureDetailsByItemId(1, 7, false, "");
+    this.getExpenditureDetailsByItemId(1, 10, "", "");
   },
 
   data() {
@@ -120,6 +124,59 @@ export default {
           sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
         },
       ],
+      columns_admin_expenditure_item_details: [
+        {
+          name: "is_selected",
+          label: "",
+          field: "is_selected",
+          sortable: true,
+          align: "left",
+        },
+        {
+          name: "name",
+          required: true,
+          label: "Name",
+          align: "left",
+          field: (row) => row.name,
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "amount_given",
+          align: "left",
+          label: "Amount Given (XAF)",
+          field: "amount_given",
+          sortable: true,
+        },
+        {
+          name: "amount_spent",
+          align: "left",
+          label: "Amount Spent (XAF)",
+          field: "amount_spent",
+          sortable: true,
+        },
+        {
+          name: "balance",
+          align: "left",
+          label: "Balance (XAF)",
+          field: "balance",
+          sortable: true,
+        },
+        {
+          name: "approve",
+          align: "left",
+          label: "Status",
+          field: "approve",
+          sortable: true,
+        },
+        {
+          name: "action",
+          label: "Action",
+          field: "action",
+          sortable: true,
+          sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
+        },
+      ],
       label: this.$t("app.delete"),
       message: this.$t("app.expenditureItemDetailDeleteMsg"),
       status: "",
@@ -127,33 +184,20 @@ export default {
       total_amount_given: 0,
       total_amount_spent: 0,
       total_balance: 0,
+      expenditure_item_details: [],
     };
   },
   computed: {
-    getExpenditureItemDetails() {
-      let data = [];
-      if (this.$store.getters.getExpenditureItemDetails !== null) {
-        this.$store.getters.getExpenditureItemDetails.data.forEach((ele) => {
-          data.push({
-            counter:
-              this.$store.getters.getExpenditureItemDetails.data.indexOf(ele) +
-              1,
-            name: ele.name,
-            amount_given: ele.amount_given,
-            amount_spent: ele.amount_spent,
-            balance: ele.balance,
-            type: "EXPENDITURE_DETAILS",
-            id: ele.id,
-            expenditure_item_id: ele.expenditure_item_id,
-            comment: ele.comment,
-            approve: ele.approve,
-            created_at: ele.created_at,
-            updated_at: ele.updated_at,
-            updated_by: ele.updated_by,
-          });
-        });
-      }
-      return data;
+    isAdminOrTreasurer() {
+      const istreasurer = LocalStorage.getItem("data")
+        .user_data.roles.map((role) => role.name)
+        .find((role) => role == "TREASURER" || role == "ADMIN");
+      return istreasurer != undefined;
+    },
+    getTableColumns() {
+      return this.isAdminOrTreasurer
+        ? this.columns_admin_expenditure_item_details
+        : this.columns;
     },
 
     getExpenditureItemName() {
@@ -163,7 +207,7 @@ export default {
     },
 
     validateDownload() {
-      return this.getExpenditureItemDetails.length == 0;
+      return this.expenditure_item_details.length == 0;
     },
 
     getPagination() {
@@ -187,32 +231,44 @@ export default {
     },
 
     getTotalAmountGiven() {
-      return this.$store.getters.getExpenditureItemDetails.total_amount_given;
+      return this.total_amount_given;
     },
 
     getTotalAmountSpent() {
-      return this.$store.getters.getExpenditureItemDetails.total_amount_spent;
+      return this.total_amount_spent;
     },
 
     getNetBalance() {
-      return this.$store.getters.getExpenditureItemDetails.total_balance;
+      return this.total_balance;
     },
 
-    getSummaryData () {
+    getSummaryData() {
       let summary = {
         estimated_amount: this.total_item_amount,
         amount_given: this.getTotalAmountGiven,
         amount_spent: this.getTotalAmountSpent,
         balance: this.getBalance,
-        net_balance: this.getNetBalance
-      }
+        net_balance: this.getNetBalance,
+      };
 
       return summary;
-    }
+    },
+
+    getExpenditureItemDetails() {
+      let details = [];
+      const data = this.$store.getters.getExpenditureItemDetails;
+      if (data != null) {
+        details = this.generateExpenditureItemDetailResponse(data);
+      } else {
+        details = this.expenditure_item_details;
+      }
+      return details;
+    },
   },
 
   methods: {
     getExpenditureDetailsByItemId(page, per_page, type, filter) {
+      this.expenditure_item_details = [];
       let search_filter = filter == undefined ? "" : filter;
       let expenditure_item = this.$store.getters.getCurrentExpenditureItem;
       let payload = {
@@ -236,6 +292,24 @@ export default {
         .dispatch("getRequest", payload)
         .then((response) => {
           if (response.success) {
+            response.data.data.forEach((ele) => {
+              this.expenditure_item_details.push({
+                counter: response.data.data.indexOf(ele) + 1,
+                name: ele.name,
+                amount_given: ele.amount_given,
+                amount_spent: ele.amount_spent,
+                balance: ele.balance,
+                type: "EXPENDITURE_DETAILS",
+                id: ele.id,
+                expenditure_item_id: ele.expenditure_item_id,
+                comment: ele.comment,
+                approve: ele.approve,
+                created_at: ele.created_at,
+                updated_at: ele.updated_at,
+                updated_by: ele.updated_by,
+                is_selected: ele.is_selected,
+              });
+            });
             this.$store.commit("SET_PAGINATION", {
               sortBy: "name",
               descending: false,
@@ -252,13 +326,15 @@ export default {
         .finally(() => {
           this.$store.commit("SET_IS_FETCHING", false);
         });
+
+      return this.expenditure_item_details;
     },
 
     onRequest(props) {
       const { page, rowsPerPage } = props.pagination;
       const fetch_count =
         rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
-        const filter = props.filter;
+      const filter = props.filter;
       this.getExpenditureDetailsByItemId(page, fetch_count, false, filter);
     },
 
@@ -293,7 +369,7 @@ export default {
         query: { status: data.payment_status, t: new Date().getTime() },
       });
 
-      this.getExpenditureDetailsByItemId(1, 7,false, "");
+      this.getExpenditureDetailsByItemId(1, 10, false, "");
     },
 
     onDeleteRow(data) {
@@ -314,14 +390,54 @@ export default {
         },
       };
       this.$store.dispatch("deleteRequest", payload).then(() => {
-        this.getExpenditureDetailsByItemId(1, 7, false, "");
+        this.getExpenditureDetailsByItemId(1, 10, false, "");
       });
+    },
+
+    fetchExpenditureDetailsUponBulkValidation() {
+      this.getExpenditureDetailsByItemId(1, 10, "", "");
+    },
+
+    generateExpenditureItemDetailResponse(response) {
+      this.expenditure_item_details = [];
+      response.data.forEach((ele) => {
+        this.expenditure_item_details.push({
+          counter: response.data.indexOf(ele) + 1,
+          name: ele.name,
+          amount_given: ele.amount_given,
+          amount_spent: ele.amount_spent,
+          balance: ele.balance,
+          type: "EXPENDITURE_DETAILS",
+          id: ele.id,
+          expenditure_item_id: ele.expenditure_item_id,
+          comment: ele.comment,
+          approve: ele.approve,
+          created_at: ele.created_at,
+          updated_at: ele.updated_at,
+          updated_by: ele.updated_by,
+          is_selected: ele.is_selected,
+        });
+      });
+      this.$store.commit("SET_PAGINATION", {
+        sortBy: "name",
+        descending: false,
+        page: response.current_page,
+        rowsPerPage: response.per_page,
+        rowsNumber: response.total,
+      });
+      this.total_amount_given = response.total_amount_given;
+      this.total_amount_spent = response.total_amount_spent;
+      this.total_item_amount = response.total_item_amount;
+      this.total_balance = response.total_balance;
+      this.expenditure_item_name = response.expenditure_item_name;
+
+      return this.expenditure_item_details;
     },
   },
   components: {
     CategoryTable,
     FilterComponentVue,
-    ContributionSummary
+    ContributionSummary,
   },
 };
 </script>

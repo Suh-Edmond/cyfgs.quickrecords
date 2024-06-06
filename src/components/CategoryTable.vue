@@ -510,7 +510,8 @@
               v-if="props.row.approve == 'PENDING'"
               dense
               size="md"
-              @input="computeTotal(props.row, $event)"
+              @input="computeTotalSelectedItems(props.row, $event)"
+              toggle-order="ft"
             />
           </q-td>
           <q-td key="name" :props="props" class="table_value">
@@ -756,6 +757,16 @@
       </q-dialog>
     </div>
     <!--------------------------------------------------END OF CONFIRM APPROVE/DECLINE A RECORD-------------->
+
+    <BulkValidationExpenditureItemDetails
+      :selectedExpenditureDetails="selectedExpenditureDetails"
+      v-if="
+        canValidateTransaction &&
+        selectedExpenditureDetails.length > 0 &&
+        show_expenditure_item_detail
+      "
+      @fetch-expenditure-details="fetchExpenditureDetails"
+    ></BulkValidationExpenditureItemDetails>
   </div>
 </template>
 <script>
@@ -766,6 +777,7 @@ import ExpenditureItemDetailMixinVue from "src/mixins/ExpenditureItemDetailMixin
 import moment from "moment";
 import ConfirmDialog from "./ConfirmDialog.vue";
 import HelperMixin from "src/mixins/HelperMixin.vue";
+import BulkValidationExpenditureItemDetails from "./BulkValidationExpenditureItemDetails.vue";
 
 export default {
   mixins: [
@@ -867,8 +879,7 @@ export default {
       type: null,
       delete_msg: "",
       show_confirm_dialog_detail: false,
-      selectedRecords: [],
-      expensesSet: new Set(),
+      selectedExpenditureDetails: [],
     };
   },
   computed: {
@@ -1198,17 +1209,29 @@ export default {
         : false;
     },
 
-    computeTotal(data, event) {
-      if (event) {
-        this.expensesSet.add(data);
+    computeTotalSelectedItems(data, evt) {
+      if (data.is_selected) {
+        const exist = this.selectedExpenditureDetails.find(
+          (ele) => ele.id === data.id
+        );
+        if (exist === undefined) {
+          this.selectedExpenditureDetails.push(data);
+        }
       } else {
-        this.expensesSet.delete(data);
+        this.selectedExpenditureDetails =
+          this.selectedExpenditureDetails.filter((ele) => ele.id === data.id);
       }
-      this.$emit("showSelectedRecords", this.expensesSet);
+      return this.selectedExpenditureDetails;
+    },
+
+    fetchExpenditureDetails() {
+      this.$emit("fetch-expenditure-details");
+      return (this.selectedExpenditureDetails = []);
     },
   },
   components: {
     ConfirmDialog,
+    BulkValidationExpenditureItemDetails,
   },
 };
 </script>

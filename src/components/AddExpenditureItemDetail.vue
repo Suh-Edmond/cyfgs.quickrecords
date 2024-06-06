@@ -184,7 +184,7 @@ export default {
         this.expenditure_item_detail.name == null ||
         this.expenditure_item_detail.amount_spent == null ||
         this.existExpenditureItemDetail ||
-        canAddExpenditureDetails
+        this.canAddExpenditureDetails
       );
     },
     getCurrentExpenditureItem() {
@@ -295,7 +295,7 @@ export default {
             this.getExpenditureDetailsByItemId(
               payload.data.expenditure_item_id,
               1,
-              7
+              10
             );
           })
           .finally(() => {
@@ -310,7 +310,7 @@ export default {
             this.getExpenditureDetailsByItemId(
               payload.data.expenditure_item_id,
               1,
-              7
+              10
             );
           })
           .finally(() => {

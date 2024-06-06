@@ -61,6 +61,16 @@
           >
           </ButtonVue>
         </div>
+        <div :class="$q.platform.is.mobile ? 'full-width' : ''">
+          <ButtonVue
+            :label="label_save"
+            :loading="loading"
+            :color="color"
+            :disabled="validateForm"
+            :no_caps="no_caps"
+          >
+          </ButtonVue>
+        </div>
       </q-form>
     </div>
   </div>

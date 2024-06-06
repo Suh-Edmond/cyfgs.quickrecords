@@ -614,6 +614,7 @@ export default {
     selectMidYear: "Select Mid Year",
     midYearOne:"January - June",
     midYearTwo: "July - December",
-    midYearReportTitle: "Mid Year from "
+    midYearReportTitle: "Mid Year from ",
+    cantAddExpenditureItemDetailsAfterApprovalMsg:"Expenditure item details cannot be added after the expenditure item has been ",
   },
 };

@@ -1,5 +1,6 @@
 <template>
   <div :class="$q.platform.is.mobile ? 'q-ml-lg q-mr-md' : 'q-mx-md'">
+    <!--------------------------------------------------------------->
     <q-banner
       inline-actions
       rounded
@@ -13,10 +14,25 @@
       <span class="text-lowercase registration_text">{{
         getUpdatedExpenditureItemDetailFromState.approve
       }}</span>
-      <template v-slot:action>
-        <q-btn flat icon="close" size="sm" />
-      </template>
     </q-banner>
+    <!--------------------------------------------------------------->
+
+    <!--------------------------------------------------------------->
+    <q-banner
+      inline-actions
+      rounded
+      class="bg-info text-white q-mt-sm"
+      dense
+      v-if="canAddExpenditureDetails"
+    >
+      <span class="registration_text">{{
+        $t("app.cantAddExpenditureItemDetailsAfterApprovalMsg")
+      }}</span>
+      <span class="text-lowercase registration_text">{{
+        getCurrentExpenditureItem.approve
+      }}</span>
+    </q-banner>
+    <!--------------------------------------------------------------->
     <div class="q-my-xs">
       <label class="text-muted info"
         >{{ $t("app.warningField") }}<span class="text-red">*</span
@@ -35,7 +51,7 @@
           outlined
           dense
           type="text"
-          :readonly="existExpenditureItemDetail"
+          :readonly="existExpenditureItemDetail || canAddExpenditureDetails"
         />
       </div>
       <div class="q-mb-md">
@@ -49,7 +65,7 @@
           dense
           type="number"
           @input="validateExpenditureAmountGiven"
-          :readonly="existExpenditureItemDetail"
+          :readonly="existExpenditureItemDetail || canAddExpenditureDetails"
         />
         <small v-if="is_valid_amount_given" class="text-red">
           <b>{{ $t("app.amountGivenWarningMsg") }}</b>
@@ -64,7 +80,7 @@
           outlined
           dense
           type="number"
-          :readonly="existExpenditureItemDetail"
+          :readonly="existExpenditureItemDetail || canAddExpenditureDetails"
         >
         </q-input>
       </div>
@@ -79,7 +95,7 @@
           autogrow
           outlined
           :placeholder="$t('app.provideCommentDetail')"
-          :readonly="existExpenditureItemDetail"
+          :readonly="existExpenditureItemDetail || canAddExpenditureDetails"
         />
       </div>
       <div
@@ -97,7 +113,7 @@
           no-caps
           outline
           @click="resetForm"
-          :disable="existExpenditureItemDetail"
+          :disable="existExpenditureItemDetail || canAddExpenditureDetails"
         >
         </q-btn>
         <ButtonVue
@@ -127,7 +143,7 @@
           no-caps
           outline
           @click="resetForm"
-          :disable="existExpenditureItemDetail"
+          :disable="existExpenditureItemDetail || canAddExpenditureDetails"
         >
         </q-btn>
       </div>
@@ -167,7 +183,8 @@ export default {
         this.expenditure_item_detail.amount_given == null ||
         this.expenditure_item_detail.name == null ||
         this.expenditure_item_detail.amount_spent == null ||
-        this.existExpenditureItemDetail
+        this.existExpenditureItemDetail ||
+        canAddExpenditureDetails
       );
     },
     getCurrentExpenditureItem() {
@@ -193,6 +210,13 @@ export default {
         this.$store.getters.getUpdatedExpenditureItemDetail !== null &&
         this.$store.getters.getUpdatedExpenditureItemDetail.approve !==
           "PENDING"
+      );
+    },
+
+    canAddExpenditureDetails() {
+      return (
+        this.$store.getters.getCurrentExpenditureItem != null &&
+        this.$store.getters.getCurrentExpenditureItem.approve != "PENDING"
       );
     },
   },

@@ -216,6 +216,7 @@ export default {
       this.$store.dispatch("setCurrentExpenditureItem", {
         id: data.expenditure_item.id,
         name: data.expenditure_item.name,
+        approve: data.expenditure_item.approve,
       });
 
       const intermediate_tabs = Array.from(

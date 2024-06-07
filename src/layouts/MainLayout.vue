@@ -523,6 +523,18 @@ export default {
         treasurer_only: false,
       });
 
+      menu_tabs.push({
+        to: "balance_sheet",
+        roles: ["ADMIN", "PRESIDENT", "FINANCIAL_SECRETARY"],
+        name: "Balance Sheet",
+        icon: "summarize",
+        label: this.$t("app.balanceSheetLabel"),
+        disable: this.getOrganisation == null,
+        has_image: false,
+        requires_add: false,
+        treasurer_only: false,
+      });
+
       return menu_tabs;
     },
 

@@ -120,17 +120,17 @@
         </label>
       </div>
     </div>
-    <div class="row q-mb-md detail-value wrap">
+    <div class="row q-mb-xs">
       <label for="comment" class="label"
         ><span> <q-icon name="description" size="xs" class="q-pr-sm" /> </span
         >{{ $t("app.comment") }}</label
       >
-      <div
-        class="value detail-value wrap"
-        v-show="getCurrentMemberSaving.comment !== null"
-      >
-        {{ getCurrentMemberSaving.comment }}
-      </div>
+    </div>
+    <div
+      class="value detail-value q-ml-lg"
+      v-show="getCurrentMemberSaving.comment !== null"
+    >
+      {{ getCurrentMemberSaving.comment }}
     </div>
   </div>
 </template>

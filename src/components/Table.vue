@@ -521,6 +521,7 @@
               :label="$t('app.approve')"
               no-caps
               unelevated
+              dense
               @click="onApprovedRecord(props.row, 'Approve')"
               v-if="canValidateTransaction() && props.row.approve == 'PENDING'"
             />
@@ -530,6 +531,7 @@
               :label="$t('app.decline')"
               no-caps
               unelevated
+              dense
               @click="onDeclineRecord(props.row, 'Decline')"
               v-if="canValidateTransaction() && props.row.approve == 'PENDING'"
             />
@@ -659,6 +661,7 @@
               :label="$t('app.approve')"
               no-caps
               unelevated
+              dense
               @click="onApprovedRecord(props.row, 'Approve')"
               v-if="canValidateTransaction() && props.row.approve == 'PENDING'"
             />
@@ -669,6 +672,7 @@
               :label="$t('app.decline')"
               no-caps
               unelevated
+              dense
               @click="onDeclineRecord(props.row, 'Decline')"
               v-if="canValidateTransaction() && props.row.approve == 'PENDING'"
             />

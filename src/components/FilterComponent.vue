@@ -934,6 +934,63 @@
       </div>
     </div>
     <!-------------------------------------------END OF FILTER HEADER FOR REPORTS--------------------------------------------------------------->
+
+    <!--------------------------------------------FILTER HEADER FOR balance sheet--------------------------------------------------------------------->
+    <div
+      class="row q-gutter-sm q-pb-sm q-pr-sm"
+      :style="
+        $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+      "
+      v-if="show_balance_sheet"
+    >
+      <div class="col-8 col-md-8 col-sm-12 col-xs-12 col-lg-8">
+        <q-select
+          v-model="year"
+          outlined
+          dense
+          :options="getSessionsFromState"
+          :label="$t('app.searchYear')"
+          use-input
+          input-debounce="0"
+          clearable
+          hide-bottom-space
+        >
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey"
+                >{{ $t("app.notResults") }}
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
+      </div>
+      <div class="col-4 col-md flex">
+        <q-btn
+          :label="$t('app.generateBalanceSheet')"
+          color="primary"
+          @click="generateBalanceSheet"
+          no-caps
+          :disabled="validateGenerateBalanceSheet"
+          :loading="false"
+          class="q-my-xs"
+          size="sm"
+        >
+        </q-btn>
+        <q-space />
+        <q-btn
+          :label="$t('app.download')"
+          :loading="getDownloadLoadingState"
+          color="positive"
+          :disabled="getDownloadLoadingState"
+          no-caps
+          icon-right="download"
+          @click="downloadBalanceSheet"
+          class="q-my-xs"
+          size="sm"
+        ></q-btn>
+      </div>
+    </div>
+    <!-------------------------------------------END OF FILTER HEADER FOR REPORTS--------------------------------------------------------------->
   </div>
 </template>
 
@@ -1014,6 +1071,11 @@ export default {
       required: false,
       type: Boolean,
     },
+
+    show_balance_sheet: {
+      required: false,
+      type: Boolean,
+    },
   },
 
   mixins: [CurrentYearMixin, PaymentItemMixinVue, MonthsMixinVue, HelperMixin],
@@ -1084,104 +1146,6 @@ export default {
         { label: this.$t("app.midYearTwo"), value: "12" },
       ],
     };
-  },
-
-  computed: {
-    validateFilterMembers() {
-      return this.year === "" || this.year === null;
-    },
-
-    validateFilterCategories() {
-      return this.year === null || this.year === "";
-    },
-
-    getDownloadLoadingState: {
-      get() {
-        return this.loading_download;
-      },
-      set(loading_download) {
-        return loading_download;
-      },
-    },
-
-    getDisableDownloadBtn: {
-      get() {
-        return this.disable_download_btn;
-      },
-      set(disable_download_btn) {
-        return disable_download_btn;
-      },
-    },
-
-    validateFilterPaymentItem() {
-      return (
-        this.year == "" &&
-        this.is_compulsory === "" &&
-        this.frequency === "" &&
-        this.type === "" &&
-        this.state === ""
-      );
-    },
-
-    validateFilterExpenditureItems() {
-      return (
-        this.payment_item_id == "" &&
-        this.year == "" &&
-        this.payment_status == ""
-      );
-    },
-
-    validateFilterExpenditureItem() {
-      return this.payment_status === "";
-    },
-
-    validateFilterSavings() {
-      return this.year === "" || this.year === null;
-    },
-
-    validateFilterMemberSavings() {
-      return (
-        (this.month === null || this.month === "") &&
-        (this.payment_status === null || this.payment_status === "")
-      );
-    },
-
-    validateFilterIncomeActivity() {
-      return (
-        (this.payment_item_id == "" || this.payment_item_id == null) &&
-        (this.year == "" || this.year == null)
-      );
-    },
-
-    validateFilterMemberContribution() {
-      return (
-        (this.payment_status === null || this.payment_status === "") &&
-        (this.transaction_status === null || this.transaction_status === "")
-      );
-    },
-
-    validateFilterSponsorship() {
-      return (
-        (this.payment_item_id == "" || this.payment_item_id == null) &&
-        (this.year == "" || this.year == null)
-      );
-    },
-
-    getReportGenerationOptions() {
-      let data = [];
-      data.push(
-        { label: this.$t("app.reportByPaymentItem"), value: 1 },
-        { label: this.$t("app.reportByQuarter"), value: 2 },
-        { label: this.$t("app.midYearReportLabel"), value: 3 },
-        { label: this.$t("app.reportByYear"), value: 4 }
-      );
-
-      return data;
-    },
-
-    validateGenerateReport() {
-      return this.report_option == "" || this.group == "";
-    },
   },
 
   methods: {
@@ -1579,6 +1543,23 @@ export default {
         report_option: this.report_option,
       };
       this.$emit("download-report", payload);
+    },
+
+    generateBalanceSheet() {
+      let payload = {
+        session: this.year,
+        organisation_id: this.$store.getters.getOrganisation.id,
+      };
+
+      this.$emit("generate-balance-sheet", payload);
+    },
+
+    downloadBalanceSheet() {
+      let payload = {
+        session: this.year,
+        organisation_id: this.$store.getters.getOrganisation.id,
+      };
+      this.$emit("download-balance-sheet", payload);
     },
   },
 };

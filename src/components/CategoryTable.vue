@@ -32,6 +32,7 @@
               unelevated
               color="primary"
               no-caps
+              dense
               class="view_items"
               :style="$q.platform.is.mobile ? 'width:200px' : 'width:200px'"
               @click="showPaymentItems(props.row)"
@@ -274,7 +275,7 @@
             >
               {{ props.row.expenditure_items }}
               <span class="q-pl-md"
-                ><q-icon name="visibility" size="xs"></q-icon
+                ><q-icon name="visibility" class="eye_icon"></q-icon
               ></span>
             </q-btn>
           </q-td>

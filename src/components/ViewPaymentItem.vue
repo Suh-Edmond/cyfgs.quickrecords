@@ -179,17 +179,17 @@
         <label class="no_member">{{ $t("app.allMembers") }}</label>
       </div>
     </div>
-    <div class="row q-mb-md">
+    <div class="row q-mb-xs">
       <label for="comment" class="label"
         ><span> <q-icon name="description" size="xs" class="q-pr-sm" /> </span
         >{{ $t("app.comment") }}</label
       >
-      <div
-        class="value detail-value wrap"
-        v-show="getUpdatedPaymentItemFromState.description !== null"
-      >
-        {{ getUpdatedPaymentItemFromState.description }}
-      </div>
+    </div>
+    <div
+      class="value detail-value q-pl-lg"
+      v-show="getUpdatedPaymentItemFromState.description !== null"
+    >
+      {{ getUpdatedPaymentItemFromState.description }}
     </div>
   </div>
 </template>

@@ -126,14 +126,14 @@
           </label>
         </div>
       </div>
-      <div class="row justify-between q-pb-md">
+      <div class="row q-mb-xs">
         <label for="name" class="label"
           ><span> <q-icon name="description" size="xs" class="q-pr-sm" /> </span
           >{{ $t("app.comment") }}
         </label>
-        <label class="value detail-value wrap">
-          {{ getCurrentIncomeActivity.comment }}
-        </label>
+      </div>
+      <div class="value detail-value q-pl-lg">
+        {{ getCurrentIncomeActivity.comment }}
       </div>
     </div>
   </div>

@@ -330,7 +330,7 @@ export default {
     totalIncome: "Total Income",
     expenditures: "EXPENDITURES",
     totalExpenditure: "Total Expenditures",
-    summary: "SUMMARY",
+    summary: "Summary",
     totalExpenditureLabel: "Total Expenditure",
     totalBalance: "Total Balance",
     presentedBy: "Presented By",

@@ -11,19 +11,19 @@
       <table
         style="border: 1px solid black; border-collapse: collapse; width: 100%"
       >
-        <tr style="padding: 7px; border: 1px solid black" class="table_header">
+        <tr style="padding: 5px; border: 1px solid black" class="table_header">
           <th style="padding: 1px; border: 1px solid black">S/N</th>
-          <th style="padding: 7px; border: 1px solid black">Names</th>
+          <th style="padding: 5px; border: 1px solid black">Names</th>
           <th
-            style="padding: 7px; border: 1px solid black"
+            style="padding: 5px; border: 1px solid black"
             v-for="(column, index) in getTableColumns"
             :key="index"
           >
             {{ column.code }}
           </th>
-          <th style="padding: 7px; border: 1px solid black">Expected XAF</th>
-          <th style="padding: 7px; border: 1px solid black">Total XAF</th>
-          <th style="padding: 7px; border: 1px solid black">Balance XAF</th>
+          <th style="padding: 5px; border: 1px solid black">Expected XAF</th>
+          <th style="padding: 5px; border: 1px solid black">Total XAF</th>
+          <th style="padding: 5px; border: 1px solid black">Balance XAF</th>
         </tr>
         <tr
           style="border: 1px solid black; font-size: smaller"
@@ -61,9 +61,21 @@
               padding: 1px;
               font-weight: bold;
             "
-            :colspan="getColumnSpan"
+            colspan="2"
           >
             Tally
+          </td>
+          <td
+            style="
+              padding: 3px;
+              font-weight: bold;
+              border: 1px solid black;
+              text-align: center;
+            "
+            v-for="(column, index) in getTableColumns"
+            :key="index"
+          >
+            {{ Number(column.total_amount_deposited).toLocaleString() }} XAF
           </td>
           <td
             style="
@@ -92,28 +104,34 @@
       </table>
     </div>
 
-    <div style="width: 40%">
-      <h6
+    <div class="text-center q-my-lg">
+      <label
         style="
           font-weight: bold;
           font-size: 0.8rem;
           text-align: center;
           text-transform: capitalize;
-          border-bottom: 1px solid black;
         "
+        class="heading"
       >
         {{ $t("app.columnNames") }}
-      </h6>
+      </label>
     </div>
     <div style="margin-bottom: 40px">
       <table
-        style="border: 1px solid black; border-collapse: collapse; width: 40%"
+        style="border: 1px solid black; border-collapse: collapse; width: 100%"
       >
         <tr style="padding: 5px; border: 1px solid black; font-size: smaller">
-          <th style="padding: 1px; border: 1px solid black">S/N</th>
+          <th style="padding: 1px; border: 1px solid black">Code</th>
           <th style="padding: 5px; border: 1px solid black">Names</th>
-          <th style="padding: 5px; border: 1px solid black">Amount XAF</th>
+          <th style="padding: 5px; border: 1px solid black">Member size</th>
           <th style="padding: 5px; border: 1px solid black">Compulsory</th>
+          <th style="padding: 5px; border: 1px solid black">Type</th>
+          <th style="padding: 5px; border: 1px solid black">Frequency</th>
+          <th style="padding: 5px; border: 1px solid black">Amount XAF</th>
+          <th style="padding: 5px; border: 1px solid black">
+            Payment Durations
+          </th>
         </tr>
 
         <tr
@@ -128,7 +146,7 @@
             {{ column.name }}
           </td>
           <td style="padding: 5px; border: 1px solid black">
-            {{ Number(column.amount).toLocaleString() }}
+            {{ column.member_size }}
           </td>
           <td
             style="padding: 5px; border: 1px solid black"
@@ -141,6 +159,85 @@
             v-show="!column.compulsory"
           >
             NO
+          </td>
+          <td style="padding: 5px; border: 1px solid black">
+            {{ formatConstants(column.type) }}
+          </td>
+          <td style="padding: 5px; border: 1px solid black">
+            {{ formatConstants(column.frequency) }}
+          </td>
+          <td style="padding: 5px; border: 1px solid black">
+            {{ Number(column.amount).toLocaleString() }}
+          </td>
+          <td style="padding: 5px; border: 1px solid black">
+            <q-chip
+              color="teal"
+              text-color="white"
+              v-for="ref in column.payment_durations"
+              :key="ref.id"
+              size="sm"
+              >{{ ref }}</q-chip
+            >
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="text-center q-my-md">
+      <label
+        style="
+          font-weight: bold;
+          font-size: 0.8rem;
+          text-align: center;
+          text-transform: capitalize;
+        "
+        class="heading"
+      >
+        {{ $t("app.summary") }}
+      </label>
+    </div>
+
+    <div style="margin-bottom: 40px">
+      <table
+        style="border: 1px solid black; border-collapse: collapse; width: 100%"
+      >
+        <tr style="padding: 5px; border: 1px solid black; font-size: smaller">
+          <th style="padding: 1px; border: 1px solid black">S/N</th>
+          <th style="padding: 5px; border: 1px solid black">
+            Total Expected Contribution
+          </th>
+          <th style="padding: 5px; border: 1px solid black">
+            Total Amount Contributed
+          </th>
+          <th style="padding: 5px; border: 1px solid black">
+            Total Balance Contribution
+          </th>
+        </tr>
+
+        <tr style="border: 1px solid black; font-size: smaller">
+          <td
+            style="padding: 5px; border: 1px solid black"
+            class="text-center text-weight-bold"
+          >
+            /
+          </td>
+          <td
+            style="padding: 5px; border: 1px solid black"
+            class="text-center text-weight-bold"
+          >
+            {{ Number(getTotalYearlExpected).toLocaleString() }}XAF
+          </td>
+          <td
+            style="padding: 5px; border: 1px solid black"
+            class="text-center text-weight-bold"
+          >
+            {{ Number(getTotalYearlyContribution).toLocaleString() }} XAF
+          </td>
+          <td
+            style="padding: 5px; border: 1px solid black"
+            class="text-center text-weight-bold"
+          >
+            {{ Number(getTotalYearlyBalance).toLocaleString() }} XAF
           </td>
         </tr>
       </table>
@@ -235,7 +332,9 @@
 
 <script>
 import ReportHead from "./ReportHead.vue";
+import HelperMixin from "src/mixins/HelperMixin.vue";
 export default {
+  mixins: [HelperMixin],
   props: {
     heading: {
       type: String,

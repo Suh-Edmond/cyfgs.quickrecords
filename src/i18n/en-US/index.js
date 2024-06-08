@@ -620,6 +620,10 @@ export default {
     generateBalanceSheet:"Generate Balance Sheet",
     balanceSheetHint:"Select Year to Generate Balance Sheet for your Organisation",
     balancesheetheading:"Balance Sheet Report for the Year ",
-    columnNames:"Column Definitions"
+    columnNames:"Column Definitions",
+    expected:"Expected",
+    totalExpectedContribution:"Total Expected Contribution",
+    totalAmountContributed:"Total Amount Contributed",
+    totalBalanceContribution:'Total Balance Contribution'
   },
 };

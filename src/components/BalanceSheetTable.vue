@@ -12,8 +12,8 @@
         style="border: 1px solid black; border-collapse: collapse; width: 100%"
       >
         <tr style="padding: 5px; border: 1px solid black" class="table_header">
-          <th style="padding: 1px; border: 1px solid black">S/N</th>
-          <th style="padding: 5px; border: 1px solid black">Names</th>
+          <th style="padding: 1px; border: 1px solid black">{{$t('app.sn')}}</th>
+          <th style="padding: 5px; border: 1px solid black">{{$t('name')}}</th>
           <th
             style="padding: 5px; border: 1px solid black"
             v-for="(column, index) in getTableColumns"
@@ -21,9 +21,9 @@
           >
             {{ column.code }}
           </th>
-          <th style="padding: 5px; border: 1px solid black">Expected XAF</th>
-          <th style="padding: 5px; border: 1px solid black">Total XAF</th>
-          <th style="padding: 5px; border: 1px solid black">Balance XAF</th>
+          <th style="padding: 5px; border: 1px solid black">{{$t('app.expected')}}</th>
+          <th style="padding: 5px; border: 1px solid black">{{$t('app.total')}}</th>
+          <th style="padding: 5px; border: 1px solid black">{{$t('app.balance')}}</th>
         </tr>
         <tr
           style="border: 1px solid black; font-size: smaller"
@@ -75,7 +75,7 @@
             v-for="(column, index) in getTableColumns"
             :key="index"
           >
-            {{ Number(column.total_amount_deposited).toLocaleString() }} XAF
+            {{ Number(column.total_amount_deposited).toLocaleString() }}
           </td>
           <td
             style="
@@ -85,7 +85,7 @@
               text-align: center;
             "
           >
-            {{ Number(getTotalYearlExpected).toLocaleString() }} XAF
+            {{ Number(getTotalYearlExpected).toLocaleString() }}
           </td>
           <td
             style="
@@ -95,10 +95,10 @@
               text-align: center;
             "
           >
-            {{ Number(getTotalYearlyContribution).toLocaleString() }} XAF
+            {{ Number(getTotalYearlyContribution).toLocaleString() }}
           </td>
           <td style="padding: 3px; font-weight: bold; text-align: center">
-            {{ Number(getTotalYearlyBalance).toLocaleString() }} XAF
+            {{ Number(getTotalYearlyBalance).toLocaleString() }}
           </td>
         </tr>
       </table>
@@ -123,14 +123,14 @@
       >
         <tr style="padding: 5px; border: 1px solid black; font-size: smaller">
           <th style="padding: 1px; border: 1px solid black">Code</th>
-          <th style="padding: 5px; border: 1px solid black">Names</th>
-          <th style="padding: 5px; border: 1px solid black">Member size</th>
-          <th style="padding: 5px; border: 1px solid black">Compulsory</th>
-          <th style="padding: 5px; border: 1px solid black">Type</th>
-          <th style="padding: 5px; border: 1px solid black">Frequency</th>
-          <th style="padding: 5px; border: 1px solid black">Amount XAF</th>
+          <th style="padding: 5px; border: 1px solid black">{{$t('app.name')}}</th>
+          <th style="padding: 5px; border: 1px solid black">{{$t('app.memberSize')}}</th>
+          <th style="padding: 5px; border: 1px solid black">{{$t('app.compulsory')}}</th>
+          <th style="padding: 5px; border: 1px solid black">{{$t('app.type')}}</th>
+          <th style="padding: 5px; border: 1px solid black">{{$t('app.frequency')}}</th>
+          <th style="padding: 5px; border: 1px solid black">{{ $t('app.Amount') }} XAF</th>
           <th style="padding: 5px; border: 1px solid black">
-            Payment Durations
+            {{$t('app.paymentDuration')}}
           </th>
         </tr>
 
@@ -152,13 +152,13 @@
             style="padding: 5px; border: 1px solid black"
             v-show="column.compulsory"
           >
-            YES
+            {{$t('app.yes')}}
           </td>
           <td
             style="padding: 5px; border: 1px solid black"
             v-show="!column.compulsory"
           >
-            NO
+            {{$t('app.no')}}
           </td>
           <td style="padding: 5px; border: 1px solid black">
             {{ formatConstants(column.type) }}
@@ -202,15 +202,15 @@
         style="border: 1px solid black; border-collapse: collapse; width: 100%"
       >
         <tr style="padding: 5px; border: 1px solid black; font-size: smaller">
-          <th style="padding: 1px; border: 1px solid black">S/N</th>
+          <th style="padding: 1px; border: 1px solid black">{{$t('app.sn')}}</th>
           <th style="padding: 5px; border: 1px solid black">
-            Total Expected Contribution
+            {{$t('app.totalExpectedContribution')}}
           </th>
           <th style="padding: 5px; border: 1px solid black">
-            Total Amount Contributed
+            {{$t('app.total-AmountContributed')}}
           </th>
           <th style="padding: 5px; border: 1px solid black">
-            Total Balance Contribution
+            {{$t('app.totalBalanceContribution')}}
           </th>
         </tr>
 

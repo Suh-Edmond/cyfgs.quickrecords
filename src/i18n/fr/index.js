@@ -534,6 +534,10 @@ export default {
     generateBalanceSheet:"Générer un bilan",
     balanceSheetHint:"Sélectionnez l'année pour générer le bilan de votre organisation",
     balancesheetheading:"Rapport de bilan de l'année ",
-    columnNames:"Définitions de colonnes"
+    columnNames:"Définitions de colonnes",
+    expected:"Attendue",
+    totalExpectedContribution:"Contribution totale attendue",
+    totalAmountContributed:"Montant total contribué",
+    totalBalanceContribution:'Contribution au solde total'
   }
 };

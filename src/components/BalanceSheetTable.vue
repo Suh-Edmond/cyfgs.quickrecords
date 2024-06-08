@@ -16,7 +16,7 @@
             {{ $t("app.sn") }}
           </th>
           <th style="padding: 5px; border: 1px solid black">
-            {{ $t("name") }}
+            {{ $t("app.nameLabel") }}
           </th>
           <th
             style="padding: 5px; border: 1px solid black"
@@ -132,15 +132,17 @@
         style="border: 1px solid black; border-collapse: collapse; width: 100%"
       >
         <tr style="padding: 5px; border: 1px solid black; font-size: smaller">
-          <th style="padding: 1px; border: 1px solid black">Code</th>
+          <th style="padding: 1px; border: 1px solid black">
+            {{ $t("app.codeLabel") }}
+          </th>
           <th style="padding: 5px; border: 1px solid black">
-            {{ $t("app.name") }}
+            {{ $t("app.nameLabel") }}
           </th>
           <th style="padding: 5px; border: 1px solid black">
             {{ $t("app.memberSize") }}
           </th>
           <th style="padding: 5px; border: 1px solid black">
-            {{ $t("app.compulsory") }}
+            {{ $t("app.compulsoryLabel") }}
           </th>
           <th style="padding: 5px; border: 1px solid black">
             {{ $t("app.type") }}
@@ -149,7 +151,7 @@
             {{ $t("app.frequency") }}
           </th>
           <th style="padding: 5px; border: 1px solid black">
-            {{ $t("app.Amount") }} XAF
+            {{ $t("app.amount") }} XAF
           </th>
           <th style="padding: 5px; border: 1px solid black">
             {{ $t("app.paymentDuration") }}

@@ -620,6 +620,6 @@ export default {
     generateBalanceSheet:"Generate Balance Sheet",
     balanceSheetHint:"Select Year to Generate Balance Sheet for your Organisation",
     balancesheetheading:"Balance Sheet Report for the Year ",
-    columnNames:"Column codes and their names"
+    columnNames:"Column Definitions"
   },
 };

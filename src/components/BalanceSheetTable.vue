@@ -11,22 +11,19 @@
       <table
         style="border: 1px solid black; border-collapse: collapse; width: 100%"
       >
-        <tr
-          style="padding: 13px; border: 1px solid black; font-size: smaller"
-          class="table_header"
-        >
+        <tr style="padding: 7px; border: 1px solid black" class="table_header">
           <th style="padding: 1px; border: 1px solid black">S/N</th>
-          <th style="padding: 12px; border: 1px solid black">Names</th>
+          <th style="padding: 7px; border: 1px solid black">Names</th>
           <th
-            style="padding: 12px; border: 1px solid black"
+            style="padding: 7px; border: 1px solid black"
             v-for="(column, index) in getTableColumns"
             :key="index"
           >
             {{ column.code }}
           </th>
-          <th style="padding: 12px; border: 1px solid black">Expected XAF</th>
-          <th style="padding: 12px; border: 1px solid black">Total XAF</th>
-          <th style="padding: 12px; border: 1px solid black">Balance XAF</th>
+          <th style="padding: 7px; border: 1px solid black">Expected XAF</th>
+          <th style="padding: 7px; border: 1px solid black">Total XAF</th>
+          <th style="padding: 7px; border: 1px solid black">Balance XAF</th>
         </tr>
         <tr
           style="border: 1px solid black; font-size: smaller"
@@ -96,26 +93,27 @@
     </div>
 
     <div style="width: 40%">
-      <h5
+      <h6
         style="
           font-weight: bold;
-          font-size: medium;
+          font-size: 0.8rem;
           text-align: center;
           text-transform: capitalize;
           border-bottom: 1px solid black;
         "
       >
         {{ $t("app.columnNames") }}
-      </h5>
+      </h6>
     </div>
     <div style="margin-bottom: 40px">
       <table
         style="border: 1px solid black; border-collapse: collapse; width: 40%"
       >
-        <tr style="padding: 8px; border: 1px solid black; font-size: smaller">
+        <tr style="padding: 5px; border: 1px solid black; font-size: smaller">
           <th style="padding: 1px; border: 1px solid black">S/N</th>
-          <th style="padding: 8px; border: 1px solid black">Names</th>
-          <th style="padding: 8px; border: 1px solid black">Amount XAF</th>
+          <th style="padding: 5px; border: 1px solid black">Names</th>
+          <th style="padding: 5px; border: 1px solid black">Amount XAF</th>
+          <th style="padding: 5px; border: 1px solid black">Compulsory</th>
         </tr>
 
         <tr
@@ -123,14 +121,26 @@
           v-for="(column, index) in getTableColumns"
           :key="index"
         >
-          <td style="padding: 8px; border: 1px solid black">
+          <td style="padding: 5px; border: 1px solid black">
             {{ column.code }}
           </td>
-          <td style="padding: 8px; border: 1px solid black">
+          <td style="padding: 5px; border: 1px solid black">
             {{ column.name }}
           </td>
-          <td style="padding: 8px; border: 1px solid black">
+          <td style="padding: 5px; border: 1px solid black">
             {{ Number(column.amount).toLocaleString() }}
+          </td>
+          <td
+            style="padding: 5px; border: 1px solid black"
+            v-show="column.compulsory"
+          >
+            YES
+          </td>
+          <td
+            style="padding: 5px; border: 1px solid black"
+            v-show="!column.compulsory"
+          >
+            NO
           </td>
         </tr>
       </table>
@@ -141,9 +151,11 @@
       <div class="col-md-1 col-sm-1 col-xs-1"></div>
       <div class="col-md-10 col-xs-12 col-sm-12">
         <div class="q-my-lg text-center">
-          <label for="income" class="admin_title text-uppercase">{{
-            $t("app.presentedBy")
-          }}</label>
+          <label
+            for="income"
+            class="admin_title text-uppercase text-weight-bold"
+            >{{ $t("app.presentedBy") }}</label
+          >
         </div>
         <div class="flex justify-between">
           <div
@@ -162,7 +174,7 @@
             </div>
             <br />
             <div>
-              <label for="name">{{ $t("app.sign") }} </label>
+              <label for="name" class="sign">{{ $t("app.sign") }} </label>
               <hr class="q-mt-lg" />
             </div>
           </div>
@@ -184,7 +196,7 @@
             </div>
             <br />
             <div>
-              <label for="name">{{ $t("app.sign") }} </label>
+              <label for="name" class="sign">{{ $t("app.sign") }} </label>
               <hr class="q-mt-lg" />
             </div>
           </div>
@@ -209,7 +221,7 @@
             </div>
             <br />
             <div>
-              <label for="name">{{ $t("app.sign") }} </label>
+              <label for="name" class="sign">{{ $t("app.sign") }} </label>
               <hr class="q-mt-lg" />
             </div>
           </div>
@@ -288,7 +300,7 @@ export default {
 .report {
   margin-top: 20px;
   margin-bottom: 5px;
-  border: 2px dashed $grey5;
+  border: 0.01rem dashed $grey5;
   border-radius: 15px;
   border-style: dashed;
 }
@@ -296,15 +308,30 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: bold;
-  font-size: 17px;
-  align-items: center;
-  letter-spacing: 0.01em;
+  font-size: 0.9rem;
   color: $dark;
-  border-bottom: 2px solid #000;
+  border-bottom: 0.01rem solid #000;
 }
 
 .table_header {
   background-color: $primary;
   color: $white1;
+  font-size: 0.8rem;
+}
+.admin_name {
+  font-size: 0.7rem;
+  min-width: 25%;
+}
+.admin_details {
+  min-width: 25%;
+}
+
+.admin_title {
+  font-size: 0.7rem;
+  text-decoration: underline;
+}
+
+.sign {
+  font-size: 0.7rem;
 }
 </style>

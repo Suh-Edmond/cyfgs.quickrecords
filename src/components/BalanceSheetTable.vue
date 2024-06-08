@@ -12,8 +12,12 @@
         style="border: 1px solid black; border-collapse: collapse; width: 100%"
       >
         <tr style="padding: 5px; border: 1px solid black" class="table_header">
-          <th style="padding: 1px; border: 1px solid black">{{$t('app.sn')}}</th>
-          <th style="padding: 5px; border: 1px solid black">{{$t('name')}}</th>
+          <th style="padding: 1px; border: 1px solid black">
+            {{ $t("app.sn") }}
+          </th>
+          <th style="padding: 5px; border: 1px solid black">
+            {{ $t("name") }}
+          </th>
           <th
             style="padding: 5px; border: 1px solid black"
             v-for="(column, index) in getTableColumns"
@@ -21,9 +25,15 @@
           >
             {{ column.code }}
           </th>
-          <th style="padding: 5px; border: 1px solid black">{{$t('app.expected')}}</th>
-          <th style="padding: 5px; border: 1px solid black">{{$t('app.total')}}</th>
-          <th style="padding: 5px; border: 1px solid black">{{$t('app.balance')}}</th>
+          <th style="padding: 5px; border: 1px solid black">
+            {{ $t("app.expected") }}
+          </th>
+          <th style="padding: 5px; border: 1px solid black">
+            {{ $t("app.total") }}
+          </th>
+          <th style="padding: 5px; border: 1px solid black">
+            {{ $t("app.balance") }}
+          </th>
         </tr>
         <tr
           style="border: 1px solid black; font-size: smaller"
@@ -123,14 +133,26 @@
       >
         <tr style="padding: 5px; border: 1px solid black; font-size: smaller">
           <th style="padding: 1px; border: 1px solid black">Code</th>
-          <th style="padding: 5px; border: 1px solid black">{{$t('app.name')}}</th>
-          <th style="padding: 5px; border: 1px solid black">{{$t('app.memberSize')}}</th>
-          <th style="padding: 5px; border: 1px solid black">{{$t('app.compulsory')}}</th>
-          <th style="padding: 5px; border: 1px solid black">{{$t('app.type')}}</th>
-          <th style="padding: 5px; border: 1px solid black">{{$t('app.frequency')}}</th>
-          <th style="padding: 5px; border: 1px solid black">{{ $t('app.Amount') }} XAF</th>
           <th style="padding: 5px; border: 1px solid black">
-            {{$t('app.paymentDuration')}}
+            {{ $t("app.name") }}
+          </th>
+          <th style="padding: 5px; border: 1px solid black">
+            {{ $t("app.memberSize") }}
+          </th>
+          <th style="padding: 5px; border: 1px solid black">
+            {{ $t("app.compulsory") }}
+          </th>
+          <th style="padding: 5px; border: 1px solid black">
+            {{ $t("app.type") }}
+          </th>
+          <th style="padding: 5px; border: 1px solid black">
+            {{ $t("app.frequency") }}
+          </th>
+          <th style="padding: 5px; border: 1px solid black">
+            {{ $t("app.Amount") }} XAF
+          </th>
+          <th style="padding: 5px; border: 1px solid black">
+            {{ $t("app.paymentDuration") }}
           </th>
         </tr>
 
@@ -152,13 +174,13 @@
             style="padding: 5px; border: 1px solid black"
             v-show="column.compulsory"
           >
-            {{$t('app.yes')}}
+            {{ $t("app.yes") }}
           </td>
           <td
             style="padding: 5px; border: 1px solid black"
             v-show="!column.compulsory"
           >
-            {{$t('app.no')}}
+            {{ $t("app.no") }}
           </td>
           <td style="padding: 5px; border: 1px solid black">
             {{ formatConstants(column.type) }}
@@ -202,15 +224,17 @@
         style="border: 1px solid black; border-collapse: collapse; width: 100%"
       >
         <tr style="padding: 5px; border: 1px solid black; font-size: smaller">
-          <th style="padding: 1px; border: 1px solid black">{{$t('app.sn')}}</th>
-          <th style="padding: 5px; border: 1px solid black">
-            {{$t('app.totalExpectedContribution')}}
+          <th style="padding: 1px; border: 1px solid black">
+            {{ $t("app.sn") }}
           </th>
           <th style="padding: 5px; border: 1px solid black">
-            {{$t('app.total-AmountContributed')}}
+            {{ $t("app.totalExpectedContribution") }}
           </th>
           <th style="padding: 5px; border: 1px solid black">
-            {{$t('app.totalBalanceContribution')}}
+            {{ $t("app.totalAmountContributed") }}
+          </th>
+          <th style="padding: 5px; border: 1px solid black">
+            {{ $t("app.totalBalanceContribution") }}
           </th>
         </tr>
 

@@ -530,6 +530,10 @@ export default {
     back:"Dos",
     roleDetails:"Détails du rôle",
     cantAddExpenditureItemDetailsAfterApprovalMsg:"Les détails d'un poste de dépense ne peuvent pas être ajoutés une fois que le poste de dépense a été",
-
+    balanceSheetLabel:"Bilan",
+    generateBalanceSheet:"Générer un bilan",
+    balanceSheetHint:"Sélectionnez l'année pour générer le bilan de votre organisation",
+    balancesheetheading:"Rapport de bilan de l'année ",
+    columnNames:"Définitions de colonnes"
   }
 };

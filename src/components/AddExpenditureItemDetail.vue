@@ -216,7 +216,8 @@ export default {
     canAddExpenditureDetails() {
       return (
         this.$store.getters.getCurrentExpenditureItem != null &&
-        this.$store.getters.getCurrentExpenditureItem.approve != "PENDING"
+        this.$store.getters.getCurrentExpenditureItem.approve != "PENDING" &&
+        this.$store.getters.getUpdatedExpenditureItemDetail == null
       );
     },
   },

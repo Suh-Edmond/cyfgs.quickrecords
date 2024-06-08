@@ -109,17 +109,17 @@
         </label>
       </div>
     </div>
-    <div class="flex justify-between q-pb-xs">
+    <div class="row q-mb-xs">
       <label for="name" class="label"
         ><span> <q-icon name="description" size="xs" class="q-pr-sm" /> </span
         >{{ $t("app.comment") }}
       </label>
-      <div
-        class="value detail-value wrap"
-        v-show="getSelectedSponsorship.comment !== null"
-      >
-        {{ getSelectedSponsorship.comment }}
-      </div>
+    </div>
+    <div
+      class="value detail-value q-ml-lg"
+      v-show="getSelectedSponsorship.comment !== null"
+    >
+      {{ getSelectedSponsorship.comment }}
     </div>
   </div>
 </template>

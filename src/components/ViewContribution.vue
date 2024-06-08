@@ -243,20 +243,17 @@
           </label>
         </div>
       </div>
-      <div class="flex justify-between q-pb-md">
-        <div>
-          <label for="name" class="label"
-            ><span>
-              <q-icon name="description" size="xs" class="q-pr-sm" /> </span
-            >{{ $t("app.comment") }}
-          </label>
-        </div>
-        <div
-          class="value detail-value wrap"
-          v-show="getSelectedContribution.comment !== null"
-        >
-          {{ getSelectedContribution.comment }}
-        </div>
+      <div class="row q-mb-xs">
+        <label for="name" class="label"
+          ><span> <q-icon name="description" size="xs" class="q-pr-sm" /> </span
+          >{{ $t("app.comment") }}
+        </label>
+      </div>
+      <div
+        class="value detail-value q-ml-lg"
+        v-show="getSelectedContribution.comment !== null"
+      >
+        {{ getSelectedContribution.comment }}
       </div>
     </div>
   </div>

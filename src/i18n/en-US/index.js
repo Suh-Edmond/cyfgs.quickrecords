@@ -330,7 +330,7 @@ export default {
     totalIncome: "Total Income",
     expenditures: "EXPENDITURES",
     totalExpenditure: "Total Expenditures",
-    summary: "SUMMARY",
+    summary: "Summary",
     totalExpenditureLabel: "Total Expenditure",
     totalBalance: "Total Balance",
     presentedBy: "Presented By",
@@ -616,5 +616,10 @@ export default {
     midYearTwo: "July - December",
     midYearReportTitle: "Mid Year from ",
     cantAddExpenditureItemDetailsAfterApprovalMsg:"Expenditure item details cannot be added after the expenditure item has been ",
+    balanceSheetLabel:"Balance Sheet",
+    generateBalanceSheet:"Generate Balance Sheet",
+    balanceSheetHint:"Select Year to Generate Balance Sheet for your Organisation",
+    balancesheetheading:"Balance Sheet Report for the Year ",
+    columnNames:"Column Definitions"
   },
 };

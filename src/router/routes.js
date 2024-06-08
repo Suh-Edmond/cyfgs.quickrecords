@@ -308,6 +308,16 @@ const routes = [
           has_intermediate_tab: false,
         },
       },
+      {
+        name: "balance_sheet",
+        path: "/dashboard/balance_sheet/managment",
+        component: () => import("src/pages/BalanceSheet/BalanceSheet.vue"),
+        meta: {
+          middleware: "auth",
+          role: "MEMBER",
+          has_intermediate_tab: false,
+        },
+      },
     ],
   },
 

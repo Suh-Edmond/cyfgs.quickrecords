@@ -934,6 +934,63 @@
       </div>
     </div>
     <!-------------------------------------------END OF FILTER HEADER FOR REPORTS--------------------------------------------------------------->
+
+    <!--------------------------------------------FILTER HEADER FOR balance sheet--------------------------------------------------------------------->
+    <div
+      class="row q-gutter-sm q-pb-sm q-pr-sm"
+      :style="
+        $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+      "
+      v-if="show_balance_sheet"
+    >
+      <div class="col-8 col-md-8 col-sm-12 col-xs-12 col-lg-8">
+        <q-select
+          v-model="year"
+          outlined
+          dense
+          :options="getSessionsFromState"
+          :label="$t('app.searchYear')"
+          use-input
+          input-debounce="0"
+          clearable
+          hide-bottom-space
+        >
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey"
+                >{{ $t("app.notResults") }}
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
+      </div>
+      <div class="col-4 col-md flex">
+        <q-btn
+          :label="$t('app.generateBalanceSheet')"
+          color="primary"
+          @click="generateBalanceSheet"
+          no-caps
+          :disabled="validateGenerateBalanceSheet"
+          :loading="false"
+          class="q-my-xs"
+          size="sm"
+        >
+        </q-btn>
+        <q-space />
+        <q-btn
+          :label="$t('app.download')"
+          :loading="getDownloadLoadingState"
+          color="positive"
+          :disabled="getDownloadLoadingState"
+          no-caps
+          icon-right="download"
+          @click="downloadBalanceSheet"
+          class="q-my-xs"
+          size="sm"
+        ></q-btn>
+      </div>
+    </div>
+    <!-------------------------------------------END OF FILTER HEADER FOR REPORTS--------------------------------------------------------------->
   </div>
 </template>
 
@@ -1011,6 +1068,11 @@ export default {
     },
 
     show_report: {
+      required: false,
+      type: Boolean,
+    },
+
+    show_balance_sheet: {
       required: false,
       type: Boolean,
     },
@@ -1181,6 +1243,10 @@ export default {
 
     validateGenerateReport() {
       return this.report_option == "" || this.group == "";
+    },
+
+    validateGenerateBalanceSheet() {
+      return this.year == "" || this.year == null;
     },
   },
 
@@ -1579,6 +1645,23 @@ export default {
         report_option: this.report_option,
       };
       this.$emit("download-report", payload);
+    },
+
+    generateBalanceSheet() {
+      let payload = {
+        session: this.year,
+        organisation_id: this.$store.getters.getOrganisation.id,
+      };
+
+      this.$emit("generate-balance-sheet", payload);
+    },
+
+    downloadBalanceSheet() {
+      let payload = {
+        session: this.year,
+        organisation_id: this.$store.getters.getOrganisation.id,
+      };
+      this.$emit("download-balance-sheet", payload);
     },
   },
 };

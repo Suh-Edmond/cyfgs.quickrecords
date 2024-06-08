@@ -163,9 +163,7 @@
           <!-------------------------------------------------------------------TABLE TITLE------------------------------------------------------------------>
           <div class="row table_header">
             <div class="col-1 col-md-1 columns text-bold">S/N</div>
-            <div class="col-md-6 columns text-bold text-left">
-              Description
-            </div>
+            <div class="col-md-6 columns text-bold text-left">Description</div>
             <div class="col-md-5 columns text-bold">{{ $t("app.amount") }}</div>
           </div>
           <!---------------------------------------------------------------------END OF TABLE TITLE--------------------------------------------------------------------------->
@@ -216,16 +214,18 @@
       <div class="col-md-1 col-sm-1 col-xs-1"></div>
       <div class="col-md-10 col-xs-12 col-sm-12">
         <div class="q-my-lg text-center">
-          <label for="income" class="summary text-uppercase"
-            >{{ $t("app.presentedBy") }}:</label
-          >
+          <label for="income" class="summary text-uppercase">{{
+            $t("app.presentedBy")
+          }}</label>
         </div>
         <div class="flex justify-between">
           <div
             class="col-md-6 text-bold text-center text-uppercase admin_details"
           >
             <div>
-              <label for="name" class="admin_title">{{ $t("app.finSec") }} </label><br />
+              <label for="name" class="admin_title"
+                >{{ $t("app.finSec") }} </label
+              ><br />
               <span
                 class="admin_name"
                 v-for="fin_sec in getFinancialSecretary"
@@ -235,7 +235,7 @@
             </div>
             <br />
             <div>
-              <label for="name">{{ $t("app.sign") }} </label>
+              <label for="name" class="sign">{{ $t("app.sign") }} </label>
               <hr class="q-mt-lg" />
             </div>
           </div>
@@ -243,7 +243,9 @@
             class="col-md-6 text-bold text-center text-uppercase admin_details"
           >
             <div>
-              <label for="name" class="admin_title">{{ $t("app.treasurer") }}</label
+              <label for="name" class="admin_title">{{
+                $t("app.treasurer")
+              }}</label
               ><br />
               <span
                 class="admin_name"
@@ -255,7 +257,7 @@
             </div>
             <br />
             <div>
-              <label for="name">{{ $t("app.sign") }} </label>
+              <label for="name" class="sign">{{ $t("app.sign") }} </label>
               <hr class="q-mt-lg" />
             </div>
           </div>
@@ -266,7 +268,9 @@
             class="col-md-12 text-bold text-center text-uppercase admin_details"
           >
             <div>
-              <label for="name" class="admin_title">{{ $t("app.president") }}</label
+              <label for="name" class="admin_title">{{
+                $t("app.president")
+              }}</label
               ><br />
               <span
                 class="admin_name"
@@ -278,7 +282,7 @@
             </div>
             <br />
             <div>
-              <label for="name">{{ $t("app.sign") }} </label>
+              <label for="name" class="sign">{{ $t("app.sign") }} </label>
               <hr class="q-mt-lg" />
             </div>
           </div>
@@ -374,90 +378,76 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: bold;
-  font-size: 17px;
-  align-items: center;
-  letter-spacing: 0.01em;
+  font-size: 0.9rem;
   color: $dark;
-  border-bottom: 2px solid #000;
+  border-bottom: 0.01rem solid #000;
 }
 
 .income_heading {
   font-family: "Roboto";
   font-style: normal;
   font-weight: bold;
-  font-size: 15px;
-  letter-spacing: 0.01em;
+  font-size: 0.7rem;
   color: $dark;
-  border-bottom: 2px solid black;
+  border-bottom: 0.01rem solid black;
 }
 
 .table_header {
-  border: 1px solid black;
   background-color: $primary;
   color: $white1;
-  border-color: $white1;
+  font-size: 0.8rem;
 }
 
 .columns {
   padding: 5px;
-  border-top: 1px solid black;
-  border-bottom: 1px solid black;
-  border-left: 1px solid black;
-  border-right: 1px solid black;
+  border-top: 0.01rem solid black;
+  border-bottom: 0.01rem solid black;
+  border-left: 0.01rem solid black;
+  border-right: 0.01rem solid black;
   border-color: $white1;
+  font-size: 0.7rem;
 }
 
 .column_details_end {
   padding: 5px;
-  border-bottom: 2px solid black;
-  border-left: 2px solid black;
+  border-bottom: 0.01rem solid black;
+  border-left: 0.01rem solid black;
   border-color: $dark;
-  border-right: 2px solid black;
+  border-right: 0.01rem solid black;
+  font-size: 0.7rem;
 }
 
 .column_details {
   padding: 5px;
-  border-bottom: 2px solid black;
-  border-left: 2px solid black;
+  border-bottom: 0.01rem solid black;
+  border-left: 0.01rem solid black;
   border-color: $dark;
+  font-size: 0.7rem;
 }
 
 .summary {
   font-family: "Roboto";
   font-style: normal;
   font-weight: bold;
-  font-size: 15px;
-  letter-spacing: 0.01em;
+  font-size: 0.7rem;
   color: $dark;
   border-bottom: 2px solid #000;
 }
 
-.summary_row {
-  border-bottom: 2px solid black;
-  border-left: 1px solid #000;
-  border-right: 1px solid #000;
-}
-.summary_row_first {
-  border-top: 2px solid black;
-  border-bottom: 2px solid black;
-  border-left: 1px solid #000;
-  border-right: 1px solid #000;
-}
-.summary_column_details {
-  border-left: 1px solid #000;
-  border-right: 1px solid #000;
-  padding: 4px;
-}
-
 .admin_name {
-
+  font-size: 0.7rem;
   min-width: 25%;
 }
 
 .admin_title {
-text-decoration: underline;
+  font-size: 0.7rem;
+  text-decoration: underline;
 }
 .admin_details {
   min-width: 25%;
+}
+
+.sign {
+  font-size: 0.7rem;
 }
 </style>

@@ -435,9 +435,9 @@
       <div class="col-md-1 col-sm-1 col-xs-1"></div>
       <div class="col-md-10 col-xs-12 col-sm-12">
         <div class="q-my-lg text-center">
-          <label for="income" class="summary text-uppercase"
-            >{{ $t("app.presentedBy") }}:</label
-          >
+          <label for="income" class="summary text-uppercase">{{
+            $t("app.presentedBy")
+          }}</label>
         </div>
         <div class="flex justify-between">
           <div
@@ -456,7 +456,7 @@
             </div>
             <br />
             <div>
-              <label for="name">{{ $t("app.sign") }} </label>
+              <label for="name" class="sign">{{ $t("app.sign") }} </label>
               <hr class="q-mt-lg" />
             </div>
           </div>
@@ -478,7 +478,7 @@
             </div>
             <br />
             <div>
-              <label for="name">{{ $t("app.sign") }} </label>
+              <label for="name" class="sign">{{ $t("app.sign") }} </label>
               <hr class="q-mt-lg" />
             </div>
           </div>
@@ -503,7 +503,7 @@
             </div>
             <br />
             <div>
-              <label for="name">{{ $t("app.sign") }} </label>
+              <label for="name" class="sign">{{ $t("app.sign") }} </label>
               <hr class="q-mt-lg" />
             </div>
           </div>
@@ -592,7 +592,7 @@ export default {
 .report {
   margin-top: 20px;
   margin-bottom: 5px;
-  border: 2px dashed $grey5;
+  border: 0.01rem dashed $grey5;
   border-radius: 15px;
   border-style: dashed;
 }
@@ -600,82 +600,84 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: bold;
-  font-size: 17px;
-  align-items: center;
-  letter-spacing: 0.01em;
+  font-size: 0.9rem;
   color: $dark;
-  border-bottom: 2px solid #000;
+  border-bottom: 0.01rem solid #000;
 }
 
 .income_heading {
   font-family: "Roboto";
   font-style: normal;
   font-weight: bold;
-  font-size: 15px;
-  letter-spacing: 0.01em;
+  font-size: 0.7rem;
   color: $dark;
-  border-bottom: 2px solid black;
+  border-bottom: 0.01rem solid black;
 }
 
 .table_header {
-  border: 1px solid black;
   background-color: $primary;
   color: $white1;
-  border-color: $white1;
+  font-size: 0.8rem;
 }
 
 .columns {
   padding: 5px;
-  border-top: 1px solid black;
-  border-bottom: 1px solid black;
-  border-left: 1px solid black;
-  border-right: 1px solid black;
+  border-top: 0.01rem solid black;
+  border-bottom: 0.01rem solid black;
+  border-left: 0.01rem solid black;
+  border-right: 0.01rem solid black;
   border-color: $white1;
+  font-size: 0.7rem;
 }
 
 .column_details_end {
   padding: 5px;
-  border-bottom: 2px solid black;
-  border-left: 2px solid black;
+  border-bottom: 0.01rem solid black;
+  border-left: 0.01rem solid black;
   border-color: $dark;
-  border-right: 2px solid black;
+  border-right: 0.01rem solid black;
+  font-size: 0.7rem;
 }
 
 .column_details {
   padding: 5px;
-  border-bottom: 2px solid black;
-  border-left: 2px solid black;
+  border-bottom: 0.01rem solid black;
+  border-left: 0.01rem solid black;
   border-color: $dark;
+  font-size: 0.7rem;
 }
 
 .summary {
   font-family: "Roboto";
   font-style: normal;
   font-weight: bold;
-  font-size: 15px;
-  letter-spacing: 0.01em;
+  font-size: 0.7rem;
   color: $dark;
-  border-bottom: 2px solid #000;
+  border-bottom: 0.01rem solid #000;
 }
 
 .summary_row {
-  border-bottom: 2px solid black;
-  border-left: 1px solid #000;
-  border-right: 1px solid #000;
+  font-size: 0.7rem;
+  border-bottom: 0.01rem solid black;
+  border-left: 0.01rem solid #000;
+  border-right: 0.01rem solid #000;
 }
 .summary_row_first {
-  border-top: 2px solid black;
-  border-bottom: 2px solid black;
-  border-left: 1px solid #000;
-  border-right: 1px solid #000;
+  font-size: 0.7rem;
+  border-top: 0.01rem solid black;
+  border-bottom: 0.01rem solid black;
+  border-left: 0.01rem solid #000;
+  border-right: 0.01rem solid #000;
 }
 .summary_column_details {
-  border-left: 1px solid #000;
-  border-right: 1px solid #000;
+  font-size: 0.7rem;
+  border-left: 0.01rem solid #000;
+  border-right: 0.01rem solid #000;
   padding: 4px;
 }
 
 .admin_name {
+  font-size: 0.7rem;
   min-width: 25%;
 }
 .admin_details {
@@ -683,6 +685,11 @@ export default {
 }
 
 .admin_title {
+  font-size: 0.7rem;
   text-decoration: underline;
+}
+
+.sign {
+  font-size: 0.7rem;
 }
 </style>

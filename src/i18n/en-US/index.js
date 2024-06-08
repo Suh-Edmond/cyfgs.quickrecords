@@ -330,7 +330,7 @@ export default {
     totalIncome: "Total Income",
     expenditures: "EXPENDITURES",
     totalExpenditure: "Total Expenditures",
-    summary: "SUMMARY",
+    summary: "Summary",
     totalExpenditureLabel: "Total Expenditure",
     totalBalance: "Total Balance",
     presentedBy: "Presented By",
@@ -620,6 +620,6 @@ export default {
     generateBalanceSheet:"Generate Balance Sheet",
     balanceSheetHint:"Select Year to Generate Balance Sheet for your Organisation",
     balancesheetheading:"Balance Sheet Report for the Year ",
-    columnNames:"Column codes and their names"
+    columnNames:"Column Definitions"
   },
 };

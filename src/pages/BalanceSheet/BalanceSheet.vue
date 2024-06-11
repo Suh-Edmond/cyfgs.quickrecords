@@ -36,11 +36,35 @@
       <q-spinner color="primary" size="3em" />
     </div>
 
-    <BalanceSheetTable
-      :heading="setTableHeader"
-      :data="balance_sheet_data"
-      v-if="show_balance_sheet && !getLoadingState"
-    ></BalanceSheetTable>
+    <div v-if="$q.platform.is.desktop">
+      <BalanceSheetTable
+        :heading="setTableHeader"
+        :data="balance_sheet_data"
+        v-if="show_balance_sheet && !getLoadingState"
+      ></BalanceSheetTable>
+    </div>
+    <div v-if="$q.platform.is.mobile">
+      <div
+        class="flex justify-between q-pa-xs q-mb-md"
+        :style="
+          $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+        "
+      >
+        <div class="hint_text_color q-pt-sm q-pl-sm">
+          {{ $t("app.balanceSheetHintMsgMobile") }}
+        </div>
+        <div>
+          <q-btn
+            flat
+            round
+            class="close_color"
+            icon="close"
+            @click="closeHint"
+            size="sm"
+          />
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 

@@ -937,7 +937,7 @@
 
     <!--------------------------------------------FILTER HEADER FOR balance sheet--------------------------------------------------------------------->
     <div
-      class="row q-gutter-sm q-pb-sm q-pr-sm"
+      class="row q-gutter-sm q-pb-sm q-px-sm"
       :style="
         $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
       "
@@ -964,7 +964,7 @@
           </template>
         </q-select>
       </div>
-      <div class="col-4 col-md flex">
+      <div class="col-4 col-md col-xs-12 col-sm-12 flex">
         <q-btn
           :label="$t('app.generateBalanceSheet')"
           color="primary"

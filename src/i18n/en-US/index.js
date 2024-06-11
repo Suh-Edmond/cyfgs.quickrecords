@@ -624,6 +624,7 @@ export default {
     expected:"Expected",
     totalExpectedContribution:"Total Expected Contribution",
     totalAmountContributed:"Total Amount Contributed",
-    totalBalanceContribution:'Total Balance Contribution'
+    totalBalanceContribution:'Total Balance Contribution',
+    balanceSheetHintMsgMobile:"Balance Sheet Preview is available only desktop"
   },
 };

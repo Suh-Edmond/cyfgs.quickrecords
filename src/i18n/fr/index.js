@@ -538,6 +538,7 @@ export default {
     expected:"Attendue",
     totalExpectedContribution:"Contribution totale attendue",
     totalAmountContributed:"Montant total contribué",
-    totalBalanceContribution:'Contribution au solde total'
+    totalBalanceContribution:'Contribution au solde total',
+    balanceSheetHintMsgMobile:"L'aperçu du bilan est disponible uniquement en mode bureau"
   }
 };

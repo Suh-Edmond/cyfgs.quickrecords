@@ -70,7 +70,7 @@
     </q-page-container>
 
     <q-drawer
-        v-model="right"
+      v-model="right"
       show-if-above
       side="right"
       bordered

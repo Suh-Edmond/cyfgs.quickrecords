@@ -37,7 +37,10 @@
         <q-spinner color="primary" size="3em" />
       </div>
       <!-- table for report by activity -->
-      <div class="row q-pt-sm" v-if="show_activity_report">
+      <div
+        class="row q-pt-sm"
+        v-if="show_activity_report && $q.platform.is.desktop"
+      >
         <div class="col-md-12 col-xs-12 col-sm-12">
           <ActivityReportTable
             :heading="heading"
@@ -48,16 +51,47 @@
       </div>
 
       <!-- quarterly report table -->
-      <div class="row q-pt-sm" v-if="show_quarterly_report && !getLoadingState">
+      <div
+        class="row q-pt-sm"
+        v-if="
+          show_quarterly_report && !getLoadingState && $q.platform.is.desktop
+        "
+      >
         <div class="col-md-12 col-xs-12 col-sm-12">
           <QuarterlyReportTable :heading="heading"> </QuarterlyReportTable>
         </div>
       </div>
 
       <!---------yearly reports table-->
-      <div class="row q-pt-sm" v-if="show_yearly_report && !getLoadingState">
+      <div
+        class="row q-pt-sm"
+        v-if="show_yearly_report && !getLoadingState && $q.platform.is.desktop"
+      >
         <div class="col-md-12 col-xs-12 col-sm-12">
           <YearlyReportTable :heading="heading"> </YearlyReportTable>
+        </div>
+      </div>
+
+      <div v-if="$q.platform.is.mobile">
+        <div
+          class="flex justify-between q-pa-xs q-mb-md"
+          :style="
+            $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
+          "
+        >
+          <div class="hint_text_color q-pt-sm q-pl-sm">
+            {{ $t("app.reportPreviewMsg") }}
+          </div>
+          <div>
+            <q-btn
+              flat
+              round
+              class="close_color"
+              icon="close"
+              @click="closeHint"
+              size="sm"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -117,7 +151,7 @@ export default {
 
   methods: {
     closeHint() {
-      return (this.show_hint = false);
+      return (this.show_hint = !this.show_hint);
     },
 
     generateReport(data) {

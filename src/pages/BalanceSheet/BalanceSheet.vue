@@ -100,7 +100,7 @@ export default {
 
   methods: {
     closeHint() {
-      return !this.show_hint;
+      return (this.show_hint = !this.show_hint);
     },
     onGenerateBalanceSheet(data) {
       this.selected_session = data.session;

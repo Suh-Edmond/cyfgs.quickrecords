@@ -46,7 +46,7 @@ module.exports = function (ctx) {
     build: {
       vueRouterMode: "history", // available values: 'hash', 'history'
       env: {
-        API_BASE_URL: "https://www.quickrecords.net",
+        API_BASE_URL: "http://13.60.200.152",
         // API_BASE_URL:"http://127.0.0.1:8000",
         CLIENT_SERVER: "https://quickrecords.vercel.app",
         REDIRECT_URL: "https://quickrecords.vercel.app/auquth/invite-member",
@@ -113,12 +113,7 @@ module.exports = function (ctx) {
       // directives: [],
 
       // Quasar plugins
-      plugins: [
-        "Notify",
-        "LocalStorage",
-        "SessionStorage",
-        "Loading",
-      ],
+      plugins: ["Notify", "LocalStorage", "SessionStorage", "Loading"],
       config: {
         notify: {
           /* look at QUASARCONFOPTIONS from the API card (bottom of page) */

@@ -63,7 +63,7 @@
           >
           </ButtonVue>
         </div>
-        <div v-if="$q.platform.is.mobile" class="full-width q-ml-md">
+        <div v-if="$q.platform.is.mobile" class="full-width q-ml-lg">
           <ButtonVue
             :label="label_save"
             :loading="loading"

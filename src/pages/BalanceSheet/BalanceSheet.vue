@@ -16,7 +16,7 @@
           round
           class="close_color"
           icon="close"
-          @click="closeHint"
+          @click="closeInfoHint"
           size="sm"
         />
       </div>
@@ -82,6 +82,7 @@ export default {
       balance_sheet_data: null,
       show_balance_sheet: false,
       selected_session: null,
+      show_info_hint: true,
     };
   },
   computed: {
@@ -101,6 +102,9 @@ export default {
   methods: {
     closeHint() {
       return (this.show_hint = !this.show_hint);
+    },
+    closeInfoHint() {
+      return (this.show_info_hint = false);
     },
     onGenerateBalanceSheet(data) {
       this.selected_session = data.session;

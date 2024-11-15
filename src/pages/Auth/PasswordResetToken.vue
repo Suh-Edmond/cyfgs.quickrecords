@@ -4,7 +4,8 @@
       class="row q-px-md"
       :class="$q.screen.lg ? 'q-pt-lg flex flex-center' : 'q-pt-sm'"
     >
-      <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12">
+      <div class="col-4 col-md-4 col-lg-4 col-sm-12 col-xs-12"></div>
+      <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12 q-mt-xl">
         <q-card :class="$q.screen.lg ? 'q-mt-lg card_lg' : 'q-mt-md card'">
           <!-------------------------PASSWORD RESET TOKEN FORM -------------------------------->
           <q-card-section v-show="show_token_form">
@@ -17,7 +18,16 @@
               />
             </div>
             <div class="text_h6 text-center q-pt-sm q-pb-sm">
-              {{ $t("app.passwordReset") }}
+              <div>
+                <a :href="baseUrl">
+                  <q-avatar :size="$q.screen.lg ? '6.6rem' : '6.6rem'">
+                    <img src="../../assets/App_Logo.jpeg" alt="app logo" />
+                  </q-avatar>
+                </a>
+              </div>
+              <div class="main_login_text">
+                {{ $t("app.passwordReset") }}
+              </div>
             </div>
             <div class="text-subtitle2 text-center q-pb-xs">
               {{ $t("app.passwordResetCaption") }}
@@ -31,6 +41,7 @@
             >
               <div>
                 <label for="credential" class="form_field"
+                  ><q-icon name="email" size="xs" class="q-py-sm"></q-icon
                   >{{ $t("app.emailLabel") }}
                   <span class="text-red">*</span></label
                 >
@@ -65,7 +76,7 @@
           <!------------------------------END OF PASSWORD RESET TOKEN FORM------------------------->
 
           <q-card-section v-show="!show_token_form && emailSentSuccessfully">
-            <div class="text-center">
+            <div class="text-center email_sent_icon">
               <q-icon name="check" class="check_icon"></q-icon>
             </div>
             <div class="q-pa-md">
@@ -79,7 +90,7 @@
           </q-card-section>
 
           <q-card-section v-show="!show_token_form && !emailSentSuccessfully">
-            <div class="text-center">
+            <div class="text-center email_sent_icon">
               <q-icon
                 name="close"
                 :class="emailSentSuccessfully ? 'check_icon' : 'close_icon'"
@@ -94,6 +105,7 @@
           </q-card-section>
         </q-card>
       </div>
+      <div class="col-4 col-md-4 col-lg-4 col-sm-12 col-xs-12"></div>
     </div>
   </q-page>
 </template>
@@ -105,17 +117,18 @@ export default {
   data() {
     return {
       user: {
-        email: null,
+        email: "",
       },
       label: this.$t("app.getPasswordResetToken"),
       loading: false,
       show_token_form: true,
       emailSentSuccessfully: true,
+      baseUrl: process.env.API_BASE_URL,
     };
   },
   computed: {
     validateEmail() {
-      return this.user.email == null;
+      return this.user.email == "";
     },
   },
   methods: {
@@ -187,11 +200,11 @@ export default {
 }
 
 .card {
-  height: 25rem;
+  height: 32rem;
 }
 
 .card_lg {
-  height: 22rem;
+  height: 25rem;
 }
 .page {
   background-color: $grey1;
@@ -222,8 +235,8 @@ export default {
   color: $grey2;
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 400;
-  font-size: 0.8rem;
+  font-weight: 500;
+  font-size: 0.9rem;
   align-items: center;
   text-align: center;
 }
@@ -232,7 +245,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   align-items: center;
   color: $grey5;
 }
@@ -253,12 +266,12 @@ export default {
 }
 
 .check_icon {
-  font-size: 4rem;
+  font-size: 5rem;
   color: $positive;
 }
 
 .close_icon {
-  font-size: 4rem;
+  font-size: 5rem;
   color: $red;
 }
 
@@ -266,8 +279,21 @@ export default {
   color: $grey2;
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 500;
+  font-weight: 600;
   font-size: 0.8rem;
   text-align: center;
+}
+
+.main_login_text {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 1rem;
+  align-items: center;
+  text-align: center;
+}
+
+.email_sent_icon {
+  margin-top: 6rem;
 }
 </style>

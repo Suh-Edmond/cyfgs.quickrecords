@@ -1,14 +1,21 @@
 <template>
   <q-page class="page">
-    <div
-      class="row q-px-sm"
-      :class="$q.screen.lg ? 'q-pt-lg flex flex-center' : 'q-pt-sm'"
-    >
-      <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12">
+    <div class="row q-px-sm q-mt-lg">
+      <div class="col-4 col-md-4 col-lg-4 col-sm-12 col-xs-12"></div>
+      <div class="col-4 col-md-4 col-lg-4 col-sm-12 col-xs-12">
         <q-card :class="$q.screen.lg ? 'q-mt-lg' : 'q-mt-xl login-card'">
           <q-card-section>
             <div class="text_h6 text-center q-pt-sm q-pb-sm">
-              {{ $t("app.signIn") }}
+              <div>
+                <a :href="baseUrl">
+                  <q-avatar :size="$q.screen.lg ? '6.6rem' : '6.6rem'">
+                    <img src="../../assets/App_Logo.jpeg" alt="app logo" />
+                  </q-avatar>
+                </a>
+              </div>
+              <div class="main_login_text">
+                {{ $t("app.signIn") }}
+              </div>
             </div>
             <div class="text-subtitle2 text-center q-pb-xs">
               {{ $t("app.loginCaption") }}
@@ -16,11 +23,12 @@
             <q-form
               @submit="onSubmit"
               class="q-gutter-md q-mt-lg"
-              :class="$q.screen.lg ? 'q-px-md' : ''"
+              :class="$q.screen.lg ? 'q-px-lg q-px-sm' : 'q-px-sm'"
             >
-              <div>
-                <label for="credential" class="form_field"
-                  >{{ $t("app.emailLabel") }}
+              <div class="q-my-md">
+                <label for="credential" class="form_field">
+                  <q-icon name="email" size="xs"></q-icon>
+                  {{ $t("app.emailLabel") }}
                   <span class="text-red">*</span></label
                 >
                 <q-input
@@ -30,9 +38,10 @@
                   type="email"
                 />
               </div>
-              <div>
-                <label for="password" class="form_field"
-                  >{{ $t("app.passwordLabel") }}
+              <div class="q-my-lg">
+                <label for="password" class="form_field q-pb-xs"
+                  ><q-icon name="lock" size="xs" class="q-pa-xs"></q-icon>
+                  {{ $t("app.passwordLabel") }}
                   <span class="text-red">*</span></label
                 >
                 <q-input
@@ -50,7 +59,7 @@
                   </template>
                 </q-input>
               </div>
-              <div class="q-mt-lg q-mb-lg">
+              <div class="q-mt-xl">
                 <q-btn
                   class="form_button"
                   :label="label_sigin"
@@ -71,7 +80,7 @@
                   class="sign_link"
                   v-if="!$q.platform.is.mobile"
                 >
-                  <span class="forgot_password text-right">{{
+                  <span class="forgot_password text-right q-mt-xl">{{
                     $t("app.forgotPasswordMsg")
                   }}</span>
                 </router-link>
@@ -94,6 +103,7 @@
           </q-card-section>
         </q-card>
       </div>
+      <div class="col-4 col-md-4 col-lg-4 col-sm-12 col-xs-12"></div>
     </div>
   </q-page>
 </template>
@@ -118,27 +128,24 @@ export default {
   data() {
     return {
       user: {
-        password: null,
+        password: "",
         password_confirmation: null,
-        credential: null,
+        credential: "",
       },
       isPwd: true,
       label_sigin: this.$t("app.loginBtnLabel"),
       loading: false,
       color: "primary",
       no_caps: true,
+      baseUrl: process.env.API_BASE_URL,
     };
   },
   computed: {
     validatePasswordMatch() {
-      return this.user.password === this.user.password_confirmation
-        ? false
-        : true;
+      return this.user.password == this.user.password_confirmation;
     },
     validateLogin() {
-      return this.user.credential === null || this.user.password === null
-        ? true
-        : false;
+      return this.user.credential == "" || this.user.password == "";
     },
   },
   methods: {
@@ -258,12 +265,22 @@ export default {
   text-align: center;
 }
 
+.main_login_text {
+  // color: $grey2;
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 1rem;
+  align-items: center;
+  text-align: center;
+}
+
 .text-subtitle2 {
   color: $grey2;
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 400;
-  font-size: 0.8rem;
+  font-weight: 500;
+  font-size: 0.9rem;
   align-items: center;
   text-align: center;
 }
@@ -272,7 +289,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   align-items: center;
   color: $grey5;
 }
@@ -287,7 +304,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 700;
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   align-items: center;
   color: $primary;
   cursor: pointer;
@@ -302,6 +319,6 @@ export default {
 }
 
 .login-card {
-  height: 500px;
+  height: 580px;
 }
 </style>

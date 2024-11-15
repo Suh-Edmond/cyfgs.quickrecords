@@ -177,41 +177,10 @@ export default {
               "setCurrentYear",
               response.data.data.current_session
             );
-            let payload = {
-              status: "none",
-              url: "/api/protected/organisation-info",
-              has_path_val: true,
-              show_feedback: false,
-              msg: "none",
-              color: "default",
-              error_msg: "default",
-              to_on_ok: "none",
-              commit: "SET_ORGANISATION",
-              has_commit: true,
-              to_be_store_data: {
-                required: true,
-                has_value: false,
-                data: null,
-              },
-            };
-            this.$store.dispatch("getRequest", payload).then((res) => {
-              if (res.success) {
-                this.$router.push({
-                  name: "dashboard",
-                });
-                SessionStorage.set("to_tab", "Dashboard");
-              } else {
-                this.$router.push({
-                  name: "create_organisation",
-                });
-                Notify.create({
-                  type: "info",
-                  message: this.$t("app.createOrganisationCaption"),
-                  position: Platform.is.mobile ? "bottom" : "top-right",
-                });
-              }
-              return res;
+            this.$router.push({
+              name: "dashboard",
             });
+            SessionStorage.set("to_tab", "Dashboard");
           }
         })
         .catch((error) => {})

@@ -74,7 +74,7 @@
       show-if-above
       side="right"
       bordered
-      :width="500"
+      :width="$q.platform.is.mobile ? 400 : 500"
       v-if="right"
     >
       <q-page>

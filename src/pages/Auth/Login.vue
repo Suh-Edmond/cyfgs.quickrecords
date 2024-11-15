@@ -7,11 +7,13 @@
           <q-card-section>
             <div class="text_h6 text-center q-pt-sm q-pb-sm">
               <div>
-                <q-avatar :size="$q.screen.lg ? '6rem' : '6rem'">
-                  <img src="../../assets/App_Logo.jpeg" alt="app logo" />
-                </q-avatar>
+                <a :href="baseUrl">
+                  <q-avatar :size="$q.screen.lg ? '6.6rem' : '6.6rem'">
+                    <img src="../../assets/App_Logo.jpeg" alt="app logo" />
+                  </q-avatar>
+                </a>
               </div>
-              <div>
+              <div class="main_login_text">
                 {{ $t("app.signIn") }}
               </div>
             </div>
@@ -21,11 +23,11 @@
             <q-form
               @submit="onSubmit"
               class="q-gutter-md q-mt-lg"
-              :class="$q.screen.lg ? 'q-px-lg q-px-md' : ''"
+              :class="$q.screen.lg ? 'q-px-lg q-px-sm' : 'q-px-sm'"
             >
               <div class="q-my-md">
                 <label for="credential" class="form_field">
-                  <q-icon name="person" size="xs"></q-icon>
+                  <q-icon name="email" size="xs"></q-icon>
                   {{ $t("app.emailLabel") }}
                   <span class="text-red">*</span></label
                 >
@@ -135,6 +137,7 @@ export default {
       loading: false,
       color: "primary",
       no_caps: true,
+      baseUrl: process.env.API_BASE_URL,
     };
   },
   computed: {
@@ -262,12 +265,22 @@ export default {
   text-align: center;
 }
 
+.main_login_text {
+  // color: $grey2;
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 1rem;
+  align-items: center;
+  text-align: center;
+}
+
 .text-subtitle2 {
   color: $grey2;
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 400;
-  font-size: 0.8rem;
+  font-weight: 500;
+  font-size: 0.9rem;
   align-items: center;
   text-align: center;
 }
@@ -276,7 +289,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   align-items: center;
   color: $grey5;
 }
@@ -291,7 +304,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 700;
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   align-items: center;
   color: $primary;
   cursor: pointer;
@@ -306,6 +319,6 @@ export default {
 }
 
 .login-card {
-  height: 550px;
+  height: 580px;
 }
 </style>

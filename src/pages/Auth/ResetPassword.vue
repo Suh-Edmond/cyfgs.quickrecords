@@ -4,13 +4,25 @@
       class="row q-px-md"
       :class="$q.screen.lg ? 'q-pt-lg flex flex-center' : 'q-pt-sm'"
     >
-      <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12">
-        <q-card :class="$q.screen.lg ? 'q-mt-lg' : 'q-mt-md'">
+      <div class="col-4 col-md-4 col-lg-4 col-sm-12 col-xs-12"></div>
+      <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12 q-mt-xl">
+        <q-card :class="$q.screen.lg ? 'q-mt-lg card_lg' : 'q-mt-md card'">
           <div v-if="!show_token_expire_msg">
             <!-------------------------PASSWORD RESET TOKEN-------------------------------->
             <q-card-section v-if="show_new_password_form">
               <div class="text_h6 text-center q-pt-sm q-pb-sm">
-                {{ $t("app.passwordResetToken") }}
+                <div>
+                  <a :href="baseUrl"
+                    ><q-avatar :size="$q.screen.lg ? '6.6rem' : '6.6rem'">
+                      <img
+                        src="../../assets/App_Logo.jpeg"
+                        alt="app logo"
+                      /> </q-avatar
+                  ></a>
+                </div>
+                <div class="main_login_text">
+                  {{ $t("app.passwordResetToken") }}
+                </div>
               </div>
               <div class="text-subtitle2 text-center q-pb-xs">
                 {{ $t("app.passwordResetTokenCap") }}
@@ -23,18 +35,20 @@
               >
                 <div>
                   <label for="credential" class="form_field"
+                    ><q-icon name="token" size="xs"></q-icon
                     >{{ $t("app.token") }}
                     <span class="text-red">*</span></label
                   >
                   <q-input v-model="token" outlined dense type="text">
                   </q-input>
                 </div>
-                <div class="q-mb-xl q-mt-lg">
+                <div class="q-mb-xl q-mt-xl">
                   <q-btn
                     class="form_button"
                     :label="label"
                     :loading="loading"
                     :color="'primary'"
+                    :disabled="validationToken"
                     no-caps
                     type="submit"
                   >
@@ -52,7 +66,16 @@
             <!-------------------------NEW PASSWORD FORM-------------------------------->
             <q-card-section v-if="!show_new_password_form">
               <div class="text_h6 text-center q-pt-sm q-pb-sm">
-                {{ $t("app.resetPasswordMsg") }}
+                <div>
+                  <a :href="baseUrl">
+                    <q-avatar :size="$q.screen.lg ? '6.6rem' : '6.6rem'">
+                      <img src="../../assets/App_Logo.jpeg" alt="app logo" />
+                    </q-avatar>
+                  </a>
+                </div>
+                <div class="main_login_text">
+                  {{ $t("app.resetPasswordMsg") }}
+                </div>
               </div>
               <div class="text-subtitle2 text-center q-pb-xs">
                 {{ $t("app.resetCap") }}
@@ -64,6 +87,7 @@
               >
                 <div>
                   <label for="credential" class="form_field"
+                    ><q-icon name="lock" size="xs"></q-icon
                     >{{ $t("app.newPassword") }}
                     <span class="text-red">*</span></label
                   >
@@ -90,6 +114,7 @@
                 </div>
                 <div>
                   <label for="credential" class="form_field"
+                    ><q-icon name="lock" size="xs"></q-icon
                     >{{ $t("app.confirmPasword") }}
                     <span class="text-red">*</span></label
                   >
@@ -138,7 +163,7 @@
 
           <!-------------------------START PASSWORD RESET TOKEN EXPIRED-------------------------------->
           <q-card-section v-if="show_token_expire_msg">
-            <div class="text-center">
+            <div class="text-center token_expire_section">
               <q-icon name="hourglass_bottom" class="expired_icon"></q-icon>
             </div>
             <div class="q-pa-md">
@@ -161,6 +186,7 @@
           <!-------------------------END PASSWORD RESET TOKEN EXPIRED-------------------------------->
         </q-card>
       </div>
+      <div class="col-4 col-md-4 col-lg-4 col-sm-12 col-xs-12"></div>
     </div>
   </q-page>
 </template>
@@ -178,27 +204,29 @@ export default {
       isPwd: true,
       isConfirmPwd: true,
       user: {
-        confirm_password: null,
-        new_password: null,
+        confirm_password: "",
+        new_password: "",
         user_id: "",
       },
       show_token_expire_msg: false,
+      baseUrl: process.env.API_BASE_URL,
     };
   },
   computed: {
+    validationToken() {
+      return this.token == "";
+    },
     validatePassword() {
       return (
-        this.user.new_password === null ||
+        this.user.new_password == "" ||
         this.user.new_password.length < 8 ||
-        this.user.confirm_password === null ||
+        this.user.confirm_password == "" ||
         this.user.confirm_password.length < 8 ||
         this.user.new_password !== this.user.confirm_password
       );
     },
     validatePasswordSize() {
-      return (
-        this.user.new_password !== null && this.user.new_password.length < 8
-      );
+      return this.user.new_password != "" && this.user.new_password.length < 8;
     },
     validatePasswordMatch() {
       return this.user.new_password !== this.user.confirm_password;
@@ -319,8 +347,8 @@ export default {
   color: $grey2;
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 400;
-  font-size: 0.8rem;
+  font-weight: 500;
+  font-size: 0.9rem;
   align-items: center;
   text-align: center;
 }
@@ -329,7 +357,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   align-items: center;
   color: $grey5;
 }
@@ -365,5 +393,26 @@ export default {
 .expired_icon {
   color: $red;
   font-size: 4rem;
+}
+
+.main_login_text {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 1rem;
+  align-items: center;
+  text-align: center;
+}
+
+.card {
+  height: 33rem;
+}
+
+.card_lg {
+  height: 25rem;
+}
+
+.token_expire_section {
+  margin-top: 5rem;
 }
 </style>

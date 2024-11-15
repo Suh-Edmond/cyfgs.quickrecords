@@ -190,7 +190,7 @@
             icon-right="add"
             :label="$t('app.addLabel')"
             push
-            :size="$q.platform.is.mobile ? 'sm' : 'sm'"
+            :size="$q.platform.is.mobile ? 'md' : 'md'"
             dense
             no-caps
             v-show="

@@ -54,12 +54,23 @@
           />
         </div>
         <div
+          v-if="$q.platform.is.desktop"
           :class="
-            $q.platform.is.mobile
+            $q.platform.is.desktop
               ? 'flex q-mt-lg justify-end'
               : 'q-pt-xs q-mb-lg'
           "
         >
+          <ButtonVue
+            :label="label_save"
+            :loading="loading"
+            :color="'primary'"
+            :disabled="validateForm"
+            :no_caps="no_caps"
+          >
+          </ButtonVue>
+        </div>
+        <div v-if="$q.platform.is.mobile" class="full-width">
           <ButtonVue
             :label="label_save"
             :loading="loading"

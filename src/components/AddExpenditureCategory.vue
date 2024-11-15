@@ -45,7 +45,9 @@
             :placeholder="$t('app.provideDescription')"
           />
         </div>
+
         <div
+          v-if="$q.platform.is.desktop"
           :class="
             $q.platform.is.desktop
               ? 'flex q-mt-lg justify-end'
@@ -55,17 +57,17 @@
           <ButtonVue
             :label="label_save"
             :loading="loading"
-            :color="color"
+            :color="'primary'"
             :disabled="validateForm"
             :no_caps="no_caps"
           >
           </ButtonVue>
         </div>
-        <div :class="$q.platform.is.mobile ? 'full-width' : ''">
+        <div v-if="$q.platform.is.mobile" class="full-width">
           <ButtonVue
             :label="label_save"
             :loading="loading"
-            :color="color"
+            :color="'primary'"
             :disabled="validateForm"
             :no_caps="no_caps"
           >

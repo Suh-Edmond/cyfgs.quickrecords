@@ -26,45 +26,41 @@
               class="col-md-5 col-xs-12 col-sm-12"
               :class="$q.screen.lg ? 'q-px-sm' : 'q-py-sm'"
             >
-              <div>
-                <label for="credential" class="form_field"
-                  >{{ $t("app.nameLabel") }}
-                  <span class="text-red q-pl-xs">*</span></label
-                >
-                <q-input
-                  v-model="organisation.name"
-                  outlined
-                  type="text"
-                  dense
-                  v-if="!exist_organisation"
-                />
-                <q-input
-                  v-model="organisation.name"
-                  outlined
-                  type="text"
-                  dense
-                  readonly
-                  disable
-                  v-if="exist_organisation"
-                />
-              </div>
+              <label for="credential" class="form_field"
+                >{{ $t("app.nameLabel") }}
+                <span class="text-red q-pl-xs">*</span></label
+              >
+              <q-input
+                v-model="organisation.name"
+                outlined
+                type="text"
+                dense
+                v-if="!exist_organisation"
+              />
+              <q-input
+                v-model="organisation.name"
+                outlined
+                type="text"
+                dense
+                readonly
+                disable
+                v-if="exist_organisation"
+              />
             </div>
             <div
               class="col-md-5 col-xs-12 col-sm-12"
-              :class="$q.screen.lg ? 'q-px-sm' : 'q-py-sm'"
+              :class="$q.screen.lg ? 'q-px-sm q-ml-md' : 'q-py-sm'"
             >
-              <div>
-                <label for="credential" class="form_field"
-                  >{{ $t("app.emailLabel") }}
-                  <span class="text-red q-pl-xs">*</span></label
-                >
-                <q-input
-                  dense
-                  v-model="organisation.email"
-                  outlined
-                  type="email"
-                />
-              </div>
+              <label for="credential" class="form_field"
+                >{{ $t("app.emailLabel") }}
+                <span class="text-red q-pl-xs">*</span></label
+              >
+              <q-input
+                dense
+                v-model="organisation.email"
+                outlined
+                type="email"
+              />
             </div>
             <div class="col-md-1"></div>
           </div>
@@ -77,65 +73,61 @@
               class="col-md-5 col-xs-12 col-sm-12"
               :class="$q.screen.lg ? 'q-px-sm' : ''"
             >
-              <div>
-                <label for="credential" class="form_field flex justify-between">
-                  <span>
-                    {{ $t("app.telephoneLabel") }}
-                    <span class="text-red q-pl-xs">*</span>
-                  </span>
-                  <a class="add_telephone">
-                    <q-icon
-                      name="add"
-                      size="xs"
-                      color="primary"
-                      v-if="canShowTelephoneField"
-                      @click.prevent="showAddTelephone"
-                      ><q-tooltip>{{
-                        $t("app.addTelephoneLabel")
-                      }}</q-tooltip></q-icon
-                    >
-                    <q-icon
-                      name="close"
-                      size="xs"
-                      color="primary"
-                      v-if="!canShowTelephoneField"
-                      @click.prevent="removeAddTelephone"
-                    >
-                      <q-tooltip>{{ $t("app.remove") }}</q-tooltip>
-                    </q-icon>
-                  </a>
-                </label>
-                <vue-tel-input
-                  v-model="organisation.telephone"
-                  defaultCountry="cm"
-                  mode="international"
-                  class="q-pa-xs q-mb-sm"
-                ></vue-tel-input>
-                <vue-tel-input
-                  v-model="organisation.telephone2"
-                  defaultCountry="cm"
-                  mode="international"
-                  class="q-pa-xs"
-                  v-if="show_telephone2"
-                ></vue-tel-input>
-              </div>
+              <label for="credential" class="form_field flex justify-between">
+                <span>
+                  {{ $t("app.telephoneLabel") }}
+                  <span class="text-red q-pl-xs">*</span>
+                </span>
+                <a class="add_telephone">
+                  <q-icon
+                    name="add"
+                    size="xs"
+                    color="primary"
+                    v-if="canShowTelephoneField"
+                    @click.prevent="showAddTelephone"
+                    ><q-tooltip>{{
+                      $t("app.addTelephoneLabel")
+                    }}</q-tooltip></q-icon
+                  >
+                  <q-icon
+                    name="close"
+                    size="xs"
+                    color="primary"
+                    v-if="!canShowTelephoneField"
+                    @click.prevent="removeAddTelephone"
+                  >
+                    <q-tooltip>{{ $t("app.remove") }}</q-tooltip>
+                  </q-icon>
+                </a>
+              </label>
+              <vue-tel-input
+                v-model="organisation.telephone"
+                defaultCountry="cm"
+                mode="international"
+                class="q-pa-xs q-mb-sm"
+              ></vue-tel-input>
+              <vue-tel-input
+                v-model="organisation.telephone2"
+                defaultCountry="cm"
+                mode="international"
+                class="q-pa-xs"
+                v-if="show_telephone2"
+              ></vue-tel-input>
             </div>
             <div
               class="col-md-5 col-xs-12 col-sm-12"
-              :class="$q.screen.lg ? 'q-px-sm' : 'q-py-sm'"
+              :class="$q.screen.lg ? 'q-px-sm  q-ml-md' : 'q-py-sm'"
             >
-              <div>
-                <label for="credential" class="form_field"
-                  >{{ $t("app.addressLabel") }}
-                  <span class="text-red q-pl-xs">*</span></label
-                >
-                <q-input
-                  v-model="organisation.address"
-                  outlined
-                  type="text"
-                  dense
-                />
-              </div>
+              <label for="credential" class="form_field"
+                >{{ $t("app.addressLabel") }}
+                <span class="text-red q-pl-xs">*</span></label
+              >
+              <q-input
+                v-model="organisation.address"
+                outlined
+                type="text"
+                dense
+              />
             </div>
             <div class="col-md-1"></div>
           </div>
@@ -148,33 +140,29 @@
               class="col-md-5 col-xs-12 col-sm-12"
               :class="$q.screen.lg ? 'q-px-sm' : 'q-py-sm'"
             >
-              <div>
-                <label for="credential" class="form_field">{{
-                  $t("app.salutation")
-                }}</label>
-                <q-input
-                  v-model="organisation.salutation"
-                  outlined
-                  type="text"
-                  dense
-                />
-              </div>
+              <label for="credential" class="form_field">{{
+                $t("app.salutation")
+              }}</label>
+              <q-input
+                v-model="organisation.salutation"
+                outlined
+                type="text"
+                dense
+              />
             </div>
             <div
               class="col-md-5 col-xs-12 col-sm-12"
-              :class="$q.screen.lg ? 'q-px-sm' : 'q-py-sm'"
+              :class="$q.screen.lg ? 'q-px-sm q-ml-md' : 'q-py-sm'"
             >
-              <div>
-                <label for="credential" class="form_field">{{
-                  $t("app.boxLabel")
-                }}</label>
-                <q-input
-                  v-model="organisation.box_number"
-                  outlined
-                  type="number"
-                  dense
-                />
-              </div>
+              <label for="credential" class="form_field">{{
+                $t("app.boxLabel")
+              }}</label>
+              <q-input
+                v-model="organisation.box_number"
+                outlined
+                type="number"
+                dense
+              />
             </div>
             <div class="col-md-1"></div>
           </div>
@@ -187,35 +175,31 @@
               class="col-md-5 col-xs-12 col-sm-12"
               :class="$q.screen.lg ? 'q-px-sm' : 'q-py-sm'"
             >
-              <div>
-                <label for="credential" class="form_field"
-                  >{{ $t("app.description") }}
-                  <span class="text-red q-pl-xs">*</span></label
-                >
-                <q-input
-                  v-model="organisation.description"
-                  outlined
-                  dense
-                  type="textarea"
-                />
-              </div>
+              <label for="credential" class="form_field"
+                >{{ $t("app.description") }}
+                <span class="text-red q-pl-xs">*</span></label
+              >
+              <q-input
+                v-model="organisation.description"
+                outlined
+                dense
+                type="textarea"
+              />
             </div>
             <div
               class="col-md-5 col-xs-12 col-sm-12"
-              :class="$q.screen.lg ? 'q-px-sm' : 'q-py-sm'"
+              :class="$q.screen.lg ? 'q-px-sm q-ml-md' : 'q-py-sm'"
             >
-              <div>
-                <label for="credential" class="form_field"
-                  >{{ $t("app.region") }}
-                  <span class="text-red q-pl-xs">*</span></label
-                >
-                <q-input
-                  v-model="organisation.region"
-                  outlined
-                  type="text"
-                  dense
-                />
-              </div>
+              <label for="credential" class="form_field"
+                >{{ $t("app.region") }}
+                <span class="text-red q-pl-xs">*</span></label
+              >
+              <q-input
+                v-model="organisation.region"
+                outlined
+                type="text"
+                dense
+              />
             </div>
             <div class="col-md-1"></div>
           </div>

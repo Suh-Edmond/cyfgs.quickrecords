@@ -5,14 +5,16 @@
         <q-toolbar-title
           :class="$q.screen.lg ? 'header_title' : 'header_title_small'"
         >
-          <span
-            ><q-avatar :size="$q.screen.lg ? '4rem' : '3rem'">
-              <img
-                src="../assets/App_Logo.jpeg"
-                alt="app logo"
-              /> </q-avatar></span
-          ><span class="app_name">{{ $t("app.nameOne") }}</span
-          >{{ $t("app.nameTwo") }}
+          <a :href="baseUrl" class="app_header">
+            <span :href="baseUrl" class="app_logo"
+              ><q-avatar :size="$q.screen.lg ? '4rem' : '3rem'">
+                <img
+                  src="../assets/App_Logo.jpeg"
+                  alt="app logo"
+                /> </q-avatar></span
+            ><span class="app_name app_logo">{{ $t("app.nameOne") }}</span
+            ><span class="app_name_2 app_logo">{{ $t("app.nameTwo") }}</span>
+          </a>
         </q-toolbar-title>
         <div class="header_note" v-show="$q.screen.lg">
           <div class="q-pa-md header_language">
@@ -83,6 +85,7 @@ export default {
       year: new Date().getFullYear(),
       language: this.$i18n.locale,
       type: "SIGN_IN",
+      baseUrl: process.env.API_BASE_URL,
     };
   },
   computed: {
@@ -149,6 +152,10 @@ export default {
   color: $primary;
 }
 
+.app_name_2 {
+  color: $orange;
+}
+
 .header {
   background-color: $white1;
 }
@@ -170,6 +177,10 @@ export default {
   font-size: large;
   font-family: "Roboto";
   display: block;
+}
+
+.app_header {
+  text-decoration: none;
 }
 
 .header_note {
@@ -212,5 +223,9 @@ export default {
 
 .copy_right {
   font-size: large;
+}
+
+.app_logo {
+  cursor: pointer;
 }
 </style>

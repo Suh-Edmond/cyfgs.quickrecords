@@ -23,7 +23,7 @@
             {{ getOrganisation.name }}
           </div>
         </div>
-        <div class="nav">
+        <div class="nav q-mt-lg">
           <q-list padding>
             <q-item
               v-for="tab in getUserSideTabs()"
@@ -41,7 +41,7 @@
                 avatar
                 :class="item.name == tab.name ? 'item_icon' : 'item_text'"
               >
-                <q-icon :name="tab.icon" size=".9rem" v-if="!tab.has_image" />
+                <q-icon :name="tab.icon" size="1rem" v-if="!tab.has_image" />
                 <img
                   v-if="tab.has_image"
                   :src="tab.image_src"
@@ -74,7 +74,7 @@
       show-if-above
       side="right"
       bordered
-      :width="400"
+      :width="$q.platform.is.mobile ? 400 : 500"
       v-if="right"
     >
       <q-page>
@@ -608,7 +608,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 700;
-  font-size: 0.8rem;
+  font-size: 1rem;
 }
 
 .left_drawer {
@@ -629,7 +629,7 @@ export default {
 }
 
 .item_name {
-  font-size: 0.7rem;
+  font-size: 0.8rem;
 }
 
 .bar {

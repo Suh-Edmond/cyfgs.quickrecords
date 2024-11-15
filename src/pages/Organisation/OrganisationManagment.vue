@@ -21,11 +21,8 @@
             class="row"
             :class="$q.screen.lg ? 'q-mb-md q-px-xl' : ' q-px-sm'"
           >
-            <div class="col-md-1"></div>
-            <div
-              class="col-md-5 col-xs-12 col-sm-12"
-              :class="$q.screen.lg ? 'q-px-sm' : 'q-py-sm'"
-            >
+            <div class="col-1 col-md-1 com-sm-1"></div>
+            <div class="col-md-5 col-xs-12 col-sm-12">
               <label for="credential" class="form_field"
                 >{{ $t("app.nameLabel") }}
                 <span class="text-red q-pl-xs">*</span></label
@@ -49,7 +46,7 @@
             </div>
             <div
               class="col-md-5 col-xs-12 col-sm-12"
-              :class="$q.screen.lg ? 'q-px-sm q-ml-md' : 'q-py-sm'"
+              :class="$q.platform.is.desktop ? 'q-ml-md' : ' q-py-sm'"
             >
               <label for="credential" class="form_field"
                 >{{ $t("app.emailLabel") }}
@@ -62,7 +59,7 @@
                 type="email"
               />
             </div>
-            <div class="col-md-1"></div>
+            <div class="col-1 col-md-1 com-sm-1"></div>
           </div>
           <div
             class="row"
@@ -116,7 +113,7 @@
             </div>
             <div
               class="col-md-5 col-xs-12 col-sm-12"
-              :class="$q.screen.lg ? 'q-px-sm  q-ml-md' : 'q-py-sm'"
+              :class="$q.platform.is.desktop ? 'q-ml-md' : ' q-py-sm'"
             >
               <label for="credential" class="form_field"
                 >{{ $t("app.addressLabel") }}
@@ -152,7 +149,7 @@
             </div>
             <div
               class="col-md-5 col-xs-12 col-sm-12"
-              :class="$q.screen.lg ? 'q-px-sm q-ml-md' : 'q-py-sm'"
+              :class="$q.platform.is.desktop ? 'q-ml-md' : ' q-py-sm'"
             >
               <label for="credential" class="form_field">{{
                 $t("app.boxLabel")
@@ -188,7 +185,7 @@
             </div>
             <div
               class="col-md-5 col-xs-12 col-sm-12"
-              :class="$q.screen.lg ? 'q-px-sm q-ml-md' : 'q-py-sm'"
+              :class="$q.platform.is.desktop ? 'q-ml-md' : ' q-py-sm'"
             >
               <label for="credential" class="form_field"
                 >{{ $t("app.region") }}

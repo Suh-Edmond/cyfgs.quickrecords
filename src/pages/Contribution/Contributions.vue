@@ -21,10 +21,21 @@
         </q-btn>
         <q-space />
         <q-btn
+          :label="$t('app.ai_model')"
+          :color="'primary'"
+          :disabled="getFilteredContributions.length === 0"
+          no-caps
+          icon-right="insights"
+          @click="onShowMakeRecommend()"
+          class="q-py-xs q-mr-md"
+          size="sm"
+        >
+        </q-btn>
+        <q-btn
           :label="$t('app.download')"
           :loading="loading_download"
           :color="'positive'"
-          :disabled="getTableData == 0"
+          :disabled="getTableData.length === 0"
           no-caps
           icon-right="download"
           @click="downloadContributions()"
@@ -88,7 +99,7 @@
           :label="$t('app.download')"
           :loading="loading_download"
           :color="'positive'"
-          :disabled="getFilteredContributions.length == 0"
+          :disabled="getFilteredContributions.length === 0"
           no-caps
           icon-right="download"
           @click="downloadContributions()"
@@ -125,7 +136,41 @@
         ></ContributionSummary>
       </div>
     </div>
-    <!------------------------------------------CONTRIBUTIONS VIEW FOR MEMBERS WITH TREASURER ROLE----------------------------------- -->
+    <!------------------------------------------CONTRIBUTIONS VIEW FOR MEMBERS WITH TREASURER ROLE-------------------------------------->
+
+    <!--------------------------------------------------------RECOMMENDATION SECTION------------------------------------------------>
+    <q-dialog v-model="showRecommendation" persistent>
+      <q-card style="width: 700px; max-width: 80vw;" class="q-px-xs q-py-lg">
+        <q-card-section class="row items-center q-pb-none">
+          <div class="model_title">QRecom Model</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup @click="closeRecommendationDialog()" />
+        </q-card-section>
+
+        <q-card-section>
+          <div class="model_caption_text">Our AI Model (QRecom) makes Recommendations to improve members participation and commitment on various activity contributions in your organisation.<br>
+
+          </div>
+
+          <q-btn
+            v-if="!has_recommendation_response"
+            label="Click on the button to get Recommendation"
+            :color="'primary'"
+            no-caps
+            @click="getContributionRecommendation()"
+            size="md"
+            :loading="loading"
+            class="q-mx-md flex justify-center full-width q-mt-lg"
+          >
+          </q-btn>
+
+          <div v-if="has_recommendation_response">
+            <div v-html="recommendationMsg"></div>
+          </div>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
+    <!----------------------------------------------------END OG RECOMMENDATION SECTION--------------------------------------------->
   </div>
 </template>
 
@@ -137,6 +182,8 @@ import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
 import { LocalStorage } from "quasar";
 import ContributionSummary from "src/components/ContributionSummary.vue";
+import RecommendationComponent from "components/RecommendationComponent";
+
 
 export default {
   mixins: [
@@ -159,7 +206,9 @@ export default {
 
   data() {
     return {
+      showRecommendation:false,
       payment_item_id: null,
+      has_recommendation_response:false,
       loading: false,
       message: this.$t("app.deleteContributionWarningMsg"),
       label: this.$t("app.delete"),
@@ -202,8 +251,20 @@ export default {
       filteredContributions: [],
       loading_filter: false,
       loading_download: false,
+      recommendationMsg:"",
+      recommendationParameter:[
+        "Payment Frequency",
+        "Payment Type",
+        "Number of Members",
+        "Total Expected Amount",
+        "Total Amount Contributed",
+        "Total Balance",
+        "Percentage of Contribution",
+        "Members Individual Contributions"
+      ]
     };
   },
+
   computed: {
     validateFilter() {
       return this.payment_item_id === null;
@@ -401,9 +462,9 @@ export default {
 
     checkTreasurerRole() {
       const treasurer_role = LocalStorage.getItem("data").user_data.roles.find(
-        (role) => role.name == "TREASURER"
+        (role) => role.name === "TREASURER"
       );
-      return treasurer_role != undefined;
+      return treasurer_role !== undefined;
     },
 
     viewContribution(data) {
@@ -435,7 +496,7 @@ export default {
       per_page,
       filter
     ) {
-      let search_filter = filter == undefined ? "" : filter;
+      let search_filter = filter === undefined ? "" : filter;
       let payload = {
         status: "none",
         url: `/api/protected/organisations/contributions/search?payment_item_id=${payment_item_id}&month=${month}&year=${year}
@@ -470,7 +531,7 @@ export default {
           this.$store.commit("SET_IS_FETCHING", false);
         });
 
-      return;
+
     },
 
     openSearchBar() {
@@ -490,7 +551,7 @@ export default {
           : "";
       const payment_item_name =
         this.$store.getters.getSearchContributionParams != null &&
-        this.$store.getters.getSearchContributionParams !== undefined
+        true
           ? this.$store.getters.getSearchContributionParams.item.label
           : "";
       let month =
@@ -520,17 +581,78 @@ export default {
     deleteRow(data) {
       this.$emit("delete-row", data);
     },
+
+    onShowMakeRecommend() {
+       this.showRecommendation = true;
+    },
+
+    closeRecommendationDialog(){
+      this.recommendationMsg = ""
+      return this.has_recommendation_response = false;
+
+    },
+    getContributionRecommendation() {
+      this.loading = true;
+      this.has_recommendation_response = false;
+      const payment_item_id =
+        this.$store.getters.getSearchContributionParams !== null &&
+        this.$store.getters.getSearchContributionParams !== undefined
+          ? this.$store.getters.getSearchContributionParams.item.value
+          : "";
+      let year =
+        this.$store.getters.getSearchContributionParams !== null &&
+        this.$store.getters.getSearchContributionParams !== undefined
+          ? this.$store.getters.getSearchContributionParams.year
+          : "";
+
+      let payload = {
+        status: "none",
+        url: `/api/protected/make-contribution-recommendation?payment_item_id=${payment_item_id}&year=${year}`,
+        show_feedback: false,
+        show_spinner: false,
+        msg: "none",
+        color: "default",
+        error_msg: "default",
+        commit: "none",
+        has_commit: false,
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: null,
+        },
+      };
+
+      this.$store.dispatch("getRequest", payload).then((res) => {
+        this.loading = false;
+        this.has_recommendation_response = true;
+        this.recommendationMsg = res
+      })
+    }
   },
   components: {
     TableVue,
     ContributionSummary,
+    RecommendationComponent
   },
 };
 </script>
 
 <style lang="scss" scoped>
+.model_title {
+  font-family: "Roboto",serif;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 20px;
+  line-height: 11px;
+  letter-spacing: 0.01em;
+  color: $primary;
+}
+.model_caption_text {
+  font-weight: 500;
+  font-size: 15px;
+}
 .detail_name {
-  font-family: "Roboto";
+  font-family: "Roboto",serif;
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
@@ -548,5 +670,13 @@ export default {
   letter-spacing: 0.01em;
   color: $grey8;
   text-decoration: underline;
+}
+
+.form_field {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 1rem;
+  align-items: center;
 }
 </style>

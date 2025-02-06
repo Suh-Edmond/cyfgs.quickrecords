@@ -22,10 +22,10 @@
             </div>
             <q-form
               @submit="onSubmit"
-              class="q-gutter-md q-mt-lg"
-              :class="$q.screen.lg ? 'q-px-lg q-px-sm' : 'q-px-sm'"
+              class="q-gutter-md q-mt-xl"
+              :class="$q.screen.lg ? 'q-px-lg' : 'q-px-sm'"
             >
-              <div class="q-my-md">
+              <div class="q-mb-xl">
                 <label for="credential" class="form_field">
                   <q-icon name="email" size="xs"></q-icon>
                   {{ $t("app.emailLabel") }}
@@ -38,7 +38,7 @@
                   type="email"
                 />
               </div>
-              <div class="q-my-lg">
+              <div class="q-my-xl">
                 <label for="password" class="form_field q-pb-xs"
                   ><q-icon name="lock" size="xs" class="q-pa-xs"></q-icon>
                   {{ $t("app.passwordLabel") }}
@@ -288,6 +288,6 @@ export default {
 }
 
 .login-card {
-  height: 580px;
+  height: 600px;
 }
 </style>

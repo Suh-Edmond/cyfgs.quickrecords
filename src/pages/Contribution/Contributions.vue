@@ -608,11 +608,11 @@ export default {
       let payload = {
         status: "none",
         url: `/api/protected/make-contribution-recommendation?payment_item_id=${payment_item_id}&year=${year}`,
-        show_feedback: false,
+        show_feedback: true,
         show_spinner: false,
-        msg: "none",
+        msg: "Success",
         color: "default",
-        error_msg: "default",
+        error_msg: "An error occurred!! Please try again",
         commit: "none",
         has_commit: false,
         to_be_store_data: {

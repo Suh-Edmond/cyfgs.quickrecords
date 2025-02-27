@@ -349,7 +349,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   align-items: center;
   color: $grey5;
 }
@@ -360,6 +360,6 @@ export default {
 }
 
 .registration_text {
-  font-size: 0.7rem;
+  font-size: 0.8rem;
 }
 </style>

@@ -3,14 +3,14 @@
     <div class="row q-mb-md q-gutter-x-xs">
       <q-card
         class="col-12 col-md"
-        :class="statistics_type == 'MEMBERSHIP' ? 'members_card' : 'card'"
+        :class="statistics_type === 'MEMBERSHIP' ? 'members_card' : 'card'"
         bordered
         @click="showStatistics('MEMBERSHIP')"
       >
         <q-card-section>
           <div
             :class="
-              statistics_type == 'MEMBERSHIP' ? 'text-h6-active' : 'text-h6'
+              statistics_type === 'MEMBERSHIP' ? 'text-h6-active' : 'text-h6'
             "
           >
             {{ $t("app.memberLabel") }}
@@ -29,9 +29,8 @@
           </div>
           <div>
             <label
-              for="total"
               :class="
-                statistics_type == 'MEMBERSHIP' ? 'total-active' : 'total'
+                statistics_type === 'MEMBERSHIP' ? 'total-active' : 'total'
               "
               >{{ getTotalMembers }}</label
             >
@@ -40,13 +39,13 @@
       </q-card>
       <q-card
         class="col-12 col-md"
-        :class="statistics_type == 'SAVINGS' ? 'saving_card' : 'card'"
+        :class="statistics_type === 'SAVINGS' ? 'saving_card' : 'card'"
         bordered
         @click="showStatistics('SAVINGS')"
       >
         <q-card-section>
           <div
-            :class="statistics_type == 'SAVINGS' ? 'text-h6-active' : 'text-h6'"
+            :class="statistics_type === 'SAVINGS' ? 'text-h6-active' : 'text-h6'"
           >
             {{ $t("app.savingtitle") }}
           </div>
@@ -63,8 +62,7 @@
           </div>
           <div>
             <label
-              for="total"
-              :class="statistics_type == 'SAVINGS' ? 'total-active' : 'total'"
+              :class="statistics_type === 'SAVINGS' ? 'total-active' : 'total'"
               >{{ Number(getTotalMembersSavings).toLocaleString() }} XAF</label
             >
           </div>
@@ -73,7 +71,7 @@
       <q-card
         class="col-12 col-md"
         :class="
-          statistics_type == 'CONTRIBUTIONS' ? 'contribution_card' : 'card'
+          statistics_type === 'CONTRIBUTIONS' ? 'contribution_card' : 'card'
         "
         bordered
         @click="showStatistics('CONTRIBUTIONS')"
@@ -81,7 +79,7 @@
         <q-card-section>
           <div
             :class="
-              statistics_type == 'CONTRIBUTIONS' ? 'text-h6-active' : 'text-h6'
+              statistics_type === 'CONTRIBUTIONS' ? 'text-h6-active' : 'text-h6'
             "
           >
             {{ $t("app.contributionName") }}
@@ -99,9 +97,8 @@
           </div>
           <div>
             <label
-              for="total"
               :class="
-                statistics_type == 'CONTRIBUTIONS' ? 'total-active' : 'total'
+                statistics_type === 'CONTRIBUTIONS' ? 'total-active' : 'total'
               "
               >{{
                 Number(getTotalYearlyContribution).toLocaleString()
@@ -114,7 +111,7 @@
       <q-card
         class="col-12 col-md"
         :class="
-          statistics_type == 'EXPENDITURES' ? 'expenditures_card' : 'card'
+          statistics_type === 'EXPENDITURES' ? 'expenditures_card' : 'card'
         "
         bordered
         @click="showStatistics('EXPENDITURES')"
@@ -122,7 +119,7 @@
         <q-card-section>
           <div
             :class="
-              statistics_type == 'EXPENDITURES' ? 'text-h6-active' : 'text-h6'
+              statistics_type === 'EXPENDITURES' ? 'text-h6-active' : 'text-h6'
             "
           >
             {{ $t("app.expenditureName") }}
@@ -140,9 +137,8 @@
           </div>
           <div>
             <label
-              for="total"
               :class="
-                statistics_type == 'EXPENDITURES' ? 'total-active' : 'total'
+                statistics_type === 'EXPENDITURES' ? 'total-active' : 'total'
               "
               >{{
                 Number(getTotalYearlyExpenditure).toLocaleString()
@@ -161,7 +157,7 @@
     <!-------------------------------------------END OF LOADING INDICATOR------------------------------------------>
 
     <!-----------------------------------------------MEMBERSHIP STATISTICS--------------------------------------->
-    <div class="row" v-if="statistics_type == 'MEMBERSHIP' && !is_fetching">
+    <div class="row" v-if="statistics_type === 'MEMBERSHIP' && !is_fetching">
       <div class="col-4 col-md-4 col-sm-12 col-xs-12 col-lg-4">
         <PieChartsVue :chart-data="getChartData"></PieChartsVue>
       </div>
@@ -172,7 +168,7 @@
     <!--------------------------------------------END OF MEMBERSHIP STATISTICS----------------------------------->
 
     <!-----------------------------------------------SAVINGS STATISTICS--------------------------------------->
-    <div class="row" v-if="statistics_type == 'SAVINGS' && !is_fetching">
+    <div class="row" v-if="statistics_type === 'SAVINGS' && !is_fetching">
       <div class="col-md-2 col-sm-12 col-xs-12 col-lg-2">
         <PieChartsVue :chart-data="pieChartData"></PieChartsVue>
       </div>
@@ -186,7 +182,7 @@
     <!--------------------------------------------END OF SAVINGS STATISTICS----------------------------------->
 
     <!-----------------------------------------------CONTRIBUTIONS STATISTICS--------------------------------------->
-    <div class="row" v-if="statistics_type == 'CONTRIBUTIONS' && !is_fetching">
+    <div class="row" v-if="statistics_type === 'CONTRIBUTIONS' && !is_fetching">
       <LineChart
         class="col-6 col-md-6 col-xs-12 col-sm-12"
         :chartData="lineChartData3"
@@ -199,7 +195,7 @@
 
     <div
       class="fit row wrap q-my-xl"
-      v-if="statistics_type == 'CONTRIBUTIONS' && !is_fetching"
+      v-if="statistics_type === 'CONTRIBUTIONS' && !is_fetching"
     >
       <BarChartVue
         class="col-4 col-md-4 col-xs-12 col-sm-12 q-pr-md"
@@ -213,7 +209,7 @@
     <!--------------------------------------------END OF CONTRIBUTIONS STATISTICS----------------------------------->
 
     <!-----------------------------------------------EXPENDITURES STATISTICS--------------------------------------->
-    <div class="row" v-if="statistics_type == 'EXPENDITURES' && !is_fetching">
+    <div class="row" v-if="statistics_type === 'EXPENDITURES' && !is_fetching">
       <LineChart
         class="col-6 col-md-6 col-xs-12 col-sm-12"
         :chartData="expenditureLineChartData1"
@@ -513,7 +509,7 @@ export default {
           : null;
       let current_session_id =
         this.$store.getters.getCurrentYear != null ||
-        this.$store.getters.getCurrentYear != undefined
+        this.$store.getters.getCurrentYear !== undefined
           ? this.$store.getters.getCurrentYear.id
           : "";
       switch (type) {

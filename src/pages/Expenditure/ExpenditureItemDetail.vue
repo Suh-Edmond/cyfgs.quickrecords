@@ -269,7 +269,7 @@ export default {
   methods: {
     getExpenditureDetailsByItemId(page, per_page, type, filter) {
       this.expenditure_item_details = [];
-      let search_filter = filter == undefined ? "" : filter;
+      let search_filter = filter === undefined ? "" : filter;
       let expenditure_item = this.$store.getters.getCurrentExpenditureItem;
       let payload = {
         url: `/api/protected/expenditure-items/${expenditure_item.id}/details?page=${page}&per_page=${per_page}&status=${this.status}&filter=${search_filter}`,
@@ -447,14 +447,14 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 14px;
+  font-size: 16px;
   color: $grey5;
 }
 .detail_value {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 14px;
+  font-size: 16px;
   color: $grey8;
 }
 .summary {

@@ -129,7 +129,7 @@ export default {
 
     getTableTitle() {
       let month_name =
-        this.month != "" || null
+        this.month !== "" || null
           ? this.$t("app.forTheMonthOf") + this.month.label
           : "";
       return this.payment_item_id != null || ""
@@ -181,7 +181,7 @@ export default {
     },
 
     validateDownload() {
-      return this.getIncomeActivities.length == 0;
+      return this.getIncomeActivities.length === 0;
     },
   },
   methods: {
@@ -219,7 +219,7 @@ export default {
       console.log(payload_data.status);
       this.payment_item_id = payload_data.payment_item_id;
       let item_id =
-        this.payment_item_id != null && this.payment_item_id != ""
+        this.payment_item_id != null && this.payment_item_id !== ""
           ? this.payment_item_id.value
           : "";
       this.session_id =

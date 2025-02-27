@@ -26,7 +26,7 @@
               :class="$q.screen.lg ? 'q-px-lg' : 'q-px-sm'"
             >
               <div class="q-mb-xl">
-                <label for="credential" class="form_field">
+                <label class="form_field">
                   <q-icon name="email" size="xs"></q-icon>
                   {{ $t("app.emailLabel") }}
                   <span class="text-red">*</span></label
@@ -39,7 +39,7 @@
                 />
               </div>
               <div class="q-my-xl">
-                <label for="password" class="form_field q-pb-xs"
+                <label class="form_field q-pb-xs"
                   ><q-icon name="lock" size="xs" class="q-pa-xs"></q-icon>
                   {{ $t("app.passwordLabel") }}
                   <span class="text-red">*</span></label
@@ -142,10 +142,10 @@ export default {
   },
   computed: {
     validatePasswordMatch() {
-      return this.user.password == this.user.password_confirmation;
+      return this.user.password === this.user.password_confirmation;
     },
     validateLogin() {
-      return this.user.credential == "" || this.user.password == "";
+      return this.user.credential === "" || this.user.password === "";
     },
   },
   methods: {
@@ -172,7 +172,7 @@ export default {
       this.$store
         .dispatch("postRequest", payload)
         .then((response) => {
-          if (response.status == 200) {
+          if (response.status === 200) {
             this.$store.dispatch(
               "setCurrentYear",
               response.data.data.current_session
@@ -181,6 +181,17 @@ export default {
               name: "dashboard",
             });
             SessionStorage.set("to_tab", "Dashboard");
+            this.filterOrganisationMembers(
+              organisation_id,
+              false,
+              1,
+              10,
+              "name",
+              "",
+              "",
+              "",
+              ""
+            );
           }
         })
         .catch((error) => {})

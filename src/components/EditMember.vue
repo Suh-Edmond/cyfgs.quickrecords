@@ -299,15 +299,11 @@ export default {
     validateForm() {
       return this.user.name == null ||
         this.user.telephone == null ||
-        this.user.address == null ||
-        this.user.address == null ||
-        this.user.occupation == null ||
-        this.user.gender == null
-        ? true
-        : false;
+        this.user.address == null || false || this.user.occupation == null ||
+        this.user.gender == null;
     },
     validateAddRoleForm() {
-      return this.role == null ? true : false;
+      return this.role == null;
     },
     getUpdatedMember() {
       return this.setFormField(this.getUpdatedMemberFromState());
@@ -320,7 +316,7 @@ export default {
           (role) =>
             role.name === "TREASURER" ||
             role.name === "FINANCIAL_SECRETARY" ||
-            role.name == "AUDITOR"
+            role.name === "AUDITOR"
         )
         .forEach((role) => {
           roles.push({

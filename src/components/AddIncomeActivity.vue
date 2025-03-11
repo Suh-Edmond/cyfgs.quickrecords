@@ -228,7 +228,7 @@ export default {
   computed: {
     validateForm() {
       return (
-        this.income_activity.amount == 0 ||
+        this.income_activity.amount === 0 ||
         this.income_activity.name == null ||
         this.income_activity.date == null ||
         this.income_activity.venue == null ||
@@ -423,7 +423,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   align-items: center;
   color: $grey5;
 }
@@ -434,6 +434,6 @@ export default {
 }
 
 .registration_text {
-  font-size: 0.7rem;
+  font-size: 0.8rem;
 }
 </style>

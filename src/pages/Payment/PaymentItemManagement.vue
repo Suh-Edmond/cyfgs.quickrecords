@@ -281,7 +281,7 @@ export default {
 
   methods: {
     fetchPaymentItems(is_filtering, page, per_page, sort_by, filter) {
-      let search_filter = filter == undefined ? "" : filter;
+      let search_filter = filter === undefined ? "" : filter;
       let is_compulsory_value =
         this.is_compulsory !== null && this.is_compulsory !== ""
           ? this.is_compulsory.value

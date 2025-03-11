@@ -1864,7 +1864,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   align-items: center;
   color: $grey5;
 }
@@ -1919,7 +1919,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 400;
-  font-size: 14px;
+  font-size: 15px;
   line-height: 11px;
   letter-spacing: 0.01em;
 }
@@ -1980,7 +1980,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 14px;
+  font-size: 15px;
   align-items: center;
   text-align: center;
 }

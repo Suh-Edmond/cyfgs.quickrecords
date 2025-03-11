@@ -129,16 +129,16 @@
 </template>
 
 <script>
-import CategoryTable from "src/components/CategoryTable.vue";
-import { SessionStorage } from "quasar";
-import HelperMixinVue from "src/mixins/HelperMixin.vue";
-import ExpenditureItemDetailMixinVue from "src/mixins/ExpenditureItemDetailMixin.vue";
-import OrganisationMixin from "src/mixins/organisationMixin.vue";
-import expenditureItemMixinVue from "src/mixins/expenditureItemMixin.vue";
-import PaymentItemMixinVue from "src/mixins/PaymentItemMixin.vue";
-import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
+  import CategoryTable from "src/components/CategoryTable.vue";
+  import {SessionStorage} from "quasar";
+  import HelperMixinVue from "src/mixins/HelperMixin.vue";
+  import ExpenditureItemDetailMixinVue from "src/mixins/ExpenditureItemDetailMixin.vue";
+  import OrganisationMixin from "src/mixins/organisationMixin.vue";
+  import expenditureItemMixinVue from "src/mixins/expenditureItemMixin.vue";
+  import PaymentItemMixinVue from "src/mixins/PaymentItemMixin.vue";
+  import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
 
-export default {
+  export default {
   mixins: [
     PaymentItemMixinVue,
     CurrentYearMixinVue,
@@ -234,14 +234,14 @@ export default {
     validateFilter() {
       return (
         this.year == null ||
-        this.year == "" ||
+        this.year === "" ||
         this.expenditure_category_id == null ||
-        this.expenditure_category_id == ""
+        this.expenditure_category_id === ""
       );
     },
 
     validateDownload() {
-      return this.getExpenditures.length == 0;
+      return this.getExpenditures.length === 0;
     },
 
     getExpenditures() {
@@ -279,15 +279,13 @@ export default {
     },
 
     getPagination() {
-      let paginate_object = {
+      return {
         sortBy: this.$store.getters.getPagination.sortBy,
         descending: this.$store.getters.getPagination.descending,
         page: this.$store.getters.getPagination.page,
         rowsPerPage: this.$store.getters.getPagination.rowsPerPage,
         rowsNumber: this.$store.getters.getPagination.rowsNumber,
       };
-
-      return paginate_object;
     },
   },
   methods: {
@@ -330,7 +328,7 @@ export default {
       this.expenditure_categories = [];
       if (
         this.$store.getters.getExpenditureCategories != null &&
-        this.$store.getters.getExpenditureCategories != "undefined"
+        this.$store.getters.getExpenditureCategories !== "undefined"
       ) {
         this.$store.getters.getExpenditureCategories.forEach((element) => {
           this.expenditure_categories.push({

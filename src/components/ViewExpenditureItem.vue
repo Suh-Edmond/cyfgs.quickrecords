@@ -222,7 +222,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 400;
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   color: $grey5;
 }
 
@@ -230,7 +230,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   color: $grey8;
 }
 

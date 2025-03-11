@@ -53,55 +53,64 @@
           <q-td
             key="has_register"
             :props="props"
-            v-if="props.row.has_register == 'NOT_REGISTERED'"
             class="not_registered table_value"
+            v-if="props.row.registered && props.row.registered.approve !== 'APPROVED'"
           >
-            {{ props.row.has_register }}
+            NOT_REGISTERED
           </q-td>
           <q-td
             key="has_register"
             :props="props"
-            v-if="props.row.has_register == 'REGISTERED'"
             class="registered table_value"
+            v-if="props.row.registered && props.row.registered.approve === 'APPROVED'"
           >
-            {{ props.row.has_register }}
+            REGISTERED
           </q-td>
           <q-td
-            key="approve"
+            key="has_register"
             :props="props"
-            v-if="props.row.approve == 'PENDING'"
-            class="text-info table_value"
-          >
-            {{ props.row.approve }}
-          </q-td>
-          <q-td
-            key="approve"
-            :props="props"
-            v-if="props.row.approve == 'DECLINED'"
             class="not_registered table_value"
+            v-if="props.row.registered === '' || props.row.registered === null"
           >
-            {{ props.row.approve }}
+            NOT_REGISTERED
           </q-td>
           <q-td
             key="approve"
             :props="props"
-            v-if="props.row.approve == 'APPROVED'"
             class="registered table_value"
+            v-if="props.row.registered &&  props.row.registered.approve === 'APPROVED'"
           >
-            {{ props.row.approve }}
+            {{props.row.registered.approve}}
           </q-td>
           <q-td
             key="approve"
             :props="props"
-            v-if="props.row.approve == ''"
-            class="table_value"
+            class="not_registered table_value"
+            v-if="props.row.registered &&  props.row.registered.approve === 'DECLINED'"
           >
+            {{props.row.registered.approve}}
+          </q-td>
+          <q-td
+            key="approve"
+            :props="props"
+            class="text-info table_value"
+            v-if="props.row.registered &&  props.row.registered.approve === 'PENDING'"
+          >
+            {{props.row.registered.approve}}
+          </q-td>
+          <q-td
+            key="approve"
+            :props="props"
+            class="text-info table_value"
+            v-if="props.row.registered === '' || props.row.registered === null"
+          >
+
           </q-td>
 
           <q-td
             key="status"
             :props="props"
-            v-if="props.row.status == 'ACTIVE'"
+            v-if="props.row.status === 'ACTIVE'"
             class="registered table_value"
           >
             {{ props.row.status }}
@@ -110,7 +119,7 @@
           <q-td
             key="status"
             :props="props"
-            v-if="props.row.status == 'IN_ACTIVE'"
+            v-if="props.row.status === 'IN_ACTIVE'"
             class="not_registered table_value"
           >
             {{ props.row.status }}
@@ -123,7 +132,7 @@
               no-caps
               dense
               @click="onApprovedRecord(props.row, 'Approve')"
-              v-if="canValidateTransaction() && props.row.approve == 'PENDING'"
+              v-if="canValidateTransaction() && props.row.approve === 'PENDING'"
             />
 
             <!-- buttons for approve and decline row data -->
@@ -133,7 +142,7 @@
               no-caps
               dense
               @click="onDeclineRecord(props.row, 'Decline')"
-              v-if="canValidateTransaction() && props.row.approve == 'PENDING'"
+              v-if="canValidateTransaction() && props.row.approve === 'PENDING'"
             />
             <!-- button to handle edit, view and delete, invite and register  a member -->
             <q-btn flat round v-if="checkTreasurerRoleOnly()">

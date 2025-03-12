@@ -4,8 +4,9 @@
       class="row q-px-sm"
       :class="$q.screen.lg ? 'q-pt-lg flex flex-center' : 'q-pt-sm'"
     >
+      <div class="col-4 col-md-4 col-lg-4 col-sm-12 col-xs-12"></div>
       <div
-        class="col-md-4 col-lg-4 col-sm-12 col-xs-12"
+        class="col-4 col-md-4 col-lg-4 col-sm-12 col-xs-12"
         v-if="!show_invitation_link_expire_msg"
       >
         <q-card :class="$q.screen.lg ? 'q-mt-lg q-pb-xl' : 'q-mt-md q-pb-xl'">
@@ -32,7 +33,7 @@
               v-show="!is_exist_user"
             >
               <div>
-                <label for="credential" class="form_field"
+                <label  class="form_field"
                   >{{ $t("app.emailLabel") }}
                   <span class="text-red">*</span></label
                 >
@@ -71,7 +72,7 @@
               v-show="is_exist_user"
             >
               <div>
-                <label for="credential" class="form_field"
+                <label  class="form_field"
                   >{{ $t("app.emailLabel") }}
                   <span class="text-red">*</span></label
                 >
@@ -84,7 +85,7 @@
                 />
               </div>
               <div>
-                <label for="password" class="form_field"
+                <label  class="form_field"
                   >{{ $t("app.passwordLabel") }}
                   <span class="text-red">*</span></label
                 >
@@ -104,7 +105,7 @@
                 </q-input>
               </div>
               <div>
-                <label for="password_confirmation" class="form_field"
+                <label  class="form_field"
                   >{{ $t("app.confirmPasswordLabel") }}
                   <span class="text-red">*</span></label
                 >
@@ -224,14 +225,14 @@ export default {
       return this.check_user.credential === "";
     },
     validatePasswordMatch() {
-      return this.user.password != this.user.password_confirmation;
+      return this.user.password !== this.user.password_confirmation;
     },
     validateLogin() {
       return (
-        this.user.password == "" ||
+        this.user.password === "" ||
         this.validatePhone ||
-        (this.user.password != "" &&
-          this.user.password != this.user.password_confirmation)
+        (this.user.password !== "" &&
+          this.user.password !== this.user.password_confirmation)
       );
     },
   },
@@ -269,7 +270,7 @@ export default {
       this.$store
         .dispatch("postRequest", payload)
         .then((res) => {
-          if (res.status == 200) {
+          if (res.status === 200) {
             this.is_exist_user = true;
             this.user.credential = this.check_user.credential;
 
@@ -279,9 +280,9 @@ export default {
               message: this.$t("app.inviteUserSuccessMsg"),
               position: Platform.is.mobile ? "bottom" : "top-right",
             });
-          } else if (res.status == 400) {
+          } else if (res.status === 400) {
             this.show_invitation_link_expire_msg = true;
-          } else if (res.status == 404) {
+          } else if (res.status === 404) {
             Notify.create({
               color: "info",
               type: "info",
@@ -331,7 +332,7 @@ export default {
       this.$store
         .dispatch("postRequest", payload)
         .then((response) => {
-          if (response.status == 200) {
+          if (response.status === 200) {
             current_session_id = response.data.data.current_session.id;
             organisation_id = response.data.data.user_data.organisation_id;
             SessionStorage.set("to_tab", "Dashboard");
@@ -344,7 +345,7 @@ export default {
               name: "dashboard",
             });
           }
-          if (response.status == 404 || response.status == 403) {
+          if (response.status === 404 || response.status === 403) {
             Notify.create({
               type: "info",
               message: this.$t("app.invalidAccount"),
@@ -354,43 +355,43 @@ export default {
           return response;
         })
         .then(async (response) => {
-          if (response.status == 200) {
+          if (response.status === 200) {
             this.getUserByRegistrationStatus(organisation_id);
           }
           return response;
         })
         .then(async (response) => {
-          if (response.status == 200) {
+          if (response.status === 200) {
             this.getTotalContributionByYear(current_session_id);
           }
           return response;
         })
         .then(async (response) => {
-          if (response.status == 200) {
+          if (response.status === 200) {
             this.getUserByRegistration(organisation_id);
           }
           return response;
         })
         .then(async (response) => {
-          if (response.status == 200) {
+          if (response.status === 200) {
             this.getOrganisationMemberSavings(organisation_id, 1, 10);
           }
           return response;
         })
         .then(async (response) => {
-          if (response.status == 200) {
+          if (response.status === 200) {
             this.getOrganisationMembers(organisation_id);
           }
           return response;
         })
         .then(async (response) => {
-          if (response.status == 200) {
+          if (response.status === 200) {
             this.getTotalYearlyExpenditures(current_session_id);
           }
           return response;
         })
         .then(async (response) => {
-          if (response.status == 200) {
+          if (response.status === 200) {
             this.filterOrganisationMembers(
               organisation_id,
               false,

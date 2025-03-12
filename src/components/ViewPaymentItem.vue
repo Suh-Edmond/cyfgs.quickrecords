@@ -2,7 +2,7 @@
   <div class="q-py-md" :class="$q.platform.is.mobile ? 'q-px-lg' : 'q-px-md'">
     <div class="flex justify-between q-mb-md">
       <div>
-        <label for="expenditure_item" class="label"
+        <label  class="label"
           ><span> <q-icon name="category" size="xs" class="q-pr-sm" /> </span
           >{{ $t("app.category") }}
         </label>
@@ -15,7 +15,7 @@
     </div>
     <div class="flex justify-between q-mb-md">
       <div>
-        <label for="expenditure_item" class="label"
+        <label  class="label"
           ><span> <q-icon name="category" size="xs" class="q-pr-sm" /> </span
           >{{ $t("app.paymentItem") }}
         </label>
@@ -28,7 +28,7 @@
     </div>
     <div class="flex justify-between q-mb-md">
       <div>
-        <label for="complusory" class="label"
+        <label  class="label"
           ><span>
             <q-icon name="priority_high" size="xs" class="q-pr-sm" /> </span
           >{{ $t("app.compulsoryLabel") }}
@@ -37,7 +37,7 @@
       <div>
         <label
           class="value"
-          v-if="getUpdatedPaymentItemFromState.compulsory == '1'"
+          v-if="getUpdatedPaymentItemFromState.compulsory === '1'"
         >
           {{ $t("app.yes") }}
         </label>
@@ -48,7 +48,7 @@
     </div>
     <div class="flex justify-between q-mb-md">
       <div>
-        <label for="amount" class="label"
+        <label class="label"
           ><span>
             <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
           >{{ $t("app.amount") }}
@@ -63,7 +63,7 @@
     </div>
     <div class="flex justify-between q-mb-md">
       <div>
-        <label for="amount" class="label"
+        <label class="label"
           ><span>
             <q-icon name="trending_flat" size="xs" class="q-pr-sm" /> </span
           >{{ $t("app.frequency") }}
@@ -77,7 +77,7 @@
       </div>
     </div>
     <div class="flex justify-between q-mb-md">
-      <label for="type" class="label"
+      <label class="label"
         ><span> <q-icon name="title" size="xs" class="q-pr-sm" /> </span
         >{{ $t("app.type") }}
       </label>
@@ -91,7 +91,7 @@
     </div>
     <div class="flex justify-between q-mb-md">
       <div>
-        <label for="deadline" class="label"
+        <label class="label"
           ><span>
             <q-icon name="hourglass_top" size="xs" class="q-pr-sm" /> </span
           >{{ $t("app.deadline") }}
@@ -105,7 +105,7 @@
     </div>
     <div class="flex justify-between q-mb-md">
       <div>
-        <label for="deadline" class="label"
+        <label class="label"
           ><span>
             <q-icon name="hourglass_top" size="xs" class="q-pr-sm" /> </span
           >{{ $t("app.status") }}
@@ -114,13 +114,13 @@
       <div>
         <label
           class="value unapproved_color"
-          v-show="getUpdatedPaymentItemFromState.deadline_state == 'EXPIRED'"
+          v-show="getUpdatedPaymentItemFromState.deadline_state === 'EXPIRED'"
         >
           {{ getUpdatedPaymentItemFromState.deadline_state }}
         </label>
         <label
           class="value text-secondary text-weight-bold"
-          v-show="getUpdatedPaymentItemFromState.deadline_state == 'ACTIVE'"
+          v-show="getUpdatedPaymentItemFromState.deadline_state === 'ACTIVE'"
         >
           {{ getUpdatedPaymentItemFromState.deadline_state }}
         </label>
@@ -128,9 +128,9 @@
     </div>
     <div class="flex justify-between q-mb-md">
       <div>
-        <label for="amount" class="label"
+        <label class="label"
           ><span> <q-icon name="person" size="xs" class="q-pr-sm" /> </span
-          >{{ $t("app.createdAt") }}
+          >{{ $t("app.createdDate") }}
         </label>
       </div>
       <div>
@@ -141,7 +141,7 @@
     </div>
     <div class="flex justify-between q-mb-md">
       <div>
-        <label for="amount" class="label"
+        <label class="label"
           ><span> <q-icon name="person" size="xs" class="q-pr-sm" /> </span
           >{{ $t("app.updatedBy") }}
         </label>
@@ -154,7 +154,7 @@
     </div>
     <div class="flex justify-between q-mb-md">
       <div>
-        <label for="amount" class="label"
+        <label class="label"
           ><span> <q-icon name="people" size="xs" class="q-pr-sm" /> </span
           >{{ $t("app.members") }}
         </label>
@@ -180,7 +180,7 @@
       </div>
     </div>
     <div class="row q-mb-xs">
-      <label for="comment" class="label"
+      <label   class="label"
         ><span> <q-icon name="description" size="xs" class="q-pr-sm" /> </span
         >{{ $t("app.comment") }}</label
       >

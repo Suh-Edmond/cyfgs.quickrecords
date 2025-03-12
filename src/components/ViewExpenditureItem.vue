@@ -16,7 +16,7 @@
       </div>
       <div class="flex justify-between q-mb-md">
         <div>
-          <label for="expenditure_item" class="label"
+          <label class="label"
             ><span> <q-icon name="category" size="xs" class="q-pr-sm" /> </span
             >{{ $t("app.expenditureItem") }}
           </label>
@@ -30,7 +30,7 @@
       </div>
       <div class="flex justify-between q-mb-md">
         <div>
-          <label for="venue" class="label"
+          <label class="label"
             ><span>
               <q-icon name="location_on" size="xs" class="q-pr-sm" /> </span
             >{{ $t("app.venue") }}
@@ -45,9 +45,22 @@
       </div>
       <div class="flex justify-between q-mb-md">
         <div>
-          <label for="date" class="label"
+          <label class="label"
             ><span> <q-icon name="schedule" size="xs" class="q-pr-sm" /> </span
             >{{ $t("app.date") }}
+          </label>
+        </div>
+        <div>
+          <label class="value">
+            {{ getFormatedDate }}
+          </label>
+        </div>
+      </div>
+      <div class="flex justify-between q-mb-md">
+        <div>
+          <label class="label"
+          ><span> <q-icon name="schedule" size="xs" class="q-pr-sm" /> </span
+          >{{ $t("app.createdDate") }}
           </label>
         </div>
         <div>
@@ -58,7 +71,7 @@
       </div>
       <div class="flex justify-between q-mb-md">
         <div>
-          <label for="amount" class="label"
+          <label  class="label"
             ><span>
               <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
             >{{ $t("app.estimatedAmount") }}
@@ -74,7 +87,7 @@
       </div>
       <div class="flex justify-between q-mb-md">
         <div>
-          <label for="amount" class="label"
+          <label  class="label"
             ><span>
               <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
             >{{ $t("app.totalAmountGiven") }}
@@ -94,7 +107,7 @@
       </div>
       <div class="flex justify-between q-mb-md">
         <div>
-          <label for="amount" class="label"
+          <label  class="label"
             ><span>
               <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
             >{{ $t("app.totalAmountSpent") }}
@@ -114,7 +127,7 @@
       </div>
       <div class="flex justify-between q-mb-md">
         <div>
-          <label for="amount" class="label"
+          <label  class="label"
             ><span>
               <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
             >{{ $t("app.totalBalance") }}
@@ -134,7 +147,7 @@
       </div>
       <div class="flex justify-between q-mb-md">
         <div>
-          <label for="status" class="label"
+          <label  class="label"
             ><span>
               <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span
             >{{ $t("app.transactionStatus") }}
@@ -144,19 +157,19 @@
         <div>
           <label
             class="value text-warning"
-            v-show="getUpdatedExpenditureFromState.approve == 'DECLINED'"
+            v-show="getUpdatedExpenditureFromState.approve === 'DECLINED'"
           >
             {{ getUpdatedExpenditureFromState.approve }}
           </label>
           <label
             class="value text-secondary"
-            v-show="getUpdatedExpenditureFromState.approve == 'APPROVED'"
+            v-show="getUpdatedExpenditureFromState.approve === 'APPROVED'"
           >
             {{ getUpdatedExpenditureFromState.approve }}
           </label>
           <label
             class="value text-info"
-            v-show="getUpdatedExpenditureFromState.approve == 'PENDING'"
+            v-show="getUpdatedExpenditureFromState.approve === 'PENDING'"
           >
             {{ getUpdatedExpenditureFromState.approve }}
           </label>
@@ -164,7 +177,7 @@
       </div>
       <div class="flex justify-between q-mb-md">
         <div>
-          <label for="amount" class="label"
+          <label  class="label"
             ><span> <q-icon name="person" size="xs" class="q-pr-sm" /> </span
             >{{ $t("app.updatedBy") }}
           </label>
@@ -176,7 +189,7 @@
         </div>
       </div>
       <div class="row q-mb-xs">
-        <label for="comment" class="label"
+        <label  class="label"
           ><span> <q-icon name="description" size="xs" class="q-pr-sm" /> </span
           >{{ $t("app.comment") }}</label
         >
@@ -206,8 +219,14 @@ export default {
       return this.$store.getters.getUpdatedExpenditureItem;
     },
 
-    getFormatedCreatedDate() {
+    getFormatedDate() {
       return moment(this.getUpdatedExpenditureFromState.date).format(
+        "MMMM Do YYYY"
+      );
+    },
+
+    getFormatedCreatedDate() {
+      return moment(this.getUpdatedExpenditureFromState.created_at).format(
         "MMMM Do YYYY"
       );
     },

@@ -11,7 +11,6 @@ export default {
     signUpCaptionMsg: "Sign up to get started with QuickRecords",
     updateOrganisationHeading: "Update Organisation Information",
     telephoneLabel: "Telephone",
-
     passwordLabel: "Password",
     loginBtnLabel: "Login",
     forgotPasswordMsg: "Forgot Password ?",

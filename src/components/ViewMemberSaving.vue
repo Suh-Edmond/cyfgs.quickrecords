@@ -16,7 +16,7 @@
     </div>
     <div class="flex justify-between q-mb-md">
       <div>
-        <label for="email" class="label"
+        <label class="label"
           ><span> <q-icon name="email" size="xs" class="q-pr-sm" /> </span
           >{{ $t("app.emailLabel") }}
         </label>
@@ -28,7 +28,7 @@
       </div>
     </div>
     <div class="flex justify-between q-mb-md">
-      <label for="telephone" class="label"
+      <label  class="label"
         ><span> <q-icon name="phone" size="xs" class="q-pr-sm" /> </span
         >{{ $t("app.telephoneLabel") }}
       </label>
@@ -39,7 +39,7 @@
       </div>
     </div>
     <div class="flex justify-between q-mb-md">
-      <label for="amount" class="label"
+      <label  class="label"
         ><span>
           <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
         >{{ $t("app.amountDeposited") }}
@@ -52,7 +52,7 @@
       </div>
     </div>
     <div class="flex justify-between q-mb-md">
-      <label for="amount" class="label"
+      <label  class="label"
         ><span>
           <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
         >{{ $t("app.amountUsed") }}
@@ -66,7 +66,7 @@
     </div>
     <div class="flex justify-between q-mb-md">
       <div>
-        <label for="status" class="label"
+        <label class="label"
           ><span>
             <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span
           >{{ $t("app.transactionStatus") }}
@@ -75,19 +75,19 @@
       <div>
         <label
           class="value text-info"
-          v-show="getCurrentMemberSaving.approve == 'PENDING'"
+          v-show="getCurrentMemberSaving.approve === 'PENDING'"
         >
           {{ getCurrentMemberSaving.approve }}
         </label>
         <label
           class="value text-secondary"
-          v-show="getCurrentMemberSaving.approve == 'APPROVED'"
+          v-show="getCurrentMemberSaving.approve === 'APPROVED'"
         >
           {{ getCurrentMemberSaving.approve }}
         </label>
         <label
           class="value text-warning"
-          v-show="getCurrentMemberSaving.approve == 'DECLINED'"
+          v-show="getCurrentMemberSaving.approve === 'DECLINED'"
         >
           {{ getCurrentMemberSaving.approve }}
         </label>
@@ -95,7 +95,7 @@
     </div>
     <div class="flex justify-between q-mb-md">
       <div>
-        <label for="amount" class="label"
+        <label  class="label"
           ><span> <q-icon name="schedule" size="xs" class="q-pr-sm" /> </span
           >{{ $t("app.createdDate") }}
         </label>
@@ -109,7 +109,7 @@
 
     <div class="flex justify-between q-mb-md">
       <div>
-        <label for="amount" class="label"
+        <label  class="label"
           ><span> <q-icon name="person" size="xs" class="q-pr-sm" /> </span
           >{{ $t("app.createdBy") }}
         </label>
@@ -121,7 +121,7 @@
       </div>
     </div>
     <div class="row q-mb-xs">
-      <label for="comment" class="label"
+      <label  class="label"
         ><span> <q-icon name="description" size="xs" class="q-pr-sm" /> </span
         >{{ $t("app.comment") }}</label
       >

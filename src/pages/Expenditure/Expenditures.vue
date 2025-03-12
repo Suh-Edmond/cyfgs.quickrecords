@@ -246,7 +246,7 @@
 
     getExpenditures() {
       let data = [];
-      if (this.$store.getters.getExpenditures != null) {
+      if (this.$store.getters.getExpenditures !== null && this.$store.getters.getExpenditures !== undefined) {
         this.$store.getters.getExpenditures.data.forEach((ele) => {
           data.push({
             counter: this.$store.getters.getExpenditures.data.indexOf(ele) + 1,
@@ -327,7 +327,7 @@
     getExpenditureCategoriesFromStore() {
       this.expenditure_categories = [];
       if (
-        this.$store.getters.getExpenditureCategories != null &&
+        this.$store.getters.getExpenditureCategories !== null &&
         this.$store.getters.getExpenditureCategories !== "undefined"
       ) {
         this.$store.getters.getExpenditureCategories.forEach((element) => {

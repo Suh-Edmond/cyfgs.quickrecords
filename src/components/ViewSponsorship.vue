@@ -2,7 +2,7 @@
   <div class="q-py-md" :class="$q.platform.is.mobile ? 'q-px-lg' : 'q-px-md'">
     <div class="flex justify-between q-pb-md">
       <div>
-        <label for="name" class="label"
+        <label class="label"
           ><span> <q-icon name="category" size="xs" class="q-pr-sm" /> </span
           >{{ $t("app.paymentItem") }}
         </label>
@@ -15,7 +15,7 @@
     </div>
     <div class="flex justify-between q-pb-md">
       <div>
-        <label for="name" class="label"
+        <label class="label"
           ><span> <q-icon name="person" size="xs" class="q-pr-sm" /> </span
           >{{ $t("app.sponsorNameLabel") }}
         </label>
@@ -28,7 +28,7 @@
     </div>
     <div class="flex justify-between q-pb-md">
       <div>
-        <label for="name" class="label">
+        <label class="label">
           <span>
             <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
           >{{ $t("app.amount") }}
@@ -43,7 +43,7 @@
       </div>
     </div>
     <div class="flex justify-between q-pb-md">
-      <label for="name" class="label"
+      <label class="label"
         ><span> <q-icon name="schedule" size="xs" class="q-pr-sm" /> </span
         >{{ $t("app.paymentDate") }}
       </label>
@@ -55,7 +55,7 @@
     </div>
     <div class="flex justify-between q-pb-md">
       <div>
-        <label for="status" class="label"
+        <label class="label"
           ><span>
             <q-icon name="check_circle" size="xs" class="q-pr-sm" /> </span
           >{{ $t("app.transactionStatus") }}
@@ -65,26 +65,26 @@
       <div>
         <label
           class="value text-secondary"
-          v-show="getSelectedSponsorship.approve == 'APPROVED'"
+          v-show="getSelectedSponsorship.approve === 'APPROVED'"
         >
           {{ getSelectedSponsorship.approve }}
         </label>
         <label
           class="value text-orange"
-          v-show="getSelectedSponsorship.approve == 'DECLINED'"
+          v-show="getSelectedSponsorship.approve === 'DECLINED'"
         >
           {{ getSelectedSponsorship.approve }}
         </label>
         <label
           class="value text-info"
-          v-show="getSelectedSponsorship.approve == 'PENDING'"
+          v-show="getSelectedSponsorship.approve === 'PENDING'"
         >
           {{ getSelectedSponsorship.approve }}
         </label>
       </div>
     </div>
     <div class="flex justify-between q-pb-md">
-      <label for="name" class="label"
+      <label class="label"
         ><span> <q-icon name="badge" size="xs" class="q-pr-sm" /> </span
         >{{ $t("app.transactionCode") }}</label
       >
@@ -97,7 +97,7 @@
     </div>
     <div class="flex justify-between q-pb-lg">
       <div>
-        <label for="name" class="label"
+        <label class="label"
           ><span> <q-icon name="person" size="xs" class="q-pr-sm" /> </span
           >{{ $t("app.createdBy") }}
         </label>
@@ -110,7 +110,7 @@
       </div>
     </div>
     <div class="row q-mb-xs">
-      <label for="name" class="label"
+      <label class="label"
         ><span> <q-icon name="description" size="xs" class="q-pr-sm" /> </span
         >{{ $t("app.comment") }}
       </label>
@@ -153,7 +153,7 @@ export default {
     validateForm() {
       return (
         this.sponsorship.supporter === null ||
-        this.sponsorship.amount_deposited == 0 ||
+        this.sponsorship.amount_deposited === 0 ||
         this.sponsorship.payment_item_id == null
       );
     },
@@ -166,7 +166,7 @@ export default {
     getSelectedSponsorship() {
       const id = this.$store.getters.getSelectedSponsorship.id;
       return this.$store.getters.getSponsorships.data.filter(
-        (ele) => ele.id == id
+        (ele) => ele.id === id
       )[0];
     },
   },

@@ -626,6 +626,7 @@ export default {
     balanceSheetHintMsgMobile:
       "Balance Sheet Preview is available only desktop",
     reportPreviewMsg: "Report Preview is available only on desktop.",
-    ai_model:"AI Model"
+    ai_model:"AI Model",
+    expectedAmount:"Expected Amount",
   },
 };

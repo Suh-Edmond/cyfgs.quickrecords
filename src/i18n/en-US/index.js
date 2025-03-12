@@ -11,7 +11,6 @@ export default {
     signUpCaptionMsg: "Sign up to get started with QuickRecords",
     updateOrganisationHeading: "Update Organisation Information",
     telephoneLabel: "Telephone",
-
     passwordLabel: "Password",
     loginBtnLabel: "Login",
     forgotPasswordMsg: "Forgot Password ?",
@@ -157,7 +156,6 @@ export default {
     security: "Security",
     editPassword: "Edit Password",
     oldPassword: "Old Password",
-    newPassword: "New Password",
     import: "Import",
     addMember: "Add Member",
     addMemberOrganisation: "Add Members to the Organisation",
@@ -378,7 +376,6 @@ export default {
     memberRoles: "Member Roles",
     member: "Member",
     updateMemberInformation: "Update Member Information",
-    removeRoleWarningMsg: "Are you sure  you want to remove this role ?",
     updateMemberSuccessMsg: "Member Information updated Successfully",
     roleExistMsg: "Role already exist",
     roleAddedSuccessMsg: "Role added successfully",
@@ -629,6 +626,7 @@ export default {
     balanceSheetHintMsgMobile:
       "Balance Sheet Preview is available only desktop",
     reportPreviewMsg: "Report Preview is available only on desktop.",
-    ai_model:"AI Model"
+    ai_model:"AI Model",
+    expectedAmount:"Expected Amount",
   },
 };

@@ -142,13 +142,13 @@
     <q-dialog v-model="showRecommendation" persistent>
       <q-card style="width: 700px; max-width: 80vw;" class="q-px-xs q-py-lg">
         <q-card-section class="row items-center q-pb-none">
-          <div class="model_title">QRecom Model</div>
+          <div class="model_title">QRM Model</div>
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup @click="closeRecommendationDialog()" />
         </q-card-section>
 
         <q-card-section>
-          <div class="model_caption_text">Our AI Model (QRecom) makes Recommendations to improve members participation and commitment on various activity contributions in your organisation.<br>
+          <div class="model_caption_text">Our AI Model (QRM) makes Recommendations to improve members participation and commitment on various activity contributions in your organisation.<br>
 
           </div>
 

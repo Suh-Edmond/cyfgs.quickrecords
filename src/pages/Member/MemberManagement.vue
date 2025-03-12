@@ -31,13 +31,13 @@
   </div>
 </template>
 <script>
-import TableVue from "src/components/Table.vue";
-import memberMixin from "src/mixins/memberMixin.vue";
-import organisationMixinVue from "src/mixins/organisationMixin.vue";
-import HelperMixinVue from "src/mixins/HelperMixin.vue";
-import FilterComponentVue from "src/components/FilterComponent.vue";
+  import TableVue from "src/components/Table.vue";
+  import memberMixin from "src/mixins/memberMixin.vue";
+  import organisationMixinVue from "src/mixins/organisationMixin.vue";
+  import HelperMixinVue from "src/mixins/HelperMixin.vue";
+  import FilterComponentVue from "src/components/FilterComponent.vue";
 
-export default {
+  export default {
   mixins: [memberMixin, organisationMixinVue, HelperMixinVue],
 
   mounted() {
@@ -94,7 +94,7 @@ export default {
         {
           name: "has_register",
           align: "left",
-          label: "Registeration Status",
+          label: "Registration Status",
           field: "has_register",
           sortable: true,
         },
@@ -153,6 +153,7 @@ export default {
             picture: member.picture,
             session_id: member.session_id,
             status: member.status,
+            registered:member.registered
           });
         });
       }
@@ -178,7 +179,7 @@ export default {
     },
 
     getPagination() {
-      let paginate_object = {
+      return {
         sortBy: "name",
         descending:
           this.$store.getters.getPagination != null
@@ -197,8 +198,6 @@ export default {
             ? this.$store.getters.getPagination.rowsNumber
             : 1,
       };
-
-      return paginate_object;
     },
   },
 
@@ -208,14 +207,15 @@ export default {
       const fetch_count =
         rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
       const filter = props.filter;
+
       this.getPaginatedOrganisationMembers(
         this.organisation_id,
         page,
         fetch_count,
         sortBy,
         filter,
-        this.gender,
-        this.has_register
+        this.has_register,
+        this.gender
       );
     },
 

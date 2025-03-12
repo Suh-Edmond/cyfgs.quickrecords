@@ -35,7 +35,7 @@ export default {
   },
   methods: {
     filterOrganisationMembers(id, show_spinner, page, rowsPerPage, sort_by, year, filter, has_register, gender) {
-      let search_filter = filter == undefined ? "" : filter;
+      let search_filter = filter === undefined ? "" : filter;
       let payload = {
         url: `/api/protected/organisations/filter-users?organisation_id=${id}&has_register=${has_register}&gender=${gender}&year=${year}&page=${page}&per_page=${rowsPerPage}&sort_by=${sort_by}&filter=${search_filter}`,
         msg: "none",

@@ -3,13 +3,13 @@
     <!--------------------------------------------------TABLE FOR EXPENDITURE DETAILS---------------------------------------->
     <div>
       <div
-        :class="$q.screen.lg ? 'row q-pa-sm' : 'col q-gutter-sm q-px-sm'"
+        :class="$q.screen.lg ? 'row q-gutter-sm q-pb-sm' : 'row q-gutter-sm q-pb-sm'"
         :style="
           $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
         "
       >
         <q-select
-          class="col-md-3 col-lg-3 col-xs-12 col-sm-12"
+          class="col-10 col-md"
           v-model="status"
           outlined
           dense
@@ -17,7 +17,7 @@
           :label="$t('app.selectStatusLabel')"
         />
         <div
-          class="col-md-9 col-lg-9 col-xs-12 col-sm-12 flex"
+          class="col-2 col-md flex"
           :class="$q.platform.is.desktop ? 'q-pl-md' : ''"
         >
           <q-btn
@@ -70,7 +70,6 @@
         @view-expenditure-item-detail="viewExpenditureItemDetail"
         @delete-row="onDeleteRow"
         @onRequest="onRequest"
-        @fetch-expenditure-details="fetchExpenditureDetailsUponBulkValidation"
       >
       </CategoryTable>
     </div>
@@ -85,11 +84,11 @@
 </template>
 
 <script>
-import CategoryTable from "src/components/CategoryTable.vue";
-import HelperMixinVue from "src/mixins/HelperMixin.vue";
-import ContributionSummary from "src/components/ContributionSummary.vue";
+  import CategoryTable from "src/components/CategoryTable.vue";
+  import HelperMixinVue from "src/mixins/HelperMixin.vue";
+  import ContributionSummary from "src/components/ContributionSummary.vue";
 
-export default {
+  export default {
   mixins: [HelperMixinVue],
 
   mounted() {
@@ -179,7 +178,7 @@ export default {
     },
 
     validateDownload() {
-      return this.expenditure_item_details.length == 0;
+      return this.expenditure_item_details.length === 0;
     },
 
     getBalance() {
@@ -187,15 +186,13 @@ export default {
     },
 
     getPagination() {
-      let paginate_object = {
+      return {
         sortBy: this.$store.getters.getPagination.sortBy,
         descending: this.$store.getters.getPagination.descending,
         page: this.$store.getters.getPagination.page,
         rowsPerPage: this.$store.getters.getPagination.rowsPerPage,
         rowsNumber: this.$store.getters.getPagination.rowsNumber,
       };
-
-      return paginate_object;
     },
 
     getLoadingState() {
@@ -209,21 +206,19 @@ export default {
     },
 
     getSummaryData() {
-      let summary = {
+      return {
         estimated_amount: this.total_item_amount,
         amount_given: this.total_amount_given,
         amount_spent: this.total_amount_spent,
         balance: this.getBalance,
         net_balance: this.getBalance,
       };
-
-      return summary;
     },
 
     getExpenditureItemDetails() {
       let details = [];
       const data = this.$store.getters.getExpenditureItemDetails;
-      if (data != null) {
+      if (data !== null) {
         details = this.generateExpenditureItemDetailResponse(data);
       } else {
         details = this.expenditure_item_details;
@@ -239,7 +234,7 @@ export default {
       expenditure_item_id
     ) {
       let payment_status =
-        this.status != "" && this.status != null
+        this.status !== "" && this.status != null
           ? this.indexPaymentStatus(this.status)
           : "";
       let payload = {
@@ -371,6 +366,8 @@ export default {
       });
     },
 
+
+
     generateExpenditureItemDetailResponse(response) {
       this.expenditure_item_details = [];
       response.data.forEach((ele) => {
@@ -405,10 +402,6 @@ export default {
       this.expenditure_item_name = response.expenditure_item_name;
 
       return this.expenditure_item_details;
-    },
-
-    fetchExpenditureDetailsUponBulkValidation() {
-      this.getExpenditureDetailsByItemId(1, 10, true, this.$route.params.id);
     },
   },
   components: {

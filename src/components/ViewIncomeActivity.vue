@@ -3,7 +3,7 @@
     <div>
       <div class="flex justify-between q-pb-md">
         <div>
-          <label for="name" class="label"
+          <label class="label"
             ><span> <q-icon name="category" size="xs" class="q-pr-sm" /> </span
             >{{ $t("app.nameLabel") }}
           </label>
@@ -16,7 +16,7 @@
       </div>
       <div class="flex justify-between q-pb-md">
         <div>
-          <label for="name" class="label"
+          <label class="label"
             ><span>
               <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
             >{{ $t("app.amount") }}
@@ -31,7 +31,7 @@
       </div>
       <div class="flex justify-between q-pb-md">
         <div>
-          <label for="name" class="label"
+          <label class="label"
             ><span> <q-icon name="category" size="xs" class="q-pr-sm" /> </span
             >{{ $t("app.paymentItem") }}
           </label>
@@ -44,7 +44,7 @@
       </div>
       <div class="flex justify-between q-pb-md">
         <div>
-          <label for="name" class="label"
+          <label class="label"
             ><span> <q-icon name="schedule" size="xs" class="q-pr-sm" /> </span
             >{{ $t("app.date") }}
           </label>
@@ -58,7 +58,7 @@
       </div>
       <div class="flex justify-between q-pb-md">
         <div>
-          <label for="name" class="label"
+          <label class="label"
             ><span>
               <q-icon name="location_on" size="xs" class="q-pr-sm" /> </span
             >{{ $t("app.venue") }}
@@ -72,7 +72,7 @@
       </div>
       <div class="flex justify-between q-pb-md">
         <div>
-          <label for="status" class="label">
+          <label class="label">
             <span>
               <q-icon name="check_circle" size="xs" class="q-pr-sm" />
             </span>
@@ -83,19 +83,19 @@
         <div>
           <label
             class="value text-warning"
-            v-show="getCurrentIncomeActivity.approve == 'DECLINED'"
+            v-show="getCurrentIncomeActivity.approve === 'DECLINED'"
           >
             {{ getCurrentIncomeActivity.approve }}
           </label>
           <label
             class="value text-secondary"
-            v-show="getCurrentIncomeActivity.approve == 'APPROVED'"
+            v-show="getCurrentIncomeActivity.approve === 'APPROVED'"
           >
             {{ getCurrentIncomeActivity.approve }}
           </label>
           <label
             class="value text-info"
-            v-show="getCurrentIncomeActivity.approve == 'PENDING'"
+            v-show="getCurrentIncomeActivity.approve === 'PENDING'"
           >
             {{ getCurrentIncomeActivity.approve }}
           </label>
@@ -103,7 +103,7 @@
       </div>
       <div class="flex justify-between q-mb-md">
         <div>
-          <label for="amount" class="label"
+          <label class="label"
             ><span> <q-icon name="schedule" size="xs" class="q-pr-sm" /> </span
             >{{ $t("app.createdDate") }}
           </label>
@@ -116,7 +116,7 @@
         </div>
       </div>
       <div class="flex justify-between q-mb-md">
-        <label for="amount" class="label"
+        <label class="label"
           ><span> <q-icon name="person" size="xs" class="q-pr-sm" /> </span
           >{{ $t("app.createdBy") }}
         </label>
@@ -127,7 +127,7 @@
         </div>
       </div>
       <div class="row q-mb-xs">
-        <label for="name" class="label"
+        <label class="label"
           ><span> <q-icon name="description" size="xs" class="q-pr-sm" /> </span
           >{{ $t("app.comment") }}
         </label>

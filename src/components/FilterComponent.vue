@@ -759,7 +759,7 @@
         ></q-btn>
       </div>
     </div>
-    <!--------------------------------------------END OF FILTER HEADER FOR VIEW MEMBER CONTTRIBUTION--------------------------------------------->
+    <!--------------------------------------------END OF FILTER HEADER FOR VIEW MEMBER CONTRIBUTION--------------------------------------------->
 
     <!--------------------------------------------FILTER HEADER FOR SPONSORSHIP----------------------------------------------------------------->
     <div
@@ -1081,10 +1081,10 @@ export default {
   mixins: [CurrentYearMixin, PaymentItemMixinVue, MonthsMixinVue, HelperMixin],
 
   mounted() {
-    if (this.getSessionsFromState.length == 0) {
+    if (this.getSessionsFromState.length === 0) {
       this.getSessions();
     }
-    if (this.$store.getters.getPaymentActivities.length == 0) {
+    if (this.$store.getters.getPaymentActivities.length === 0) {
       this.fetchPaymentActivities();
     }
     this.getAllPaymentItemsFromStore();
@@ -1177,7 +1177,7 @@ export default {
 
     validateFilterPaymentItem() {
       return (
-        this.year == "" &&
+        this.year === "" &&
         this.is_compulsory === "" &&
         this.frequency === "" &&
         this.type === "" &&
@@ -1187,9 +1187,9 @@ export default {
 
     validateFilterExpenditureItems() {
       return (
-        this.payment_item_id == "" &&
-        this.year == "" &&
-        this.payment_status == ""
+        this.payment_item_id === "" &&
+        this.year === "" &&
+        this.payment_status === ""
       );
     },
 
@@ -1210,8 +1210,8 @@ export default {
 
     validateFilterIncomeActivity() {
       return (
-        (this.payment_item_id == "" || this.payment_item_id == null) &&
-        (this.year == "" || this.year == null)
+        (this.payment_item_id === "" || this.payment_item_id == null) &&
+        (this.year === "" || this.year == null)
       );
     },
 
@@ -1224,8 +1224,8 @@ export default {
 
     validateFilterSponsorship() {
       return (
-        (this.payment_item_id == "" || this.payment_item_id == null) &&
-        (this.year == "" || this.year == null)
+        (this.payment_item_id === "" || this.payment_item_id == null) &&
+        (this.year === "" || this.year == null)
       );
     },
 
@@ -1242,11 +1242,11 @@ export default {
     },
 
     validateGenerateReport() {
-      return this.report_option == "" || this.group == "";
+      return this.report_option === "" || this.group === "";
     },
 
     validateGenerateBalanceSheet() {
-      return this.year == "" || this.year == null;
+      return this.year === "" || this.year == null;
     },
   },
 
@@ -1357,12 +1357,12 @@ export default {
     downloadExpenditureItems() {
       let payload = {
         payment_item_id:
-          this.payment_item_id != null && this.payment_item_id != ""
+          this.payment_item_id != null && this.payment_item_id !== ""
             ? this.payment_item_id
             : "",
-        year: this.year != null && this.year != "" ? this.year : "",
+        year: this.year != null && this.year !== "" ? this.year : "",
         payment_status:
-          this.payment_status != null && this.payment_status != ""
+          this.payment_status != null && this.payment_status !== ""
             ? this.indexPaymentStatus(this.payment_status)
             : "",
       };
@@ -1439,7 +1439,7 @@ export default {
         abort();
         return;
       }
-      if (this.month == "") {
+      if (this.month === "") {
         this.monthsOptions = this.getMonths;
       }
       update(() => {
@@ -1542,7 +1542,7 @@ export default {
       if (this.report_option != null) {
         switch (this.report_option.value) {
           case 1:
-            if (this.$store.getters.getPaymentActivities.length == 0) {
+            if (this.$store.getters.getPaymentActivities.length === 0) {
               this.fetchPaymentActivities();
             }
             this.getAllPaymentItemsFromStore();

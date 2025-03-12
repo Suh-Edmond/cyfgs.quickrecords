@@ -93,9 +93,9 @@
         <q-card-section class="q-mb-md flex justify-end">
           <q-btn
             class="form_button"
-            :label="type == 'Approve' ? $t('app.approve') : $t('app.decline')"
+            :label="type === 'Approve' ? $t('app.approve') : $t('app.decline')"
             :loading="loading_payment"
-            :color="type == 'Approve' ? 'secondary' : 'orange'"
+            :color="type === 'Approve' ? 'secondary' : 'orange'"
             :disabled="false"
             no-caps
             size="sm"
@@ -158,9 +158,7 @@ export default {
     },
 
     setApproveFeedbackMsg() {
-      let msg =
-        this.$t("app.recordWas") + `${this.type}` + this.$t("app.successfull");
-      return msg;
+      return this.$t("app.recordWas") + `${this.type}` + this.$t("app.successfull");
     },
 
     setRequestData() {

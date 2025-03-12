@@ -1,21 +1,21 @@
-import { LocalStorage, Notify, Platform } from "quasar";
-import { axios } from "src/boot/axios";
+import {LocalStorage, Notify, Platform, SessionStorage} from "quasar";
+import {axios} from "src/boot/axios";
 
 const API_URL = process.env.API_BASE_URL;
 
 export function handleRequestResponse({}, payload) {
-  if (payload.status == "success" && payload.show_feedback) {
-    if (payload.msg == "default") {
+  if (payload.status === "success" && payload.show_feedback) {
+    if (payload.msg === "default") {
       Notify.create({
         type: "positive",
-        color: payload.color != "default" ? payload.color : "positive",
+        color: payload.color !== "default" ? payload.color : "positive",
         message: "Action completed successful",
         position: Platform.is.mobile ? "bottom" : "top-right",
       });
     } else if (payload.msg) {
       Notify.create({
         type: "positive",
-        color: payload.color != "default" ? payload.color : "positive",
+        color: payload.color !== "default" ? payload.color : "positive",
         message: payload.msg,
         position: Platform.is.mobile ? "bottom" : "top-right",
       });
@@ -29,23 +29,23 @@ export function handleRequestResponse({}, payload) {
         }
       });
     }
-    if (payload.to_on_ok !== "none" && payload.status == "success") {
+    if (payload.to_on_ok !== "none" && payload.status === "success") {
       this.$router.push({
         name: payload.to_on_ok,
       });
     }
   }
-  if (payload.status == "fail" && payload.show_feedback) {
-    if (payload.fail_msg == "default") {
+  if (payload.status === "fail" && payload.show_feedback) {
+    if (payload.fail_msg === "default") {
       Notify.create({
-        color: payload.color != "default" ? payload.color : "info",
+        color: payload.color !== "default" ? payload.color : "info",
         type: "info",
         message: "Action did not complete successfully",
         position: Platform.is.mobile ? "bottom" : "top-right",
       });
     } else if (payload.fail_msg) {
       Notify.create({
-        color: payload.color != "default" ? payload.color : "info",
+        color: payload.color !== "default" ? payload.color : "info",
         message: payload.fail_msg,
         type: "info",
         position: Platform.is.mobile ? "bottom" : "top-right",
@@ -91,7 +91,7 @@ export function postRequest({ dispatch }, payload) {
         color: "negative",
         to_on_fail: payload.to_on_fail,
         fail_msg:
-          payload.error_msg != "default"
+          payload.error_msg !== "default"
             ? payload.error_msg
             : error.response.message,
         status_code: 404,
@@ -133,7 +133,7 @@ export function uploadFileRequest({ dispatch }, payload) {
         to_on_fail: "none",
         show_feedback: payload.show_feedback,
         fail_msg:
-          payload.error_msg != "default"
+          payload.error_msg !== "default"
             ? payload.error_msg
             : error.response.data.message,
         status_code: 404,
@@ -180,13 +180,13 @@ export function getRequest({ commit, dispatch }, payload) {
         to_on_fail: payload.to_on_fail,
         show_feedback: payload.show_feedback,
         fail_msg:
-          payload.error_msg != "default"
+          payload.error_msg !== "default"
             ? payload.error_msg
-            : error.response != undefined
+            : error.response !== undefined
             ? error.response.data.message
             : "An Error occurred not found",
         status_code:
-          error.response != undefined ? error.response.data.status : 404,
+          error.response !== undefined ? error.response.data.status : 404,
       };
       dispatch("handleRequestResponse", handle_fail_res_payload);
       return error.response;
@@ -226,9 +226,9 @@ export function putRequest({ dispatch, commit }, payload) {
         to_on_fail: payload.to_on_fail,
         show_feedback: payload.show_feedback,
         fail_msg:
-          payload.error_msg != "default"
+          payload.error_msg !== "default"
             ? payload.error_msg
-            : error.response != undefined
+            : error.response !== undefined
             ? error.response.data.message
             : "An error occurred",
         status_code: 404,
@@ -267,9 +267,9 @@ export function deleteRequest({ dispatch }, payload) {
         show_feedback: payload.show_feedback,
         to_on_fail: payload.to_on_fail,
         fail_msg:
-          payload.error_msg != "default"
+          payload.error_msg !== "default"
             ? payload.error_msg
-            : error.response != undefined
+            : error.response !== undefined
             ? error.response.data.message
             : "An error occured",
         status_code: 404,
@@ -322,14 +322,14 @@ export async function uploadImageRequest({ commit, dispatch }, payload) {
       return res;
     })
     .catch((error) => {
-      if (error.response != "undefined") {
+      if (error.response !== "undefined") {
         let handle_error_payload = {
           status: "fail",
           color: "negative",
           to_on_fail: "none",
           show_feedback: payload.show_feedback,
           fail_msg:
-            payload.error_msg != "default" ? payload.error_msg : "error mesg",
+            payload.error_msg !== "default" ? payload.error_msg : "error mesg",
           status_code: 404,
         };
         dispatch("handleRequestResponse", handle_error_payload);
@@ -339,10 +339,9 @@ export async function uploadImageRequest({ commit, dispatch }, payload) {
 
 //fetch uploaded files
 export async function fetchUploadedImageRequest({}, payload) {
-  const res = await axios.get(API_URL + payload.url, {
+  return await axios.get(API_URL + payload.url, {
     withCredentials: false,
   });
-  return res;
 }
 
 export function setFetchingState({ commit }, payload) {
@@ -357,6 +356,7 @@ export function logoutUser({}, payload) {
   LocalStorage.remove("data");
   LocalStorage.remove("credential");
   LocalStorage.remove("organisation");
+  SessionStorage.clear();
   this.$router.push({
     name: payload.to_on_ok,
   });
@@ -382,7 +382,7 @@ export function setNavigationTabByUserRole() {
   let role = LocalStorage.getItem("data").user_data.roles.find(
     (role) => role.name === "PRESIDENT"
   );
-  return role == undefined;
+  return role === undefined;
 }
 
 export function setCurrentPaymentCategory({ commit }, data) {

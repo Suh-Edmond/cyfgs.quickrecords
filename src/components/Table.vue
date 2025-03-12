@@ -17,7 +17,7 @@
           class="title"
           v-show="show_contribution || show_member_contribution"
         >
-          <label for="title">
+          <label>
             {{ title }}
           </label>
         </div>
@@ -53,55 +53,64 @@
           <q-td
             key="has_register"
             :props="props"
-            v-if="props.row.has_register == 'NOT_REGISTERED'"
             class="not_registered table_value"
+            v-if="props.row.registered && props.row.registered.approve !== 'APPROVED'"
           >
-            {{ props.row.has_register }}
+            NOT_REGISTERED
           </q-td>
           <q-td
             key="has_register"
             :props="props"
-            v-if="props.row.has_register == 'REGISTERED'"
             class="registered table_value"
+            v-if="props.row.registered && props.row.registered.approve === 'APPROVED'"
           >
-            {{ props.row.has_register }}
+            REGISTERED
           </q-td>
           <q-td
-            key="approve"
+            key="has_register"
             :props="props"
-            v-if="props.row.approve == 'PENDING'"
-            class="text-info table_value"
-          >
-            {{ props.row.approve }}
-          </q-td>
-          <q-td
-            key="approve"
-            :props="props"
-            v-if="props.row.approve == 'DECLINED'"
             class="not_registered table_value"
+            v-if="props.row.registered === '' || props.row.registered === null"
           >
-            {{ props.row.approve }}
+            NOT_REGISTERED
           </q-td>
           <q-td
             key="approve"
             :props="props"
-            v-if="props.row.approve == 'APPROVED'"
             class="registered table_value"
+            v-if="props.row.registered &&  props.row.registered.approve === 'APPROVED'"
           >
-            {{ props.row.approve }}
+            {{props.row.registered.approve}}
           </q-td>
           <q-td
             key="approve"
             :props="props"
-            v-if="props.row.approve == ''"
-            class="table_value"
+            class="not_registered table_value"
+            v-if="props.row.registered &&  props.row.registered.approve === 'DECLINED'"
           >
+            {{props.row.registered.approve}}
+          </q-td>
+          <q-td
+            key="approve"
+            :props="props"
+            class="text-info table_value"
+            v-if="props.row.registered &&  props.row.registered.approve === 'PENDING'"
+          >
+            {{props.row.registered.approve}}
+          </q-td>
+          <q-td
+            key="approve"
+            :props="props"
+            class="text-info table_value"
+            v-if="props.row.registered === '' || props.row.registered === null"
+          >
+
           </q-td>
 
           <q-td
             key="status"
             :props="props"
-            v-if="props.row.status == 'ACTIVE'"
+            v-if="props.row.status === 'ACTIVE'"
             class="registered table_value"
           >
             {{ props.row.status }}
@@ -110,31 +119,13 @@
           <q-td
             key="status"
             :props="props"
-            v-if="props.row.status == 'IN_ACTIVE'"
+            v-if="props.row.status === 'IN_ACTIVE'"
             class="not_registered table_value"
           >
             {{ props.row.status }}
           </q-td>
 
           <q-td key="action" :props="props">
-            <q-btn
-              class="approve_btn"
-              :label="$t('app.approve')"
-              no-caps
-              dense
-              @click="onApprovedRecord(props.row, 'Approve')"
-              v-if="canValidateTransaction() && props.row.approve == 'PENDING'"
-            />
-
-            <!-- buttons for approve and decline row data -->
-            <q-btn
-              class="decline_btn"
-              :label="$t('app.decline')"
-              no-caps
-              dense
-              @click="onDeclineRecord(props.row, 'Decline')"
-              v-if="canValidateTransaction() && props.row.approve == 'PENDING'"
-            />
             <!-- button to handle edit, view and delete, invite and register  a member -->
             <q-btn flat round v-if="checkTreasurerRoleOnly()">
               <q-icon
@@ -210,7 +201,7 @@
                       clickable
                       v-close-popup
                       @click="onInviteMember(props.row)"
-                      :disabled="props.row.status == 'IN_ACTIVE'"
+                      :disabled="props.row.status === 'IN_ACTIVE'"
                       v-if="checkAdminPresidentRole()"
                     >
                       <q-item-section avatar>
@@ -229,7 +220,7 @@
                     <q-item
                       clickable
                       v-close-popup
-                      :disabled="props.row.status == 'IN_ACTIVE'"
+                      :disabled="props.row.status === 'IN_ACTIVE'"
                       @click="onRegisterMember(props.row)"
                       v-if="checkRole()"
                     >
@@ -267,6 +258,25 @@
                 </q-menu>
               </q-icon>
             </q-btn>
+
+            <q-btn
+              class="q-ml-md approve_btn"
+              :label="$t('app.approve')"
+              no-caps
+              dense
+              @click="onApprovedRecord(props.row, 'Approve')"
+              v-if="canValidateTransaction() && props.row.registered &&  props.row.registered.approve === 'PENDING'"
+            />
+
+            <!-- buttons for approve and decline row data -->
+            <q-btn
+              class="decline_btn"
+              :label="$t('app.decline')"
+              no-caps
+              dense
+              @click="onDeclineRecord(props.row, 'Decline')"
+              v-if="canValidateTransaction() && props.row.registered &&  props.row.registered.approve === 'PENDING'"
+            />
           </q-td>
         </q-tr>
         <!---------------------------------------------END BODE FOR MEMBERS------------------------------------------------------------------------------------->
@@ -291,7 +301,7 @@
           <q-td
             key="approve"
             :props="props"
-            v-if="props.row.approve == 'DECLINED'"
+            v-if="props.row.approve === 'DECLINED'"
             class="not_registered table_value"
           >
             {{ props.row.approve }}
@@ -334,7 +344,7 @@
           <q-td
             key="approve"
             :props="props"
-            v-if="props.row.approve == 'DECLINED'"
+            v-if="props.row.approve === 'DECLINED'"
             class="not_registered table_value"
           >
             {{ props.row.approve }}
@@ -368,7 +378,7 @@
           <q-td
             key="approve"
             :props="props"
-            v-if="props.row.approve == 'PENDING'"
+            v-if="props.row.approve === 'PENDING'"
             class="text-info table_value"
           >
             {{ props.row.approve }}
@@ -376,7 +386,7 @@
           <q-td
             key="approve"
             :props="props"
-            v-if="props.row.approve == 'APPROVED'"
+            v-if="props.row.approve === 'APPROVED'"
             class="registered table_value"
           >
             {{ props.row.approve }}
@@ -384,7 +394,7 @@
           <q-td
             key="approve"
             :props="props"
-            v-if="props.row.approve == 'DECLINED'"
+            v-if="props.row.approve === 'DECLINED'"
             class="not_registered table_value"
           >
             {{ props.row.approve }}
@@ -400,7 +410,7 @@
               unelevated
               dense
               @click="onApprovedRecord(props.row, 'Approve')"
-              v-if="props.row.approve == 'PENDING' && canValidateTransaction()"
+              v-if="props.row.approve === 'PENDING' && canValidateTransaction()"
             />
 
             <q-btn
@@ -410,7 +420,7 @@
               unelevated
               dense
               @click="onDeclineRecord(props.row, 'Decline')"
-              v-if="props.row.approve == 'PENDING' && canValidateTransaction()"
+              v-if="props.row.approve === 'PENDING' && canValidateTransaction()"
             />
 
             <q-btn
@@ -493,7 +503,7 @@
           <q-td
             key="approve"
             :props="props"
-            v-if="props.row.approve == 'PENDING'"
+            v-if="props.row.approve === 'PENDING'"
             class="text-info table_value"
           >
             {{ props.row.approve }}
@@ -501,7 +511,7 @@
           <q-td
             key="approve"
             :props="props"
-            v-if="props.row.approve == 'APPROVED'"
+            v-if="props.row.approve === 'APPROVED'"
             class="registered table_value"
           >
             {{ props.row.approve }}
@@ -509,7 +519,7 @@
           <q-td
             key="approve"
             :props="props"
-            v-if="props.row.approve == 'DECLINED'"
+            v-if="props.row.approve === 'DECLINED'"
             class="not_registered table_value"
           >
             {{ props.row.approve }}
@@ -523,7 +533,7 @@
               unelevated
               dense
               @click="onApprovedRecord(props.row, 'Approve')"
-              v-if="canValidateTransaction() && props.row.approve == 'PENDING'"
+              v-if="canValidateTransaction() && props.row.approve === 'PENDING'"
             />
 
             <q-btn
@@ -533,7 +543,7 @@
               unelevated
               dense
               @click="onDeclineRecord(props.row, 'Decline')"
-              v-if="canValidateTransaction() && props.row.approve == 'PENDING'"
+              v-if="canValidateTransaction() && props.row.approve === 'PENDING'"
             />
 
             <!-- button to handle view all activity -->
@@ -634,7 +644,7 @@
           <q-td
             key="approve"
             :props="props"
-            v-if="props.row.approve == 'PENDING'"
+            v-if="props.row.approve === 'PENDING'"
             class="text-info table_value"
           >
             {{ props.row.approve }}
@@ -642,7 +652,7 @@
           <q-td
             key="approve"
             :props="props"
-            v-if="props.row.approve == 'APPROVED'"
+            v-if="props.row.approve === 'APPROVED'"
             class="registered table_value"
           >
             {{ props.row.approve }}
@@ -650,7 +660,7 @@
           <q-td
             key="approve"
             :props="props"
-            v-if="props.row.approve == 'DECLINED'"
+            v-if="props.row.approve === 'DECLINED'"
             class="not_registered table_value"
           >
             {{ props.row.approve }}
@@ -663,7 +673,7 @@
               unelevated
               dense
               @click="onApprovedRecord(props.row, 'Approve')"
-              v-if="canValidateTransaction() && props.row.approve == 'PENDING'"
+              v-if="canValidateTransaction() && props.row.approve === 'PENDING'"
             />
 
             <!-- buttons for approve and decline row data -->
@@ -674,7 +684,7 @@
               unelevated
               dense
               @click="onDeclineRecord(props.row, 'Decline')"
-              v-if="canValidateTransaction() && props.row.approve == 'PENDING'"
+              v-if="canValidateTransaction() && props.row.approve === 'PENDING'"
             />
 
             <!-- menu to handle edit and view details of a single contributions -->
@@ -705,7 +715,7 @@
           <q-td
             key="quarterly_name"
             :props="props"
-            v-if="props.row.payment_item_frequency == 'QUARTERLY'"
+            v-if="props.row.payment_item_frequency === 'QUARTERLY'"
             class="table_value"
           >
             {{ props.row.quarterly_name }}
@@ -713,7 +723,7 @@
           <q-td
             key="quarterly_name"
             :props="props"
-            v-if="props.row.payment_item_frequency == 'MONTHLY'"
+            v-if="props.row.payment_item_frequency === 'MONTHLY'"
             class="table_value"
           >
             {{ props.row.month_name }}
@@ -721,7 +731,7 @@
           <q-td
             key="quarterly_name"
             :props="props"
-            v-if="props.row.payment_item_frequency == 'ONE_TIME'"
+            v-if="props.row.payment_item_frequency === 'ONE_TIME'"
             class="table_value"
           >
             {{ formatConstants(props.row.payment_item_frequency) }}
@@ -729,7 +739,7 @@
           <q-td
             key="quarterly_name"
             :props="props"
-            v-if="props.row.payment_item_frequency == 'YEARLY'"
+            v-if="props.row.payment_item_frequency === 'YEARLY'"
             class="table_value"
           >
             {{ props.row.payment_item_frequency }}
@@ -744,7 +754,7 @@
             key="status"
             :props="props"
             class="registered table_value"
-            v-if="props.row.status == 'COMPLETE'"
+            v-if="props.row.status === 'COMPLETE'"
           >
             {{ props.row.status }}
           </q-td>
@@ -752,7 +762,7 @@
             key="status"
             :props="props"
             class="not_registered table_value"
-            v-if="props.row.status == 'INCOMPLETE'"
+            v-if="props.row.status === 'INCOMPLETE'"
           >
             {{ props.row.status }}
           </q-td>
@@ -762,7 +772,7 @@
           <q-td
             key="approve"
             :props="props"
-            v-if="props.row.approve == 'PENDING'"
+            v-if="props.row.approve === 'PENDING'"
             class="text-info table_value"
           >
             {{ props.row.approve }}
@@ -770,7 +780,7 @@
           <q-td
             key="approve"
             :props="props"
-            v-if="props.row.approve == 'APPROVED'"
+            v-if="props.row.approve === 'APPROVED'"
             class="registered table_value"
           >
             {{ props.row.approve }}
@@ -778,7 +788,7 @@
           <q-td
             key="approve"
             :props="props"
-            v-if="props.row.approve == 'DECLINED'"
+            v-if="props.row.approve === 'DECLINED'"
             class="not_registered table_value"
           >
             {{ props.row.approve }}
@@ -898,7 +908,7 @@
             {{ $t("app.inviteMsg") }}
           </div>
           <div v-if="show_invite">
-            <label for="name" class="form_field">{{
+            <label  class="form_field">{{
               $t("app.membersName")
             }}</label>
             <q-input
@@ -910,7 +920,7 @@
             />
           </div>
           <div class="q-pt-md">
-            <label for="credential" class="form_field"
+            <label class="form_field"
               >{{ $t("app.selectRole") }} <span class="text-red">*</span></label
             >
             <q-select
@@ -959,7 +969,7 @@
         <q-card-section>
           <div class="row">
             <div class="col-md-12">
-              <label for="msg" class="warning_msg">
+              <label class="warning_msg">
                 <span class="text-weight-bold"
                   >{{ $t("app.doYouKnow") }}{{ chosen_state }}
                   {{ approve_msg }}?</span
@@ -1027,7 +1037,7 @@
 
         <q-card-actions align="right" class="q-mx-sm">
           <q-btn
-            :class="chosen_state == 'Approve' ? 'approve' : 'decline'"
+            :class="chosen_state === 'Approve' ? 'approve' : 'decline'"
             size="md"
             :label="$t('app.cancel')"
             flat
@@ -1035,7 +1045,7 @@
             no-caps
           />
           <q-btn
-            :class="chosen_state == 'Approve' ? 'approve' : 'decline'"
+            :class="chosen_state === 'Approve' ? 'approve' : 'decline'"
             size="md"
             :label="chosen_state"
             flat
@@ -1049,16 +1059,18 @@
   </div>
 </template>
 <script>
-import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
-import IncomeActivityMixin from "src/mixins/IncomeActivityMixin.vue";
-import { LocalStorage, Notify, Platform } from "quasar";
-import moment from "moment";
-import ContributionsMixinVue from "src/mixins/ContributionsMixin.vue";
-import memberMixin from "src/mixins/memberMixin.vue";
-import ConfirmDialogVue from "./ConfirmDialog.vue";
-import HelperMixin from "src/mixins/HelperMixin.vue";
+  import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
+  import IncomeActivityMixin from "src/mixins/IncomeActivityMixin.vue";
+  import {LocalStorage, Notify, Platform} from "quasar";
+  import moment from "moment";
+  import ContributionsMixinVue from "src/mixins/ContributionsMixin.vue";
+  import memberMixin from "src/mixins/memberMixin.vue";
+  import ConfirmDialogVue from "./ConfirmDialog.vue";
+  import HelperMixin from "src/mixins/HelperMixin.vue";
+  import CategoryConstants from "components/Constants/CategoryConstants";
+  import TransactionStatus from "components/Constants/TransactionStatus";
 
-export default {
+  export default {
   mixins: [
     UserSavingMixinVue,
     IncomeActivityMixin,
@@ -1243,21 +1255,21 @@ export default {
       this.$store
         .dispatch("postRequest", payload)
         .then((response) => {
-          if (response.status == 200) {
+          if (response.status === 200) {
             Notify.create({
               type: "positive",
               color: "positive",
               message: this.$t("app.memberInviteSuccess"),
               position: Platform.is.mobile ? "bottom" : "top-right",
             });
-          } else if (response.status == 403) {
+          } else if (response.status === 403) {
             Notify.create({
               type: "info",
               color: "info",
               message: this.$t("app.oneMemberRoleWarningMsg"),
               position: Platform.is.mobile ? "bottom" : "top-right",
             });
-          } else if (response.status == 427) {
+          } else if (response.status === 427) {
             Notify.create({
               type: "info",
               color: "info",
@@ -1283,7 +1295,7 @@ export default {
       const president_role = LocalStorage.getItem("data").user_data.roles.find(
         (role) => role.name === "PRESIDENT" || role.name === "ADMIN"
       );
-      return president_role != undefined;
+      return president_role !== undefined;
     },
 
     checkRole() {
@@ -1293,7 +1305,7 @@ export default {
           role.name === "FINANCIAL_SECRETARY" ||
           role.name === "ADMIN"
       );
-      return president_role != undefined;
+      return president_role !== undefined;
     },
 
     onRegisterMember(data) {
@@ -1350,9 +1362,9 @@ export default {
 
     checkPresidentTreasurerRole() {
       const treasurer_role = LocalStorage.getItem("data").user_data.roles.find(
-        (role) => role.name == "TREASURER" || "PRESIDENT"
+        (role) => role.name === "TREASURER" || "PRESIDENT"
       );
-      return treasurer_role != undefined;
+      return treasurer_role !== undefined;
     },
 
     onApprovedRecord(row, state) {
@@ -1372,13 +1384,12 @@ export default {
     },
 
     onChangeRecordState() {
+      console.log(this.approve_data)
       let payload = {
         url: this.setApproveUrlBaseOnType(this.approve_data),
         msg: this.setApproveFeedbackMsg(this.approve_data),
         data:
-          this.approve_data.type == "MEMBERS_CONTRIBUTIONS"
-            ? this.setApproveContributionPayload(this.approve_data)
-            : null,
+          this.approve_data.type === CategoryConstants.MEMBERS_CONTRIBUTIONS ? this.setApproveContributionPayload(this.approve_data) : null,
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
@@ -1401,19 +1412,19 @@ export default {
 
     setApproveUrlBaseOnType(data) {
       let url = "";
-      let type = this.chosen_state == "Approve" ? "APPROVED" : "DECLINED";
+      let type = this.chosen_state === CategoryConstants.Approve ? TransactionStatus.APPROVED : TransactionStatus.DECLINED;
       switch (data.type) {
-        case "INCOME_ACTIVITIES":
+        case CategoryConstants.INCOME_ACTIVITIES:
           url = `/api/protected/income-activities/${data.id}/approve?type=${type}`;
           break;
-        case "MEMBER_SAVINGS":
+        case CategoryConstants.MEMBER_SAVINGS:
           url = `/api/protected/user-savings/${data.id}?type=${type}`;
           break;
-        case "MEMBERS_CONTRIBUTIONS":
+        case CategoryConstants.MEMBERS_CONTRIBUTIONS:
           url = `/api/protected/contributions/approve`;
           break;
-        case "MEMBERS":
-          url = `/api/protected/members-registration/approve?user_id=${data.id}&status=${type}&session_id=${data.session_id}`;
+        case CategoryConstants.MEMBERS:
+          url = `/api/protected/members-registration/approve?user_id=${data.id}&status=${type}&session_id=${data.registered.session_id}`;
           break;
       }
 
@@ -1425,7 +1436,7 @@ export default {
         this.$t("app.recordWas") +
         `${this.chosen_state}` +
         this.$t("app.successfull");
-      if (data.type == "MEMBERS") {
+      if (data.type === CategoryConstants.MEMBERS) {
         msg =
           this.$t("app.memberReg") +
           `${this.chosen_state}` +
@@ -1438,19 +1449,19 @@ export default {
     setApproveWarningMsgByType(data) {
       let date = "";
       switch (data.type) {
-        case "INCOME_ACTIVITIES":
+        case CategoryConstants.INCOME_ACTIVITIES:
           this.income_amount = data.amount;
           this.contributor = data.name;
           this.approve_msg =
             this.$t("app.contributionFor") + `${data.payment_item.name}`;
           break;
-        case "MEMBER_SAVINGS":
+        case CategoryConstants.MEMBER_SAVINGS:
           date = moment(data.created_at).format("MMMM Do YYYY");
           this.income_amount = data.amount_deposited;
           this.contributor = data.user_name;
           this.approve_msg = this.$t("app.memberContribution") + `${date}`;
           break;
-        case "MEMBERS_CONTRIBUTIONS":
+        case CategoryConstants.MEMBERS_CONTRIBUTIONS:
           date = moment(data.date).format("MMMM Do YYYY");
           this.approve_msg =
             this.$t("app.memberContributionDownloadLabel") +
@@ -1458,7 +1469,7 @@ export default {
             this.$t("app.on") +
             `${date}`;
           break;
-        case "MEMBERS":
+        case CategoryConstants.MEMBERS:
           this.register_member_name = data.name;
           this.approve_msg = this.$t("app.regFor") + `${data.year}`;
           break;
@@ -1471,23 +1482,23 @@ export default {
 
       let organisation_id = this.$store.getters.getOrganisation.id;
       let session_id = this.current_session_id;
-      let status = route_data.status != undefined ? route_data.status : "";
-      let name = route_data.name != undefined ? route_data.name : "";
+      let status = route_data.status !== undefined ? route_data.status : "";
+      let name = route_data.name !== undefined ? route_data.name : "";
       let amount_deposited =
-        this.$route.amount_deposited != undefined
+        this.$route.amount_deposited !== undefined
           ? route_data.amount_deposited
           : "";
-      let month = route_data.month != undefined ? route_data.month : "";
+      let month = route_data.month !== undefined ? route_data.month : "";
       let date = route_data.date ? route_data.date : "";
       let range = route_data.range ? route_data.range : "";
       switch (data.type) {
-        case "INCOME_ACTIVITIES":
+        case CategoryConstants.INCOME_ACTIVITIES:
           this.getOrganisationIncomeActivities(organisation_id, 1, 10);
           break;
-        case "MEMBER_SAVINGS":
+        case CategoryConstants.MEMBER_SAVINGS:
           this.getMemberSavings(data.user_id, 1, 10, month, status);
           break;
-        case "MEMBERS_CONTRIBUTIONS":
+        case CategoryConstants.MEMBERS_CONTRIBUTIONS:
           let payload = {
             payment_item_id: data.payment_item_id,
             year: data.session_id,
@@ -1510,7 +1521,7 @@ export default {
             },
           });
           break;
-        case "MEMBERS":
+        case CategoryConstants.MEMBERS:
           this.filterOrganisationMembers(
             organisation_id,
             true,
@@ -1527,15 +1538,13 @@ export default {
     },
 
     setApproveContributionPayload(data) {
-      let type = this.chosen_state == "Approve" ? "APPROVED" : "DECLINED";
-      let payload = {
+      let type = this.chosen_state === CategoryConstants.Approve ? TransactionStatus.APPROVED : TransactionStatus.DECLINED;
+      return {
         payment_item_id: data.payment_item_id,
         user_id: data.user_id,
         session_id: data.session_id,
         type: type,
       };
-
-      return payload;
     },
 
     cancelDialog() {
@@ -1654,7 +1663,7 @@ export default {
     onDeleteContribution(data) {
       this.deleted_row = data;
       this.dialog = true;
-      this.type = "MEMBERS_CONTRIBUTIONS";
+      this.type = CategoryConstants.MEMBERS_CONTRIBUTIONS;
       this.delete_msg = this.$t("app.deleteContributionWarningMsg");
     },
   },

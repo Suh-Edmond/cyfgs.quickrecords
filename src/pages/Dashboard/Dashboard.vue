@@ -223,17 +223,18 @@
   </q-page>
 </template>
 <script>
-import organisationMixin from "src/mixins/organisationMixin.vue";
-import memberMixinVue from "src/mixins/memberMixin.vue";
-import UserSavingMixin from "src/mixins/UserSavingMixin.vue";
-import PieChartsVue from "src/components/charts/PieCharts.vue";
-import BarChartVue from "src/components/charts/BarChart.vue";
-import LineChart from "src/components/charts/LineChart.vue";
-import ContributionsMixin from "src/mixins/ContributionsMixin.vue";
-import ExpenditureItemDetailMixinVue from "src/mixins/ExpenditureItemDetailMixin.vue";
-import CurrentYearMixin from "src/mixins/CurrentYearMixin.vue";
+  import organisationMixin from "src/mixins/organisationMixin.vue";
+  import memberMixinVue from "src/mixins/memberMixin.vue";
+  import UserSavingMixin from "src/mixins/UserSavingMixin.vue";
+  import PieChartsVue from "src/components/charts/PieCharts.vue";
+  import BarChartVue from "src/components/charts/BarChart.vue";
+  import LineChart from "src/components/charts/LineChart.vue";
+  import ContributionsMixin from "src/mixins/ContributionsMixin.vue";
+  import ExpenditureItemDetailMixinVue from "src/mixins/ExpenditureItemDetailMixin.vue";
+  import CurrentYearMixin from "src/mixins/CurrentYearMixin.vue";
+  import CategoryConstants from "components/Constants/CategoryConstants";
 
-export default {
+  export default {
   mixins: [
     organisationMixin,
     memberMixinVue,
@@ -266,13 +267,13 @@ export default {
   },
 
   mounted() {
-    this.showStatistics("MEMBERSHIP");
+    this.showStatistics(CategoryConstants.MEMBERSHIP);
   },
 
   data() {
     return {
       loading: false,
-      statistics_type: "MEMBERSHIP",
+      statistics_type: CategoryConstants.MEMBERSHIP,
       visible: false,
       show_statistics: false,
       lineChartData1: {
@@ -403,9 +404,7 @@ export default {
       return this.$store.getters.getFetchingState;
     },
     getTotalMembers() {
-      return this.$store.getters.getMembers !== null
-        ? this.$store.getters.getMembers.total
-        : 0;
+      return this.$store.getters.getBarChartData.usersByRegStatus.allUsers;
     },
 
     getTotalMembersSavings() {
@@ -415,7 +414,7 @@ export default {
     },
 
     getChartData() {
-      let data = {
+      return {
         labels: [
           this.$t("app.registeredName"),
           this.$t("app.pendingName"),
@@ -425,39 +424,51 @@ export default {
         datasets: [
           {
             backgroundColor: ["#27ae60", "#2d9cdb", "#f2994a", "#fe1915"],
-            data: this.$store.getters.getPieChartData,
+            data: [
+              this.$store.getters.getBarChartData.usersByRegStatus.approvedUsers,
+              this.$store.getters.getBarChartData.usersByRegStatus.pendingUsers,
+              this.$store.getters.getBarChartData.usersByRegStatus.declinedUsers,
+              this.$store.getters.getBarChartData.usersByRegStatus.notRegistered
+            ],
           },
         ],
       };
-      return data;
     },
+
 
     getApprovedUsers() {
       let approved_users = [];
-      this.$store.getters.getBarChartData.forEach((ele) =>
-        approved_users.push(ele[0])
-      );
+      this.$store.getters.getBarChartData.usersByMonth.forEach(e => {
+        approved_users.push(e[0]);
+      })
       return approved_users;
     },
 
     getPendingUsers() {
       let pending_users = [];
-      this.$store.getters.getBarChartData.forEach((ele) =>
-        pending_users.push(ele[1])
-      );
+      this.$store.getters.getBarChartData.usersByMonth.forEach(e => {
+        pending_users.push(e[1]);
+      });
       return pending_users;
     },
 
     getDeclineUsers() {
       let decline_users = [];
-      this.$store.getters.getBarChartData.forEach((ele) =>
-        decline_users.push(ele[2])
-      );
+      this.$store.getters.getBarChartData.usersByMonth.forEach(e => {
+        decline_users.push(e[2]);
+      });
       return decline_users;
+    },
+    getNotRegisteredUsers(){
+      let not_registered = [];
+      this.$store.getters.getBarChartData.usersByMonth.forEach(e => {
+        not_registered.push(e[3]);
+      });
+      return not_registered;
     },
 
     getBarData() {
-      let data = {
+      return {
         labels: [
           this.$t("app.januaryName"),
           this.$t("app.februaryName"),
@@ -488,9 +499,13 @@ export default {
             backgroundColor: "#f2994a",
             data: this.getDeclineUsers,
           },
+          {
+            label: this.$t("app.nonRegisteredName"),
+            backgroundColor: "#fe1915",
+            data: this.getNotRegisteredUsers,
+          },
         ],
       };
-      return data;
     },
 
     getTotalYearlyContribution() {
@@ -504,47 +519,27 @@ export default {
   methods: {
     showStatistics(type) {
       let organisation_id =
-        this.$store.getters.getOrganisation != null
-          ? this.$store.getters.getOrganisation.id
-          : null;
-      let current_session_id =
-        this.$store.getters.getCurrentYear != null ||
-        this.$store.getters.getCurrentYear !== undefined
-          ? this.$store.getters.getCurrentYear.id
-          : "";
+        this.$store.getters.getOrganisation !== null && this.$store.getters.getOrganisation !== undefined ? this.$store.getters.getOrganisation.id : null;
+      let current_session_id = this.$store.getters.getCurrentYear !== null && this.$store.getters.getCurrentYear !== undefined ? this.$store.getters.getCurrentYear.id : "";
       switch (type) {
-        case "MEMBERSHIP":
-          this.statistics_type = "MEMBERSHIP";
+        case CategoryConstants.MEMBERSHIP:
+          this.statistics_type = CategoryConstants.MEMBERSHIP;
           this.getUserByRegistrationStatus(organisation_id, current_session_id);
-          this.getUserByRegistration(organisation_id, current_session_id);
           this.getOrganisationMemberSavings(organisation_id, 1, 10);
           this.getTotalContributionByYear(current_session_id);
           this.getTotalYearlyExpenditures(current_session_id);
-          this.filterOrganisationMembers(
-            organisation_id,
-            false,
-            1,
-            10,
-            "name",
-            "",
-            "",
-            "",
-            ""
-          );
           break;
-        case "SAVINGS":
-          this.statistics_type = "SAVINGS";
+        case CategoryConstants.SAVINGS:
+          this.statistics_type = CategoryConstants.SAVINGS;
           this.getSavingsStatistics();
           break;
-        case "CONTRIBUTIONS":
-          this.statistics_type = "CONTRIBUTIONS";
+        case CategoryConstants.CONTRIBUTIONS:
+          this.statistics_type = CategoryConstants.CONTRIBUTIONS;
           this.getPercentageContributionsBySession(current_session_id);
           break;
-        case "EXPENDITURES":
-          this.statistics_type = "EXPENDITURES";
-          this.getYearlyExpenditureStatistics(
-            this.$store.getters.getCurrentYear.id
-          );
+        case CategoryConstants.EXPENDITURES:
+          this.statistics_type = CategoryConstants.EXPENDITURES;
+          this.getYearlyExpenditureStatistics(current_session_id);
           break;
       }
     },
@@ -647,7 +642,7 @@ export default {
         ];
         (this.barChartData1.datasets[0].label = this.$t(
           "app.avgContributionFrequencyMsg"
-        )),
+        ));
           (this.barChartData1.datasets[0].backgroundColor = "#8c9eff");
         this.barChartData1.datasets[0].data = percentages[1].avg_by_frequency;
 
@@ -660,7 +655,7 @@ export default {
         ];
         (this.barChartData2.datasets[0].label = this.$t(
           "app.avgContributionsByPaymentTypeMsg"
-        )),
+        ));
           (this.barChartData2.datasets[0].backgroundColor = "#8c9eff");
         this.barChartData2.datasets[0].data = percentages[2].avg_by_type;
       }

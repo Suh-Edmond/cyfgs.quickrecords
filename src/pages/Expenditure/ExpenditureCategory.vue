@@ -106,10 +106,8 @@
   computed: {
     getData() {
       let data = [];
-      if (
-        this.$store.getters.getExpenditureCategories !== null &&
-        this.$store.getters.getExpenditureCategories !== "undefined"
-      ) {
+      if ((this.$store.getters.getExpenditureCategories !== null && this.$store.getters.getExpenditureCategories !== undefined) &&
+        (this.$store.getters.getExpenditureCategories.data !== null && this.$store.getters.getExpenditureCategories.data !== undefined)) {
         this.$store.getters.getExpenditureCategories.data.forEach((element) => {
           data.push({
             counter:

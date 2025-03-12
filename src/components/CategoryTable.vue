@@ -1135,12 +1135,12 @@
     callFetchDataAfterApproveAction(data) {
       switch (data.type) {
         case CategoryConstants.EXPENDITURE_ITEMS:
-          this.fetchExpenditureItems(
+          this.filterExpenditureItems(
             1,
             10,
-            { value: data.session.id },
-            "",
-            "",
+            { value : this.$route.query.expenditure_category_id },
+            { value: "" },
+            { value: this.$route.query.session },
             ""
           );
           break;

@@ -72,12 +72,9 @@ export default {
       payment_item_value,
       filter
     ) {
-      let search_filter = filter == undefined ? "" : filter;
+      let search_filter = filter === undefined ? "" : filter;
       let category = this.$store.getters.getCurrentExpenditureCategory;
-      let session_value =
-        year_value === ""
-          ? this.$store.getters.getCurrentYear.id
-          : year_value.value;
+      let session_value = year_value === "" ? this.$store.getters.getCurrentYear.id : year_value.value;
       let payload = {
         status: "none",
         url: `/api/protected/expenditure-categories/${category.id}/expenditure-items?status=${status}&session_id=${session_value}
@@ -123,16 +120,10 @@ export default {
       year,
       filter
     ) {
-      let selected_expenditure_cat =
-        expenditure_category_id != null && expenditure_category_id != ""
-          ? expenditure_category_id.value
-          : "";
-      let selected_payment_item =
-        payment_item_id !== null && payment_item_id !== ""
-          ? payment_item_id.value
-          : "";
-      let session = year != null && year != "" ? year.value : "";
-      let search_filter = filter == undefined ? "" : filter;
+      let selected_expenditure_cat = expenditure_category_id != null && expenditure_category_id !== "" ? expenditure_category_id.value : "";
+      let selected_payment_item = payment_item_id !== null && payment_item_id !== "" ? payment_item_id.value : "";
+      let session = year != null && year !== "" ? year.value : "";
+      let search_filter = filter === undefined ? "" : filter;
 
       let payload = {
         status: "none",

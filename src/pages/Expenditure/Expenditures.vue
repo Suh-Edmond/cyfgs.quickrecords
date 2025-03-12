@@ -280,11 +280,11 @@
 
     getPagination() {
       return {
-        sortBy: this.$store.getters.getPagination.sortBy,
-        descending: this.$store.getters.getPagination.descending,
-        page: this.$store.getters.getPagination.page,
-        rowsPerPage: this.$store.getters.getPagination.rowsPerPage,
-        rowsNumber: this.$store.getters.getPagination.rowsNumber,
+        sortBy: this.$store.getters.getPagination ? this.$store.getters.getPagination.sortBy : 'name',
+        descending: this.$store.getters.getPagination ? this.$store.getters.getPagination.descending : true,
+        page: this.$store.getters.getPagination ? this.$store.getters.getPagination.page : 1,
+        rowsPerPage: this.$store.getters.getPagination ? this.$store.getters.getPagination.rowsPerPage: 10,
+        rowsNumber: this.$store.getters.getPagination ? this.$store.getters.getPagination.rowsNumber : 1,
       };
     },
   },

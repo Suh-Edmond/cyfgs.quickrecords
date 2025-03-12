@@ -404,7 +404,7 @@
       return this.$store.getters.getFetchingState;
     },
     getTotalMembers() {
-      return this.$store.getters.getBarChartData.usersByRegStatus.allUsers;
+      return this.$store.getters.getBarChartData !== undefined && this.$store.getters.getBarChartData !== null ? this.$store.getters.getBarChartData.usersByRegStatus.allUsers : 0;
     },
 
     getTotalMembersSavings() {

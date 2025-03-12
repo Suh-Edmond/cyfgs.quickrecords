@@ -29,6 +29,7 @@ export default {
         .dispatch("getRequest", payload)
         .then((response) => {
           if (response.success) {
+            this.$store.commit("SET_EXPENDITURE_ITEM_DETAIL", response.data);
             this.$store.commit("SET_PAGINATION", {
               sortBy: "name",
               descending: false,
@@ -36,8 +37,6 @@ export default {
               rowsPerPage: response.data.per_page,
               rowsNumber: response.data.total,
             });
-
-            this.$store.commit("SET_EXPENDITURE_ITEM_DETAIL", response.data);
           }
         })
         .finally(() => {
@@ -65,7 +64,7 @@ export default {
       this.$store.dispatch("getRequest", payload).then((res) => {});
     },
 
-    
+
   },
 };
 </script>

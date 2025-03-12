@@ -508,7 +508,7 @@
           <q-td key="is_selected" :props="props" class="table_value">
             <q-checkbox
               v-model="props.row.is_selected"
-              v-if="props.row.approve == 'PENDING'"
+              v-if="props.row.approve === 'PENDING'"
               dense
               size="md"
               @input="computeTotalSelectedItems(props.row, $event)"
@@ -530,7 +530,7 @@
           <q-td
             key="approve"
             :props="props"
-            v-if="props.row.approve == 'APPROVED'"
+            v-if="props.row.approve === 'APPROVED'"
             class="text-positive table_value"
           >
             {{ props.row.approve }}
@@ -538,7 +538,7 @@
           <q-td
             key="approve"
             :props="props"
-            v-if="props.row.approve == 'PENDING'"
+            v-if="props.row.approve === 'PENDING'"
             class="text-info table_value"
           >
             {{ props.row.approve }}
@@ -546,7 +546,7 @@
           <q-td
             key="approve"
             :props="props"
-            v-if="props.row.approve == 'DECLINED'"
+            v-if="props.row.approve === 'DECLINED'"
             class="text-orange table_value"
           >
             {{ props.row.approve }}
@@ -560,7 +560,7 @@
               no-caps
               unelevated
               @click="onApprovedRecord(props.row, 'Approve')"
-              v-if="canValidateTransaction() && props.row.approve == 'PENDING'"
+              v-if="canValidateTransaction() && props.row.approve === 'PENDING'"
             />
 
             <!-- approved btn for expenditure item details -->
@@ -571,7 +571,7 @@
               unelevated
               no-caps
               @click="onDeclineRecord(props.row, 'Decline')"
-              v-if="canValidateTransaction() && props.row.approve == 'PENDING'"
+              v-if="canValidateTransaction() && props.row.approve === 'PENDING'"
             />
 
             <!-- view expenditure item details -->
@@ -723,7 +723,7 @@
           <q-card-section>
             <div class="row">
               <div class="col-md-12">
-                <label for="msg" class="warning_msg">
+                <label class="warning_msg">
                   <span class="text-weight-bold"
                     >{{ $t("app.doYouKnow") }} {{ chosen_state }}
                     {{ approve_msg }}</span
@@ -735,7 +735,7 @@
 
           <q-card-actions align="right">
             <q-btn
-              :class="chosen_state == 'Approve' ? 'approve' : 'decline'"
+              :class="chosen_state === 'Approve' ? 'approve' : 'decline'"
               size="md"
               :label="$t('app.cancel')"
               flat
@@ -744,7 +744,7 @@
               class="q-my-md"
             />
             <q-btn
-              :class="chosen_state == 'Approve' ? 'approve' : 'decline'"
+              :class="chosen_state === 'Approve' ? 'approve' : 'decline'"
               size="md"
               :label="chosen_state"
               flat
@@ -771,16 +771,17 @@
   </div>
 </template>
 <script>
-import { LocalStorage } from "quasar";
-import PaymentCategoryMixinVue from "src/mixins/PaymentCategoryMixin.vue";
-import expenditureItemMixinVue from "src/mixins/expenditureItemMixin.vue";
-import ExpenditureItemDetailMixinVue from "src/mixins/ExpenditureItemDetailMixin.vue";
-import moment from "moment";
-import ConfirmDialog from "./ConfirmDialog.vue";
-import HelperMixin from "src/mixins/HelperMixin.vue";
-import BulkValidationExpenditureItemDetails from "./BulkValidationExpenditureItemDetails.vue";
+  import {LocalStorage} from "quasar";
+  import PaymentCategoryMixinVue from "src/mixins/PaymentCategoryMixin.vue";
+  import expenditureItemMixinVue from "src/mixins/expenditureItemMixin.vue";
+  import ExpenditureItemDetailMixinVue from "src/mixins/ExpenditureItemDetailMixin.vue";
+  import moment from "moment";
+  import ConfirmDialog from "./ConfirmDialog.vue";
+  import HelperMixin from "src/mixins/HelperMixin.vue";
+  import BulkValidationExpenditureItemDetails from "./BulkValidationExpenditureItemDetails.vue";
+  import CategoryConstants from "components/Constants/CategoryConstants";
 
-export default {
+  export default {
   mixins: [
     PaymentCategoryMixinVue,
     expenditureItemMixinVue,
@@ -948,13 +949,13 @@ export default {
     computeShowConfirmDialogDetail() {
       let show_confirm_dialog_detail = false;
       switch (this.type) {
-        case "PAYMENT_CATEGORY":
+        case CategoryConstants.PAYMENT_CATEGORY:
           show_confirm_dialog_detail = true;
           break;
-        case "PAYMENT_ITEMS":
+        case CategoryConstants.PAYMENT_ITEMS:
           show_confirm_dialog_detail = true;
           break;
-        case "EXPENDITURE_CATEGORY":
+        case CategoryConstants.EXPENDITURE_CATEGORY:
           show_confirm_dialog_detail = true;
           break;
       }
@@ -966,19 +967,19 @@ export default {
       this.dialog = true;
       this.type = type;
       switch (this.type) {
-        case "PAYMENT_CATEGORY":
+        case CategoryConstants.PAYMENT_CATEGORY:
           this.delete_msg = this.$t("app.deletePaymentCategory");
           break;
-        case "PAYMENT_ITEMS":
+        case CategoryConstants.PAYMENT_ITEMS:
           this.delete_msg = this.$t("app.deletePaymentItem");
           break;
-        case "EXPENDITURE_CATEGORY":
+        case CategoryConstants.EXPENDITURE_CATEGORY:
           this.delete_msg = this.$t("app.deleteExpenditureCategory");
           break;
-        case "EXPENDITURE_ITEMS":
+        case CategoryConstants.EXPENDITURE_ITEMS:
           this.delete_msg = this.$t("app.deleteExpenditureItem");
           break;
-        case "EXPENDITURE_DETAILS":
+        case CategoryConstants.EXPENDITURE_DETAIL:
           this.delete_msg = this.$t("app.deleteExpenditureItemDetail");
           break;
       }
@@ -1083,14 +1084,14 @@ export default {
     setApproveUrlBaseOnType(data) {
       let url = "";
       let type =
-        this.chosen_state == "Approve"
+        this.chosen_state === "Approve"
           ? this.$t("app.approveLabel")
           : this.$t("app.declineLabel");
       switch (data.type) {
-        case "EXPENDITURE_ITEMS":
+        case CategoryConstants.EXPENDITURE_ITEMS:
           url = `/api/protected/expenditure-items/${data.id}/approve?type=${type}`;
           break;
-        case "EXPENDITURE_DETAILS":
+        case CategoryConstants.EXPENDITURE_DETAILS:
           url = `/api/protected/expenditure-details/${data.id}/approve?type=${type}`;
           break;
       }
@@ -1098,17 +1099,15 @@ export default {
     },
 
     setApproveFeedbackMsg() {
-      let msg =
-        this.$t("app.recordWas") +
+      return this.$t("app.recordWas") +
         `${this.chosen_state} ` +
         this.$t("app.successfull");
-      return msg;
     },
 
     setApproveWarningMsgByType(data) {
       let date = "";
       switch (data.type) {
-        case "EXPENDITURE_ITEMS":
+        case CategoryConstants.EXPENDITURE_ITEMS:
           date = moment(data.date).format("MMMM Do YYYY");
           this.approve_msg =
             ` ${data.amount}  ` +
@@ -1119,7 +1118,7 @@ export default {
             this.$t("app.at") +
             ` ${data.venue} ?`;
           break;
-        case "EXPENDITURE_DETAILS":
+        case CategoryConstants.EXPENDITURE_DETAILS:
           date = moment(data.created_at).format("MMMM Do YYYY");
           this.approve_msg =
             ` ${data.amount_given} ` +
@@ -1135,7 +1134,7 @@ export default {
 
     callFetchDataAfterApproveAction(data) {
       switch (data.type) {
-        case "EXPENDITURE_ITEMS":
+        case CategoryConstants.EXPENDITURE_ITEMS:
           this.fetchExpenditureItems(
             1,
             10,
@@ -1145,7 +1144,7 @@ export default {
             ""
           );
           break;
-        case "EXPENDITURE_DETAILS":
+        case CategoryConstants.EXPENDITURE_DETAILS:
           this.getExpenditureDetailsByItemId(data.expenditure_item_id, 1, 10);
           break;
       }
@@ -1205,8 +1204,8 @@ export default {
     checkIfExpendituredetailsStatus() {
       return this.$store.getters.getExpenditures.length > 0
         ? this.$store.getters.getExpenditures[0].expenditure_details.filter(
-            (ele) => ele.approve == "PENDING"
-          ).length == 0
+            (ele) => ele.approve === "PENDING"
+          ).length === 0
         : false;
     },
 
@@ -1226,7 +1225,7 @@ export default {
     },
 
     fetchExpenditureDetails() {
-      this.$emit("fetch-expenditure-details");
+      this.getExpenditureDetailsByItemId(this.$route.params.id, 1, 10);
       return (this.selectedExpenditureDetails = []);
     },
   },

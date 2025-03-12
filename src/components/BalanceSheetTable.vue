@@ -5,7 +5,7 @@
     </div>
 
     <div class="q-pt-xl text-center text-bold">
-      <label for="title" class="heading">{{ heading }}</label>
+      <label   class="heading">{{ heading }}</label>
     </div>
     <div class="q-pt-md row q-mb-xs">
       <table
@@ -154,6 +154,15 @@
             {{ $t("app.amount") }} XAF
           </th>
           <th style="padding: 5px; border: 1px solid black">
+            {{ $t("app.expectedAmount") }} XAF
+          </th>
+          <th style="padding: 5px; border: 1px solid black">
+            {{ $t("app.amountDeposited") }} XAF
+          </th>
+          <th style="padding: 5px; border: 1px solid black">
+            {{ $t("app.balance") }} XAF
+          </th>
+          <th style="padding: 5px; border: 1px solid black">
             {{ $t("app.paymentDuration") }}
           </th>
         </tr>
@@ -191,7 +200,20 @@
             {{ formatConstants(column.frequency) }}
           </td>
           <td style="padding: 5px; border: 1px solid black">
-            {{ Number(column.amount).toLocaleString() }}
+            <span v-if="column.type === 'SAVINGS'">{{Number(column.total_amount_deposited).toLocaleString()}}</span>
+            <span v-else>{{ Number(column.amount).toLocaleString() }}</span>
+          </td>
+          <td style="padding: 5px; border: 1px solid black">
+            <span v-if="column.type === 'SAVINGS'">0</span>
+            <span v-else>{{ Number(column.total_expect_amount).toLocaleString() }}</span>
+          </td>
+          <td style="padding: 5px; border: 1px solid black">
+            <span v-if="column.type === 'SAVINGS'">0</span>
+            <span v-else>{{ Number(column.total_amount_deposited).toLocaleString() }}</span>
+          </td>
+          <td style="padding: 5px; border: 1px solid black">
+            <span v-if="column.type === 'SAVINGS'">0</span>
+            <span v-else> {{ Number(computeBalance(column.total_expect_amount, column.total_amount_deposited)).toLocaleString() }}</span>
           </td>
           <td style="padding: 5px; border: 1px solid black">
             <q-chip
@@ -275,7 +297,7 @@
       <div class="col-md-10 col-xs-12 col-sm-12">
         <div class="q-my-lg text-center">
           <label
-            for="income"
+
             class="admin_title text-uppercase text-weight-bold"
             >{{ $t("app.presentedBy") }}</label
           >
@@ -285,7 +307,7 @@
             class="col-md-6 text-bold text-center text-uppercase admin_details"
           >
             <div>
-              <label for="name" class="admin_title"
+              <label class="admin_title"
                 >{{ $t("app.finSec") }} </label
               ><br />
               <span
@@ -297,7 +319,7 @@
             </div>
             <br />
             <div>
-              <label for="name" class="sign">{{ $t("app.sign") }} </label>
+              <label class="sign">{{ $t("app.sign") }} </label>
               <hr class="q-mt-lg" />
             </div>
           </div>
@@ -305,7 +327,7 @@
             class="col-md-6 text-bold text-center text-uppercase admin_details"
           >
             <div>
-              <label for="name" class="admin_title">{{
+              <label class="admin_title">{{
                 $t("app.treasurer")
               }}</label
               ><br />
@@ -319,7 +341,7 @@
             </div>
             <br />
             <div>
-              <label for="name" class="sign">{{ $t("app.sign") }} </label>
+              <label class="sign">{{ $t("app.sign") }} </label>
               <hr class="q-mt-lg" />
             </div>
           </div>
@@ -330,7 +352,7 @@
             class="col-md-12 text-bold text-center text-uppercase admin_details"
           >
             <div>
-              <label for="name" class="admin_title">{{
+              <label class="admin_title">{{
                 $t("app.president")
               }}</label
               ><br />
@@ -344,7 +366,7 @@
             </div>
             <br />
             <div>
-              <label for="name" class="sign">{{ $t("app.sign") }} </label>
+              <label class="sign">{{ $t("app.sign") }} </label>
               <hr class="q-mt-lg" />
             </div>
           </div>
@@ -411,9 +433,15 @@ export default {
     getFinancialSecretary() {
       return this.data.fin_sec;
     },
+
+
   },
 
-  methods: {},
+  methods: {
+    computeBalance(expected_amount, amount_contributed){
+      return expected_amount - amount_contributed
+    }
+  },
 
   components: {
     ReportHead,

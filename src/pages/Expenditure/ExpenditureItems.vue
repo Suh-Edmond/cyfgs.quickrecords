@@ -257,8 +257,7 @@ export default {
     },
 
     filterItems(data) {
-      let expenditure_category =
-        this.$store.getters.getCurrentExpenditureCategory;
+      let expenditure_category = this.$store.getters.getCurrentExpenditureCategory;
       this.$router.push({
         path: `/dashboard/expenditure-categories/${expenditure_category.id}/items`,
         query: {

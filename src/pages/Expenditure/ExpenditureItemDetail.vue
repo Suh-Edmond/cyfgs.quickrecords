@@ -36,7 +36,6 @@
         @view-expenditure-item-detail="viewExpenditureItemDetail"
         @delete-row="onDeleteRow"
         @onRequest="onRequest"
-        @fetch-expenditure-details="fetchExpenditureDetailsUponBulkValidation"
       >
       </CategoryTable>
 
@@ -51,14 +50,14 @@
 </template>
 
 <script>
-import CategoryTable from "src/components/CategoryTable.vue";
-import HelperMixinVue from "src/mixins/HelperMixin.vue";
-import ExpenditureItemDetailMixinVue from "src/mixins/ExpenditureItemDetailMixin.vue";
-import FilterComponentVue from "src/components/FilterComponent.vue";
-import ContributionSummary from "src/components/ContributionSummary.vue";
-import { LocalStorage } from "quasar";
+  import CategoryTable from "src/components/CategoryTable.vue";
+  import HelperMixinVue from "src/mixins/HelperMixin.vue";
+  import ExpenditureItemDetailMixinVue from "src/mixins/ExpenditureItemDetailMixin.vue";
+  import FilterComponentVue from "src/components/FilterComponent.vue";
+  import ContributionSummary from "src/components/ContributionSummary.vue";
+  import {LocalStorage} from "quasar";
 
-export default {
+  export default {
   mixins: [HelperMixinVue, ExpenditureItemDetailMixinVue],
   beforeMount() {
     this.$store.commit("SET_PAGINATION", {
@@ -191,8 +190,8 @@ export default {
     isAdminOrTreasurer() {
       const istreasurer = LocalStorage.getItem("data")
         .user_data.roles.map((role) => role.name)
-        .find((role) => role == "TREASURER" || role == "ADMIN");
-      return istreasurer != undefined;
+        .find((role) => role === "TREASURER" || role === "ADMIN");
+      return istreasurer !== undefined;
     },
     getTableColumns() {
       return this.isAdminOrTreasurer
@@ -207,19 +206,17 @@ export default {
     },
 
     validateDownload() {
-      return this.expenditure_item_details.length == 0;
+      return this.expenditure_item_details.length === 0;
     },
 
     getPagination() {
-      let paginate_object = {
+      return {
         sortBy: this.$store.getters.getPagination.sortBy,
         descending: this.$store.getters.getPagination.descending,
         page: this.$store.getters.getPagination.page,
         rowsPerPage: this.$store.getters.getPagination.rowsPerPage,
         rowsNumber: this.$store.getters.getPagination.rowsNumber,
       };
-
-      return paginate_object;
     },
 
     getLoadingState() {
@@ -243,20 +240,20 @@ export default {
     },
 
     getSummaryData() {
-      let summary = {
+      return {
         estimated_amount: this.total_item_amount,
         amount_given: this.getTotalAmountGiven,
         amount_spent: this.getTotalAmountSpent,
         balance: this.getBalance,
         net_balance: this.getNetBalance,
       };
-
-      return summary;
     },
 
     getExpenditureItemDetails() {
+
       let details = [];
       const data = this.$store.getters.getExpenditureItemDetails;
+
       if (data != null) {
         details = this.generateExpenditureItemDetailResponse(data);
       } else {
@@ -392,10 +389,6 @@ export default {
       this.$store.dispatch("deleteRequest", payload).then(() => {
         this.getExpenditureDetailsByItemId(1, 10, false, "");
       });
-    },
-
-    fetchExpenditureDetailsUponBulkValidation() {
-      this.getExpenditureDetailsByItemId(1, 10, "", "");
     },
 
     generateExpenditureItemDetailResponse(response) {

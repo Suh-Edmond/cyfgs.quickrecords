@@ -246,7 +246,7 @@
 
     getExpenditures() {
       let data = [];
-      if (this.$store.getters.getExpenditures != null) {
+      if (this.$store.getters.getExpenditures !== null && this.$store.getters.getExpenditures !== undefined) {
         this.$store.getters.getExpenditures.data.forEach((ele) => {
           data.push({
             counter: this.$store.getters.getExpenditures.data.indexOf(ele) + 1,
@@ -280,11 +280,11 @@
 
     getPagination() {
       return {
-        sortBy: this.$store.getters.getPagination.sortBy,
-        descending: this.$store.getters.getPagination.descending,
-        page: this.$store.getters.getPagination.page,
-        rowsPerPage: this.$store.getters.getPagination.rowsPerPage,
-        rowsNumber: this.$store.getters.getPagination.rowsNumber,
+        sortBy: this.$store.getters.getPagination ? this.$store.getters.getPagination.sortBy : 'name',
+        descending: this.$store.getters.getPagination ? this.$store.getters.getPagination.descending : true,
+        page: this.$store.getters.getPagination ? this.$store.getters.getPagination.page : 1,
+        rowsPerPage: this.$store.getters.getPagination ? this.$store.getters.getPagination.rowsPerPage: 10,
+        rowsNumber: this.$store.getters.getPagination ? this.$store.getters.getPagination.rowsNumber : 1,
       };
     },
   },
@@ -327,7 +327,7 @@
     getExpenditureCategoriesFromStore() {
       this.expenditure_categories = [];
       if (
-        this.$store.getters.getExpenditureCategories != null &&
+        this.$store.getters.getExpenditureCategories !== null &&
         this.$store.getters.getExpenditureCategories !== "undefined"
       ) {
         this.$store.getters.getExpenditureCategories.forEach((element) => {

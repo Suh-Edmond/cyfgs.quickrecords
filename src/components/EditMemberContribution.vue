@@ -9,7 +9,7 @@
       <q-form @submit="onUpdateContribution" class="q-gutter-md">
         <div>
           <div class="q-mb-md">
-            <label for="name" class="form_field">{{$t('app.paymentCategory')}} </label>
+            <label class="form_field">{{$t('app.paymentCategory')}} </label>
             <q-select
               outlined
               dense
@@ -19,7 +19,7 @@
             </q-select>
           </div>
           <div class="q-mb-md">
-            <label for="name" class="form_field">{{$t('app.paymentItem')}}</label>
+            <label class="form_field">{{$t('app.paymentItem')}}</label>
             <q-select
               outlined
               dense
@@ -29,7 +29,7 @@
             </q-select>
           </div>
           <div class="q-mb-md">
-            <label for="credential" class="form_field"
+            <label class="form_field"
               >{{$t('app.amountPayable')}} (XAF)</label
             >
             <q-input
@@ -43,7 +43,7 @@
 
           <div>
             <div class="q-mb-md">
-              <label for="name" class="form_field">{{$t('app.membersName')}} </label>
+              <label class="form_field">{{$t('app.membersName')}} </label>
               <q-select
                 outlined
                 dense
@@ -54,7 +54,7 @@
               </q-select>
             </div>
             <div class="q-mb-md">
-              <label for="credential" class="form_field"
+              <label class="form_field"
                 >{{$t('app.amount_deposited')}}(XAF) <span class="text-red">*</span></label
               >
               <q-input
@@ -70,7 +70,7 @@
               </small>
             </div>
             <div class="q-mb-md">
-              <label for="credential" class="form_field">Comment </label>
+              <label class="form_field">Comment </label>
               <q-input
                 v-model="contribution.comment"
                 outlined
@@ -147,14 +147,12 @@ export default {
   },
   computed: {
     validateForm() {
-      return this.contribution.amount_deposited == 0 || !this.amount_has_exceed
-        ? false
-        : true;
+      return !(this.contribution.amount_deposited === 0 || !this.amount_has_exceed);
     },
 
     hasCompletedPayment() {
       return (
-        parseFloat(this.contribution.total_amount_deposited) ==
+        parseFloat(this.contribution.total_amount_deposited) ===
         parseFloat(
           this.$store.getters.getSelectedContribution.payment_item_amount
         )
@@ -166,12 +164,10 @@ export default {
     },
 
     checkPaymentItemBal() {
-      return this.contribution.amount_deposited != 0 &&
+      return this.contribution.amount_deposited !== 0 &&
         parseFloat(this.contribution.amount_deposited) +
-          parseFloat(this.contribution.total_amount_deposited) >
-          parseFloat(this.contribution.amount_payable)
-        ? true
-        : false;
+        parseFloat(this.contribution.total_amount_deposited) >
+        parseFloat(this.contribution.amount_payable);
     },
   },
   methods: {
@@ -267,7 +263,7 @@ export default {
     },
 
     depositedAmount() {
-      if (this.amount_before_update == this.contribution.amount_deposited) {
+      if (this.amount_before_update === this.contribution.amount_deposited) {
         this.contribution.balance = this.contribution.balance;
       } else {
         this.setPaymentItemBalance();

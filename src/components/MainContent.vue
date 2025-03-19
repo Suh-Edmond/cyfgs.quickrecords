@@ -300,7 +300,7 @@ export default {
         this.auth_user !== undefined &&
         this.auth_user.picture !== null &&
         this.auth_user.picture !== undefined &&
-        this.auth_user.picture != ""
+        this.auth_user.picture !== ""
       );
     },
   },
@@ -310,7 +310,7 @@ export default {
       const president_role = LocalStorage.getItem("data").user_data.roles.find(
         (role) => role.name === "PRESIDENT" || role.name === "ADMIN"
       );
-      return president_role != undefined;
+      return president_role !== undefined;
     },
 
     searchContribution(data) {
@@ -362,7 +362,7 @@ export default {
         this.$store.getters.getCurrentExpenditureCategory !== null
           ? this.$store.getters.getCurrentExpenditureCategory.id
           : { value: "" };
-      if (this.$route.name == "expenditure_detail") {
+      if (this.$route.name === "expenditure_detail") {
         this.filterExpenditureItems(
           1,
           10,
@@ -374,7 +374,7 @@ export default {
       }
       let data = [];
       data = Array.from(this.$store.getters.getIntermediateTabs);
-      if (tab == "Expenditure Categories") {
+      if (tab === "Expenditure Categories") {
         data.pop();
         data.pop();
       } else {
@@ -431,13 +431,13 @@ export default {
     },
     getCurrentRightDrawerTab() {
       let tab = "";
-      if (Array.from(this.$store.getters.getIntermediateTabs).length == 0) {
+      if (Array.from(this.$store.getters.getIntermediateTabs).length === 0) {
         tab = SessionStorage.getItem("to_tab");
       }
-      if (Array.from(this.$store.getters.getIntermediateTabs).length == 1) {
+      if (Array.from(this.$store.getters.getIntermediateTabs).length === 1) {
         tab = Array.from(this.$store.getters.getIntermediateTabs)[0].name;
       }
-      if (Array.from(this.$store.getters.getIntermediateTabs).length == 2) {
+      if (Array.from(this.$store.getters.getIntermediateTabs).length === 2) {
         tab = Array.from(this.$store.getters.getIntermediateTabs)[1].name;
       }
       return tab;
@@ -511,8 +511,8 @@ export default {
 
     verifyRequiredAdd() {
       return (
-        this.$route.name != "member_account" &&
-        this.$route.name != "member_profile"
+        this.$route.name !== "member_account" &&
+        this.$route.name !== "member_profile"
       );
     },
 
@@ -560,7 +560,7 @@ export default {
         },
       };
       this.$store.dispatch("getRequest", payload).then((res) => {
-        if (res.status == 200) {
+        if (res.status === 200) {
           this.notifications = res.data.filter(
             (notification) => !notification.has_seen_notification
           );
@@ -581,7 +581,7 @@ export default {
 
       if (Math.trunc(millisec / hour) > 24) {
         time =
-          Math.trunc(millisec / oneDay) == 1
+          Math.trunc(millisec / oneDay) === 1
             ? Math.trunc(millisec / oneDay) + " day ago"
             : Math.trunc(millisec / oneDay) + " days ago";
       } else if (
@@ -589,12 +589,12 @@ export default {
         Math.trunc(millisec / hour) <= 24
       ) {
         time =
-          Math.trunc(millisec / hour) == 1
+          Math.trunc(millisec / hour) === 1
             ? Math.trunc(millisec / hour) + " hour ago"
             : Math.trunc(millisec / hour) + " hours ago";
       } else if (Math.trunc(millisec / hour) < 1) {
         time =
-          Math.trunc(millisec / mins) == 1
+          Math.trunc(millisec / mins) === 1
             ? Math.trunc(millisec / mins) + " min ago"
             : Math.trunc(millisec / mins) + " mins ago";
       }

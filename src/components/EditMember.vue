@@ -36,13 +36,13 @@
           <div class="q-mx-lg q-pt-md">
             <q-form @submit="onUpdateMember" class="q-gutter-md">
               <div>
-                <label for="credential" class="form_field"
+                <label class="form_field"
                   >{{$t('app.nameLabel')}} <span class="text-red">*</span></label
                 >
                 <q-input v-model="user.name" outlined dense type="text" />
               </div>
               <div>
-                <label for="credential" class="form_field"
+                <label class="form_field"
                   >{{$t('app.gender')}} <span class="text-red">*</span></label
                 >
                 <q-select
@@ -54,11 +54,11 @@
                 />
               </div>
               <div>
-                <label for="credential" class="form_field">{{$t('app.emailLabel')}}</label>
+                <label class="form_field">{{$t('app.emailLabel')}}</label>
                 <q-input v-model="user.email" outlined dense type="email" />
               </div>
               <div>
-                <label for="credential" class="form_field"
+                <label class="form_field"
                   >{{$t('app.telephoneLabel')}} <span class="text-red">*</span></label
                 >
                 <q-input
@@ -73,13 +73,13 @@
                 />
               </div>
               <div>
-                <label for="credential" class="form_field"
+                <label class="form_field"
                   >{{$t('app.addressLabel')}} <span class="text-red">*</span></label
                 >
                 <q-input v-model="user.address" outlined dense type="text" />
               </div>
               <div>
-                <label for="credential" class="form_field"
+                <label class="form_field"
                   >{{$t('app.occupation')}} <span class="text-red">*</span></label
                 >
                 <q-input v-model="user.occupation" outlined dense type="text" />
@@ -113,30 +113,30 @@
                 v-ripple
                 class="q-mb-sm"
               >
-                <q-item-section avatar v-if="role.name == 'MEMBER'">
+                <q-item-section avatar v-if="role.name === 'MEMBER'">
                   <q-avatar color="primary" text-color="white" size="35px">
                     M</q-avatar
                   >
                 </q-item-section>
-                <q-item-section avatar v-if="role.name == 'PRESIDENT'">
+                <q-item-section avatar v-if="role.name === 'PRESIDENT'">
                   <q-avatar color="primary" text-color="white" size="35px">
                     PP
                   </q-avatar>
                 </q-item-section>
                 <q-item-section
                   avatar
-                  v-if="role.name == 'FINANCIAL_SECRETARY'"
+                  v-if="role.name === 'FINANCIAL_SECRETARY'"
                 >
                   <q-avatar color="primary" text-color="white" size="35px">
                     FS
                   </q-avatar>
                 </q-item-section>
-                <q-item-section avatar v-if="role.name == 'TREASURER'">
+                <q-item-section avatar v-if="role.name === 'TREASURER'">
                   <q-avatar color="primary" text-color="white" size="35px">
                     TR
                   </q-avatar>
                 </q-item-section>
-                <q-item-section avatar v-if="role.name == 'AUDITOR'">
+                <q-item-section avatar v-if="role.name === 'AUDITOR'">
                   <q-avatar color="primary" text-color="white" size="35px">
                     AU
                   </q-avatar>
@@ -331,11 +331,11 @@ export default {
       let has_president_role = LocalStorage.getItem("data").user_data.roles.find(
         (role) => role.name === "PRESIDENT"
       );
-      return has_president_role != undefined;
+      return has_president_role !== undefined;
     },
 
     getRoleWithNameUser() {
-      const role = this.user_roles.find((ele) => ele.name == "MEMBER");
+      const role = this.user_roles.find((ele) => ele.name === "MEMBER");
       return role;
     },
   },
@@ -376,7 +376,7 @@ export default {
     },
 
     addRole() {
-      const role = this.user_roles.find((ele) => ele.name == this.role.value);
+      const role = this.user_roles.find((ele) => ele.name === this.role.value);
 
       if (role !== undefined) {
         Notify.create({
@@ -511,7 +511,7 @@ export default {
       let has_president_role = LocalStorage.getItem("data").user_data.roles.find(
         (role) => role.name === "PRESIDENT"
       );
-      return has_president_role != undefined;
+      return has_president_role !== undefined;
     },
   },
   components: {

@@ -40,7 +40,7 @@
         >
           <div v-if="!has_selected_payment_item">
             <div class="q-mb-md">
-              <label for="name" class="form_field"
+              <label  class="form_field"
                 >{{ $t("app.sessionLabel") }}<span class="text-red">*</span>
               </label>
               <q-select
@@ -64,7 +64,7 @@
             </div>
 
             <div class="q-mb-md">
-              <label for="name" class="form_field"
+              <label  class="form_field"
                 >{{ $t("app.paymentItem") }}<span class="text-red">*</span>
               </label>
               <q-select
@@ -100,18 +100,18 @@
               "
             >
               <div class="q-mb-md flex justify-between">
-                <label for="credential" class="form_field">{{
+                <label class="form_field">{{
                   $t("app.nameLabel")
                 }}</label>
-                <label for="credential" class="value">{{
+                <label class="value">{{
                   selected_payment_item.label
                 }}</label>
               </div>
               <div class="q-mb-md flex justify-between">
-                <label for="credential" class="form_field">{{
+                <label class="form_field">{{
                   $t("app.amountPayable")
                 }}</label>
-                <label for="credential" class="value"
+                <label class="value"
                   >{{
                     Number(selected_payment_item.amount).toString()
                   }}
@@ -119,26 +119,26 @@
                 >
               </div>
               <div class="q-mb-md flex justify-between">
-                <label for="credential" class="form_field">{{
+                <label class="form_field">{{
                   $t("app.frequency")
                 }}</label>
-                <label for="credential" class="value">{{
+                <label class="value">{{
                   formatConstants(selected_payment_item.frequency)
                 }}</label>
               </div>
               <div class="q-mb-md flex justify-between">
-                <label for="credential" class="form_field">{{
+                <label class="form_field">{{
                   $t("app.type")
                 }}</label>
-                <label for="credential" class="value">{{
+                <label class="value">{{
                   formatConstants(selected_payment_item.type)
                 }}</label>
               </div>
               <div
                 class="q-mb-md flex justify-between"
-                v-if="selected_payment_item.frequency == 'MONTHLY'"
+                v-if="selected_payment_item.frequency === 'MONTHLY'"
               >
-                <label for="credential" class="form_field">{{
+                <label class="form_field">{{
                   $t("app.monthsLabel")
                 }}</label>
                 <div
@@ -157,9 +157,9 @@
               </div>
               <div
                 class="q-mb-md flex justify-between"
-                v-if="selected_payment_item.frequency == 'QUARTERLY'"
+                v-if="selected_payment_item.frequency === 'QUARTERLY'"
               >
-                <label for="credential" class="form_field">{{
+                <label class="form_field">{{
                   $t("app.quarter")
                 }}</label>
                 <div
@@ -192,7 +192,7 @@
           </div>
           <div v-show="has_selected_payment_item && !is_fetching_members">
             <div class="q-mb-md">
-              <label for="name" class="form_field"
+              <label  class="form_field"
                 >{{ $t("app.memberName") }}
                 <span class="text-red">*</span>
               </label>
@@ -222,7 +222,7 @@
               </q-select>
             </div>
             <div class="q-mb-md" v-if="valideteMonthlyPaymentItemFrequency">
-              <label for="credential" class="form_field"
+              <label class="form_field"
                 >{{ $t("app.selectMonth")
                 }}<span class="text-red">*</span></label
               >
@@ -248,7 +248,7 @@
               </q-select>
             </div>
             <div class="q-mb-md" v-if="valideteQuarterlyPaymentItemFrequency">
-              <label for="credential" class="form_field"
+              <label class="form_field"
                 >{{ $t("app.selectQuarter")
                 }}<span class="text-red">*</span></label
               >
@@ -272,7 +272,7 @@
               </q-select>
             </div>
             <div class="q-mb-md">
-              <label for="credential" class="form_field">{{
+              <label class="form_field">{{
                 $t("app.totalAmountDeposited")
               }}</label>
               <q-input
@@ -286,7 +286,7 @@
               </q-input>
             </div>
             <div class="q-mb-md">
-              <label for="credential" class="form_field">{{
+              <label class="form_field">{{
                 $t("app.balance")
               }}</label>
               <q-input
@@ -299,7 +299,7 @@
               />
             </div>
             <div class="q-mb-md">
-              <label for="credential" class="form_field"
+              <label class="form_field"
                 >{{ $t("app.depositedAmount")
                 }}<span class="text-red">*</span></label
               >
@@ -325,7 +325,7 @@
               </label>
             </div>
             <div class="q-mb-md">
-              <label for="credential" class="form_field"
+              <label class="form_field"
                 >{{ $t("app.comment") }}
               </label>
               <q-input
@@ -423,7 +423,7 @@
           <q-form @submit="onAddContribution" class="q-gutter-md">
             <div v-show="!has_selected_payment_item">
               <div class="q-mb-md">
-                <label for="name" class="form_field"
+                <label  class="form_field"
                   >{{ $t("app.sessionLabel") }}<span class="text-red">*</span>
                 </label>
                 <q-select
@@ -446,7 +446,7 @@
                 </q-select>
               </div>
               <div class="q-mb-md">
-                <label for="name" class="form_field"
+                <label  class="form_field"
                   >{{ $t("app.paymentItem") }}
                   <span class="text-red">*</span>
                 </label>
@@ -483,34 +483,34 @@
                 "
               >
                 <div class="q-mb-md flex justify-between">
-                  <label for="credential" class="form_field">{{
+                  <label class="form_field">{{
                     $t("app.nameLabel")
                   }}</label>
-                  <label for="credential" class="value">{{
+                  <label class="value">{{
                     selected_payment_item.label
                   }}</label>
                 </div>
                 <div class="q-mb-md flex justify-between">
-                  <label for="credential" class="form_field">{{
+                  <label class="form_field">{{
                     $t("app.amountPayable")
                   }}</label>
-                  <label for="credential" class="value">{{
+                  <label class="value">{{
                     Number(selected_payment_item.amount).toString()
                   }}</label>
                 </div>
                 <div class="q-mb-md flex justify-between">
-                  <label for="credential" class="form_field">{{
+                  <label class="form_field">{{
                     $t("app.frequency")
                   }}</label>
-                  <label for="credential" class="value">{{
+                  <label class="value">{{
                     selected_payment_item.frequency
                   }}</label>
                 </div>
                 <div class="q-mb-md flex justify-between">
-                  <label for="credential" class="form_field">{{
+                  <label class="form_field">{{
                     $t("app.type")
                   }}</label>
-                  <label for="credential" class="value">{{
+                  <label class="value">{{
                     selected_payment_item.type
                   }}</label>
                 </div>
@@ -518,7 +518,7 @@
                   class="q-mb-md flex"
                   v-if="selected_payment_item.frequency == 'MONTHLY'"
                 >
-                  <label for="credential" class="form_field">{{
+                  <label class="form_field">{{
                     $t("app.monthsLabel")
                   }}</label>
                   <div
@@ -539,7 +539,7 @@
                   class="q-mb-md flex"
                   v-if="selected_payment_item.frequency == 'QUARTERLY'"
                 >
-                  <label for="credential" class="form_field"
+                  <label class="form_field"
                     >{{ $t("app.quarter") }}:</label
                   >
                   <div
@@ -578,7 +578,7 @@
             </div>
             <div v-show="has_selected_payment_item && !is_fetching_members">
               <div class="q-mb-md">
-                <label for="name" class="form_field"
+                <label  class="form_field"
                   >{{ $t("app.memberName") }}
                   <span class="text-red">*</span>
                 </label>
@@ -607,7 +607,7 @@
                 </q-select>
               </div>
               <div class="q-mb-md" v-if="valideteMonthlyPaymentItemFrequency">
-                <label for="credential" class="form_field"
+                <label class="form_field"
                   >{{ $t("app.selectMonth") }}
                   <span class="text-red">*</span></label
                 >
@@ -631,7 +631,7 @@
                 </q-select>
               </div>
               <div class="q-mb-md" v-if="valideteQuarterlyPaymentItemFrequency">
-                <label for="credential" class="form_field"
+                <label class="form_field"
                   >{{ $t("app.selectQuarter")
                   }}<span class="text-red">*</span></label
                 >
@@ -654,7 +654,7 @@
                 </q-select>
               </div>
               <div class="q-mb-md">
-                <label for="credential" class="form_field">{{
+                <label class="form_field">{{
                   $t("app.totalSaving")
                 }}</label>
                 <q-input
@@ -667,7 +667,7 @@
                 </q-input>
               </div>
               <div class="q-mb-md">
-                <label for="credential" class="form_field">{{
+                <label class="form_field">{{
                   $t("app.totalAmountDeposited")
                 }}</label>
                 <q-input
@@ -680,7 +680,7 @@
                 </q-input>
               </div>
               <div class="q-mb-md">
-                <label for="credential" class="form_field">{{
+                <label class="form_field">{{
                   $t("app.balance")
                 }}</label>
                 <q-input
@@ -692,7 +692,7 @@
                 />
               </div>
               <div class="q-mb-md">
-                <label for="credential" class="form_field"
+                <label class="form_field"
                   >{{ $t("app.depositedAmount")
                   }}<span class="text-red">*</span></label
                 >
@@ -723,7 +723,7 @@
                 </label>
               </div>
               <div class="q-mb-md">
-                <label for="credential" class="form_field"
+                <label class="form_field"
                   >{{ $t("app.comment") }}
                 </label>
                 <q-input
@@ -841,7 +841,7 @@ export default {
 
     this.$emit("set-heading", heading);
 
-    if (this.getSessionsFromState.length == 0) {
+    if (this.getSessionsFromState.length === 0) {
       this.getSessions();
     }
   },
@@ -885,17 +885,15 @@ export default {
   },
   computed: {
     checkPaymentItemBal() {
-      return this.contribution.amount_deposited != 0 &&
+      return this.contribution.amount_deposited !== 0 &&
         parseFloat(this.contribution.amount_deposited) +
-          parseFloat(this.contribution.total_amount_deposited) >
-          parseFloat(this.contribution.amount_payable)
-        ? true
-        : false;
+        parseFloat(this.contribution.total_amount_deposited) >
+        parseFloat(this.contribution.amount_payable);
     },
 
     checkAmountDepositedBasedOnSaving() {
       return (
-        this.contribution.amount_deposited != 0 &&
+        this.contribution.amount_deposited !== 0 &&
         parseInt(this.contribution.amount_deposited) >
           parseFloat(LocalStorage.getItem("saving"))
       );
@@ -904,7 +902,7 @@ export default {
     validateForm() {
       return (
         this.contribution.user_id === null ||
-        this.contribution.amount_deposited == 0 ||
+        this.contribution.amount_deposited === 0 ||
         this.contribution.payment_item_id == null ||
         this.checkPaymentItemBal ||
         (this.valideteMonthlyPaymentItemFrequency &&
@@ -961,7 +959,7 @@ export default {
           comment: this.contribution.comment,
           month_name: this.contribution.month_name,
           quarterly_name: this.contribution.quarterly_name,
-          contributed_via_saving: this.getCurrentTab == "Use Saving",
+          contributed_via_saving: this.getCurrentTab === "Use Saving",
         },
         msg: this.$t("app.saveContributionSuccessMsg"),
         color: "default",
@@ -984,18 +982,18 @@ export default {
       if (this.contribution.payment_item_id != null) {
         this.start_filtering = false;
         this.selected_payment_item = this.filtered_payment_items.find(
-          (item) => item.value == this.contribution.payment_item_id.value
+          (item) => item.value === this.contribution.payment_item_id.value
         );
         if (
           this.selected_payment_item !== undefined &&
-          this.selected_payment_item.frequency == "QUARTERLY"
+          this.selected_payment_item.frequency === "QUARTERLY"
         ) {
           this.contribution.amount_payable = this.selected_payment_item.amount;
           this.quarterOptions =
             this.selected_payment_item.payment_item_quarters;
         } else if (
           this.selected_payment_item !== undefined &&
-          this.selected_payment_item.frequency == "MONTHLY"
+          this.selected_payment_item.frequency === "MONTHLY"
         ) {
           this.contribution.amount_payable = this.selected_payment_item.amount;
           this.monthsOptions = this.selected_payment_item.payment_item_months;
@@ -1040,7 +1038,7 @@ export default {
         this.contribution.user_id != null
           ? this.contribution.user_id.value
           : "";
-      if (this.tab == "Enter Contribution") {
+      if (this.tab === "Enter Contribution") {
         let amount_deposited_payload = {
           status: "none",
           url: `/api/protected/contributions/users/${user_id}/items/${this.contribution.payment_item_id.value}?month=${this.contribution.month_name}&quarter=${this.contribution.quarterly_name}&frequency=${this.contribution.payment_item_id.frequency}`,
@@ -1066,7 +1064,7 @@ export default {
               this.contribution.total_amount_deposited = res.data;
               this.contribution.balance =
                 this.contribution.amount_payable - res.data;
-              if (this.contribution.balance == 0) {
+              if (this.contribution.balance === 0) {
                 this.has_completed_payment = true;
               }
             }
@@ -1097,7 +1095,7 @@ export default {
           .then((res) => {
             this.contribution.total_saving = parseFloat(res.data.total_savings);
             LocalStorage.set("saving", this.contribution.total_saving);
-            if (res.success && res.data.total_savings == 0) {
+            if (res.success && res.data.total_savings === 0) {
               Notify.create({
                 color: "info",
                 message: this.$t("app.noSavingAvailableMsg"),
@@ -1133,7 +1131,7 @@ export default {
                   this.contribution.total_amount_deposited = res.data;
                   this.contribution.balance =
                     this.contribution.amount_payable - res.data;
-                  if (this.contribution.balance == 0) {
+                  if (this.contribution.balance === 0) {
                     this.has_completed_payment = true;
                   }
                 }
@@ -1150,7 +1148,7 @@ export default {
         parseFloat(this.contribution.total_amount_deposited) +
         parseFloat(this.contribution.amount_deposited);
       this.contribution.balance =
-        this.contribution.amount_deposited != 0
+        this.contribution.amount_deposited !== 0
           ? this.contribution.amount_payable - total_amount_paid
           : this.contribution.amount_payable -
             this.contribution.total_amount_deposited;
@@ -1158,8 +1156,8 @@ export default {
       let deposite = parseFloat(this.contribution.amount_deposited);
 
       this.contribution.total_saving =
-        this.contribution.amount_deposited != 0 &&
-        this.contribution.amount_deposited != NaN
+        this.contribution.amount_deposited !== 0 &&
+        !isNaN(this.contribution.amount_deposited)
           ? savings - deposite
           : savings;
     },

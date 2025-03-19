@@ -15,7 +15,7 @@
       >
         <template v-slot:top-left>
           <div>
-            <label for="title" class="title">{{ table_header }}</label>
+            <label  class="title">{{ table_header }}</label>
           </div>
         </template>
         <template v-slot:top-right>
@@ -41,7 +41,7 @@
               key="status"
               :props="props"
               :class="
-                props.row.status == 'ACTIVE'
+                props.row.status === 'ACTIVE'
                   ? 'status_active'
                   : 'status_in_active'
               "
@@ -94,7 +94,7 @@
         <q-card-section class="q-pt-none">
           <q-form @submit="onSetSession" class="q-gutter-md">
             <div>
-              <label for="credential" class="form_field"
+              <label  class="form_field"
                 >{{ $t("app.year") }} <span class="text-red">*</span></label
               >
               <q-input
@@ -102,11 +102,11 @@
                 outlined
                 dense
                 type="text"
-                :disable="this.session != undefined && this.session.id != null"
+                :disable="this.session !== undefined && this.session.id != null"
               />
             </div>
             <div>
-              <label for="credential" class="form_field"
+              <label  class="form_field"
                 >{{ $t("app.status") }} <span class="text-red">*</span></label
               >
               <q-select
@@ -233,9 +233,9 @@ export default {
   methods: {
     getCurrentSession() {
       const current_session = this.data.filter(
-        (ele) => ele.status == SessionStatusVue.ACTIVE
+        (ele) => ele.status === SessionStatusVue.ACTIVE
       );
-      return current_session != undefined ? current_session[0] : null;
+      return current_session !== undefined ? current_session[0] : null;
     },
 
     onSetSession() {

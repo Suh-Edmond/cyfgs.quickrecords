@@ -12,13 +12,13 @@
     <div class="q-mt-md">
       <q-form @submit="onAddExpenditureCategory" class="q-gutter-md">
         <div>
-          <label for="credential" class="form_field"
+          <label class="form_field"
             >{{ $t("app.nameLabel") }} <span class="text-red">*</span></label
           >
           <q-input v-model="expenditure.name" outlined dense type="text" />
         </div>
         <div>
-          <label for="credential" class="form_field"
+          <label class="form_field"
             >{{ $t("app.codeLabel") }} <span class="text-red">*</span></label
           >
           <q-input
@@ -34,7 +34,7 @@
           </q-input>
         </div>
         <div>
-          <label for="credential" class="form_field"
+          <label class="form_field"
             >{{ $t("app.description") }} <span class="text-red">*</span></label
           >
           <q-input
@@ -107,9 +107,7 @@ export default {
   computed: {
     validateForm() {
       return this.expenditure.name == null ||
-        this.expenditure.description == null
-        ? true
-        : false;
+        this.expenditure.description == null;
     },
     getUpdatedExpenditureCategory() {
       return this.setFormField(this.getUpdatedExpenditureCategoryFromState());

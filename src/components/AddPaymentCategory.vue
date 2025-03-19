@@ -12,7 +12,7 @@
     <div class="q-mt-lg">
       <q-form @submit="onAddPaymentCategory" class="q-gutter-md">
         <div>
-          <label for="credential" class="form_field"
+          <label class="form_field"
             >{{ $t("app.nameLabel") }} <span class="text-red">*</span></label
           >
           <q-input
@@ -24,7 +24,7 @@
           />
         </div>
         <div>
-          <label for="credential" class="form_field"
+          <label class="form_field"
             >{{ $t("app.codeLabel") }} <span class="text-red">*</span></label
           >
           <q-input
@@ -41,7 +41,7 @@
           </q-input>
         </div>
         <div>
-          <label for="credential" class="form_field"
+          <label class="form_field"
             >{{ $t("app.description") }} <span class="text-red">*</span></label
           >
           <q-input
@@ -133,7 +133,7 @@ export default {
       const treasurer_role = LocalStorage.getItem("data").user_data.roles.find(
         (role) => role.name === "TREASURER"
       );
-      return treasurer_role != undefined;
+      return treasurer_role !== undefined;
     },
 
     setRequestUrl() {

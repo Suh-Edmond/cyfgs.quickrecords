@@ -29,7 +29,7 @@
     </div>
     <q-form @submit="onAddIncomeActivity" class="q-gutter-md">
       <div class="q-mb-md">
-        <label for="name" class="form_field"
+        <label class="form_field"
           >{{ $t("app.paymentItem") }}<span class="text-red">*</span></label
         >
         <q-select
@@ -61,7 +61,7 @@
         </q-select>
       </div>
       <div class="q-mb-md">
-        <label for="credential" class="form_field"
+        <label class="form_field"
           >{{ $t("app.nameLabel") }} <span class="text-red">*</span></label
         >
         <q-input
@@ -74,7 +74,7 @@
         />
       </div>
       <div class="q-mb-md">
-        <label for="credential" class="form_field"
+        <label class="form_field"
           >{{ $t("app.amount") }} <span class="text-red">*</span></label
         >
         <q-input
@@ -87,7 +87,7 @@
         />
       </div>
       <div class="q-mb-md">
-        <label for="credential" class="form_field"
+        <label class="form_field"
           >{{ $t("app.venue") }} <span class="text-red">*</span></label
         >
         <q-input
@@ -100,7 +100,7 @@
         />
       </div>
       <div class="q-mb-md">
-        <label for="credential" class="form_field"
+        <label class="form_field"
           >{{ $t("app.date") }} <span class="text-red">*</span></label
         >
         <q-input
@@ -127,7 +127,7 @@
         </q-input>
       </div>
       <div class="q-mb-md">
-        <label for="credential" class="form_field">{{
+        <label class="form_field">{{
           $t("app.description")
         }}</label>
         <q-input

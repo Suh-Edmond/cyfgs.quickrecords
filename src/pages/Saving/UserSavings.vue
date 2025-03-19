@@ -137,7 +137,7 @@ export default {
     },
 
     validateDownload() {
-      return this.getMemberSavings.length == 0;
+      return this.getMemberSavings.length === 0;
     },
   },
   methods: {

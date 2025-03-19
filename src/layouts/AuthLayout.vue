@@ -101,11 +101,11 @@ export default {
   },
   methods: {
     onItemClick(lang) {
-      if (lang == "fr") {
+      if (lang === "fr") {
         this.$i18n.locale = "fr";
         this.showAppTranslateLoading();
       }
-      if (lang == "en-US") {
+      if (lang === "en-US") {
         this.$i18n.locale = "en-US";
         this.showAppTranslateLoading();
       }

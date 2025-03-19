@@ -42,7 +42,7 @@
             <!-- member roles -->
             <div class="flex q-px-md">
               <div>
-                <label for="role" class="role_heading"
+                <label class="role_heading"
                   ><span
                     ><q-icon
                       name="military_tech"
@@ -58,30 +58,30 @@
                 :key="index"
                 class="q-mb-md"
               >
-                <q-item-section avatar v-if="role.name == 'MEMBER'">
+                <q-item-section avatar v-if="role.name === 'MEMBER'">
                   <q-avatar color="primary" text-color="white" size="md">
                     M</q-avatar
                   >
                 </q-item-section>
-                <q-item-section avatar v-if="role.name == 'PRESIDENT'">
+                <q-item-section avatar v-if="role.name === 'PRESIDENT'">
                   <q-avatar color="primary" text-color="white" size="md">
                     PP
                   </q-avatar>
                 </q-item-section>
                 <q-item-section
                   avatar
-                  v-if="role.name == 'FINANCIAL_SECRETARY'"
+                  v-if="role.name === 'FINANCIAL_SECRETARY'"
                 >
                   <q-avatar color="primary" text-color="white" size="md">
                     FS
                   </q-avatar>
                 </q-item-section>
-                <q-item-section avatar v-if="role.name == 'TREASURER'">
+                <q-item-section avatar v-if="role.name === 'TREASURER'">
                   <q-avatar color="primary" text-color="white" size="md">
                     TR
                   </q-avatar>
                 </q-item-section>
-                <q-item-section avatar v-if="role.name == 'ADMIN'">
+                <q-item-section avatar v-if="role.name === 'ADMIN'">
                   <q-avatar color="primary" text-color="white" size="md">
                     A
                   </q-avatar>
@@ -114,7 +114,7 @@
             <div v-if="!edit_profile" class="q-mb-xl">
               <div class="q-mb-xl row">
                 <div>
-                  <label for="info" class="info">{{
+                  <label  class="info">{{
                     $t("app.personalInformationLabel")
                   }}</label>
                 </div>
@@ -132,7 +132,7 @@
                 </div>
               </div>
               <div class="flex q-pb-md">
-                <label for="name" class="label"
+                <label  class="label"
                   ><q-icon name="person" class="profile_icon"></q-icon>
                   {{ $t("app.nameLabel") }}
                 </label>
@@ -142,15 +142,15 @@
                 </label>
               </div>
               <div class="flex q-pb-md">
-                <label for="name" class="label"
+                <label  class="label"
                   ><q-icon
                     name="female"
-                    v-if="user.gender == 'FEMALE'"
+                    v-if="user.gender === 'FEMALE'"
                     class="profile_icon"
                   ></q-icon>
                   <q-icon
                     name="male"
-                    v-if="user.gender == 'MALE'"
+                    v-if="user.gender === 'MALE'"
                     class="profile_icon"
                   ></q-icon>
 
@@ -165,7 +165,7 @@
                 </label>
               </div>
               <div class="flex q-pb-md">
-                <label for="name" class="label">
+                <label  class="label">
                   <q-icon name="email" class="profile_icon"></q-icon
                   >{{ $t("app.emailLabel") }}
                 </label>
@@ -175,7 +175,7 @@
                 </label>
               </div>
               <div class="flex q-pb-md">
-                <label for="name" class="label"
+                <label  class="label"
                   ><q-icon name="phone" class="profile_icon"></q-icon
                   >{{ $t("app.telephoneLabel") }}
                 </label>
@@ -183,7 +183,7 @@
                 <label class="value">{{ user.telephone }}</label>
               </div>
               <div class="flex q-pb-md">
-                <label for="name" class="label"
+                <label  class="label"
                   ><q-icon name="location_on" class="profile_icon"></q-icon>
                   {{ $t("app.addressLabel") }}
                 </label>
@@ -191,7 +191,7 @@
                 <label class="value">{{ user.address }}</label>
               </div>
               <div class="flex q-pb-md">
-                <label for="name" class="label"
+                <label  class="label"
                   ><q-icon name="work" class="profile_icon"></q-icon>
                   {{ $t("app.occupation") }}
                 </label>
@@ -199,7 +199,7 @@
                 <label class="value">{{ user.occupation }}</label>
               </div>
               <div class="flex q-pb-md">
-                <label for="name" class="label">
+                <label  class="label">
                   <q-icon name="verified_user" class="profile_icon"></q-icon>
                   {{ $t("app.createdDate") }}
                 </label>
@@ -207,7 +207,7 @@
                 <label class="value">{{ getFormatedCreatedDate }}</label>
               </div>
               <div class="flex q-pb-md">
-                <label for="name" class="label"
+                <label  class="label"
                   ><q-icon name="verified_user" class="profile_icon"></q-icon
                   >{{ $t("app.updatedDate") }}
                 </label>
@@ -229,14 +229,14 @@
                   >{{ $t("app.fields") }}</small
                 >
                 <div>
-                  <label for="credential" class="form_field"
+                  <label class="form_field"
                     >{{ $t("app.nameLabel") }}
                     <span class="text-red">*</span></label
                   >
                   <q-input v-model="user.name" outlined dense type="text" />
                 </div>
                 <div>
-                  <label for="credential" class="form_field"
+                  <label class="form_field"
                     >{{ $t("app.gender") }}
                     <span class="text-red">*</span></label
                   >
@@ -248,7 +248,7 @@
                   />
                 </div>
                 <div>
-                  <label for="credential" class="form_field"
+                  <label class="form_field"
                     >{{ $t("app.emailLabel") }}
                     <span class="text-red">*</span></label
                   >
@@ -261,7 +261,7 @@
                   />
                 </div>
                 <div>
-                  <label for="credential" class="form_field">{{
+                  <label class="form_field">{{
                     $t("app.telephoneLabel")
                   }}</label>
 
@@ -273,14 +273,14 @@
                   ></vue-tel-input>
                 </div>
                 <div>
-                  <label for="credential" class="form_field"
+                  <label class="form_field"
                     >{{ $t("app.addressLabel") }}
                     <span class="text-red">*</span></label
                   >
                   <q-input v-model="user.address" outlined dense type="text" />
                 </div>
                 <div>
-                  <label for="credential" class="form_field"
+                  <label class="form_field"
                     >{{ $t("app.occupation") }}
                     <span class="text-red">*</span></label
                   >
@@ -320,7 +320,7 @@
             >
               <div class="q-mb-md row">
                 <div>
-                  <label for="info" class="security">{{
+                  <label  class="security">{{
                     $t("app.security")
                   }}</label>
                 </div>
@@ -338,7 +338,7 @@
                 </div>
               </div>
               <div class="flex q-pb-md">
-                <label for="name" class="label"
+                <label  class="label"
                   ><span
                     ><q-icon name="key" class="profile_icon"></q-icon
                   ></span>
@@ -357,7 +357,7 @@
                   >{{ $t("app.fields") }}</small
                 >
                 <div>
-                  <label for="password" class="form_field"
+                  <label class="form_field"
                     >{{ $t("app.oldPassword") }}
                     <span class="text-red">*</span></label
                   >
@@ -377,7 +377,7 @@
                   </q-input>
                 </div>
                 <div>
-                  <label for="password" class="form_field"
+                  <label class="form_field"
                     >{{ $t("app.newPassword") }}
                     <span class="text-red">*</span></label
                   >
@@ -397,7 +397,7 @@
                   </q-input>
                 </div>
                 <div>
-                  <label for="confirm_password" class="form_field"
+                  <label class="form_field"
                     >{{ $t("app.confirmPasswordLabel") }}
                     <span class="text-red">*</span></label
                   >
@@ -469,13 +469,13 @@
             >{{ $t("app.fields") }}</small
           >
           <div>
-            <label for="credential" class="form_field"
+            <label class="form_field"
               >{{ $t("app.nameLabel") }} <span class="text-red">*</span></label
             >
             <q-input v-model="user.name" outlined dense type="text" />
           </div>
           <div>
-            <label for="credential" class="form_field"
+            <label class="form_field"
               >{{ $t("app.gender") }} <span class="text-red">*</span></label
             >
             <q-select
@@ -486,13 +486,13 @@
             />
           </div>
           <div>
-            <label for="credential" class="form_field"
+            <label class="form_field"
               >{{ $t("app.emailLabel") }} <span class="text-red">*</span></label
             >
             <q-input v-model="user.email" outlined dense type="email" disable/>
           </div>
           <div>
-            <label for="credential" class="form_field">{{
+            <label class="form_field">{{
               $t("app.telephoneLabel")
             }}</label>
             <vue-tel-input
@@ -503,14 +503,14 @@
             ></vue-tel-input>
           </div>
           <div>
-            <label for="credential" class="form_field"
+            <label class="form_field"
               >{{ $t("app.addressLabel") }}
               <span class="text-red">*</span></label
             >
             <q-input v-model="user.address" outlined dense type="text" />
           </div>
           <div>
-            <label for="credential" class="form_field"
+            <label class="form_field"
               >{{ $t("app.occupation") }} <span class="text-red">*</span></label
             >
             <q-input v-model="user.occupation" outlined dense type="text" />
@@ -554,7 +554,7 @@
             >{{ $t("app.fields") }}</small
           >
           <div>
-            <label for="password" class="form_field">{{
+            <label class="form_field">{{
               $t("app.oldPassword")
             }}</label>
             <q-input
@@ -573,7 +573,7 @@
             </q-input>
           </div>
           <div>
-            <label for="password" class="form_field">{{
+            <label class="form_field">{{
               $t("app.newPassword")
             }}</label>
             <q-input
@@ -592,7 +592,7 @@
             </q-input>
           </div>
           <div>
-            <label for="confirm_password" class="form_field">{{
+            <label class="form_field">{{
               $t("app.confirmPasswordLabel")
             }}</label>
             <q-input
@@ -683,11 +683,8 @@ export default {
   },
   computed: {
     canShowProfilePic() {
-      return (
-        this.user.picture != "" &&
-        this.user.picture != null &&
-        this.user.picture != undefined
-      );
+      return (this.user.picture !== "" &&
+        this.user.picture != null && true);
     },
 
     getFormatedCreatedDate() {
@@ -713,7 +710,7 @@ export default {
     validatePasswordMatch() {
       return (
         this.security.password != null &&
-        this.security.password != this.security.password_confirmation
+        this.security.password !== this.security.password_confirmation
       );
     },
 

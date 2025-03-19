@@ -123,12 +123,12 @@
 </template>
 
 <script>
-import CategoryTable from "src/components/CategoryTable.vue";
-import HelperMixinVue from "src/mixins/HelperMixin.vue";
-import ConfirmDialog from "src/components/ConfirmDialog.vue";
-import FilterComponentVue from "src/components/FilterComponent.vue";
+  import CategoryTable from "src/components/CategoryTable.vue";
+  import HelperMixinVue from "src/mixins/HelperMixin.vue";
+  import ConfirmDialog from "src/components/ConfirmDialog.vue";
+  import FilterComponentVue from "src/components/FilterComponent.vue";
 
-export default {
+  export default {
   mixins: [HelperMixinVue],
   beforeMount() {
     this.$store.commit("SET_PAGINATION", {
@@ -231,7 +231,7 @@ export default {
     },
 
     validateDownload() {
-      return this.getPaymentItemsFromState.length == 0;
+      return this.getPaymentItemsFromState.length === 0;
     },
 
     getPaymentItemsFromState() {
@@ -263,15 +263,13 @@ export default {
     },
 
     getPagination() {
-      let paginate_object = {
+      return {
         sortBy: this.$store.getters.getPagination.sortBy,
         descending: this.$store.getters.getPagination.descending,
         page: this.$store.getters.getPagination.page,
         rowsPerPage: this.$store.getters.getPagination.rowsPerPage,
         rowsNumber: this.$store.getters.getPagination.rowsNumber,
       };
-
-      return paginate_object;
     },
 
     getLoadingState() {

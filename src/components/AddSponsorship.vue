@@ -29,7 +29,7 @@
     <q-form @submit="onAddSponsorship" class="q-gutter-sm q-mt-sm">
       <div>
         <div class="q-mb-md">
-          <label for="name" class="form_field"
+          <label class="form_field"
             >{{ $t("app.paymentItem") }} <span class="text-red">*</span>
           </label>
           <q-select
@@ -61,7 +61,7 @@
         </div>
         <div>
           <div class="q-mb-md">
-            <label for="name" class="form_field"
+            <label class="form_field"
               >{{ $t("app.sponsorNameLabel") }} <span class="text-red">*</span>
             </label>
             <q-input
@@ -75,7 +75,7 @@
             </q-input>
           </div>
           <div class="q-mb-md">
-            <label for="credential" class="form_field"
+            <label class="form_field"
               >{{ $t("app.amountDeposited")
               }}<span class="text-red">*</span></label
             >
@@ -91,7 +91,7 @@
             </q-input>
           </div>
           <div class="q-mb-md">
-            <label for="credential" class="form_field"
+            <label class="form_field"
               >{{ $t("app.comment") }}
             </label>
             <q-input
@@ -189,7 +189,7 @@ export default {
     validateForm() {
       return (
         this.sponsorship.supporter === null ||
-        this.sponsorship.amount_deposited == 0 ||
+        this.sponsorship.amount_deposited === 0 ||
         this.sponsorship.payment_item_id == null ||
         this.existSponsorship
       );
@@ -202,7 +202,7 @@ export default {
     existSponsorship() {
       return (
         this.$store.getters.getSelectedSponsorship !== null &&
-        this.$store.getters.getSelectedSponsorship.approve != "PENDING"
+        this.$store.getters.getSelectedSponsorship.approve !== "PENDING"
       );
     },
   },

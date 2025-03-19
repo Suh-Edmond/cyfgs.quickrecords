@@ -9,7 +9,7 @@
     <!----------START OF REPORT HEADING-------------------------------->
     <div class="q-pt-xl text-center text-bold">
       <div>
-        <label for="title" class="heading">{{ heading }}</label>
+        <label class="heading">{{ heading }}</label>
       </div>
     </div>
     <!--------------END OF REPORT HEADER---------------------------->
@@ -19,7 +19,7 @@
       <div class="col-1 col-md-1 col-sm-12 col-xs-12"></div>
       <div class="col-10 col-md-10 col-sm-12 col-xs-12">
         <div class="text-center q-pt-md">
-          <label for="income" class="income_heading"
+          <label class="income_heading"
             >{{ $t("app.income") }} (XAF)</label
           >
         </div>
@@ -74,7 +74,7 @@
               <div class="col-md-2 column_details"></div>
               <div
                 class="col-md-2 column_details_end text-bold"
-                v-if="income.items.length == 0"
+                v-if="income.items.length === 0"
               >
                 {{ Number(income.total).toLocaleString() }}
               </div>
@@ -104,7 +104,7 @@
                 <div
                   class="row"
                   v-if="
-                    item.name != getCurrentYear.year &&
+                    item.name !== getCurrentYear.year &&
                     item.id != null &&
                     item.year != null
                   "
@@ -232,7 +232,7 @@
       <div class="col-1 col-md-1 col-sm-12 col-xs-12"></div>
       <div class="col-10 col-md-10 col-sm-12 col-xs-12">
         <div class="text-center">
-          <label for="income" class="income_heading"
+          <label class="income_heading"
             >{{ $t("app.expenditures") }} (XAF)</label
           >
         </div>
@@ -377,7 +377,7 @@
       <div class="col-md-1 col-sm-1 col-xs-1"></div>
       <div class="col-md-10 col-xs-12 col-sm-12">
         <div class="q-my-md text-center">
-          <label for="income" class="summary"
+          <label class="summary"
             >{{ $t("app.summary") }} (XAF)</label
           >
         </div>
@@ -435,7 +435,7 @@
       <div class="col-md-1 col-sm-1 col-xs-1"></div>
       <div class="col-md-10 col-xs-12 col-sm-12">
         <div class="q-my-lg text-center">
-          <label for="income" class="summary text-uppercase">{{
+          <label class="summary text-uppercase">{{
             $t("app.presentedBy")
           }}</label>
         </div>
@@ -444,7 +444,7 @@
             class="col-md-6 text-bold text-center text-uppercase admin_details"
           >
             <div>
-              <label for="name" class="admin_title"
+              <label class="admin_title"
                 >{{ $t("app.finSec") }} </label
               ><br />
               <span
@@ -456,7 +456,7 @@
             </div>
             <br />
             <div>
-              <label for="name" class="sign">{{ $t("app.sign") }} </label>
+              <label class="sign">{{ $t("app.sign") }} </label>
               <hr class="q-mt-lg" />
             </div>
           </div>
@@ -464,7 +464,7 @@
             class="col-md-6 text-bold text-center text-uppercase admin_details"
           >
             <div>
-              <label for="name" class="admin_title">{{
+              <label class="admin_title">{{
                 $t("app.treasurer")
               }}</label
               ><br />
@@ -478,7 +478,7 @@
             </div>
             <br />
             <div>
-              <label for="name" class="sign">{{ $t("app.sign") }} </label>
+              <label class="sign">{{ $t("app.sign") }} </label>
               <hr class="q-mt-lg" />
             </div>
           </div>
@@ -489,7 +489,7 @@
             class="col-md-12 text-bold text-center text-uppercase admin_details"
           >
             <div>
-              <label for="name" class="admin_title">{{
+              <label class="admin_title">{{
                 $t("app.president")
               }}</label
               ><br />
@@ -503,7 +503,7 @@
             </div>
             <br />
             <div>
-              <label for="name" class="sign">{{ $t("app.sign") }} </label>
+              <label class="sign">{{ $t("app.sign") }} </label>
               <hr class="q-mt-lg" />
             </div>
           </div>
@@ -547,7 +547,7 @@ export default {
     getTotalIncome() {
       return this.$store.getters.getReportData.length > 0
         ? this.$store.getters.getReportData[2].total_income
-        : 0 + this.getBalanceBF;
+        : this.getBalanceBF;
     },
 
     getTotalExpenditure() {

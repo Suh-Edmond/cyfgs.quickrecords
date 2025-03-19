@@ -13,7 +13,7 @@
         flat
       >
         <template v-slot:top-left>
-          <label for="title" class="title">{{ table_header }}</label>
+          <label   class="title">{{ table_header }}</label>
         </template>
         <template v-slot:top-right>
           <q-btn
@@ -42,7 +42,7 @@
               :props="props"
               class="table_value"
               :class="
-                props.row.status == 'ACTIVE'
+                props.row.status === 'ACTIVE'
                   ? 'status_active'
                   : 'status_in_active'
               "
@@ -110,14 +110,14 @@
         <q-card-section class="q-pt-none">
           <q-form @submit="onAddFee" class="q-gutter-md">
             <div>
-              <label for="credential" class="form_field"
+              <label class="form_field"
                 >{{ $t("app.amount") }} <span class="text-red">*</span></label
               >
               <q-input v-model="fee.amount" outlined dense type="number" />
             </div>
             <div class="flex">
               <div>
-                <label for="credential" class="form_field"
+                <label class="form_field"
                   >{{ $t("app.compulsoryLabel") }}
                   <span class="text-red">*</span></label
                 >
@@ -140,7 +140,7 @@
               </div>
             </div>
             <div>
-              <label for="credential" class="form_field"
+              <label class="form_field"
                 >{{ $t("app.status") }} <span class="text-red">*</span></label
               >
               <q-select
@@ -151,7 +151,7 @@
               />
             </div>
             <div>
-              <label for="credential" class="form_field"
+              <label class="form_field"
                 >{{ $t("app.frequency") }}
                 <span class="text-red">*</span></label
               >
@@ -168,7 +168,7 @@
                 :label="$t('app.saveBtnLabel')"
                 :loading="is_fetching"
                 :color="'primary'"
-                :disabled="fee.amount == 0"
+                :disabled="fee.amount === 0"
                 :no_caps="true"
               >
               </ButtonVue>
@@ -179,7 +179,7 @@
                 :label="$t('app.saveBtnLabel')"
                 :loading="is_fetching"
                 :color="'primary'"
-                :disabled="fee.amount == 0"
+                :disabled="fee.amount === 0"
                 :no_caps="true"
               >
               </ButtonVue>

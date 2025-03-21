@@ -7,7 +7,7 @@
         >
           <a :href="baseUrl" class="app_header">
             <span :href="baseUrl" class="app_logo"
-              ><q-avatar :size="$q.screen.lg ? '4rem' : '3rem'">
+              ><q-avatar :size="$q.screen.lg ? '5rem' : '5rem'">
                 <img
                   src="../assets/App_Logo.jpeg"
                   alt="app logo"

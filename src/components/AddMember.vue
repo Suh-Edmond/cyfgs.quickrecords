@@ -37,7 +37,7 @@
               >{{ $t("app.fields") }}</small
             >
             <div>
-              <label for="credential" class="form_field"
+              <label class="form_field"
                 >{{ $t("app.nameLabel") }}
                 <span class="text-red">*</span></label
               >
@@ -50,7 +50,7 @@
               />
             </div>
             <div>
-              <label for="credential" class="form_field"
+              <label class="form_field"
                 >{{ $t("app.gender") }} <span class="text-red">*</span></label
               >
               <q-select
@@ -62,7 +62,7 @@
               />
             </div>
             <div>
-              <label for="credential" class="form_field"
+              <label class="form_field"
                 >{{ $t("app.emailLabel") }}
                 <span class="text-red">*</span></label
               >
@@ -75,7 +75,7 @@
               />
             </div>
             <div>
-              <label for="credential" class="form_field"
+              <label class="form_field"
                 >{{ $t("app.telephoneLabel") }}
                 <span class="text-red">*</span></label
               >
@@ -88,7 +88,7 @@
               ></vue-tel-input>
             </div>
             <div>
-              <label for="credential" class="form_field"
+              <label class="form_field"
                 >{{ $t("app.addressLabel") }}
                 <span class="text-red">*</span></label
               >
@@ -101,7 +101,7 @@
               />
             </div>
             <div>
-              <label for="credential" class="form_field"
+              <label class="form_field"
                 >{{ $t("app.occupation") }}
                 <span class="text-red">*</span></label
               >

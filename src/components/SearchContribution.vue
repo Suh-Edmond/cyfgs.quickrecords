@@ -2,7 +2,7 @@
   <div :class="$q.platform.is.desktop ? 'q-ml-sm q-mr-sm' : 'q-ml-lg q-mr-sm'">
     <q-linear-progress indeterminate v-show="is_fetching_members" />
     <div class="q-my-md">
-      <label for="heading" class="text">{{ $t("app.filterMsg") }} </label>
+      <label  class="text">{{ $t("app.filterMsg") }} </label>
     </div>
     <div class="q-mb-lg row">
       <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
@@ -53,7 +53,7 @@
 
     <!-- filter by status of contributions -->
     <div class="q-my-md">
-      <label for="heading" class="text">{{ $t("app.filterStatus") }}</label>
+      <label  class="text">{{ $t("app.filterStatus") }}</label>
     </div>
     <div class="q-mb-lg row">
       <div v-for="status in statuses" :key="status.index">
@@ -74,7 +74,7 @@
     <!-- filter by duration -->
     <hr class="separator" />
     <div class="q-my-md">
-      <label for="heading" class="text">{{ $t("app.filterDelay") }}</label>
+      <label  class="text">{{ $t("app.filterDelay") }}</label>
     </div>
     <!-- by year -->
     <div class="q-mb-sm row">
@@ -296,7 +296,7 @@ export default {
   methods: {
     getPaymentItems() {
       this.payment_items_by_category = [];
-      if (this.year == null || this.year == "" || this.year == "undefined") {
+      if (this.year == null || this.year === "" || this.year === "undefined") {
         return;
       }
       this.is_fetching_members = true;
@@ -341,7 +341,7 @@ export default {
         status: status !== null && status !== "" ? status : "",
         payment_item_id: this.param.payment_item_id,
         year:
-          this.param.year == "" && this.param.year !== null
+          this.param.year === "" && this.param.year !== null
             ? this.current_session_id
             : this.param.year.value,
         month:
@@ -428,7 +428,7 @@ export default {
         abort();
         return;
       }
-      if (this.month == "") {
+      if (this.month === "") {
         this.monthsOptions = this.getMonths;
       }
       update(() => {
@@ -458,14 +458,14 @@ export default {
     stopSearch() {
       if (
         this.param.payment_item_id != null &&
-        this.param.payment_item_id != ""
+        this.param.payment_item_id !== ""
       ) {
         this.start_filter_payment_item = false;
       }
-      if (this.param.year != null && this.param.year != "") {
+      if (this.param.year != null && this.param.year !== "") {
         this.start_filter_year = false;
       }
-      if (this.param.month != null && this.param.month != "") {
+      if (this.param.month != null && this.param.month !== "") {
         this.start_filter_month = false;
       }
     },

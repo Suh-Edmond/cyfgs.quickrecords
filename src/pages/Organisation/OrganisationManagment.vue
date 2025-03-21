@@ -8,7 +8,7 @@
     />
     <div v-if="!exist_organisation">
       <div class="flex flex-center q-mb-md">
-        <label for="title" class="title">{{
+        <label   class="title">{{
           $t("app.updateOrganisationHeading")
         }}</label>
       </div>
@@ -23,7 +23,7 @@
           >
             <div class="col-1 col-md-1 com-sm-1"></div>
             <div class="col-md-5 col-xs-12 col-sm-12">
-              <label for="credential" class="form_field"
+              <label  class="form_field"
                 >{{ $t("app.nameLabel") }}
                 <span class="text-red q-pl-xs">*</span></label
               >
@@ -48,7 +48,7 @@
               class="col-md-5 col-xs-12 col-sm-12"
               :class="$q.platform.is.desktop ? 'q-ml-md' : ' q-py-sm'"
             >
-              <label for="credential" class="form_field"
+              <label  class="form_field"
                 >{{ $t("app.emailLabel") }}
                 <span class="text-red q-pl-xs">*</span></label
               >
@@ -70,7 +70,7 @@
               class="col-md-5 col-xs-12 col-sm-12"
               :class="$q.screen.lg ? 'q-px-sm' : ''"
             >
-              <label for="credential" class="form_field flex justify-between">
+              <label  class="form_field flex justify-between">
                 <span>
                   {{ $t("app.telephoneLabel") }}
                   <span class="text-red q-pl-xs">*</span>
@@ -115,7 +115,7 @@
               class="col-md-5 col-xs-12 col-sm-12"
               :class="$q.platform.is.desktop ? 'q-ml-md' : ' q-py-sm'"
             >
-              <label for="credential" class="form_field"
+              <label  class="form_field"
                 >{{ $t("app.addressLabel") }}
                 <span class="text-red q-pl-xs">*</span></label
               >
@@ -137,7 +137,7 @@
               class="col-md-5 col-xs-12 col-sm-12"
               :class="$q.screen.lg ? 'q-px-sm' : 'q-py-sm'"
             >
-              <label for="credential" class="form_field">{{
+              <label  class="form_field">{{
                 $t("app.salutation")
               }}</label>
               <q-input
@@ -151,7 +151,7 @@
               class="col-md-5 col-xs-12 col-sm-12"
               :class="$q.platform.is.desktop ? 'q-ml-md' : ' q-py-sm'"
             >
-              <label for="credential" class="form_field">{{
+              <label  class="form_field">{{
                 $t("app.boxLabel")
               }}</label>
               <q-input
@@ -172,7 +172,7 @@
               class="col-md-5 col-xs-12 col-sm-12"
               :class="$q.screen.lg ? 'q-px-sm' : 'q-py-sm'"
             >
-              <label for="credential" class="form_field"
+              <label  class="form_field"
                 >{{ $t("app.description") }}
                 <span class="text-red q-pl-xs">*</span></label
               >
@@ -187,7 +187,7 @@
               class="col-md-5 col-xs-12 col-sm-12"
               :class="$q.platform.is.desktop ? 'q-ml-md' : ' q-py-sm'"
             >
-              <label for="credential" class="form_field"
+              <label  class="form_field"
                 >{{ $t("app.region") }}
                 <span class="text-red q-pl-xs">*</span></label
               >
@@ -400,17 +400,17 @@ export default {
   computed: {
     validateForm() {
       return (
-        this.organisation.name == "" ||
-        this.organisation.email == "" ||
-        this.organisation.telephone == "" ||
-        this.organisation.address == "" ||
-        this.organisation.description == "" ||
-        this.organisation.region == ""
+        this.organisation.name === "" ||
+        this.organisation.email === "" ||
+        this.organisation.telephone === "" ||
+        this.organisation.address === "" ||
+        this.organisation.description === "" ||
+        this.organisation.region === ""
       );
     },
 
     checkIfOrganisationExist() {
-      return this.$store.getters.getOrganisation == null ? true : false;
+      return this.$store.getters.getOrganisation == null;
     },
 
     getOrganisationLogo() {
@@ -498,7 +498,7 @@ export default {
     setOrganisationInfo() {
       let data = this.$store.getters.getOrganisation;
       let telephoneString = data.telephone.split("/");
-      if (data != null) {
+      if (true) {
         this.exist_organisation = true;
         if (telephoneString.length > 1) {
           this.show_telephone2 = true;
@@ -508,7 +508,7 @@ export default {
         this.organisation.email = data.email;
         this.organisation.telephone = telephoneString[0];
         this.organisation.telephone2 =
-          telephoneString[1] != undefined ? telephoneString[1] : "";
+          telephoneString[1] !== undefined ? telephoneString[1] : "";
         this.organisation.salutation = data.salutation;
         this.organisation.description = data.description;
         this.organisation.box_number = data.box_number;
@@ -540,7 +540,7 @@ export default {
       let finalTelephone = "";
       if (
         (show_telephone2 && this.organisation.telephone2 !== undefined) ||
-        this.organisation.telephone2 != ""
+        this.organisation.telephone2 !== ""
       ) {
         finalTelephone = telephone + "/" + telephone2;
       } else {
@@ -578,7 +578,7 @@ export default {
       this.$store
         .dispatch("uploadImageRequest", payload)
         .then((response) => {
-          if (response.status == 200) {
+          if (response.status === 200) {
             this.organisation.logo = response.data.data;
             this.$store.dispatch("setOrganisation", this.organisation);
             Notify.create({

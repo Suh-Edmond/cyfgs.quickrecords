@@ -34,7 +34,7 @@
                 :class="$q.screen.lg ? 'q-px-md' : ''"
               >
                 <div>
-                  <label for="credential" class="form_field"
+                  <label  class="form_field"
                     ><q-icon name="token" size="xs"></q-icon
                     >{{ $t("app.token") }}
                     <span class="text-red">*</span></label
@@ -86,7 +86,7 @@
                 :class="$q.screen.lg ? 'q-px-md' : ''"
               >
                 <div>
-                  <label for="credential" class="form_field"
+                  <label  class="form_field"
                     ><q-icon name="lock" size="xs"></q-icon
                     >{{ $t("app.newPassword") }}
                     <span class="text-red">*</span></label
@@ -113,7 +113,7 @@
                   </q-input>
                 </div>
                 <div>
-                  <label for="credential" class="form_field"
+                  <label  class="form_field"
                     ><q-icon name="lock" size="xs"></q-icon
                     >{{ $t("app.confirmPasword") }}
                     <span class="text-red">*</span></label
@@ -214,19 +214,19 @@ export default {
   },
   computed: {
     validationToken() {
-      return this.token == "";
+      return this.token === "";
     },
     validatePassword() {
       return (
-        this.user.new_password == "" ||
+        this.user.new_password === "" ||
         this.user.new_password.length < 8 ||
-        this.user.confirm_password == "" ||
+        this.user.confirm_password === "" ||
         this.user.confirm_password.length < 8 ||
         this.user.new_password !== this.user.confirm_password
       );
     },
     validatePasswordSize() {
-      return this.user.new_password != "" && this.user.new_password.length < 8;
+      return this.user.new_password !== "" && this.user.new_password.length < 8;
     },
     validatePasswordMatch() {
       return this.user.new_password !== this.user.confirm_password;
@@ -255,11 +255,11 @@ export default {
       this.$store
         .dispatch("postRequest", payload)
         .then((res) => {
-          if (res.status == 200) {
+          if (res.status === 200) {
             this.user.user_id = res.data.data.user_id;
             this.show_new_password_form = false;
           }
-          if (res.status == 400) {
+          if (res.status === 400) {
             this.show_token_expire_msg = true;
             Notify.create({
               type: "info",
@@ -267,7 +267,7 @@ export default {
               message: this.$t("app.tokenExpireMsg"),
             });
           }
-          if (res.status == 403) {
+          if (res.status === 403) {
             Notify.create({
               type: "info",
               position: Platform.is.mobile ? "bottom" : "top-right",

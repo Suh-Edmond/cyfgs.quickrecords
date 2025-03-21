@@ -8,7 +8,7 @@
       rounded
       class="bg-secondary text-white q-mb-md"
       dense
-      v-if="checkUserHasRegister && getMemberRegistrationStatus == 'APPROVED'"
+      v-if="checkUserHasRegister && getMemberRegistrationStatus === 'APPROVED'"
     >
       <span class="registration_text">
         {{ $t("app.memberHasRegister") }} {{ getRegisterMember.year }}
@@ -22,7 +22,7 @@
       rounded
       class="bg-info text-white q-mb-md registration_text"
       dense
-      v-if="checkUserHasRegister && getMemberRegistrationStatus == 'PENDING'"
+      v-if="checkUserHasRegister && getMemberRegistrationStatus === 'PENDING'"
     >
       <span class="registration_text"
         >{{ $t("app.memberPaidRegistrationMsg") }}
@@ -38,17 +38,17 @@
       :class="$q.platform.is.mobile ? 'q-pl-sm' : ''"
     >
       <div>
-        <label for="credential" class="form_field">{{
+        <label class="form_field">{{
           $t("app.membersName")
         }}</label>
         <q-input v-model="user.user_name" outlined dense disable />
       </div>
       <div>
-        <label for="credential" class="form_field">{{ $t("app.year") }}</label>
+        <label class="form_field">{{ $t("app.year") }}</label>
         <q-input v-model="user.year" outlined dense disable hide-bottom-space />
       </div>
       <div>
-        <label for="credential" class="form_field"
+        <label class="form_field"
           >{{ $t("app.amount") }}
         </label>
         <q-input
@@ -61,7 +61,7 @@
         />
       </div>
       <div v-if="isMonthlyRegFrequency">
-        <label for="month" class="form_field"
+        <label class="form_field"
           >{{ $t("app.selectMonth") }}<span class="text-red">*</span></label
         >
         <q-select
@@ -149,8 +149,7 @@ export default {
     this.$emit("set-heading", heading);
     this.getRegistrationAmount();
     if (
-      this.$store.getters.getCurrentYear == null ||
-      this.$store.getters.getCurrentYear == undefined
+      this.$store.getters.getCurrentYear == null
     ) {
       this.fetchCurrentYear();
     }
@@ -169,7 +168,7 @@ export default {
   },
   computed: {
     isMonthlyRegFrequency() {
-      return this.$store.getters.getRegAmount.frequency == "MONTHLY";
+      return this.$store.getters.getRegAmount.frequency === "MONTHLY";
     },
     getRegisterMember() {
       if (this.$store.getters.getRegAmount == null) {
@@ -189,8 +188,8 @@ export default {
 
     validateForm() {
       return (
-        (this.isMonthlyRegFrequency && this.user.month_name == "") ||
-        this.$store.getters.getRegAmount == 0 ||
+        (this.isMonthlyRegFrequency && this.user.month_name === "") ||
+        this.$store.getters.getRegAmount === 0 ||
         this.checkUserHasRegister
       );
     },
@@ -278,7 +277,7 @@ export default {
         abort();
         return;
       }
-      if (this.month == "") {
+      if (this.month === "") {
         this.monthsOptions = months;
       }
       update(() => {

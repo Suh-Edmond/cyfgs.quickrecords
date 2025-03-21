@@ -40,7 +40,7 @@
               :class="$q.screen.lg ? 'q-px-md' : ''"
             >
               <div>
-                <label for="credential" class="form_field"
+                <label   class="form_field"
                   ><q-icon name="email" size="xs" class="q-py-sm"></q-icon
                   >{{ $t("app.emailLabel") }}
                   <span class="text-red">*</span></label
@@ -128,7 +128,7 @@ export default {
   },
   computed: {
     validateEmail() {
-      return this.user.email == "";
+      return this.user.email === "";
     },
   },
   methods: {
@@ -158,17 +158,17 @@ export default {
       this.$store
         .dispatch("postRequest", payload)
         .then((res) => {
-          if (res.status == 200) {
+          if (res.status === 200) {
             this.show_token_form = false;
             this.emailSentSuccessfully = true;
-          } else if (res.status == 403) {
+          } else if (res.status === 403) {
             this.emailSentSuccessfully = false;
             Notify.create({
               type: "info",
               message: this.$t("app.NonRoleUserEmailFailMsg"),
               position: Platform.is.mobile ? "bottom" : "top-right",
             });
-          } else if (res.status == 404) {
+          } else if (res.status === 404) {
             this.emailSentSuccessfully = false;
             Notify.create({
               type: "info",

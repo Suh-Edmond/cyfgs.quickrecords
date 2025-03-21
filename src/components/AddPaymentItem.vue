@@ -11,7 +11,7 @@
     </div>
     <q-form @submit="onAddPaymentItem" class="q-gutter-md q-mt-xs">
       <div>
-        <label for="credential" class="form_field"
+        <label class="form_field"
           >{{ $t("app.nameLabel") }} <span class="text-red">*</span></label
         >
         <q-input
@@ -23,7 +23,7 @@
         />
       </div>
       <div>
-        <label for="credential" class="form_field"
+        <label class="form_field"
           >{{ $t("app.amount") }} <span class="text-red">*</span></label
         >
         <q-input
@@ -36,7 +36,7 @@
       </div>
       <div class="flex">
         <div>
-          <label for="credential" class="form_field"
+          <label class="form_field"
             >{{ $t("app.compulsoryLabel") }}
             <span class="text-red">*</span></label
           >
@@ -59,7 +59,7 @@
         </div>
       </div>
       <div>
-        <label for="credential" class="form_field"
+        <label class="form_field"
           >{{ $t("app.deadline") }} <span class="text-red">*</span></label
         >
         <q-input
@@ -93,7 +93,7 @@
         </label>
       </div>
       <div>
-        <label for="credential" class="form_field"
+        <label class="form_field"
           >{{ $t("app.frequency") }} <span class="text-red">*</span></label
         >
         <q-select
@@ -107,7 +107,7 @@
         />
       </div>
       <div>
-        <label for="credential" class="form_field"
+        <label class="form_field"
           >{{ $t("app.type") }} <span class="text-red">*</span></label
         >
         <q-select
@@ -123,14 +123,14 @@
       </div>
 
       <!-- when the payment item type is A_MEMBER -->
-      <div v-if="payment_item.type == 'A_MEMBER'">
-        <div v-if="references.length == 0">
-          <label for="title" class="q-mt-sm form_field"
+      <div v-if="payment_item.type === 'A_MEMBER'">
+        <div v-if="references.length === 0">
+          <label class="q-mt-sm form_field"
             >{{ $t("app.selectMember") }} <span class="text-red">*</span></label
           >
         </div>
         <div v-if="references.length > 0">
-          <label for="title" class="q-mt-sm form_field">{{
+          <label class="q-mt-sm form_field">{{
             $t("app.selectedMember")
           }}</label>
           <div class="q-gutter-xs q-mb-lg">
@@ -162,7 +162,7 @@
           input-debounce="0"
           @filter="filterFn"
           clearable
-          v-if="references.length == 0"
+          v-if="references.length === 0"
         >
           <template v-slot:append v-if="start_filtering">
             <q-spinner color="primary" size="1.2em" :thickness="5" />
@@ -180,15 +180,15 @@
       </div>
 
       <!-- When the type is GROUPED_MEMBERS -->
-      <div v-if="payment_item.type == 'GROUPED_MEMBERS'">
-        <div v-if="references.length == 0">
-          <label for="title" class="q-mt-sm form_field"
+      <div v-if="payment_item.type === 'GROUPED_MEMBERS'">
+        <div v-if="references.length === 0">
+          <label class="q-mt-sm form_field"
             >{{ $t("app.selectMembers") }}
             <span class="text-red">*</span></label
           >
         </div>
         <div v-if="references.length > 0">
-          <label for="title" class="q-mt-sm form_field">{{
+          <label class="q-mt-sm form_field">{{
             $t("app.selectedMembers")
           }}</label>
           <div class="q-gutter-xs q-mb-lg">
@@ -239,7 +239,7 @@
       <!-- END OF SELECTIONS -->
 
       <div class="q-mt-lg">
-        <label for="credential" class="form_field"
+        <label class="form_field"
           >{{ $t("app.description") }}
         </label>
         <q-input
@@ -416,7 +416,7 @@ export default {
       let date = new Date();
       let month =
         date.getMonth() + 1 > 10
-          ? 0 + date.getMonth() + 1
+          ? date.getMonth() + 1
           : date.getMonth() + 1;
       let current_date =
         date.getFullYear() + "/" + 0 + month + "/" + date.getDate();
@@ -523,7 +523,7 @@ export default {
         this.payment_item.id = data.id;
         this.payment_item.amount = data.amount;
         this.payment_item.type = data.payment_item_type;
-        this.payment_item.compulsory = data.compulsory == 1 ? true : false;
+        this.payment_item.compulsory = data.compulsory === 1;
         this.references = this.setReferences(data.references);
         this.payment_item.deadline = data.deadline;
       }
@@ -533,9 +533,9 @@ export default {
     handlePaymentItemType() {
       this.payment_item.reference = null;
       if (
-        this.payment_item.type == "A_MEMBER" ||
-        (this.payment_item.type == "GROUPED_MEMBERS" &&
-          this.getMembersFromStore.length == 0)
+        this.payment_item.type === "A_MEMBER" ||
+        (this.payment_item.type === "GROUPED_MEMBERS" &&
+          this.getMembersFromStore.length === 0)
       ) {
         this.getOrganisationMembers();
       }
@@ -567,30 +567,30 @@ export default {
 
     selectMember() {
       let selected = null;
-      if (this.payment_item.type == "A_MEMBER") {
+      if (this.payment_item.type === "A_MEMBER") {
         selected = JSON.parse(JSON.stringify(this.payment_item.reference));
         this.references.push({ label: selected.label, value: selected.value });
         this.payment_item.reference = null;
         this.members = this.members.filter(
-          (member) => member.value != selected.value
+          (member) => member.value !== selected.value
         );
       } else {
         selected =
-          JSON.parse(JSON.stringify(this.payment_item.reference)) != undefined
+          JSON.parse(JSON.stringify(this.payment_item.reference)) !== undefined
             ? JSON.parse(JSON.stringify(this.payment_item.reference))[0]
             : null;
         if (selected != null) {
           const exist = this.references.find(
-            (ele) => ele.value == selected.value
+            (ele) => ele.value === selected.value
           );
-          if (exist == undefined) {
+          if (exist === undefined) {
             this.references.push({
               label: selected.label,
               value: selected.value,
             });
             this.payment_item.reference = null;
             this.members = this.members.filter(
-              (member) => member.value != selected.value
+              (member) => member.value !== selected.value
             );
           } else {
             Notify.create({
@@ -606,7 +606,7 @@ export default {
 
     removeSelectedReference(ref) {
       this.references = this.references.filter(
-        (reference) => reference.value != ref.value
+        (reference) => reference.value !== ref.value
       );
       this.members.push(ref);
       if (this.$store.getters.getUpdatedPaymentItem != null) {

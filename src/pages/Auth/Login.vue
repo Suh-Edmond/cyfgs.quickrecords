@@ -8,7 +8,7 @@
             <div class="text_h6 text-center q-pt-sm q-pb-sm">
               <div>
                 <a :href="baseUrl">
-                  <q-avatar :size="$q.screen.lg ? '6.6rem' : '6.6rem'">
+                  <q-avatar :size="$q.screen.lg ? '7rem' : '7rem'">
                     <img src="../../assets/App_Logo.jpeg" alt="app logo" />
                   </q-avatar>
                 </a>

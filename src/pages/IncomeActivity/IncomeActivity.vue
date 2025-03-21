@@ -37,13 +37,13 @@
 </template>
 
 <script>
-import TableVue from "src/components/Table.vue";
-import IncomeActivityMixinVue from "src/mixins/IncomeActivityMixin.vue";
-import HelperMixinVue from "src/mixins/HelperMixin.vue";
-import FilterComponentVue from "src/components/FilterComponent.vue";
-import { LocalStorage } from "quasar";
+  import TableVue from "src/components/Table.vue";
+  import IncomeActivityMixinVue from "src/mixins/IncomeActivityMixin.vue";
+  import HelperMixinVue from "src/mixins/HelperMixin.vue";
+  import FilterComponentVue from "src/components/FilterComponent.vue";
+  import {LocalStorage} from "quasar";
 
-export default {
+  export default {
   mixins: [IncomeActivityMixinVue, HelperMixinVue],
   beforeMount() {
     this.$store.commit("SET_PAGINATION", {
@@ -165,15 +165,13 @@ export default {
     },
 
     getPagination() {
-      let paginate_object = {
+      return {
         sortBy: this.$store.getters.getPagination.sortBy,
         descending: this.$store.getters.getPagination.descending,
         page: this.$store.getters.getPagination.page,
         rowsPerPage: this.$store.getters.getPagination.rowsPerPage,
         rowsNumber: this.$store.getters.getPagination.rowsNumber,
       };
-
-      return paginate_object;
     },
 
     getLoadingState() {
@@ -223,20 +221,20 @@ export default {
           ? this.payment_item_id.value
           : "";
       this.session_id =
-        payload_data.year != null && payload_data.year != ""
+        payload_data.year != null && payload_data.year !== ""
           ? payload_data.year
           : "";
-      let search_filter = filter != null && filter != "undefined" ? filter : "";
+      let search_filter = filter != null && filter !== "undefined" ? filter : "";
       this.month = payload_data.month;
       let month_value =
-        this.month != "" && this.month != null ? this.month.value : "";
+        this.month !== "" && this.month != null ? this.month.value : "";
 
-      let month_label = this.month != "" ? this.month.label : "";
+      let month_label = this.month !== "" ? this.month.label : "";
       this.status = payload_data.status;
       let page_num =
-        this.payment_item_id != null || this.payment_item_id != "" ? 1 : page;
+        this.payment_item_id != null || this.payment_item_id !== "" ? 1 : page;
       let num_rows =
-        this.payment_item_id != null || this.payment_item_id != ""
+        this.payment_item_id != null || this.payment_item_id !== ""
           ? 7
           : per_page;
 
@@ -286,15 +284,15 @@ export default {
 
     downloadIncomeActivity(data) {
       let payment_item_value =
-        data.payment_item_id != null && data.payment_item_id != ""
+        data.payment_item_id != null && data.payment_item_id !== ""
           ? data.payment_item_id.value
           : "";
       let payment_item_label =
-        data.payment_item_id != null && data.payment_item_id != ""
+        data.payment_item_id != null && data.payment_item_id !== ""
           ? data.payment_item_id.label
           : "";
       let month =
-        data.month != null && data.month != "" ? data.month.value : "";
+        data.month != null && data.month !== "" ? data.month.value : "";
       let status = data.status;
       let year = LocalStorage.getItem("data").current_session.year;
       let url = `/api/protected/organisations/income-activities/generate-pdf?organisation_id=${this.organisation_id}&month=${month}&payment_item_id=${payment_item_value}&status=${status}&payment_item_name=${payment_item_label}&year=${year}`;

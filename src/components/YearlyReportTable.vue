@@ -534,7 +534,6 @@ export default {
   },
   computed: {
     getQuarterlyIncome() {
-      console.log(this.$store.getters.getReportData[0])
       return this.$store.getters.getReportData[0];
     },
     getQuarterlyExpenditure() {

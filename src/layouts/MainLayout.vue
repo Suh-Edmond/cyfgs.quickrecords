@@ -28,10 +28,10 @@
             <q-item
               v-for="tab in getUserSideTabs()"
               :key="tab.to"
-              :active="item.name == tab.name"
+              :active="item.name === tab.name"
               clickable
               v-ripple
-              :active-class="item.name == tab.name ? 'item' : 'item_text'"
+              :active-class="item.name === tab.name ? 'item' : 'item_text'"
               @click="
                 setItem({ name: tab.name, selected: true }, tab.requires_add)
               "
@@ -39,7 +39,7 @@
             >
               <q-item-section
                 avatar
-                :class="item.name == tab.name ? 'item_icon' : 'item_text'"
+                :class="item.name === tab.name ? 'item_icon' : 'item_text'"
               >
                 <q-icon :name="tab.icon" size="1rem" v-if="!tab.has_image" />
                 <img
@@ -91,7 +91,6 @@
             >
             </q-btn>
             <label
-              for="heading"
               class="text-white q-ml-sm q-mt-xs"
               :class="$q.platform.is.desktop ? 'text_h6' : 'side-bar-heading'"
               >{{ heading }}</label
@@ -112,61 +111,61 @@
         </q-card>
         <div>
           <AddMember
-            v-if="current_tab == 'Member Management'"
+            v-if="current_tab === 'Member Management'"
             @close-right-drawer="closeRightDrawer"
             @set-heading="setHeading"
           ></AddMember>
           <AddPaymentCategory
-            v-if="current_tab == 'Payment Categories'"
+            v-if="current_tab === 'Payment Categories'"
             @close-right-drawer="closeRightDrawer"
             @set-heading="setHeading"
           >
           </AddPaymentCategory>
           <AddPaymentItem
-            v-if="current_tab == 'Payment Items'"
+            v-if="current_tab === 'Payment Items'"
             @close-right-drawer="closeRightDrawer"
             @set-heading="setHeading"
           ></AddPaymentItem>
           <AddExpenditureCategory
-            v-if="current_tab == 'Expenditure Categories'"
+            v-if="current_tab === 'Expenditure Categories'"
             @close-right-drawer="closeRightDrawer"
             @set-heading="setHeading"
           ></AddExpenditureCategory>
           <AddExpenditureItem
-            v-if="current_tab == 'Expenditure Items'"
+            v-if="current_tab === 'Expenditure Items'"
             @close-right-drawer="closeRightDrawer"
             @set-heading="setHeading"
           ></AddExpenditureItem>
           <AddExpenditureItemDetail
-            v-if="current_tab == 'Expenditure Item Details'"
+            v-if="current_tab === 'Expenditure Item Details'"
             @close-right-drawer="closeRightDrawer"
             @set-heading="setHeading"
           ></AddExpenditureItemDetail>
           <AddMemberSavingVue
             v-if="
-              current_tab.includes('Savings') && current_tab != 'Search Savings'
+              current_tab.includes('Savings') && current_tab !== 'Search Savings'
             "
             @close-right-drawer="closeRightDrawer"
             @set-heading="setHeading"
           ></AddMemberSavingVue>
           <ViewMemberSaving
-            v-if="current_tab == 'View Member Saving'"
+            v-if="current_tab === 'View Member Saving'"
             @close-right-drawer="closeRightDrawer"
             @set-heading="setHeading"
           >
           </ViewMemberSaving>
           <AddIncomeActivity
-            v-if="current_tab == 'Income Activities'"
+            v-if="current_tab === 'Income Activities'"
             @close-right-drawer="closeRightDrawer"
             @set-heading="setHeading"
           ></AddIncomeActivity>
           <ViewIncomeActivity
-            v-if="current_tab == 'View Income Activity'"
+            v-if="current_tab === 'View Income Activity'"
             @close-right-drawer="closeRightDrawer"
             @set-heading="setHeading"
           ></ViewIncomeActivity>
           <ViewContribution
-            v-if="current_tab == 'View Contribution'"
+            v-if="current_tab === 'View Contribution'"
             @set-heading="setHeading"
             @edit-contribution="updateRightDrawer"
           >
@@ -174,67 +173,67 @@
           <AddContribution
             v-if="
               current_tab.includes('Contributions') &&
-              current_tab != 'Search Members Contributions'
+              current_tab !== 'Search Members Contributions'
             "
             @close-right-drawer="closeRightDrawer"
             @set-heading="setHeading"
           ></AddContribution>
           <SearchSavings
-            v-if="current_tab == 'Search Savings'"
+            v-if="current_tab === 'Search Savings'"
             @close-right-drawer="closeRightDrawer"
             @set-heading="setHeading"
           >
           </SearchSavings>
           <SearchContribution
-            v-if="current_tab == 'Search Members Contributions'"
+            v-if="current_tab === 'Search Members Contributions'"
             @close-right-drawer="closeRightDrawer"
             @set-heading="setHeading"
             @search-contribution="searchContribution"
           >
           </SearchContribution>
           <EditMemberContribution
-            v-if="current_tab == 'Edit Member Contribution'"
+            v-if="current_tab === 'Edit Member Contribution'"
             @close-right-drawer="closeRightDrawer"
             @set-heading="setHeading"
           >
           </EditMemberContribution>
           <AddSponsorship
-            v-if="current_tab == 'Sponsorship Management'"
+            v-if="current_tab === 'Sponsorship Management'"
             @close-right-drawer="closeRightDrawer"
             @set-heading="setHeading"
           ></AddSponsorship>
           <ViewSponsorshipVue
-            v-if="current_tab == 'View Sponsorship'"
+            v-if="current_tab === 'View Sponsorship'"
             @close-right-drawer="closeRightDrawer"
             @set-heading="setHeading"
           >
           </ViewSponsorshipVue>
           <ViewExpenditureItemVue
-            v-if="current_tab == 'Expenditure Activity Information'"
+            v-if="current_tab === 'Expenditure Activity Information'"
             @close-right-drawer="closeRightDrawer"
             @set-heading="setHeading"
           >
           </ViewExpenditureItemVue>
           <ViewExpenditureItemDetail
-            v-if="current_tab == 'Expenditure Item Detail Information'"
+            v-if="current_tab === 'Expenditure Item Detail Information'"
             @close-right-drawer="closeRightDrawer"
             @set-heading="setHeading"
           >
           </ViewExpenditureItemDetail>
           <MemberRegistration
-            v-if="current_tab == 'Register Member'"
+            v-if="current_tab === 'Register Member'"
             @close-right-drawer="closeRightDrawer"
             @set-heading="setHeading"
           >
           </MemberRegistration>
           <ViewPaymentItem
-            v-if="current_tab == 'View Payment Item'"
+            v-if="current_tab === 'View Payment Item'"
             @close-right-drawer="closeRightDrawer"
             @set-heading="setHeading"
           >
           </ViewPaymentItem>
           <PaymentDetails
-            v-if="current_tab == 'Payment Details'"
+            v-if="current_tab === 'Payment Details'"
             :payment-details="data"
             @close-right-drawer="closeRightDrawer"
             @set-heading="setHeading"
@@ -540,7 +539,7 @@ export default {
 
     getRoleGroups() {
       const storage_data =
-        LocalStorage.getItem("data") != "undefined" &&
+        LocalStorage.getItem("data") !== "undefined" &&
         LocalStorage.getItem("data") != null
           ? LocalStorage.getItem("data").user_data
           : [];
@@ -551,12 +550,12 @@ export default {
       const tabs = new Set();
       this.getSidebarTabs().forEach((tab) => {
         this.getRoleGroups().forEach((role) => {
-          if (tab.roles.includes(role) && tab.name != "Expenditures") {
+          if (tab.roles.includes(role) && tab.name !== "Expenditures") {
             tabs.add(tab);
           } else if (
             this.checkTreasurerRoleOnly() &&
             tab.roles.includes(role) &&
-            tab.name == "Expenditures"
+            tab.name === "Expenditures"
           ) {
             tabs.add(tab);
           }

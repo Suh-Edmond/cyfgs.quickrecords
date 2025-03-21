@@ -23,7 +23,7 @@
     </div>
     <q-form @submit="onAddSaving" class="q-gutter-sm q-mt-sm">
       <div>
-        <label for="name" class="form_field"
+        <label class="form_field"
           >{{ $t("app.memberName") }}<span class="text-red">*</span>
         </label>
         <q-select
@@ -51,7 +51,7 @@
         </q-select>
       </div>
       <div>
-        <label for="credential" class="form_field q-mt-ms"
+        <label class="form_field q-mt-ms"
           >{{ $t("app.amount") }} <span class="text-red">*</span></label
         >
         <q-input
@@ -63,7 +63,7 @@
         />
       </div>
       <div>
-        <label for="credential" class="form_field"
+        <label class="form_field"
           >{{ $t("app.comment") }}
         </label>
         <q-input
@@ -164,19 +164,19 @@ export default {
     validateForm() {
       return (
         this.saving.user_id == null ||
-        this.saving.amount_deposited == 0 ||
+        this.saving.amount_deposited === 0 ||
         this.onMemberSavingExist
       );
     },
     isMemberExist() {
       return (
         this.saving.user_id !== null &&
-        this.saving.amount_deposited != 0 &&
+        this.saving.amount_deposited !== 0 &&
         this.saving.id != null
       );
     },
     startSearch() {
-      return this.saving.user_id === null ? false : true;
+      return this.saving.user_id !== null;
     },
     getUpdateMemberSaving() {
       this.setFormFields(this.$store.getters.getUpdatedMemberSaving);
@@ -285,7 +285,7 @@ export default {
         this.$store
           .dispatch("putRequest", payload)
           .then((response) => {
-            if (response.status == 403) {
+            if (response.status === 403) {
               Notify.create({
                 type: "info",
                 position: Platform.is.mobile ? "bottom" : "top-right",

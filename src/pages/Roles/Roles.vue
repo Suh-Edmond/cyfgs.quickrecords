@@ -4,7 +4,7 @@
       <q-spinner color="primary" size="2.5em" />
     </div>
     <div class="row" v-if="!getLoadingState">
-      <label for="title" class="q-pb-md title">{{
+      <label   class="q-pb-md title">{{
         $t("app.availableRoleLabel")
       }}</label>
     </div>
@@ -16,15 +16,15 @@
             v-ripple
             v-for="role in getRoles"
             :key="role.id"
-            :active-class="current_tag == role.name ? 'active_item' : ''"
-            :active="current_tag == role.name"
+            :active-class="current_tag === role.name ? 'active_item' : ''"
+            :active="current_tag === role.name"
             @click="setCurrentRole(role)"
           >
             <q-item-section top avatar>
               <q-avatar
                 size="md"
-                :color="current_tag == role.name ? 'white' : 'primary'"
-                :text-color="current_tag == role.name ? 'grey' : 'white'"
+                :color="current_tag === role.name ? 'white' : 'primary'"
+                :text-color="current_tag === role.name ? 'grey' : 'white'"
               >
                 {{ getFirstLetter(role.name) }}
               </q-avatar>
@@ -32,7 +32,7 @@
 
             <q-item-section>
               <q-item-label
-                :class="current_tag == role.name ? '' : 'role_name'"
+                :class="current_tag === role.name ? '' : 'role_name'"
                 >{{ role.name }}</q-item-label
               >
             </q-item-section>
@@ -67,7 +67,7 @@
           </div>
         </div>
         <div class="flex justify-between q-mt-lg">
-          <label for=""
+          <label
             ><span class="label text-weight-meduim">{{
               $t("app.nameLabel")
             }}</span>
@@ -79,7 +79,7 @@
           >
         </div>
         <div class="flex justify-between q-mt-sm">
-          <label for=""
+          <label
             ><span class="label text-weight-meduim">{{ $t("app.term") }}</span>
           </label>
           <label
@@ -90,7 +90,7 @@
           <label class="value text-weight-bold" v-else> 0</label>
         </div>
         <div class="flex justify-between q-mt-sm">
-          <label for=""
+          <label
             ><span class="label text-weight-meduim">{{
               $t("app.memberCountLabel")
             }}</span>
@@ -105,7 +105,7 @@
           }}</label>
         </div>
         <div class="flex justify-between q-mt-sm">
-          <label for=""
+          <label
             ><span class="label text-weight-meduim">{{
               $t("app.createdDate")
             }}</span>
@@ -115,7 +115,7 @@
           }}</label>
         </div>
         <div class="flex justify-between q-mt-sm">
-          <label for=""
+          <label
             ><span class="label text-weight-meduim">{{
               $t("app.updatedDate")
             }}</span>
@@ -125,7 +125,7 @@
           }}</label>
         </div>
         <div class="flex justify-between q-mt-sm">
-          <label for=""
+          <label
             ><span class="label text-weight-meduim">{{
               $t("app.updatedBy")
             }}</span>
@@ -135,7 +135,7 @@
           }}</label>
         </div>
         <div class="flex justify-between q-mt-sm">
-          <label for=""
+          <label
             ><span class="label text-weight-meduim">{{
               $t("app.defaultRole")
             }}</span>
@@ -282,7 +282,7 @@ export default {
     getSelectedRole() {
       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       let selected_role =
-        this.$store.getters.getRoles != undefined &&
+        this.$store.getters.getRoles !== undefined &&
         this.$store.getters.getRoles !== null &&
         this.selected_role == null
           ? this.$store.getters.getRoles[0]

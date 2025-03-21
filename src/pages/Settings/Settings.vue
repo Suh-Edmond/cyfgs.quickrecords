@@ -14,14 +14,14 @@
           clickable
           v-ripple
           @click="getCurrentItem('Session')"
-          :active-class="tag == 'Session' ? 'active_item' : ''"
-          :active="tag == 'Session'"
+          :active-class="tag === 'Session' ? 'active_item' : ''"
+          :active="tag === 'Session'"
         >
           <q-item-section avatar top>
             <q-icon
               name="timer"
               :class="
-                tag == 'Session' ? 'icon_color_active' : 'icon_color_in_active'
+                tag === 'Session' ? 'icon_color_active' : 'icon_color_in_active'
               "
               size="xs"
             ></q-icon>
@@ -29,7 +29,7 @@
           <q-item-section>
             <q-item-label
               :class="
-                tag == 'Session'
+                tag === 'Session'
                   ? 'text_header_active'
                   : 'text_header_in_active'
               "
@@ -37,7 +37,7 @@
             >
             <q-item-label
               caption
-              :class="tag == 'Session' ? 'text_active' : 'text_in_active'"
+              :class="tag === 'Session' ? 'text_active' : 'text_in_active'"
             >
               {{ $t("app.sessionCaptionMsg") }}
             </q-item-label>
@@ -138,7 +138,7 @@
         :table_header="session_table_header"
         @fetch-sessions="getSessions"
         class="col-8 col-md-8 col-sm-12 col-xs-12"
-        v-if="tag == 'Session'"
+        v-if="tag === 'Session'"
       ></SessionsTable>
       <RegistrationFeeTable
         :columns="reg_table_columns"
@@ -147,7 +147,7 @@
         :loading="loading_reg_fees"
         @fetch-registration-fee="getRegFee"
         class="col-8 col-md-8 col-sm-12 col-xs-12 col-lg-8"
-        v-if="tag == 'Registration_fee'"
+        v-if="tag === 'Registration_fee'"
       ></RegistrationFeeTable>
     </div>
 
@@ -538,11 +538,11 @@ export default {
     },
 
     onItemClick(lang) {
-      if (lang == "fr") {
+      if (lang === "fr") {
         this.$i18n.locale = "fr";
         this.showAppTranslateLoading();
       }
-      if (lang == "en-US") {
+      if (lang === "en-US") {
         this.$i18n.locale = "en-US";
         this.showAppTranslateLoading();
       }

@@ -110,8 +110,8 @@ export default {
   mixins: [HelperMixin, CurrentYearMixinVue],
   mounted() {
     if (
-      this.$store.getters.getCurrentYear == null ||
-      this.$store.getters.getCurrentYear == undefined
+      this.$store.getters.getCurrentYear === null ||
+      this.$store.getters.getCurrentYear === undefined
     ) {
       this.fetchCurrentYear();
     }
@@ -141,7 +141,7 @@ export default {
   },
   computed: {
     validateDownloadBtn(data) {
-      return data.length < 0 ? true : false;
+      return data.length < 0;
     },
 
     getLoadingState() {
@@ -212,7 +212,7 @@ export default {
 
     generateQuarterlyReport(data) {
       this.heading =
-        data.group.value == 6 || data.group.value == 12
+        data.group.value === 6 || data.group.value === 12
           ? this.$t("app.midYearReportTitle") +
             `${data.group.label} ${this.year}`
           : this.$t("app.quarterReportTitle") +
@@ -277,22 +277,22 @@ export default {
     },
 
     downloadReport(data) {
-      let id = data.group != null && data.group != "" ? data.group.value : "";
+      let id = data.group != null && data.group !== "" ? data.group.value : "";
       let label =
-        data.group != null && data.group != "" ? data.group.label : "";
+        data.group != null && data.group !== "" ? data.group.label : "";
       this.loading = true;
       let url = "";
       let file_name = "";
-      if (data.report_option.value == 1) {
+      if (data.report_option.value === 1) {
         url = `/api/protected/activity/${id}/report/download?payment_activity=${label}&year=${this.year}`;
         file_name = "Activity_Report.pdf";
       } else if (
-        data.report_option.value == 2 ||
-        data.report_option.value == 3
+        data.report_option.value === 2 ||
+        data.report_option.value === 3
       ) {
         url = `/api/protected/report/quarter/download?quarter=${data.group.value}&year=${this.year}&organisation_id=${this.organisation_id}`;
         file_name =
-          data.report_option.value == 2
+          data.report_option.value === 2
             ? "Quarterly_Report.pdf"
             : "Mid_Year_Report.pdf";
       } else {

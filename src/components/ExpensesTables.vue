@@ -181,7 +181,7 @@ export default {
     setApproveUrlBaseOnType(data) {
       let url = "";
       let type =
-        this.chosen_state == "Approve"
+        this.chosen_state === "Approve"
           ? this.$t("app.approveLabel")
           : this.$t("app.declineLabel");
       switch (data.type) {

@@ -2,7 +2,7 @@
   <div class="q-py-md" :class="$q.platform.is.mobile ? 'q-px-lg' : 'q-px-md'">
     <div class="flex justify-between q-mb-md">
       <div>
-        <label for="name" class="label"
+        <label class="label"
           ><span> <q-icon name="person" size="xs" class="q-pr-sm" /> </span
           >{{ $t("app.memberName") }}
         </label>

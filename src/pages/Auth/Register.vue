@@ -16,7 +16,7 @@
             <div class="q-pa-md">
               <q-form @submit="onSubmit" class="q-gutter-md">
                 <div class="q-pb-md">
-                  <label for="name" class="form_field"
+                  <label class="form_field"
                     >{{ $t("app.nameLabel") }}
                     <span class="text-red">*</span></label
                   >
@@ -29,7 +29,7 @@
                   />
                 </div>
                 <div class="q-pb-md">
-                  <label for="telephone" class="form_field"
+                  <label class="form_field"
                     >{{ $t("app.telephoneLabel") }}
                     <span class="text-red">*</span></label
                   >
@@ -41,7 +41,7 @@
                   ></vue-tel-input>
                 </div>
                 <div>
-                  <label for="email" class="form_field"
+                  <label   class="form_field"
                     >{{ $t("app.emailLabel") }}
                     <span class="text-red">*</span></label
                   >
@@ -55,7 +55,7 @@
                   </q-input>
                 </div>
                 <div>
-                  <label for="password" class="form_field"
+                  <label   class="form_field"
                     >{{ $t("app.passwordLabel") }}
                     <span class="text-red">*</span></label
                   >
@@ -81,7 +81,7 @@
                   </q-input>
                 </div>
                 <div>
-                  <label for="confirm_password" class="form_field"
+                  <label  class="form_field"
                     >{{ $t("app.confirmPasswordLabel")
                     }}<span class="text-red">*</span></label
                   >
@@ -217,9 +217,7 @@ export default {
       });
     },
     checkValidate() {
-      return this.user.password === this.user.password_confirmation
-        ? true
-        : false;
+      return this.user.password === this.user.password_confirmation;
     },
   },
   components: {

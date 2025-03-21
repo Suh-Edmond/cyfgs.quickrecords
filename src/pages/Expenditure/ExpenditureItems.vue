@@ -39,13 +39,13 @@
 </template>
 
 <script>
-import CategoryTable from "src/components/CategoryTable.vue";
-import HelperMixinVue from "src/mixins/HelperMixin.vue";
-import ExpenditureItemDetailMixinVue from "src/mixins/ExpenditureItemDetailMixin.vue";
-import expenditureItemMixinVue from "src/mixins/expenditureItemMixin.vue";
-import FilterComponentVue from "src/components/FilterComponent.vue";
+  import CategoryTable from "src/components/CategoryTable.vue";
+  import HelperMixinVue from "src/mixins/HelperMixin.vue";
+  import ExpenditureItemDetailMixinVue from "src/mixins/ExpenditureItemDetailMixin.vue";
+  import expenditureItemMixinVue from "src/mixins/expenditureItemMixin.vue";
+  import FilterComponentVue from "src/components/FilterComponent.vue";
 
-export default {
+  export default {
   mixins: [
     HelperMixinVue,
     ExpenditureItemDetailMixinVue,
@@ -165,19 +165,17 @@ export default {
     },
 
     validateDownload() {
-      return this.getExpenditureItems.length == 0;
+      return this.getExpenditureItems.length === 0;
     },
 
     getPagination() {
-      let paginate_object = {
+      return {
         sortBy: this.$store.getters.getPagination.sortBy,
         descending: this.$store.getters.getPagination.descending,
         page: this.$store.getters.getPagination.page,
         rowsPerPage: this.$store.getters.getPagination.rowsPerPage,
         rowsNumber: this.$store.getters.getPagination.rowsNumber,
       };
-
-      return paginate_object;
     },
 
     getLoadingState() {

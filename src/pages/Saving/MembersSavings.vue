@@ -71,14 +71,15 @@
 </template>
 
 <script>
-import { LocalStorage } from "quasar";
-import TableVue from "src/components/Table.vue";
-import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
-import HelperMixinVue from "src/mixins/HelperMixin.vue";
-import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
-import MonthsMixinVue from "src/mixins/MonthsMixin.vue";
-import FilterComponentVue from "src/components/FilterComponent.vue";
-export default {
+  import {LocalStorage} from "quasar";
+  import TableVue from "src/components/Table.vue";
+  import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
+  import HelperMixinVue from "src/mixins/HelperMixin.vue";
+  import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
+  import MonthsMixinVue from "src/mixins/MonthsMixin.vue";
+  import FilterComponentVue from "src/components/FilterComponent.vue";
+
+  export default {
   mixins: [
     UserSavingMixinVue,
     HelperMixinVue,
@@ -195,19 +196,17 @@ export default {
     },
 
     validateDownload() {
-      return this.getMembersSavings.length == 0;
+      return this.getMembersSavings.length === 0;
     },
 
     getPagination() {
-      let paginate_object = {
+      return {
         sortBy: this.$store.getters.getPagination.sortBy,
         descending: this.$store.getters.getPagination.descending,
         page: this.$store.getters.getPagination.page,
         rowsPerPage: this.$store.getters.getPagination.rowsPerPage,
         rowsNumber: this.$store.getters.getPagination.rowsNumber,
       };
-
-      return paginate_object;
     },
   },
   watch: {},
@@ -235,9 +234,9 @@ export default {
 
     checkTreasurerRole() {
       const treasurer_role = LocalStorage.getItem("data").user_data.roles.find(
-        (role) => role.name == "TREASURER"
+        (role) => role.name === "TREASURER"
       );
-      return treasurer_role != undefined;
+      return treasurer_role !== undefined;
     },
 
     editMemberSaving(data) {

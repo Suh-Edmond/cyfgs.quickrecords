@@ -20,7 +20,7 @@
             <q-form @submit="onSubmit">
               <div class="row q-my-md">
                 <div class="col-md-12 col-lg-12 col-xs-12 col-sm-12">
-                  <label for="credential" class="form_field"
+                  <label class="form_field"
                     >{{ $t("app.nameLabel") }}
                     <span class="text-red q-pl-xs">*</span></label
                   >
@@ -34,7 +34,7 @@
               </div>
               <div class="row q-my-lg">
                 <div class="col-md-12 col-lg-12 col-xs-12 col-sm-12">
-                  <label for="credential" class="form_field"
+                  <label class="form_field"
                     >{{ $t("app.emailLabel") }}
                     <span class="text-red q-pl-xs">*</span></label
                   >
@@ -49,7 +49,7 @@
               <div class="row q-my-lg">
                 <div class="col-md-12 col-lg-12 col-xs-12 col-sm-12">
                   <div>
-                    <label for="credential" class="form_field flex"
+                    <label class="form_field flex"
                       >{{ $t("app.telephoneLabel") }}
                       <span class="text-red q-pl-xs">*</span><q-space />
                       <a
@@ -95,7 +95,7 @@
               <div class="row q-my-lg">
                 <div class="col-md-12 col-lg-12 col-xs-12 col-sm-12">
                   <div>
-                    <label for="credential" class="form_field"
+                    <label class="form_field"
                       >{{ $t("app.addressLabel")
                       }}<span class="text-red q-pl-xs">*</span></label
                     >
@@ -111,7 +111,7 @@
               <div class="row q-my-lg">
                 <div class="col-md-12 col-lg-12 col-xs-12 col-sm-12">
                   <div>
-                    <label for="credential" class="form_field"
+                    <label class="form_field"
                       >{{ $t("app.salutation")
                       }}<span class="text-red q-pl-xs">*</span></label
                     >
@@ -145,7 +145,7 @@
                 <div class="row q-my-lg">
                   <div class="col-md-12 col-lg-12 col-xs-12 col-sm-12">
                     <div>
-                      <label for="credential" class="form_field"
+                      <label class="form_field"
                         >{{ $t("app.boxLabel")
                         }}<span class="text-red q-pl-xs">*</span></label
                       >
@@ -161,7 +161,7 @@
                 <div class="row q-my-lg">
                   <div class="col-md-12 col-lg-12 col-xs-12 col-sm-12">
                     <div>
-                      <label for="credential" class="form_field"
+                      <label class="form_field"
                         >{{ $t("app.region")
                         }}<span class="text-red q-pl-xs">*</span></label
                       >
@@ -177,7 +177,7 @@
                 <div class="row q-my-lg">
                   <div class="col-md-12 col-lg-12 col-xs-12 col-sm-12">
                     <div>
-                      <label for="credential" class="form_field"
+                      <label class="form_field"
                         >{{ $t("app.logo") }}
                         <span class="text-red q-pl-xs">*</span></label
                       >
@@ -194,7 +194,7 @@
                 <div class="row q-my-lg">
                   <div class="col-md-12 col-lg-12 col-xs-12 col-sm-12">
                     <div>
-                      <label for="credential" class="form_field"
+                      <label class="form_field"
                         >{{ $t("app.description") }}
                         <span class="text-red q-pl-xs">*</span></label
                       >
@@ -267,9 +267,7 @@ export default {
       return this.organisation.name == null ||
         this.organisation.email == null ||
         this.organisation.telephone == null ||
-        this.organisation.address == null
-        ? true
-        : false;
+        this.organisation.address == null;
     },
     validateForm() {
       return this.organisation.name == null ||
@@ -277,9 +275,7 @@ export default {
         this.organisation.telephone == null ||
         this.organisation.address == null ||
         this.organisation.description == null ||
-        this.organisation.region == null
-        ? true
-        : false;
+        this.organisation.region == null;
     },
   },
   methods: {

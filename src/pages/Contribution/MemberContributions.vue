@@ -46,12 +46,13 @@
 </template>
 
 <script>
-import TableVue from "src/components/Table.vue";
-import ContributionsMixin from "src/mixins/ContributionsMixin.vue";
-import HelperMixin from "src/mixins/HelperMixin.vue";
-import FilterComponentVue from "src/components/FilterComponent.vue";
-import ContributionSummary from "src/components/ContributionSummary.vue";
-export default {
+  import TableVue from "src/components/Table.vue";
+  import ContributionsMixin from "src/mixins/ContributionsMixin.vue";
+  import HelperMixin from "src/mixins/HelperMixin.vue";
+  import FilterComponentVue from "src/components/FilterComponent.vue";
+  import ContributionSummary from "src/components/ContributionSummary.vue";
+
+  export default {
   mixins: [ContributionsMixin, HelperMixin],
 
   mounted() {
@@ -210,7 +211,7 @@ export default {
     },
 
     validateDownload() {
-      return this.getMemberContributions.length == 0;
+      return this.getMemberContributions.length === 0;
     },
 
     getPaymentItemName() {
@@ -240,7 +241,7 @@ export default {
 
     getSummaryData() {
       const data = this.$store.getters.getMemberContributions;
-      let summary = {
+      return {
         expect_contribution: data.total_amount_payable,
         amount_contributed: data.total_amount,
         balance: data.total_balance,
@@ -249,8 +250,6 @@ export default {
         frequency: data.payment_item.frequency,
         member_size: data.member_size,
       };
-
-      return summary;
     },
   },
   methods: {

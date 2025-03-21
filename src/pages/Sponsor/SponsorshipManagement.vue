@@ -30,13 +30,13 @@
 </template>
 
 <script>
-import SponsorshipTable from "src/components/SponsorshipTable.vue";
-import PaymentItemMixin from "src/mixins/PaymentItemMixin.vue";
-import SponsorshipMixin from "src/mixins/SponsorshipMixin.vue";
-import HelperMixin from "src/mixins/HelperMixin.vue";
-import FilterComponentVue from "src/components/FilterComponent.vue";
+  import SponsorshipTable from "src/components/SponsorshipTable.vue";
+  import PaymentItemMixin from "src/mixins/PaymentItemMixin.vue";
+  import SponsorshipMixin from "src/mixins/SponsorshipMixin.vue";
+  import HelperMixin from "src/mixins/HelperMixin.vue";
+  import FilterComponentVue from "src/components/FilterComponent.vue";
 
-export default {
+  export default {
   mixins: [PaymentItemMixin, SponsorshipMixin, HelperMixin],
   beforeMount() {
     this.$store.commit("SET_PAGINATION", {
@@ -104,7 +104,7 @@ export default {
   },
   computed: {
     validateDownload() {
-      return this.getData.length == 0;
+      return this.getData.length === 0;
     },
 
     getTotalSponsorship() {
@@ -120,15 +120,13 @@ export default {
     },
 
     getPagination() {
-      let paginate_object = {
+      return {
         sortBy: this.$store.getters.getPagination.sortBy,
         descending: this.$store.getters.getPagination.descending,
         page: this.$store.getters.getPagination.page,
         rowsPerPage: this.$store.getters.getPagination.rowsPerPage,
         rowsNumber: this.$store.getters.getPagination.rowsNumber,
       };
-
-      return paginate_object;
     },
 
     getLoadingState() {
@@ -168,10 +166,10 @@ export default {
       filter
     ) {
       let payment_item_id =
-        payment_item != "" && payment_item != null ? payment_item.value : "";
-      let status_value = status != "" && status != null ? status : "";
-      let session_id = session != "" && session != null ? session.value : "";
-      let search_filter = filter == undefined ? "" : filter;
+        payment_item !== "" && payment_item != null ? payment_item.value : "";
+      let status_value = status !== "" && status != null ? status : "";
+      let session_id = session !== "" && session != null ? session.value : "";
+      let search_filter = filter === undefined ? "" : filter;
       let payload = {
         status: "none",
         url: `/api/protected/sponsorships?page=${page}&per_page=${per_page}&payment_item_id=${payment_item_id}&status=${status_value}&session_id=${session_id}&filter=${search_filter}`,
@@ -228,11 +226,11 @@ export default {
 
     filterSponsorship(data) {
       let payment_item_name =
-        data.payment_item_id != "" && data.payment_item_id != null
+        data.payment_item_id !== "" && data.payment_item_id != null
           ? data.payment_item_id.label
           : "";
       let session_id =
-        data.year != "" && data.year != null ? data.year.value : "";
+        data.year !== "" && data.year != null ? data.year.value : "";
       this.$router.push({
         path: `/dashboard/sponsorship?payment_item=${payment_item_name}&status=${data.payment_status}&session_id=${session_id}`,
         query: {
@@ -258,15 +256,15 @@ export default {
 
     downloadSponsorship(data) {
       let payment_item_value =
-        data.payment_item_id != null && data.payment_item_id != ""
+        data.payment_item_id != null && data.payment_item_id !== ""
           ? data.payment_item_id.value
           : "";
       let payment_item_name =
-        data.payment_item_id != null && data.payment_item_id != ""
+        data.payment_item_id != null && data.payment_item_id !== ""
           ? data.payment_item_id.label
           : "";
       let status_value =
-        data.payment_status != null && data.payment_status != ""
+        data.payment_status != null && data.payment_status !== ""
           ? data.payment_status
           : "";
       let url = `/api/protected/sponsorships/download?payment_item_id=${payment_item_value}&status=${status_value}&per_page=&payment_item_label=${payment_item_name}`;

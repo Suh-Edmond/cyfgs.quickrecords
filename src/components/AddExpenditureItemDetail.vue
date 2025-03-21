@@ -42,7 +42,7 @@
 
     <q-form @submit="onAddExpenditureItemDetail" class="q-gutter-sm q-mt-xs">
       <div class="q-mb-md">
-        <label for="credential" class="form_field"
+        <label class="form_field"
           >{{ $t("app.nameLabel") }} <span class="text-red">*</span></label
         >
 
@@ -55,7 +55,7 @@
         />
       </div>
       <div class="q-mb-md">
-        <label for="credential" class="form_field"
+        <label class="form_field"
           >{{ $t("app.amountGivenLabel")
           }}<span class="text-red">*</span></label
         >
@@ -72,7 +72,7 @@
         </small>
       </div>
       <div class="q-mb-md">
-        <label for="credential" class="form_field"
+        <label class="form_field"
           >{{ $t("app.amountSpent") }}<span class="text-red">*</span></label
         >
         <q-input
@@ -85,7 +85,7 @@
         </q-input>
       </div>
       <div class="q-mb-md">
-        <label for="credential" class="form_field">{{
+        <label class="form_field">{{
           $t("app.comment")
         }}</label>
         <q-input
@@ -216,7 +216,7 @@ export default {
     canAddExpenditureDetails() {
       return (
         this.$store.getters.getCurrentExpenditureItem != null &&
-        this.$store.getters.getCurrentExpenditureItem.approve != "PENDING" &&
+        this.$store.getters.getCurrentExpenditureItem.approve !== "PENDING" &&
         this.$store.getters.getUpdatedExpenditureItemDetail == null
       );
     },

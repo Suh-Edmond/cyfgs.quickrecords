@@ -4,7 +4,7 @@
     class="q-mt-md"
   >
     <div class="q-mb-md">
-      <label for="heading" class="text">{{ $t("app.filterUserSaving") }}</label>
+      <label class="text">{{ $t("app.filterUserSaving") }}</label>
     </div>
     <!-- search by name of member -->
     <div class="q-mb-lg row q-gutter-x-md">
@@ -29,7 +29,7 @@
     </div>
     <hr class="separator" />
     <div class="q-my-md">
-      <label for="heading" class="text">{{ $t("app.filterAmount") }} </label>
+      <label class="text">{{ $t("app.filterAmount") }} </label>
     </div>
     <!-- search by amount deposited -->
     <div class="q-mb-lg row q-gutter-x-md">
@@ -54,7 +54,7 @@
     </div>
     <hr class="separator" />
     <div class="q-my-sm">
-      <label for="heading" class="text">{{ $t("app.filterStatus") }}</label>
+      <label class="text">{{ $t("app.filterStatus") }}</label>
     </div>
     <!-- filter by status of savings -->
     <div class="row q-mb-md">
@@ -74,7 +74,7 @@
 
     <hr class="separator" />
     <div class="q-my-sm">
-      <label for="heading" class="text">{{ $t("app.filterDelay") }}</label>
+      <label class="text">{{ $t("app.filterDelay") }}</label>
     </div>
     <!-- search by year -->
     <div class="q-mb-md row">
@@ -301,7 +301,7 @@ export default {
   },
   methods: {
     filterByUserInfo() {
-      let name = this.param != "undefined" ? this.param.name : "";
+      let name = this.param !== "undefined" ? this.param.name : "";
       this.$router.push({
         path: `/dashboard/members-savings`,
         query: {
@@ -407,10 +407,10 @@ export default {
     },
 
     stopSearch() {
-      if (this.param.year != null && this.param.year != "") {
+      if (this.param.year != null && this.param.year !== "") {
         this.start_filter_year = false;
       }
-      if (this.param.month != null && this.param.month != "") {
+      if (this.param.month != null && this.param.month !== "") {
         this.start_filter_month = false;
       }
     },

@@ -25,7 +25,7 @@
           <q-td
             key="approve"
             :props="props"
-            v-if="props.row.approve == 'PENDING'"
+            v-if="props.row.approve === 'PENDING'"
             class="text-info table_value"
           >
             {{ props.row.approve }}
@@ -33,7 +33,7 @@
           <q-td
             key="approve"
             :props="props"
-            v-if="props.row.approve == 'APPROVED'"
+            v-if="props.row.approve === 'APPROVED'"
             class="registered table_value"
           >
             {{ props.row.approve }}
@@ -41,7 +41,7 @@
           <q-td
             key="approve"
             :props="props"
-            v-if="props.row.approve == 'DECLINED'"
+            v-if="props.row.approve === 'DECLINED'"
             class="not_registered table_value"
           >
             {{ props.row.approve }}
@@ -56,7 +56,7 @@
               no-caps
               unelevated
               @click="onApprovedRecord(props.row, 'Approve')"
-              v-if="canValidateTransaction() && props.row.approve == 'PENDING'"
+              v-if="canValidateTransaction() && props.row.approve === 'PENDING'"
             />
 
             <q-btn
@@ -66,7 +66,7 @@
               dense
               unelevated
               @click="onDeclineRecord(props.row, 'Decline')"
-              v-if="canValidateTransaction() && props.row.approve == 'PENDING'"
+              v-if="canValidateTransaction() && props.row.approve === 'PENDING'"
             />
 
             <!-- button to handle edit, view and delete of row data  q-px-sm -->
@@ -243,7 +243,7 @@
         <q-card-section>
           <div class="row">
             <div class="col-md-12">
-              <label for="msg">
+              <label>
                 <span class="text-weight-bold"
                   >{{ $t("app.doYouKnow") }}{{ chosen_state }}
                   {{ approve_msg }}</span
@@ -269,7 +269,7 @@
 
         <q-card-actions align="right" class="q-ma-md">
           <q-btn
-            :class="chosen_state == 'Approve' ? 'approve' : 'decline'"
+            :class="chosen_state === 'Approve' ? 'approve' : 'decline'"
             size="md"
             :label="$t('app.cancel')"
             flat
@@ -277,7 +277,7 @@
             no-caps
           />
           <q-btn
-            :class="chosen_state == 'Approve' ? 'approve' : 'decline'"
+            :class="chosen_state === 'Approve' ? 'approve' : 'decline'"
             size="md"
             :label="chosen_state"
             flat

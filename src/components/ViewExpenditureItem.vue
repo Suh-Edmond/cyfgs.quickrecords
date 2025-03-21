@@ -3,7 +3,7 @@
     <div>
       <div class="flex justify-between q-mb-md">
         <div>
-          <label for="expenditure_item" class="label"
+          <label class="label"
             ><span> <q-icon name="category" size="xs" class="q-pr-sm" /> </span
             >{{ $t("app.paymentItem") }}
           </label>

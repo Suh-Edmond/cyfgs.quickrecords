@@ -174,11 +174,11 @@ export default {
 
     validateSearchData(data, state, session_id, month, date, range) {
       let validate_data = {
-        status: data.status != undefined ? data.status : state,
-        year: data.year != undefined ? data.year : session_id,
-        month: data.month != undefined ? data.month : month,
-        date: data.date != undefined ? data.date : date,
-        range: data.date_range != undefined ? data.date_range : range,
+        status: data.status !== undefined ? data.status : state,
+        year: data.year !== undefined ? data.year : session_id,
+        month: data.month !== undefined ? data.month : month,
+        date: data.date !== undefined ? data.date : date,
+        range: data.date_range !== undefined ? data.date_range : range,
       };
 
       return validate_data;

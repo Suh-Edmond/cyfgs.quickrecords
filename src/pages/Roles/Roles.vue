@@ -240,10 +240,11 @@
 </template>
 
 <script>
-import roleMixin from "src/mixins/roleMixin.vue";
-import ButtonVue from "src/components/Button.vue";
-import moment from "moment";
-export default {
+  import roleMixin from "src/mixins/roleMixin.vue";
+  import ButtonVue from "src/components/Button.vue";
+  import moment from "moment";
+
+  export default {
   mixins: [roleMixin],
 
   mounted() {
@@ -281,13 +282,11 @@ export default {
 
     getSelectedRole() {
       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-      let selected_role =
-        this.$store.getters.getRoles !== undefined &&
-        this.$store.getters.getRoles !== null &&
-        this.selected_role == null
-          ? this.$store.getters.getRoles[0]
-          : this.selected_role;
-      return selected_role;
+      return this.$store.getters.getRoles !== undefined &&
+      this.$store.getters.getRoles !== null &&
+      this.selected_role == null
+        ? this.$store.getters.getRoles[0]
+        : this.selected_role;
     },
   },
 

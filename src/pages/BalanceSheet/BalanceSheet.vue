@@ -87,7 +87,7 @@ export default {
   },
   computed: {
     validateDownloadBtn() {
-      return false;
+      return this.balance_sheet_data === null;
     },
 
     setTableHeader() {

@@ -252,40 +252,51 @@
     <div v-if="exist_organisation" class="q-mb-xl">
       <div class="flex justify-center">
         <q-card class="text-dark" flat>
-          <q-card-section class="flex flex-center">
-            <q-avatar
-              size="150px"
-              font-size="52px"
-              v-if="organisation.logo != null"
-            >
-              <img :src="getOrganisationLogo" alt="" width="160px" />
-            </q-avatar>
-            <q-avatar
-              size="150px"
-              font-size="52px"
-              color="grey-3"
-              v-if="organisation.logo == null"
-            >
-            </q-avatar>
+          <q-card-section class="flex justify-between">
             <div>
-              <input
-                type="file"
-                accept="image/x-png,image/jpg,image/jpeg"
-                style="display: none"
-                id="logo"
-                @change="onFileChanged"
-              />
-              <q-icon
-                name="add_a_photo"
-                size="sm"
-                class="camara"
-                @click="openFileUpload"
+              <q-avatar
+                size="120px"
+                font-size="52px"
+                v-if="organisation.logo != null"
               >
-                <q-tooltip>{{ $t("app.uploadLogo") }}</q-tooltip>
-              </q-icon>
+                <img src="../../assets/pcc_logo.png" alt="" width="499" />
+              </q-avatar>
+            </div>
+            <div>
+              <q-avatar
+                size="120px"
+                font-size="52px"
+                v-if="organisation.logo != null"
+              >
+                <img :src="getOrganisationLogo" alt="" width="150px" />
+              </q-avatar>
+              <q-avatar
+                size="120px"
+                font-size="52px"
+                color="grey-3"
+                v-if="organisation.logo == null"
+              >
+              </q-avatar>
+              <div>
+                <input
+                  type="file"
+                  accept="image/x-png,image/jpg,image/jpeg"
+                  style="display: none"
+                  id="logo"
+                  @change="onFileChanged"
+                />
+                <q-icon
+                  name="add_a_photo"
+                  size="sm"
+                  class="camara"
+                  @click="openFileUpload"
+                >
+                  <q-tooltip>{{ $t("app.uploadLogo") }}</q-tooltip>
+                </q-icon>
+              </div>
             </div>
           </q-card-section>
-          <q-card-section>
+          <q-card-section class="q-mt-xl">
             <div class="flex">
               <div class="text-h6 title">
                 {{ $t("app.organisationMgtHeading") }}
@@ -308,7 +319,7 @@
               </div>
             </div>
           </q-card-section>
-          <q-card-section class="q-pt-none">
+          <q-card-section>
             <p>
               <q-icon name="diversity_3" size="xs"></q-icon>
               <span class="q-pl-sm text-body1 text-weight-medium">{{
@@ -639,7 +650,7 @@ export default {
 .camara {
   position: absolute;
   top: 70%;
-  left: 53%;
+  left: 96%;
   cursor: pointer;
   color: $grey8;
 }

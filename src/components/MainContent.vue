@@ -247,7 +247,10 @@ export default {
       (role) => role.name !== "MEMBER"
     ).name;
     this.auth_user_role = this.formatUserRole(welcome_title);
-    this.getNotifications();
+    if(this.checkPresidentOrAdminRole()){
+      this.getNotifications();
+    }
+
   },
   props: {
     item: {
@@ -548,7 +551,6 @@ export default {
         msg: this.$t("app.saveContributionSuccessMsg"),
         show_feedback: false,
         show_spinner: false,
-        msg: "none",
         color: "default",
         error_msg: "default",
         commit: "none",

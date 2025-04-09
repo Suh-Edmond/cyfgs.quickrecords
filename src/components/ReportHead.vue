@@ -80,8 +80,7 @@ import moment from "moment";
 export default {
   computed: {
     getOrganisation() {
-      console.log(this.$store.getters.getOrganisation)
-      return this.$store.getters.getOrganisation;
+       return this.$store.getters.getOrganisation;
     },
 
     getPrintedDate() {
@@ -95,7 +94,6 @@ export default {
     },
 
     getOrganisationTelephone(){
-      console.log(this.$store.getters.getOrganisation.telephone.split("/"))
       return this.$store.getters.getOrganisation.telephone.split("/");
     }
   },

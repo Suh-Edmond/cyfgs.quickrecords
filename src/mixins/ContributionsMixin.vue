@@ -62,7 +62,7 @@ export default {
       );
       this.loading = true;
       let id =
-        data.payment_item_id.value != undefined
+        data.payment_item_id.value !== undefined
           ? data.payment_item_id.value
           : data.payment_item_id;
       let url = `/api/protected/organisations/contributions/search?payment_item_id=${id}&year=${validate_data.year}&month=${validate_data.month}&date=${validate_data.date}&range=${validate_data.range}&status=${validate_data.status}&page=${page}&per_page=${per_page}`;
@@ -160,7 +160,7 @@ export default {
     },
 
     setSearchedPayload(data) {
-      let search_payload = {
+      return {
         item: data.payment_item_id,
         status: data.status,
         year: data.year,
@@ -168,20 +168,16 @@ export default {
         date: data.date,
         range: data.range,
       };
-
-      return search_payload;
     },
 
     validateSearchData(data, state, session_id, month, date, range) {
-      let validate_data = {
+      return {
         status: data.status !== undefined ? data.status : state,
         year: data.year !== undefined ? data.year : session_id,
         month: data.month !== undefined ? data.month : month,
         date: data.date !== undefined ? data.date : date,
         range: data.date_range !== undefined ? data.date_range : range,
       };
-
-      return validate_data;
     },
 
     setSearchRoute(data, status, year, month, date, range, amount) {

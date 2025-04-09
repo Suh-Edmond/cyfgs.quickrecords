@@ -311,6 +311,7 @@
                 @input="setPaymentItemBalance"
                 :disable="has_completed_payment"
                 hide-bottom-space
+                autofocus
               >
               </q-input>
               <label v-if="checkPaymentItemBal" class="text-red">
@@ -323,6 +324,33 @@
                   {{ selected_payment_item.label }}</b
                 >
               </label>
+            </div>
+            <div class="q-mb-md">
+              <label class="form_field"
+              >{{ $t("app.paymentDate") }} <span class="text-red">*</span></label
+              >
+              <q-input
+                v-model="contribution.date"
+                outlined
+                dense
+                :disable="has_completed_payment"
+              >
+                <template v-slot:append>
+                  <q-icon name="event" class="cursor-pointer">
+                    <q-popup-proxy
+                      ref="qDateProxy"
+                      transition-show="scale"
+                      transition-hide="scale"
+                    >
+                      <q-date v-model="contribution.date">
+                        <div class="row items-center justify-end">
+                          <q-btn v-close-popup label="Close" color="primary" flat />
+                        </div>
+                      </q-date>
+                    </q-popup-proxy>
+                  </q-icon>
+                </template>
+              </q-input>
             </div>
             <div class="q-mb-md">
               <label class="form_field"
@@ -359,7 +387,7 @@
                 <q-btn
                   :label="$t('app.reset')"
                   :color="'primary'"
-                  :disabled="!validateForm"
+                  :disabled="false"
                   no-caps
                   outline
                   @click="resetForm"
@@ -516,7 +544,7 @@
                 </div>
                 <div
                   class="q-mb-md flex"
-                  v-if="selected_payment_item.frequency == 'MONTHLY'"
+                  v-if="selected_payment_item.frequency === 'MONTHLY'"
                 >
                   <label class="form_field">{{
                     $t("app.monthsLabel")
@@ -537,7 +565,7 @@
                 </div>
                 <div
                   class="q-mb-md flex"
-                  v-if="selected_payment_item.frequency == 'QUARTERLY'"
+                  v-if="selected_payment_item.frequency === 'QUARTERLY'"
                 >
                   <label class="form_field"
                     >{{ $t("app.quarter") }}:</label
@@ -703,6 +731,7 @@
                   type="number"
                   @input="setPaymentItemBalance"
                   :disable="has_completed_payment"
+                  autofocus
                 >
                 </q-input>
                 <label v-if="checkPaymentItemBal" class="text-red">
@@ -721,6 +750,33 @@
                     {{ selected_payment_item.label }}</b
                   >
                 </label>
+              </div>
+              <div class="q-mb-md">
+                <label class="form_field"
+                >{{ $t("app.paymentDate") }} <span class="text-red">*</span></label
+                >
+                <q-input
+                  v-model="contribution.date"
+                  outlined
+                  dense
+                  :disable="has_completed_payment"
+                >
+                  <template v-slot:append>
+                    <q-icon name="event" class="cursor-pointer">
+                      <q-popup-proxy
+                        ref="qDateProxy"
+                        transition-show="scale"
+                        transition-hide="scale"
+                      >
+                        <q-date v-model="contribution.date">
+                          <div class="row items-center justify-end">
+                            <q-btn v-close-popup label="Close" color="primary" flat />
+                          </div>
+                        </q-date>
+                      </q-popup-proxy>
+                    </q-icon>
+                  </template>
+                </q-input>
               </div>
               <div class="q-mb-md">
                 <label class="form_field"
@@ -801,7 +857,7 @@
                   class="full-width"
                   :label="$t('app.reset')"
                   :color="'primary'"
-                  :disabled="!validateForm"
+                  :disabled="false"
                   no-caps
                   outline
                   @click="resetForm"
@@ -823,8 +879,10 @@ import memberMixinVue from "src/mixins/memberMixin.vue";
 import ContributionsMixinVue from "src/mixins/ContributionsMixin.vue";
 import CurrentYearMixin from "src/mixins/CurrentYearMixin.vue";
 import HelperMixin from "src/mixins/HelperMixin.vue";
+import moment from "moment";
 
 import { LocalStorage, Notify, Platform } from "quasar";
+import CategoryConstants from "components/Constants/CategoryConstants";
 
 export default {
   mixins: [
@@ -862,6 +920,7 @@ export default {
         month_name: "",
         quarterly_name: "",
         total_saving: 0,
+        date:moment(new Date()).format("YYYY/MM/DD"),
       },
       position: "right",
       error_bal: false,
@@ -875,7 +934,7 @@ export default {
       members: [],
       monthsOptions: [],
       quarterOptions: [],
-      tab: "Enter Contribution",
+      tab: CategoryConstants.ENTERED_CONTRIBUTION,
       start_filter_members: false,
       start_filtering: false,
       payment_item_members: [],
@@ -920,14 +979,14 @@ export default {
     valideteMonthlyPaymentItemFrequency() {
       return (
         this.contribution.payment_item_id !== null &&
-        this.contribution.payment_item_id.frequency === "MONTHLY"
+        this.contribution.payment_item_id.frequency === CategoryConstants.MONTHLY
       );
     },
 
     valideteQuarterlyPaymentItemFrequency() {
       return (
         this.contribution.payment_item_id !== null &&
-        this.contribution.payment_item_id.frequency === "QUARTERLY"
+        this.contribution.payment_item_id.frequency === CategoryConstants.QUARTERLY
       );
     },
 
@@ -959,7 +1018,8 @@ export default {
           comment: this.contribution.comment,
           month_name: this.contribution.month_name,
           quarterly_name: this.contribution.quarterly_name,
-          contributed_via_saving: this.getCurrentTab === "Use Saving",
+          contributed_via_saving: this.getCurrentTab === CategoryConstants.USE_SAVING,
+          date: this.contribution.date.replaceAll("/", "-")
         },
         msg: this.$t("app.saveContributionSuccessMsg"),
         color: "default",
@@ -986,14 +1046,14 @@ export default {
         );
         if (
           this.selected_payment_item !== undefined &&
-          this.selected_payment_item.frequency === "QUARTERLY"
+          this.selected_payment_item.frequency === CategoryConstants.QUARTERLY
         ) {
           this.contribution.amount_payable = this.selected_payment_item.amount;
           this.quarterOptions =
             this.selected_payment_item.payment_item_quarters;
         } else if (
           this.selected_payment_item !== undefined &&
-          this.selected_payment_item.frequency === "MONTHLY"
+          this.selected_payment_item.frequency === CategoryConstants.MONTHLY
         ) {
           this.contribution.amount_payable = this.selected_payment_item.amount;
           this.monthsOptions = this.selected_payment_item.payment_item_months;
@@ -1011,10 +1071,10 @@ export default {
 
     selectMember() {
       switch (this.contribution.payment_item_id.frequency) {
-        case "QUARTERLY":
+        case CategoryConstants.QUARTERLY:
           this.getTotalQuarterlyContributionByPaymentItem();
           break;
-        case "MONTHLY":
+        case CategoryConstants.MONTHLY:
           this.getTotalMonthlyContributionByPaymentItem();
           break;
         default:
@@ -1038,7 +1098,7 @@ export default {
         this.contribution.user_id != null
           ? this.contribution.user_id.value
           : "";
-      if (this.tab === "Enter Contribution") {
+      if (this.tab === CategoryConstants.ENTERED_CONTRIBUTION) {
         let amount_deposited_payload = {
           status: "none",
           url: `/api/protected/contributions/users/${user_id}/items/${this.contribution.payment_item_id.value}?month=${this.contribution.month_name}&quarter=${this.contribution.quarterly_name}&frequency=${this.contribution.payment_item_id.frequency}`,
@@ -1184,6 +1244,10 @@ export default {
       return this.contribution;
     },
 
+    getCurrentYearId(){
+      return this.$store.getters.getCurrentYear === null ? LocalStorage.getItem("current_session").id: this.$store.getters.getCurrentYear.id;
+    },
+
     setDispatchAction(payload, payment_item) {
       this.loading = true;
       this.$store
@@ -1191,7 +1255,7 @@ export default {
         .then(() => {
           let data = {
             payment_item_id: payment_item,
-            year: this.$store.getters.getCurrentYear.id,
+            year: this.getCurrentYearId(),
             month: "",
             date: "",
             status: "",

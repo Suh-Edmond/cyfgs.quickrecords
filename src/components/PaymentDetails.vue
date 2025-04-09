@@ -164,7 +164,7 @@
       </div>
       <div>
         <label class="value">
-          {{ getPaymentDetails.details.created_at }}
+          {{ getPaymentDetails.details.date }}
         </label>
       </div>
     </div>

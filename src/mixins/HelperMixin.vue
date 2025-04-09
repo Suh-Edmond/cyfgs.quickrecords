@@ -106,6 +106,14 @@ export default {
       return istreasurer_only.length === auth_role.length;
     },
 
+    checkPresidentOrAdminRole() {
+      const canViewNotification = LocalStorage.getItem("data")
+        .user_data.roles.map((role) => role.name)
+        .filter((role) => (role === "ADMIN" || role === "PRESIDENT"));
+
+      return canViewNotification.length !== 0
+    },
+
     canValidateTransaction() {
       const istreasurer = LocalStorage.getItem("data")
         .user_data.roles.map((role) => role.name)

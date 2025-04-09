@@ -147,7 +147,7 @@ export default {
     addLabel: "Add",
     removeRoleWarningMsg: "Are you sure you want to remove this role ?",
     role: "Role",
-    confirmPaymentLabel: "Confirm Payment(s)",
+    confirmPaymentLabel: "Confirm Payment",
     sn: "S/N",
     paymentItem: "Payment Item",
     amount: "Amount",

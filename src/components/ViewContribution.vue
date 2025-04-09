@@ -294,13 +294,15 @@ export default {
         user_id: null,
         user_name: null,
         user_telephone: null,
+        date:null
       },
     };
   },
   computed: {
     getFormatedCreatedDate() {
+      console.log(this.$store.getters.getSelectedContribution)
       return moment(
-        this.$store.getters.getSelectedContribution.created_at
+        this.$store.getters.getSelectedContribution.date
       ).format("MMMM Do YYYY");
     },
 

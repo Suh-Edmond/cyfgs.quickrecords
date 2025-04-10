@@ -11,10 +11,10 @@
       v-if="show_banner"
     >
       <span class="registration_text">
-        {{ $t("app.changeIncomeActivityCaption") }}</span
+        {{ $t("app.updateSponsorshipCaption") }}</span
       >
       <span class="text-lowercase registration_text">{{
-        getCurrentIncomeActivity.approve
+        getCurrentSponsorship.approve
       }}</span>
       <template v-slot:action>
         <q-btn flat icon="close" size="sm" @click="closeBanner()" />
@@ -33,7 +33,7 @@
         >{{ $t("app.paymentItem") }}</label
         >
         <q-input
-          v-model="getCurrentIncomeActivity.payment_item.name"
+          v-model="getCurrentSponsorship.payment_item.name"
           outlined
           dense
           type="text"
@@ -46,47 +46,7 @@
         >{{ $t("app.nameLabel") }}</label
         >
         <q-input
-          v-model="getCurrentIncomeActivity.name"
-          outlined
-          dense
-          type="text"
-          readonly
-          hide-bottom-space
-        />
-      </div>
-      <div class="q-mb-md">
-        <label class="form_field"
-        >{{ $t("app.date") }}</label
-        >
-        <q-input
-          v-model="getCurrentIncomeActivity.date"
-          outlined
-          dense
-          readonly
-        >
-          <template v-slot:append>
-            <q-icon name="event" class="cursor-pointer">
-              <q-popup-proxy
-                ref="qDateProxy"
-                transition-show="scale"
-                transition-hide="scale"
-              >
-                <q-date v-model="getCurrentIncomeActivity.date">
-                  <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Close" color="primary" flat />
-                  </div>
-                </q-date>
-              </q-popup-proxy>
-            </q-icon>
-          </template>
-        </q-input>
-      </div>
-      <div class="q-mb-md">
-        <label class="form_field"
-        >{{ $t("app.venue") }}</label
-        >
-        <q-input
-          v-model="getCurrentIncomeActivity.venue"
+          v-model="getCurrentSponsorship.supporter"
           outlined
           dense
           type="text"
@@ -99,7 +59,7 @@
         >{{ $t("app.oldAmount") }}</label
         >
         <q-input
-          v-model="getCurrentIncomeActivity.amount"
+          v-model="getOldAmountDeposited"
           outlined
           dense
           type="number"
@@ -112,7 +72,7 @@
         >{{ $t("app.newAmount") }}<span class="text-red q-ml-xs">*</span></label
         >
         <q-input
-          v-model="income_activity_history.new_amount_deposited"
+          v-model="sponsorship_history.new_amount_deposited"
           outlined
           dense
           type="number"
@@ -124,7 +84,7 @@
           $t("app.reason")
           }}<span class="text-red q-ml-xs">*</span></label>
         <q-input
-          v-model="income_activity_history.reason"
+          v-model="sponsorship_history.reason"
           outlined
           dense
           autogrow
@@ -180,14 +140,14 @@
 </template>
 
 <script>
-    import IncomeActivityMixinVue from "src/mixins/IncomeActivityMixin";
+    import SponsorshipMixin from "src/mixins/SponsorshipMixin";
     import TransactionStatus from "components/Constants/TransactionStatus";
     import TransactionDataGroup from "components/Constants/TransactionDataGroup";
     import ButtonVue from "components/Button";
 
     export default {
       name: "ChangeSponsorshipTransactionHistory",
-      mixins: [IncomeActivityMixinVue],
+      mixins: [SponsorshipMixin],
       props: {
         sponsorship: {
           type: Object,
@@ -195,21 +155,21 @@
         },
       },
       mounted() {
-        this.$emit("set-heading", this.$t("app.updateIncomeActivityTitleComponent"));
+        this.$emit("set-heading", this.$t("app.updateSponsorshipTitleComponent"));
       },
 
       data() {
         return {
           loading: false,
           payment_statuses: [TransactionStatus.PENDING, TransactionStatus.APPROVED, TransactionStatus.DECLINED],
-          income_activity_history: {
+          sponsorship_history: {
             reason: null,
-            old_amount_deposited: this.incomeActivity.amount,
-            reference_data: this.incomeActivity.id,
+            old_amount_deposited: parseInt(this.sponsorship.amount_deposited),
+            reference_data: this.sponsorship.id,
             organisation_id: null,
-            approve: this.incomeActivity.approve,
+            approve: this.sponsorship.approve,
             new_amount_deposited: 0,
-            transaction_data_group:TransactionDataGroup.INCOME_ACTIVITY
+            transaction_data_group:TransactionDataGroup.SPONSORSHIP
           },
           position: "right",
           organisation_id: this.$store.getters.getOrganisation.id,
@@ -219,24 +179,26 @@
       computed: {
         validateForm() {
           return (
-            this.income_activity_history.new_amount_deposited === 0 ||
-            this.income_activity_history.reason == null ||
-            this.income_activity_history.reason.length < 30 ||
-            this.income_activity_history.approve == null
+            this.sponsorship_history.new_amount_deposited === 0 ||
+            this.sponsorship_history.reason == null ||
+            this.sponsorship_history.reason.length < 30 ||
+            this.sponsorship_history.approve == null
           );
         },
 
-        getCurrentIncomeActivity() {
-          return this.incomeActivity;
+        getCurrentSponsorship() {
+          return this.sponsorship;
         },
-
+        getOldAmountDeposited() {
+          return parseInt(this.sponsorship.amount_deposited);
+        }
       },
 
       methods: {
         onUpdateIncomeActivityHistory() {
           let payload = {
             url: `/api/protected/transactions/update-history`,
-            data: this.income_activity_history,
+            data: this.sponsorship_history,
             msg: this.$t("app.addIncomeSuccessFeedbackMsg"),
             color: "default",
             to_on_ok: "none",
@@ -253,9 +215,8 @@
           };
           this.loading = true;
           this.$store.dispatch("postRequest", payload).then((res) => {
-            let payment_item_id = this.incomeActivity.payment_item.id;
-            let session_id = this.incomeActivity.session.id;
-            this.getPaymentItemIncomeActivities(payment_item_id, 1, 10, session_id, this.organisation_id);
+            let payment_item_id = this.sponsorship.payment_item.id;
+            this.getAllSponsorships( 1, 10, payment_item_id, "");
           }).finally(() => {
             this.$emit("close-right-drawer");
             this.loading = false;
@@ -265,12 +226,12 @@
         },
 
         resetForm() {
-          this.income_activity_history.new_amount_deposited = 0;
-          this.income_activity_history.approve = this.incomeActivity.approve;
-          this.income_activity_history.reason = null;
-          this.income_activity_history.reference_data = this.incomeActivity.id
+          this.sponsorship_history.new_amount_deposited = 0;
+          this.sponsorship_history.approve = this.incomeActivity.approve;
+          this.sponsorship_history.reason = null;
+          this.sponsorship_history.reference_data = this.incomeActivity.id
 
-          return this.income_activity_history;
+          return this.sponsorship_history;
         },
         closeBanner(){
           return this.show_banner = !this.show_banner;

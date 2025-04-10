@@ -631,6 +631,8 @@ export default {
     reason:"Reason",
     reasonCaption:"Provide a reason for making this change",
     updateIncomeActivityTitleComponent:"Update Income Activity History",
-    changeIncomeActivityCaption:"You are about to update an income activity transaction that has been "
+    changeIncomeActivityCaption:"You are about to update an income activity transaction that has been ",
+    updateSponsorshipTitleComponent:"Update Sponsorship Transaction History",
+    updateSponsorshipCaption:"You are about to update a sponsorship transaction that has been "
   },
 };

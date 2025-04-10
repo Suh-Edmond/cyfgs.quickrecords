@@ -228,6 +228,7 @@
               @search-contribution="searchContribution"
               @view-payment-details="onViewPaymentDetails"
               @update-income-activity-history="updateIncomeActivityHistory"
+              @update-sponsorship-history="updateSponsorshipHistory"
             />
           </div>
         </q-card-section>
@@ -463,6 +464,10 @@ export default {
     },
 
     editContribution(data) {
+      this.updateDrawer(data);
+    },
+
+    updateSponsorshipHistory(data){
       this.updateDrawer(data);
     },
 

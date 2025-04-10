@@ -233,7 +233,6 @@
     },
 
     methods: {
-
       onUpdateIncomeActivityHistory() {
         let payload = {
           url: `/api/protected/transactions/update-history`,

@@ -378,10 +378,18 @@ export default {
         data: data,
         tab: this.$t("app.sponsorshipMgt"),
       };
-
       this.$store.dispatch("setSelectedSponsorship", data);
 
-      this.$emit("edit-sponsorship", payload);
+      if(this.checkPresidentOrAdminRole()){
+        let transactionHistoryPayload = {
+          data: data,
+          tab: "Change Sponsorship History",
+        };
+        this.$emit("update-sponsorship-history", transactionHistoryPayload);
+      }else {
+        this.$emit("edit-sponsorship", payload);
+      }
+
     },
     onDeleteSupport(data) {
       this.dialog = true;

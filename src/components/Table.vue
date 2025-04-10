@@ -1384,7 +1384,6 @@
     },
 
     onChangeRecordState() {
-      console.log(this.approve_data)
       let payload = {
         url: this.setApproveUrlBaseOnType(this.approve_data),
         msg: this.setApproveFeedbackMsg(this.approve_data),
@@ -1596,7 +1595,16 @@
       };
       this.$store.dispatch("setUpdatedIncomeActivity", data);
 
-      this.$emit("edit-income-activity", payload);
+      if(this.checkPresidentOrAdminRole()){
+        let transactionHistoryPayload = {
+          data: data,
+          tab: "Change Income Activity History",
+        };
+        this.$emit("update-income-activity-history", transactionHistoryPayload);
+      }else {
+        this.$emit("edit-income-activity", payload);
+      }
+
     },
 
     onViewIncomeActivity(data) {

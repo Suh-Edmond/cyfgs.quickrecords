@@ -268,7 +268,7 @@ export default {
     addSavingSuccessMsg: "Member Saving Save Successfully",
     amountDeposited: "Amount Deposited",
     transactionStatus: "Transaction Status",
-    searchTransactionStatus: "Select transaction status...",
+    searchTransactionStatus: "Select transaction status",
     action: "Action",
     markAll: "Check all",
     all: "ALL",
@@ -519,7 +519,6 @@ export default {
     appTranslationLabel: "Please wait! Translating Application's Language.",
     uploadMemberSuccessMsg: "Members uploaded successfully",
     addMemberSuccessMsg: "Member added Successfully",
-    member: "Member",
     contributionsFor: "Contributions For ",
 
     memberInviteSuccess: "Member's invitation sent successfully",
@@ -621,12 +620,17 @@ export default {
     columnNames: "Column Definitions",
     expected: "Expected",
     totalExpectedContribution: "Total Expected Contribution",
-    totalAmountContributed: "Total Amount Contributed",
     totalBalanceContribution: "Total Balance Contribution",
     balanceSheetHintMsgMobile:
       "Balance Sheet Preview is available only desktop",
     reportPreviewMsg: "Report Preview is available only on desktop.",
     ai_model:"AI Model",
     expectedAmount:"Expected Amount",
+    oldAmount:"Old Amount Deposited",
+    newAmount: "New Amount Deposited",
+    reason:"Reason",
+    reasonCaption:"Provide a reason for making this change",
+    updateIncomeActivityTitleComponent:"Update Income Activity History",
+    changeIncomeActivityCaption:"You are about to update an income activity transaction that has been "
   },
 };

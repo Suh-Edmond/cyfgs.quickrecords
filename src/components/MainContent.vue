@@ -227,6 +227,7 @@
               @register-member="registerMember"
               @search-contribution="searchContribution"
               @view-payment-details="onViewPaymentDetails"
+              @update-income-activity-history="updateIncomeActivityHistory"
             />
           </div>
         </q-card-section>
@@ -449,6 +450,9 @@ export default {
       this.updateDrawer(data);
     },
     editIncomeActivity(data) {
+      this.updateDrawer(data);
+    },
+    updateIncomeActivityHistory(data){
       this.updateDrawer(data);
     },
     viewIncomeActivity(data) {

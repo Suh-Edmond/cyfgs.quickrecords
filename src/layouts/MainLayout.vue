@@ -239,6 +239,12 @@
             @close-right-drawer="closeRightDrawer"
             @set-heading="setHeading"
           ></PaymentDetails>
+          <UpdateIncomeActivityHistory
+            v-if="current_tab === 'Change Income Activity History'"
+            @close-right-drawer="closeRightDrawer"
+            @set-heading="setHeading"
+            :incomeActivity="data"
+          ></UpdateIncomeActivityHistory>
         </div>
       </q-page>
     </q-drawer>
@@ -273,6 +279,7 @@ import ViewPaymentItem from "src/components/ViewPaymentItem.vue";
 import PaymentDetails from "src/components/PaymentDetails.vue";
 import CurrentYearMixin from "src/mixins/CurrentYearMixin.vue";
 import HelperMixin from "src/mixins/HelperMixin.vue";
+import UpdateIncomeActivityHistory from "components/UpdateIncomeActivityHistory";
 
 export default {
   mixins: [organisationMixinVue, CurrentYearMixin, HelperMixin],
@@ -589,6 +596,7 @@ export default {
     MemberRegistration,
     ViewPaymentItem,
     PaymentDetails,
+    UpdateIncomeActivityHistory
   },
 };
 </script>

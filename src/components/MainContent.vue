@@ -230,6 +230,8 @@
               @update-income-activity-history="updateIncomeActivityHistory"
               @update-sponsorship-history="updateSponsorshipHistory"
               @update-user-saving-history="updateUserSavingHistory"
+              @update-expenditure-item-transaction="updateExpenditureItemTransaction"
+              @update-expenditure-item-detail-transaction="updateExpenditureItemDetailTransaction"
             />
           </div>
         </q-card-section>
@@ -474,6 +476,13 @@ export default {
 
     updateUserSavingHistory(data){
       this.updateDrawer(data)
+    },
+    updateExpenditureItemTransaction(data){
+      this.updateDrawer(data)
+    },
+
+    updateExpenditureItemDetailTransaction(data){
+      this.updateDrawer(data);
     },
 
     formatUserRole(role) {

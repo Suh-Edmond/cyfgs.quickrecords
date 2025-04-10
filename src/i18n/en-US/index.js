@@ -635,6 +635,16 @@ export default {
     updateSponsorshipTitleComponent:"Update Sponsorship Transaction",
     updateSponsorshipCaption:"You are about to update a sponsorship transaction that has been ",
     updateUserSavingTitleComponent:"Update Member's Saving Transaction",
-    updateUserSavingCaption:"You are about to update a members's saving transaction that has been "
+    updateUserSavingCaption:"You are about to update a members's saving transaction that has been ",
+    updateExpenditureItemTitleComponent:"Update Expenditure Item Transaction",
+    updateExpenditureItemCaption:"You are about to update an expenditure item transaction that has been ",
+    oldEstimatedAmount:"Old Estimated Amount",
+    newEstimatedAmount: "New Estimated Deposited",
+    oldAmountGiven: "Old Amount Given",
+    oldAmountSpent: "Old Amount Spent",
+    newAmountGiven: "New Amount Given",
+    newAmountSpent: "New Amount Spent",
+    updateExpenditureItemDetailTitleComponent:"Update Expenditure Item Detail Transaction",
+    updateExpenditureItemDetailCaption:"You are about to update an expenditure item detail transaction that has been ",
   },
 };

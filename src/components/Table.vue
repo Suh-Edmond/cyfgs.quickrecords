@@ -1576,7 +1576,15 @@
         tab: "Savings",
       };
       this.$store.dispatch("setUpdatedMemberSaving", data);
-      this.$emit("edit-member-saving", payload);
+      if(this.checkPresidentOrAdminRole()){
+        let transactionHistoryPayload = {
+          data: data,
+          tab: "Change User Saving History",
+        };
+        this.$emit("update-user-saving-history", transactionHistoryPayload);
+      }else {
+        this.$emit("edit-member-saving", payload);
+      }
     },
 
     onViewMemberSaving(data) {

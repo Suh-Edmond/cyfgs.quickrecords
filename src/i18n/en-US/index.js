@@ -630,9 +630,11 @@ export default {
     newAmount: "New Amount Deposited",
     reason:"Reason",
     reasonCaption:"Provide a reason for making this change",
-    updateIncomeActivityTitleComponent:"Update Income Activity History",
+    updateIncomeActivityTitleComponent:"Update Income Activity Transaction",
     changeIncomeActivityCaption:"You are about to update an income activity transaction that has been ",
-    updateSponsorshipTitleComponent:"Update Sponsorship Transaction History",
-    updateSponsorshipCaption:"You are about to update a sponsorship transaction that has been "
+    updateSponsorshipTitleComponent:"Update Sponsorship Transaction",
+    updateSponsorshipCaption:"You are about to update a sponsorship transaction that has been ",
+    updateUserSavingTitleComponent:"Update Member's Saving Transaction",
+    updateUserSavingCaption:"You are about to update a members's saving transaction that has been "
   },
 };

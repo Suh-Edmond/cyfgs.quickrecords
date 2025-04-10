@@ -229,6 +229,7 @@
               @view-payment-details="onViewPaymentDetails"
               @update-income-activity-history="updateIncomeActivityHistory"
               @update-sponsorship-history="updateSponsorshipHistory"
+              @update-user-saving-history="updateUserSavingHistory"
             />
           </div>
         </q-card-section>
@@ -469,6 +470,10 @@ export default {
 
     updateSponsorshipHistory(data){
       this.updateDrawer(data);
+    },
+
+    updateUserSavingHistory(data){
+      this.updateDrawer(data)
     },
 
     formatUserRole(role) {

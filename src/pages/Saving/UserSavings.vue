@@ -29,6 +29,7 @@
         @fetch-member-saving="fetchMemberSaving"
         @view-member-saving="ViewMemberSaving"
         @edit-member-saving="editMemberSaving"
+        @update-user-saving-history="updateUserSavingHistory"
         @onRequest="onRequest"
       >
       </TableVue>
@@ -177,7 +178,6 @@ export default {
         .dispatch("getRequest", payload)
         .then(() => {
           let data = this.$store.getters.getMemberSavings;
-          console.log(data)
          if(data !== undefined){
            this.pagination.page = data.current_page;
            this.pagination.rowsPerPage = data.per_page;
@@ -201,6 +201,10 @@ export default {
 
     editMemberSaving(data) {
       this.$emit("edit-member-saving", data);
+    },
+
+    updateUserSavingHistory(data){
+      this.$emit("update-user-saving-history", data);
     },
 
     filterSavings(data) {

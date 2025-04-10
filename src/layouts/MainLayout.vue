@@ -251,6 +251,12 @@
             @set-heading="setHeading"
             :sponsorship="data">
           </ChangeSponsorshipTransactionHistory>
+          <ChangeUserSavingTransactionHistory
+            v-if="current_tab === 'Change User Saving History'"
+            @close-right-drawer="closeRightDrawer"
+            @set-heading="setHeading"
+            :userSaving="data"
+          ></ChangeUserSavingTransactionHistory>
         </div>
       </q-page>
     </q-drawer>
@@ -287,6 +293,7 @@ import CurrentYearMixin from "src/mixins/CurrentYearMixin.vue";
 import HelperMixin from "src/mixins/HelperMixin.vue";
 import UpdateIncomeActivityHistory from "components/UpdateIncomeActivityHistory";
 import ChangeSponsorshipTransactionHistory from "components/ChangeSponsorshipTransactionHistory";
+import ChangeUserSavingTransactionHistory from "components/ChangeUserSavingTransactionHistory";
 
 export default {
   mixins: [organisationMixinVue, CurrentYearMixin, HelperMixin],
@@ -604,7 +611,8 @@ export default {
     ViewPaymentItem,
     PaymentDetails,
     UpdateIncomeActivityHistory,
-    ChangeSponsorshipTransactionHistory
+    ChangeSponsorshipTransactionHistory,
+    ChangeUserSavingTransactionHistory
   },
 };
 </script>

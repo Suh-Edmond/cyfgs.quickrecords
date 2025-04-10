@@ -436,7 +436,7 @@ export default {
 }
 
 .text_h6 {
-  color: $dark;
+  color: $primary;
   font-family: "Roboto";
   font-style: normal;
   font-weight: 600;

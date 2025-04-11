@@ -23,6 +23,7 @@
         @view-sponsorship="viewSponsorship"
         @edit-sponsorship="editSponsorship"
         @onRequest="onRequest"
+        @update-sponsorship-history="updateSponsorshipHistory"
       >
       </SponsorshipTable>
     </div>
@@ -278,6 +279,10 @@
 
     editSponsorship(data) {
       this.$emit("edit-sponsorship", data);
+    },
+
+    updateSponsorshipHistory(data){
+      this.$emit("update-sponsorship-history", data);
     },
 
     setSearchVariables(data) {

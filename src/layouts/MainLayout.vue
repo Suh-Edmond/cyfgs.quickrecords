@@ -239,6 +239,43 @@
             @close-right-drawer="closeRightDrawer"
             @set-heading="setHeading"
           ></PaymentDetails>
+          <UpdateIncomeActivityHistory
+            v-if="current_tab === 'Change Income Activity History'"
+            @close-right-drawer="closeRightDrawer"
+            @set-heading="setHeading"
+            :incomeActivity="data"
+          ></UpdateIncomeActivityHistory>
+          <ChangeSponsorshipTransactionHistory
+            v-if="current_tab === 'Change Sponsorship History'"
+            @close-right-drawer="closeRightDrawer"
+            @set-heading="setHeading"
+            :sponsorship="data">
+          </ChangeSponsorshipTransactionHistory>
+          <ChangeUserSavingTransactionHistory
+            v-if="current_tab === 'Change User Saving History'"
+            @close-right-drawer="closeRightDrawer"
+            @set-heading="setHeading"
+            :userSaving="data"
+          ></ChangeUserSavingTransactionHistory>
+          <ChangeExpenditureItemTransaction
+            v-if="current_tab === 'Change Expenditure Item Transaction'"
+            @close-right-drawer="closeRightDrawer"
+            @set-heading="setHeading"
+            :expenditureItemData="data"
+          >
+          </ChangeExpenditureItemTransaction>
+          <ChangeExpenditureItemDetailTransaction
+            v-if="current_tab === 'Change Expenditure Item Detail Transaction'"
+            @close-right-drawer="closeRightDrawer"
+            @set-heading="setHeading"
+            :expenditureItemDetailData="data"
+          ></ChangeExpenditureItemDetailTransaction>
+          <UpdateUserContributionTransaction
+            v-if="current_tab === 'Change User Contribution Transaction'"
+            @close-right-drawer="closeRightDrawer"
+            @set-heading="setHeading"
+            :userContribution="data">
+          </UpdateUserContributionTransaction>
         </div>
       </q-page>
     </q-drawer>
@@ -247,7 +284,7 @@
 
 <script>
 import MainContent from "src/components/MainContent.vue";
-import { LocalStorage, Platform, SessionStorage } from "quasar";
+import { LocalStorage, SessionStorage } from "quasar";
 import AddMember from "src/components/AddMember.vue";
 import AddPaymentCategory from "src/components/AddPaymentCategory.vue";
 import AddPaymentItem from "src/components/AddPaymentItem.vue";
@@ -273,6 +310,12 @@ import ViewPaymentItem from "src/components/ViewPaymentItem.vue";
 import PaymentDetails from "src/components/PaymentDetails.vue";
 import CurrentYearMixin from "src/mixins/CurrentYearMixin.vue";
 import HelperMixin from "src/mixins/HelperMixin.vue";
+import UpdateIncomeActivityHistory from "components/UpdateIncomeActivityHistory";
+import ChangeSponsorshipTransactionHistory from "components/ChangeSponsorshipTransactionHistory";
+import ChangeUserSavingTransactionHistory from "components/ChangeUserSavingTransactionHistory";
+import ChangeExpenditureItemTransaction from "components/ChangeExpenditureItemTransaction";
+import ChangeExpenditureItemDetailTransaction from "components/ChangeExpenditureItemDetailTransaction";
+import UpdateUserContributionTransaction from "components/UpdateUserContributionTransaction";
 
 export default {
   mixins: [organisationMixinVue, CurrentYearMixin, HelperMixin],
@@ -589,6 +632,12 @@ export default {
     MemberRegistration,
     ViewPaymentItem,
     PaymentDetails,
+    UpdateIncomeActivityHistory,
+    ChangeSponsorshipTransactionHistory,
+    ChangeUserSavingTransactionHistory,
+    ChangeExpenditureItemTransaction,
+    ChangeExpenditureItemDetailTransaction,
+    UpdateUserContributionTransaction
   },
 };
 </script>

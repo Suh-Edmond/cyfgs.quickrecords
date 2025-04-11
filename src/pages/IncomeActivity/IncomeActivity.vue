@@ -28,6 +28,7 @@
         :table_loading="getLoadingState"
         @edit-income-activity="editIncomeActivity"
         @view-income-activity="viewIncomeActivity"
+        @update-income-activity-history="updateIncomeActivityHistory"
         @delete-row="deleteRow"
         @onRequest="onRequest"
       >
@@ -158,6 +159,8 @@
             organisation_id: ele.organisation_id,
             created_at: ele.created_at,
             updated_by: ele.updated_by,
+            transactionHistory: ele.transactionHistory,
+            session: ele.session
           });
         });
       }
@@ -213,8 +216,11 @@
       this.$emit("view-income-activity", data);
     },
 
+    updateIncomeActivityHistory(data){
+      this.$emit("update-income-activity-history", data);
+    },
+
     filterIncomeActivity(payload_data, page, per_page, filter) {
-      console.log(payload_data.status);
       this.payment_item_id = payload_data.payment_item_id;
       let item_id =
         this.payment_item_id != null && this.payment_item_id !== ""
@@ -224,7 +230,7 @@
         payload_data.year != null && payload_data.year !== ""
           ? payload_data.year
           : "";
-      let search_filter = filter != null && filter !== "undefined" ? filter : "";
+      let search_filter = filter != null && true ? filter : "";
       this.month = payload_data.month;
       let month_value =
         this.month !== "" && this.month != null ? this.month.value : "";

@@ -841,7 +841,7 @@
                       clickable
                       v-close-popup
                       @click="onEditContribution(props.row)"
-                      v-if="!show_member_contribution"
+                      v-if="show_member_contribution && checkAdminPresidentRole()"
                     >
                       <q-item-section avatar class="q-mr-lg">
                         <span>
@@ -1384,7 +1384,6 @@
     },
 
     onChangeRecordState() {
-      console.log(this.approve_data)
       let payload = {
         url: this.setApproveUrlBaseOnType(this.approve_data),
         msg: this.setApproveFeedbackMsg(this.approve_data),
@@ -1577,7 +1576,15 @@
         tab: "Savings",
       };
       this.$store.dispatch("setUpdatedMemberSaving", data);
-      this.$emit("edit-member-saving", payload);
+      if(this.checkPresidentOrAdminRole()){
+        let transactionHistoryPayload = {
+          data: data,
+          tab: "Change User Saving History",
+        };
+        this.$emit("update-user-saving-history", transactionHistoryPayload);
+      }else {
+        this.$emit("edit-member-saving", payload);
+      }
     },
 
     onViewMemberSaving(data) {
@@ -1596,7 +1603,16 @@
       };
       this.$store.dispatch("setUpdatedIncomeActivity", data);
 
-      this.$emit("edit-income-activity", payload);
+      if(this.checkPresidentOrAdminRole()){
+        let transactionHistoryPayload = {
+          data: data,
+          tab: "Change Income Activity History",
+        };
+        this.$emit("update-income-activity-history", transactionHistoryPayload);
+      }else {
+        this.$emit("edit-income-activity", payload);
+      }
+
     },
 
     onViewIncomeActivity(data) {
@@ -1654,10 +1670,17 @@
         data: data,
         tab: "Edit Member Contribution",
       };
-
       this.$store.dispatch("setSelectedContribution", data);
 
-      this.$emit("edit-contribution", payload);
+      if(this.checkPresidentOrAdminRole()){
+        let transactionHistoryPayload = {
+          data: data,
+          tab: "Change User Contribution Transaction",
+        };
+        this.$emit("update-user-contribution-transaction", transactionHistoryPayload);
+      }else {
+        this.$emit("edit-contribution", payload);
+      }
     },
 
     onDeleteContribution(data) {

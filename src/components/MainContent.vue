@@ -227,6 +227,12 @@
               @register-member="registerMember"
               @search-contribution="searchContribution"
               @view-payment-details="onViewPaymentDetails"
+              @update-income-activity-history="updateIncomeActivityHistory"
+              @update-sponsorship-history="updateSponsorshipHistory"
+              @update-user-saving-history="updateUserSavingHistory"
+              @update-expenditure-item-transaction="updateExpenditureItemTransaction"
+              @update-expenditure-item-detail-transaction="updateExpenditureItemDetailTransaction"
+              @update-user-contribution-transaction="updateUserContributionTransaction"
             />
           </div>
         </q-card-section>
@@ -451,6 +457,9 @@ export default {
     editIncomeActivity(data) {
       this.updateDrawer(data);
     },
+    updateIncomeActivityHistory(data){
+      this.updateDrawer(data);
+    },
     viewIncomeActivity(data) {
       this.updateDrawer(data);
     },
@@ -462,6 +471,24 @@ export default {
       this.updateDrawer(data);
     },
 
+    updateSponsorshipHistory(data){
+      this.updateDrawer(data);
+    },
+
+    updateUserSavingHistory(data){
+      this.updateDrawer(data)
+    },
+    updateExpenditureItemTransaction(data){
+      this.updateDrawer(data)
+    },
+
+    updateExpenditureItemDetailTransaction(data){
+      this.updateDrawer(data);
+    },
+
+    updateUserContributionTransaction(data){
+      this.updateDrawer(data);
+    },
     formatUserRole(role) {
       let user_role = null;
       if (role === "FINANCIAL_SECRETARY") {

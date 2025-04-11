@@ -841,7 +841,7 @@
                       clickable
                       v-close-popup
                       @click="onEditContribution(props.row)"
-                      v-if="!show_member_contribution"
+                      v-if="show_member_contribution && checkAdminPresidentRole()"
                     >
                       <q-item-section avatar class="q-mr-lg">
                         <span>
@@ -1670,10 +1670,17 @@
         data: data,
         tab: "Edit Member Contribution",
       };
-
       this.$store.dispatch("setSelectedContribution", data);
 
-      this.$emit("edit-contribution", payload);
+      if(this.checkPresidentOrAdminRole()){
+        let transactionHistoryPayload = {
+          data: data,
+          tab: "Change User Contribution Transaction",
+        };
+        this.$emit("update-user-contribution-transaction", transactionHistoryPayload);
+      }else {
+        this.$emit("edit-contribution", payload);
+      }
     },
 
     onDeleteContribution(data) {

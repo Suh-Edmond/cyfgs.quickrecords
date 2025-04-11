@@ -646,5 +646,9 @@ export default {
     newAmountSpent: "New Amount Spent",
     updateExpenditureItemDetailTitleComponent:"Update Expenditure Item Detail Transaction",
     updateExpenditureItemDetailCaption:"You are about to update an expenditure item detail transaction that has been ",
+    newBalance: "New Balance",
+    updateUserContributionTitleComponent:"Update User Contribution Transaction",
+    updateUserContributionCaption:"You are about to update an user contribution transaction that has been ",
+
   },
 };

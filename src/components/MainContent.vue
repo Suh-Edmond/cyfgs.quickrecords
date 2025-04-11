@@ -232,6 +232,7 @@
               @update-user-saving-history="updateUserSavingHistory"
               @update-expenditure-item-transaction="updateExpenditureItemTransaction"
               @update-expenditure-item-detail-transaction="updateExpenditureItemDetailTransaction"
+              @update-user-contribution-transaction="updateUserContributionTransaction"
             />
           </div>
         </q-card-section>
@@ -485,6 +486,9 @@ export default {
       this.updateDrawer(data);
     },
 
+    updateUserContributionTransaction(data){
+      this.updateDrawer(data);
+    },
     formatUserRole(role) {
       let user_role = null;
       if (role === "FINANCIAL_SECRETARY") {

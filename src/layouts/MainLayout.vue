@@ -270,6 +270,12 @@
             @set-heading="setHeading"
             :expenditureItemDetailData="data"
           ></ChangeExpenditureItemDetailTransaction>
+          <UpdateUserContributionTransaction
+            v-if="current_tab === 'Change User Contribution Transaction'"
+            @close-right-drawer="closeRightDrawer"
+            @set-heading="setHeading"
+            :userContribution="data">
+          </UpdateUserContributionTransaction>
         </div>
       </q-page>
     </q-drawer>
@@ -309,6 +315,7 @@ import ChangeSponsorshipTransactionHistory from "components/ChangeSponsorshipTra
 import ChangeUserSavingTransactionHistory from "components/ChangeUserSavingTransactionHistory";
 import ChangeExpenditureItemTransaction from "components/ChangeExpenditureItemTransaction";
 import ChangeExpenditureItemDetailTransaction from "components/ChangeExpenditureItemDetailTransaction";
+import UpdateUserContributionTransaction from "components/UpdateUserContributionTransaction";
 
 export default {
   mixins: [organisationMixinVue, CurrentYearMixin, HelperMixin],
@@ -629,7 +636,8 @@ export default {
     ChangeSponsorshipTransactionHistory,
     ChangeUserSavingTransactionHistory,
     ChangeExpenditureItemTransaction,
-    ChangeExpenditureItemDetailTransaction
+    ChangeExpenditureItemDetailTransaction,
+    UpdateUserContributionTransaction
   },
 };
 </script>

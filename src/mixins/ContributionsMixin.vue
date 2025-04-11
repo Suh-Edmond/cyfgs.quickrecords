@@ -113,9 +113,11 @@ export default {
       transaction_status,
       payment_status
     ) {
+      let pageNum = 1;
+      let perPage = 10;
       let payload = {
         status: "none",
-        url: `/api/protected/contributions/payment-items/${payment_item_id}/users/${user_id}&page=${page}&per_page=${per_page}&transaction_status=${transaction_status}&payment_status=${payment_status}`,
+        url: `/api/protected/contributions/payment-items/${payment_item_id}/users/${user_id}?page=${pageNum}&per_page=${perPage}&transaction_status=${transaction_status}&payment_status=${payment_status}`,
         has_path_val: true,
         show_feedback: false,
         show_spinner: true,

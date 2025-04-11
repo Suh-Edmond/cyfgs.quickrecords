@@ -11,10 +11,10 @@
       v-if="show_banner"
     >
       <span class="registration_text">
-        {{ $t("app.updateExpenditureItemDetailCaption") }}</span
+        {{ $t("app.updateUserContributionCaption") }}</span
       >
       <span class="text-lowercase registration_text">{{
-        getCurrentExpenditureItemDetail.approve
+        getCurrentUserContribution.approve
       }}</span>
       <template v-slot:action>
         <q-btn flat icon="close" size="sm" @click="closeBanner()" />
@@ -30,10 +30,10 @@
     <q-form @submit="onUpdateExpenditureItemDetailTransaction" class="q-gutter-md">
       <div class="q-mb-md">
         <label class="form_field"
-        >{{ $t("app.nameLabel") }}</label
+        >{{ $t("app.paymentItem") }}</label
         >
         <q-input
-          v-model="expenditureItemDetailData.name"
+          v-model="userContribution.payment_item_name"
           outlined
           dense
           type="text"
@@ -43,10 +43,10 @@
       </div>
       <div class="q-mb-md">
         <label class="form_field"
-        >{{ $t("app.oldAmountGiven") }}</label
+        >{{ $t("app.totalAmountPayable") }}</label
         >
         <q-input
-          v-model="expenditureItemDetailData.amount_given"
+          v-model="getContributionSummary.payment_item.amount"
           outlined
           dense
           type="number"
@@ -56,10 +56,23 @@
       </div>
       <div class="q-mb-md">
         <label class="form_field"
-        >{{ $t("app.oldAmountSpent") }}</label
+        >{{ $t("app.memberName") }}</label
         >
         <q-input
-          v-model="expenditureItemDetailData.amount_spent"
+          v-model="userContribution.user_name"
+          outlined
+          dense
+          type="text"
+          readonly
+          hide-bottom-space
+        />
+      </div>
+      <div class="q-mb-md">
+        <label class="form_field"
+        >{{ $t("app.totalAmountDeposited") }}</label
+        >
+        <q-input
+          v-model="getContributionSummary.total_amount"
           outlined
           dense
           type="number"
@@ -69,34 +82,51 @@
       </div>
       <div class="q-mb-md">
         <label class="form_field"
-        >{{ $t("app.newAmountGiven") }}<span class="text-red q-ml-xs">*</span></label
+        >{{ $t("app.totalBalance") }}</label
         >
         <q-input
-          v-model="expenditure_item_detail_transaction.new_amount_given"
+          v-model="computeTotalBalanceAfterUpdate"
           outlined
           dense
           type="number"
+          readonly
           hide-bottom-space
         />
       </div>
       <div class="q-mb-md">
         <label class="form_field"
-        >{{ $t("app.newAmountSpent") }}<span class="text-red q-ml-xs">*</span></label
+        >{{ $t("app.oldAmount") }}</label
         >
         <q-input
-          v-model="expenditure_item_detail_transaction.new_amount_spent"
+          v-model="userContribution.amount_deposited"
+          outlined
+          dense
+          type="number"
+          readonly
+          hide-bottom-space
+        />
+      </div>
+      <div class="q-mb-md">
+        <label class="form_field"
+        >{{ $t("app.newAmount") }}<span class="text-red q-ml-xs">*</span></label
+        >
+        <q-input
+          v-model="contribution_transaction.new_amount_deposited"
           outlined
           dense
           type="number"
           hide-bottom-space
         />
+        <label v-if="computeTotalBalanceAfterUpdate < 0" class="text-red">
+          <b>{{ $t("app.excessAmountLabel") }}</b>
+        </label>
       </div>
       <div class="q-mb-md">
         <label class="form_field">{{
           $t("app.reason")
           }}<span class="text-red q-ml-xs">*</span></label>
         <q-input
-          v-model="expenditure_item_detail_transaction.reason"
+          v-model="contribution_transaction.reason"
           outlined
           dense
           autogrow
@@ -154,34 +184,35 @@
 <script>
   import TransactionDataGroup from "components/Constants/TransactionDataGroup";
   import ButtonVue from "components/Button";
-  import ExpenditureItemDetailMixin from "src/mixins/ExpenditureItemDetailMixin";
+  import ContributionsMixin from "src/mixins/ContributionsMixin";
+  import {Notify, Platform} from "quasar";
 
   export default {
     name: "ChangeExpenditureItemTransaction",
-    mixins: [ExpenditureItemDetailMixin],
+    mixins: [ContributionsMixin],
     props: {
-      expenditureItemDetailData: {
+      userContribution: {
         type: Object,
         required: true,
       },
     },
     mounted() {
-      this.$emit("set-heading", this.$t("app.updateExpenditureItemDetailTitleComponent"));
+      this.$emit("set-heading", this.$t("app.updateUserContributionTitleComponent"));
     },
 
     data() {
       return {
         loading: false,
-        expenditure_item_detail_transaction: {
+        contribution_transaction: {
           reason: null,
-          old_amount_deposited: this.expenditureItemDetailData.amount,
-          reference_data: this.expenditureItemDetailData.id,
+          old_amount_deposited: this.userContribution.amount_deposited,
+          reference_data: this.userContribution.id,
           organisation_id: this.$store.getters.getOrganisation.id,
-          approve: this.expenditureItemDetailData.approve,
+          approve: this.userContribution.approve,
           new_amount_deposited: 0,
-          transaction_data_group: TransactionDataGroup.EXPENDITURE_ITEM_DETAILS,
-          new_amount_spent: 0,
-          new_amount_given: 0
+          transaction_data_group: TransactionDataGroup.USER_CONTRIBUTIONS,
+          new_balance: 0,
+          initial_total_balance: this.$store.getters.getMemberContributions.total_balance
         },
         position: "right",
         organisation_id: this.$store.getters.getOrganisation.id,
@@ -191,17 +222,32 @@
     computed: {
       validateForm() {
         return (
-          this.expenditure_item_detail_transaction.new_amount_spent === 0 ||
-          this.expenditure_item_detail_transaction.new_amount_given === 0 ||
-          this.expenditure_item_detail_transaction.reason == null ||
-          this.expenditure_item_detail_transaction.reason.length < 30 ||
-          this.expenditure_item_detail_transaction.approve == null
+          this.contribution_transaction.old_amount_deposited === 0 ||
+          this.contribution_transaction.new_amount_deposited === 0 ||
+          this.contribution_transaction.reason == null ||
+          this.contribution_transaction.reason.length < 30 ||
+          this.contribution_transaction.approve == null
         );
       },
 
-      getCurrentExpenditureItemDetail() {
-        return this.expenditureItemDetailData;
+      getCurrentUserContribution() {
+        return this.userContribution;
       },
+
+      getContributionSummary(){
+        return this.$store.getters.getMemberContributions;
+      },
+      computeTotalBalanceAfterUpdate(){
+        let total_amount_contributed = this.$store.getters.getMemberContributions.total_amount;
+        let offset_balance = total_amount_contributed - parseInt(this.contribution_transaction.new_amount_deposited);
+
+        let total_balance = this.$store.getters.getMemberContributions.total_balance;
+        if(parseInt(this.contribution_transaction.new_amount_deposited) > 0){
+          total_balance = this.$store.getters.getMemberContributions.total_balance + offset_balance;
+        }
+
+        return total_balance;
+      }
     },
 
     methods: {
@@ -209,19 +255,19 @@
         let payload = {
           url: `/api/protected/transactions/update-history`,
           data: {
-            reason: this.expenditure_item_detail_transaction.reason,
-            old_amount_deposited: this.expenditureItemDetailData.amount_given + "/" + this.expenditureItemDetailData.amount_spent,
-            reference_data: this.expenditureItemDetailData.id,
+            reason: this.contribution_transaction.reason,
+            old_amount_deposited: this.userContribution.amount_deposited,
+            reference_data: this.userContribution.id,
             organisation_id: this.$store.getters.getOrganisation.id,
-            approve: this.expenditureItemDetailData.approve,
-            new_amount_deposited: this.expenditure_item_detail_transaction.new_amount_given + "/" + this.expenditure_item_detail_transaction.new_amount_spent,
-            transaction_data_group: TransactionDataGroup.EXPENDITURE_ITEM_DETAILS,
+            approve: this.userContribution.approve,
+            new_amount_deposited: this.contribution_transaction.new_amount_deposited,
+            transaction_data_group: TransactionDataGroup.USER_CONTRIBUTIONS,
           },
           msg: this.$t("app.saveDetailSuccessMsg"),
           color: "default",
           to_on_ok: "none",
           to_on_fail: "none",
-          show_feedback: true,
+          show_feedback: false,
           error_msg: this.$t("app.defaultErrorMsg"),
           has_commit: false,
           commit: "none",
@@ -233,7 +279,15 @@
         };
         this.loading = true;
         this.$store.dispatch("postRequest", payload).then((res) => {
-          this.getExpenditureDetailsByItemId( this.expenditureItemDetailData.expenditure_item_id, 1, 10);
+         if(res.data.status === 400){
+           Notify.create({
+             color: "info",
+             message: res.data.message,
+             type: "info",
+             position: Platform.is.mobile ? "bottom" : "top-right",
+           });
+         }
+          this.getMemberContributionsByPaymentItem(this.userContribution.payment_item_id, this.userContribution.user_id, "ALL", "ALL");
         }).finally(() => {
           this.$emit("close-right-drawer");
           this.loading = false;
@@ -243,12 +297,12 @@
       },
 
       resetForm() {
-        this.expenditure_item_detail_transaction.new_amount_deposited = 0;
-        this.expenditure_item_detail_transaction.approve = this.expenditureItemDetailData.approve;
-        this.expenditure_item_detail_transaction.reason = null;
-        this.expenditure_item_detail_transaction.reference_data = this.expenditureItemDetailData.id
+        this.contribution_transaction.new_amount_deposited = 0;
+        this.contribution_transaction.approve = this.userContribution.approve;
+        this.contribution_transaction.reason = null;
+        this.contribution_transaction.reference_data = this.userContribution.id
 
-        return this.expenditure_item_detail_transaction;
+        return this.contribution_transaction;
       },
       closeBanner(){
         return this.show_banner = !this.show_banner;

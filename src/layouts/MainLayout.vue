@@ -18,13 +18,13 @@
             </q-avatar>
           </div>
           <div
-            class="text-weight-bold text-center organisation_name text-wrap q-pt-md"
+            class="text-weight-bold text-center organisation_name text-wrap q-pt-md q-mb-xl"
             v-if="getOrganisation != null"
           >
             {{ getOrganisation.name }}
           </div>
         </div>
-        <div class="nav q-mt-lg">
+        <div class="nav q-mt-xl">
           <q-list padding>
             <q-item
               v-for="tab in getUserSideTabs()"

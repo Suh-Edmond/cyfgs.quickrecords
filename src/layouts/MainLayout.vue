@@ -11,14 +11,13 @@
     >
       <div>
         <div class="left_drawer">
-          <div class="bg-transparent q-pa-sm flex flex-center">
-            <q-avatar size="100px"
-                        v-if="getOrganisation != null">
+          <div class="q-my-md flex flex-center">
+            <q-avatar size="6rem" v-if="getOrganisation != null" class="q-py-md ">
               <q-img :src="getOrganisationLogo"> </q-img>
             </q-avatar>
           </div>
           <div
-            class="text-weight-bold text-center organisation_name"
+            class="text-weight-bold text-center organisation_name text-wrap q-pt-sm"
             v-if="getOrganisation != null"
           >
             {{ getOrganisation.name }}

@@ -30,32 +30,6 @@
     <q-form @submit="onUpdateExpenditureItemDetailTransaction" class="q-gutter-md">
       <div class="q-mb-md">
         <label class="form_field"
-        >{{ $t("app.paymentItem") }}</label
-        >
-        <q-input
-          v-model="userContribution.payment_item_name"
-          outlined
-          dense
-          type="text"
-          readonly
-          hide-bottom-space
-        />
-      </div>
-      <div class="q-mb-md">
-        <label class="form_field"
-        >{{ $t("app.totalAmountPayable") }}</label
-        >
-        <q-input
-          v-model="getContributionSummary.payment_item.amount"
-          outlined
-          dense
-          type="number"
-          readonly
-          hide-bottom-space
-        />
-      </div>
-      <div class="q-mb-md">
-        <label class="form_field"
         >{{ $t("app.memberName") }}</label
         >
         <q-input
@@ -63,32 +37,6 @@
           outlined
           dense
           type="text"
-          readonly
-          hide-bottom-space
-        />
-      </div>
-      <div class="q-mb-md">
-        <label class="form_field"
-        >{{ $t("app.totalAmountDeposited") }}</label
-        >
-        <q-input
-          v-model="getContributionSummary.total_amount"
-          outlined
-          dense
-          type="number"
-          readonly
-          hide-bottom-space
-        />
-      </div>
-      <div class="q-mb-md">
-        <label class="form_field"
-        >{{ $t("app.totalBalance") }}</label
-        >
-        <q-input
-          v-model="computeTotalBalanceAfterUpdate"
-          outlined
-          dense
-          type="number"
           readonly
           hide-bottom-space
         />
@@ -185,7 +133,6 @@
   import TransactionDataGroup from "components/Constants/TransactionDataGroup";
   import ButtonVue from "components/Button";
   import ContributionsMixin from "src/mixins/ContributionsMixin";
-  import {Notify, Platform} from "quasar";
 
   export default {
     name: "ChangeExpenditureItemTransaction",
@@ -247,6 +194,17 @@
         }
 
         return total_balance;
+      },
+      computeTotalAmountContributedAfterUpdate(){
+        let total_amount_contributed = this.$store.getters.getMemberContributions.total_amount;
+        let offset_balance = total_amount_contributed - parseInt(this.contribution_transaction.new_amount_deposited);
+        let total_balance = this.$store.getters.getMemberContributions.total_balance;
+
+        if(parseInt(this.contribution_transaction.new_amount_deposited) > 0){
+          total_balance = this.$store.getters.getMemberContributions.total_balance + offset_balance;
+        }
+
+        return this.userContribution.payment_item_amount - total_balance;
       }
     },
 
@@ -263,11 +221,11 @@
             new_amount_deposited: this.contribution_transaction.new_amount_deposited,
             transaction_data_group: TransactionDataGroup.USER_CONTRIBUTIONS,
           },
-          msg: this.$t("app.saveDetailSuccessMsg"),
+          msg: this.$t("app.saveContributionSuccessMsg"),
           color: "default",
           to_on_ok: "none",
           to_on_fail: "none",
-          show_feedback: false,
+          show_feedback: true,
           error_msg: this.$t("app.defaultErrorMsg"),
           has_commit: false,
           commit: "none",
@@ -279,14 +237,6 @@
         };
         this.loading = true;
         this.$store.dispatch("postRequest", payload).then((res) => {
-         if(res.data.status === 400){
-           Notify.create({
-             color: "info",
-             message: res.data.message,
-             type: "info",
-             position: Platform.is.mobile ? "bottom" : "top-right",
-           });
-         }
           this.getMemberContributionsByPaymentItem(this.userContribution.payment_item_id, this.userContribution.user_id, "ALL", "ALL");
         }).finally(() => {
           this.$emit("close-right-drawer");

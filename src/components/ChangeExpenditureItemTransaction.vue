@@ -235,7 +235,7 @@
         let payload = {
           url: `/api/protected/transactions/update-history`,
           data: this.expenditure_item_transaction,
-          msg: this.$t("app.addIncomeSuccessFeedbackMsg"),
+          msg: this.$t("app.addExpenditureItemSuccessMsg"),
           color: "default",
           to_on_ok: "none",
           to_on_fail: "none",

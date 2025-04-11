@@ -199,7 +199,7 @@
           let payload = {
             url: `/api/protected/transactions/update-history`,
             data: this.sponsorship_history,
-            msg: this.$t("app.addIncomeSuccessFeedbackMsg"),
+            msg: this.$t("app.addSponsorshipSuccessMsg"),
             color: "default",
             to_on_ok: "none",
             to_on_fail: "none",

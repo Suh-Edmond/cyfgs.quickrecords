@@ -29,6 +29,7 @@
         @fetch-member-saving="fetchMemberSaving"
         @view-member-saving="ViewMemberSaving"
         @edit-member-saving="editMemberSaving"
+        @update-user-saving-history="updateUserSavingHistory"
         @onRequest="onRequest"
       >
       </TableVue>
@@ -154,10 +155,8 @@ export default {
     },
 
     getPaginatedData(id, page, fetch_count) {
-      let searched_month =
-        this.month !== "" && this.status !== null ? this.month.value : "";
-      let searched_status =
-        this.status !== "" && this.status !== null ? this.status : "";
+      let searched_month = this.month === "" || this.month === null ? "" : this.month.value;
+      let searched_status = this.status !== "" && this.status !== null ? this.status : "";
       let payload = {
         url: `/api/protected/user-savings/${id}?month=${searched_month}&status=${searched_status}&page=${page}&per_page=${fetch_count}`,
         color: "default",
@@ -178,10 +177,16 @@ export default {
       this.$store
         .dispatch("getRequest", payload)
         .then(() => {
-          const data = this.$store.getters.getMemberSavings;
-          this.pagination.page = data.current_page;
-          this.pagination.rowsPerPage = data.per_page;
-          this.pagination.rowsNumber = data.total;
+          let data = this.$store.getters.getMemberSavings;
+         if(data !== undefined){
+           this.pagination.page = data.current_page;
+           this.pagination.rowsPerPage = data.per_page;
+           this.pagination.rowsNumber = data.total;
+         }else {
+           this.pagination.page = 1;
+           this.pagination.rowsPerPage = 7;
+           this.pagination.rowsNumber = 10;
+         }
         })
         .finally(() => {
           this.$store.commit("SET_IS_FETCHING", false);
@@ -196,6 +201,10 @@ export default {
 
     editMemberSaving(data) {
       this.$emit("edit-member-saving", data);
+    },
+
+    updateUserSavingHistory(data){
+      this.$emit("update-user-saving-history", data);
     },
 
     filterSavings(data) {

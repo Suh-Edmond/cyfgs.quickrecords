@@ -44,9 +44,7 @@
                     <q-avatar
                       size="150px"
                       v-if="
-                        getCurrentMember.picture !== '' &&
-                        getCurrentMember.picture !== null &&
-                        getCurrentMember.picture !== 'undefined'
+                         getProfilePicture !== null
                       "
                     >
                       <img
@@ -58,11 +56,7 @@
                       size="150px"
                       font-size="52px"
                       color="grey-3"
-                      v-if="
-                        getCurrentMember.picture === '' ||
-                        getCurrentMember.picture == null ||
-                        getCurrentMember.picture === 'undefined'
-                      "
+                      v-if="getProfilePicture === null"
                     >
                     </q-avatar>
                     <div class="camara" v-if="!checkTreasurerRoleOnly()">
@@ -758,8 +752,8 @@
                       >
                         {{ props.row.approve }}
                       </q-td>
-                      <q-td key="created_at" :props="props" class="table_value">
-                        {{ props.row.created_at }}
+                      <q-td key="date" :props="props" class="table_value">
+                        {{ props.row.date }}
                       </q-td>
                       <q-td key="action" :props="props">
                         <q-btn
@@ -938,6 +932,32 @@
               </tbody>
             </q-markup-table>
           </div>
+          <div class="q-mb-md">
+            <label class="form_field"
+            >{{ $t("app.date") }} <span class="text-red">*</span></label
+            >
+            <q-input
+              v-model="bulk_payment.date"
+              outlined
+              dense
+            >
+              <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy
+                    ref="qDateProxy"
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
+                    <q-date v-model="bulk_payment.date">
+                      <div class="row items-center justify-end">
+                        <q-btn v-close-popup label="Close" color="primary" flat />
+                      </div>
+                    </q-date>
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+            </q-input>
+          </div>
         </q-card-section>
 
         <q-card-section class="q-mb-md flex justify-end">
@@ -1072,11 +1092,13 @@ import memberMixin from "src/mixins/memberMixin.vue";
 import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
 import { VueTelInput } from "vue-tel-input";
+import CategoryConstants from "components/Constants/CategoryConstants";
 
 export default {
   mixins: [organisationMixin, memberMixin, CurrentYearMixinVue, HelperMixinVue],
 
   mounted() {
+    this.getMemberProfile(this.$route.params.id);
     this.getUserRoles(this.$route.params.id);
     if(!this.checkTreasurerRoleOnly()){
       this.getMembersDebts(true);
@@ -1210,9 +1232,9 @@ export default {
           align: "left",
         },
         {
-          name: "created_at",
+          name: "date",
           label: "Payment Date",
-          field: "created_at",
+          field: "date",
           align: "left",
         },
         {
@@ -1236,6 +1258,11 @@ export default {
       status_options: ["ACTIVE", "IN_ACTIVE"],
       showEditProfileDialog: false,
       loading_download: false,
+      bulk_payment: {
+        date:moment(new Date()).format("YYYY/MM/DD"),
+      },
+      loading_paid_download:false,
+      loading_upaid_download:false,
     };
   },
   computed: {
@@ -1300,7 +1327,9 @@ export default {
     },
 
     getProfilePicture() {
-      return process.env.API_BASE_URL + this.getCurrentMember.picture;
+      let pic = ""
+      this.getCurrentMember !== null ? this.getCurrentMember.picture : "";
+      return process.env.API_BASE_URL + pic;
     },
 
     validateDownloadUnPaidItems() {
@@ -1481,7 +1510,7 @@ export default {
         this.total_amount_payable -= data.balance;
         this.total_amount_payable = parseFloat(this.total_amount_payable);
         this.selected_items = this.selected_items.filter(
-          (ele) => ele.id != data.id
+          (ele) => ele.id !== data.id
         );
       }
       return this.total_amount_payable;
@@ -1657,6 +1686,7 @@ export default {
           data: [],
         },
       };
+
       this.$store.dispatch("postRequest", payload).then(() => {
         this.loading_payment = false;
         this.show_payment_dialog = false;
@@ -1673,7 +1703,7 @@ export default {
     buildPayloadData() {
       let data = [];
       this.selected_items.forEach((ele) => {
-        if (ele.code !== "REGISTRATION") {
+        if (ele.code !== CategoryConstants.REGISTRATION) {
           data.push({
             user_id: this.$store.getters.getCurrentMember.id,
             payment_item_id: ele.id,
@@ -1686,6 +1716,7 @@ export default {
             month_name: ele.month_name,
             registration_id: ele.id,
             contributed_via_saving: false,
+            date: this.bulk_payment.date.replaceAll("/", "-")
           });
         } else {
           data.push({
@@ -1808,8 +1839,10 @@ export default {
                 created_by: ele.created_by,
                 comment: ele.comment,
                 is_compulsory: ele.is_compulsory,
+                date:ele.date
               });
             });
+            console.log(this.data1)
           }
         })
         .finally(() => {
@@ -1821,14 +1854,82 @@ export default {
     downloadUnPaidItem() {
       let id = this.$route.params.id;
       let url = `/api/protected/contributions/members/debts/download?user_id=${id}&session_id=${this.current_year.id}`;
-      this.loading_download = this.downloadPdf(url, "Unpaid_PaymentItems.pdf");
+
+      let payload = {
+        status: "none",
+        url: url,
+        has_path_val: true,
+        show_feedback: true,
+        msg: "none",
+        file_name: "Unpaid_PaymentItems.pdf",
+        color: "default",
+        error_msg: this.$t("app.downloadFileErrorMsg"),
+        commit: "none",
+        has_commit: false,
+        to_be_store_data: {
+          required: true,
+          has_value: false,
+          data: null,
+        },
+      };
+      this.loading_upaid_download = true;
+      this.$store
+        .dispatch("downloadPdf", payload)
+        .then(() => {
+          this.loading_upaid_download = false;
+        })
+        .catch(() => {
+          this.loading_upaid_download = false;
+          Notify.create({
+            type: "info",
+            message: this.$t("app.downloadFileErrorMsg"),
+            position: Platform.is.mobile ? "bottom-left" : "top-right",
+          });
+        });
+
     },
 
     downloadPaidItem() {
       let id = this.$route.params.id;
       let url = `/api/protected/contributions/members/paid_items/download?user_id=${id}&session_id=${this.current_year.id}`;
-      this.loading_download = this.downloadPdf(url, "Paid_PaymentItem.pdf");
+
+      let payload = {
+        status: "none",
+        url: url,
+        has_path_val: true,
+        show_feedback: true,
+        msg: "none",
+        file_name: "Paid_PaymentItem.pdf",
+        color: "default",
+        error_msg: this.$t("app.downloadFileErrorMsg"),
+        commit: "none",
+        has_commit: false,
+        to_be_store_data: {
+          required: true,
+          has_value: false,
+          data: null,
+        },
+      };
+      this.loading_paid_download = true;
+      this.$store
+        .dispatch("downloadPdf", payload)
+        .then(() => {
+          this.loading_paid_download = false;
+        })
+        .catch(() => {
+          this.loading_paid_download = false;
+          Notify.create({
+            type: "info",
+            message: this.$t("app.downloadFileErrorMsg"),
+            position: Platform.is.mobile ? "bottom-left" : "top-right",
+          });
+        });
+
     },
+
+
+
+
   },
   components: {
     ButtonVue,

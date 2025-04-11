@@ -175,17 +175,17 @@
 </template>
 
 <script>
-import TableVue from "src/components/Table.vue";
-import PaymentCategoryMixinVue from "src/mixins/PaymentCategoryMixin.vue";
-import PaymentItemMixinVue from "src/mixins/PaymentItemMixin.vue";
-import organisationMixinVue from "src/mixins/organisationMixin.vue";
-import HelperMixinVue from "src/mixins/HelperMixin.vue";
-import { LocalStorage } from "quasar";
-import ContributionSummary from "src/components/ContributionSummary.vue";
-import RecommendationComponent from "components/RecommendationComponent";
+  import TableVue from "src/components/Table.vue";
+  import PaymentCategoryMixinVue from "src/mixins/PaymentCategoryMixin.vue";
+  import PaymentItemMixinVue from "src/mixins/PaymentItemMixin.vue";
+  import organisationMixinVue from "src/mixins/organisationMixin.vue";
+  import HelperMixinVue from "src/mixins/HelperMixin.vue";
+  import {LocalStorage} from "quasar";
+  import ContributionSummary from "src/components/ContributionSummary.vue";
+  import RecommendationComponent from "components/RecommendationComponent";
 
 
-export default {
+  export default {
   mixins: [
     PaymentCategoryMixinVue,
     PaymentItemMixinVue,
@@ -386,7 +386,7 @@ export default {
     },
 
     buildPaginatedObject() {
-      let paginatedObject = {
+      return {
         sortBy: "name",
         descending: false,
         page:
@@ -402,7 +402,6 @@ export default {
             ? this.$store.getters.getFilteredContributions.total
             : 0,
       };
-      return paginatedObject;
     },
 
     getFetchingState() {
@@ -410,20 +409,18 @@ export default {
     },
 
     getPagination() {
-      let paginate_object = {
+      return {
         sortBy: this.$store.getters.getPagination.sortBy,
         descending: this.$store.getters.getPagination.descending,
         page: this.$store.getters.getPagination.page,
         rowsPerPage: this.$store.getters.getPagination.rowsPerPage,
         rowsNumber: this.$store.getters.getPagination.rowsNumber,
       };
-
-      return paginate_object;
     },
 
     getSummaryData() {
       const data = this.$store.getters.getFilteredContributions;
-      let summary = {
+      return {
         type: data.payment_item.type,
         frequency: data.payment_item.frequency,
         expect_contribution: data.total_amount_payable,
@@ -433,8 +430,6 @@ export default {
         payment_durations: data.payment_durations,
         member_size: data.member_size,
       };
-
-      return summary;
     },
   },
 

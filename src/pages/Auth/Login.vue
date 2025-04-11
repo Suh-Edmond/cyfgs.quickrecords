@@ -246,7 +246,7 @@ export default {
 }
 
 .main_login_text {
-  // color: $grey2;
+  color: $primary;
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;

@@ -143,7 +143,7 @@ export default {
     addLabel:'Ajouter',
     removeRoleWarningMsg:'Êtes-vous sûr de vouloir supprimer ce rôle ?',
     role:'Rôle',
-    confirmPaymentLabel:'Confirmez le paiement(s)',
+    confirmPaymentLabel:'Confirmez le paiement',
     sn:'S/N',
     paymentItem:'Paiement de l\'article',
     amount:'Montant',

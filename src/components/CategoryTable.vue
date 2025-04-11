@@ -1027,7 +1027,15 @@
       };
       this.$store.dispatch("setUpdatedExpenditureItem", expenditure_item);
 
-      this.$emit("edit-expenditure-item", payload);
+      if(this.checkPresidentOrAdminRole()){
+        let transactionHistoryPayload = {
+          data: expenditure_item,
+          tab: "Change Expenditure Item Transaction",
+        };
+        this.$emit("update-expenditure-item-transaction", transactionHistoryPayload);
+      }else {
+        this.$emit("edit-expenditure-item", payload);
+      }
     },
 
     onViewExpenditureItemDetails(expenditure_item) {
@@ -1048,8 +1056,18 @@
         data: expenditure_item_detail,
         tab: "Expenditure Item Details",
       };
-      this.$emit("edit-expenditure-item-detail", payload);
+      if(this.checkPresidentOrAdminRole()){
+        let transactionHistoryPayload = {
+          data: expenditure_item_detail,
+          tab: "Change Expenditure Item Detail Transaction",
+        }
+        this.$emit("update-expenditure-item-detail-transaction", transactionHistoryPayload);
+      }else {
+        this.$emit("edit-expenditure-item-detail", payload);
+      }
     },
+
+
 
     onViewItemDetail(data) {
       let payload = {

@@ -32,6 +32,7 @@
         @show-expenditure-item-details="showExpenditureItemDetails"
         @delete-row="deleteRow"
         @onRequest="onRequest"
+        @update-expenditure-item-transaction="updateExpenditureItemTransaction"
       >
       </CategoryTable>
     </div>
@@ -204,6 +205,10 @@
 
     editExpenditureItem(data) {
       this.$emit("edit-expenditure-item", data);
+    },
+
+    updateExpenditureItemTransaction(data){
+      this.$emit('update-expenditure-item-transaction', data);
     },
 
     viewExpenditureItem(data) {

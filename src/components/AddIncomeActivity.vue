@@ -16,9 +16,6 @@
       <span class="text-lowercase registration_text">{{
         getUpdatedIncomeActivityFromState().approve
       }}</span>
-      <template v-slot:action>
-        <q-btn flat icon="close" size="sm" />
-      </template>
     </q-banner>
 
     <div class="text-left q-mt-md q-mb-lg">

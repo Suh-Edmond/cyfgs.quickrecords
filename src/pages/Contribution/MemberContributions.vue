@@ -32,6 +32,7 @@
         @edit-contribution="editContribution"
         @delete-row="deleteRow"
         @onRequest="onRequest"
+        @update-user-contribution-transaction="updateUserContributionTransaction"
       >
       </TableVue>
 
@@ -82,7 +83,7 @@
         {
           name: "quarterly_name",
           required: true,
-          label: "Quarter/Month",
+          label: "Period",
           align: "left",
           field: "quarterly_name",
         },
@@ -259,6 +260,10 @@
 
     editContribution(data) {
       this.$emit("edit-contribution", data);
+    },
+
+    updateUserContributionTransaction(data){
+      this.$emit("update-user-contribution-transaction", data);
     },
 
     downloadContributions() {

@@ -11,8 +11,9 @@
     >
       <div>
         <div class="left_drawer">
-          <div class="q-my-md flex flex-center">
-            <q-avatar size="6rem" v-if="getOrganisation != null" class="q-py-sm ">
+          <div class="bg-transparent q-pa-sm flex flex-center">
+            <q-avatar size="100px"
+                      v-if="getOrganisation != null">
               <q-img :src="getOrganisationLogo"> </q-img>
             </q-avatar>
           </div>

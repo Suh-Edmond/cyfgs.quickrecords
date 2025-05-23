@@ -209,7 +209,7 @@ export default {
         user_id: "",
       },
       show_token_expire_msg: false,
-      baseUrl: process.env.API_BASE_URL,
+      baseUrl: process.env.CLIENT_SERVER,
     };
   },
   computed: {

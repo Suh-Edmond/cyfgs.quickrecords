@@ -123,7 +123,7 @@ export default {
       loading: false,
       show_token_form: true,
       emailSentSuccessfully: true,
-      baseUrl: process.env.API_BASE_URL,
+      baseUrl: process.env.CLIENT_SERVER,
     };
   },
   computed: {

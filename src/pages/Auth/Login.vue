@@ -137,7 +137,7 @@ export default {
       loading: false,
       color: "primary",
       no_caps: true,
-      baseUrl: process.env.API_BASE_URL,
+      baseUrl: process.env.CLIENT_SERVER,
     };
   },
   computed: {

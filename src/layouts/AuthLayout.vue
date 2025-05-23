@@ -85,7 +85,7 @@ export default {
       year: new Date().getFullYear(),
       language: this.$i18n.locale,
       type: "SIGN_IN",
-      baseUrl: process.env.API_BASE_URL,
+      baseUrl: process.env.CLIENT_SERVER,
     };
   },
   computed: {

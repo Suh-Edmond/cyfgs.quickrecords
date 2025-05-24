@@ -12,10 +12,7 @@
       <div>
         <div class="left_drawer">
           <div class="bg-transparent q-pa-sm flex flex-center">
-            <q-avatar size="100px"
-                      v-if="getOrganisation != null">
-              <q-img :src="getOrganisationLogo"> </q-img>
-            </q-avatar>
+            <img :src="getOrganisationLogo" alt=""  width="130" height="110" v-if="getOrganisation != null"/>
           </div>
           <div
             class="text-weight-bold text-center organisation_name text-wrap q-pt-md q-mb-xl"
@@ -24,7 +21,7 @@
             {{ getOrganisation.name }}
           </div>
         </div>
-        <div class="nav q-mt-xl">
+        <div class="nav sidebar_items">
           <q-list padding>
             <q-item
               v-for="tab in getUserSideTabs()"
@@ -42,7 +39,7 @@
                 avatar
                 :class="item.name === tab.name ? 'item_icon' : 'item_text'"
               >
-                <q-icon :name="tab.icon" size="1rem" v-if="!tab.has_image" />
+                <q-icon :name="tab.icon" size="1.3rem" v-if="!tab.has_image" />
                 <img
                   v-if="tab.has_image"
                   :src="tab.image_src"
@@ -55,6 +52,11 @@
               </q-item-section>
             </q-item>
           </q-list>
+        </div>
+        <div class="app_version">
+          <a :href="appLinkedinUrl" class="app_name_text">
+            QuickRecords v1.0
+            </a>
         </div>
       </div>
     </q-drawer>
@@ -339,6 +341,7 @@ export default {
       right_drawer_tab: "",
       data: null,
       heading: "",
+      appLinkedinUrl: process.env.appLinkedinUrl
     };
   },
   computed: {
@@ -702,5 +705,25 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-size: 0.76rem;
+}
+
+.sidebar_items {
+  margin-top: 6rem;
+}
+
+.app_version {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  left: 8%;
+  bottom: 0;
+
+}
+
+.app_name_text {
+  color: $primary;
+  font-size: .9rem;
+  font-weight: 600;
+  text-decoration: none;
 }
 </style>

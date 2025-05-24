@@ -46,16 +46,17 @@ module.exports = function (ctx) {
     build: {
       vueRouterMode: "history", // available values: 'hash', 'history'
       env: {
-        API_BASE_URL: "https://www.api.brocon.mtmkay.com",
-        // API_BASE_URL:"http://localhost:8000",
+        // API_BASE_URL: "https://www.api.brocon.mtmkay.com",
+        API_BASE_URL: "http://localhost:8000",
         CLIENT_SERVER: "https://gsbrocon.vercel.app/auth/login",
         REDIRECT_URL: "https://gsbrocon.vercel.app/auth/invite-member",
         APP_NAME: "Quick_Records",
         FILE_CATEGORY: "LOGOS",
         BASE_FOLDER: "LOGOS",
         PROFILE_PICTURES: "PROFILE_PICTURES",
+        appLinkedinUrl: "https://www.linkedin.com/company/quickrecords"
       },
-      distDir: ctx.mode.spa ? "public" : null,
+      // distDir: ctx.mode.spa ? "public" : null,
       // env: envparser(),
       // transpile: false,
 
@@ -84,7 +85,7 @@ module.exports = function (ctx) {
       //       { loader: "yaml-loader" },
       //     ]);
       // },
-      extendWebpack(cfg) {},
+      extendWebpack (cfg) { },
     },
 
     // Full list of options: https://v1.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-devServer
@@ -207,7 +208,7 @@ module.exports = function (ctx) {
       // More info: https://v1.quasar.dev/quasar-cli/developing-electron-apps/node-integration
       nodeIntegration: true,
 
-      extendWebpack(/* cfg */) {
+      extendWebpack (/* cfg */) {
         // do something with Electron main process Webpack cfg
         // chainWebpack also available besides this extendWebpack
       },

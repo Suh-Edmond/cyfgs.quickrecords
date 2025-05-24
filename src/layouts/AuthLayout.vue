@@ -65,9 +65,9 @@
           <p class="footer_text">
             <span class="material-icons copy_right"> copyright </span>
             {{ year }}
-            <span class="appName"
+             <a :href="appLinkedinUrl" class="appName"><span 
               >{{ $t("app.nameOne") }}{{ $t("app.nameTwo") }}</span
-            >.{{ $t("app.allRightsReserved") }}
+            ></a>.{{ $t("app.allRightsReserved") }}
           </p>
         </q-toolbar-title>
       </q-toolbar>
@@ -86,6 +86,7 @@ export default {
       language: this.$i18n.locale,
       type: "SIGN_IN",
       baseUrl: process.env.CLIENT_SERVER,
+      appLinkedinUrl: process.env.appLinkedinUrl
     };
   },
   computed: {
@@ -140,7 +141,7 @@ export default {
 
 .footer {
   background-color: $white1;
-  height: 2rem;
+  height: 3.3rem;
 }
 
 .content {
@@ -206,19 +207,20 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   text-transform: capitalize;
-  color: $dark;
+  color: $primary;
   font-weight: 700;
-  font-size: 0.7rem;
+  font-size: 0.9rem;
+  text-decoration: none;
 }
 
 .footer_text {
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 400;
-  font-size: 0.6rem;
+  font-weight: 500;
+  font-size: 0.9rem;
   align-items: center;
   text-align: center;
-  padding-bottom: 1rem;
+  // padding-bottom: 1rem;
 }
 
 .copy_right {

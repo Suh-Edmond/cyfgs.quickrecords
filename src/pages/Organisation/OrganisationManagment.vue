@@ -263,13 +263,7 @@
               </q-avatar>
             </div>
             <div>
-              <q-avatar
-                size="120px"
-                font-size="52px"
-                v-if="organisation.logo != null"
-              >
-                <img :src="getOrganisationLogo" alt="" width="150px" />
-              </q-avatar>
+              <img :src="getOrganisationLogo" alt=""  width="130" height="110" />
               <q-avatar
                 size="120px"
                 font-size="52px"
@@ -650,7 +644,7 @@ export default {
 .camara {
   position: absolute;
   top: 70%;
-  left: 96%;
+  left: 98%;
   cursor: pointer;
   color: $grey8;
 }

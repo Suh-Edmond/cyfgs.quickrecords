@@ -1,7 +1,7 @@
 import {LocalStorage, Notify, Platform, SessionStorage} from "quasar";
 import {axios} from "src/boot/axios";
 
-const API_URL = process.env.API_BASE_URL;
+const API_URL = process.env.SERVER_BASE_URL;
 
 export function handleRequestResponse({}, payload) {
   if (payload.status === "success" && payload.show_feedback) {

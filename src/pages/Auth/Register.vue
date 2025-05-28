@@ -271,8 +271,6 @@ export default {
 
 .form_button {
   width: 100%;
-  // margin-top: 0.5rem;
-  // margin-bottom: 0.5rem;
 }
 
 .forgot_password {

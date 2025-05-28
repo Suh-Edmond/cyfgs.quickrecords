@@ -46,7 +46,7 @@ module.exports = function (ctx) {
     build: {
       vueRouterMode: "history", // available values: 'hash', 'history'
       env: {
-        API_BASE_URL: "https://www.api.brocon.mtmkay.com"
+        API_BASE_URL: "https://www.api.brocon.mtmkay.com",
         CLIENT_SERVER: "https://gsbrocon.vercel.app/auth/login",
         REDIRECT_URL: "https://gsbrocon.vercel.app/auth/invite-member",
         APP_NAME: "Quick_Records",

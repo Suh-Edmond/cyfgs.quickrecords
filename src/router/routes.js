@@ -20,15 +20,6 @@ const routes = [
         },
       },
       {
-        name: "Register",
-        path: "auth/register",
-        component: () => import("src/pages/Auth/Register.vue"),
-        meta: {
-          middleware: "guest",
-          enableSignUp: true,
-        },
-      },
-      {
         name: "PasswordResetToken",
         path: "auth/password-reset/get-token",
         component: () => import("src/pages/Auth/PasswordResetToken.vue"),

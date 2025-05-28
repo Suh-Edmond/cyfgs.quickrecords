@@ -114,7 +114,7 @@ import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
 import memberMixinVue from "src/mixins/memberMixin.vue";
 import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
 import ContributionsMixinVue from "src/mixins/ContributionsMixin.vue";
-import { Notify, Platform, SessionStorage } from "quasar";
+import {SessionStorage } from "quasar";
 
 export default {
   name: "PageIndex",

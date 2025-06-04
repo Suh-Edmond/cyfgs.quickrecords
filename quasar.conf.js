@@ -56,7 +56,7 @@ module.exports = function (ctx) {
         PROFILE_PICTURES: "PROFILE_PICTURES",
         appLinkedinUrl: "https://www.linkedin.com/company/quickrecords"
       },
-      // distDir: ctx.mode.spa ? "public" : null,
+      distDir: ctx.mode.spa ? "public" : null,
       // env: envparser(),
       // transpile: false,
 

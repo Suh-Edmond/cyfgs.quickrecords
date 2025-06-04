@@ -723,7 +723,7 @@ export default {
     },
 
     getProfilePicture() {
-      return process.env.API_BASE_URL + this.user.picture;
+      return process.env.SERVER_BASE_URL + this.user.picture;
     },
   },
   methods: {

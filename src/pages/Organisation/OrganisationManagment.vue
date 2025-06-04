@@ -420,7 +420,7 @@ export default {
 
     getOrganisationLogo() {
       return (
-        process.env.API_BASE_URL + this.$store.getters.getOrganisation.logo
+        process.env.SERVER_BASE_URL + this.$store.getters.getOrganisation.logo
       );
     },
 

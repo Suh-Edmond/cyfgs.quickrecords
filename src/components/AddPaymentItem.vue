@@ -88,7 +88,7 @@
             </q-icon>
           </template>
         </q-input>
-        <label v-if="invalid_deadline" class="text-red">
+        <label v-if="!validateDeadline()" class="text-red">
           <b>{{ $t("app.invalidDeadline") }}</b>
         </label>
       </div>
@@ -358,7 +358,6 @@ export default {
       members: [],
       references: [],
       start_filtering: false,
-      invalid_deadline: false,
     };
   },
   computed: {
@@ -414,15 +413,10 @@ export default {
   methods: {
     validateDeadline() {
       let date = new Date();
-      let month =
-        date.getMonth() + 1 > 10
-          ? date.getMonth() + 1
-          : date.getMonth() + 1;
-      let current_date =
-        date.getFullYear() + "/" + 0 + month + "/" + date.getDate();
-      return (this.invalid_deadline =
-        this.payment_item.deadline !== null &&
-        this.payment_item.deadline < current_date);
+      let formatedInputDate = moment(this.payment_item.deadline).format('DD/MM/YYYY');
+      let formatCurrentDate = moment(date).format('DD/MM/YYYY');
+      
+      return formatedInputDate >= formatCurrentDate;
     },
     onAddPaymentItem() {
       let category = this.$store.getters.getCurrentPaymentCategory;

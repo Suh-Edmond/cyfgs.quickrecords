@@ -709,16 +709,14 @@ export default {
 
     validatePasswordMatch() {
       return (
-        this.security.password != null &&
+        this.security.password !== null &&
         this.security.password !== this.security.password_confirmation
       );
     },
 
     validatePassword() {
       return (
-        this.security.old_password == null ||
-        this.security.password == null ||
-        this.security.password_confirmation == null
+        this.security.old_password == null || this.validatePasswordMatch
       );
     },
 

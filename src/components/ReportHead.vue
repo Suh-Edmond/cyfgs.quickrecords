@@ -34,13 +34,7 @@
 
       <!----------------LOGO--------------------->
       <div class="col-2 col-lg-2 col-md-2 col-sm-12 col-xs-12 flex justify-end" >
-        <q-avatar
-          size="110px"
-          font-size="52px"
-          v-if="getOrganisation.logo != null"
-        >
-          <img :src="getOrganisationLogo" alt="" width="160px" />
-        </q-avatar>
+        <img :src="getOrganisationLogo" alt="" width="130" height="110" v-if="getOrganisation != null" />
       </div>
       <!-------------END OF LOGO----------------->
 
@@ -89,7 +83,7 @@ export default {
 
     getOrganisationLogo() {
       return (
-        process.env.API_BASE_URL + this.$store.getters.getOrganisation.logo
+        process.env.SERVER_BASE_URL + this.getOrganisation.logo
       );
     },
 

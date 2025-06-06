@@ -717,6 +717,7 @@ export default {
   flex-direction: column;
   left: 8%;
   bottom: 0;
+  top:15%
 
 }
 

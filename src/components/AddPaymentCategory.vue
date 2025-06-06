@@ -70,13 +70,14 @@
           >
           </ButtonVue>
         </div>
-        <div v-if="$q.platform.is.mobile" class="full-width q-ml-lg">
+        <div v-if="$q.platform.is.mobile" class="q-gutter-y-lg q-mb-lg q-mt-sm">
           <ButtonVue
             :label="label_save"
             :loading="loading"
             :color="'primary'"
             :disabled="validateForm"
             :no_caps="no_caps"
+            class="full-width"
           >
           </ButtonVue>
         </div>

@@ -78,6 +78,7 @@
           :style="
             $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
           "
+          v-if="show_preview_hint"
         >
           <div class="hint_text_color q-pt-sm q-pl-sm">
             {{ $t("app.reportPreviewMsg") }}
@@ -88,7 +89,7 @@
               round
               class="close_color"
               icon="close"
-              @click="closeHint"
+              @click="closePreviewHint()"
               size="sm"
             />
           </div>
@@ -137,6 +138,7 @@ export default {
       organisation_id: this.$store.getters.getOrganisation.id,
       session_id: this.$store.getters.getCurrentYear,
       show_hint: true,
+      show_preview_hint:true,
     };
   },
   computed: {
@@ -152,6 +154,10 @@ export default {
   methods: {
     closeHint() {
       return (this.show_hint = !this.show_hint);
+    },
+
+    closePreviewHint(){
+      return this.show_preview_hint = !this.show_preview_hint
     },
 
     generateReport(data) {

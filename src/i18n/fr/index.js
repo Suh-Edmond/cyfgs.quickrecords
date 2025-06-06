@@ -539,6 +539,7 @@ export default {
     totalExpectedContribution:"Contribution totale attendue",
     totalAmountContributed:"Montant total contribué",
     totalBalanceContribution:'Contribution au solde total',
-    balanceSheetHintMsgMobile:"L'aperçu du bilan est disponible uniquement en mode bureau"
+    balanceSheetHintMsgMobile:"L'aperçu du bilan est disponible uniquement en mode bureau",
+    reportPreviewMsg: "L'aperçu du rapport est disponible uniquement sur les appareils de bureau.",
   }
 };

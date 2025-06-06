@@ -608,7 +608,7 @@ export default {
     totalBalanceContribution: "Total Balance Contribution",
     balanceSheetHintMsgMobile:
       "Balance Sheet Preview is available only desktop",
-    reportPreviewMsg: "Report Preview is available only on desktop.",
+    reportPreviewMsg: "Report Preview is available only on desktop devices.",
     ai_model:"AI Model",
     expectedAmount:"Expected Amount",
     oldAmount:"Old Amount Deposited",

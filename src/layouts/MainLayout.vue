@@ -715,9 +715,8 @@ export default {
   position: fixed;
   display: flex;
   flex-direction: column;
-  left: 8%;
+  left: 10%;
   bottom: 0;
-  top:15%
 
 }
 

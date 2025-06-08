@@ -8,9 +8,7 @@
     />
     <div v-if="!exist_organisation">
       <div class="flex flex-center q-mb-md">
-        <label   class="title">{{
-          $t("app.updateOrganisationHeading")
-        }}</label>
+        <label class="title">{{ $t("app.updateOrganisationHeading") }}</label>
       </div>
       <div>
         <q-form
@@ -23,7 +21,7 @@
           >
             <div class="col-1 col-md-1 com-sm-1"></div>
             <div class="col-md-5 col-xs-12 col-sm-12">
-              <label  class="form_field"
+              <label class="form_field"
                 >{{ $t("app.nameLabel") }}
                 <span class="text-red q-pl-xs">*</span></label
               >
@@ -48,7 +46,7 @@
               class="col-md-5 col-xs-12 col-sm-12"
               :class="$q.platform.is.desktop ? 'q-ml-md' : ' q-py-sm'"
             >
-              <label  class="form_field"
+              <label class="form_field"
                 >{{ $t("app.emailLabel") }}
                 <span class="text-red q-pl-xs">*</span></label
               >
@@ -70,7 +68,7 @@
               class="col-md-5 col-xs-12 col-sm-12"
               :class="$q.screen.lg ? 'q-px-sm' : ''"
             >
-              <label  class="form_field flex justify-between">
+              <label class="form_field flex justify-between">
                 <span>
                   {{ $t("app.telephoneLabel") }}
                   <span class="text-red q-pl-xs">*</span>
@@ -115,7 +113,7 @@
               class="col-md-5 col-xs-12 col-sm-12"
               :class="$q.platform.is.desktop ? 'q-ml-md' : ' q-py-sm'"
             >
-              <label  class="form_field"
+              <label class="form_field"
                 >{{ $t("app.addressLabel") }}
                 <span class="text-red q-pl-xs">*</span></label
               >
@@ -137,9 +135,7 @@
               class="col-md-5 col-xs-12 col-sm-12"
               :class="$q.screen.lg ? 'q-px-sm' : 'q-py-sm'"
             >
-              <label  class="form_field">{{
-                $t("app.salutation")
-              }}</label>
+              <label class="form_field">{{ $t("app.salutation") }}</label>
               <q-input
                 v-model="organisation.salutation"
                 outlined
@@ -151,9 +147,7 @@
               class="col-md-5 col-xs-12 col-sm-12"
               :class="$q.platform.is.desktop ? 'q-ml-md' : ' q-py-sm'"
             >
-              <label  class="form_field">{{
-                $t("app.boxLabel")
-              }}</label>
+              <label class="form_field">{{ $t("app.boxLabel") }}</label>
               <q-input
                 v-model="organisation.box_number"
                 outlined
@@ -172,7 +166,7 @@
               class="col-md-5 col-xs-12 col-sm-12"
               :class="$q.screen.lg ? 'q-px-sm' : 'q-py-sm'"
             >
-              <label  class="form_field"
+              <label class="form_field"
                 >{{ $t("app.description") }}
                 <span class="text-red q-pl-xs">*</span></label
               >
@@ -187,7 +181,7 @@
               class="col-md-5 col-xs-12 col-sm-12"
               :class="$q.platform.is.desktop ? 'q-ml-md' : ' q-py-sm'"
             >
-              <label  class="form_field"
+              <label class="form_field"
                 >{{ $t("app.region") }}
                 <span class="text-red q-pl-xs">*</span></label
               >
@@ -259,11 +253,11 @@
                 font-size="52px"
                 v-if="organisation.logo != null"
               >
-                <img src="../../assets/pcc_logo.png" alt="" width="499" />
+                <img src="../../assets/cyf_logo.png" alt="" width="499" />
               </q-avatar>
             </div>
             <div>
-              <img :src="getOrganisationLogo" alt=""  width="130" height="110" />
+              <img :src="getOrganisationLogo" alt="" width="130" height="110" />
               <q-avatar
                 size="120px"
                 font-size="52px"

@@ -1327,9 +1327,7 @@ export default {
     },
 
     getProfilePicture() {
-      let pic = ""
-      this.getCurrentMember !== null ? this.getCurrentMember.picture : "";
-      return process.env.API_BASE_URL + pic;
+      return this.getCurrentMember !== null && this.getCurrentMember.picture !== null ? process.env.SERVER_BASE_URL + this.getCurrentMember.picture : "";
     },
 
     validateDownloadUnPaidItems() {
@@ -1427,7 +1425,8 @@ export default {
     },
 
     showEditProfile() {
-      this.setFormField();
+      
+      this.setFormField(this.$store.getters.getCurrentMember);
       if (Platform.is.mobile) {
         this.showEditProfileDialog = true;
       } else {
@@ -1842,7 +1841,7 @@ export default {
                 date:ele.date
               });
             });
-            console.log(this.data1)
+            
           }
         })
         .finally(() => {

@@ -309,7 +309,6 @@ export default {
 
   data() {
     return {
-      label_download: this.$t("app.print"),
       loading: false,
       color: "positive",
       no_caps: true,

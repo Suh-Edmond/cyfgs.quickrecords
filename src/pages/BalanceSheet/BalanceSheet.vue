@@ -5,7 +5,7 @@
       :style="
         $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
       "
-      v-if="show_hint"
+      v-if="show_info_hint"
     >
       <div class="hint_text_color q-pt-sm q-pl-sm">
         {{ $t("app.balanceSheetHint") }}
@@ -49,6 +49,7 @@
         :style="
           $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
         "
+        v-if="show_hint"
       >
         <div class="hint_text_color q-pt-sm q-pl-sm">
           {{ $t("app.balanceSheetHintMsgMobile") }}

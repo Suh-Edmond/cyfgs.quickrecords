@@ -3,9 +3,9 @@
     <div class="row q-px-sm" :class=" $q.platform.is.desktop ? 'q-mt-lg':''">
       <div class="col-4 col-md-4 col-lg-4 col-sm-12 col-xs-12"></div>
       <div class="col-4 col-md-4 col-lg-4 col-sm-12 col-xs-12">
-        <q-card :class="$q.screen.lg ? 'q-mt-lg' : 'q-mt-xl login-card'">
+        <q-card :class="$q.screen.lg ? 'q-mt-lg' : 'login-card'">
           <q-card-section>
-            <div class="text_h6 text-center q-pt-sm q-pb-sm">
+            <div class="text_h6 text-center q-pb-sm">
               <div>
                 <a :href="baseUrl">
                   <q-avatar :size="$q.screen.lg ? '7rem' : '7rem'">

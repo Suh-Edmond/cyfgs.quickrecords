@@ -76,7 +76,7 @@ export default {
       payment_item_value,
       filter
     ) {
-      console.log(LocalStorage.getItem("data"))
+
       let current_session_id = LocalStorage.getItem("data").current_session.id;
       let search_filter = filter === undefined ? "" : filter;
       let category = this.$store.getters.getCurrentExpenditureCategory;

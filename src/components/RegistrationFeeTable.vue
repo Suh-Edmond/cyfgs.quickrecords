@@ -69,7 +69,7 @@
               {{ props.row.updated_by }}
             </q-td>
             <q-td key="updated_at" :props="props" class="table_value">
-              {{ props.row.updated_at }}
+              {{ getFormatedDate(props.row.updated_at) }}
             </q-td>
             <q-td key="action" :props="props">
               <q-icon
@@ -195,9 +195,9 @@
 <script>
 import ButtonVue from "./Button.vue";
 import RegistrationFreqencyVue from "./Constants/RegistrationFreqency.vue";
-import ConfirmDialog from "./ConfirmDialog.vue";
 import SessionStatusVue from "./Constants/SessionStatus.vue";
 import HelperMixin from "src/mixins/HelperMixin.vue";
+  import moment from "moment";
 
 export default {
   mixins: [HelperMixin],
@@ -295,6 +295,9 @@ export default {
 
     fetchRegistrationFee() {
       this.$emit("fetch-registration-fee");
+    },
+    getFormatedDate(date) {
+      return moment(date).format("MMMM Do YYYY");
     },
   },
   components: {

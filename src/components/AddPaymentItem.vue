@@ -88,7 +88,7 @@
             </q-icon>
           </template>
         </q-input>
-        <label v-if="!validateDeadline()" class="text-red">
+        <label v-if="validateDeadline()" class="text-red">
           <b>{{ $t("app.invalidDeadline") }}</b>
         </label>
       </div>
@@ -324,6 +324,7 @@ export default {
 
   beforeMount() {
     this.resetForm();
+    
   },
 
   data() {
@@ -345,7 +346,7 @@ export default {
         frequency: "ONE_TIME",
         amount: 0.0,
         reference: null,
-        deadline: new Date(),
+        deadline: new Date().setDate(new Date().getDate() + 1),
       },
       payment_item_types: [
         "ALL_MEMBERS",
@@ -412,11 +413,7 @@ export default {
 
   methods: {
     validateDeadline() {
-      let date = new Date();
-      let formatedInputDate = moment(this.payment_item.deadline).format('DD/MM/YYYY');
-      let formatCurrentDate = moment(date).format('DD/MM/YYYY');
-      
-      return formatedInputDate >= formatCurrentDate;
+      return  new Date() >= new Date(this.payment_item.deadline);
     },
     onAddPaymentItem() {
       let category = this.$store.getters.getCurrentPaymentCategory;
@@ -456,7 +453,7 @@ export default {
       this.payment_item.amount = 0.0;
       this.payment_item.frequency = "ONE_TIME";
       this.payment_item.reference = null;
-      this.payment_item.deadline = moment(new Date()).format("YYYY/MM/D");
+      this.payment_item.deadline = moment(new Date().setDate(new Date().getDate() + 1)).format("YYYY/MM/D");
       (this.payment_item.description = ""),
         (this.payment_item.compulsory = true);
       this.payment_item.id = null;

@@ -140,16 +140,25 @@
 
     <!--------------------------------------------------------RECOMMENDATION SECTION------------------------------------------------>
     <q-dialog v-model="showRecommendation" persistent>
-      <q-card style="width: 700px; max-width: 80vw;" class="q-px-xs q-py-lg">
+      <q-card style="width: 700px; max-width: 80vw" class="q-px-xs q-py-lg">
         <q-card-section class="row items-center q-pb-none">
           <div class="model_title">QRM Model</div>
           <q-space />
-          <q-btn icon="close" flat round dense v-close-popup @click="closeRecommendationDialog()" />
+          <q-btn
+            icon="close"
+            flat
+            round
+            dense
+            v-close-popup
+            @click="closeRecommendationDialog()"
+          />
         </q-card-section>
 
         <q-card-section>
-          <div class="model_caption_text">Our AI Model (QRM) makes Recommendations to improve members participation and commitment on various activity contributions in your organisation.<br>
-
+          <div class="model_caption_text">
+            Our AI Model (QRM) makes Recommendations to improve members
+            participation and commitment on various activity contributions in
+            your organisation.<br />
           </div>
 
           <q-btn
@@ -175,17 +184,15 @@
 </template>
 
 <script>
-  import TableVue from "src/components/Table.vue";
-  import PaymentCategoryMixinVue from "src/mixins/PaymentCategoryMixin.vue";
-  import PaymentItemMixinVue from "src/mixins/PaymentItemMixin.vue";
-  import organisationMixinVue from "src/mixins/organisationMixin.vue";
-  import HelperMixinVue from "src/mixins/HelperMixin.vue";
-  import {LocalStorage} from "quasar";
-  import ContributionSummary from "src/components/ContributionSummary.vue";
-  import RecommendationComponent from "components/RecommendationComponent";
+import TableVue from "src/components/Table.vue";
+import PaymentCategoryMixinVue from "src/mixins/PaymentCategoryMixin.vue";
+import PaymentItemMixinVue from "src/mixins/PaymentItemMixin.vue";
+import organisationMixinVue from "src/mixins/organisationMixin.vue";
+import HelperMixinVue from "src/mixins/HelperMixin.vue";
+import { LocalStorage } from "quasar";
+import ContributionSummary from "src/components/ContributionSummary.vue";
 
-
-  export default {
+export default {
   mixins: [
     PaymentCategoryMixinVue,
     PaymentItemMixinVue,
@@ -197,7 +204,7 @@
       sortBy: "name",
       descending: false,
       page: 1,
-      rowsPerPage: 7,
+      rowsPerPage: 10,
       rowsNumber: 0,
     });
   },
@@ -206,9 +213,9 @@
 
   data() {
     return {
-      showRecommendation:false,
+      showRecommendation: false,
       payment_item_id: null,
-      has_recommendation_response:false,
+      has_recommendation_response: false,
       loading: false,
       message: this.$t("app.deleteContributionWarningMsg"),
       label: this.$t("app.delete"),
@@ -251,8 +258,8 @@
       filteredContributions: [],
       loading_filter: false,
       loading_download: false,
-      recommendationMsg:"",
-      recommendationParameter:[
+      recommendationMsg: "",
+      recommendationParameter: [
         "Payment Frequency",
         "Payment Type",
         "Number of Members",
@@ -260,8 +267,8 @@
         "Total Amount Contributed",
         "Total Balance",
         "Percentage of Contribution",
-        "Members Individual Contributions"
-      ]
+        "Members Individual Contributions",
+      ],
     };
   },
 
@@ -277,11 +284,12 @@
       } else {
         data = this.getFilteredContributions;
       }
+      
       return data;
     },
 
     computeTotalContributions() {
-      return this.$store.getters.getFilteredContributions !== null
+      return  this.$store.getters.getFilteredContributions !== null
         ? this.$store.getters.getFilteredContributions.total_amount
         : 0;
     },
@@ -330,51 +338,65 @@
     getFilteredContributions() {
       let data = [];
 
-      if (this.$store.getters.getFilteredContributions != null) {
-        this.$store.getters.getFilteredContributions.data.forEach((ele) => {
-          data.push({
-            counter:
-              this.$store.getters.getFilteredContributions.data.indexOf(ele) +
-              1,
-            amount_deposited: ele.amount_deposited,
-            total_amount_deposited: ele.total_amount_deposited,
-            id: ele.id,
-            approve: ele.approve,
-            balance: ele.balance,
-            payment_item_amount: ele.payment_item_amount,
-            payment_item_id: ele.payment_item_id,
-            payment_item_complusory: ele.payment_item_complusory,
-            payment_item_name: ele.payment_item_name,
-            comment: ele.comment,
-            code: ele.code,
-            type: "MEMBERS_CONTRIBUTIONS",
-            compulsory: ele.compulsory,
-            created_at: ele.created_at,
-            updated_by: ele.updated_by,
-            status: ele.status,
-            user_id: ele.user_id,
-            user_name: ele.user_name,
-            user_telephone: ele.user_telephone,
-            session_id: ele.session_id,
+      if (this.$store.getters.getFilteredContributions !== null && this.$store.getters.getFilteredContributions !== undefined) {
+          this.$store.getters.getFilteredContributions.data.forEach((ele) => {
+            data.push({
+              counter:
+                this.$store.getters.getFilteredContributions.data.indexOf(ele) +
+                1,
+              amount_deposited: ele.amount_deposited,
+              total_amount_deposited: ele.total_amount_deposited,
+              id: ele.id,
+              approve: ele.approve,
+              balance: ele.balance,
+              payment_item_amount: ele.payment_item_amount,
+              payment_item_id: ele.payment_item_id,
+              payment_item_complusory: ele.payment_item_complusory,
+              payment_item_name: ele.payment_item_name,
+              comment: ele.comment,
+              code: ele.code,
+              type: "MEMBERS_CONTRIBUTIONS",
+              compulsory: ele.compulsory,
+              created_at: ele.created_at,
+              updated_by: ele.updated_by,
+              status: ele.status,
+              user_id: ele.user_id,
+              user_name: ele.user_name,
+              user_telephone: ele.user_telephone,
+              session_id: ele.session_id,
+            });
           });
-        });
-      }
+        }
       return data;
     },
 
     computeTotalContributionsForFilteredRecord() {
-      return this.$store.getters.getFilteredContributions !== null
-        ? this.$store.getters.getFilteredContributions.total_amount
-        : 0;
+      let total = 0;
+      if (
+        this.$store.getters.getFilteredContributions !== null
+      ) {
+        total = this.$store.getters.getFilteredContributions.total_amount;
+      }
+      return total;
     },
 
     getTableTitleForSearchContributions() {
       let title = "";
       const payment_item = this.$store.getters.getSearchContributionParams;
-      title =
-        payment_item !== null
-          ? this.$t("app.contributionPartTitle") + `${payment_item.item.label}`
-          : "";
+      const search_params = this.$store.getters.getSearchContributionParams;
+      if (
+        payment_item !== null 
+      ) {
+        title =
+          this.$t("app.contributionPartTitle") + `${payment_item.item.label}`;
+      } else if (
+        payment_item !== null &&
+        search_params !== null &&
+        search_params.status !== "NOT_PAID"
+      ) {
+        title = "Member's not Contributed" + +`${payment_item.item.label}`;
+      }
+
       return title;
     },
 
@@ -396,7 +418,7 @@
         rowsPerPage:
           this.$store.getters.getFilteredContributions !== null
             ? this.$store.getters.getFilteredContributions.per_page
-            : 7,
+            : 10,
         rowsNumber:
           this.$store.getters.getFilteredContributions !== null
             ? this.$store.getters.getFilteredContributions.total
@@ -492,6 +514,8 @@
       filter
     ) {
       let search_filter = filter === undefined ? "" : filter;
+       
+      
       let payload = {
         status: "none",
         url: `/api/protected/organisations/contributions/search?payment_item_id=${payment_item_id}&month=${month}&year=${year}
@@ -525,8 +549,6 @@
         .finally(() => {
           this.$store.commit("SET_IS_FETCHING", false);
         });
-
-
     },
 
     openSearchBar() {
@@ -545,8 +567,7 @@
           ? this.$store.getters.getSearchContributionParams.item.value
           : "";
       const payment_item_name =
-        this.$store.getters.getSearchContributionParams != null &&
-        true
+        this.$store.getters.getSearchContributionParams != null && true
           ? this.$store.getters.getSearchContributionParams.item.label
           : "";
       let month =
@@ -564,12 +585,17 @@
         this.$store.getters.getSearchContributionParams !== undefined
           ? this.$store.getters.getSearchContributionParams.status
           : "";
-      let url = `/api/protected/download-contributions?payment_item_id=${payment_item_id}&month=${month}&year=${year}&status=${status}&payment_item_name=${payment_item_name}`;
 
-      let file_name =
-        this.$t("app.memberContributionDownloadLabel") +
+      let url = "";
+      if (status == "NOT_PAID") {
+        url = `/api/protected/contributions/members_not_comply/download?payment_item_id=${payment_item_id}&month=${month}&year=${year}&status=${status}&payment_item_name=${payment_item_name}`;
+      } else {
+        url = `/api/protected/download-contributions?payment_item_id=${payment_item_id}&month=${month}&year=${year}&status=${status}&payment_item_name=${payment_item_name}`;
+      }
+
+      let file_name = status !== "NOT_PAID" ? this.$t("app.memberContributionDownloadLabel") +
         payment_item_name +
-        ".pdf";
+        ".pdf" : "Members_Not_Contributed for" + payment_item_name
       this.loading_download = this.downloadPdf(url, file_name);
     },
 
@@ -578,13 +604,12 @@
     },
 
     onShowMakeRecommend() {
-       this.showRecommendation = true;
+      this.showRecommendation = true;
     },
 
-    closeRecommendationDialog(){
-      this.recommendationMsg = ""
-      return this.has_recommendation_response = false;
-
+    closeRecommendationDialog() {
+      this.recommendationMsg = "";
+      return (this.has_recommendation_response = false);
     },
     getContributionRecommendation() {
       this.loading = true;
@@ -619,22 +644,21 @@
 
       this.$store.dispatch("getRequest", payload).then((res) => {
         this.loading = false;
-        this.has_recommendation_response = true;
-        this.recommendationMsg = res
-      })
-    }
+        this.has_recommendation_response = res.status == 200;
+        this.recommendationMsg = res;
+      });
+    },
   },
   components: {
     TableVue,
     ContributionSummary,
-    RecommendationComponent
   },
 };
 </script>
 
 <style lang="scss" scoped>
 .model_title {
-  font-family: "Roboto",serif;
+  font-family: "Roboto", serif;
   font-style: normal;
   font-weight: bold;
   font-size: 20px;
@@ -647,7 +671,7 @@
   font-size: 15px;
 }
 .detail_name {
-  font-family: "Roboto",serif;
+  font-family: "Roboto", serif;
   font-style: normal;
   font-weight: 500;
   font-size: 14px;

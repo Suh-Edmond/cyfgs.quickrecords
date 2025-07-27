@@ -764,10 +764,9 @@
       v-if="
         canValidateTransaction &&
         selectedExpenditureDetails.length > 0 &&
-        show_expenditure_item_detail
-      "
-      @fetch-expenditure-details="fetchExpenditureDetails"
-    ></BulkValidationExpenditureItemDetails>
+        show_expenditure_item_detail"
+      @fetch-expenditure-details="fetchExpenditureDetails">
+      </BulkValidationExpenditureItemDetails>
   </div>
 </template>
 <script>

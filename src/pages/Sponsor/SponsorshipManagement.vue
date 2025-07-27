@@ -44,14 +44,14 @@
       sortBy: "name",
       descending: false,
       page: 1,
-      rowsPerPage: 7,
+      rowsPerPage: 10,
       rowsNumber: 0,
     });
   },
 
   mounted() {
     let page = 1;
-    let per_page = 7;
+    let per_page = 10;
     let payment_item_id = "";
     let status = "";
     let session_id = null;
@@ -116,9 +116,15 @@
     },
 
     setTableTitle() {
-      return this.payment_item_id !== null && this.payment_item_id !== " "
-        ? this.$t("app.partSponsorshipTitle") + this.payment_item_id.label
-        : "";
+       
+      let title = "";
+      if(this.payment_item_id !== null && this.payment_item_id !== ""){
+        title = this.$t("app.partSponsorshipTitle") + this.payment_item_id.label;
+      }else if(this.session_id !== null && this.session_id !== ""){
+           title = this.$t("app.partSponsorshipTitle") + this.session_id.label;
+      }
+      
+      return title
     },
 
     getPagination() {

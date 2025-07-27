@@ -171,6 +171,8 @@ export default {
       return this.$store.getters.getRegAmount.frequency === "MONTHLY";
     },
     getRegisterMember() {
+      console.log(this.$store.getters.getRegAmount);
+      
       if (this.$store.getters.getRegAmount == null) {
         Notify.create({
           color: "info",

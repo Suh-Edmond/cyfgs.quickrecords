@@ -449,7 +449,7 @@ export default {
       });
       menu_tabs.push({
         to: "role_privilge",
-        roles: ["ADMIN"],
+        roles: ["ADMIN", "PRESIDENT"],
         name: "Roles Managment",
         icon: "engineering",
         label: this.$t("app.role_privilage"),
@@ -709,6 +709,7 @@ export default {
 
 .sidebar_items {
   margin-top: 6rem;
+  margin-bottom: 4rem;
 }
 
 .app_version {
@@ -716,7 +717,7 @@ export default {
   display: flex;
   flex-direction: column;
   left: 10%;
-  bottom: 0;
+  bottom: 1%;
 
 }
 

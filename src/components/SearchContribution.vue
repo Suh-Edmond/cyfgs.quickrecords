@@ -76,35 +76,7 @@
     <div class="q-my-md">
       <label  class="text">{{ $t("app.filterDelay") }}</label>
     </div>
-    <!-- by year -->
-    <div class="q-mb-sm row">
-      <div class="col-12 col-md">
-        <q-select
-          v-model="param.year"
-          outlined
-          dense
-          :label="$t('app.searchYear')"
-          :options="years"
-          input-debounce="0"
-          use-input
-          clearable
-          @filter="filterYears"
-          @input="stopSearch"
-          hide-bottom-space
-        >
-          <template v-slot:append v-if="start_filter_year">
-            <q-spinner color="primary" size="1.2em" :thickness="3" />
-          </template>
-          <template v-slot:no-option>
-            <q-item>
-              <q-item-section class="text-grey">
-                {{ $t("app.noResults") }}
-              </q-item-section>
-            </q-item>
-          </template>
-        </q-select>
-      </div>
-    </div>
+     
     <!--  by month -->
     <div class="q-mb-sm row">
       <div class="col-12 col-md">
@@ -336,14 +308,15 @@ export default {
     },
 
     filterByDuration(status) {
+       
       let payload = {
         organisation_id: this.getOrganisationId,
         status: status !== null && status !== "" ? status : "",
         payment_item_id: this.param.payment_item_id,
         year:
-          this.param.year === "" && this.param.year !== null
+          this.year === "" && this.param.year !== null
             ? this.current_session_id
-            : this.param.year.value,
+            : this.year.value,
         month:
           this.param.month !== null && this.param.month !== ""
             ? this.param.month.value
@@ -359,6 +332,7 @@ export default {
         amount: this.param.payment_item_id.amount,
         frequency: this.param.payment_item_id.frequency,
       };
+      
       this.loading = this.filterMembersContributions(
         payload,
         payload.year,
@@ -368,7 +342,7 @@ export default {
         payload.date_range,
         payload.amount,
         1,
-        7
+        10
       );
     },
 

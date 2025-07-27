@@ -107,7 +107,7 @@
       </div>
       <div>
         <label class="form_field"
-          >{{ $t("app.venue") }}
+          >{{ $t("app.venue") }} <span class="text-red">*</span>
         </label>
         <q-input
           v-model="expenditure_item.venue"
@@ -187,7 +187,6 @@
 import ButtonVue from "src/components/Button.vue";
 import expenditureItemMixinVue from "src/mixins/expenditureItemMixin.vue";
 import moment from "moment";
-import { Notify, Platform } from "quasar";
 
 export default {
   mixins: [expenditureItemMixinVue],
@@ -223,7 +222,8 @@ export default {
       return (
         this.expenditure_item.amount === 0 ||
         this.expenditure_item.name === null ||
-        this.expenditure_item.date === null ||
+        this.expenditure_item.date === null || 
+        this.expenditure_item.venue === null ||
         this.expenditure_item.payment_item_id === null ||
         this.existExpenditureItem
       );

@@ -1469,8 +1469,10 @@
             `${date}`;
           break;
         case CategoryConstants.MEMBERS:
+          console.log(LocalStorage.getItem('data').current_session.year);
+          
           this.register_member_name = data.name;
-          this.approve_msg = this.$t("app.regFor") + `${data.year}`;
+          this.approve_msg = this.$t("app.regFor") + `${LocalStorage.getItem('data').current_session.year}`;
           break;
       }
       return this.approve_msg;

@@ -46,6 +46,7 @@
           />
         </div>
 
+      
         <div
           v-if="$q.platform.is.desktop"
           :class="
@@ -63,7 +64,7 @@
           >
           </ButtonVue>
         </div>
-        <div v-if="$q.platform.is.mobile" class="q-gutter-y-lg q-mb-lg q-mt-sm">
+        <!-- <div v-if="$q.platform.is.mobile" class="q-gutter-y-lg q-mb-lg q-mt-sm">
           <ButtonVue
             :label="label_save"
             :loading="loading"
@@ -73,7 +74,7 @@
             class="full-width"
           >
           </ButtonVue>
-        </div>
+        </div> -->
       </q-form>
     </div>
   </div>

@@ -88,17 +88,7 @@
                     </label>
                     <q-space />
 
-                    <label  class="role_heading"
-                      ><q-icon
-                        name="add"
-                        class="role_icon q-mr-md"
-                        @click="showAddRole"
-                        v-if="canEditUserRole"
-                        size="xs"
-                      ></q-icon>
-
-                      <q-tooltip> {{ $t("app.addRoleLabel") }} </q-tooltip>
-                    </label>
+                  
                   </div>
                   <q-list>
                     <q-item
@@ -363,7 +353,6 @@
                           outlined
                           dense
                           type="email"
-                          disable
                           hide-bottom-space
                         />
                       </div>

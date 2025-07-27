@@ -1190,7 +1190,7 @@
       registration_amount: null,
       income_amount: 0,
       contributor: null,
-      roles: ["TREASURER", "FINANCIAL_SECRETARY", "ADMIN", "PRESIDENT"],
+      roles: ["TREASURER", "FINANCIAL_SECRETARY", "PRESIDENT"],
       member_invite_name: "",
       selected_role: "",
       loading_invitation: false,

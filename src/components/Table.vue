@@ -1080,7 +1080,9 @@
     HelperMixin,
   ],
 
-  mounted() {},
+  mounted() {
+    
+  },
 
   props: {
     columns: {
@@ -1190,7 +1192,7 @@
       registration_amount: null,
       income_amount: 0,
       contributor: null,
-      roles: ["TREASURER", "FINANCIAL_SECRETARY", "ADMIN", "PRESIDENT"],
+      roles: ["TREASURER", "FINANCIAL_SECRETARY", "PRESIDENT"],
       member_invite_name: "",
       selected_role: "",
       loading_invitation: false,
@@ -1469,8 +1471,9 @@
             `${date}`;
           break;
         case CategoryConstants.MEMBERS:
+          
           this.register_member_name = data.name;
-          this.approve_msg = this.$t("app.regFor") + `${data.year}`;
+          this.approve_msg = this.$t("app.regFor") + `${LocalStorage.getItem('data').current_session.year}`;
           break;
       }
       return this.approve_msg;

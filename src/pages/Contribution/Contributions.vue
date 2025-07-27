@@ -588,9 +588,9 @@ export default {
 
       let url = "";
       if (status == "NOT_PAID") {
-        url = `/api/protected/contributions/members_not_comply/download?payment_item_id=${payment_item_id}&month=${month}&year=${year}&status=${status}&payment_item_name=${payment_item_name}`;
+        url = `/api/protected/contributions/members_not_comply/download?payment_item_id=${payment_item_id}&month=${month}&year=${year}&status=${status}&payment_item_name=${payment_item_name}&page=1&per_page=1000`;
       } else {
-        url = `/api/protected/download-contributions?payment_item_id=${payment_item_id}&month=${month}&year=${year}&status=${status}&payment_item_name=${payment_item_name}`;
+        url = `/api/protected/download-contributions?payment_item_id=${payment_item_id}&month=${month}&year=${year}&status=${status}&payment_item_name=${payment_item_name}&page=1&per_page=1000`;
       }
 
       let file_name = status !== "NOT_PAID" ? this.$t("app.memberContributionDownloadLabel") +

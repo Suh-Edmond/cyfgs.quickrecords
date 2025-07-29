@@ -44,7 +44,7 @@
                     <q-avatar
                       size="150px"
                       v-if="
-                         getProfilePicture !== null
+                         getProfilePicture !== ''
                       "
                     >
                       <img
@@ -56,7 +56,7 @@
                       size="150px"
                       font-size="52px"
                       color="grey-3"
-                      v-if="getProfilePicture === null"
+                      v-if="getProfilePicture === ''"
                     >
                     </q-avatar>
                     <div class="camara" v-if="!checkTreasurerRoleOnly()">
@@ -1315,8 +1315,8 @@ export default {
       return this.setFormField(this.$store.getters.getCurrentMember);
     },
 
-    getProfilePicture() {
-      return this.getCurrentMember !== null && this.getCurrentMember.picture !== null ? process.env.SERVER_BASE_URL + this.getCurrentMember.picture : "";
+    getProfilePicture() {      
+      return   this.getCurrentMember == null ||  this.getCurrentMember.picture == null ? '' : process.env.SERVER_BASE_URL + this.getCurrentMember.picture;
     },
 
     validateDownloadUnPaidItems() {

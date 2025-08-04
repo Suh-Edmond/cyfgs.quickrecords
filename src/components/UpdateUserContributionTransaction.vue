@@ -66,7 +66,7 @@
           hide-bottom-space
         />
         <label v-if="computeTotalBalanceAfterUpdate < 0" class="text-red">
-          <b>{{ $t("app.excessAmountLabel") }}</b>
+          {{ $t("app.excessAmountLabel") }} 
         </label>
       </div>
       <div class="q-mb-md">

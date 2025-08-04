@@ -634,6 +634,9 @@ export default {
     newBalance: "New Balance",
     updateUserContributionTitleComponent:"Update User Contribution Transaction",
     updateUserContributionCaption:"You are about to update an user contribution transaction that has been ",
-
+    isRangeLabel:"Range Payment",
+    startAmountLabel:"Start Amount",
+    endAmountLabel:"End Amount",
+    inValidRangeAmount:"Start Range Amount must be less than the End Range Amount"
   },
 };

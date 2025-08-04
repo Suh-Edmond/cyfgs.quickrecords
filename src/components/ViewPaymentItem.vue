@@ -2,7 +2,7 @@
   <div class="q-py-md" :class="$q.platform.is.mobile ? 'q-px-lg' : 'q-px-md'">
     <div class="flex justify-between q-mb-md">
       <div>
-        <label  class="label"
+        <label class="label"
           ><span> <q-icon name="category" size="xs" class="q-pr-sm" /> </span
           >{{ $t("app.category") }}
         </label>
@@ -15,7 +15,7 @@
     </div>
     <div class="flex justify-between q-mb-md">
       <div>
-        <label  class="label"
+        <label class="label"
           ><span> <q-icon name="category" size="xs" class="q-pr-sm" /> </span
           >{{ $t("app.paymentItem") }}
         </label>
@@ -28,7 +28,7 @@
     </div>
     <div class="flex justify-between q-mb-md">
       <div>
-        <label  class="label"
+        <label class="label"
           ><span>
             <q-icon name="priority_high" size="xs" class="q-pr-sm" /> </span
           >{{ $t("app.compulsoryLabel") }}
@@ -50,6 +50,26 @@
       <div>
         <label class="label"
           ><span>
+            <q-icon name="priority_high" size="xs" class="q-pr-sm" /> </span
+          >{{ $t("app.isRangeLabel") }}
+        </label>
+      </div>
+      <div>
+        <label class="value" v-if="getUpdatedPaymentItemFromState.is_range">
+          {{ $t("app.yes") }}
+        </label>
+        <label class="value" v-else>
+          {{ $t("app.no") }}
+        </label>
+      </div>
+    </div>
+    <div
+      class="flex justify-between q-mb-md"
+      v-if="!getUpdatedPaymentItemFromState.is_range"
+    >
+      <div>
+        <label class="label"
+          ><span>
             <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
           >{{ $t("app.amount") }}
         </label>
@@ -57,6 +77,46 @@
       <div>
         <label class="value">
           {{ Number(getUpdatedPaymentItemFromState.amount).toLocaleString() }}
+          XAF
+        </label>
+      </div>
+    </div>
+    <div
+      class="flex justify-between q-mb-md"
+      v-if="getUpdatedPaymentItemFromState.is_range"
+    >
+      <div>
+        <label class="label"
+          ><span>
+            <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
+          >{{ $t("app.startAmountLabel") }}
+        </label>
+      </div>
+      <div>
+        <label class="value">
+          {{
+            Number(getUpdatedPaymentItemFromState.start_amount).toLocaleString()
+          }}
+          XAF
+        </label>
+      </div>
+    </div>
+    <div
+      class="flex justify-between q-mb-md"
+      v-if="getUpdatedPaymentItemFromState.is_range"
+    >
+      <div>
+        <label class="label"
+          ><span>
+            <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
+          >{{ $t("app.endAmountLabel") }}
+        </label>
+      </div>
+      <div>
+        <label class="value">
+          {{
+            Number(getUpdatedPaymentItemFromState.end_amount).toLocaleString()
+          }}
           XAF
         </label>
       </div>
@@ -180,7 +240,7 @@
       </div>
     </div>
     <div class="row q-mb-xs">
-      <label   class="label"
+      <label class="label"
         ><span> <q-icon name="description" size="xs" class="q-pr-sm" /> </span
         >{{ $t("app.comment") }}</label
       >

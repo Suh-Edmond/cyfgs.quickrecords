@@ -168,7 +168,7 @@
           required: true,
           label: "Compulsory",
           align: "left",
-          field: (row) => row.name,
+          field: (row) => row.compulsory,
           format: (val) => `${val}`,
           sortable: true,
         },
@@ -177,7 +177,7 @@
           required: true,
           label: "Frequency",
           align: "left",
-          field: (row) => row.name,
+          field: (row) => row.frequency,
           format: (val) => `${val}`,
           sortable: true,
         },
@@ -186,7 +186,7 @@
           required: true,
           label: "Type",
           align: "left",
-          field: (row) => row.name,
+          field: (row) => row.payment_item_type,
           format: (val) => `${val}`,
           sortable: true,
         },
@@ -195,7 +195,7 @@
           required: true,
           label: "Member(s)",
           align: "left",
-          field: (row) => row.name,
+          field: (row) => row.reference,
           format: (val) => `${val}`,
           sortable: true,
         },
@@ -241,7 +241,7 @@
           items.push({
             counter: this.$store.getters.getPaymentItems.data.indexOf(ele) + 1,
             name: ele.name,
-            amount: ele.amount,
+            amount: ele.is_range ? ele.start_amount: ele.amount,
             id: ele.id,
             compulsory: ele.compulsory,
             payment_category_id: ele.payment_category_id,
@@ -256,6 +256,9 @@
             updated_by: ele.updated_by,
             deadline: ele.deadline,
             deadline_state: ele.deadline_state,
+            is_range:ele.is_range,
+            start_amount: ele.start_amount,
+            end_amount:ele.end_amount
           });
         });
       }

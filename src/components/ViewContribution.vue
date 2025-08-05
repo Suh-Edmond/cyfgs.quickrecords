@@ -18,6 +18,21 @@
       <div class="flex justify-between q-pb-md">
         <div>
           <label class="label"
+            ><span> <q-icon name="category" size="xs" class="q-pr-sm" /> </span
+            >{{ $t("app.isRangeLabel") }}
+          </label>
+        </div>
+
+        <div>
+          <label class="value">
+            {{ getSelectedContribution.is_range ? 'YES': 'NO' }}
+          </label>
+        </div>
+      </div>
+      
+      <div class="flex justify-between q-pb-md" v-if="!getSelectedContribution.is_range">
+        <div>
+          <label class="label"
             ><span>
               <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
             >{{ $t("app.totalAmountPayable") }}
@@ -28,6 +43,44 @@
             {{
               Number(
                 getSelectedContribution.payment_item_amount
+              ).toLocaleString()
+            }}
+            XAF
+          </label>
+        </div>
+      </div>
+      <div class="flex justify-between q-pb-md" v-if="getSelectedContribution.is_range">
+        <div>
+          <label class="label"
+            ><span>
+              <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
+            >{{ $t("app.startAmountLabel") }}
+          </label>
+        </div>
+        <div>
+          <label class="value">
+            {{
+              Number(
+                getSelectedContribution.start_amount
+              ).toLocaleString()
+            }}
+            XAF
+          </label>
+        </div>
+      </div>
+      <div class="flex justify-between q-pb-md" v-if="getSelectedContribution.is_range">
+        <div>
+          <label class="label"
+            ><span>
+              <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
+            >{{ $t("app.endAmountLabel") }}
+          </label>
+        </div>
+        <div>
+          <label class="value">
+            {{
+              Number(
+                getSelectedContribution.end_amount
               ).toLocaleString()
             }}
             XAF
@@ -285,6 +338,9 @@ export default {
         payment_item_id: null,
         payment_item_complusory: "",
         payment_item_name: null,
+        is_range:false,
+        start_amount:0,
+        end_amount:0,
         comment: null,
         code: null,
         type: "",
@@ -300,13 +356,12 @@ export default {
   },
   computed: {
     getFormatedCreatedDate() {
-      console.log(this.$store.getters.getSelectedContribution)
       return moment(
         this.$store.getters.getSelectedContribution.date
       ).format("MMMM Do YYYY");
     },
 
-    getSelectedContribution() {
+    getSelectedContribution() {      
       return this.$store.getters.getSelectedContribution;
     },
 

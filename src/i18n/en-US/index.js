@@ -605,7 +605,7 @@ export default {
     columnNames: "Column Definitions",
     expected: "Expected",
     totalExpectedContribution: "Total Expected Contribution",
-    totalBalanceContribution: "Total Balance Contribution",
+    totalBalanceContribution: "Total Balance",
     balanceSheetHintMsgMobile:
       "Balance Sheet Preview is available only desktop",
     reportPreviewMsg: "Report Preview is available only on desktop devices.",
@@ -634,6 +634,10 @@ export default {
     newBalance: "New Balance",
     updateUserContributionTitleComponent:"Update User Contribution Transaction",
     updateUserContributionCaption:"You are about to update an user contribution transaction that has been ",
-
+    isRangeLabel:"Range Payment",
+    startAmountLabel:"Start Amount",
+    endAmountLabel:"End Amount",
+    inValidRangeAmount:"Start Range Amount must be less than the End Range Amount",
+    minRangeAmountMet:"Member has already met the minimum range amount for the payment item"
   },
 };

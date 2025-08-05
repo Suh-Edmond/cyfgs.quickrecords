@@ -1,6 +1,6 @@
 <script>
 export default {
-  data() {
+  data () {
     return {
       loading: false,
       percentage_contributions: [],
@@ -10,7 +10,7 @@ export default {
   computed: {},
 
   methods: {
-    getMembersContributionsByPaymentItem(id) {
+    getMembersContributionsByPaymentItem (id) {
       let payload = {
         status: "none",
         url: `/api/protected/contributions/payment-items/${id}`,
@@ -28,10 +28,10 @@ export default {
           data: null,
         },
       };
-      this.$store.dispatch("getRequest", payload).then(() => {});
+      this.$store.dispatch("getRequest", payload).then(() => { });
     },
 
-    filterMembersContributions(
+    filterMembersContributions (
       data,
       session_id,
       state,
@@ -86,6 +86,8 @@ export default {
         "setSearchContributionParams",
         this.setSearchedPayload(data)
       );
+
+
       this.$store.commit("SET_IS_FETCHING", true);
       this.$store
         .dispatch("getRequest", payload)
@@ -107,7 +109,7 @@ export default {
       return this.loading;
     },
 
-    getMemberContributionsByPaymentItem(
+    getMemberContributionsByPaymentItem (
       payment_item_id,
       user_id,
       transaction_status,
@@ -132,10 +134,10 @@ export default {
           data: null,
         },
       };
-      this.$store.dispatch("getRequest", payload).then(() => {});
+      this.$store.dispatch("getRequest", payload).then(() => { });
     },
 
-    getTotalContributionByYear(session_id) {
+    getTotalContributionByYear (session_id) {
       this.total_contributions = 0;
       let payload = {
         status: "none",
@@ -161,7 +163,7 @@ export default {
       return this.total_contributions;
     },
 
-    setSearchedPayload(data) {
+    setSearchedPayload (data) {
       return {
         item: data.payment_item_id,
         status: data.status,
@@ -172,7 +174,7 @@ export default {
       };
     },
 
-    validateSearchData(data, state, session_id, month, date, range) {
+    validateSearchData (data, state, session_id, month, date, range) {
       return {
         status: data.status !== undefined ? data.status : state,
         year: data.year !== undefined ? data.year : session_id,
@@ -182,7 +184,7 @@ export default {
       };
     },
 
-    setSearchRoute(data, status, year, month, date, range, amount) {
+    setSearchRoute (data, status, year, month, date, range, amount) {
       this.$router.push({
         path: `/dashboard/contributions`,
         query: {

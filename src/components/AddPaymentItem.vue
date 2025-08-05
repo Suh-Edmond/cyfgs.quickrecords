@@ -22,7 +22,32 @@
           hide-bottom-space
         />
       </div>
-      <div>
+      
+      <div class="flex">
+        <div>
+          <label class="form_field"
+            >{{ $t("app.isRangeLabel") }}
+            <span class="text-red">*</span></label
+          >
+        </div>
+        <div class="q-gutter-sm q-ml-lg">
+          <q-radio
+            dense
+            v-model="payment_item.is_range"
+            :val="true"
+            :label="$t('app.yes')"
+            size="xs"
+          />
+          <q-radio
+            dense
+            v-model="payment_item.is_range"
+            :val="false"
+            :label="$t('app.no')"
+            size="xs"
+          />
+        </div>
+      </div>
+      <div v-if="!payment_item.is_range">
         <label class="form_field"
           >{{ $t("app.amount") }} <span class="text-red">*</span></label
         >
@@ -33,6 +58,34 @@
           type="number"
           hide-bottom-space
         />
+      </div>
+      <div v-if="payment_item.is_range">
+         <div class="q-mb-md">
+        <label class="form_field"
+          >{{ $t("app.startAmountLabel") }} <span class="text-red">*</span></label
+        >
+        <q-input
+          v-model="payment_item.start_amount"
+          outlined
+          dense
+          type="number"
+          hide-bottom-space
+        />
+        <label v-if="validateRangeAmount" class="text-red">{{ $t("app.inValidRangeAmount") }}</label>
+      </div>
+
+       <div>
+        <label class="form_field"
+          >{{ $t("app.endAmountLabel") }} <span class="text-red">*</span></label
+        >
+        <q-input
+          v-model="payment_item.end_amount"
+          outlined
+          dense
+          type="number"
+          hide-bottom-space
+        />
+      </div>
       </div>
       <div class="flex">
         <div>
@@ -89,7 +142,7 @@
           </template>
         </q-input>
         <label v-if="validateDeadline()" class="text-red">
-          <b>{{ $t("app.invalidDeadline") }}</b>
+          {{ $t("app.invalidDeadline") }} 
         </label>
       </div>
       <div>
@@ -239,9 +292,7 @@
       <!-- END OF SELECTIONS -->
 
       <div class="q-mt-lg">
-        <label class="form_field"
-          >{{ $t("app.description") }}
-        </label>
+        <label class="form_field">{{ $t("app.description") }} </label>
         <q-input
           v-model="payment_item.description"
           outlined
@@ -324,7 +375,6 @@ export default {
 
   beforeMount() {
     this.resetForm();
-    
   },
 
   data() {
@@ -347,6 +397,9 @@ export default {
         amount: 0.0,
         reference: null,
         deadline: new Date().setDate(new Date().getDate() + 1),
+        is_range: false,
+        start_amount: 0.0,
+        end_amount: 0.0,
       },
       payment_item_types: [
         "ALL_MEMBERS",
@@ -363,15 +416,20 @@ export default {
   },
   computed: {
     validateForm() {
+
       return (
         this.payment_item.name === null ||
         this.payment_item.type === null ||
         this.payment_item.frequency === null ||
         this.payment_item.deadline === null ||
-        this.payment_item.amount === 0.0 ||
+        (!this.payment_item.is_range && this.payment_item.amount === 0.0) ||
         (this.payment_item.type === "GROUPED_MEMBERS" &&
           this.references.length == 0) ||
-        (this.payment_item.type === "A_MEMBER" && this.references.length == 0)
+        (this.payment_item.type === "A_MEMBER" &&
+          this.references.length == 0)  || 
+          (this.payment_item.is_range &&
+          (this.payment_item.start_amount === 0.0 ||
+            this.payment_item.end_amount === 0.0))
       );
     },
 
@@ -400,6 +458,10 @@ export default {
 
       return data;
     },
+
+    validateRangeAmount(){
+      return  parseInt(this.payment_item.start_amount) > parseInt(this.payment_item.end_amount);
+    }
   },
 
   watch: {
@@ -413,7 +475,7 @@ export default {
 
   methods: {
     validateDeadline() {
-      return  new Date() >= new Date(this.payment_item.deadline);
+      return new Date() >= new Date(this.payment_item.deadline);
     },
     onAddPaymentItem() {
       let category = this.$store.getters.getCurrentPaymentCategory;
@@ -429,6 +491,9 @@ export default {
           description: this.payment_item.description,
           reference: this.buildStringOfReferences(this.references),
           deadline: this.payment_item.deadline,
+          is_range: this.payment_item.is_range,
+          start_amount: this.payment_item.start_amount,
+          end_amount: this.payment_item.end_amount,
         },
         msg: this.$t("app.paymentItemSuccessMsg"),
         color: "default",
@@ -453,12 +518,17 @@ export default {
       this.payment_item.amount = 0.0;
       this.payment_item.frequency = "ONE_TIME";
       this.payment_item.reference = null;
-      this.payment_item.deadline = moment(new Date().setDate(new Date().getDate() + 1)).format("YYYY/MM/D");
+      this.payment_item.deadline = moment(
+        new Date().setDate(new Date().getDate() + 1)
+      ).format("YYYY/MM/D");
       (this.payment_item.description = ""),
         (this.payment_item.compulsory = true);
       this.payment_item.id = null;
       this.payment_item.payment_category_id = null;
       this.references = [];
+      this.payment_item.is_range = false;
+      this.payment_item.start_amount = 0;
+      this.payment_item.end_amount = 0;
       return this.payment_item;
     },
 
@@ -517,6 +587,9 @@ export default {
         this.payment_item.compulsory = data.compulsory === 1;
         this.references = this.setReferences(data.references);
         this.payment_item.deadline = data.deadline;
+        this.payment_item.is_range = data.is_range;
+        this.payment_item.start_amount = data.start_amount;
+        this.payment_item.end_amount = data.end_amount;
       }
       return this.payment_item;
     },

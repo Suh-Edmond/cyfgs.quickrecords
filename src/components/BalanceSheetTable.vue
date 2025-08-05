@@ -439,7 +439,7 @@ export default {
 
   methods: {
     computeBalance(expected_amount, amount_contributed){
-      return expected_amount - amount_contributed
+      return amount_contributed >= expected_amount ? 0: expected_amount - amount_contributed
     }
   },
 

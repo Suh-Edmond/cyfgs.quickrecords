@@ -65,7 +65,7 @@
           type="number"
           hide-bottom-space
         />
-        <label v-if="computeTotalBalanceAfterUpdate < 0" class="text-red">
+        <label v-if="computeTotalBalanceAfterUpdate < 0 && !getPaymentItem.is_range" class="text-red">
           {{ $t("app.excessAmountLabel") }} 
         </label>
       </div>
@@ -172,7 +172,7 @@
           this.contribution_transaction.old_amount_deposited === 0 ||
           this.contribution_transaction.new_amount_deposited === 0 ||
           this.contribution_transaction.reason == null ||
-          this.contribution_transaction.reason.length < 30 ||
+          this.contribution_transaction.reason.length < 20 ||
           this.contribution_transaction.approve == null
         );
       },
@@ -184,12 +184,19 @@
       getContributionSummary(){
         return this.$store.getters.getMemberContributions;
       },
+
+      getPaymentItem(){
+        return this.$store.getters.getMemberContributions.payment_item;
+      },
       computeTotalBalanceAfterUpdate(){
         let total_amount_contributed = this.$store.getters.getMemberContributions.total_amount;
+              
         let offset_balance = total_amount_contributed - parseInt(this.contribution_transaction.new_amount_deposited);
 
         let total_balance = this.$store.getters.getMemberContributions.total_balance;
-        if(parseInt(this.contribution_transaction.new_amount_deposited) > 0){
+
+        
+        if(parseInt(this.contribution_transaction.new_amount_deposited) > 0){          
           total_balance = this.$store.getters.getMemberContributions.total_balance + offset_balance;
         }
 

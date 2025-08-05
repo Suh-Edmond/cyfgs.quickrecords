@@ -605,7 +605,7 @@ export default {
     columnNames: "Column Definitions",
     expected: "Expected",
     totalExpectedContribution: "Total Expected Contribution",
-    totalBalanceContribution: "Total Balance Contribution",
+    totalBalanceContribution: "Total Balance",
     balanceSheetHintMsgMobile:
       "Balance Sheet Preview is available only desktop",
     reportPreviewMsg: "Report Preview is available only on desktop devices.",

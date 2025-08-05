@@ -1397,7 +1397,7 @@ export default {
             status: "",
             date_range: "",
           };
-          console.log(data);
+        
           
           this.filterMembersContributions(
             data,

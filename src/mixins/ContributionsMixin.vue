@@ -86,6 +86,8 @@ export default {
         "setSearchContributionParams",
         this.setSearchedPayload(data)
       );
+      console.log(payload);
+      
       this.$store.commit("SET_IS_FETCHING", true);
       this.$store
         .dispatch("getRequest", payload)

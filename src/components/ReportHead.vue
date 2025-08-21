@@ -4,30 +4,19 @@
       <div class="col-1 col-md-1 col-sm-12 col-xs-12"></div>
       <!----------------LOGO--------------------->
       <div class="col-2 col-md-2 col-sm-12 col-xs-12">
-        <q-avatar
-          size="110px"
-          font-size="52px"
-          v-if="getOrganisation.logo != null"
-        >
-          <img src="../assets/cyf_logo.png" alt="" width="160px" />
-        </q-avatar>
+        <img
+          :src="getOrganisationLogo"
+          alt=""
+          width="130"
+          height="110"
+          v-if="getOrganisation != null"
+        />
       </div>
       <!-------------END OF LOGO----------------->
 
       <!---------------DETAILS--------------------->
       <div class="col-6 col-lg-6 col-md-6 col-sm-12 col-xs-12 text-center">
         <label>
-          <span class="text-uppercase detail text-weight-bolder"
-            >CHRISTIAN YOUTH FELLOWSHIP (C.Y.F)</span
-          ><br />
-          <span class="text-uppercase detail text-weight-bolder"
-            >FAKO NORTH PRESBYTERY</span
-          ><br />
-          <span class="text-uppercase detail text-weight-bolder">BUEA ZONE</span
-          ><br />
-          <span class="text-uppercase detail text-weight-bolder"
-            >CHRISTIAN YOUTH FELLOWSHIP - GREAT SOPPO</span
-          ><br />
           <span class="text-uppercase detail text-weight-bolder"
             >{{ getOrganisation.name }} - {{ getOrganisation.address }}</span
           >

@@ -246,16 +246,7 @@
     <div v-if="exist_organisation" class="q-mb-xl">
       <div class="flex justify-center">
         <q-card class="text-dark" flat>
-          <q-card-section class="flex justify-between">
-            <div>
-              <q-avatar
-                size="120px"
-                font-size="52px"
-                v-if="organisation.logo != null"
-              >
-                <img src="../../assets/cyf_logo.png" alt="" width="499" />
-              </q-avatar>
-            </div>
+          <q-card-section class="flex">
             <div>
               <img :src="getOrganisationLogo" alt="" width="130" height="110" />
               <q-avatar
@@ -638,7 +629,7 @@ export default {
 .camara {
   position: absolute;
   top: 70%;
-  left: 98%;
+  left: 40%;
   cursor: pointer;
   color: $grey8;
 }

@@ -13,6 +13,22 @@
         </label>
       </div>
     </div>
+     <div class="flex justify-between q-pb-md">
+      <div>
+        <label class="label"
+          ><span> <q-icon name="category" size="xs" class="q-pr-sm" /> </span
+          >{{ $t("app.isRangeLabel") }}:
+        </label>
+      </div>
+      <div class="detail-value wrap">
+        <label class="value" v-if="!getPaymentDetails.details.is_range">
+          NO
+        </label>
+         <label class="value" v-if="getPaymentDetails.details.is_range">
+          YES
+        </label>
+      </div>
+    </div>
     <div class="flex justify-between q-pb-md">
       <div>
         <label class="label"
@@ -22,10 +38,22 @@
         </label>
       </div>
       <div>
-        <label class="value"
+        <label class="value" v-if="!getPaymentDetails.details.is_range"
           >{{
             Number(
               getPaymentDetails.details.payment_item_amount
+            ).toLocaleString()
+          }}
+          XAF</label
+        >
+        <label class="value" v-if="getPaymentDetails.details.is_range"
+          >{{
+            Number(
+              getPaymentDetails.details.start_amount
+            ).toLocaleString()
+          }}  -  {{
+            Number(
+              getPaymentDetails.details.end_amount
             ).toLocaleString()
           }}
           XAF</label
@@ -129,7 +157,7 @@
         <label class="label">
           <span>
             <q-icon name="monetization_on" size="xs" class="q-pr-sm" /> </span
-          >{{ $t("app.amount") }}:
+          >{{ $t("app.amountDeposited") }}:
         </label>
       </div>
       <div>

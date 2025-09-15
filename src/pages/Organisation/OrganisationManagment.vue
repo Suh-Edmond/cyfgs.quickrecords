@@ -629,7 +629,7 @@ export default {
 .camara {
   position: absolute;
   top: 70%;
-  left: 40%;
+  left: 15%;
   cursor: pointer;
   color: $grey8;
 }

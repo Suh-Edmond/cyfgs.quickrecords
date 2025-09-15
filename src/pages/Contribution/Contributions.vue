@@ -20,7 +20,7 @@
         >
         </q-btn>
         <q-space />
-        <q-btn
+        <!-- <q-btn
           :label="$t('app.ai_model')"
           :color="'primary'"
           :disabled="getFilteredContributions.length === 0"
@@ -30,7 +30,7 @@
           class="q-py-xs q-mr-md"
           size="sm"
         >
-        </q-btn>
+        </q-btn> -->
         <q-btn
           :label="$t('app.download')"
           :loading="loading_download"

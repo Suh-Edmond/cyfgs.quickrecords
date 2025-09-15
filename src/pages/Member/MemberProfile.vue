@@ -545,16 +545,20 @@
                       <q-td key="name" :props="props" class="table_value">
                         {{ props.row.name }}
                       </q-td>
-                      <q-td key="balance" :props="props" class="table_value">
+                      <q-td key="balance" :props="props" class="table_value" v-if="!props.row.is_range">
                         {{ Number(props.row.balance).toLocaleString() }}
                       </q-td>
+                      <q-td key="balance" :props="props" class="table_value" v-if="props.row.is_range">
+                        {{ Number(props.row.start_amount).toLocaleString() }} -  {{ Number(props.row.end_amount).toLocaleString() }}
+                      </q-td>
+                      
                       <q-td key="frequency" :props="props" class="table_value">
                         {{ formatConstants(props.row.frequency) }}
                       </q-td>
                       <q-td key="month_name" :props="props" class="table_value">
                         {{
                           props.row.month_name == null
-                            ? "N/A"
+                            ? ""
                             : props.row.month_name
                         }}
                       </q-td>
@@ -566,7 +570,7 @@
                         {{
                           props.row.frequency === "QUARTERLY"
                             ? props.row.quarterly_name
-                            : "N/A"
+                            : ""
                         }}
                       </q-td>
                       <q-td key="year" :props="props" class="table_value">
@@ -674,27 +678,6 @@
                       <q-td key="name" :props="props" class="table_value">
                         {{ props.row.name }}
                       </q-td>
-                      <q-td key="frequency" :props="props" class="table_value">
-                        {{ formatConstants(props.row.frequency) }}
-                      </q-td>
-                      <q-td key="month_name" :props="props" class="table_value">
-                        {{
-                          props.row.month_name == null
-                            ? "N/A"
-                            : props.row.month_name
-                        }}
-                      </q-td>
-                      <q-td
-                        key="quarterly_name"
-                        :props="props"
-                        class="table_value"
-                      >
-                        {{
-                          props.row.quarterly_name == null
-                            ? "N/A"
-                            : props.row.quarterly_name
-                        }}
-                      </q-td>
                       <q-td key="amount" :props="props" class="table_value">
                         {{ Number(props.row.amount).toLocaleString() }}
                       </q-td>
@@ -744,6 +727,27 @@
                       <q-td key="date" :props="props" class="table_value">
                         {{ props.row.date }}
                       </q-td>
+                      <q-td key="frequency" :props="props" class="table_value">
+                        {{ formatConstants(props.row.frequency) }}
+                      </q-td>
+                      <q-td key="month_name" :props="props" class="table_value">
+                        {{
+                          props.row.month_name == null
+                            ? ""
+                            : props.row.month_name
+                        }}
+                      </q-td>
+                      <q-td
+                        key="quarterly_name"
+                        :props="props"
+                        class="table_value"
+                      >
+                        {{
+                          props.row.quarterly_name == null
+                            ? ""
+                            : props.row.quarterly_name
+                        }}
+                      </q-td>
                       <q-td key="action" :props="props">
                         <q-btn
                           unelevated
@@ -773,62 +777,6 @@
         </q-tab-panels>
       </div>
     </div>
-
-    <!-------------------------------------------ADD ROLE DIALOG------------------------------>
-    <q-dialog v-model="show_add_role_dialog">
-      <q-card
-        :style="$q.platform.is.desktop ? 'width: 350px' : 'width: 450px'"
-        class="q-pt-sm q-pb-md"
-        :class="$q.platform.is.desktop ? 'q-px-sm' : 'q-mb-md'"
-      >
-        <q-card-section class="row items-center q-pb-md">
-          <div class="text-h6 add_role_title">{{ $t("app.addRoleLabel") }}</div>
-          <q-space />
-          <q-btn icon="close" flat round dense v-close-popup />
-        </q-card-section>
-
-        <q-card-section class="q-pt-none">
-          <q-form @submit="onAddRole" class="q-gutter-md">
-            <div>
-              <label class="form_field"
-                >{{ $t("app.selectRole") }}
-                <span class="text-red">*</span></label
-              >
-              <q-select
-                v-model="role"
-                outlined
-                :options="getAvailableRoles"
-                dense
-              />
-            </div>
-            <div class="flex justify-end" v-if="$q.platform.is.desktop">
-              <ButtonVue
-                class="q-mt-xs"
-                :label="$t('app.addLabel')"
-                :loading="loading"
-                color="primary"
-                :disabled="validateAddRole"
-                :no_caps="true"
-              >
-              </ButtonVue>
-            </div>
-
-            <div v-if="$q.platform.is.mobile">
-              <ButtonVue
-                class="full-width"
-                :label="$t('app.addLabel')"
-                :loading="loading"
-                color="primary"
-                :disabled="validateAddRole"
-                :no_caps="true"
-              >
-              </ButtonVue>
-            </div>
-          </q-form>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
-    <!-------------------------------------------END OF ADD ROLE DIALOG----------------------->
 
     <!-------------------------------------------REMOVE ROLE DIALOG--------------------------->
     <q-dialog v-model="show_remove_role_dialog">
@@ -907,7 +855,8 @@
                 <tr v-for="(item, index) in selected_items" :key="index">
                   <td class="text-left">{{ index + 1 }}</td>
                   <td class="text-left">{{ item.name }}</td>
-                  <td class="text-left">{{ item.balance }}</td>
+                  <td class="text-left" v-if="!item.is_range">{{ item.balance }}</td>
+                   <td class="text-left" v-if="item.is_range">{{ item.start_amount }}</td>
                 </tr>
                 <tr>
                   <td class="text-left text-weight-bold">
@@ -1172,28 +1121,7 @@ export default {
           field: (row) => row.name,
           format: (val) => `${val}`,
           sortable: true,
-        },
-        {
-          name: "frequency",
-          align: "left",
-          label: "Frequency",
-          field: "frequency",
-          sortable: true,
-        },
-        {
-          name: "month_name",
-          align: "left",
-          label: "Month",
-          field: "month_name",
-          sortable: true,
-        },
-        {
-          name: "quarterly_name",
-          align: "left",
-          label: "Quarter",
-          field: "quarterly_name",
-          sortable: true,
-        },
+        },  
         {
           name: "amount",
           align: "left",
@@ -1225,6 +1153,27 @@ export default {
           label: "Payment Date",
           field: "date",
           align: "left",
+        },
+        {
+          name: "frequency",
+          align: "left",
+          label: "Frequency",
+          field: "frequency",
+          sortable: true,
+        },
+        {
+          name: "month_name",
+          align: "left",
+          label: "Month",
+          field: "month_name",
+          sortable: true,
+        },
+        {
+          name: "quarterly_name",
+          align: "left",
+          label: "Quarter",
+          field: "quarterly_name",
+          sortable: true,
         },
         {
           name: "action",
@@ -1490,12 +1439,13 @@ export default {
     },
 
     computeTotal(data, evt) {
+      let amount_payable = data.is_range ? data.start_amount : data.balance
       if (evt) {
-        this.total_amount_payable += data.balance;
+        this.total_amount_payable += amount_payable;
         this.total_amount_payable = parseFloat(this.total_amount_payable);
         this.selected_items.push(data);
       } else {
-        this.total_amount_payable -= data.balance;
+        this.total_amount_payable -= amount_payable;
         this.total_amount_payable = parseFloat(this.total_amount_payable);
         this.selected_items = this.selected_items.filter(
           (ele) => ele.id !== data.id
@@ -1505,33 +1455,10 @@ export default {
     },
 
     showAddRole() {
-      this.getAllRoles();
       this.show_add_role_dialog = true;
     },
 
-    getAllRoles() {
-      this.available_roles = [];
-      let payload = {
-        url: `/api/protected/roles`,
-        msg: "none",
-        color: "default",
-        status: "none",
-        error_msg: "An Error occurred! Please try again",
-        has_commit: false,
-        show_spinner: false,
-        commit: "",
-        to_be_store_data: {
-          required: false,
-          has_value: false,
-          data: [],
-        },
-      };
-      this.$store.dispatch("getRequest", payload).then((res) => {
-        res.data.forEach((ele) => {
-          this.available_roles.push(ele);
-        });
-      });
-    },
+
 
     onAddRole() {
       let user_id = this.getCurrentMember.id;
@@ -1695,7 +1622,7 @@ export default {
           data.push({
             user_id: this.$store.getters.getCurrentMember.id,
             payment_item_id: ele.id,
-            amount_deposited: parseInt(ele.balance),
+            amount_deposited: ele.is_range ? parseInt(ele.start_amount): parseInt(ele.balance),
             is_compulsory: ele.is_compulsory,
             code: ele.code,
             year: this.current_year.id,
@@ -1710,7 +1637,7 @@ export default {
           data.push({
             user_id: this.$store.getters.getCurrentMember.id,
             payment_item_id: ele.id,
-            amount_deposited: parseInt(ele.balance),
+            amount_deposited: ele.is_range ? parseInt(ele.start_amount): parseInt(ele.balance),
             is_compulsory: ele.is_compulsory,
             code: ele.code,
             year: ele.session.id,
@@ -1752,6 +1679,8 @@ export default {
         .dispatch("getRequest", payload)
         .then((res) => {
           if (res !== undefined && res.data.length > 0) {
+            console.log(res.data);
+            
             res.data.forEach((ele) => {
               this.due_amount += ele.balance;
               this.data.push({
@@ -1768,6 +1697,9 @@ export default {
                 month_name: ele.month_name,
                 quarterly_name: ele.quarterly_name,
                 session: ele.session,
+                is_range: ele.is_range,
+                start_amount: ele.start_amount,
+                end_amount: ele.end_amount
               });
             });
           }
@@ -1827,7 +1759,10 @@ export default {
                 created_by: ele.created_by,
                 comment: ele.comment,
                 is_compulsory: ele.is_compulsory,
-                date:ele.date
+                date:ele.date,
+                is_range:ele.is_range,
+                start_amount: ele.start_amount,
+                end_amount: ele.end_amount
               });
             });
             

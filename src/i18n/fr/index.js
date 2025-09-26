@@ -570,6 +570,7 @@ export default {
     startAmountLabel:"Montant de départ",
     endAmountLabel:"Montant final",
     inValidRangeAmount:"Le montant de la plage de départ doit être inférieur au montant de la plage de fin",
-    minRangeAmountMet:"Le membre a déjà atteint le montant minimum de la fourchette pour l'élément de paiement"
+    minRangeAmountMet:"Le membre a déjà atteint le montant minimum de la fourchette pour l'élément de paiement",
+     reasonLengthWarning:"La raison doit comporter au moins 20 caractères."
   }
 };

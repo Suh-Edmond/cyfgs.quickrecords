@@ -638,6 +638,7 @@ export default {
     startAmountLabel:"Start Amount",
     endAmountLabel:"End Amount",
     inValidRangeAmount:"Start Range Amount must be less than the End Range Amount",
-    minRangeAmountMet:"Member has already met the minimum range amount for the payment item"
+    minRangeAmountMet:"Member has already met the minimum range amount for the payment item",
+    reasonLengthWarning:"Please the reason must be at least 20 characters"
   },
 };

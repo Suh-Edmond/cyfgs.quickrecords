@@ -394,18 +394,16 @@ export default {
         payment_category_id: null,
         type: "ALL_MEMBERS",
         frequency: "ONE_TIME",
-        amount: 0.0,
+        amount: 0,
         reference: null,
         deadline: new Date().setDate(new Date().getDate() + 1),
         is_range: false,
-        start_amount: 0.0,
-        end_amount: 0.0,
+        start_amount: 0,
+        end_amount: 0,
       },
       payment_item_types: [
         "ALL_MEMBERS",
         "A_MEMBER",
-        "MEMBERS_WITH_ROLES",
-        "MEMBERS_WITHOUT_ROLES",
         "GROUPED_MEMBERS",
       ],
       frequencies: ["YEARLY", "MONTHLY", "ONE_TIME", "QUARTERLY"],
@@ -422,14 +420,14 @@ export default {
         this.payment_item.type === null ||
         this.payment_item.frequency === null ||
         this.payment_item.deadline === null ||
-        (!this.payment_item.is_range && this.payment_item.amount === 0.0) ||
+        (!this.payment_item.is_range && this.payment_item.amount === 0) ||
         (this.payment_item.type === "GROUPED_MEMBERS" &&
           this.references.length == 0) ||
         (this.payment_item.type === "A_MEMBER" &&
           this.references.length == 0)  || 
           (this.payment_item.is_range &&
-          (this.payment_item.start_amount === 0.0 ||
-            this.payment_item.end_amount === 0.0))
+          (this.payment_item.start_amount === 0 ||
+            this.payment_item.end_amount === 0))
       );
     },
 
@@ -515,7 +513,7 @@ export default {
     resetForm() {
       this.payment_item.name = null;
       this.payment_item.type = "ALL_MEMBERS";
-      this.payment_item.amount = 0.0;
+      this.payment_item.amount = 0;
       this.payment_item.frequency = "ONE_TIME";
       this.payment_item.reference = null;
       this.payment_item.deadline = moment(

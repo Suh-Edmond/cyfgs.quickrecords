@@ -103,6 +103,7 @@
           :placeholder="$t('app.reasonCaption')"
           hide-bottom-space
         />
+        <small class="text-muted info">{{$t('app.reasonLengthWarning')}}</small>
       </div>
       <div
         :class="$q.platform.is.desktop ? 'flex q-mt-md justify-end' : 'q-mb-xl'"
@@ -194,7 +195,7 @@
           this.expenditure_item_detail_transaction.new_amount_spent === 0 ||
           this.expenditure_item_detail_transaction.new_amount_given === 0 ||
           this.expenditure_item_detail_transaction.reason == null ||
-          this.expenditure_item_detail_transaction.reason.length < 30 ||
+          this.expenditure_item_detail_transaction.reason.length < 20 ||
           this.expenditure_item_detail_transaction.approve == null
         );
       },

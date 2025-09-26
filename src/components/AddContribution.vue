@@ -999,7 +999,7 @@ export default {
     };
   },
   computed: {
-    checkPaymentItemBal() {
+    checkPaymentItemBal() {      
       if (
         this.selected_payment_item != null &&
         !this.selected_payment_item.is_range
@@ -1199,19 +1199,22 @@ export default {
             // //set the balance to be paid by the member has paid anything got the item before
             if (res) {
               this.contribution.total_amount_deposited = res.data;
+              let comparison_amount= this.selected_payment_item.is_range ? this.selected_payment_item.start_amount : this.selected_payment_item.amount;
+              
               this.contribution.balance =
                 this.contribution.total_amount_deposited >=
-                this.selected_payment_item.start_amount
+                comparison_amount
                   ? 0
                   : this.contribution.amount_payable - res.data;
+              
+              
               if (
                 this.contribution.balance === 0 ||
                 this.contribution.total_amount_deposited >=
                   this.selected_payment_item.start_amount
               ) {
-                this.has_completed_payment = this.selected_payment_item.is_range
-                  ? false
-                  : true;
+                 
+                this.has_completed_payment = this.selected_payment_item.is_range? false : this.contribution.total_amount_deposited  == this.selected_payment_item.amount;
 
                 if (this.selected_payment_item.is_range &&  this.contribution.total_amount_deposited >= this.selected_payment_item.start_amount) {
                   Notify.create({
@@ -1284,9 +1287,10 @@ export default {
                 // //set the balance to be paid by the member has paid anything got the item before
                 if (res) {
                   this.contribution.total_amount_deposited = res.data;
+                  let comparison_amount= this.selected_payment_item.is_range ? this.selected_payment_item.start_amount : this.selected_payment_item.amount;
                   this.contribution.balance =
                     this.contribution.total_amount_deposited >=
-                    this.selected_payment_item.start_amount
+                    comparison_amount
                       ? 0
                       : this.contribution.amount_payable - res.data;
                   if (
@@ -1294,10 +1298,7 @@ export default {
                     this.contribution.total_amount_deposited >=
                       this.selected_payment_item.start_amount
                   ) {
-                    this.has_completed_payment = this.selected_payment_item
-                      .is_range
-                      ? false
-                      : true;
+                    this.has_completed_payment = this.selected_payment_item.is_range? false : this.contribution.total_amount_deposited  == this.selected_payment_item.amount;
                     if (this.selected_payment_item.is_range &&  this.contribution.total_amount_deposited >=
                       this.selected_payment_item.start_amount) {
                       Notify.create({
@@ -1356,14 +1357,14 @@ export default {
       this.has_selected_payment_item = false;
       this.has_completed_payment = false;
       this.contribution.user_id = null;
-      this.contribution.amount_payable = 0.0;
-      this.contribution.amount_deposited = 0.0;
-      this.contribution.balance = 0.0;
+      this.contribution.amount_payable = 0;
+      this.contribution.amount_deposited = 0;
+      this.contribution.balance = 0;
       this.contribution.comment = null;
       this.contribution.payment_item_id = null;
       this.contribution.payment_category_id = null;
       this.contribution.id = null;
-      this.contribution.total_amount_deposited = 0.0;
+      this.contribution.total_amount_deposited = 0;
       this.contribution.month_name = "";
       this.contribution.quarterly_name = "";
       this.contribution.total_saving = 0;

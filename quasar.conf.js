@@ -46,7 +46,7 @@ module.exports = function (ctx) {
     build: {
       vueRouterMode: "history", // available values: 'hash', 'history'
       env: {
-        SERVER_BASE_URL:  "https://www.quickrecords.xyz",
+        SERVER_BASE_URL:  "https://api.mountzioncm.com",
         CLIENT_SERVER: "https://quickrecords-demo.vercel.app/auth/login",
         REDIRECT_URL: "https://quickrecords-demo.vercel.app/auth/invite-member",
         APP_NAME: "Quick_Records",

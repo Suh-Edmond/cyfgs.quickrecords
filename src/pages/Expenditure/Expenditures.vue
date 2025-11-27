@@ -290,7 +290,7 @@
   },
   methods: {
     fetchExpenditureCategories() {
-      let organisationId = this.getOrganisationId;
+      let organisationId = this.getOrganisationId();
       let payload = {
         url: `/api/protected/expenditure-categories-all?organisation_id=${organisationId}`,
         msg: "none",

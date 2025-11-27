@@ -207,6 +207,7 @@ import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
 import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
 import MonthsMixin from "src/mixins/MonthsMixin.vue";
+import { LocalStorage } from 'quasar';
 
 export default {
   mixins: [
@@ -258,8 +259,8 @@ export default {
       dialog: false,
       loading_user_info: false,
       loading_save_amount: false,
-      organisation_id: this.$store.getters.getOrganisation.id,
-      session_id: this.$store.getters.getCurrentYear.id,
+      organisation_id: this.getOrganisationId(),
+      session_id: this.getCurrentYear(),
       start_filter_month: false,
       start_filter_year: false,
     };
@@ -301,7 +302,7 @@ export default {
   },
   methods: {
     filterByUserInfo() {
-      let name = this.param !== "undefined" ? this.param.name : "";
+      let name = this.param !== undefined && this.param !== null ? this.param.name : "";
       this.$router.push({
         path: `/dashboard/members-savings`,
         query: {

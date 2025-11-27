@@ -29,7 +29,7 @@
           </label>
         </div>
       </div>
-      
+
       <div class="flex justify-between q-pb-md" v-if="!getSelectedContribution.is_range">
         <div>
           <label class="label"
@@ -361,7 +361,7 @@ export default {
       ).format("MMMM Do YYYY");
     },
 
-    getSelectedContribution() {      
+    getSelectedContribution() {
       return this.$store.getters.getSelectedContribution;
     },
 
@@ -379,7 +379,7 @@ export default {
         right: true,
       };
 
-      let id = this.getOrganisationId;
+      let id = this.getOrganisationId();
 
       if (this.$store.getters.getMembers.length === 0) {
         this.getOrganisationMembers(id, false);

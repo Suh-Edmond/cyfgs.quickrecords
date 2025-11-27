@@ -46,7 +46,7 @@
           />
         </div>
 
-      
+
         <div
           v-if="$q.platform.is.desktop"
           :class="
@@ -122,7 +122,7 @@ export default {
   },
   methods: {
     setRequestUrl() {
-      let id = this.getOrganisationId;
+      let id = this.getOrganisationId();
       return this.getUpdatedExpenditureCategoryFromState() === null
         ? `/api/protected/organisations/${id}/expenditure-categories`
         : `/api/protected/organisations/${id}/expenditure-categories/${

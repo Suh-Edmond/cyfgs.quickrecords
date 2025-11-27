@@ -360,7 +360,7 @@ export default {
           data: [],
         },
       };
-      let organisation_id = this.getOrganisationId;
+      let organisation_id = this.getOrganisationId();
       this.loading = true;
 
       this.$store

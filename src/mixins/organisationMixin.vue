@@ -1,16 +1,11 @@
 <script>
+import { LocalStorage } from 'quasar';
 
 
 export default {
   data() { },
   computed: {
-    getOrganisationId() {
-      let id = "";
-      if (this.$store.getters.getOrganisation !== null) {
-        id = this.$store.getters.getOrganisation.id
-      }
-      return id
-    },
+
   },
   methods: {
     getOrganisationInfo() {
@@ -34,6 +29,10 @@ export default {
 
       });
 
+    },
+
+    getOrganisationId() {
+      return LocalStorage.getItem("data").user_data.organisation_id
     },
   }
 };

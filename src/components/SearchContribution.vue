@@ -76,7 +76,7 @@
     <div class="q-my-md">
       <label  class="text">{{ $t("app.filterDelay") }}</label>
     </div>
-     
+
     <!--  by month -->
     <div class="q-mb-sm row">
       <div class="col-12 col-md">
@@ -308,9 +308,9 @@ export default {
     },
 
     filterByDuration(status) {
-       
+
       let payload = {
-        organisation_id: this.getOrganisationId,
+        organisation_id: this.getOrganisationId(),
         status: status !== null && status !== "" ? status : "",
         payment_item_id: this.param.payment_item_id,
         year:
@@ -332,7 +332,7 @@ export default {
         amount: this.param.payment_item_id.amount,
         frequency: this.param.payment_item_id.frequency,
       };
-      
+
       this.loading = this.filterMembersContributions(
         payload,
         payload.year,

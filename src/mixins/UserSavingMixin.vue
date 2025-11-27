@@ -10,7 +10,7 @@ export default {
   methods: {
     getOrganisationMemberSavings(id, page, per_page) {
       let session_id =
-        this.getCurrentYear != null ? this.getCurrentYear.id : "";
+        this.getCurrentYear() != null ? this.getCurrentYear().id : "";
       let payload = {
         url: `/api/protected/user-savings?organisation_id=${id}&session_id=${session_id}&page=${page}&per_page=${per_page}`,
         msg: "none",

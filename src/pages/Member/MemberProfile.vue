@@ -88,7 +88,7 @@
                     </label>
                     <q-space />
 
-                  
+
                   </div>
                   <q-list>
                     <q-item
@@ -551,7 +551,7 @@
                       <q-td key="balance" :props="props" class="table_value" v-if="props.row.is_range">
                         {{ Number(props.row.start_amount).toLocaleString() }} -  {{ Number(props.row.end_amount).toLocaleString() }}
                       </q-td>
-                      
+
                       <q-td key="frequency" :props="props" class="table_value">
                         {{ formatConstants(props.row.frequency) }}
                       </q-td>
@@ -1121,7 +1121,7 @@ export default {
           field: (row) => row.name,
           format: (val) => `${val}`,
           sortable: true,
-        },  
+        },
         {
           name: "amount",
           align: "left",
@@ -1264,7 +1264,7 @@ export default {
       return this.setFormField(this.$store.getters.getCurrentMember);
     },
 
-    getProfilePicture() {      
+    getProfilePicture() {
       return   this.getCurrentMember == null ||  this.getCurrentMember.picture == null ? '' : process.env.SERVER_BASE_URL + this.getCurrentMember.picture;
     },
 
@@ -1275,6 +1275,10 @@ export default {
     validateDownloadPaidItems() {
       return this.data1.length < 0;
     },
+
+    getCurrentYear(){
+      return LocalStorage.getItem("data").current_session
+    }
   },
   watch: {
     getFormField() {
@@ -1363,7 +1367,7 @@ export default {
     },
 
     showEditProfile() {
-      
+
       this.setFormField(this.$store.getters.getCurrentMember);
       if (Platform.is.mobile) {
         this.showEditProfileDialog = true;
@@ -1680,7 +1684,7 @@ export default {
         .then((res) => {
           if (res !== undefined && res.data.length > 0) {
             console.log(res.data);
-            
+
             res.data.forEach((ele) => {
               this.due_amount += ele.balance;
               this.data.push({
@@ -1765,7 +1769,7 @@ export default {
                 end_amount: ele.end_amount
               });
             });
-            
+
           }
         })
         .finally(() => {

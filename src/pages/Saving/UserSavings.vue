@@ -91,7 +91,7 @@ export default {
         sortBy: "name",
         descending: false,
         page: 1,
-        rowsPerPage: 7,
+        rowsPerPage: 10,
         rowsNumber:
           this.$store.getters.getMemberSavings !== null
             ? this.$store.getters.getMemberSavings.total
@@ -155,8 +155,8 @@ export default {
     },
 
     getPaginatedData(id, page, fetch_count) {
-      let searched_month = this.month === "" || this.month === null ? "" : this.month.value;
-      let searched_status = this.status !== "" && this.status !== null ? this.status : "";
+      let searched_month = this.month === "" && this.month === null && this.month === undefined ? "" : this.month.value;
+      let searched_status = this.status !== "" && this.status !== null && this.status !== undefined ? this.status : "";
       let payload = {
         url: `/api/protected/user-savings/${id}?month=${searched_month}&status=${searched_status}&page=${page}&per_page=${fetch_count}`,
         color: "default",
@@ -184,7 +184,7 @@ export default {
            this.pagination.rowsNumber = data.total;
          }else {
            this.pagination.page = 1;
-           this.pagination.rowsPerPage = 7;
+           this.pagination.rowsPerPage = 10;
            this.pagination.rowsNumber = 10;
          }
         })

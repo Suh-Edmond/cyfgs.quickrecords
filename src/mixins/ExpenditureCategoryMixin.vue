@@ -9,7 +9,7 @@ export default {
   },
   methods: {
     fetchExpenditureCategories() {
-      let organisationId = this.getOrganisationId;
+      let organisationId = this.getOrganisationId();
       let payload = {
         url: `/api/protected/organisations/${organisationId}/expenditure-categories`,
         msg: "none",

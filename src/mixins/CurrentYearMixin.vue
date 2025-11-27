@@ -1,13 +1,11 @@
 <script>
+import { LocalStorage } from 'quasar';
 export default {
   data() {
     return {};
   },
 
   computed: {
-    getCurrentYear() {
-      return this.$store.getters.getCurrentYear;
-    },
 
     getSessionsFromState() {
       let data = [];
@@ -66,6 +64,9 @@ export default {
       };
       this.$store.dispatch("getRequest", payload).then(() => {});
     },
+    getCurrentYear() {
+      return LocalStorage.getItem("data").current_session.id;
+    }
   },
 };
 </script>

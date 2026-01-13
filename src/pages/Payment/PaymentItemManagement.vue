@@ -127,6 +127,7 @@
   import HelperMixinVue from "src/mixins/HelperMixin.vue";
   import ConfirmDialog from "src/components/ConfirmDialog.vue";
   import FilterComponentVue from "src/components/FilterComponent.vue";
+import { LocalStorage } from 'quasar';
 
   export default {
   mixins: [HelperMixinVue],
@@ -222,7 +223,7 @@
       selected_payment_item: null,
       loading_download: false,
       is_fetching_members: false,
-      session_id: "",
+      session_id: LocalStorage.getItem("data").current_session.id,
     };
   },
   computed: {
@@ -284,13 +285,11 @@
     fetchPaymentItems(is_filtering, page, per_page, sort_by, filter) {
       let search_filter = filter === undefined ? "" : filter;
       let is_compulsory_value =
-        this.is_compulsory !== null && this.is_compulsory !== ""
-          ? this.is_compulsory.value
-          : "";
+        this.is_compulsory ? this.is_compulsory.value : "";
       let state_value =
-        this.state !== null && this.state !== "" ? this.state.value : "";
+        this.state   ? this.state.value : "";
       let payment_category_id = this.$route.params.id;
-      let type_value = this.type !== null && this.type !== "" ? this.type : "";
+      let type_value = this.type   ? this.type : "";
       let payload = {
         status: "none",
         url: `/api/protected/filter-payment-items?payment_category_id=${payment_category_id}&is_compulsory=${is_compulsory_value}&type=${type_value}

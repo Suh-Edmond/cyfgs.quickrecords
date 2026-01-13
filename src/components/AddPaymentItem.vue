@@ -22,7 +22,7 @@
           hide-bottom-space
         />
       </div>
-      
+
       <div class="flex">
         <div>
           <label class="form_field"
@@ -142,7 +142,7 @@
           </template>
         </q-input>
         <label v-if="validateDeadline()" class="text-red">
-          {{ $t("app.invalidDeadline") }} 
+          {{ $t("app.invalidDeadline") }}
         </label>
       </div>
       <div>
@@ -355,7 +355,7 @@
   </div>
 </template>
 <script>
-import { Notify, Platform } from "quasar";
+import { LocalStorage, Notify, Platform } from "quasar";
 import ButtonVue from "src/components/Button.vue";
 import PaymentItemMixin from "src/mixins/PaymentItemMixin.vue";
 import PaymentItemMixinVue from "src/mixins/PaymentItemMixin.vue";
@@ -410,6 +410,7 @@ export default {
       members: [],
       references: [],
       start_filtering: false,
+      session_id: LocalStorage.getItem("data").current_session.id,
     };
   },
   computed: {
@@ -424,7 +425,7 @@ export default {
         (this.payment_item.type === "GROUPED_MEMBERS" &&
           this.references.length == 0) ||
         (this.payment_item.type === "A_MEMBER" &&
-          this.references.length == 0)  || 
+          this.references.length == 0)  ||
           (this.payment_item.is_range &&
           (this.payment_item.start_amount === 0 ||
             this.payment_item.end_amount === 0))
@@ -547,7 +548,7 @@ export default {
         this.$store
           .dispatch("postRequest", payload)
           .then(() => {
-            this.getPaymentItemsByCategory(category.id);
+            this.fetchPaymentItems(1, 10);
             this.resetForm();
             this.$emit("close-right-drawer");
           })
@@ -561,7 +562,7 @@ export default {
         this.$store
           .dispatch("putRequest", payload)
           .then(() => {
-            this.getPaymentItemsByCategory(category.id);
+            this.fetchPaymentItems(1, 10);
             this.resetForm();
             this.$emit("close-right-drawer");
             this.references = [];
@@ -585,7 +586,7 @@ export default {
         this.payment_item.compulsory = data.compulsory === 1;
         this.references = this.setReferences(data.references);
         this.payment_item.deadline = data.deadline;
-        this.payment_item.is_range = data.is_range;
+        this.payment_item.is_range = data.is_range === 1;
         this.payment_item.start_amount = data.start_amount;
         this.payment_item.end_amount = data.end_amount;
       }
@@ -733,6 +734,38 @@ export default {
       });
       return refs;
     },
+
+    fetchPaymentItems(page, per_page) {
+      let payload = {
+        status: "none",
+        url: `/api/protected/filter-payment-items?payment_category_id=${this.$store.getters.getCurrentPaymentCategory.id}&is_compulsory=&type=
+        &frequency=&state=&page=${page}&per_page=${per_page}&sort_by=&session_id=${this.session_id}&filter=`,
+        has_path_val: true,
+        show_feedback: false,
+        show_spinner: false,
+        msg: "none",
+        color: "default",
+        error_msg: "default",
+        commit: "SET_PAYMENT_ITEMS",
+        has_commit: true,
+        to_be_store_data: {
+          required: true,
+          has_value: false,
+          data: null,
+        },
+      };
+      this.$store.commit("SET_IS_FETCHING", true);
+      this.loading = true;
+      this.$store
+        .dispatch("getRequest", payload)
+        .then((response) => {
+
+        })
+        .finally(() => {
+          this.$store.commit("SET_IS_FETCHING", false);
+          this.loading = false;
+        });
+    }
   },
   components: {
     ButtonVue,

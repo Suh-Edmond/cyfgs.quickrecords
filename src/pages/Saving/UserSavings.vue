@@ -93,9 +93,7 @@ export default {
         page: 1,
         rowsPerPage: 10,
         rowsNumber:
-          this.$store.getters.getMemberSavings !== null
-            ? this.$store.getters.getMemberSavings.total
-            : 0,
+          this.$store.getters.getMemberSavings ? this.$store.getters.getMemberSavings.total : 0,
       },
       session_id: this.$store.getters.getCurrentYear.id,
     };
@@ -155,8 +153,8 @@ export default {
     },
 
     getPaginatedData(id, page, fetch_count) {
-      let searched_month = this.month === "" && this.month === null && this.month === undefined ? "" : this.month.value;
-      let searched_status = this.status !== "" && this.status !== null && this.status !== undefined ? this.status : "";
+      let searched_month = this.month ? this.month.value : "";
+      let searched_status = this.status ? this.status : "";
       let payload = {
         url: `/api/protected/user-savings/${id}?month=${searched_month}&status=${searched_status}&page=${page}&per_page=${fetch_count}`,
         color: "default",
@@ -212,7 +210,7 @@ export default {
         path: `/dashboard/members-savings/users/${this.$route.params.id}`,
         query: {
           status: data.payment_status,
-          month: typeof data.month.label !== undefined ? data.month.label : "",
+          month:   data.month.label ? data.month.label : "",
           t: new Date().getTime(),
         },
       });

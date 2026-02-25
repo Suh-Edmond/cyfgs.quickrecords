@@ -39,12 +39,12 @@ const routes = [
       },
       {
         name: "create_organisation",
-        path: "organisation/create",
-        component: () =>
-          import("src/pages/Organisation/CreateOrganisation.vue"),
+        path: "auth/client-onboarding",
+        component: () => import("src/pages/Organisation/SetupClient.vue"),
         meta: {
-          middleware: "auth",
-          role: "MEMBER",
+          middleware: "guest",
+          firstTimer: true,
+          enableSignUp: true,
         },
       },
     ],

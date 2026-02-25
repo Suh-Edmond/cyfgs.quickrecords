@@ -8,7 +8,7 @@ export default {
     french: "French",
     continue: "Continue",
     loginCaption: "Login to continue to QuickRecords",
-    signUpCaptionMsg: "Sign up to get started with QuickRecords",
+    signUpCaptionMsg: "Create an account to get started with QuickRecords",
     updateOrganisationHeading: "Update Organisation Information",
     telephoneLabel: "Telephone",
     passwordLabel: "Password",
@@ -609,36 +609,60 @@ export default {
     balanceSheetHintMsgMobile:
       "Balance Sheet Preview is available only desktop",
     reportPreviewMsg: "Report Preview is available only on desktop devices.",
-    ai_model:"AI Model",
-    expectedAmount:"Expected Amount",
-    oldAmount:"Old Amount Deposited",
+    ai_model: "AI Model",
+    expectedAmount: "Expected Amount",
+    oldAmount: "Old Amount Deposited",
     newAmount: "New Amount Deposited",
-    reason:"Reason",
-    reasonCaption:"Provide a reason for making this change",
-    updateIncomeActivityTitleComponent:"Update Income Activity Transaction",
-    changeIncomeActivityCaption:"You are about to update an income activity transaction that has been ",
-    updateSponsorshipTitleComponent:"Update Sponsorship Transaction",
-    updateSponsorshipCaption:"You are about to update a sponsorship transaction that has been ",
-    updateUserSavingTitleComponent:"Update Member's Saving Transaction",
-    updateUserSavingCaption:"You are about to update a members's saving transaction that has been ",
-    updateExpenditureItemTitleComponent:"Update Expenditure Item Transaction",
-    updateExpenditureItemCaption:"You are about to update an expenditure item transaction that has been ",
-    oldEstimatedAmount:"Old Estimated Amount",
+    reason: "Reason",
+    reasonCaption: "Provide a reason for making this change",
+    updateIncomeActivityTitleComponent: "Update Income Activity Transaction",
+    changeIncomeActivityCaption:
+      "You are about to update an income activity transaction that has been ",
+    updateSponsorshipTitleComponent: "Update Sponsorship Transaction",
+    updateSponsorshipCaption:
+      "You are about to update a sponsorship transaction that has been ",
+    updateUserSavingTitleComponent: "Update Member's Saving Transaction",
+    updateUserSavingCaption:
+      "You are about to update a members's saving transaction that has been ",
+    updateExpenditureItemTitleComponent: "Update Expenditure Item Transaction",
+    updateExpenditureItemCaption:
+      "You are about to update an expenditure item transaction that has been ",
+    oldEstimatedAmount: "Old Estimated Amount",
     newEstimatedAmount: "New Estimated Deposited",
     oldAmountGiven: "Old Amount Given",
     oldAmountSpent: "Old Amount Spent",
     newAmountGiven: "New Amount Given",
     newAmountSpent: "New Amount Spent",
-    updateExpenditureItemDetailTitleComponent:"Update Expenditure Item Detail Transaction",
-    updateExpenditureItemDetailCaption:"You are about to update an expenditure item detail transaction that has been ",
+    updateExpenditureItemDetailTitleComponent:
+      "Update Expenditure Item Detail Transaction",
+    updateExpenditureItemDetailCaption:
+      "You are about to update an expenditure item detail transaction that has been ",
     newBalance: "New Balance",
-    updateUserContributionTitleComponent:"Update User Contribution Transaction",
-    updateUserContributionCaption:"You are about to update an user contribution transaction that has been ",
-    isRangeLabel:"Range Payment",
-    startAmountLabel:"Start Amount",
-    endAmountLabel:"End Amount",
-    inValidRangeAmount:"Start Range Amount must be less than the End Range Amount",
-    minRangeAmountMet:"Member has already met the minimum range amount for the payment item",
-    reasonLengthWarning:"Please the reason must be at least 20 characters"
+    updateUserContributionTitleComponent:
+      "Update User Contribution Transaction",
+    updateUserContributionCaption:
+      "You are about to update an user contribution transaction that has been ",
+    isRangeLabel: "Range Payment",
+    startAmountLabel: "Start Amount",
+    endAmountLabel: "End Amount",
+    inValidRangeAmount:
+      "Start Range Amount must be less than the End Range Amount",
+    minRangeAmountMet:
+      "Member has already met the minimum range amount for the payment item",
+    reasonLengthWarning: "Please the reason must be at least 20 characters",
+    usernameLabel: "Username",
+    usernameAdminLabel: "Admin Username",
+    nameAdminLabel: "Admin Name",
+    createAccountTitle: "Create an Account",
+    confirmAccount: "Confirm your Account",
+    continueWithTrialMsg: "Experience the full power, zero strings attached",
+    continuetrialLink: "Continue with Trial",
+    makePaymentMsg:
+      "Complete Subscription Payment to leverage full power of QuickRecords",
+    makePaymentBtnLabel: "Make Payment Now!",
+    notMakyPayment: "Don't want to make a subscription payment ?",
+    successfulOrganSetup:
+      "Congratulations on setting up your organisation on QuickRecords!",
+      subscribe:"Subscribe Now!"
   },
 };

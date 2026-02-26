@@ -1,24 +1,19 @@
 <template>
-  <div
-    class="row q-px-sm flex flex-center"
-    :class="$q.screen.lg ? 'q-pt-xl flex flex-center' : 'q-pt-sm'"
-  >
+  <div class="row q-px-sm flex flex-center">
     <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12">
       <q-card flat>
         <q-card-section>
-          <div class="text_h6 text-center q-pt-xs q-pb-sm">
+          <div class="text_h6 text-center">
             {{ $t("app.createAccountTitle") }}
           </div>
-          <div class="text-subtitle2 text-center q-pb-xs">
-            {{ $t("app.signUpCaptionMsg") }}
-          </div>
-          <small class="q-pl-md hint"
+
+          <small class="q-pl-xs hint"
             >{{ $t("app.warningField") }}<span class="text-red">* </span
             >{{ $t("app.fields") }}</small
           >
-          <div class="q-pa-md">
+          <div class="q-pa-xs">
             <q-form @submit="onSubmit" class="q-gutter-md">
-              <div class="q-pb-md">
+              <div>
                 <label class="form_field"
                   >{{ $t("app.nameAdminLabel") }}
                   <span class="text-red">*</span></label
@@ -28,10 +23,12 @@
                   outlined
                   dense
                   type="text"
-                  lazy-rules
+                  @input="validateName()"
+                  :error="!!nameError"
+                  :error-message="nameError"
                 />
               </div>
-              <div class="q-pb-md">
+              <div>
                 <label class="form_field"
                   >{{ $t("app.usernameAdminLabel") }}
                   <span class="text-red">*</span></label
@@ -40,10 +37,13 @@
                   v-model="user.username"
                   outlined
                   dense
+                  @input="validateUsername()"
                   type="text"
                   placeholder="exampleadmin"
-                  lazy-rules
-                />
+                  :error="!!usernameError"
+                  :error-message="usernameError"
+                >
+                </q-input>
               </div>
               <div class="q-pb-md">
                 <label class="form_field"
@@ -55,6 +55,9 @@
                   defaultCountry="cm"
                   mode="international"
                   class="q-pa-xs"
+                  :error="!!telephoneError"
+                  :error-message="telephoneError"
+                  @input="validateTelephone()"
                 ></vue-tel-input>
               </div>
               <div>
@@ -64,8 +67,10 @@
                   outlined
                   dense
                   type="email"
-                  bottom-slots
                   placeholder="example@example.com"
+                  :error="!!emailError"
+                  :error-message="emailError"
+                  @input="validateEmail()"
                 >
                 </q-input>
               </div>
@@ -80,6 +85,9 @@
                   outlined
                   dense
                   bottom-slots
+                  @input="validatePassword()"
+                  :error="!!passwordError"
+                  :error-message="passwordError"
                 >
                   <template v-slot:append>
                     <q-icon
@@ -88,14 +96,9 @@
                       @click="is_pwd = !is_pwd"
                     />
                   </template>
-                  <template v-slot:hint>
-                    <span class="text-red" v-if="invalidPassword">{{
-                      $t("app.newPasswordHintMsg")
-                    }}</span>
-                  </template>
                 </q-input>
               </div>
-              <div>
+              <div class="q-pb-xs">
                 <label class="form_field"
                   >{{ $t("app.confirmPasswordLabel") }}
                   <span class="text-red">*</span></label
@@ -104,9 +107,11 @@
                   v-model="user.password_confirmation"
                   :type="is_confirm_pwd ? 'password' : 'text'"
                   outlined
-                  @input="checkValidate()"
+                  @input="validatePasswordMatch()"
                   bottom-slots
                   dense
+                  :error="!!passwordConfirmError"
+                  :error-message="passwordConfirmError"
                 >
                   <template v-slot:append>
                     <q-icon
@@ -115,14 +120,9 @@
                       @click="is_confirm_pwd = !is_confirm_pwd"
                     />
                   </template>
-                  <template v-slot:hint v-if="!validatePasswordMatch">
-                    <span class="text-red">{{
-                      $t("app.passwordNotMatchMsg")
-                    }}</span>
-                  </template>
                 </q-input>
               </div>
-              <div class="q-pt-lg">
+              <div>
                 <q-btn
                   class="form_button"
                   :label="$t('app.createAccountTitle')"
@@ -139,7 +139,7 @@
                   ></q-icon>
                 </q-btn>
               </div>
-              <div class="row justify-center bottom q-pt-md">
+              <div class="row justify-center bottom q-pt-sm">
                 {{ $t("app.haveAccountMsg") }}
                 <span @click="onConfirmAccountCreation()" class="sign_link"
                   >&nbsp;{{ $t("app.confirmAccount") }}</span
@@ -165,7 +165,7 @@ export default {
         telephone: null,
         password: null,
         password_confirmation: null,
-        name: null,
+        name: " ",
         email: null,
         username: null,
       },
@@ -176,75 +176,127 @@ export default {
       disabled: true,
       is_valid_email: false,
       color: "primary",
+      username_errors: [],
+      emailError: "",
+      usernameError: "",
+      telephoneError: "",
+      nameError: "",
+      passwordError: "",
+      passwordConfirmError: "",
     };
   },
   emits: ["confirmAccountCreation", "onAccountCreation"],
   computed: {
-    validatePasswordMatch() {
-      return this.checkValidate();
-    },
     validateForm() {
-      return (
-        this.user.name !== null &&
-        this.user.username !== null &&
-        this.user.telephone !== null &&
-        this.user.password !== null &&
-        this.user.password_confirmation !== null &&
-        this.validatePasswordMatch
-      );
-    },
-
-    invalidPassword() {
-      return this.user.password !== null && this.user.password.length < 8;
+      // return (
+      //   // this.validateName() &&
+      //   // this.validateUsername() && this.validateTelephone()
+      //   // &&
+      //   // this.validatePassword() &&
+      //   // this.validatePasswordMatch() &&
+      //   // this.validateEmail()
+      // );
+      return true;
     },
   },
   methods: {
     onSubmit() {
-      // this.$store.commit("SET_PROCESS_STEP", {
-      //   processStatus: ProcessStatusVue.ACCOUNT_VERIFICATION,
-      //   step: 2,
-      // });
-      // let payload = {
-      //   url: "/api/public/auth/signup",
-      //   data: this.user,
-      //   msg: "Account Created Successfully",
-      //   color: "default",
-      //   to_on_ok: "",
-      //   to_on_fail: "",
-      //   error_msg: "default",
-      //   show_feedback: true,
-      //   to_be_store_data: {
-      //     required: true,
-      //     has_value: true,
-      //     data: [
-      //       { key: "is_exist_user", value: true },
-      //       { key: "has_logged_in", value: true },
-      //     ],
-      //   },
-      // };
-      // this.loading = true;
-      // this.$store.dispatch("postRequest", payload).then((res) => {
-      //   if ((res.status = 422)) {
-      //     Notify.create({
-      //       type: "negative",
-      //       message: this.$t("app.createAccountFailMsg"),
-      //       position: Platform.is.mobile ? "bottom" : "top-right",
-      //     });
-      //   }
-      //   if (res.status == 200) {
+      let payload = {
+        url: "/api/public/auth/signup",
+        data: this.user,
+        msg: "Account Created Successfully",
+        color: "default",
+        to_on_ok: "none",
+        to_on_fail: "none",
+        error_msg: "default",
+        show_feedback: true,
+        to_be_store_data: {
+          required: true,
+          has_value: true,
+          data: [
+            { key: "is_exist_user", value: true },
+            { key: "has_logged_in", value: true },
+          ],
+        },
+      };
+      this.loading = true;
+      this.$store
+        .dispatch("postRequest", payload)
+        .then((res) => {
+          if (res.status === 422) {
+            Notify.create({
+              type: "negative",
+              message: this.$t("app.createAccountFailMsg"),
+              position: Platform.is.mobile ? "bottom" : "top-right",
+            });
+          }
+          if (res.status === 200) {
+            console.log(res.data);
 
-      this.$store.commit("SET_PROCESS_STEP", {
-        processStatus: ProcessStatusVue.CREATE_ORGANISATION,
-        step: 3,
-        isSuccessful: true,
-      });
-      this.$emit("onAccountCreation");
-      //   }
-      //   this.loading = false;
-      // });
+            this.$store.commit("SET_PROCESS_STEP", {
+              processStatus: ProcessStatusVue.CREATE_ORGANISATION,
+              step: 3,
+              isSuccessful: true,
+              username: res.data.username,
+              loginId: res.data.id,
+              email: res.data.email,
+            });
+            this.$emit("onAccountCreation");
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        })
+        .finally(() => {
+          this.loading = false;
+        });
     },
-    checkValidate() {
-      return this.user.password === this.user.password_confirmation;
+    validatePasswordMatch() {
+      const isValid = this.user.password === this.user.password_confirmation;
+      this.passwordConfirmError = isValid
+        ? ""
+        : this.$t("app.passwordNotMatchMsg");
+      return isValid;
+    },
+    validString(data) {
+      return data !== null && data !== undefined && data.trim().length > 0;
+    },
+
+    validateEmail() {
+      const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const validEmail = regex.test(this.user.email);
+      this.emailError = validEmail ? "" : this.$t("app.invalidEmailErrorMsg");
+      return validEmail;
+    },
+    validateName() {
+      const validName =
+        this.validString(this.user.name) && this.user.name.length >= 4;
+      this.nameError = validName ? "" : this.$t("app.invalidNameMsg");
+      return validName;
+    },
+    validateUsername() {
+      const isvalid =
+        this.validString(this.user.username) &&
+        this.user.username.length >= 4 &&
+        !this.user.username.includes(" ");
+      this.usernameError = isvalid
+        ? ""
+        : this.$t("app.invalidUsernameErrorMsg");
+      return isvalid;
+    },
+
+    validateTelephone() {
+      const regex = /^(\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4}))$/;
+      const validPhone = regex.test(this.user.telephone);
+      this.telephoneError = validPhone ? "" : this.$t("app.invalidPhoneError");
+      return validPhone;
+    },
+
+    validatePassword() {
+      const validPass =
+        this.user.password !== null && this.user.password.length >= 8;
+      this.passwordError = validPass ? "" : this.$t("app.newPasswordHintMsg");
+      return validPass;
     },
     onConfirmAccountCreation() {
       this.$store.commit("SET_PROCESS_STEP", {
@@ -276,7 +328,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 800;
-  font-size: 15px;
+  font-size: 17px;
   line-height: 24px;
   align-items: center;
   text-align: center;

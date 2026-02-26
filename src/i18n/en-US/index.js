@@ -663,6 +663,12 @@ export default {
     notMakyPayment: "Don't want to make a subscription payment ?",
     successfulOrganSetup:
       "Congratulations on setting up your organisation on QuickRecords!",
-      subscribe:"Subscribe Now!"
+    subscribe: "Subscribe Now!",
+    invalidUsernameErrorMsg:
+      "Admin Username must have at least 4 character and contains no spaces",
+    invalidEmailErrorMsg: "The provided email address is invalid",
+    invalidNameMsg: "The provided name is invalid",
+    invalidPhoneError: "The provided telephone is invalid",
+    confirmAccountLabel:"Confirm your Account"
   },
 };

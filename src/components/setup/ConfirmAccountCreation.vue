@@ -9,29 +9,14 @@
           <div class="text_h6 text-center q-pt-xs q-pb-sm">
             {{ $t("app.createAccountTitle") }}
           </div>
-          <div class="text-subtitle2 text-center q-pb-xs">
-            {{ $t("app.signUpCaptionMsg") }}
-          </div>
+           
           <small class="q-pl-md hint"
             >{{ $t("app.warningField") }}<span class="text-red">* </span
             >{{ $t("app.fields") }}</small
           >
           <div class="q-pa-md">
             <q-form @submit="onSubmit" class="q-gutter-md">
-              <div class="q-pb-md">
-                <label class="form_field"
-                  >{{ $t("app.nameAdminLabel") }}
-                  <span class="text-red">*</span></label
-                >
-                <q-input
-                  v-model="user.name"
-                  outlined
-                  dense
-                  type="text"
-                  lazy-rules
-                />
-              </div>
-              <div class="q-pb-md">
+              <div>
                 <label class="form_field"
                   >{{ $t("app.usernameAdminLabel") }}
                   <span class="text-red">*</span></label
@@ -40,12 +25,15 @@
                   v-model="user.username"
                   outlined
                   dense
+                  @input="validateUsername()"
                   type="text"
                   placeholder="exampleadmin"
-                  lazy-rules
-                />
+                  :error="!!usernameError"
+                  :error-message="usernameError"
+                >
+                </q-input>
               </div>
-              <div class="q-pb-md">
+              <div>
                 <label class="form_field"
                   >{{ $t("app.telephoneLabel") }}
                   <span class="text-red">*</span></label
@@ -57,18 +45,7 @@
                   class="q-pa-xs"
                 ></vue-tel-input>
               </div>
-              <div>
-                <label class="form_field">{{ $t("app.emailLabel") }} </label>
-                <q-input
-                  v-model="user.email"
-                  outlined
-                  dense
-                  type="email"
-                  bottom-slots
-                  placeholder="example@example.com"
-                >
-                </q-input>
-              </div>
+
               <div>
                 <label class="form_field"
                   >{{ $t("app.passwordLabel") }}
@@ -80,6 +57,9 @@
                   outlined
                   dense
                   bottom-slots
+                  @input="validatePassword()"
+                  :error="!!passwordError"
+                  :error-message="passwordError"
                 >
                   <template v-slot:append>
                     <q-icon
@@ -87,11 +67,6 @@
                       class="cursor-pointer"
                       @click="is_pwd = !is_pwd"
                     />
-                  </template>
-                  <template v-slot:hint>
-                    <span class="text-red" v-if="invalidPassword">{{
-                      $t("app.newPasswordHintMsg")
-                    }}</span>
                   </template>
                 </q-input>
               </div>
@@ -101,7 +76,7 @@
                   :label="$t('app.confirmAccount')"
                   :loading="loading"
                   :disabled="!validateForm"
-                  :color="color"
+                  color="primary"
                   :no_caps="true"
                   type="submit"
                 >
@@ -145,10 +120,9 @@ export default {
       is_pwd: true,
       is_confirm_pwd: true,
       loading: false,
-      has_logged_in: false,
-      disabled: true,
-      is_valid_email: false,
-      color: "primary",
+      usernameError: "",
+      telephoneError: "",
+      passwordError: "",
     };
   },
   emits: ["onAccountCreation", "onCreateOrganisation"],
@@ -209,8 +183,33 @@ export default {
       });
       this.$emit("onCreateOrganisation");
     },
-    checkValidate() {
-      return this.user.password === this.user.password_confirmation;
+    validString(data) {
+      return data !== null && data !== undefined && data.trim().length > 0;
+    },
+
+    validateUsername() {
+      const isvalid =
+        this.validString(this.user.username) &&
+        this.user.username.length >= 4 &&
+        !this.user.username.includes(" ");
+      this.usernameError = isvalid
+        ? ""
+        : this.$t("app.invalidUsernameErrorMsg");
+      return isvalid;
+    },
+
+    validateTelephone() {
+      const regex = /^(\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4}))$/;
+      const validPhone = regex.test(this.user.telephone);
+      this.telephoneError = validPhone ? "" : this.$t("app.invalidPhoneError");
+      return validPhone;
+    },
+
+    validatePassword() {
+      const validPass =
+        this.user.password !== null && this.user.password.length >= 8;
+      this.passwordError = validPass ? "" : this.$t("app.newPasswordHintMsg");
+      return validPass;
     },
 
     onAccountCreation() {

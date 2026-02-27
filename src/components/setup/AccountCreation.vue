@@ -6,18 +6,12 @@
           <div class="text_h6 text-center">
             {{ $t("app.createAccountTitle") }}
           </div>
-
-          <small class="q-pl-xs hint"
-            >{{ $t("app.warningField") }}<span class="text-red">* </span
-            >{{ $t("app.fields") }}</small
-          >
           <div class="q-pa-xs">
             <q-form @submit="onSubmit" class="q-gutter-md">
               <div>
                 <label class="form_field"
                   >{{ $t("app.nameAdminLabel") }}
-                  <span class="text-red">*</span></label
-                >
+                </label>
                 <q-input
                   v-model="user.name"
                   outlined
@@ -31,8 +25,7 @@
               <div>
                 <label class="form_field"
                   >{{ $t("app.usernameAdminLabel") }}
-                  <span class="text-red">*</span></label
-                >
+                </label>
                 <q-input
                   v-model="user.username"
                   outlined
@@ -48,8 +41,7 @@
               <div class="q-pb-md">
                 <label class="form_field"
                   >{{ $t("app.telephoneLabel") }}
-                  <span class="text-red">*</span></label
-                >
+                </label>
                 <vue-tel-input
                   v-model="user.telephone"
                   defaultCountry="cm"
@@ -75,10 +67,7 @@
                 </q-input>
               </div>
               <div>
-                <label class="form_field"
-                  >{{ $t("app.passwordLabel") }}
-                  <span class="text-red">*</span></label
-                >
+                <label class="form_field">{{ $t("app.passwordLabel") }} </label>
                 <q-input
                   v-model="user.password"
                   :type="is_pwd ? 'password' : 'text'"
@@ -101,8 +90,7 @@
               <div class="q-pb-xs">
                 <label class="form_field"
                   >{{ $t("app.confirmPasswordLabel") }}
-                  <span class="text-red">*</span></label
-                >
+                </label>
                 <q-input
                   v-model="user.password_confirmation"
                   :type="is_confirm_pwd ? 'password' : 'text'"

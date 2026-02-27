@@ -61,6 +61,12 @@ export default function () {
       username: "",
       accountId: "",
       isTrial: false,
+      email: "",
+      has_organisation: false,
+      organisation_id: "",
+      organisation_name: "",
+      organisation_email: "",
+      subscriptions: [],
     },
   };
 }

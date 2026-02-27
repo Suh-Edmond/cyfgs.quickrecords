@@ -7,20 +7,12 @@
       <q-card flat>
         <q-card-section>
           <div class="text_h6 text-center q-pt-xs q-pb-sm">
-            {{ $t("app.createAccountTitle") }}
+            {{ $t("app.confirmAccount") }}
           </div>
-           
-          <small class="q-pl-md hint"
-            >{{ $t("app.warningField") }}<span class="text-red">* </span
-            >{{ $t("app.fields") }}</small
-          >
           <div class="q-pa-md">
             <q-form @submit="onSubmit" class="q-gutter-md">
               <div>
-                <label class="form_field"
-                  >{{ $t("app.usernameAdminLabel") }}
-                  <span class="text-red">*</span></label
-                >
+                <label class="form_field">{{ $t("app.usernameLabel") }} </label>
                 <q-input
                   v-model="user.username"
                   outlined
@@ -33,24 +25,8 @@
                 >
                 </q-input>
               </div>
-              <div>
-                <label class="form_field"
-                  >{{ $t("app.telephoneLabel") }}
-                  <span class="text-red">*</span></label
-                >
-                <vue-tel-input
-                  v-model="user.telephone"
-                  defaultCountry="cm"
-                  mode="international"
-                  class="q-pa-xs"
-                ></vue-tel-input>
-              </div>
-
-              <div>
-                <label class="form_field"
-                  >{{ $t("app.passwordLabel") }}
-                  <span class="text-red">*</span></label
-                >
+              <div class="q-pt-md">
+                <label class="form_field">{{ $t("app.passwordLabel") }} </label>
                 <q-input
                   v-model="user.password"
                   :type="is_pwd ? 'password' : 'text'"
@@ -70,14 +46,14 @@
                   </template>
                 </q-input>
               </div>
-              <div class="q-pt-lg">
+              <div class="q-pt-md">
                 <q-btn
                   class="form_button"
                   :label="$t('app.confirmAccount')"
                   :loading="loading"
                   :disabled="!validateForm"
                   color="primary"
-                  :no_caps="true"
+                  no-caps
                   type="submit"
                 >
                   <q-icon
@@ -103,18 +79,13 @@
 
 <script>
 import { Notify, Platform } from "quasar";
-import { VueTelInput } from "vue-tel-input";
 import ProcessStatusVue from "../Constants/ProcessStatus.vue";
 export default {
   name: "PageIndex",
   data() {
     return {
       user: {
-        telephone: null,
         password: null,
-        password_confirmation: null,
-        name: null,
-        email: null,
         username: null,
       },
       is_pwd: true,
@@ -132,7 +103,6 @@ export default {
     },
     validateForm() {
       return (
-        this.user.name !== null &&
         this.user.username !== null &&
         this.user.telephone !== null &&
         this.user.password !== null
@@ -145,43 +115,50 @@ export default {
   },
   methods: {
     onSubmit() {
-      // let payload = {
-      //   url: "/api/public/auth/signup",
-      //   data: this.user,
-      //   msg: "Account Created Successfully",
-      //   color: "default",
-      //   to_on_ok: "",
-      //   to_on_fail: "",
-      //   error_msg: "default",
-      //   show_feedback: true,
-      //   to_be_store_data: {
-      //     required: true,
-      //     has_value: true,
-      //     data: [
-      //       { key: "is_exist_user", value: true },
-      //       { key: "has_logged_in", value: true },
-      //     ],
-      //   },
-      // };
-      // this.loading = true;
-      // this.$store.dispatch("postRequest", payload).then((res) => {
-      //   if ((res.status = 422)) {
-      //     Notify.create({
-      //       type: "negative",
-      //       message: this.$t("app.createAccountFailMsg"),
-      //       position: Platform.is.mobile ? "bottom" : "top-right",
-      //     });
-      //   }
-      //   this.loading = false;
-      // });
-
-      //TODO: only called when request is sent and successful
-      this.$store.commit("SET_PROCESS_STEP", {
-        processStatus: ProcessStatusVue.CREATE_ORGANISATION,
-        step: 3,
-        isSuccessful: true,
-      });
-      this.$emit("onCreateOrganisation");
+      let payload = {
+        url: "/api/public/auth/verify-client",
+        data: this.user,
+        msg: "Account Confirm Successfully",
+        color: "default",
+        to_on_ok: "none",
+        to_on_fail: "none",
+        error_msg: "default",
+        show_feedback: true,
+        to_be_store_data: {
+          required: true,
+          has_value: true,
+          data: [
+            { key: "is_exist_user", value: true },
+            { key: "has_logged_in", value: true },
+          ],
+        },
+      };
+      this.loading = true;
+      this.$store
+        .dispatch("postRequest", payload)
+        .then((res) => {
+          if (res.status === 422) {
+            Notify.create({
+              type: "negative",
+              message: this.$t("app.confirmAccountFailMsg"),
+              position: Platform.is.mobile ? "bottom" : "top-right",
+            });
+          }
+          if (res.status === 200) {
+            this.$store.commit("SET_PROCESS_STEP", {
+              ...res.data,
+              processStatus: ProcessStatusVue.CREATE_ORGANISATION,
+              step: 3,
+              isSuccessful: true,
+              loginId: res.data.id,
+              accountId: res.data.id,
+            });
+            this.$emit("onCreateOrganisation");
+          }
+        })
+        .finally(() => {
+          this.loading = false;
+        });
     },
     validString(data) {
       return data !== null && data !== undefined && data.trim().length > 0;
@@ -221,9 +198,7 @@ export default {
       this.$emit("onAccountCreation");
     },
   },
-  components: {
-    VueTelInput,
-  },
+  components: {},
 };
 </script>
 

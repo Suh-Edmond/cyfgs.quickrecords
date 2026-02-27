@@ -78,7 +78,7 @@
 </template>
 
 <script>
-import { Notify, Platform } from "quasar";
+import { LocalStorage, Notify, Platform } from "quasar";
 import ProcessStatusVue from "../Constants/ProcessStatus.vue";
 export default {
   name: "PageIndex",
@@ -144,14 +144,22 @@ export default {
               position: Platform.is.mobile ? "bottom" : "top-right",
             });
           }
+          if (res.status === 403) {
+            Notify.create({
+              type: "negative",
+              message: this.$t("app.accountInvalid"),
+              position: Platform.is.mobile ? "bottom" : "top-right",
+            });
+          }
           if (res.status === 200) {
+            LocalStorage.set("loginId", res.data.data.id);
             this.$store.commit("SET_PROCESS_STEP", {
-              ...res.data,
+              ...res.data.data,
               processStatus: ProcessStatusVue.CREATE_ORGANISATION,
               step: 3,
               isSuccessful: true,
-              loginId: res.data.id,
-              accountId: res.data.id,
+              loginId: res.data.data.id,
+              accountId: res.data.data.id,
             });
             this.$emit("onCreateOrganisation");
           }

@@ -669,7 +669,11 @@ export default {
     invalidEmailErrorMsg: "The provided email address is invalid",
     invalidNameMsg: "The provided name is invalid",
     invalidPhoneError: "The provided telephone is invalid",
-    confirmAccountLabel:"Confirm your Account",
-    confirmAccountFailMsg:"Account confirmation failed"
+    confirmAccountLabel: "Confirm your Account",
+    confirmAccountFailMsg: "Account confirmation failed",
+    accountInvalid: "User Account is invalid",
+    telephoneOne: "Telephone",
+    telephoneTwo: "WhatsApp",
+    createOrganisationFailMsg: "Create Organisation failed!",
   },
 };

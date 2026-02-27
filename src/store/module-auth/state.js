@@ -66,6 +66,13 @@ export default function () {
       organisation_id: "",
       organisation_name: "",
       organisation_email: "",
+      organisation_description: "",
+      organisation_telephone: "",
+      organisation_address: "",
+      organisation_salutation: "",
+      organisation_region: "",
+      organisation_box_number: "",
+      organisation_logo: "",
       subscriptions: [],
     },
   };

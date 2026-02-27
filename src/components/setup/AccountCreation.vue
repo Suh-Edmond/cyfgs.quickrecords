@@ -219,17 +219,17 @@ export default {
             });
           }
           if (res.status === 200) {
-            console.log(res.data);
-
             this.$store.commit("SET_PROCESS_STEP", {
+              ...res.data.data,
               processStatus: ProcessStatusVue.CREATE_ORGANISATION,
               step: 3,
               isSuccessful: true,
-              username: res.data.username,
-              loginId: res.data.id,
-              email: res.data.email,
+              username: res.data.data.username,
+              loginId: res.data.data.id,
+              email: res.data.data.email,
             });
             this.$emit("onAccountCreation");
+            LocalStorage.set("loginId", res.data.data.id);
           }
         })
         .catch((e) => {

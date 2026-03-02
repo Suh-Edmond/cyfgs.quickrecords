@@ -50,16 +50,9 @@
         <SubscriptionCreationVue
           @onMakePayment="handleMakePayment"
           @onContinueTrial="handleTrial"
+          @onBackToOrganisation="handleBackToOrganisation"
+          @setProgressBar="setProgressBar"
         />
-        <q-stepper-navigation>
-          <q-btn
-            flat
-            @click="step = 3"
-            color="primary"
-            label="Back"
-            class="q-ml-sm"
-          />
-        </q-stepper-navigation>
       </q-step>
 
       <q-step
@@ -137,6 +130,12 @@
         <q-banner v-else class="bg-primary text-white q-px-lg">
           Complete Subscription Payment
         </q-banner>
+        <q-linear-progress
+          rounded
+          indeterminate
+          color="primary"
+          v-show="showProgressBar"
+        />
       </template>
     </q-stepper>
   </div>
@@ -144,14 +143,12 @@
 
 <script>
 import organisationMixin from "src/mixins/organisationMixin.vue";
-import ButtonVue from "src/components/Button.vue";
 import AccountCreation from "src/components/setup/AccountCreation.vue";
 import ConfirmAccountCreationVue from "src/components/setup/ConfirmAccountCreation.vue";
 import CreateOrganisationVue from "src/components/setup/CreateOrganisation.vue";
 
 import memberMixinVue from "src/mixins/memberMixin.vue";
 import UserSavingMixin from "src/mixins/UserSavingMixin.vue";
-import { VueTelInput } from "vue-tel-input";
 import SubscriptionCreationVue from "src/components/setup/SubscriptionCreation.vue";
 import PaymentManagementVue from "src/components/setup/PaymentManagement.vue";
 import TrialManagementVue from "src/components/setup/TrialManagement.vue";
@@ -177,6 +174,7 @@ export default {
       hasCompletedPayment: false,
       hasCompletedSetup: false,
       isTrialMode: LocalStorage.getItem("isTrialMode"),
+      showProgressBar: false,
     };
   },
 
@@ -245,6 +243,17 @@ export default {
       this.hasCompletedSetup = this.$store.getters.getProcessStage.isSuccessful;
       this.step = this.$store.getters.getProcessStage.step;
       this.processStatus = this.$store.getters.getProcessStage.processStatus;
+    },
+
+    handleBackToOrganisation() {
+      this.completedOrganisationCreation =
+        this.$store.getters.getProcessStage.isSuccessful;
+      this.step = this.$store.getters.getProcessStage.step;
+      this.processStatus = this.$store.getters.getProcessStage.processStatus;
+    },
+
+    setProgressBar(showProgressBar) {
+      return (this.showProgressBar = showProgressBar);
     },
   },
   components: {

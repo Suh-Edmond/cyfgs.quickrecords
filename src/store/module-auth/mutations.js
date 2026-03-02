@@ -204,3 +204,7 @@ export function SET_PAGINATION(state, data) {
 export function SET_PROCESS_STEP(state, data) {
   state.process_stage = { ...data };
 }
+
+export function SET_SUBSCRIPTION_PLAN(state, data) {
+  state.subscriptionPlans = data;
+}

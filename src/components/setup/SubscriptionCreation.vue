@@ -7,101 +7,117 @@
       <q-card flat>
         <q-card-section>
           <div class="text_h6 text-center q-pt-xs q-pb-sm">
-            {{ $t("app.createAccountTitle") }}
+            {{ $t("app.createSubscription") }}
           </div>
-          <div class="text-subtitle2 text-center q-pb-xs">
-            {{ $t("app.signUpCaptionMsg") }}
-          </div>
-          <small class="q-pl-md hint"
-            >{{ $t("app.warningField") }}<span class="text-red">* </span
-            >{{ $t("app.fields") }}</small
-          >
+
           <div class="q-pa-md">
             <q-form @submit="onSubmit" class="q-gutter-md">
-              <div class="q-pb-md">
-                <label class="form_field"
-                  >{{ $t("app.nameAdminLabel") }}
-                  <span class="text-red">*</span></label
+              <q-list>
+                <q-item
+                  v-ripple
+                  v-for="(feature, index) in features"
+                  ,
+                  :key="index"
                 >
-                <q-input
-                  v-model="user.name"
-                  outlined
-                  dense
-                  type="text"
-                  lazy-rules
-                />
-              </div>
-              <div class="q-pb-md">
-                <label class="form_field"
-                  >{{ $t("app.usernameAdminLabel") }}
-                  <span class="text-red">*</span></label
-                >
-                <q-input
-                  v-model="user.username"
-                  outlined
-                  dense
-                  type="text"
-                  placeholder="exampleadmin"
-                  lazy-rules
-                />
-              </div>
-              <div class="q-pb-md">
-                <label class="form_field"
-                  >{{ $t("app.telephoneLabel") }}
-                  <span class="text-red">*</span></label
-                >
-                <vue-tel-input
-                  v-model="user.telephone"
-                  defaultCountry="cm"
-                  mode="international"
-                  class="q-pa-xs"
-                ></vue-tel-input>
-              </div>
-              <div>
-                <label class="form_field">{{ $t("app.emailLabel") }} </label>
-                <q-input
-                  v-model="user.email"
-                  outlined
-                  dense
-                  type="email"
-                  bottom-slots
-                  placeholder="example@example.com"
-                >
-                </q-input>
-              </div>
-              <div>
-                <label class="form_field"
-                  >{{ $t("app.passwordLabel") }}
-                  <span class="text-red">*</span></label
-                >
-                <q-input
-                  v-model="user.password"
-                  :type="is_pwd ? 'password' : 'text'"
-                  outlined
-                  dense
-                  bottom-slots
-                >
-                  <template v-slot:append>
-                    <q-icon
-                      :name="is_pwd ? 'visibility_off' : 'visibility'"
-                      class="cursor-pointer"
-                      @click="is_pwd = !is_pwd"
+                  <q-item-section avatar>
+                    <q-avatar
+                      color="secondary"
+                      text-color="white"
+                      icon="done"
+                      size="sm"
                     />
-                  </template>
-                  <template v-slot:hint>
-                    <span class="text-red" v-if="invalidPassword">{{
-                      $t("app.newPasswordHintMsg")
-                    }}</span>
-                  </template>
-                </q-input>
+                  </q-item-section>
+                  <q-item-section>{{ feature }}</q-item-section>
+                </q-item>
+              </q-list>
+
+              <div class="q-pt-md">
+                <q-list bordered class="subscription">
+                  <q-item
+                    class="q-py-md"
+                    :class="
+                      defaultSubPlan.billing_cycle === 'yearly'
+                        ? 'yearly_subscription'
+                        : ''
+                    "
+                    clickable
+                    @click="onSelectSubPlan('yearly')"
+                  >
+                    <q-item-section>
+                      <q-item-label class="text-bold">Yearly</q-item-label>
+                      <q-item-label caption class="text-weight-bold"
+                        >Three months free Trial - Then
+                        {{ Number(getYearlyPlan).toLocaleString() }}
+                        XAF/Year</q-item-label
+                      >
+                    </q-item-section>
+
+                    <q-item-section side top>
+                      <q-item-label caption
+                        ><q-badge color="secondary">
+                          Best value
+                        </q-badge></q-item-label
+                      >
+                    </q-item-section>
+                  </q-item>
+                </q-list>
               </div>
-              <div class="q-pt-lg">
+
+              <div class="q-pt-md">
+                <q-list
+                  bordered
+                  class="subscription"
+                  :class="
+                    defaultSubPlan.billing_cycle === 'monthly'
+                      ? 'month_subscription'
+                      : ''
+                  "
+                >
+                  <q-item
+                    class="q-py-md"
+                    clickable
+                    @click="onSelectSubPlan('monthly')"
+                  >
+                    <q-item-section>
+                      <q-item-label class="text-bold">Monthly</q-item-label>
+                      <q-item-label caption class="text-weight-bold"
+                        >One month free Trial - Then
+                        {{ Number(getMonthlyPlan).toLocaleString() }}
+                        XAF/Month</q-item-label
+                      >
+                    </q-item-section>
+
+                    <q-item-section side top>
+                      <q-item-label caption
+                        ><q-badge color="warning">
+                          Basic value
+                        </q-badge></q-item-label
+                      >
+                    </q-item-section>
+                  </q-item>
+                </q-list>
+              </div>
+              <div class="q-py-md">
+                <label class="form_field">{{ $t("app.couponCode") }} </label>
+                <q-input
+                  v-model="subscription.referral_code"
+                  outlined
+                  dense
+                  type="text"
+                />
+
+                <q-tooltip anchor="top middle" self="top middle">
+                  {{ $t("app.referralCodeCaption") }}
+                </q-tooltip>
+              </div>
+
+              <div class="q-pt-xs">
                 <q-btn
                   class="form_button"
-                  :label="$t('app.saveBtnLabel')"
+                  :label="$t('app.continue')"
                   :loading="loading"
-                  :disabled="!validateForm"
-                  :color="color"
+                  :disabled="false"
+                  color="primary"
                   :no_caps="true"
                   type="submit"
                 >
@@ -112,10 +128,16 @@
                   ></q-icon>
                 </q-btn>
               </div>
-              <div class="row justify-center bottom q-pt-md">
-                {{ $t("app.continueWithTrialMsg") }}
-                <span @click="onContinueWithTrial()" class="sign_link"
-                  >&nbsp;{{ $t("app.continuetrialLink") }}</span
+              <div class="row justify-between bottom q-pt-md">
+                <span
+                  >{{ $t("app.continueWithTrialMsg") }}
+                  <span @click="onContinueWithTrial()" class="sign_link"
+                    >&nbsp;{{ $t("app.continuetrialLink") }}</span
+                  >
+                </span>
+
+                <span @click="onbacK()" class="sign_link"
+                  >&nbsp;{{ $t("app.backToOrganisation") }}</span
                 >
               </div>
             </q-form>
@@ -127,90 +149,118 @@
 </template>
 
 <script>
-import { Notify, Platform } from "quasar";
-import { VueTelInput } from "vue-tel-input";
+import { LocalStorage, Notify, Platform } from "quasar";
 import ProcessStatusVue from "../Constants/ProcessStatus.vue";
 export default {
   name: "PageIndex",
+  mounted() {
+    if (this.$store.getters.getSubscriptionPlans.length === 0) {
+      this.getSubscriptionPlans();
+    }
+  },
   data() {
     return {
-      user: {
-        telephone: null,
-        password: null,
-        password_confirmation: null,
-        name: null,
-        email: null,
-        username: null,
+      subscription: {
+        subscription_plan_id: null,
+        organisation_id: null,
+        referral_code: null,
+        is_trial: null,
+        login_id: null,
+        auto_renewal: null,
       },
-      is_pwd: true,
-      is_confirm_pwd: true,
       loading: false,
-      has_logged_in: false,
-      disabled: true,
-      is_valid_email: false,
+      defaultSubPlan: {},
       color: "primary",
+      features: [
+        "User Management",
+        "Income Management",
+        "Expenditure Management",
+        "Contributions",
+        "Reports and Statistics",
+        "Balance Sheets",
+        "Logs and Tracability",
+        "Security and Secure Storage",
+      ],
     };
   },
-  emits: ["onMakePayment", "onContinueTrial"],
+  emits: [
+    "onMakePayment",
+    "onContinueTrial",
+    "onBackToOrganisation",
+    "setProgressBar",
+  ],
   computed: {
-    validatePasswordMatch() {
-      return this.checkValidate();
-    },
-    validateForm() {
-      return (
-        this.user.name !== null &&
-        this.user.username !== null &&
-        this.user.telephone !== null &&
-        this.user.password !== null
+    getYearlyPlan() {
+      const yearlyPlan = this.$store.getters.getSubscriptionPlans.find(
+        (e) => e.billing_cycle == "yearly"
       );
+      if (!yearlyPlan) {
+        return 0;
+      }
+      return yearlyPlan.price;
     },
 
-    invalidPassword() {
-      return this.user.password !== null && this.user.password.length < 8;
+    getMonthlyPlan() {
+      const yearlyPlan = this.$store.getters.getSubscriptionPlans.find(
+        (e) => e.billing_cycle === "monthly"
+      );
+      if (!yearlyPlan) {
+        return 0;
+      }
+      return yearlyPlan.price;
     },
   },
   methods: {
     onSubmit() {
-      // let payload = {
-      //   url: "/api/public/auth/signup",
-      //   data: this.user,
-      //   msg: "Account Created Successfully",
-      //   color: "default",
-      //   to_on_ok: "",
-      //   to_on_fail: "",
-      //   error_msg: "default",
-      //   show_feedback: true,
-      //   to_be_store_data: {
-      //     required: true,
-      //     has_value: true,
-      //     data: [
-      //       { key: "is_exist_user", value: true },
-      //       { key: "has_logged_in", value: true },
-      //     ],
-      //   },
-      // };
-      // this.loading = true;
-      // this.$store.dispatch("postRequest", payload).then((res) => {
-      //   if ((res.status = 422)) {
-      //     Notify.create({
-      //       type: "negative",
-      //       message: this.$t("app.createAccountFailMsg"),
-      //       position: Platform.is.mobile ? "bottom" : "top-right",
-      //     });
-      //   }
-      //   this.loading = false;
-      // });
-
-      //TODO: only called when request is sent and successful
-      this.$store.commit("SET_PROCESS_STEP", {
-        processStatus: ProcessStatusVue.MAKE_PAYMENT,
-        step: 6,
-        isSuccessful: true,
-      });
-      this.$emit("onMakePayment");
-    },
-    checkValidate() {
-      return this.user.password === this.user.password_confirmation;
+      const data = {
+        subscription_plan_id: this.defaultSubPlan.id,
+        organisation_id: LocalStorage.getItem("organisationId"),
+        referral_code: this.subscription.referral_code,
+        is_trial: this.subscription.is_trial !== null,
+        login_id: LocalStorage.getItem("loginId"),
+        auto_renewal: false,
+      };
+      let payload = {
+        url: "/api/protected/init/subscriptions",
+        data: data,
+        msg: "Subscription plan created successfully",
+        color: "default",
+        to_on_ok: "none",
+        to_on_fail: "none",
+        error_msg: "default",
+        show_feedback: true,
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.loading = true;
+      this.$store
+        .dispatch("postRequest", payload)
+        .then((res) => {
+          if (res.status === 422) {
+            Notify.create({
+              type: "negative",
+              message: res.data.message,
+              position: Platform.is.mobile ? "bottom" : "top-right",
+            });
+          }
+          if (res.status === 200) {
+            this.$store.commit("SET_PROCESS_STEP", {
+              processStatus: ProcessStatusVue.MAKE_PAYMENT,
+              step: 6,
+              isSuccessful: true,
+            });
+            this.$emit("onMakePayment");
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        })
+        .finally(() => {
+          this.loading = false;
+        });
     },
 
     onContinueWithTrial() {
@@ -220,12 +270,60 @@ export default {
         isSuccessful: true,
         isTrial: true,
       });
+      this.subscription.is_trial = true;
       this.$emit("onContinueTrial");
     },
+
+    onSelectSubPlan(plan) {
+      const selectedPlan = this.$store.getters.getSubscriptionPlans.find(
+        (e) => e.billing_cycle === plan
+      );
+      this.defaultSubPlan = selectedPlan;
+    },
+
+    onbacK() {
+      this.$store.commit("SET_PROCESS_STEP", {
+        processStatus: ProcessStatusVue.CREATE_ORGANISATION,
+        step: 3,
+        isSuccessful: true,
+        isTrial: false,
+      });
+      this.$emit("onBackToOrganisation");
+    },
+
+    getSubscriptionPlans() {
+      let payload = {
+        status: "none",
+        url: "/api/public/subscription-plans",
+        has_path_val: true,
+        show_feedback: false,
+        msg: "default",
+        color: "default",
+        error_msg: "default",
+        commit: "SET_SUBSCRIPTION_PLAN",
+        has_commit: true,
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: null,
+        },
+      };
+      this.$emit("setProgressBar", true);
+      this.$store
+        .dispatch("getRequest", payload)
+        .then((res) => {
+          if (res.success) {
+            this.defaultSubPlan = res.data.find(
+              (e) => e.billing_cycle === "yearly"
+            );
+          }
+        })
+        .finally(() => {
+          this.$emit("setProgressBar", false);
+        });
+    },
   },
-  components: {
-    VueTelInput,
-  },
+  components: {},
 };
 </script>
 
@@ -276,19 +374,8 @@ export default {
   width: 100%;
 }
 
-.forgot_password {
-  margin-top: 0.5rem;
-  display: block;
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 24px;
-  align-items: center;
-  letter-spacing: 0.005em;
-  color: $primary;
-  cursor: pointer;
-  margin-bottom: 2.2rem;
+.subscription {
+  border-radius: 10px;
 }
 
 .sign_link {
@@ -299,21 +386,17 @@ export default {
   cursor: pointer;
 }
 
-.account_text {
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 600;
-  font-size: 14px;
-  color: $dark;
-  text-transform: uppercase;
-}
-
 .bottom {
   margin-bottom: 2.5rem;
 }
 
-.hint {
-  color: $grey2;
-  font-size: small;
+.yearly_subscription {
+  border: 2px solid $primary;
+  border-radius: 8px;
+}
+
+.month_subscription {
+  border: 2px solid $primary;
+  border-radius: 8px;
 }
 </style>

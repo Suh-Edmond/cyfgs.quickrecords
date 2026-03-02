@@ -75,5 +75,6 @@ export default function () {
       organisation_logo: "",
       subscriptions: [],
     },
+    subscriptionPlans: [],
   };
 }

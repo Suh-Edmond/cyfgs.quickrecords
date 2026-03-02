@@ -208,3 +208,7 @@ export function getPagination(state) {
 export function getProcessStage(state) {
   return state.process_stage;
 }
+
+export function getSubscriptionPlans(state) {
+  return state.subscriptionPlans;
+}

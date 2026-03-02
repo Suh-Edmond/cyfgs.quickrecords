@@ -675,5 +675,10 @@ export default {
     telephoneOne: "Telephone",
     telephoneTwo: "WhatsApp",
     createOrganisationFailMsg: "Create Organisation failed!",
+    createSubscription: "Try QuickRecords Premium for free",
+    couponCode: "Referral code(Optional)- 5% discount",
+    referralCodeCaption:
+      "The referral code is of the individual or organisation who referred you to QuickRecords!",
+    backToOrganisation: "Back to Organisation ?",
   },
 };

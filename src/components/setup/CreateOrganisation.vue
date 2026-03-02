@@ -139,7 +139,7 @@
       <div class="flex justify-center q-mt-xs" v-if="$q.platform.is.desktop">
         <q-btn
           class="form_button"
-          :label="$t('app.createOrganisation')"
+          :label="$t('app.saveBtnLabel')"
           :loading="loading"
           :disabled="validateForm"
           color="primary"
@@ -152,7 +152,7 @@
       <div class="row q-gutter-md q-mx-sm" v-if="$q.platform.is.mobile">
         <q-btn
           class="form_button full-width"
-          :label="$t('app.createOrganisation')"
+          :label="$t('app.saveBtnLabel')"
           :loading="loading"
           :disabled="validateForm"
           color="primary"
@@ -248,8 +248,6 @@ export default {
   },
   methods: {
     onSubmit() {
-      console.log(this.organisation);
-
       let payload = {
         data: {
           name: this.organisation.name,
@@ -315,8 +313,9 @@ export default {
               loginId: res.data.data.user_id,
               accountId: res.data.data.user_id,
             });
+
             this.$emit("onSubscriptionCreation");
-            LocalStorage.set("loginId", res.data.data.id);
+            LocalStorage.set("loginId", res.data.data.user_id);
             LocalStorage.set("organisationId", res.data.data.id);
           }
         })

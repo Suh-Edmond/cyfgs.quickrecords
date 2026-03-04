@@ -149,7 +149,20 @@ export default {
             });
           }
           if (res.status === 200) {
+            const organisation = {
+              id: res.data.data.id,
+              name: res.data.data.organisation_name,
+              email: res.data.data.organisation_email,
+              description: res.data.data.organisation_description,
+              telephone: res.data.data.organisation_telephone,
+              address: res.data.data.organisation_address,
+              salutation: res.data.data.organisation_salutation,
+              region: res.data.data.organisation_region,
+              box_number: res.data.data.organisation_box_number,
+              logo: res.data.data.organisation_logo,
+            };
             LocalStorage.set("loginId", res.data.data.id);
+            LocalStorage.set("organisation", organisation);
             this.$store.commit("SET_PROCESS_STEP", {
               ...res.data.data,
               processStatus: ProcessStatusVue.CREATE_ORGANISATION,

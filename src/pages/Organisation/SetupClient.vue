@@ -66,7 +66,7 @@
         style="min-height: 500px"
       >
         <TrialManagementVue
-          @onSubscribeToPackage="handleSubscriptionCreationEvent"
+          @onMakePaymentToPackage="handleSubscriptionPaymentEvent"
           @onStartTrial="handleStartTrialEvent"
         />
       </q-step>
@@ -81,17 +81,8 @@
         <PaymentManagementVue
           @onContinueTrial="handleContinueTrialEvent"
           @onCompletePayment="handleCompletePayment"
+          @onbackSubscription="handleBackToSubscription"
         />
-
-        <q-stepper-navigation>
-          <q-btn
-            flat
-            @click="$refs.stepper.previous()"
-            color="primary"
-            label="Back"
-            class="q-ml-sm"
-          />
-        </q-stepper-navigation>
       </q-step>
 
       <q-step
@@ -101,14 +92,16 @@
         :done="hasCompletedSetup"
         style="min-height: 500px"
       >
-        <span class="forgot_password text-right q-mt-xl">{{
-          $t("app.successfulOrganSetup")
-        }}</span>
-        <router-link to="/auth/login" class="sign_link">
-          <span class="forgot_password text-right q-mt-xl">{{
-            $t("app.loginCaption")
+        <CompleteSetup @onMakePayment="handleMakePayment">
+          <!-- <span class="forgot_password text-right q-mt-xl">{{
+            $t("app.successfulOrganSetup")
           }}</span>
-        </router-link>
+          <router-link to="/auth/login" class="sign_link">
+            <span class="forgot_password text-right q-mt-xl">{{
+              $t("app.loginCaption")
+            }}</span>
+          </router-link> -->
+        </CompleteSetup>
       </q-step>
 
       <template v-slot:message>
@@ -122,13 +115,13 @@
           Create your Organisation
         </q-banner>
         <q-banner v-else-if="step === 4" class="bg-primary text-white q-px-lg">
-          Subscribe to a package or continue with Trail
+          Subscribe to a plan and enjoy full features
         </q-banner>
         <q-banner v-else-if="step === 5" class="bg-primary text-white q-px-lg">
           You are currently in Trial mode, make payment for complete usage
         </q-banner>
         <q-banner v-else class="bg-primary text-white q-px-lg">
-          Complete Subscription Payment
+          Setup Completed! Client account activated
         </q-banner>
         <q-linear-progress
           rounded
@@ -153,6 +146,7 @@ import SubscriptionCreationVue from "src/components/setup/SubscriptionCreation.v
 import PaymentManagementVue from "src/components/setup/PaymentManagement.vue";
 import TrialManagementVue from "src/components/setup/TrialManagement.vue";
 import { LocalStorage } from "quasar";
+import CompleteSetup from "src/components/setup/CompleteSetup.vue";
 
 export default {
   name: "PageIndex",
@@ -163,7 +157,7 @@ export default {
       loading: false,
       color: "primary",
       directory: "LOGOS",
-      step: 6,
+      step: 7,
       processStatus: "CREATE_ACCOUNT",
       processStep: "CREATE_ACCOUNT",
       hasCompletedAccountCreation: false,
@@ -211,6 +205,14 @@ export default {
       this.processStatus = this.$store.getters.getProcessStage.processStatus;
     },
 
+    handleSubscriptionPaymentEvent() {
+      this.hasCompletedSubscription =
+        this.$store.getters.getProcessStage.isSuccessful;
+      this.hasCompletedTrial = this.$store.getters.getProcessStage.isSuccessful;
+      this.step = this.$store.getters.getProcessStage.step;
+      this.processStatus = this.$store.getters.getProcessStage.processStatus;
+    },
+
     handleMakePayment() {
       this.hasCompletedSubscription =
         this.$store.getters.getProcessStage.isSuccessful;
@@ -229,6 +231,7 @@ export default {
       this.hasCompletedTrial = this.$store.getters.getProcessStage.isSuccessful;
       this.step = this.$store.getters.getProcessStage.step;
       this.processStatus = this.$store.getters.getProcessStage.processStatus;
+      this.hasCompletedSetup = this.$store.getters.getProcessStage.isSuccessful;
     },
     handleContinueTrialEvent() {
       this.hasCompletedSubscription =
@@ -255,6 +258,13 @@ export default {
     setProgressBar(showProgressBar) {
       return (this.showProgressBar = showProgressBar);
     },
+
+    handleBackToSubscription() {
+      this.completedOrganisationCreation =
+        this.$store.getters.getProcessStage.isSuccessful;
+      this.step = this.$store.getters.getProcessStage.step;
+      this.processStatus = this.$store.getters.getProcessStage.processStatus;
+    },
   },
   components: {
     AccountCreation,
@@ -263,6 +273,7 @@ export default {
     SubscriptionCreationVue,
     TrialManagementVue,
     PaymentManagementVue,
+    CompleteSetup,
   },
 };
 </script>

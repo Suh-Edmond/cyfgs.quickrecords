@@ -314,11 +314,12 @@ export default {
             });
 
             this.$emit("onSubscriptionCreation");
-            LocalStorage.set("organisationName", res.data.data.name);
-            LocalStorage.set("organisationEmail", res.data.data.email);
+            // LocalStorage.set("organisationName", res.data.data.name);
+            // LocalStorage.set("organisationEmail", res.data.data.email);
             LocalStorage.set("adminUsername", res.data.data.adminUsername);
             LocalStorage.set("adminName", res.data.data.adminName);
             LocalStorage.set("organisationId", res.data.data.id);
+            LocalStorage.set("organisation", res.data.data);
           }
         })
         .finally(() => {
@@ -327,28 +328,20 @@ export default {
     },
 
     setOrganisationInfo() {
-      if (this.$store.getters.getProcessStage.has_organisation) {
-        let telephoneString =
-          this.$store.getters.getProcessStage.organisation_telephone.split("/");
-        this.organisation.address =
-          this.$store.getters.getProcessStage.organisation_address;
-        this.organisation.name =
-          this.$store.getters.getProcessStage.organisation_name;
-        this.organisation.email =
-          this.$store.getters.getProcessStage.organisation_email;
+      const organisation = LocalStorage.getItem("organisation");
+      if (organisation !== null) {
+        let telephoneString = organisation.telephone.split("/");
+        this.organisation.address = organisation.address;
+        this.organisation.name = organisation.name;
+        this.organisation.email = organisation.email;
         this.organisation.telephone = telephoneString[0];
         this.organisation.telephone2 =
           telephoneString[1] !== undefined ? telephoneString[1] : "";
-        this.organisation.salutation =
-          this.$store.getters.getProcessStage.organisation_salutation;
-        this.organisation.description =
-          this.$store.getters.getProcessStage.organisation_description;
-        this.organisation.box_number =
-          this.$store.getters.getProcessStage.organisation_box_number;
-        this.organisation.region =
-          this.$store.getters.getProcessStage.organisation_region;
-        this.organisation.logo =
-          this.$store.getters.getProcessStage.organisation_logo;
+        this.organisation.salutation = organisation.salutation;
+        this.organisation.description = organisation.description;
+        this.organisation.box_number = organisation.box_number;
+        this.organisation.region = organisation.region;
+        this.organisation.logo = organisation.logo;
       }
 
       return this.organisation;

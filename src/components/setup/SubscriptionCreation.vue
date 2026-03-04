@@ -3,7 +3,7 @@
     class="row q-px-sm flex flex-center"
     :class="$q.screen.lg ? 'q-pt-xl flex flex-center' : 'q-pt-sm'"
   >
-    <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12">
+    <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">
       <q-card flat>
         <q-card-section>
           <div class="text_h6 text-center q-pt-xs q-pb-sm">
@@ -22,10 +22,10 @@
                       :key="index"
                     >
                       <q-item-section avatar>
-                        <q-avatar
+                        <q-icon
                           color="secondary"
                           text-color="white"
-                          icon="done"
+                          name="done"
                           size="sm"
                         />
                       </q-item-section>
@@ -43,10 +43,10 @@
                       :key="index"
                     >
                       <q-item-section avatar>
-                        <q-avatar
+                        <q-icon
                           color="secondary"
                           text-color="white"
-                          icon="done"
+                          name="done"
                           size="sm"
                         />
                       </q-item-section>
@@ -153,17 +153,24 @@
                   ></q-icon>
                 </q-btn>
               </div>
-              <div class="row justify-between bottom q-pt-md">
-                <span
-                  >{{ $t("app.continueWithTrialMsg") }}
-                  <span @click="onContinueWithTrial()" class="sign_link"
-                    >&nbsp;{{ $t("app.continuetrialLink") }}</span
-                  >
-                </span>
+              <div class="row justify-between q-pt-md">
+                <q-btn
+                  outline
+                  rounded
+                  @click="onContinueWithTrial()"
+                  color="primary"
+                  no-caps
+                  :label="$t('app.continuetrialLink')"
+                />
 
-                <span @click="onbacK()" class="sign_link"
-                  >&nbsp;{{ $t("app.backToOrganisation") }}</span
-                >
+                <q-btn
+                  outline
+                  rounded
+                  @click="onbacK()"
+                  color="primary"
+                  no-caps
+                  :label="$t('app.backToOrganisation')"
+                />
               </div>
             </q-form>
           </div>
@@ -179,9 +186,7 @@ import ProcessStatusVue from "../Constants/ProcessStatus.vue";
 export default {
   name: "PageIndex",
   mounted() {
-    if (this.$store.getters.getSubscriptionPlans.length === 0) {
-      this.getSubscriptionPlans();
-    }
+    this.getSubscriptionPlans();
   },
   data() {
     return {
@@ -248,14 +253,14 @@ export default {
         subscription_plan_id: this.defaultSubPlan.id,
         organisation_id: LocalStorage.getItem("organisationId"),
         referral_code: this.subscription.referral_code,
-        is_trial: this.subscription.is_trial !== null,
+        is_trial: true,
         login_id: LocalStorage.getItem("loginId"),
         auto_renewal: false,
       };
       let payload = {
         url: "/api/protected/init/subscriptions",
         data: data,
-        msg: "Subscription plan created successfully",
+        msg: "Subscription createde successfully",
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",

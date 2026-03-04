@@ -170,11 +170,25 @@
                 </template>
               </q-btn>
             </div>
-            <div class="row justify-center bottom q-pt-md">
-              {{ $t("app.notMakyPayment") }}
-              <span @click="onContinueWithTrial()" class="sign_link"
-                >&nbsp;{{ $t("app.continuetrialLink") }}</span
-              >
+
+            <div class="row justify-between q-pt-md">
+              <q-btn
+                outline
+                rounded
+                @click="onContinueWithTrial()"
+                color="primary"
+                no-caps
+                :label="$t('app.continuetrialLink')"
+              />
+
+              <q-btn
+                outline
+                rounded
+                @click="onbackSubscription()"
+                color="primary"
+                no-caps
+                :label="$t('app.backSubscription')"
+              />
             </div>
           </q-form>
         </q-card-section>
@@ -232,7 +246,7 @@
 
               <label class="payment_figures"> {{ getPaymentCharges }} % </label>
             </div>
-
+            <q-separator />
             <div class="row justify-between">
               <label class="payment_total_amount text-weight-bolder"
                 >Total
@@ -268,7 +282,6 @@
 
 <script>
 import { LocalStorage, Notify, Platform } from "quasar";
-import { VueTelInput } from "vue-tel-input";
 import ProcessStatusVue from "../Constants/ProcessStatus.vue";
 export default {
   name: "PageIndex",
@@ -318,7 +331,7 @@ export default {
       userSubscriptions: JSON.parse(LocalStorage.getItem("subscriptions")),
     };
   },
-  emits: ["onCompletePayment", "onContinueTrial"],
+  emits: ["onCompletePayment", "onContinueTrial", "onbackSubscription"],
   computed: {
     validateForm() {
       const regex = /^\+?[\d\s]+$/;
@@ -446,26 +459,113 @@ export default {
         });
     },
 
+    onHandlePaymentCallback() {
+      let payload = {
+        url: "/api/protected/init/client/subscriptions/initiate-payment",
+        data: {
+          ...this.payment,
+          transaction_number: this.payment.transaction_number
+            .replaceAll(" ", "")
+            .replaceAll("+", ""),
+        },
+        msg: "Payment completed Successfully",
+        color: "default",
+        to_on_ok: "none",
+        to_on_fail: "none",
+        error_msg: "default",
+        show_feedback: true,
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.loading = true;
+      this.$store
+        .dispatch("postRequest", payload)
+        .then((res) => {
+          if (res.status === 422) {
+            Notify.create({
+              type: "negative",
+              message: this.$t("app.createAccountFailMsg"),
+              position: Platform.is.mobile ? "bottom" : "top-right",
+            });
+          }
+          if (res.status === 408) {
+            Notify.create({
+              type: "negative",
+              message: this.$t("app.connectionProblem"),
+              position: Platform.is.mobile ? "bottom" : "top-right",
+            });
+          }
+          if (res.status == 200) {
+            let subscriptions = [];
+            const subscription = {
+              id: res.data.data.subscription.id,
+              organisation: res.data.data.organisation,
+              subscription_plan: res.data.data.subscription_plan,
+              auto_renewal: res.data.data.subscription.auto_renewal,
+              referral_code_discount:
+                res.data.data.subscription.referral_code_discount,
+              current_period_start_date:
+                res.data.data.subscription.current_period_start_date,
+              current_period_end_date:
+                res.data.data.subscription.current_period_end_date,
+              status: res.data.data.subscription.status,
+              trial_period_end_date:
+                res.data.data.subscription.trial_period_end_date,
+              trial_period_start_date:
+                res.data.data.subscription.trial_period_start_date,
+              is_trail: res.data.data.subscription.is_trail,
+              login_id: null,
+              transaction_status: res.data.data.transaction_status,
+              payment_date: res.data.data.payment_date,
+            };
+            subscriptions.push(subscription);
+            LocalStorage.set("subscriptions", JSON.stringify(subscriptions));
+            this.$store.commit("SET_PROCESS_STEP", {
+              processStatus: ProcessStatusVue.COMPLETE_SETUP,
+              step: 7,
+              isSuccessful: true,
+            });
+            this.$emit("onCompletePayment");
+          }
+        })
+        .finally(() => {
+          this.loading = false;
+        });
+    },
+
     onContinueWithTrial() {
-      this.$store.commit("SET_PROCESS_STEP", {
-        processStatus: ProcessStatusVue.IN_TRIAL,
-        step: 5,
-        isSuccessful: true,
-        isTrial: true,
-      });
+      LocalStorage.set("isTrialMode", true),
+        this.$store.commit("SET_PROCESS_STEP", {
+          processStatus: ProcessStatusVue.IN_TRIAL,
+          step: 5,
+          isSuccessful: true,
+          isTrial: true,
+        });
       this.$emit("onContinueTrial");
+    },
+
+    onbackSubscription() {
+      this.$store.commit("SET_PROCESS_STEP", {
+        processStatus: ProcessStatusVue.CREATE_SUBSCRIPTION,
+        step: 4,
+        isSuccessful: true,
+        isTrial: false,
+      });
+      this.$emit("onbackSubscription");
     },
 
     setPaymentInfo() {
       let subscriptions = this.userSubscriptions;
-      if (subscriptions !== null) {
+      let organisation = LocalStorage.getItem("organisation");
+      if (subscriptions !== null && organisation !== null) {
         this.payment.login_id = LocalStorage.getItem("loginId");
         this.payment.adminName = LocalStorage.getItem("adminName");
         this.payment.adminUsername = LocalStorage.getItem("adminUsername");
-        this.payment.organisationName =
-          LocalStorage.getItem("organisationName");
-        this.payment.organisationEmail =
-          LocalStorage.getItem("organisationEmail");
+        this.payment.organisationName = organisation.name;
+        this.payment.organisationEmail = organisation.email;
         this.payment.subscription_id = subscriptions[0].id;
       }
     },

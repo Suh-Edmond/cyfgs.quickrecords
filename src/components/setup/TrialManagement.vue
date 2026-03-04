@@ -1,108 +1,88 @@
 <template>
-  <div
-    class="row q-px-sm flex flex-center"
-    :class="$q.screen.lg ? 'q-pt-xl flex flex-center' : 'q-pt-sm'"
-  >
-    <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12">
+  <div class="row q-px-sm flex flex-center">
+    <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">
       <q-card flat>
         <q-card-section>
           <div class="text_h6 text-center q-pt-xs q-pb-sm">
-            {{ $t("app.createAccountTitle") }}
+            {{ $t("app.createSubscription") }}
           </div>
-          <div class="text-subtitle2 text-center q-pb-xs">
-            {{ $t("app.signUpCaptionMsg") }}
-          </div>
-          <small class="q-pl-md hint"
-            >{{ $t("app.warningField") }}<span class="text-red">* </span
-            >{{ $t("app.fields") }}</small
-          >
+
           <div class="q-pa-md">
             <q-form @submit="onSubmit" class="q-gutter-md">
-              <div class="q-pb-md">
-                <label class="form_field"
-                  >{{ $t("app.nameAdminLabel") }}
-                  <span class="text-red">*</span></label
-                >
-                <q-input
-                  v-model="user.name"
-                  outlined
-                  dense
-                  type="text"
-                  lazy-rules
-                />
-              </div>
-              <div class="q-pb-md">
-                <label class="form_field"
-                  >{{ $t("app.usernameAdminLabel") }}
-                  <span class="text-red">*</span></label
-                >
-                <q-input
-                  v-model="user.username"
-                  outlined
-                  dense
-                  type="text"
-                  placeholder="exampleadmin"
-                  lazy-rules
-                />
-              </div>
-              <div class="q-pb-md">
-                <label class="form_field"
-                  >{{ $t("app.telephoneLabel") }}
-                  <span class="text-red">*</span></label
-                >
-                <vue-tel-input
-                  v-model="user.telephone"
-                  defaultCountry="cm"
-                  mode="international"
-                  class="q-pa-xs"
-                ></vue-tel-input>
-              </div>
-              <div>
-                <label class="form_field">{{ $t("app.emailLabel") }} </label>
-                <q-input
-                  v-model="user.email"
-                  outlined
-                  dense
-                  type="email"
-                  bottom-slots
-                  placeholder="example@example.com"
-                >
-                </q-input>
-              </div>
-              <div>
-                <label class="form_field"
-                  >{{ $t("app.passwordLabel") }}
-                  <span class="text-red">*</span></label
-                >
-                <q-input
-                  v-model="user.password"
-                  :type="is_pwd ? 'password' : 'text'"
-                  outlined
-                  dense
-                  bottom-slots
-                >
-                  <template v-slot:append>
-                    <q-icon
-                      :name="is_pwd ? 'visibility_off' : 'visibility'"
-                      class="cursor-pointer"
-                      @click="is_pwd = !is_pwd"
-                    />
-                  </template>
-                  <template v-slot:hint>
-                    <span class="text-red" v-if="invalidPassword">{{
-                      $t("app.newPasswordHintMsg")
-                    }}</span>
-                  </template>
-                </q-input>
+              <div class="row q-gutter-x-md bg-grey-2">
+                <div class="col-md-6">
+                  <q-list>
+                    <q-item
+                      v-ripple
+                      v-for="(feature, index) in featuresFirstFour"
+                      ,
+                      :key="index"
+                    >
+                      <q-item-section avatar>
+                        <q-icon
+                          color="secondary"
+                          text-color="white"
+                          name="done"
+                          size="sm"
+                        />
+                      </q-item-section>
+                      <q-item-section>{{ feature }}</q-item-section>
+                    </q-item>
+                  </q-list>
+                </div>
+
+                <div class="col-md-6">
+                  <q-list>
+                    <q-item
+                      v-ripple
+                      v-for="(feature, index) in featuresLastFour"
+                      ,
+                      :key="index"
+                    >
+                      <q-item-section avatar>
+                        <q-icon
+                          color="secondary"
+                          text-color="white"
+                          name="done"
+                          size="sm"
+                        />
+                      </q-item-section>
+                      <q-item-section>{{ feature }}</q-item-section>
+                    </q-item>
+                  </q-list>
+                </div>
               </div>
               <div class="q-pt-lg">
+                <q-list bordered class="subscription month_subscription">
+                  <q-item class="q-py-md" clickable>
+                    <q-item-section>
+                      <q-item-label class="text-bold">Monthly</q-item-label>
+                      <q-item-label caption class="text-weight-bold"
+                        >One month free Trial - Then
+                        {{ Number(getMonthlyPlan).toLocaleString() }}
+                        XAF/Month</q-item-label
+                      >
+                    </q-item-section>
+
+                    <q-item-section side top>
+                      <q-item-label caption
+                        ><q-badge color="warning">
+                          Basic value
+                        </q-badge></q-item-label
+                      >
+                    </q-item-section>
+                  </q-item>
+                </q-list>
+              </div>
+
+              <div class="q-py-lg">
                 <q-btn
                   class="form_button"
-                  :label="$t('app.saveBtnLabel')"
+                  :label="$t('app.startTrial')"
                   :loading="loading"
-                  :disabled="!validateForm"
-                  :color="color"
-                  :no_caps="true"
+                  :disabled="false"
+                  color="primary"
+                  no-caps
                   type="submit"
                 >
                   <q-icon
@@ -112,11 +92,16 @@
                   ></q-icon>
                 </q-btn>
               </div>
-              <div class="row justify-center bottom q-pt-md">
-                {{ $t("app.makePaymentMsg") }}
-                <span @click="onSubscribeToPackage()" class="sign_link"
-                  >&nbsp;{{ $t("app.subscribe") }}</span
-                >
+              <div class="row justify-end">
+                <!-- <label for="text">{{ $t("app.makePaymentMsg") }}</label> -->
+                <q-btn
+                  outline
+                  rounded
+                  @click="onMakePaymentToPackage()"
+                  color="primary"
+                  no-caps
+                  :label="$t('app.makePaymentBtnLabel')"
+                />
               </div>
             </q-form>
           </div>
@@ -127,107 +112,176 @@
 </template>
 
 <script>
-import { Notify, Platform } from "quasar";
-import { VueTelInput } from "vue-tel-input";
+import { LocalStorage, Notify, Platform } from "quasar";
 import ProcessStatusVue from "../Constants/ProcessStatus.vue";
 export default {
   name: "PageIndex",
+  mounted() {
+    this.getSubscriptionPlans();
+  },
   data() {
     return {
-      user: {
-        telephone: null,
-        password: null,
-        password_confirmation: null,
-        name: null,
-        email: null,
-        username: null,
+      subscription: {
+        subscription_plan_id: null,
+        organisation_id: null,
+        referral_code: null,
+        is_trial: null,
+        login_id: null,
+        auto_renewal: null,
       },
-      is_pwd: true,
-      is_confirm_pwd: true,
       loading: false,
-      has_logged_in: false,
-      disabled: true,
-      is_valid_email: false,
+      defaultSubPlan: {},
       color: "primary",
+      features: [
+        "User Management",
+        "Income Management",
+        "Expenditure Management",
+        "Contributions",
+        "Reports and Statistics",
+        "Balance Sheets",
+        "Logs and Tracability",
+        "Security and Secure Storage",
+        "Free Training and Support",
+        "Free Data Migration",
+      ],
     };
   },
-  emits: ["onSubscribeToPackage", "onStartTrial"],
+  emits: ["onMakePayment", "onContinueTrial", "setProgressBar"],
   computed: {
-    validatePasswordMatch() {
-      return this.checkValidate();
-    },
-    validateForm() {
-      return (
-        this.user.name !== null &&
-        this.user.username !== null &&
-        this.user.telephone !== null &&
-        this.user.password !== null
-      );
+    getMonthlyPlan() {
+      return this.defaultSubPlan.price;
     },
 
-    invalidPassword() {
-      return this.user.password !== null && this.user.password.length < 8;
+    featuresFirstFour() {
+      return this.features.slice(0, 5);
+    },
+    featuresLastFour() {
+      return this.features.slice(5);
     },
   },
   methods: {
     onSubmit() {
-      // let payload = {
-      //   url: "/api/public/auth/signup",
-      //   data: this.user,
-      //   msg: "Account Created Successfully",
-      //   color: "default",
-      //   to_on_ok: "",
-      //   to_on_fail: "",
-      //   error_msg: "default",
-      //   show_feedback: true,
-      //   to_be_store_data: {
-      //     required: true,
-      //     has_value: true,
-      //     data: [
-      //       { key: "is_exist_user", value: true },
-      //       { key: "has_logged_in", value: true },
-      //     ],
-      //   },
-      // };
-      // this.loading = true;
-      // this.$store.dispatch("postRequest", payload).then((res) => {
-      //   if ((res.status = 422)) {
-      //     Notify.create({
-      //       type: "negative",
-      //       message: this.$t("app.createAccountFailMsg"),
-      //       position: Platform.is.mobile ? "bottom" : "top-right",
-      //     });
-      //   }
-      //   this.loading = false;
-      // });
+      const data = {
+        subscription_plan_id: this.defaultSubPlan.id,
+        organisation_id: LocalStorage.getItem("organisationId"),
+        referral_code: null,
+        is_trial: true,
+        login_id: LocalStorage.getItem("loginId"),
+        auto_renewal: false,
+      };
+      let payload = {
+        url: "/api/protected/init/subscriptions/trial",
+        data: data,
+        msg: "Subscription trail activated successfully",
+        color: "default",
+        to_on_ok: "none",
+        to_on_fail: "none",
+        error_msg: "default",
+        show_feedback: true,
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.loading = true;
+      this.$store
+        .dispatch("postRequest", payload)
+        .then((res) => {
+          if (res.status === 422) {
+            Notify.create({
+              type: "negative",
+              message: res.data.message,
+              position: Platform.is.mobile ? "bottom" : "top-right",
+            });
+          }
+          if (res.status === 400) {
+            Notify.create({
+              type: "info",
+              message: res.data.message,
+              position: Platform.is.mobile ? "bottom" : "top-right",
+            });
+          }
+          if (res.status === 200) {
+            let subscriptions = [];
+            const subscription = {
+              id: res.data.data.id,
+              organisation: res.data.data.organisation,
+              subscription_plan: res.data.data.subscription_plan,
+              auto_renewal: res.data.data.auto_renewal,
+              referral_code_discount: res.data.data.referral_code_discount,
+              current_period_start_date:
+                res.data.data.current_period_start_date,
+              current_period_end_date: res.data.data.current_period_end_date,
+              status: res.data.data.status,
+              trial_period_end_date: res.data.data.trial_period_end_date,
+              trial_period_start_date: res.data.data.trial_period_start_date,
+              is_trail: res.data.data.is_trail,
+              login_id: res.data.data.login_id,
+              billing_duration: res.data.data.billing_duration,
+            };
+            subscriptions.push(subscription);
+            LocalStorage.set("subscriptions", JSON.stringify(subscriptions));
 
-      //TODO: only called when request is sent and successful
-
-      this.$store.commit("SET_PROCESS_STEP", {
-        processStatus: ProcessStatusVue.COMPLETE_SETUP,
-        step: 7,
-        isSuccessful: true,
-        isTrial: true,
-      });
-      this.$emit("onStartTrial");
+            this.$store.commit("SET_PROCESS_STEP", {
+              processStatus: ProcessStatusVue.COMPLETE_SETUP,
+              step: 7,
+              isSuccessful: true,
+            });
+            this.$emit("onStartTrial");
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        })
+        .finally(() => {
+          this.loading = false;
+        });
     },
-    checkValidate() {
-      return this.user.password === this.user.password_confirmation;
-    },
 
-    onSubscribeToPackage() {
+    onMakePaymentToPackage() {
       this.$store.commit("SET_PROCESS_STEP", {
-        processStatus: ProcessStatusVue.CREATE_SUBSCRIPTION,
-        step: 4,
+        processStatus: ProcessStatusVue.MAKE_PAYMENT,
+        step: 6,
         isSuccessful: true,
         isTrial: false,
       });
-      this.$emit("onSubscribeToPackage");
+      this.$emit("onMakePaymentToPackage");
+    },
+
+    getSubscriptionPlans() {
+      let payload = {
+        status: "none",
+        url: "/api/public/subscription-plans",
+        has_path_val: true,
+        show_feedback: false,
+        msg: "default",
+        color: "default",
+        error_msg: "default",
+        commit: "SET_SUBSCRIPTION_PLAN",
+        has_commit: true,
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: null,
+        },
+      };
+      this.$emit("setProgressBar", true);
+      this.$store
+        .dispatch("getRequest", payload)
+        .then((res) => {
+          if (res.success) {
+            this.defaultSubPlan = res.data.find(
+              (e) => e.billing_cycle === "monthly"
+            );
+          }
+        })
+        .finally(() => {
+          this.$emit("setProgressBar", false);
+        });
     },
   },
-  components: {
-    VueTelInput,
-  },
+  components: {},
 };
 </script>
 
@@ -278,19 +332,8 @@ export default {
   width: 100%;
 }
 
-.forgot_password {
-  margin-top: 0.5rem;
-  display: block;
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 24px;
-  align-items: center;
-  letter-spacing: 0.005em;
-  color: $primary;
-  cursor: pointer;
-  margin-bottom: 2.2rem;
+.subscription {
+  border-radius: 10px;
 }
 
 .sign_link {
@@ -301,21 +344,12 @@ export default {
   cursor: pointer;
 }
 
-.account_text {
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 600;
-  font-size: 14px;
-  color: $dark;
-  text-transform: uppercase;
-}
-
 .bottom {
   margin-bottom: 2.5rem;
 }
 
-.hint {
-  color: $grey2;
-  font-size: small;
+.month_subscription {
+  border: 2px solid $primary;
+  border-radius: 8px;
 }
 </style>

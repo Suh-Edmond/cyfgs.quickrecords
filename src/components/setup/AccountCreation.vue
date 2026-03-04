@@ -127,7 +127,7 @@
                   ></q-icon>
                 </q-btn>
               </div>
-              <div class="row justify-center bottom q-pt-sm">
+              <div class="row justify-center bottom q-pt-md">
                 {{ $t("app.haveAccountMsg") }}
                 <span @click="onConfirmAccountCreation()" class="sign_link"
                   >&nbsp;{{ $t("app.confirmAccount") }}</span

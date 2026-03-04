@@ -1,216 +1,449 @@
 <template>
-  <div
-    class="row q-px-sm flex flex-center"
-    :class="$q.screen.lg ? 'q-pt-xl flex flex-center' : 'q-pt-sm'"
-  >
-    <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12">
-      <q-card flat>
+  <div class="row q-col-gutter-md">
+    <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12"></div>
+    <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12">
+      <q-card flat bordered>
+        <q-card-section class="bg-primary text-white text-muted">
+          <div class="text_h6 q-pt-xs q-pb-sm row justify-start text-white">
+            {{ $t("app.paymentDetails") }}
+          </div>
+          <div class="q-pb-xs summaryCaption text-white">
+            {{ $t("app.paymentCaption") }}
+          </div>
+        </q-card-section>
         <q-card-section>
-          <div class="text_h6 text-center q-pt-xs q-pb-sm">
-            {{ $t("app.createAccountTitle") }}
-          </div>
-          <div class="text-subtitle2 text-center q-pb-xs">
-            {{ $t("app.signUpCaptionMsg") }}
-          </div>
-          <small class="q-pl-md hint"
-            >{{ $t("app.warningField") }}<span class="text-red">* </span
-            >{{ $t("app.fields") }}</small
-          >
-          <div class="q-pa-md">
-            <q-form @submit="onSubmit" class="q-gutter-md">
-              <div class="q-pb-md">
+          <q-form @submit="onSubmit">
+            <div class="q-pb-sm">
+              <q-btn
+                round
+                color="grey-5"
+                label="1"
+                class="q-mb-lg text-black payment_btn_step"
+                size="sm"
+              />
+              <label class="text-h6 q-pl-md text-subtitle2"
+                >{{ $t("app.customerInformationTitle") }}
+              </label>
+            </div>
+            <div class="row q-col-gutter-x-xs">
+              <div class="col-6">
                 <label class="form_field"
                   >{{ $t("app.nameAdminLabel") }}
-                  <span class="text-red">*</span></label
-                >
+                </label>
                 <q-input
-                  v-model="user.name"
-                  outlined
-                  dense
-                  type="text"
-                  lazy-rules
-                />
-              </div>
-              <div class="q-pb-md">
-                <label class="form_field"
-                  >{{ $t("app.usernameAdminLabel") }}
-                  <span class="text-red">*</span></label
-                >
-                <q-input
-                  v-model="user.username"
+                  v-model="payment.adminName"
                   outlined
                   dense
                   type="text"
                   placeholder="exampleadmin"
-                  lazy-rules
                 />
               </div>
-              <div class="q-pb-md">
+              <div class="col-6">
                 <label class="form_field"
-                  >{{ $t("app.telephoneLabel") }}
-                  <span class="text-red">*</span></label
-                >
-                <vue-tel-input
-                  v-model="user.telephone"
-                  defaultCountry="cm"
-                  mode="international"
-                  class="q-pa-xs"
-                ></vue-tel-input>
-              </div>
-              <div>
-                <label class="form_field">{{ $t("app.emailLabel") }} </label>
+                  >{{ $t("app.usernameAdminLabel") }}
+                </label>
                 <q-input
-                  v-model="user.email"
+                  v-model="payment.adminUsername"
+                  outlined
+                  dense
+                  type="text"
+                  placeholder="exampleadmin"
+                  bottom-slots
+                />
+              </div>
+            </div>
+
+            <div class="row q-col-gutter-x-xs">
+              <div class="col-6">
+                <label class="form_field"
+                  >{{ $t("app.organisationName") }}
+                </label>
+                <q-input
+                  v-model="payment.organisationName"
+                  outlined
+                  dense
+                  type="text"
+                  placeholder="exampleadmin"
+                />
+              </div>
+              <div class="col-6">
+                <label class="form_field"
+                  >{{ $t("app.organisationEmail") }}
+                </label>
+                <q-input
+                  v-model="payment.organisationEmail"
                   outlined
                   dense
                   type="email"
-                  bottom-slots
-                  placeholder="example@example.com"
-                >
-                </q-input>
+                  placeholder="exampleadmin"
+                />
               </div>
-              <div>
-                <label class="form_field"
-                  >{{ $t("app.passwordLabel") }}
-                  <span class="text-red">*</span></label
-                >
-                <q-input
-                  v-model="user.password"
-                  :type="is_pwd ? 'password' : 'text'"
-                  outlined
-                  dense
-                  bottom-slots
-                >
-                  <template v-slot:append>
-                    <q-icon
-                      :name="is_pwd ? 'visibility_off' : 'visibility'"
-                      class="cursor-pointer"
-                      @click="is_pwd = !is_pwd"
-                    />
-                  </template>
-                  <template v-slot:hint>
-                    <span class="text-red" v-if="invalidPassword">{{
-                      $t("app.newPasswordHintMsg")
-                    }}</span>
-                  </template>
-                </q-input>
-              </div>
-              <div class="q-pt-lg">
-                <q-btn
-                  class="form_button"
-                  :label="$t('app.saveBtnLabel')"
-                  :loading="loading"
-                  :disabled="!validateForm"
-                  :color="color"
-                  :no_caps="true"
-                  type="submit"
-                >
-                  <q-icon
-                    name="arrow_forward"
-                    size="xs"
-                    class="q-pl-lg"
-                  ></q-icon>
-                </q-btn>
-              </div>
-              <div class="row justify-center bottom q-pt-md">
-                {{ $t("app.notMakyPayment") }}
-                <span @click="onContinueWithTrial()" class="sign_link"
-                  >&nbsp;{{ $t("app.continuetrialLink") }}</span
-                >
-              </div>
-            </q-form>
-          </div>
+            </div>
+
+            <div class="q-py-lg">
+              <q-btn
+                round
+                color="grey-5"
+                label="2"
+                class="q-mb-lg text-black payment_btn_step"
+                size="sm"
+              />
+
+              <label class="text-h6 q-pl-md text-subtitle2"
+                >{{ $t("app.paymentMethod") }}
+              </label>
+            </div>
+            <div>
+              <label class="form_field"
+                >{{ $t("app.paymentMethodLabel") }}
+              </label>
+              <q-select
+                outlined
+                dense
+                v-model="payment.payment_method"
+                :options="paymentOptions"
+                :error="!!paymentError"
+                :error-message="paymentError"
+              />
+            </div>
+            <div>
+              <label class="form_field">
+                <span>
+                  {{ $t("app.accountNumber") }}
+                </span>
+              </label>
+              <q-input
+                placeholder="Enter an account number"
+                v-model="payment.transaction_number"
+                outlined
+                dense
+                type="text"
+                hide-bottom-space
+                :error="!!accountNumberError"
+                :error-message="accountNumberError"
+              ></q-input>
+            </div>
+            <div v-if="getSubscriptionPlan.billing_cycle === 'monthly'">
+              <label class="form_field"
+                >{{ $t("app.numberofPaymentMonths") }}
+              </label>
+              <q-input
+                v-model="payment.billing_duration"
+                outlined
+                dense
+                type="number"
+              />
+            </div>
+            <div
+              class="q-pt-md"
+              v-if="getSubscriptionPlan.billing_cycle === 'yearly'"
+            >
+              <label class="form_field"
+                >{{ $t("app.numberofPaymentYears") }}
+              </label>
+              <q-input
+                v-model="payment.billing_duration"
+                outlined
+                dense
+                type="number"
+              />
+            </div>
+            <div class="q-pt-lg">
+              <q-btn
+                class="form_button"
+                :label="$t('app.makePaymentBtnLabel')"
+                :loading="loading"
+                :disabled="!validateForm"
+                color="primary"
+                no-caps
+                type="submit"
+              >
+                <q-icon
+                  name="arrow_forward"
+                  size="xs"
+                  class="q-pl-lg"
+                  v-show="!loading"
+                ></q-icon>
+                <template v-slot:loading>
+                  {{ $t("app.processingPayment") }}
+                  <q-spinner />
+                </template>
+              </q-btn>
+            </div>
+            <div class="row justify-center bottom q-pt-md">
+              {{ $t("app.notMakyPayment") }}
+              <span @click="onContinueWithTrial()" class="sign_link"
+                >&nbsp;{{ $t("app.continuetrialLink") }}</span
+              >
+            </div>
+          </q-form>
         </q-card-section>
       </q-card>
     </div>
+    <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12">
+      <q-card flat bordered>
+        <q-card-section class="bg-indigo-1">
+          <div class="text_h6 q-pt-xs q-pb-sm row justify-start text-black">
+            {{ $t("app.summaryTitle") }}
+          </div>
+          <div class="q-pb-sm summaryCaption">
+            {{ $t("app.summaryCaption") }}
+          </div>
+        </q-card-section>
+        <q-card-section>
+          <div class="bg-indigo-1 q-pa-lg rounded-borders">
+            <div
+              class="row justify-between"
+              v-if="getSubscriptionPlan.billing_cycle === 'monthly'"
+            >
+              <label class="payment_figures"
+                >{{ $t("app.monthlyBilling") }}
+              </label>
+
+              <label class="payment_figures">
+                {{ Number(getSubscriptionPlan.price).toLocaleString() }}
+                XAF/Month
+              </label>
+            </div>
+            <div
+              class="row justify-between"
+              v-if="getSubscriptionPlan.billing_cycle === 'yearly'"
+            >
+              <label class="payment_figures"
+                >{{ $t("app.yearlyBilling") }}
+              </label>
+
+              <label class="payment_figures">
+                {{ Number(getSubscriptionPlan.price).toLocaleString() }}
+                XAF/Year
+              </label>
+            </div>
+
+            <div class="row justify-between q-py-sm">
+              <label class="payment_figures">Referral Code Discount </label>
+
+              <label class="payment_figures">
+                {{ Number(getReferralCodeDiscount).toLocaleString() }} XAF
+              </label>
+            </div>
+
+            <div class="row justify-between q-pb-sm">
+              <label class="payment_figures">Payment Charges </label>
+
+              <label class="payment_figures"> {{ getPaymentCharges }} % </label>
+            </div>
+
+            <div class="row justify-between">
+              <label class="payment_total_amount text-weight-bolder"
+                >Total
+              </label>
+
+              <label class="payment_total_amount text-weight-bolder">
+                {{ Number(computeTotalAmount).toLocaleString() }} XAF
+              </label>
+            </div>
+          </div>
+        </q-card-section>
+        <q-card-section>
+          <label class="account_text">{{ $t("app.featureList") }} </label>
+          <q-list class="q-pt-md">
+            <q-item v-for="(feature, index) in features" , :key="index" dense>
+              <q-item-section avatar>
+                <q-icon
+                  color="secondary"
+                  text-color="white"
+                  name="done"
+                  size="sm"
+                />
+              </q-item-section>
+              <q-item-section>{{ feature }}</q-item-section>
+            </q-item>
+          </q-list>
+        </q-card-section>
+      </q-card>
+    </div>
+    <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12"></div>
   </div>
 </template>
 
 <script>
-import { Notify, Platform } from "quasar";
+import { LocalStorage, Notify, Platform } from "quasar";
 import { VueTelInput } from "vue-tel-input";
 import ProcessStatusVue from "../Constants/ProcessStatus.vue";
 export default {
   name: "PageIndex",
+  mounted() {
+    this.setPaymentInfo();
+  },
   data() {
     return {
-      user: {
-        telephone: null,
-        password: null,
-        password_confirmation: null,
-        name: null,
-        email: null,
-        username: null,
+      payment: {
+        payment_method: "MTN Mobile-Money",
+        transaction_number: "",
+        billing_duration: 1,
+        adminName: "",
+        adminUsername: "",
+        organisationName: "",
+        organisationEmail: "",
+        login_id: "",
+        subscription_id: "",
       },
-      is_pwd: true,
-      is_confirm_pwd: true,
       loading: false,
-      has_logged_in: false,
-      disabled: true,
-      is_valid_email: false,
-      color: "primary",
+      paymentOptions: [
+        {
+          value: "MTN",
+          label: "MTN Mobile-Money",
+        },
+        {
+          value: "Orange",
+          label: "Orange Money",
+        },
+      ],
+      paymentError: "",
+      accountNumberError: "",
+      telephoneError: "",
+      features: [
+        "User Management",
+        "Income Management",
+        "Expenditure Management",
+        "Contributions Management",
+        "Reports and Statistics",
+        "Balance Sheets Generation",
+        "Logs and Tracability",
+        "Security and Secure Storage",
+        "Free Training and Support",
+        "Free Data Migration",
+        "One Month Free Trial",
+      ],
+      userSubscriptions: JSON.parse(LocalStorage.getItem("subscriptions")),
     };
   },
   emits: ["onCompletePayment", "onContinueTrial"],
   computed: {
-    validatePasswordMatch() {
-      return this.checkValidate();
-    },
     validateForm() {
-      return (
-        this.user.name !== null &&
-        this.user.username !== null &&
-        this.user.telephone !== null &&
-        this.user.password !== null
-      );
+      const regex = /^\+?[\d\s]+$/;
+      const validPhone = regex.test(this.payment.transaction_number);
+
+      return validPhone;
     },
 
-    invalidPassword() {
-      return this.user.password !== null && this.user.password.length < 8;
+    getSubscriptionPlan() {
+      if (this.userSubscriptions === null) {
+        return;
+      }
+      return this.userSubscriptions[0].subscription_plan;
+    },
+
+    getReferralCodeDiscount() {
+      if (this.userSubscriptions === null) {
+        return 0;
+      }
+      return this.userSubscriptions[0].referral_code_discount;
+    },
+    getPaymentCharges() {
+      return process.env.PAYMENT_CHARGES;
+    },
+    computeTotalAmount() {
+      let subscription = this.userSubscriptions;
+      let totalAmount = subscription[0].subscription_plan.price;
+      if (subscription === null) {
+        return;
+      }
+      let subscriptionPlan = subscription[0].subscription_plan;
+      if (
+        subscriptionPlan.is_discount_applicable &&
+        subscriptionPlan.discount_percentage > 0
+      ) {
+        totalAmount =
+          subscriptionPlan.price -
+          subscriptionPlan.price * (subscriptionPlan.discount_percentage / 100);
+      }
+
+      if (this.getReferralCodeDiscount > 0) {
+        totalAmount =
+          totalAmount > 0
+            ? totalAmount - this.getReferralCodeDiscount
+            : subscriptionPlan.price - this.getReferralCodeDiscount;
+      }
+      totalAmount = totalAmount * this.payment.billing_duration;
+
+      totalAmount =
+        totalAmount * (process.env.PAYMENT_CHARGES / 100) + totalAmount;
+
+      return totalAmount;
+    },
+
+    computePaymentCharges() {
+      return process.env.PAYMENT_CHARGES / 100;
     },
   },
   methods: {
     onSubmit() {
-      // let payload = {
-      //   url: "/api/public/auth/signup",
-      //   data: this.user,
-      //   msg: "Account Created Successfully",
-      //   color: "default",
-      //   to_on_ok: "",
-      //   to_on_fail: "",
-      //   error_msg: "default",
-      //   show_feedback: true,
-      //   to_be_store_data: {
-      //     required: true,
-      //     has_value: true,
-      //     data: [
-      //       { key: "is_exist_user", value: true },
-      //       { key: "has_logged_in", value: true },
-      //     ],
-      //   },
-      // };
-      // this.loading = true;
-      // this.$store.dispatch("postRequest", payload).then((res) => {
-      //   if ((res.status = 422)) {
-      //     Notify.create({
-      //       type: "negative",
-      //       message: this.$t("app.createAccountFailMsg"),
-      //       position: Platform.is.mobile ? "bottom" : "top-right",
-      //     });
-      //   }
-      //   this.loading = false;
-      // });
-
-      //TODO: only called when request is sent and successful
-      this.$store.commit("SET_PROCESS_STEP", {
-        processStatus: ProcessStatusVue.COMPLETE_SETUP,
-        step: 7,
-        isSuccessful: true,
-      });
-      this.$emit("onCompletePayment");
-    },
-    checkValidate() {
-      return this.user.password === this.user.password_confirmation;
+      let payload = {
+        url: "/api/protected/init/client/subscriptions/initiate-payment",
+        data: {
+          ...this.payment,
+          transaction_number: this.payment.transaction_number
+            .replaceAll(" ", "")
+            .replaceAll("+", ""),
+        },
+        msg: "Payment Initiated Successfully",
+        color: "default",
+        to_on_ok: "none",
+        to_on_fail: "none",
+        error_msg: "default",
+        show_feedback: true,
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.loading = true;
+      this.$store
+        .dispatch("postRequest", payload)
+        .then((res) => {
+          if (res.status === 422) {
+            Notify.create({
+              type: "negative",
+              message: this.$t("app.createAccountFailMsg"),
+              position: Platform.is.mobile ? "bottom" : "top-right",
+            });
+          }
+          if (res.status === 408) {
+            Notify.create({
+              type: "negative",
+              message: this.$t("app.connectionProblem"),
+              position: Platform.is.mobile ? "bottom" : "top-right",
+            });
+          }
+          if (res.status == 200) {
+            this.$q
+              .dialog({
+                title: "Alert",
+                message:
+                  "Please confirm the payment or dial *126# to confirm the payment",
+              })
+              .onOk(() => {
+                console.log("OK");
+              })
+              .onCancel(() => {
+                console.log("Cancel");
+              })
+              .onDismiss(() => {
+                console.log("I am triggered on both OK and Cancel");
+              });
+            this.$store.commit("SET_PROCESS_STEP", {
+              processStatus: ProcessStatusVue.COMPLETE_SETUP,
+              step: 7,
+              isSuccessful: true,
+            });
+            this.$emit("onCompletePayment");
+          }
+        })
+        .finally(() => {
+          this.loading = false;
+        });
     },
 
     onContinueWithTrial() {
@@ -222,10 +455,22 @@ export default {
       });
       this.$emit("onContinueTrial");
     },
+
+    setPaymentInfo() {
+      let subscriptions = this.userSubscriptions;
+      if (subscriptions !== null) {
+        this.payment.login_id = LocalStorage.getItem("loginId");
+        this.payment.adminName = LocalStorage.getItem("adminName");
+        this.payment.adminUsername = LocalStorage.getItem("adminUsername");
+        this.payment.organisationName =
+          LocalStorage.getItem("organisationName");
+        this.payment.organisationEmail =
+          LocalStorage.getItem("organisationEmail");
+        this.payment.subscription_id = subscriptions[0].id;
+      }
+    },
   },
-  components: {
-    VueTelInput,
-  },
+  components: {},
 };
 </script>
 
@@ -251,15 +496,23 @@ export default {
 }
 
 .text-subtitle2 {
-  color: $grey2;
+  color: $primary;
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 400;
-  font-size: 13px;
+  font-weight: 500;
+  font-size: 15px;
   line-height: 18px;
   align-items: center;
   text-align: center;
   letter-spacing: 0.01em;
+}
+
+.sign_link {
+  text-decoration: none;
+  color: $primary;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
 }
 
 .form_field {
@@ -276,7 +529,19 @@ export default {
   width: 100%;
 }
 
-.forgot_password {
+.payment_total_amount {
+  margin-top: 0.5rem;
+  display: block;
+  font-family: "Roboto";
+  font-style: normal;
+  font-size: 14px;
+  line-height: 24px;
+  align-items: center;
+  letter-spacing: 0.005em;
+  color: $primary;
+}
+
+.payment_figures {
   margin-top: 0.5rem;
   display: block;
   font-family: "Roboto";
@@ -287,33 +552,33 @@ export default {
   align-items: center;
   letter-spacing: 0.005em;
   color: $primary;
-  cursor: pointer;
-  margin-bottom: 2.2rem;
 }
 
-.sign_link {
+.summaryCaption {
   text-decoration: none;
-  color: $primary;
-  font-weight: 600;
-  font-size: 14px;
-  cursor: pointer;
+  color: $dark;
+  font-weight: 400;
+  font-size: 15px;
 }
 
 .account_text {
   font-family: "Roboto";
   font-style: normal;
-  font-weight: 600;
-  font-size: 14px;
+  font-weight: 500;
+  font-size: 15px;
   color: $dark;
-  text-transform: uppercase;
+  text-transform: none;
 }
 
 .bottom {
   margin-bottom: 2.5rem;
 }
 
-.hint {
-  color: $grey2;
-  font-size: small;
+.payment_details {
+  border: 1px solid lightgray;
+}
+
+.payment_btn_step {
+  font-size: 12px !important;
 }
 </style>

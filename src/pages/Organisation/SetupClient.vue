@@ -163,7 +163,7 @@ export default {
       loading: false,
       color: "primary",
       directory: "LOGOS",
-      step: 1,
+      step: 6,
       processStatus: "CREATE_ACCOUNT",
       processStep: "CREATE_ACCOUNT",
       hasCompletedAccountCreation: false,

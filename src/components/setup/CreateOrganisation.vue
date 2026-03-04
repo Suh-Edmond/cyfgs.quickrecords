@@ -139,7 +139,7 @@
       <div class="flex justify-center q-mt-xs" v-if="$q.platform.is.desktop">
         <q-btn
           class="form_button"
-          :label="$t('app.saveBtnLabel')"
+          :label="$t('app.saveOrganisationLabel')"
           :loading="loading"
           :disabled="validateForm"
           color="primary"
@@ -152,7 +152,7 @@
       <div class="row q-gutter-md q-mx-sm" v-if="$q.platform.is.mobile">
         <q-btn
           class="form_button full-width"
-          :label="$t('app.saveBtnLabel')"
+          :label="$t('app.saveOrganisationLabel')"
           :loading="loading"
           :disabled="validateForm"
           color="primary"
@@ -167,7 +167,6 @@
 </template>
 
 <script>
-import ButtonVue from "src/components/Button.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import { LocalStorage, Notify, Platform } from "quasar";
 import { VueTelInput } from "vue-tel-input";
@@ -315,7 +314,10 @@ export default {
             });
 
             this.$emit("onSubscriptionCreation");
-            LocalStorage.set("loginId", res.data.data.user_id);
+            LocalStorage.set("organisationName", res.data.data.name);
+            LocalStorage.set("organisationEmail", res.data.data.email);
+            LocalStorage.set("adminUsername", res.data.data.adminUsername);
+            LocalStorage.set("adminName", res.data.data.adminName);
             LocalStorage.set("organisationId", res.data.data.id);
           }
         })

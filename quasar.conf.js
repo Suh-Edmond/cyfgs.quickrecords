@@ -55,6 +55,7 @@ module.exports = function (ctx) {
         BASE_FOLDER: "LOGOS",
         PROFILE_PICTURES: "PROFILE_PICTURES",
         appLinkedinUrl: "https://www.linkedin.com/company/quickrecords",
+        PAYMENT_CHARGES: 2,
       },
       distDir: ctx.mode.spa ? "public" : null,
       // env: envparser(),
@@ -114,7 +115,13 @@ module.exports = function (ctx) {
       // directives: [],
 
       // Quasar plugins
-      plugins: ["Notify", "LocalStorage", "SessionStorage", "Loading"],
+      plugins: [
+        "Notify",
+        "LocalStorage",
+        "SessionStorage",
+        "Loading",
+        "Dialog",
+      ],
       config: {
         notify: {
           /* look at QUASARCONFOPTIONS from the API card (bottom of page) */

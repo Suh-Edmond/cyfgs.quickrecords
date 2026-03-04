@@ -12,24 +12,49 @@
 
           <div class="q-pa-md">
             <q-form @submit="onSubmit" class="q-gutter-md">
-              <q-list>
-                <q-item
-                  v-ripple
-                  v-for="(feature, index) in features"
-                  ,
-                  :key="index"
-                >
-                  <q-item-section avatar>
-                    <q-avatar
-                      color="secondary"
-                      text-color="white"
-                      icon="done"
-                      size="sm"
-                    />
-                  </q-item-section>
-                  <q-item-section>{{ feature }}</q-item-section>
-                </q-item>
-              </q-list>
+              <div class="row q-gutter-x-md bg-grey-2">
+                <div class="col-md-6">
+                  <q-list>
+                    <q-item
+                      v-ripple
+                      v-for="(feature, index) in featuresFirstFour"
+                      ,
+                      :key="index"
+                    >
+                      <q-item-section avatar>
+                        <q-avatar
+                          color="secondary"
+                          text-color="white"
+                          icon="done"
+                          size="sm"
+                        />
+                      </q-item-section>
+                      <q-item-section>{{ feature }}</q-item-section>
+                    </q-item>
+                  </q-list>
+                </div>
+
+                <div class="col-md-6">
+                  <q-list>
+                    <q-item
+                      v-ripple
+                      v-for="(feature, index) in featuresLastFour"
+                      ,
+                      :key="index"
+                    >
+                      <q-item-section avatar>
+                        <q-avatar
+                          color="secondary"
+                          text-color="white"
+                          icon="done"
+                          size="sm"
+                        />
+                      </q-item-section>
+                      <q-item-section>{{ feature }}</q-item-section>
+                    </q-item>
+                  </q-list>
+                </div>
+              </div>
 
               <div class="q-pt-md">
                 <q-list bordered class="subscription">
@@ -114,11 +139,11 @@
               <div class="q-pt-xs">
                 <q-btn
                   class="form_button"
-                  :label="$t('app.continue')"
+                  :label="$t('app.saveSubscriptionBtnLabel')"
                   :loading="loading"
                   :disabled="false"
                   color="primary"
-                  :no_caps="true"
+                  no-caps
                   type="submit"
                 >
                   <q-icon
@@ -209,6 +234,13 @@ export default {
       }
       return yearlyPlan.price;
     },
+
+    featuresFirstFour() {
+      return this.features.slice(0, 4);
+    },
+    featuresLastFour() {
+      return this.features.slice(4);
+    },
   },
   methods: {
     onSubmit() {
@@ -247,6 +279,25 @@ export default {
             });
           }
           if (res.status === 200) {
+            let subscriptions = [];
+            const subscription = {
+              id: res.data.data.id,
+              organisation: res.data.data.organisation,
+              subscription_plan: res.data.data.subscription_plan,
+              auto_renewal: res.data.data.auto_renewal,
+              referral_code_discount: res.data.data.referral_code_discount,
+              current_period_start_date:
+                res.data.data.current_period_start_date,
+              current_period_end_date: res.data.data.current_period_end_date,
+              status: res.data.data.status,
+              trial_period_end_date: res.data.data.trial_period_end_date,
+              trial_period_start_date: res.data.data.trial_period_start_date,
+              is_trail: res.data.data.is_trail,
+              login_id: res.data.data.login_id,
+            };
+            subscriptions.push(subscription);
+            LocalStorage.set("subscriptions", JSON.stringify(subscriptions));
+
             this.$store.commit("SET_PROCESS_STEP", {
               processStatus: ProcessStatusVue.MAKE_PAYMENT,
               step: 6,

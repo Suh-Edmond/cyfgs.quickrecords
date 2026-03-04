@@ -125,12 +125,9 @@ export default {
         error_msg: "default",
         show_feedback: true,
         to_be_store_data: {
-          required: true,
-          has_value: true,
-          data: [
-            { key: "is_exist_user", value: true },
-            { key: "has_logged_in", value: true },
-          ],
+          required: false,
+          has_value: false,
+          data: [],
         },
       };
       this.loading = true;

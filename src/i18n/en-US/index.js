@@ -659,7 +659,7 @@ export default {
     continuetrialLink: "Continue with Trial",
     makePaymentMsg:
       "Complete Subscription Payment to leverage full power of QuickRecords",
-    makePaymentBtnLabel: "Make Payment Now!",
+    makePaymentBtnLabel: "Make Payment",
     notMakyPayment: "Don't want to make a subscription payment ?",
     successfulOrganSetup:
       "Congratulations on setting up your organisation on QuickRecords!",
@@ -680,5 +680,22 @@ export default {
     referralCodeCaption:
       "The referral code is of the individual or organisation who referred you to QuickRecords!",
     backToOrganisation: "Back to Organisation ?",
+    paymentCaption: "Your information is secured",
+    customerInformationTitle: "Client Information",
+    organisationEmail: "Organisation Email",
+    paymentMethod: "Payment Method",
+    paymentMethodLabel: "Choose Payment Method",
+    accountNumber: "Account Number",
+    summaryTitle: "Subscription Summary",
+    summaryCaption: "Review your subscription details",
+    featureList: "What's included",
+    numberofPaymentMonths: "Number of months",
+    numberofPaymentYears: "Number of years",
+    saveSubscriptionBtnLabel: "Save Subscription",
+    saveOrganisationLabel: "Save Organisation",
+    yearlyBilling: "Yearly Billing",
+    monthlyBilling: "Monthly Billing",
+    processingPayment: "Processing Payment...",
+    connectionProblem: "Please check your network connection and try again",
   },
 };

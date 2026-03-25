@@ -9,6 +9,11 @@
 // https://v1.quasar.dev/quasar-cli/quasar-conf-js
 
 const ESLintPlugin = require("eslint-webpack-plugin");
+const dotenv = require("dotenv");
+const path = require("path");
+
+const envPath = path.resolve(__dirname, "../.env");
+dotenv.config({ path: envPath });
 
 module.exports = function (ctx) {
   return {
@@ -43,6 +48,7 @@ module.exports = function (ctx) {
     ],
 
     // Full list of options: https://v1.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
+
     build: {
       vueRouterMode: "history", // available values: 'hash', 'history'
       env: {
@@ -56,6 +62,11 @@ module.exports = function (ctx) {
         PROFILE_PICTURES: "PROFILE_PICTURES",
         appLinkedinUrl: "https://www.linkedin.com/company/quickrecords",
         PAYMENT_CHARGES: 2,
+        VITE_REVERB_APP_KEY: "4duflprn6epgas47upi1",
+        VITE_REVERB_HOST: "localhost",
+        VITE_REVERB_PORT: "8001",
+        VITE_REVERB_SCHEME: "http",
+        VITE_REVERB_APP_SECRET: "ayvjxr9c1iiwvuxhramu",
       },
       distDir: ctx.mode.spa ? "public" : null,
       // env: envparser(),
@@ -92,6 +103,7 @@ module.exports = function (ctx) {
     // Full list of options: https://v1.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-devServer
     devServer: {
       https: false,
+      host: "localhost",
       port: 7000,
       open: true, // opens browser window automatically
     },

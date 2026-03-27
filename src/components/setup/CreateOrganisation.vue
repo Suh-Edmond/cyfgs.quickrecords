@@ -5,7 +5,10 @@
     }}</label>
 
     <q-form @submit="onSubmit">
-      <div class="row q-gutter-x-md">
+      <div
+        class="row"
+        :class="$q.platform.is.desktop ? 'q-gutter-x-md' : 'q-gutter-x-xs'"
+      >
         <div class="col-2 col-md-2 col-sm-2 col-lg-2"></div>
         <div class="col-md-4 col-xs-12 col-sm-12">
           <label class="form_field">{{ $t("app.nameLabel") }} </label>
@@ -32,7 +35,10 @@
         </div>
         <div class="col-2 col-md-2 col-sm-2 col-lg-2"></div>
       </div>
-      <div class="row q-gutter-x-md">
+      <div
+        class="row"
+        :class="$q.platform.is.desktop ? 'q-gutter-x-md' : 'q-gutter-x-xs'"
+      >
         <div class="col-2 col-md-2 col-sm-2 col-lg-2"></div>
         <div class="col-md-4 col-xs-12 col-sm-12">
           <label class="form_field flex justify-between">
@@ -62,7 +68,10 @@
         </div>
         <div class="col-2 col-md-2 col-sm-2 col-lg-2"></div>
       </div>
-      <div class="row q-gutter-x-md">
+      <div
+        class="row"
+        :class="$q.platform.is.desktop ? 'q-gutter-x-md' : 'q-gutter-x-xs'"
+      >
         <div class="col-2 col-md-2 col-sm-2 col-lg-2"></div>
         <div class="col-md-4 col-xs-12 col-sm-12">
           <label class="form_field flex justify-between">
@@ -92,7 +101,10 @@
         </div>
         <div class="col-2 col-md-2 col-sm-2 col-lg-2"></div>
       </div>
-      <div class="row q-gutter-x-md">
+      <div
+        class="row"
+        :class="$q.platform.is.desktop ? 'q-gutter-x-md' : 'q-gutter-x-xs'"
+      >
         <div class="col-2 col-md-2 col-sm-2 col-lg-2"></div>
         <div class="col-md-4 col-xs-12 col-sm-12">
           <label class="form_field">{{ $t("app.salutation") }} </label>
@@ -103,7 +115,10 @@
             dense
           />
         </div>
-        <div class="col-md-4 col-xs-12 col-sm-12">
+        <div
+          class="col-md-4 col-xs-12 col-sm-12"
+          :class="$q.platform.is.mobile ? ' q-mt-lg' : ''"
+        >
           <label class="form_field">{{ $t("app.region") }} </label>
           <q-select
             outlined
@@ -117,7 +132,7 @@
         <div class="col-2 col-md-2 col-sm-2 col-lg-2"></div>
       </div>
 
-      <div class="row q-gutter-x-md">
+      <div class="row" v-if="$q.platform.is.desktop">
         <div class="col-2 col-md-2 col-sm-2 col-lg-2"></div>
         <div
           class="col-8 col-md-8"
@@ -136,6 +151,18 @@
         </div>
         <div class="col-2 col-md-2 col-sm-2 col-lg-2"></div>
       </div>
+      <div class="row" v-if="$q.platform.is.mobile">
+        <label class="form_field">{{ $t("app.description") }} </label>
+        <q-input
+          v-model="organisation.description"
+          outlined
+          dense
+          type="textarea"
+          class="full-width"
+          :error="!!descriptionError"
+          :error-message="descriptionError"
+        />
+      </div>
       <div class="flex justify-center q-mt-xs" v-if="$q.platform.is.desktop">
         <q-btn
           class="form_button"
@@ -146,10 +173,9 @@
           no-caps
           type="submit"
         >
-          <q-icon name="arrow_forward" size="xs" class="q-pl-lg"></q-icon>
         </q-btn>
       </div>
-      <div class="row q-gutter-md q-mx-sm" v-if="$q.platform.is.mobile">
+      <div class="row q-mb-xl" v-if="$q.platform.is.mobile">
         <q-btn
           class="form_button full-width"
           :label="$t('app.saveOrganisationLabel')"
@@ -159,7 +185,6 @@
           no-caps
           type="submit"
         >
-          <q-icon name="arrow_forward" size="xs" class="q-pl-lg"></q-icon>
         </q-btn>
       </div>
     </q-form>
@@ -220,7 +245,7 @@ export default {
       ],
     };
   },
-  emits: ["onSubscriptionCreation"],
+  emits: ["onSubscriptionCreation", "onContinueTrial"],
 
   computed: {
     validateForm() {
@@ -247,6 +272,7 @@ export default {
   },
   methods: {
     onSubmit() {
+      const organisation = LocalStorage.getItem("organisation");
       let payload = {
         data: {
           name: this.organisation.name,
@@ -262,6 +288,8 @@ export default {
           region: this.organisation.region,
           id: this.$store.getters.getProcessStage.has_organisation
             ? this.$store.getters.getProcessStage.organisation_id
+            : organisation !== null
+            ? organisation.id
             : "",
           account_id: LocalStorage.getItem("loginId"),
         },
@@ -295,10 +323,14 @@ export default {
           if (res.status === 200) {
             this.$store.commit("SET_PROCESS_STEP", {
               ...res.data.data,
-              processStatus: ProcessStatusVue.CREATE_SUBSCRIPTION,
-              step: 4,
+              // processStatus: ProcessStatusVue.CREATE_SUBSCRIPTION,
+              // step: 4,
+              // isSuccessful: true,
+              processStatus: ProcessStatusVue.IN_TRIAL,
+              step: 5,
               isSuccessful: true,
-              has_organisation: false,
+              isTrial: true,
+              has_organisation: true,
               organisation_id: res.data.data.id,
               organisation_name: res.data.data.name,
               organisation_email: res.data.data.email,
@@ -313,9 +345,8 @@ export default {
               accountId: res.data.data.user_id,
             });
 
-            this.$emit("onSubscriptionCreation");
-            // LocalStorage.set("organisationName", res.data.data.name);
-            // LocalStorage.set("organisationEmail", res.data.data.email);
+            // this.$emit("onSubscriptionCreation");
+            this.$emit("onContinueTrial");
             LocalStorage.set("adminUsername", res.data.data.adminUsername);
             LocalStorage.set("adminName", res.data.data.adminName);
             LocalStorage.set("organisationId", res.data.data.id);
@@ -324,6 +355,7 @@ export default {
         })
         .finally(() => {
           this.loading = false;
+          this.resetOrganisationInfo();
         });
     },
 
@@ -345,6 +377,19 @@ export default {
       }
 
       return this.organisation;
+    },
+
+    resetOrganisationInfo() {
+      this.organisation.address = "";
+      this.organisation.name = "";
+      this.organisation.email = "";
+      this.organisation.telephone = "";
+      this.organisation.telephone2 = "";
+      this.organisation.salutation = "";
+      this.organisation.description = "";
+      this.organisation.box_number = "";
+      this.organisation.region = "";
+      this.organisation.logo = "";
     },
 
     setTelephone(telephone, telephone2) {

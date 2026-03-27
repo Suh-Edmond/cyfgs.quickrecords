@@ -719,5 +719,7 @@ export default {
     trialingStart: "Trialing Start",
     trialingEnd: "Trialing End",
     backSubscription: "Back to Subscription",
+    inTrialMode: "In Trial Mode",
+    duration: "Duration",
   },
 };

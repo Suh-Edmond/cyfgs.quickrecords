@@ -202,14 +202,18 @@ export default {
       defaultSubPlan: {},
       color: "primary",
       features: [
-        "User Management",
+        "Member Management",
         "Income Management",
         "Expenditure Management",
-        "Contributions",
+        "Contribution Management",
+        "Member's Saving",
         "Reports and Statistics",
         "Balance Sheets",
         "Logs and Tracability",
         "Security and Secure Storage",
+        "Free Training and Support",
+        "Free Data Migration",
+        "Free Customization & Updates",
       ],
     };
   },
@@ -241,10 +245,10 @@ export default {
     },
 
     featuresFirstFour() {
-      return this.features.slice(0, 4);
+      return this.features.slice(0, 6);
     },
     featuresLastFour() {
-      return this.features.slice(4);
+      return this.features.slice(6);
     },
   },
   methods: {

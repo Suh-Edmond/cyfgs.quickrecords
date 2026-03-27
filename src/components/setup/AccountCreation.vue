@@ -1,12 +1,12 @@
 <template>
-  <div class="row q-px-sm flex flex-center">
+  <div class="row flex flex-center">
     <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12">
       <q-card flat>
         <q-card-section>
           <div class="text_h6 text-center">
             {{ $t("app.createAccountTitle") }}
           </div>
-          <div class="q-pa-xs">
+          <div>
             <q-form @submit="onSubmit" class="q-gutter-md">
               <div>
                 <label class="form_field"

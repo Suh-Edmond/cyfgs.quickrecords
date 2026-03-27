@@ -1,6 +1,6 @@
 <template>
   <div
-    class="row q-px-sm flex flex-center"
+    class="row flex flex-center"
     :class="$q.screen.lg ? 'q-pt-xl flex flex-center' : 'q-pt-sm'"
   >
     <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12">
@@ -9,7 +9,7 @@
           <div class="text_h6 text-center q-pt-xs q-pb-sm">
             {{ $t("app.confirmAccount") }}
           </div>
-          <div class="q-pa-md">
+          <div>
             <q-form @submit="onSubmit" class="q-gutter-md">
               <div>
                 <label class="form_field">{{ $t("app.usernameLabel") }} </label>

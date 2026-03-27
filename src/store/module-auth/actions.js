@@ -1,5 +1,5 @@
-import {LocalStorage, Notify, Platform, SessionStorage} from "quasar";
-import {axios} from "src/boot/axios";
+import { LocalStorage, Notify, Platform, SessionStorage } from "quasar";
+import { axios } from "src/boot/axios";
 
 const API_URL = process.env.SERVER_BASE_URL;
 

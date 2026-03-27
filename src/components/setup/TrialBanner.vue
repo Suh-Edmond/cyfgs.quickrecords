@@ -9,7 +9,7 @@
           <q-icon name="warning" class="" size="md" />
         </q-item-section>
 
-        <q-item-section class="q-pa-xs" v-if="$q.platform.is.mobile">
+        <q-item-section class="q-pa-xs" v-if="$q.platform.is.desktop">
           <q-item-label lines="1" class="text-weight-bold">{{
             $t("app.trailingSubscription")
           }}</q-item-label>
@@ -23,7 +23,7 @@
           {{ $t("app.trialingSubscriptionCaption") }}
         </div>
 
-        <q-item-section side top v-if="$q.platform.is.mobile">
+        <q-item-section side top v-if="$q.platform.is.desktop">
           <q-item-label lines="1" class="text-weight-bold text-white">{{
             $t("app.duration")
           }}</q-item-label>
@@ -56,7 +56,7 @@ export default {
 
   methods: {
     getFormatDate(date) {
-      return moment(date).format("MMMM Do YYYY");
+      return moment(date).format("YYYY-MM-DD HH:mm:ss a");
     },
   },
 };

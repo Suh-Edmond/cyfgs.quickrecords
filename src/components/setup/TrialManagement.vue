@@ -1,119 +1,208 @@
 <template>
-  <div class="row q-px-sm flex flex-center">
-    <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">
-      <q-card flat>
-        <q-card-section>
-          <div class="text_h6 text-center q-pt-xs q-pb-sm">
-            {{ $t("app.createSubscription") }}
-          </div>
+  <div>
+    <div class="row q-px-sm flex flex-center" v-if="$q.platform.is.desktop">
+      <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">
+        <q-card flat>
+          <q-card-section>
+            <div class="text_h6 text-center q-pt-xs q-pb-sm">
+              {{ $t("app.createSubscription") }}
+            </div>
 
-          <div class="q-pa-md">
-            <q-form @submit="onSubmit" class="q-gutter-md">
-              <div class="row q-gutter-x-md bg-grey-2">
-                <div class="col-md-6">
-                  <q-list>
-                    <q-item
-                      v-ripple
-                      v-for="(feature, index) in featuresFirstFour"
-                      ,
-                      :key="index"
-                    >
-                      <q-item-section avatar>
-                        <q-icon
-                          color="secondary"
-                          text-color="white"
-                          name="done"
-                          size="sm"
-                        />
+            <div class="q-pa-md">
+              <q-form @submit="onSubmit" class="q-gutter-md">
+                <div class="row q-gutter-x-md bg-grey-2">
+                  <div class="col">
+                    <q-list>
+                      <q-item
+                        v-ripple
+                        v-for="(feature, index) in featuresFirstFour"
+                        ,
+                        :key="index"
+                      >
+                        <q-item-section avatar>
+                          <q-icon
+                            :color="
+                              feature.requires_subscription
+                                ? 'negative'
+                                : 'secondary'
+                            "
+                            text-color="white"
+                            :name="
+                              feature.requires_subscription ? 'cancel' : 'done'
+                            "
+                            size="sm"
+                          />
+                        </q-item-section>
+                        <q-item-section>{{ feature.name }}</q-item-section>
+                      </q-item>
+                    </q-list>
+                  </div>
+
+                  <div class="col">
+                    <q-list>
+                      <q-item
+                        v-ripple
+                        v-for="(feature, index) in featuresLastFour"
+                        ,
+                        :key="index"
+                      >
+                        <q-item-section avatar>
+                          <q-icon
+                            :color="
+                              feature.requires_subscription
+                                ? 'negative'
+                                : 'secondary'
+                            "
+                            text-color="white"
+                            :name="
+                              feature.requires_subscription ? 'cancel' : 'done'
+                            "
+                            size="sm"
+                          />
+                        </q-item-section>
+                        <q-item-section>{{ feature.name }}</q-item-section>
+                      </q-item>
+                    </q-list>
+                  </div>
+                </div>
+                <div class="q-pt-lg">
+                  <q-list bordered class="subscription month_subscription">
+                    <q-item class="q-py-md" clickable>
+                      <q-item-section>
+                        <q-item-label class="text-bold">{{
+                          $t("app.monthlyPlan")
+                        }}</q-item-label>
+                        <q-item-label caption class="text-weight-bold"
+                          >{{ $t("app.trialPlanCaption") }}
+                          {{ Number(getMonthlyPlan).toLocaleString() }}
+                          XAF/{{ $t("app.month") }}</q-item-label
+                        >
                       </q-item-section>
-                      <q-item-section>{{ feature }}</q-item-section>
+
+                      <q-item-section side top>
+                        <q-item-label caption
+                          ><q-badge color="warning">
+                            {{ $t("app.basicValue") }}
+                          </q-badge></q-item-label
+                        >
+                      </q-item-section>
                     </q-item>
                   </q-list>
                 </div>
 
-                <div class="col-md-6">
-                  <q-list>
-                    <q-item
-                      v-ripple
-                      v-for="(feature, index) in featuresLastFour"
-                      ,
-                      :key="index"
-                    >
-                      <q-item-section avatar>
-                        <q-icon
-                          color="secondary"
-                          text-color="white"
-                          name="done"
-                          size="sm"
-                        />
-                      </q-item-section>
-                      <q-item-section>{{ feature }}</q-item-section>
-                    </q-item>
-                  </q-list>
+                <div class="q-py-lg">
+                  <q-btn
+                    class="form_button"
+                    :label="$t('app.startTrial')"
+                    :loading="loading"
+                    :disabled="false"
+                    color="primary"
+                    no-caps
+                    type="submit"
+                  >
+                    <q-icon
+                      name="arrow_forward"
+                      size="xs"
+                      class="q-pl-lg"
+                    ></q-icon>
+                  </q-btn>
                 </div>
-              </div>
-              <div class="q-pt-lg">
-                <q-list bordered class="subscription month_subscription">
-                  <q-item class="q-py-md" clickable>
-                    <q-item-section>
-                      <q-item-label class="text-bold">Monthly</q-item-label>
-                      <q-item-label caption class="text-weight-bold"
-                        >One month free Trial - Then
-                        {{ Number(getMonthlyPlan).toLocaleString() }}
-                        XAF/Month</q-item-label
-                      >
-                    </q-item-section>
-
-                    <q-item-section side top>
-                      <q-item-label caption
-                        ><q-badge color="warning">
-                          Basic value
-                        </q-badge></q-item-label
-                      >
-                    </q-item-section>
-                  </q-item>
-                </q-list>
-              </div>
-
-              <div class="q-py-lg">
-                <q-btn
-                  class="form_button"
-                  :label="$t('app.startTrial')"
-                  :loading="loading"
-                  :disabled="false"
-                  color="primary"
-                  no-caps
-                  type="submit"
-                >
-                  <q-icon
-                    name="arrow_forward"
-                    size="xs"
-                    class="q-pl-lg"
-                  ></q-icon>
-                </q-btn>
-              </div>
-              <div class="row justify-end">
-                <!-- <label for="text">{{ $t("app.makePaymentMsg") }}</label> -->
-                <q-btn
-                  outline
-                  rounded
-                  @click="onMakePaymentToPackage()"
-                  color="primary"
-                  no-caps
-                  :label="$t('app.makePaymentBtnLabel')"
-                />
-              </div>
-            </q-form>
-          </div>
-        </q-card-section>
-      </q-card>
+                <div class="row justify-end"></div>
+              </q-form>
+            </div>
+          </q-card-section>
+        </q-card>
+      </div>
     </div>
+    <q-card flat class="card" v-if="$q.platform.is.mobile">
+      <q-card-section>
+        <div class="text_h6 text-center q-pt-xs q-pb-sm">
+          {{ $t("app.createSubscription") }}
+        </div>
+
+        <q-form @submit="onSubmit">
+          <q-list class="fll-width bg-grey-2">
+            <q-item
+              v-ripple
+              v-for="(feature, index) in featuresFirstFour"
+              ,
+              :key="index"
+            >
+              <q-item-section avatar>
+                <q-icon
+                  :color="
+                    feature.requires_subscription ? 'negative' : 'secondary'
+                  "
+                  text-color="white"
+                  :name="feature.requires_subscription ? 'cancel' : 'done'"
+                  size="sm"
+                />
+              </q-item-section>
+              <q-item-section>{{ feature.name }}</q-item-section>
+            </q-item>
+          </q-list>
+          <q-list class="bg-grey-2">
+            <q-item
+              v-ripple
+              v-for="(feature, index) in featuresLastFour"
+              ,
+              :key="index"
+            >
+              <q-item-section avatar>
+                <q-icon
+                  :color="
+                    feature.requires_subscription ? 'negative' : 'secondary'
+                  "
+                  text-color="white"
+                  :name="feature.requires_subscription ? 'cancel' : 'done'"
+                  size="sm"
+                />
+              </q-item-section>
+              <q-item-section>{{ feature.name }}</q-item-section>
+            </q-item>
+          </q-list>
+          <q-list bordered class="subscription month_subscription">
+            <q-item class="q-py-md" clickable>
+              <q-item-section>
+                <q-item-label class="text-bold">{{
+                  $t("app.monthPlan")
+                }}</q-item-label>
+                <q-item-label caption class="text-weight-bold"
+                  >{{ $t("app.trialPlanCaption") }}
+                  {{ Number(getMonthlyPlan).toLocaleString() }}
+                  XAF/{{ $t("app.month") }}</q-item-label
+                >
+              </q-item-section>
+
+              <q-item-section side top>
+                <q-item-label caption
+                  ><q-badge color="warning">
+                    {{ $t("app.basicValue") }}
+                  </q-badge></q-item-label
+                >
+              </q-item-section>
+            </q-item>
+          </q-list>
+          <q-btn
+            class="form_button"
+            :label="$t('app.startTrial')"
+            :loading="loading"
+            :disabled="false"
+            color="primary"
+            no-caps
+            type="submit"
+          >
+          </q-btn>
+        </q-form>
+      </q-card-section>
+    </q-card>
   </div>
 </template>
 
 <script>
 import { LocalStorage, Notify, Platform } from "quasar";
 import ProcessStatusVue from "../Constants/ProcessStatus.vue";
+import { APP_FEATURES_EN, APP_FEATURES_FR } from "../../utils/app-features";
 export default {
   name: "PageIndex",
   mounted() {
@@ -132,31 +221,21 @@ export default {
       loading: false,
       defaultSubPlan: {},
       color: "primary",
-      features: [
-        "User Management",
-        "Income Management",
-        "Expenditure Management",
-        "Contributions",
-        "Reports and Statistics",
-        "Balance Sheets",
-        "Logs and Tracability",
-        "Security and Secure Storage",
-        "Free Training and Support",
-        "Free Data Migration",
-      ],
+      features:
+        this.$i18n.locale === "en-US" ? APP_FEATURES_EN : APP_FEATURES_FR,
     };
   },
-  emits: ["onMakePayment", "onContinueTrial", "setProgressBar"],
+  emits: ["onMakePayment", "onStartTrial", "setProgressBar"],
   computed: {
     getMonthlyPlan() {
       return this.defaultSubPlan.price;
     },
 
     featuresFirstFour() {
-      return this.features.slice(0, 5);
+      return this.features.slice(0, 6);
     },
     featuresLastFour() {
-      return this.features.slice(5);
+      return this.features.slice(6);
     },
   },
   methods: {
@@ -231,9 +310,7 @@ export default {
             this.$emit("onStartTrial");
           }
         })
-        .catch((e) => {
-          console.log(e);
-        })
+        .catch((e) => {})
         .finally(() => {
           this.loading = false;
         });
@@ -330,18 +407,16 @@ export default {
 
 .form_button {
   width: 100%;
+  margin-top: 20px;
+  margin-bottom: 10px;
 }
 
 .subscription {
   border-radius: 10px;
 }
 
-.sign_link {
-  text-decoration: none;
-  color: $primary;
-  font-weight: 600;
-  font-size: 14px;
-  cursor: pointer;
+.card {
+  margin-bottom: 10px;
 }
 
 .bottom {
@@ -351,5 +426,6 @@ export default {
 .month_subscription {
   border: 2px solid $primary;
   border-radius: 8px;
+  margin-top: 10px;
 }
 </style>

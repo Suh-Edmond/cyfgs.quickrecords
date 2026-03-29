@@ -1,6 +1,6 @@
 <template>
   <q-page class="page">
-    <div class="row q-px-sm" :class=" $q.platform.is.desktop ? 'q-mt-lg':''">
+    <div class="row q-px-sm" :class="$q.platform.is.desktop ? 'q-mt-lg' : ''">
       <div class="col-4 col-md-4 col-lg-4 col-sm-12 col-xs-12"></div>
       <div class="col-4 col-md-4 col-lg-4 col-sm-12 col-xs-12">
         <q-card :class="$q.screen.lg ? 'q-mt-lg' : 'login-card'">
@@ -27,16 +27,11 @@
             >
               <div class="q-mb-xl">
                 <label class="form_field">
-                  <q-icon name="email" size="xs"></q-icon>
-                  {{ $t("app.emailLabel") }}
+                  <q-icon name="lock_person" size="xs"></q-icon>
+                  {{ $t("app.usernameLabel") }}
                   <span class="text-red">*</span></label
                 >
-                <q-input
-                  v-model="user.credential"
-                  outlined
-                  dense
-                  type="email"
-                />
+                <q-input v-model="user.credential" outlined dense type="text" />
               </div>
               <div class="q-my-xl">
                 <label class="form_field q-pb-xs"
@@ -114,7 +109,7 @@ import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
 import memberMixinVue from "src/mixins/memberMixin.vue";
 import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
 import ContributionsMixinVue from "src/mixins/ContributionsMixin.vue";
-import {SessionStorage } from "quasar";
+import { SessionStorage } from "quasar";
 
 export default {
   name: "PageIndex",
@@ -154,7 +149,7 @@ export default {
       let payload = {
         url: "/api/public/auth/login",
         data: {
-          email: this.user.credential,
+          username: this.user.credential,
           password: this.user.password,
         },
         msg: "Login Successful",

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="row q-px-sm flex flex-center"
+    class="row flex flex-center"
     :class="$q.screen.lg ? 'q-pt-xl flex flex-center' : 'q-pt-sm'"
   >
     <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12">
@@ -9,24 +9,31 @@
           <div class="text_h6 text-center q-pt-xs q-pb-sm">
             {{ $t("app.confirmAccount") }}
           </div>
-          <div class="q-pa-md">
+          <div>
             <q-form @submit="onSubmit" class="q-gutter-md">
               <div>
-                <label class="form_field">{{ $t("app.usernameLabel") }} </label>
+                <label class="form_field"
+                  ><q-icon name="lock_person" size="xs" class="q-pr-xs"></q-icon
+                  >{{ $t("app.usernameLabel") }}
+                  <span :class="usernameError ? 'text-red' : ''">*</span></label
+                >
                 <q-input
                   v-model="user.username"
                   outlined
                   dense
                   @input="validateUsername()"
                   type="text"
-                  placeholder="exampleadmin"
                   :error="!!usernameError"
                   :error-message="usernameError"
                 >
                 </q-input>
               </div>
               <div class="q-pt-md">
-                <label class="form_field">{{ $t("app.passwordLabel") }} </label>
+                <label class="form_field"
+                  ><q-icon name="lock" size="xs" class="q-pr-xs"></q-icon
+                  >{{ $t("app.passwordLabel") }}
+                  <span :class="passwordError ? 'text-red' : ''">*</span></label
+                >
                 <q-input
                   v-model="user.password"
                   :type="is_pwd ? 'password' : 'text'"
@@ -56,11 +63,6 @@
                   no-caps
                   type="submit"
                 >
-                  <q-icon
-                    name="arrow_forward"
-                    size="xs"
-                    class="q-pl-lg"
-                  ></q-icon>
                 </q-btn>
               </div>
               <div class="row justify-center bottom q-pt-md">
@@ -92,7 +94,6 @@ export default {
       is_confirm_pwd: true,
       loading: false,
       usernameError: "",
-      telephoneError: "",
       passwordError: "",
     };
   },
@@ -104,13 +105,14 @@ export default {
     validateForm() {
       return (
         this.user.username !== null &&
-        this.user.telephone !== null &&
-        this.user.password !== null
+        this.usernameError === "" &&
+        this.user.password !== null &&
+        this.passwordError === ""
       );
     },
 
     invalidPassword() {
-      return this.user.password !== null && this.user.password.length < 8;
+      return this.user.password !== null;
     },
   },
   methods: {
@@ -141,7 +143,7 @@ export default {
               position: Platform.is.mobile ? "bottom" : "top-right",
             });
           }
-          if (res.status === 403) {
+          if (res.status === 403 || res.status === 404) {
             Notify.create({
               type: "negative",
               message: this.$t("app.accountInvalid"),
@@ -178,31 +180,17 @@ export default {
           this.loading = false;
         });
     },
-    validString(data) {
-      return data !== null && data !== undefined && data.trim().length > 0;
-    },
 
     validateUsername() {
-      const isvalid =
-        this.validString(this.user.username) &&
-        this.user.username.length >= 4 &&
-        !this.user.username.includes(" ");
+      const isvalid = !this.user.username !== null;
       this.usernameError = isvalid
         ? ""
         : this.$t("app.invalidUsernameErrorMsg");
       return isvalid;
     },
 
-    validateTelephone() {
-      const regex = /^(\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4}))$/;
-      const validPhone = regex.test(this.user.telephone);
-      this.telephoneError = validPhone ? "" : this.$t("app.invalidPhoneError");
-      return validPhone;
-    },
-
     validatePassword() {
-      const validPass =
-        this.user.password !== null && this.user.password.length >= 8;
+      const validPass = this.user.password !== null;
       this.passwordError = validPass ? "" : this.$t("app.newPasswordHintMsg");
       return validPass;
     },

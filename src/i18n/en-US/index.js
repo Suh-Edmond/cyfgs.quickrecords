@@ -654,7 +654,7 @@ export default {
     usernameAdminLabel: "Admin Username",
     nameAdminLabel: "Admin Name",
     createAccountTitle: "Create an Account",
-    confirmAccount: "Confirm your Account",
+    confirmAccount: "Confirm Your Account",
     continueWithTrialMsg: "Experience the full power, zero strings attached",
     continuetrialLink: "Continue with Trial",
     makePaymentMsg:
@@ -664,12 +664,14 @@ export default {
     successfulOrganSetup:
       "Congratulations on setting up your organisation on QuickRecords!",
     subscribe: "Subscribe Now!",
+
     invalidUsernameErrorMsg:
       "Admin Username must have at least 4 character and contains no spaces",
     invalidEmailErrorMsg: "The provided email address is invalid",
     invalidNameMsg: "The provided name is invalid",
-    invalidPhoneError: "The provided telephone is invalid",
-    confirmAccountLabel: "Confirm your Account",
+    invalidPhoneError:
+      "The provided telephone is invalid. The elephone must have at 9 digits ",
+    confirmAccountLabel: "Verify & Continue",
     confirmAccountFailMsg: "Account confirmation failed",
     accountInvalid: "User Account is invalid",
     telephoneOne: "Telephone",
@@ -715,9 +717,34 @@ export default {
     billingDuration: "Billing Duration",
     referralCodeDiscountLabel: "Referral Code Discount",
     trailingSubscription: "Trail Subscription",
-    trialingSubscriptionCaption: "You are currently on a free trial",
+    trialingSubscriptionCaption:
+      "You are currently on a free trial! Call/WhatsApp {telephone} to make payment and unlock every premuim feature",
     trialingStart: "Trialing Start",
     trialingEnd: "Trialing End",
     backSubscription: "Back to Subscription",
+    inTrialMode: "In Trial Mode",
+    duration: "Duration",
+    createAccountCaption:
+      "Begin your experience by creating a QuickRecords account.",
+    confirmAccountCaption: "Please confirm your account.",
+    createOrganisationCaption: "Set Up Organisation",
+    subscriptionCaption: "Experience the full power of QuickRecords.",
+    trialCaption:
+      " You're just one step away from the full experience! Call/WhatsApp {telephone} to unlock every premuim feature.",
+    completedSetupCaption:
+      "You're all set! Start managing your finances with QuickRecords.",
+    trialStartDate: "Trial start date",
+    trialEndDate: "Trial end date",
+    trialPlanCaption: "One month free Trial - Then",
+    month: "Month",
+    basicValue: "Basic value",
+    trial: "Access Activation",
+    accountVerification: "Account Verification",
+    account: "Account",
+    complete: "Complete",
+    descriptionplaceHolder:
+      "Please provide a description, mission or vision of your organisation",
+    regionError: "Region is required",
+    invalidAddress: "Please provide an address",
   },
 };

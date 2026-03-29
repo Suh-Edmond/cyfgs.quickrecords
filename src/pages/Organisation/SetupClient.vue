@@ -3,8 +3,8 @@
     <q-stepper v-model="step" ref="stepper" color="primary" animated>
       <q-step
         :name="1"
-        title="Account"
-        icon="settings"
+        :title="$t('app.account')"
+        icon="account_circle"
         :done="hasCompletedAccountCreation"
         style="min-height: 500px"
       >
@@ -17,8 +17,8 @@
       <q-step
         v-if="processStatus === 'ACCOUNT_VERIFICATION'"
         :name="2"
-        title="Account Verification"
-        icon="settings"
+        :title="$t('app.accountVerification')"
+        icon="account_circle"
         :done="hasCompletedAccountVerification"
         style="min-height: 500px"
       >
@@ -30,20 +30,21 @@
 
       <q-step
         :name="3"
-        title="Organisation"
-        icon="settings"
-        :done="completedOrganisationCreation"
+        :title="$t('app.organisationLabel')"
+        icon="diversity_3"
+        :done="hasCompletedOrganisationCreation"
         style="min-height: 500px"
       >
         <CreateOrganisationVue
           @onSubscriptionCreation="handleSubscriptionCreationEvent"
+          @onContinueTrial="handleTrial"
         />
       </q-step>
 
-      <q-step
+      <!-- <q-step
         :name="4"
         title="Subscription"
-        icon="settings"
+        icon="calendar_check"
         :done="hasCompletedSubscription"
         style="min-height: 500px"
       >
@@ -53,75 +54,57 @@
           @onBackToOrganisation="handleBackToOrganisation"
           @setProgressBar="setProgressBar"
         />
-      </q-step>
+      </q-step> -->
 
       <q-step
         :name="5"
-        v-if="
-          processStatus === 'IN_TRIAL' || getProcessStage.isTrial || isTrialMode
-        "
-        title="Trail"
-        icon="settings"
+        :title="$t('app.trial')"
+        icon="free_cancellation"
         :done="hasCompletedTrial"
         style="min-height: 500px"
       >
         <TrialManagementVue
           @onMakePaymentToPackage="handleSubscriptionPaymentEvent"
           @onStartTrial="handleStartTrialEvent"
+          @setProgressBar="setProgressBar"
         />
       </q-step>
-
-      <q-step
-        :name="6"
-        title="Payment"
-        icon="settings"
-        :done="hasCompletedPayment"
-        style="min-height: 500px"
-      >
-        <PaymentManagementVue
-          @onContinueTrial="handleContinueTrialEvent"
-          @onCompletePayment="handleCompletePayment"
-          @onbackSubscription="handleBackToSubscription"
-        />
-      </q-step>
-
       <q-step
         :name="7"
-        title="Complete"
-        icon="settings"
+        :title="$t('app.complete')"
+        icon="task_alt"
         :done="hasCompletedSetup"
         style="min-height: 500px"
       >
-        <CompleteSetup @onMakePayment="handleMakePayment">
-          <!-- <span class="forgot_password text-right q-mt-xl">{{
-            $t("app.successfulOrganSetup")
-          }}</span>
-          <router-link to="/auth/login" class="sign_link">
-            <span class="forgot_password text-right q-mt-xl">{{
-              $t("app.loginCaption")
-            }}</span>
-          </router-link> -->
+        <CompleteSetup
+          @onMakePayment="handleMakePayment"
+          class="complete_content"
+        >
         </CompleteSetup>
       </q-step>
 
       <template v-slot:message>
         <q-banner v-if="step === 1" class="bg-primary text-white q-px-lg">
-          Get Started by creating an account
+          {{ $t("app.createAccountCaption") }}
         </q-banner>
         <q-banner v-else-if="step === 2" class="bg-primary text-white q-px-lg">
-          Continue by verifying your account
+          {{ $t("app.confirmAccountCaption") }}
         </q-banner>
         <q-banner v-else-if="step === 3" class="bg-primary text-white q-px-lg">
-          Create your Organisation
+          {{ $t("app.createOrganisationCaption") }}
         </q-banner>
         <q-banner v-else-if="step === 4" class="bg-primary text-white q-px-lg">
-          Subscribe to a plan and enjoy full features
+          {{ $t("app.subscriptionCaption") }}
         </q-banner>
         <q-banner v-else-if="step === 5" class="bg-primary text-white q-px-lg">
-          You are currently in Trial mode, make payment for complete usage
+          {{
+            $t("app.trialingSubscriptionCaption", {
+              telephone: "+237673660071",
+            })
+          }}
         </q-banner>
         <q-banner v-else class="bg-primary text-white q-px-lg">
-          Setup Completed! Client account activated
+          {{ $t("app.completedSetupCaption") }}
         </q-banner>
         <q-linear-progress
           rounded
@@ -142,8 +125,6 @@ import CreateOrganisationVue from "src/components/setup/CreateOrganisation.vue";
 
 import memberMixinVue from "src/mixins/memberMixin.vue";
 import UserSavingMixin from "src/mixins/UserSavingMixin.vue";
-import SubscriptionCreationVue from "src/components/setup/SubscriptionCreation.vue";
-import PaymentManagementVue from "src/components/setup/PaymentManagement.vue";
 import TrialManagementVue from "src/components/setup/TrialManagement.vue";
 import { LocalStorage } from "quasar";
 import CompleteSetup from "src/components/setup/CompleteSetup.vue";
@@ -157,12 +138,12 @@ export default {
       loading: false,
       color: "primary",
       directory: "LOGOS",
-      step: 1,
+      step: 7,
       processStatus: "CREATE_ACCOUNT",
       processStep: "CREATE_ACCOUNT",
       hasCompletedAccountCreation: false,
       hasCompletedAccountVerification: false,
-      completedOrganisationCreation: false,
+      hasCompletedOrganisationCreation: false,
       hasCompletedSubscription: false,
       hasCompletedTrial: false,
       hasCompletedPayment: false,
@@ -199,7 +180,7 @@ export default {
     },
 
     handleSubscriptionCreationEvent() {
-      this.completedOrganisationCreation =
+      this.hasCompletedOrganisationCreation =
         this.$store.getters.getProcessStage.isSuccessful;
       this.step = this.$store.getters.getProcessStage.step;
       this.processStatus = this.$store.getters.getProcessStage.processStatus;
@@ -221,6 +202,8 @@ export default {
     },
 
     handleTrial() {
+      this.hasCompletedOrganisationCreation =
+        this.$store.getters.getProcessStage.isSuccessful; //TODO: Remove when payment is working
       this.hasCompletedSubscription =
         this.$store.getters.getProcessStage.isSuccessful;
       this.step = this.$store.getters.getProcessStage.step;
@@ -228,10 +211,10 @@ export default {
     },
 
     handleStartTrialEvent() {
+      this.hasCompletedSetup = true; // TODO: Remove when payment is wokring;
       this.hasCompletedTrial = this.$store.getters.getProcessStage.isSuccessful;
       this.step = this.$store.getters.getProcessStage.step;
       this.processStatus = this.$store.getters.getProcessStage.processStatus;
-      this.hasCompletedSetup = this.$store.getters.getProcessStage.isSuccessful;
     },
     handleContinueTrialEvent() {
       this.hasCompletedSubscription =
@@ -239,6 +222,7 @@ export default {
       this.step = this.$store.getters.getProcessStage.step;
       this.hasCompletedPayment = false;
       this.processStatus = this.$store.getters.getProcessStage.processStatus;
+      this.hasCompletedSetup = true; // TODO: Remove when payment is wokring;
     },
     handleCompletePayment() {
       this.hasCompletedPayment =
@@ -249,7 +233,7 @@ export default {
     },
 
     handleBackToOrganisation() {
-      this.completedOrganisationCreation =
+      this.hasCompletedOrganisationCreation =
         this.$store.getters.getProcessStage.isSuccessful;
       this.step = this.$store.getters.getProcessStage.step;
       this.processStatus = this.$store.getters.getProcessStage.processStatus;
@@ -260,7 +244,7 @@ export default {
     },
 
     handleBackToSubscription() {
-      this.completedOrganisationCreation =
+      this.hasCompletedOrganisationCreation =
         this.$store.getters.getProcessStage.isSuccessful;
       this.step = this.$store.getters.getProcessStage.step;
       this.processStatus = this.$store.getters.getProcessStage.processStatus;
@@ -270,9 +254,8 @@ export default {
     AccountCreation,
     ConfirmAccountCreationVue,
     CreateOrganisationVue,
-    SubscriptionCreationVue,
+    // SubscriptionCreationVue,
     TrialManagementVue,
-    PaymentManagementVue,
     CompleteSetup,
   },
 };
@@ -337,19 +320,8 @@ export default {
   margin-bottom: 0.1rem;
 }
 
-.forgot_password {
-  display: block;
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 700;
-  font-size: 13px;
-  line-height: 24px;
-  align-items: center;
-  letter-spacing: 0.005em;
-  color: $primary;
-  cursor: pointer;
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
+.complete_content {
+  margin-bottom: 3rem !important;
 }
 
 .submit_btn {

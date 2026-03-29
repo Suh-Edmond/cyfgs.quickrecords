@@ -283,29 +283,9 @@
 <script>
 import { LocalStorage, Notify, Platform } from "quasar";
 import ProcessStatusVue from "../Constants/ProcessStatus.vue";
-import startBroadcasting from "src/boot/echo";
 export default {
   name: "PageIndex",
-  mounted() {
-    this.setPaymentInfo();
-    startBroadcasting;
 
-    // let payId = "77433ef3-a060-4779-95f6-7ac2c18fe722",
-    // let subscId = "321c173d-fbc0-4741-b6a1-1b3c4ca2d3b7"
-    window.Echo.private(
-      `payments.321c173d-fbc0-4741-b6a1-1b3c4ca2d3b7.77433ef3-a060-4779-95f6-7ac2c18fe722`
-    )
-      .listen("PaymentStatusUpdated", (e) => {
-        // this.handlePaymentUpdate(e);
-        console.log(e);
-      })
-      .error((error) => {
-        console.error("Connection Error:", error);
-      });
-  },
-  beforeDestroy() {
-    // window.Echo.leave(`payments.${this.payment.transaction_id}`);
-  },
   data() {
     return {
       payment: {

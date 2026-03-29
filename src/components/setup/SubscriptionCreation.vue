@@ -183,6 +183,7 @@
 <script>
 import { LocalStorage, Notify, Platform } from "quasar";
 import ProcessStatusVue from "../Constants/ProcessStatus.vue";
+import { APP_FEATURES_EN, APP_FEATURES_FR } from "../../utils/app-features";
 export default {
   name: "PageIndex",
   mounted() {
@@ -201,16 +202,8 @@ export default {
       loading: false,
       defaultSubPlan: {},
       color: "primary",
-      features: [
-        "User Management",
-        "Income Management",
-        "Expenditure Management",
-        "Contributions",
-        "Reports and Statistics",
-        "Balance Sheets",
-        "Logs and Tracability",
-        "Security and Secure Storage",
-      ],
+      features:
+        this.$i18n.locale === "en-US" ? APP_FEATURES_EN : APP_FEATURES_FR,
     };
   },
   emits: [
@@ -241,10 +234,10 @@ export default {
     },
 
     featuresFirstFour() {
-      return this.features.slice(0, 4);
+      return this.features.slice(0, 6);
     },
     featuresLastFour() {
-      return this.features.slice(4);
+      return this.features.slice(6);
     },
   },
   methods: {
@@ -311,9 +304,7 @@ export default {
             this.$emit("onMakePayment");
           }
         })
-        .catch((e) => {
-          console.log(e);
-        })
+        .catch((e) => {})
         .finally(() => {
           this.loading = false;
         });

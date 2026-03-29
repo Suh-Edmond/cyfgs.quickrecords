@@ -5,22 +5,33 @@
     }}</label>
 
     <q-form @submit="onSubmit">
-      <div class="row q-gutter-x-md">
+      <div
+        class="row"
+        :class="$q.platform.is.desktop ? 'q-gutter-x-md' : 'q-gutter-x-xs'"
+      >
         <div class="col-2 col-md-2 col-sm-2 col-lg-2"></div>
         <div class="col-md-4 col-xs-12 col-sm-12">
-          <label class="form_field">{{ $t("app.nameLabel") }} </label>
+          <label class="form_field"
+            ><q-icon name="diversity_3" size="xs" class="q-pr-xs"></q-icon
+            >{{ $t("app.nameLabel") }}
+            <span :class="nameError ? 'text-red' : ''">*</span></label
+          >
           <q-input
             v-model="organisation.name"
             outlined
             type="text"
             dense
-            placeholder="Growth Leader Association"
             :error="!!nameError"
             :error-message="nameError"
+            @input="validateName()"
           />
         </div>
         <div class="col-md-4 col-xs-12 col-sm-12">
-          <label class="form_field">{{ $t("app.emailLabel") }} </label>
+          <label class="form_field"
+            ><q-icon name="email" size="xs" class="q-pr-xs"></q-icon
+            >{{ $t("app.emailLabel") }}
+            <span :class="emailError ? 'text-red' : ''">*</span></label
+          >
           <q-input
             dense
             v-model="organisation.email"
@@ -28,29 +39,40 @@
             type="email"
             :error="!!emailError"
             :error-message="emailError"
+            @input="validateEmail()"
           />
         </div>
         <div class="col-2 col-md-2 col-sm-2 col-lg-2"></div>
       </div>
-      <div class="row q-gutter-x-md">
+      <div
+        class="row"
+        :class="$q.platform.is.desktop ? 'q-gutter-x-md' : 'q-gutter-x-xs'"
+      >
         <div class="col-2 col-md-2 col-sm-2 col-lg-2"></div>
         <div class="col-md-4 col-xs-12 col-sm-12">
           <label class="form_field flex justify-between">
             <span>
-              {{ $t("app.telephoneOne") }}
+              <q-icon name="phone" size="xs" class="q-pr-xs"></q-icon
+              >{{ $t("app.telephoneOne") }}
+              <span :class="telephoneOneError ? 'text-red' : ''">*</span>
             </span>
           </label>
-          <vue-tel-input
+          <q-input
             v-model="organisation.telephone"
-            defaultCountry="cm"
-            mode="international"
-            class="q-pa-xs q-mb-sm"
+            outlined
+            dense
+            type="text"
             :error="!!telephoneOneError"
             :error-message="telephoneOneError"
-          ></vue-tel-input>
+            @input="validateTelephoneOne()"
+          ></q-input>
         </div>
         <div class="col-md-4 col-xs-12 col-sm-12">
-          <label class="form_field">{{ $t("app.addressLabel") }} </label>
+          <label class="form_field"
+            ><q-icon name="location_on" size="xs" class="q-pr-xs"></q-icon
+            >{{ $t("app.addressLabel") }}
+            <span :class="addressError ? 'text-red' : ''">*</span></label
+          >
           <q-input
             v-model="organisation.address"
             outlined
@@ -58,53 +80,43 @@
             dense
             :error="!!addressError"
             :error-message="addressError"
+            @input="validateAddress()"
           />
         </div>
         <div class="col-2 col-md-2 col-sm-2 col-lg-2"></div>
       </div>
-      <div class="row q-gutter-x-md">
+      <div
+        class="row"
+        :class="$q.platform.is.desktop ? 'q-gutter-x-md' : 'q-gutter-x-xs'"
+      >
         <div class="col-2 col-md-2 col-sm-2 col-lg-2"></div>
         <div class="col-md-4 col-xs-12 col-sm-12">
           <label class="form_field flex justify-between">
             <span>
-              {{ $t("app.telephoneTwo") }}
+              <img
+                src="../../assets/whatsapp_transparent.jpg"
+                width="25px"
+                class="q-pr-sm whatsapp_icon"
+              />{{ $t("app.telephoneTwo") }}
+              <span :class="telephoneTwoError ? 'text-red' : ''">*</span>
             </span>
           </label>
-          <vue-tel-input
+          <q-input
             v-model="organisation.telephone2"
-            defaultCountry="cm"
-            mode="international"
-            class="q-pa-xs q-mb-sm"
+            outlined
+            dense
+            type="text"
             :error="!!telephoneTwoError"
             :error-message="telephoneTwoError"
-          ></vue-tel-input>
+            @input="validateTelephoneTwo()"
+          ></q-input>
         </div>
         <div class="col-md-4 col-xs-12 col-sm-12">
-          <label class="form_field">{{ $t("app.boxLabel") }}</label>
-          <q-input
-            v-model="organisation.box_number"
-            outlined
-            type="number"
-            dense
-            :error="!!box_numberError"
-            :error-message="box_numberError"
-          />
-        </div>
-        <div class="col-2 col-md-2 col-sm-2 col-lg-2"></div>
-      </div>
-      <div class="row q-gutter-x-md">
-        <div class="col-2 col-md-2 col-sm-2 col-lg-2"></div>
-        <div class="col-md-4 col-xs-12 col-sm-12">
-          <label class="form_field">{{ $t("app.salutation") }} </label>
-          <q-input
-            v-model="organisation.salutation"
-            outlined
-            type="text"
-            dense
-          />
-        </div>
-        <div class="col-md-4 col-xs-12 col-sm-12">
-          <label class="form_field">{{ $t("app.region") }} </label>
+          <label class="form_field"
+            ><q-icon name="location_on" size="xs" class="q-pr-xs"></q-icon
+            >{{ $t("app.region") }}
+            <span :class="regionError ? 'text-red' : ''">*</span></label
+          >
           <q-select
             outlined
             dense
@@ -112,18 +124,24 @@
             :options="regions"
             :error="!!regionError"
             :error-message="regionError"
+            @input="validateRegion()"
           />
         </div>
         <div class="col-2 col-md-2 col-sm-2 col-lg-2"></div>
       </div>
 
-      <div class="row q-gutter-x-md">
+      <div class="row" v-if="$q.platform.is.desktop">
         <div class="col-2 col-md-2 col-sm-2 col-lg-2"></div>
         <div
-          class="col-8 col-md-8"
+          class="col-8 col-md-8 description"
           :class="$q.platform.is.desktop ? 'complete_width' : ''"
         >
-          <label class="form_field">{{ $t("app.description") }} </label>
+          <label class="form_field"
+            ><span
+              ><q-icon name="article" size="xs" class="q-pr-xs"></q-icon></span
+            >{{ $t("app.description")
+            }}<span :class="descriptionError ? 'text-red' : ''">*</span></label
+          >
           <q-input
             v-model="organisation.description"
             outlined
@@ -131,35 +149,51 @@
             type="textarea"
             class="full-width"
             :error="!!descriptionError"
+            :label="$t('app.descriptionplaceHolder')"
             :error-message="descriptionError"
+            @input="validateDescription()"
           />
         </div>
         <div class="col-2 col-md-2 col-sm-2 col-lg-2"></div>
       </div>
+      <div class="row" v-if="$q.platform.is.mobile">
+        <label class="form_field"
+          ><q-icon name="article" size="xs" class="q-pr-xs"></q-icon
+          >{{ $t("app.description") }}
+        </label>
+        <q-input
+          v-model="organisation.description"
+          outlined
+          dense
+          type="textarea"
+          class="full-width"
+          :error="!!descriptionError"
+          :label="$t('app.descriptionplaceHolder')"
+          :error-message="descriptionError"
+        />
+      </div>
       <div class="flex justify-center q-mt-xs" v-if="$q.platform.is.desktop">
         <q-btn
-          class="form_button"
+          class="form_button button"
           :label="$t('app.saveOrganisationLabel')"
           :loading="loading"
-          :disabled="validateForm"
+          :disabled="!validateForm"
           color="primary"
           no-caps
           type="submit"
         >
-          <q-icon name="arrow_forward" size="xs" class="q-pl-lg"></q-icon>
         </q-btn>
       </div>
-      <div class="row q-gutter-md q-mx-sm" v-if="$q.platform.is.mobile">
+      <div class="row q-mb-xl" v-if="$q.platform.is.mobile">
         <q-btn
           class="form_button full-width"
           :label="$t('app.saveOrganisationLabel')"
           :loading="loading"
-          :disabled="validateForm"
+          :disabled="!validateForm"
           color="primary"
           no-caps
           type="submit"
         >
-          <q-icon name="arrow_forward" size="xs" class="q-pl-lg"></q-icon>
         </q-btn>
       </div>
     </q-form>
@@ -169,9 +203,8 @@
 <script>
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import { LocalStorage, Notify, Platform } from "quasar";
-import { VueTelInput } from "vue-tel-input";
 import ProcessStatusVue from "../Constants/ProcessStatus.vue";
-
+import { REGIONS } from "../../utils/regions";
 export default {
   mixins: [organisationMixinVue],
 
@@ -203,34 +236,29 @@ export default {
       emailError: "",
       addressError: "",
       descriptionError: "",
-      salutationError: "",
       regionError: "",
-      box_numberError: "",
-      regions: [
-        "Adamawa - Ngaoundere",
-        "Center - Yaounde",
-        "East - Bertoua",
-        "Far North - Maroua",
-        "Littoral - Douala",
-        "North - Garoua",
-        "Northwest - Bamenda",
-        "West - Bafoussam",
-        "South - Ebolowa",
-        "Southwest - Buea",
-      ],
+      regions: REGIONS,
     };
   },
-  emits: ["onSubscriptionCreation"],
+  emits: ["onSubscriptionCreation", "onContinueTrial"],
 
   computed: {
     validateForm() {
       return (
-        this.organisation.name === "" ||
-        this.organisation.email === "" ||
-        this.organisation.telephone === "" ||
-        this.organisation.address === "" ||
-        this.organisation.description === "" ||
-        this.organisation.region === ""
+        this.organisation.name !== null &&
+        this.nameError === "" &&
+        this.organisation.email !== null &&
+        this.emailError === "" &&
+        this.organisation.telephone !== null &&
+        this.telephoneOneError === "" &&
+        this.organisation.telephone2 !== null &&
+        this.telephoneTwoError === "" &&
+        this.organisation.address !== null &&
+        this.addressError === "" &&
+        this.organisation.description !== null &&
+        this.descriptionError === "" &&
+        this.organisation.region !== null &&
+        this.regionError === ""
       );
     },
 
@@ -247,6 +275,7 @@ export default {
   },
   methods: {
     onSubmit() {
+      const organisation = LocalStorage.getItem("organisation");
       let payload = {
         data: {
           name: this.organisation.name,
@@ -262,6 +291,8 @@ export default {
           region: this.organisation.region,
           id: this.$store.getters.getProcessStage.has_organisation
             ? this.$store.getters.getProcessStage.organisation_id
+            : organisation !== null
+            ? organisation.id
             : "",
           account_id: LocalStorage.getItem("loginId"),
         },
@@ -285,7 +316,7 @@ export default {
       this.$store
         .dispatch("postRequest", payload)
         .then((res) => {
-          if (res.status === 422 || res.status == 400 || res.status == 401) {
+          if (res.status === 422 || res.status === 400 || res.status === 401) {
             Notify.create({
               type: "negative",
               message: this.$t("app.createOrganisationFailMsg"),
@@ -295,10 +326,14 @@ export default {
           if (res.status === 200) {
             this.$store.commit("SET_PROCESS_STEP", {
               ...res.data.data,
-              processStatus: ProcessStatusVue.CREATE_SUBSCRIPTION,
-              step: 4,
+              // processStatus: ProcessStatusVue.CREATE_SUBSCRIPTION,
+              // step: 4,
+              // isSuccessful: true,
+              processStatus: ProcessStatusVue.IN_TRIAL,
+              step: 5,
               isSuccessful: true,
-              has_organisation: false,
+              isTrial: true,
+              has_organisation: true,
               organisation_id: res.data.data.id,
               organisation_name: res.data.data.name,
               organisation_email: res.data.data.email,
@@ -313,9 +348,8 @@ export default {
               accountId: res.data.data.user_id,
             });
 
-            this.$emit("onSubscriptionCreation");
-            // LocalStorage.set("organisationName", res.data.data.name);
-            // LocalStorage.set("organisationEmail", res.data.data.email);
+            // this.$emit("onSubscriptionCreation");
+            this.$emit("onContinueTrial");
             LocalStorage.set("adminUsername", res.data.data.adminUsername);
             LocalStorage.set("adminName", res.data.data.adminName);
             LocalStorage.set("organisationId", res.data.data.id);
@@ -324,6 +358,7 @@ export default {
         })
         .finally(() => {
           this.loading = false;
+          this.resetOrganisationInfo();
         });
     },
 
@@ -347,8 +382,82 @@ export default {
       return this.organisation;
     },
 
+    resetOrganisationInfo() {
+      this.organisation.address = "";
+      this.organisation.name = "";
+      this.organisation.email = "";
+      this.organisation.telephone = "";
+      this.organisation.telephone2 = "";
+      this.organisation.salutation = "";
+      this.organisation.description = "";
+      this.organisation.box_number = "";
+      this.organisation.region = "";
+      this.organisation.logo = "";
+    },
+
     setTelephone(telephone, telephone2) {
       return telephone + "/" + telephone2;
+    },
+
+    validateTelephoneOne() {
+      const regex = /^\d{9,15}$/;
+      const validPhone = regex.test(this.organisation.telephone);
+      this.telephoneOneError = validPhone
+        ? ""
+        : this.$t("app.invalidPhoneError");
+      return validPhone;
+    },
+
+    validateTelephoneTwo() {
+      const regex = /^\d{9,15}$/;
+      const validPhone = regex.test(this.organisation.telephone2);
+      this.telephoneTwoError = validPhone
+        ? ""
+        : this.$t("app.invalidPhoneError");
+      return validPhone;
+    },
+
+    validString(data) {
+      return data !== null && data !== undefined && data.trim().length > 0;
+    },
+
+    validateEmail() {
+      const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const validEmail = regex.test(this.organisation.email);
+      this.emailError = validEmail ? "" : this.$t("app.invalidEmailErrorMsg");
+      return validEmail;
+    },
+    validateName() {
+      const validName =
+        this.validString(this.organisation.name) &&
+        this.organisation.name.length >= 4;
+      this.nameError = validName ? "" : this.$t("app.invalidNameMsg");
+      return validName;
+    },
+
+    validateAddress() {
+      const validAddress =
+        this.validString(this.organisation.address) &&
+        this.organisation.address.length >= 4;
+      this.addressError = validAddress ? "" : this.$t("app.invalidAddress");
+      return validAddress;
+    },
+
+    validateDescription() {
+      const validDescription =
+        this.validString(this.organisation.description) &&
+        this.organisation.description.length >= 4;
+      this.descriptionError = validDescription
+        ? ""
+        : this.$t("app.descriptionplaceHolder");
+      return validDescription;
+    },
+    validateRegion() {
+      const validRegion =
+        this.validString(this.organisation.region) &&
+        this.organisation.region !== "";
+      this.regionError = validRegion ? "" : this.$t("app.regionError");
+      return validRegion;
     },
 
     // openFileUpload() {
@@ -394,9 +503,7 @@ export default {
     //     });
     // },
   },
-  components: {
-    VueTelInput,
-  },
+  components: {},
 };
 </script>
 <style lang="scss" scoped>
@@ -410,12 +517,13 @@ export default {
   color: $primary;
 }
 
-.text-body1 {
-  font-size: 0.9rem;
+.description {
+  margin-left: 18px;
 }
 
-.icon {
-  color: $grey2;
+.button {
+  margin-top: 3px;
+  width: 15%;
 }
 
 .form_field {
@@ -423,12 +531,11 @@ export default {
   font-style: normal;
   font-weight: 500;
   font-size: 0.9rem;
-  align-items: center;
   color: $grey5;
 }
 
 .complete_width {
-  width: 67.7% !important;
+  width: 67.8% !important;
 }
 
 .logo {

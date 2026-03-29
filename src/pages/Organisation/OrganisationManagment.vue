@@ -1,352 +1,191 @@
 <template>
-  <q-page class="q-pa-xs">
+  <q-page>
     <q-linear-progress
       rounded
       indeterminate
       color="primary"
       v-show="show_loading"
     />
-    <div v-if="!exist_organisation">
-      <div class="flex flex-center q-mb-md">
-        <label class="title">{{ $t("app.updateOrganisationHeading") }}</label>
-      </div>
+    <div class="flex flex-center q-mb-md">
+      <label class="title">{{ $t("app.organisationMgtHeading") }}</label>
+    </div>
+    <div class="row justify-center q-mb-xl">
+      <img
+        :src="getOrganisationLogo"
+        alt=""
+        width="130"
+        height="110"
+        v-if="!organisationExist"
+      />
+      <q-avatar
+        size="120px"
+        font-size="52px"
+        color="grey-3"
+        v-if="organisationExist"
+      >
+      </q-avatar>
       <div>
-        <q-form
-          @submit="onSubmit"
-          :style="$q.screen.lg ? '' : 'margin-bottom:5rem;'"
+        <input
+          type="file"
+          accept="image/x-png,image/jpg,image/jpeg"
+          style="display: none"
+          id="logo"
+          @change="onFileChanged"
+        />
+        <q-icon
+          name="add_a_photo"
+          size="sm"
+          class="camara"
+          @click="openFileUpload"
         >
-          <div
-            class="row"
-            :class="$q.screen.lg ? 'q-mb-md q-px-xl' : ' q-px-sm'"
+          <q-tooltip>{{ $t("app.uploadLogo") }}</q-tooltip>
+        </q-icon>
+      </div>
+    </div>
+    <q-form
+      @submit="onSubmit"
+      :style="$q.screen.lg ? '' : 'margin-bottom:5rem;'"
+    >
+      <div class="row" :class="$q.platform.is.desktop ? 'q-my-md' : ' q-px-sm'">
+        <div class="col-1 col-md-1 com-sm-1"></div>
+        <div class="col-md-5 col-xs-12 col-sm-12">
+          <label class="form_field"
+            >{{ $t("app.nameLabel") }}
+            <span class="text-red q-pl-xs">*</span></label
           >
-            <div class="col-1 col-md-1 com-sm-1"></div>
-            <div class="col-md-5 col-xs-12 col-sm-12">
-              <label class="form_field"
-                >{{ $t("app.nameLabel") }}
-                <span class="text-red q-pl-xs">*</span></label
-              >
-              <q-input
-                v-model="organisation.name"
-                outlined
-                type="text"
-                dense
-                v-if="!exist_organisation"
-              />
-              <q-input
-                v-model="organisation.name"
-                outlined
-                type="text"
-                dense
-                readonly
-                disable
-                v-if="exist_organisation"
-              />
-            </div>
-            <div
-              class="col-md-5 col-xs-12 col-sm-12"
-              :class="$q.platform.is.desktop ? 'q-ml-md' : ' q-py-sm'"
-            >
-              <label class="form_field"
-                >{{ $t("app.emailLabel") }}
-                <span class="text-red q-pl-xs">*</span></label
-              >
-              <q-input
-                dense
-                v-model="organisation.email"
-                outlined
-                type="email"
-              />
-            </div>
-            <div class="col-1 col-md-1 com-sm-1"></div>
-          </div>
-          <div
-            class="row"
-            :class="$q.screen.lg ? 'q-mb-md q-px-xl' : 'q-px-sm'"
+          <q-input v-model="organisation.name" outlined type="text" dense />
+        </div>
+        <div
+          class="col-md-5 col-xs-12 col-sm-12"
+          :class="$q.platform.is.desktop ? 'q-ml-md' : ' q-py-sm'"
+        >
+          <label class="form_field"
+            >{{ $t("app.emailLabel") }}
+            <span class="text-red q-pl-xs">*</span></label
           >
-            <div class="col-md-1"></div>
-            <div
-              class="col-md-5 col-xs-12 col-sm-12"
-              :class="$q.screen.lg ? 'q-px-sm' : ''"
-            >
-              <label class="form_field flex justify-between">
-                <span>
-                  {{ $t("app.telephoneLabel") }}
-                  <span class="text-red q-pl-xs">*</span>
-                </span>
-                <a class="add_telephone">
-                  <q-icon
-                    name="add"
-                    size="xs"
-                    color="primary"
-                    v-if="canShowTelephoneField"
-                    @click.prevent="showAddTelephone"
-                    ><q-tooltip>{{
-                      $t("app.addTelephoneLabel")
-                    }}</q-tooltip></q-icon
-                  >
-                  <q-icon
-                    name="close"
-                    size="xs"
-                    color="primary"
-                    v-if="!canShowTelephoneField"
-                    @click.prevent="removeAddTelephone"
-                  >
-                    <q-tooltip>{{ $t("app.remove") }}</q-tooltip>
-                  </q-icon>
-                </a>
-              </label>
-              <vue-tel-input
-                v-model="organisation.telephone"
-                defaultCountry="cm"
-                mode="international"
-                class="q-pa-xs q-mb-sm"
-              ></vue-tel-input>
-              <vue-tel-input
-                v-model="organisation.telephone2"
-                defaultCountry="cm"
-                mode="international"
-                class="q-pa-xs"
-                v-if="show_telephone2"
-              ></vue-tel-input>
-            </div>
-            <div
-              class="col-md-5 col-xs-12 col-sm-12"
-              :class="$q.platform.is.desktop ? 'q-ml-md' : ' q-py-sm'"
-            >
-              <label class="form_field"
-                >{{ $t("app.addressLabel") }}
-                <span class="text-red q-pl-xs">*</span></label
-              >
-              <q-input
-                v-model="organisation.address"
-                outlined
-                type="text"
-                dense
-              />
-            </div>
-            <div class="col-md-1"></div>
-          </div>
-          <div
-            class="row"
-            :class="$q.screen.lg ? 'q-mb-md q-px-xl' : 'q-px-sm'"
-          >
-            <div class="col-md-1"></div>
-            <div
-              class="col-md-5 col-xs-12 col-sm-12"
-              :class="$q.screen.lg ? 'q-px-sm' : 'q-py-sm'"
-            >
-              <label class="form_field">{{ $t("app.salutation") }}</label>
-              <q-input
-                v-model="organisation.salutation"
-                outlined
-                type="text"
-                dense
-              />
-            </div>
-            <div
-              class="col-md-5 col-xs-12 col-sm-12"
-              :class="$q.platform.is.desktop ? 'q-ml-md' : ' q-py-sm'"
-            >
-              <label class="form_field">{{ $t("app.boxLabel") }}</label>
-              <q-input
-                v-model="organisation.box_number"
-                outlined
-                type="number"
-                dense
-              />
-            </div>
-            <div class="col-md-1"></div>
-          </div>
-          <div
-            class="row q-mb-md"
-            :class="$q.screen.lg ? 'q-mb-xs q-px-xl' : 'q-px-sm'"
-          >
-            <div class="col-md-1"></div>
-            <div
-              class="col-md-5 col-xs-12 col-sm-12"
-              :class="$q.screen.lg ? 'q-px-sm' : 'q-py-sm'"
-            >
-              <label class="form_field"
-                >{{ $t("app.description") }}
-                <span class="text-red q-pl-xs">*</span></label
-              >
-              <q-input
-                v-model="organisation.description"
-                outlined
-                dense
-                type="textarea"
-              />
-            </div>
-            <div
-              class="col-md-5 col-xs-12 col-sm-12"
-              :class="$q.platform.is.desktop ? 'q-ml-md' : ' q-py-sm'"
-            >
-              <label class="form_field"
-                >{{ $t("app.region") }}
-                <span class="text-red q-pl-xs">*</span></label
-              >
-              <q-input
-                v-model="organisation.region"
-                outlined
-                type="text"
-                dense
-              />
-            </div>
-            <div class="col-md-1"></div>
-          </div>
-          <div class="row q-mt-md q-pr-sm" v-if="$q.platform.is.desktop">
-            <div class="col-md-3"></div>
-            <div
-              class="col-md-8 flex q-gutter-md justify-end"
-              :class="$q.screen.lg ? 'q-px-lg' : ''"
-            >
-              <q-btn
-                outline
+          <q-input dense v-model="organisation.email" outlined type="email" />
+        </div>
+        <div class="col-1 col-md-1 com-sm-1"></div>
+      </div>
+      <div class="row" :class="$q.platform.is.desktop ? 'q-my-md' : 'q-px-sm'">
+        <div class="col-md-1"></div>
+        <div class="col-md-5 col-xs-12 col-sm-12">
+          <label class="form_field flex justify-between">
+            <span>
+              {{ $t("app.telephoneLabel") }}
+              <span class="text-red q-pl-xs">*</span>
+            </span>
+            <a class="add_telephone">
+              <q-icon
+                name="add"
+                size="xs"
                 color="primary"
-                :label="$t('app.cancel')"
-                no-caps
-                @click="showDetail"
-                :disable="checkIfOrganisationExist"
-              />
-              <ButtonVue
-                :label="$t('app.saveBtnLabel')"
-                :loading="loading"
-                :disabled="validateForm"
-                :color="color"
-                :no_caps="true"
+                v-if="canShowTelephoneField"
+                @click.prevent="showAddTelephone"
+                ><q-tooltip>{{
+                  $t("app.addTelephoneLabel")
+                }}</q-tooltip></q-icon
               >
-              </ButtonVue>
-            </div>
-            <div class="col-md-1"></div>
-          </div>
-          <div class="row q-gutter-md q-mx-sm" v-if="$q.platform.is.mobile">
-            <ButtonVue
-              :label="$t('app.saveBtnLabel')"
-              :loading="loading"
-              :disabled="validateForm"
-              :color="color"
-              :no_caps="true"
-              class="full-width"
-            >
-            </ButtonVue>
-
-            <q-btn
-              outline
-              color="primary"
-              :label="$t('app.cancel')"
-              no-caps
-              @click="showDetail"
-              :disable="checkIfOrganisationExist"
-              class="full-width"
-            />
-          </div>
-        </q-form>
+            </a>
+          </label>
+          <vue-tel-input
+            v-model="organisation.telephone"
+            defaultCountry="cm"
+            mode="international"
+            class="q-pa-xs q-mb-sm"
+          ></vue-tel-input>
+        </div>
+        <div
+          class="col-md-5 col-xs-12 col-sm-12"
+          :class="$q.platform.is.desktop ? 'q-ml-md' : ' q-py-sm'"
+        >
+          <label class="form_field"
+            >{{ $t("app.addressLabel") }}
+            <span class="text-red q-pl-xs">*</span></label
+          >
+          <q-input v-model="organisation.address" outlined type="text" dense />
+        </div>
+        <div class="col-md-1"></div>
       </div>
-    </div>
-    <div v-if="exist_organisation" class="q-mb-xl">
-      <div class="flex justify-center">
-        <q-card class="text-dark" flat>
-          <q-card-section class="flex">
-            <div>
-              <img :src="getOrganisationLogo" alt="" width="130" height="110" />
-              <q-avatar
-                size="120px"
-                font-size="52px"
-                color="grey-3"
-                v-if="organisation.logo == null"
-              >
-              </q-avatar>
-              <div>
-                <input
-                  type="file"
-                  accept="image/x-png,image/jpg,image/jpeg"
-                  style="display: none"
-                  id="logo"
-                  @change="onFileChanged"
-                />
-                <q-icon
-                  name="add_a_photo"
-                  size="sm"
-                  class="camara"
-                  @click="openFileUpload"
-                >
-                  <q-tooltip>{{ $t("app.uploadLogo") }}</q-tooltip>
-                </q-icon>
-              </div>
-            </div>
-          </q-card-section>
-          <q-card-section class="q-mt-xl">
-            <div class="flex">
-              <div class="text-h6 title">
-                {{ $t("app.organisationMgtHeading") }}
-              </div>
-              <q-space />
-              <div>
-                <q-btn
-                  dense
-                  flat
-                  color="primary"
-                  icon="edit"
-                  v-close-popup
-                  @click="editOrganisation()"
-                  size="sm"
-                >
-                  <q-tooltip>{{
-                    $t("app.updateOrganisationHeading")
-                  }}</q-tooltip>
-                </q-btn>
-              </div>
-            </div>
-          </q-card-section>
-          <q-card-section>
-            <p>
-              <q-icon name="diversity_3" size="xs"></q-icon>
-              <span class="q-pl-sm text-body1 text-weight-medium">{{
-                organisation.name
-              }}</span>
-            </p>
-            <p v-if="organisation.salutation !== null">
-              <q-icon name="people" size="xs"></q-icon>
-              <span class="q-pl-sm text-body1 text-weight-medium">{{
-                organisation.salutation
-              }}</span>
-            </p>
-            <p>
-              <q-icon name="email" size="xs"></q-icon>
-              <span class="q-pl-sm text-body1 text-weight-medium">{{
-                organisation.email
-              }}</span>
-            </p>
-            <p>
-              <q-icon name="phone" size="xs"></q-icon>
-              <span class="q-pl-sm text-body1 text-weight-medium"
-                >{{ organisation.telephone }}
-              </span>
-              <span
-                v-if="organisation.telephone2 !== ''"
-                class="q-pl-sm text-body1 text-weight-medium"
-                >/ {{ organisation.telephone2 }}</span
-              >
-            </p>
-            <p>
-              <q-icon name="location_on" size="xs"></q-icon>
-              <span class="q-pl-sm text-body1 text-weight-medium"
-                >{{ organisation.region }}, {{ organisation.address }},
-                <span v-if="organisation.box_number !== null">{{
-                  organisation.box_number
-                }}</span></span
-              >
-            </p>
-            <p>
-              <q-icon name="description" size="xs"></q-icon>
-              <span class="q-mx-md q-pl-sm text-body1 text-weight-medium"
-                >{{ organisation.description }}
-              </span>
-            </p>
-          </q-card-section>
-        </q-card>
+      <div class="row" :class="$q.platform.is.desktop ? 'q-my-md' : 'q-px-sm'">
+        <div class="col-md-1"></div>
+        <div class="col-md-5 col-xs-12 col-sm-12">
+          <label class="form_field flex justify-between">
+            <span>
+              {{ $t("app.telephoneTwo") }}
+              <span class="text-red q-pl-xs">*</span>
+            </span>
+          </label>
+          <vue-tel-input
+            v-model="organisation.telephone2"
+            defaultCountry="cm"
+            mode="international"
+            class="q-pa-xs"
+            v-if="show_telephone2"
+          ></vue-tel-input>
+        </div>
+        <div
+          class="col-md-5 col-xs-12 col-sm-12"
+          :class="$q.platform.is.desktop ? 'q-ml-md' : ' q-py-sm'"
+        >
+          <label class="form_field"
+            >{{ $t("app.region") }} <span>*</span></label
+          >
+          <q-select
+            outlined
+            dense
+            v-model="organisation.region"
+            :options="regions"
+          />
+        </div>
+        <div class="col-md-1"></div>
       </div>
-    </div>
+      <div class="row q-mb-md">
+        <div class="col-md-1"></div>
+        <div
+          class="col-10 col-md-10 col-xs-12 col-sm-12"
+          :class="$q.platform.is.desktop ? 'complete_width' : ''"
+        >
+          <label class="form_field"
+            >{{ $t("app.description") }}
+            <span class="text-red q-pl-xs">*</span></label
+          >
+          <q-input
+            v-model="organisation.description"
+            outlined
+            dense
+            type="textarea"
+            class="full-width"
+          />
+        </div>
+        <div class="col-md-1"></div>
+      </div>
+      <div
+        class="row q-mt-md justify-end q-gutter-md"
+        :class="$q.platform.is.desktop ? 'buttons' : ''"
+        v-if="$q.platform.is.desktop"
+      >
+        <ButtonVue
+          :label="$t('app.saveBtnLabel')"
+          :loading="loading"
+          :disabled="validateForm"
+          :color="color"
+          :no_caps="true"
+        >
+        </ButtonVue>
+      </div>
+      <div class="row q-gutter-md q-mx-sm" v-if="$q.platform.is.mobile">
+        <ButtonVue
+          :label="$t('app.saveBtnLabel')"
+          :loading="loading"
+          :disabled="validateForm"
+          :color="color"
+          :no_caps="true"
+          class="full-width"
+        >
+        </ButtonVue>
+      </div>
+    </q-form>
   </q-page>
 </template>
 
@@ -355,6 +194,7 @@ import ButtonVue from "src/components/Button.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import { Notify, Platform } from "quasar";
 import { VueTelInput } from "vue-tel-input";
+import { REGIONS } from "../../utils/regions";
 
 export default {
   mixins: [organisationMixinVue],
@@ -364,7 +204,6 @@ export default {
   },
   data() {
     return {
-      exist_organisation: false,
       logo: null,
       organisation: {
         name: null,
@@ -385,6 +224,7 @@ export default {
       color: "primary",
       show_telephone2: false,
       updatedTelephone: "",
+      regions: REGIONS,
     };
   },
   computed: {
@@ -399,8 +239,8 @@ export default {
       );
     },
 
-    checkIfOrganisationExist() {
-      return this.$store.getters.getOrganisation == null;
+    organisationExist() {
+      return this.$store.getters.getOrganisation === null;
     },
 
     getOrganisationLogo() {
@@ -454,7 +294,6 @@ export default {
       this.$store
         .dispatch("postRequest", payload)
         .then(() => {
-          this.exist_organisation = true;
           this.getOrganisationInfo();
         })
         .finally(() => {
@@ -488,8 +327,7 @@ export default {
     setOrganisationInfo() {
       let data = this.$store.getters.getOrganisation;
       let telephoneString = data.telephone.split("/");
-      if (true) {
-        this.exist_organisation = true;
+      if (data !== null) {
         if (telephoneString.length > 1) {
           this.show_telephone2 = true;
         }
@@ -507,14 +345,6 @@ export default {
       }
 
       return this.organisation;
-    },
-
-    editOrganisation() {
-      this.exist_organisation = false;
-    },
-
-    showDetail() {
-      this.exist_organisation = !this.exist_organisation;
     },
 
     showAddTelephone() {
@@ -612,7 +442,7 @@ export default {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   align-items: center;
   color: $grey5;
 }
@@ -628,9 +458,16 @@ export default {
 
 .camara {
   position: absolute;
-  top: 70%;
-  left: 15%;
+  top: 17%;
+  left: 53%;
   cursor: pointer;
   color: $grey8;
+}
+
+.complete_width {
+  width: 84.2% !important;
+}
+.buttons {
+  margin-right: 7.5% !important;
 }
 </style>

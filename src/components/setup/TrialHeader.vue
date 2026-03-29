@@ -16,7 +16,8 @@
         {{ $t("app.monthlyPlan") }}
       </div>
       <div class="q-pb-sm">
-        {{ $t("app.inTrialMode") }}
+        {{ Number(subscriptionPlan.price).toLocaleString() }}
+        XAF/{{ $t("app.month") }}
       </div>
     </div>
   </div>

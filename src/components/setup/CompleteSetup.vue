@@ -14,7 +14,7 @@
         </q-card-section>
         <q-card-section>
           <account-completed-in-trial
-            :features="getFeatures"
+            :features="features"
             :organisation="getOrganisation"
             :subscription="getSubscription"
           ></account-completed-in-trial>
@@ -28,6 +28,7 @@
               color="primary"
               no-caps
               type="submit"
+              @click="completedSetup()"
             >
             </q-btn>
           </div>
@@ -43,7 +44,7 @@ import moment from "moment";
 import AccountCompletedInTrial from "./AccountCompletedInTrial.vue";
 import TrialBanner from "./TrialBanner.vue";
 import TrialHeader from "./TrialHeader.vue";
-
+import { APP_FEATURES_EN, APP_FEATURES_FR } from "../../utils/app-features";
 export default {
   name: "PageIndex",
   mounted() {},
@@ -51,20 +52,8 @@ export default {
     return {
       defaultSubPlan: {},
       color: "primary",
-      features: [
-        "Member Management",
-        "Income Management",
-        "Expenditure Management",
-        "Contribution Management",
-        "Member's Saving",
-        "Reports and Statistics",
-        "Balance Sheets",
-        "Logs and Tracability",
-        "Security and Secure Storage",
-        "Free Training and Support",
-        "Free Data Migration",
-        "Free Customization & Updates",
-      ],
+      features:
+        this.$i18n.locale === "en-US" ? APP_FEATURES_EN : APP_FEATURES_FR,
       userSubscriptions: JSON.parse(LocalStorage.getItem("subscriptions")),
     };
   },
@@ -107,10 +96,6 @@ export default {
       }
       return currentDate;
     },
-    getFeatures() {
-      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-      return this.features.splice(0, 10);
-    },
   },
   methods: {
     getFormatDate(date) {
@@ -123,6 +108,9 @@ export default {
         isSuccessful: true,
       });
       this.$emit("onMakePayment");
+    },
+    completedSetup() {
+      LocalStorage.remove("subscriptions");
     },
   },
   components: {

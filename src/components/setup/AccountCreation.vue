@@ -1,149 +1,153 @@
 <template>
   <div class="row flex flex-center">
-    <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12">
-      <q-card flat>
-        <q-card-section>
-          <div class="text_h6 text-center">
-            {{ $t("app.createAccountTitle") }}
+    <q-card flat class="col-4 col-md-4 col-lg-4 col-sm-12 col-xs-12">
+      <q-card-section>
+        <div class="text_h6 text-center">
+          {{ $t("app.createAccountTitle") }}
+        </div>
+        <q-form @submit="onSubmit" class="q-gutter-md">
+          <div>
+            <label class="form_field"
+              ><q-icon name="person" size="xs" class="q-pr-xs"></q-icon>
+              {{ $t("app.nameAdminLabel") }}
+              <span :class="nameError ? 'text-red' : ''">*</span>
+            </label>
+            <q-input
+              v-model="user.name"
+              outlined
+              dense
+              type="text"
+              @input="validateName()"
+              :error="!!nameError"
+              :error-message="nameError"
+            />
           </div>
           <div>
-            <q-form @submit="onSubmit" class="q-gutter-md">
-              <div>
-                <label class="form_field"
-                  >{{ $t("app.nameAdminLabel") }}
-                </label>
-                <q-input
-                  v-model="user.name"
-                  outlined
-                  dense
-                  type="text"
-                  @input="validateName()"
-                  :error="!!nameError"
-                  :error-message="nameError"
-                />
-              </div>
-              <div>
-                <label class="form_field"
-                  >{{ $t("app.usernameAdminLabel") }}
-                </label>
-                <q-input
-                  v-model="user.username"
-                  outlined
-                  dense
-                  @input="validateUsername()"
-                  type="text"
-                  placeholder="exampleadmin"
-                  :error="!!usernameError"
-                  :error-message="usernameError"
-                >
-                </q-input>
-              </div>
-              <div class="q-pb-md">
-                <label class="form_field"
-                  >{{ $t("app.telephoneLabel") }}
-                </label>
-                <vue-tel-input
-                  v-model="user.telephone"
-                  defaultCountry="cm"
-                  mode="international"
-                  class="q-pa-xs"
-                  :error="!!telephoneError"
-                  :error-message="telephoneError"
-                  @input="validateTelephone()"
-                ></vue-tel-input>
-              </div>
-              <div>
-                <label class="form_field">{{ $t("app.emailLabel") }} </label>
-                <q-input
-                  v-model="user.email"
-                  outlined
-                  dense
-                  type="email"
-                  placeholder="example@example.com"
-                  :error="!!emailError"
-                  :error-message="emailError"
-                  @input="validateEmail()"
-                >
-                </q-input>
-              </div>
-              <div>
-                <label class="form_field">{{ $t("app.passwordLabel") }} </label>
-                <q-input
-                  v-model="user.password"
-                  :type="is_pwd ? 'password' : 'text'"
-                  outlined
-                  dense
-                  bottom-slots
-                  @input="validatePassword()"
-                  :error="!!passwordError"
-                  :error-message="passwordError"
-                >
-                  <template v-slot:append>
-                    <q-icon
-                      :name="is_pwd ? 'visibility_off' : 'visibility'"
-                      class="cursor-pointer"
-                      @click="is_pwd = !is_pwd"
-                    />
-                  </template>
-                </q-input>
-              </div>
-              <div class="q-pb-xs">
-                <label class="form_field"
-                  >{{ $t("app.confirmPasswordLabel") }}
-                </label>
-                <q-input
-                  v-model="user.password_confirmation"
-                  :type="is_confirm_pwd ? 'password' : 'text'"
-                  outlined
-                  @input="validatePasswordMatch()"
-                  bottom-slots
-                  dense
-                  :error="!!passwordConfirmError"
-                  :error-message="passwordConfirmError"
-                >
-                  <template v-slot:append>
-                    <q-icon
-                      :name="is_confirm_pwd ? 'visibility_off' : 'visibility'"
-                      class="cursor-pointer"
-                      @click="is_confirm_pwd = !is_confirm_pwd"
-                    />
-                  </template>
-                </q-input>
-              </div>
-              <div>
-                <q-btn
-                  class="form_button"
-                  :label="$t('app.createAccountTitle')"
-                  :loading="loading"
-                  :disabled="!validateForm"
-                  :color="color"
-                  :no_caps="true"
-                  type="submit"
-                >
-                  <q-icon
-                    name="arrow_forward"
-                    size="xs"
-                    class="q-pl-lg"
-                  ></q-icon>
-                </q-btn>
-              </div>
-              <div class="row justify-center bottom q-pt-md">
-                {{ $t("app.haveAccountMsg") }}
-                <span @click="onConfirmAccountCreation()" class="sign_link"
-                  >&nbsp;{{ $t("app.confirmAccount") }}</span
-                >
-              </div>
-            </q-form>
+            <label class="form_field"
+              ><q-icon name="lock_person" size="xs" class="q-pr-xs"></q-icon
+              >{{ $t("app.usernameAdminLabel") }}
+              <span :class="usernameError ? 'text-red' : ''">*</span>
+            </label>
+            <q-input
+              v-model="user.username"
+              outlined
+              dense
+              @input="validateUsername()"
+              type="text"
+              :error="!!usernameError"
+              :error-message="usernameError"
+            >
+            </q-input>
           </div>
-        </q-card-section>
-      </q-card>
-    </div>
+          <div class="q-pb-md">
+            <label class="form_field"
+              ><q-icon name="phone" size="xs" class="q-pr-xs"></q-icon
+              >{{ $t("app.telephoneLabel") }}
+              <span :class="telephoneError ? 'text-red' : ''">*</span>
+            </label>
+            <q-input
+              v-model="user.telephone"
+              outlined
+              dense
+              type="text"
+              :error="!!telephoneError"
+              :error-message="telephoneError"
+              @input="validateTelephone()"
+            ></q-input>
+          </div>
+          <div>
+            <label class="form_field"
+              ><q-icon name="email" size="xs" class="q-pr-xs"></q-icon
+              >{{ $t("app.emailLabel") }}
+              <span :class="emailError ? 'text-red' : ''">*</span></label
+            >
+            <q-input
+              v-model="user.email"
+              outlined
+              dense
+              type="email"
+              :error="!!emailError"
+              :error-message="emailError"
+              @input="validateEmail()"
+            >
+            </q-input>
+          </div>
+          <div>
+            <label class="form_field"
+              ><q-icon name="lock" size="xs" class="q-pr-xs"></q-icon
+              >{{ $t("app.passwordLabel") }}
+              <span :class="passwordError ? 'text-red' : ''">*</span></label
+            >
+            <q-input
+              v-model="user.password"
+              :type="is_pwd ? 'password' : 'text'"
+              outlined
+              dense
+              bottom-slots
+              @input="validatePassword()"
+              :error="!!passwordError"
+              :error-message="passwordError"
+            >
+              <template v-slot:append>
+                <q-icon
+                  :name="is_pwd ? 'visibility_off' : 'visibility'"
+                  class="cursor-pointer"
+                  @click="is_pwd = !is_pwd"
+                />
+              </template>
+            </q-input>
+          </div>
+          <div class="q-pb-xs">
+            <label class="form_field"
+              ><q-icon name="lock" size="xs" class="q-pr-xs"></q-icon
+              >{{ $t("app.confirmPasswordLabel") }}
+              <span :class="passwordConfirmError ? 'text-red' : ''">*</span>
+            </label>
+            <q-input
+              v-model="user.password_confirmation"
+              :type="is_confirm_pwd ? 'password' : 'text'"
+              outlined
+              @input="validatePasswordMatch()"
+              bottom-slots
+              dense
+              :error="!!passwordConfirmError"
+              :error-message="passwordConfirmError"
+            >
+              <template v-slot:append>
+                <q-icon
+                  :name="is_confirm_pwd ? 'visibility_off' : 'visibility'"
+                  class="cursor-pointer"
+                  @click="is_confirm_pwd = !is_confirm_pwd"
+                />
+              </template>
+            </q-input>
+          </div>
+          <div>
+            <q-btn
+              class="form_button"
+              :label="$t('app.createAccountTitle')"
+              :loading="loading"
+              :disabled="!validateForm"
+              :color="color"
+              :no_caps="true"
+              type="submit"
+            >
+            </q-btn>
+          </div>
+          <div class="row justify-center bottom q-pt-md">
+            {{ $t("app.haveAccountMsg") }}
+            <span @click="onConfirmAccountCreation()" class="sign_link"
+              >&nbsp;{{ $t("app.confirmAccount") }}</span
+            >
+          </div>
+        </q-form>
+      </q-card-section>
+    </q-card>
   </div>
 </template>
 
 <script>
 import { LocalStorage, Notify, Platform } from "quasar";
-import { VueTelInput } from "vue-tel-input";
 import ProcessStatusVue from "../Constants/ProcessStatus.vue";
 export default {
   name: "PageIndex",
@@ -164,27 +168,31 @@ export default {
       disabled: true,
       is_valid_email: false,
       color: "primary",
-      username_errors: [],
       emailError: "",
       usernameError: "",
-      telephoneError: "",
       nameError: "",
       passwordError: "",
       passwordConfirmError: "",
+      telephoneError: "",
     };
   },
   emits: ["confirmAccountCreation", "onAccountCreation"],
   computed: {
     validateForm() {
-      // return (
-      //   // this.validateName() &&
-      //   // this.validateUsername() && this.validateTelephone()
-      //   // &&
-      //   // this.validatePassword() &&
-      //   // this.validatePasswordMatch() &&
-      //   // this.validateEmail()
-      // );
-      return true;
+      return (
+        this.user.email !== null &&
+        this.emailError === "" &&
+        this.user.telephone !== null &&
+        this.telephoneError === "" &&
+        this.user.name !== null &&
+        this.nameError === "" &&
+        this.user.username !== null &&
+        this.usernameError === "" &&
+        this.user.password !== null &&
+        this.passwordError === "" &&
+        this.user.password_confirmation !== null &&
+        this.passwordConfirmError === ""
+      );
     },
   },
   methods: {
@@ -229,9 +237,7 @@ export default {
             LocalStorage.set("loginId", res.data.data.id);
           }
         })
-        .catch((e) => {
-          console.log(e);
-        })
+        .catch((e) => {})
         .finally(() => {
           this.loading = false;
         });
@@ -271,7 +277,7 @@ export default {
     },
 
     validateTelephone() {
-      const regex = /^(\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4}))$/;
+      const regex = /^\d{9,15}$/;
       const validPhone = regex.test(this.user.telephone);
       this.telephoneError = validPhone ? "" : this.$t("app.invalidPhoneError");
       return validPhone;
@@ -293,9 +299,7 @@ export default {
       this.$emit("confirmAccountCreation");
     },
   },
-  components: {
-    VueTelInput,
-  },
+  components: {},
 };
 </script>
 

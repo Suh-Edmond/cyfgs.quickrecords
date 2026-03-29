@@ -11,7 +11,7 @@
             <div class="q-pa-md">
               <q-form @submit="onSubmit" class="q-gutter-md">
                 <div class="row q-gutter-x-md bg-grey-2">
-                  <div class="col-md-12">
+                  <div class="col">
                     <q-list>
                       <q-item
                         v-ripple
@@ -21,18 +21,24 @@
                       >
                         <q-item-section avatar>
                           <q-icon
-                            color="secondary"
+                            :color="
+                              feature.requires_subscription
+                                ? 'negative'
+                                : 'secondary'
+                            "
                             text-color="white"
-                            name="done"
+                            :name="
+                              feature.requires_subscription ? 'cancel' : 'done'
+                            "
                             size="sm"
                           />
                         </q-item-section>
-                        <q-item-section>{{ feature }}</q-item-section>
+                        <q-item-section>{{ feature.name }}</q-item-section>
                       </q-item>
                     </q-list>
                   </div>
 
-                  <div class="col-md-12">
+                  <div class="col">
                     <q-list>
                       <q-item
                         v-ripple
@@ -42,13 +48,19 @@
                       >
                         <q-item-section avatar>
                           <q-icon
-                            color="secondary"
+                            :color="
+                              feature.requires_subscription
+                                ? 'negative'
+                                : 'secondary'
+                            "
                             text-color="white"
-                            name="done"
+                            :name="
+                              feature.requires_subscription ? 'cancel' : 'done'
+                            "
                             size="sm"
                           />
                         </q-item-section>
-                        <q-item-section>{{ feature }}</q-item-section>
+                        <q-item-section>{{ feature.name }}</q-item-section>
                       </q-item>
                     </q-list>
                   </div>
@@ -57,18 +69,20 @@
                   <q-list bordered class="subscription month_subscription">
                     <q-item class="q-py-md" clickable>
                       <q-item-section>
-                        <q-item-label class="text-bold">Monthly</q-item-label>
+                        <q-item-label class="text-bold">{{
+                          $t("app.monthlyPlan")
+                        }}</q-item-label>
                         <q-item-label caption class="text-weight-bold"
-                          >One month free Trial - Then
+                          >{{ $t("app.trialPlanCaption") }}
                           {{ Number(getMonthlyPlan).toLocaleString() }}
-                          XAF/Month</q-item-label
+                          XAF/{{ $t("app.month") }}</q-item-label
                         >
                       </q-item-section>
 
                       <q-item-section side top>
                         <q-item-label caption
                           ><q-badge color="warning">
-                            Basic value
+                            {{ $t("app.basicValue") }}
                           </q-badge></q-item-label
                         >
                       </q-item-section>
@@ -116,13 +130,15 @@
             >
               <q-item-section avatar>
                 <q-icon
-                  color="secondary"
+                  :color="
+                    feature.requires_subscription ? 'negative' : 'secondary'
+                  "
                   text-color="white"
-                  name="done"
+                  :name="feature.requires_subscription ? 'cancel' : 'done'"
                   size="sm"
                 />
               </q-item-section>
-              <q-item-section>{{ feature }}</q-item-section>
+              <q-item-section>{{ feature.name }}</q-item-section>
             </q-item>
           </q-list>
           <q-list class="bg-grey-2">
@@ -134,30 +150,34 @@
             >
               <q-item-section avatar>
                 <q-icon
-                  color="secondary"
+                  :color="
+                    feature.requires_subscription ? 'negative' : 'secondary'
+                  "
                   text-color="white"
-                  name="done"
+                  :name="feature.requires_subscription ? 'cancel' : 'done'"
                   size="sm"
                 />
               </q-item-section>
-              <q-item-section>{{ feature }}</q-item-section>
+              <q-item-section>{{ feature.name }}</q-item-section>
             </q-item>
           </q-list>
           <q-list bordered class="subscription month_subscription">
             <q-item class="q-py-md" clickable>
               <q-item-section>
-                <q-item-label class="text-bold">Monthly</q-item-label>
+                <q-item-label class="text-bold">{{
+                  $t("app.monthPlan")
+                }}</q-item-label>
                 <q-item-label caption class="text-weight-bold"
-                  >One month free Trial - Then
+                  >{{ $t("app.trialPlanCaption") }}
                   {{ Number(getMonthlyPlan).toLocaleString() }}
-                  XAF/Month</q-item-label
+                  XAF/{{ $t("app.month") }}</q-item-label
                 >
               </q-item-section>
 
               <q-item-section side top>
                 <q-item-label caption
                   ><q-badge color="warning">
-                    Basic value
+                    {{ $t("app.basicValue") }}
                   </q-badge></q-item-label
                 >
               </q-item-section>
@@ -182,6 +202,7 @@
 <script>
 import { LocalStorage, Notify, Platform } from "quasar";
 import ProcessStatusVue from "../Constants/ProcessStatus.vue";
+import { APP_FEATURES_EN, APP_FEATURES_FR } from "../../utils/app-features";
 export default {
   name: "PageIndex",
   mounted() {
@@ -200,23 +221,11 @@ export default {
       loading: false,
       defaultSubPlan: {},
       color: "primary",
-      features: [
-        "Member Management",
-        "Income Management",
-        "Expenditure Management",
-        "Contribution Management",
-        "Member's Saving",
-        "Reports and Statistics",
-        "Balance Sheets",
-        "Logs and Tracability",
-        "Security and Secure Storage",
-        "Free Training and Support",
-        "Free Data Migration",
-        "Free Customization & Updates",
-      ],
+      features:
+        this.$i18n.locale === "en-US" ? APP_FEATURES_EN : APP_FEATURES_FR,
     };
   },
-  emits: ["onMakePayment", "onContinueTrial", "setProgressBar"],
+  emits: ["onMakePayment", "onStartTrial", "setProgressBar"],
   computed: {
     getMonthlyPlan() {
       return this.defaultSubPlan.price;
@@ -301,9 +310,7 @@ export default {
             this.$emit("onStartTrial");
           }
         })
-        .catch((e) => {
-          console.log(e);
-        })
+        .catch((e) => {})
         .finally(() => {
           this.loading = false;
         });

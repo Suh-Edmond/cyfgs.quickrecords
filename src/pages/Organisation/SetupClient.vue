@@ -3,7 +3,7 @@
     <q-stepper v-model="step" ref="stepper" color="primary" animated>
       <q-step
         :name="1"
-        title="Account"
+        :title="$t('app.account')"
         icon="account_circle"
         :done="hasCompletedAccountCreation"
         style="min-height: 500px"
@@ -17,7 +17,7 @@
       <q-step
         v-if="processStatus === 'ACCOUNT_VERIFICATION'"
         :name="2"
-        title="Account Verification"
+        :title="$t('app.accountVerification')"
         icon="account_circle"
         :done="hasCompletedAccountVerification"
         style="min-height: 500px"
@@ -30,7 +30,7 @@
 
       <q-step
         :name="3"
-        title="Organisation"
+        :title="$t('app.organisationLabel')"
         icon="diversity_3"
         :done="hasCompletedOrganisationCreation"
         style="min-height: 500px"
@@ -58,7 +58,7 @@
 
       <q-step
         :name="5"
-        title="Trail"
+        :title="$t('app.trial')"
         icon="free_cancellation"
         :done="hasCompletedTrial"
         style="min-height: 500px"
@@ -66,11 +66,12 @@
         <TrialManagementVue
           @onMakePaymentToPackage="handleSubscriptionPaymentEvent"
           @onStartTrial="handleStartTrialEvent"
+          @setProgressBar="setProgressBar"
         />
       </q-step>
       <q-step
         :name="7"
-        title="Complete"
+        :title="$t('app.complete')"
         icon="task_alt"
         :done="hasCompletedSetup"
         style="min-height: 500px"
@@ -84,23 +85,26 @@
 
       <template v-slot:message>
         <q-banner v-if="step === 1" class="bg-primary text-white q-px-lg">
-          Get Started by creating an account
+          {{ $t("app.createAccountCaption") }}
         </q-banner>
         <q-banner v-else-if="step === 2" class="bg-primary text-white q-px-lg">
-          Continue by verifying your account
+          {{ $t("app.confirmAccountCaption") }}
         </q-banner>
         <q-banner v-else-if="step === 3" class="bg-primary text-white q-px-lg">
-          Create your Organisation
+          {{ $t("app.createOrganisationCaption") }}
         </q-banner>
         <q-banner v-else-if="step === 4" class="bg-primary text-white q-px-lg">
-          Subscribe to a plan and enjoy full features
+          {{ $t("app.subscriptionCaption") }}
         </q-banner>
         <q-banner v-else-if="step === 5" class="bg-primary text-white q-px-lg">
-          You're just one step away from the full experience! Call
-          <b>+237673660071</b> to unlock every premuim feature.
+          {{
+            $t("app.trialingSubscriptionCaption", {
+              telephone: "+237673660071",
+            })
+          }}
         </q-banner>
         <q-banner v-else class="bg-primary text-white q-px-lg">
-          You're all set! Start managing your finances with QuickRecords.
+          {{ $t("app.completedSetupCaption") }}
         </q-banner>
         <q-linear-progress
           rounded
@@ -207,11 +211,10 @@ export default {
     },
 
     handleStartTrialEvent() {
-      this.hasCompletedSetup = this.$store.getters.getProcessStage.isSuccessful;
+      this.hasCompletedSetup = true; // TODO: Remove when payment is wokring;
       this.hasCompletedTrial = this.$store.getters.getProcessStage.isSuccessful;
       this.step = this.$store.getters.getProcessStage.step;
       this.processStatus = this.$store.getters.getProcessStage.processStatus;
-      this.hasCompletedSetup = this.$store.getters.getProcessStage.isSuccessful;
     },
     handleContinueTrialEvent() {
       this.hasCompletedSubscription =
@@ -219,6 +222,7 @@ export default {
       this.step = this.$store.getters.getProcessStage.step;
       this.hasCompletedPayment = false;
       this.processStatus = this.$store.getters.getProcessStage.processStatus;
+      this.hasCompletedSetup = true; // TODO: Remove when payment is wokring;
     },
     handleCompletePayment() {
       this.hasCompletedPayment =

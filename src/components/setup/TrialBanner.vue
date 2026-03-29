@@ -14,7 +14,11 @@
             $t("app.trailingSubscription")
           }}</q-item-label>
           <q-item-label lines="2">
-            {{ $t("app.trialingSubscriptionCaption") }}
+            {{
+              $t("app.trialingSubscriptionCaption", {
+                telephone: "+237673660071",
+              })
+            }}
           </q-item-label>
         </q-item-section>
 
@@ -22,19 +26,6 @@
           {{ $t("app.trailingSubscription") }}<br />
           {{ $t("app.trialingSubscriptionCaption") }}
         </div>
-
-        <q-item-section side top v-if="$q.platform.is.desktop">
-          <q-item-label lines="1" class="text-weight-bold text-white">{{
-            $t("app.duration")
-          }}</q-item-label>
-          <q-item-label class="row q-gutter-col-x-md text-white duration">
-            <span>{{
-              getFormatDate(subscription.trial_period_start_date)
-            }}</span>
-            ------
-            <span>{{ getFormatDate(subscription.trial_period_end_date) }}</span>
-          </q-item-label>
-        </q-item-section>
       </q-item>
     </q-list>
   </div>

@@ -1,62 +1,95 @@
 <template>
   <div class="row">
     <div class="col-4 col-md-4 col-lg-4 col-xs-12 col-sm-12">
-      <div class="text_h6 flex justify-start q-pl-md q-pb-sm">
+      <div class="header flex justify-start q-pl-md q-pb-sm">
         {{ $t("app.organisationMgtHeading") }}
       </div>
       <div class="q-pt-sm bill_info">
         <div class="row q-col-gutter-x-md justify-between">
-          <label class="text-muted">Name:</label>
-          <label class="text_h6">
+          <label class="text-label"
+            ><q-icon name="diversity_3" size="xs" class="q-pr-sm" />{{
+              $t("app.organisationName")
+            }}
+            :
+          </label>
+          <label class="text_value">
             {{ organisation.name }}
           </label>
         </div>
         <div class="row q-col-gutter-x-md q-pt-sm justify-between">
-          <label class="text-muted">Email:</label>
-          <label class="text_h6 flex justify-end items-end">
+          <label class="text-label"
+            ><q-icon name="email" size="xs" class="q-pr-sm" />{{
+              $t("app.emailLabel")
+            }}
+            :
+          </label>
+          <label class="text_value flex justify-end items-end">
             {{ organisation.email }}
           </label>
         </div>
         <div class="row q-col-gutter-x-md q-pt-sm justify-between">
-          <label class="text-muted">Telehone:</label>
-          <label class="text_h6"> {{ getTelephone }} </label>
+          <label class="text-label"
+            ><q-icon name="call" size="xs" class="q-pr-sm" />{{
+              $t("app.telephoneLabel")
+            }}
+            :
+          </label>
+          <label class="text_value"> {{ getTelephone }} </label>
         </div>
 
         <div class="row q-col-gutter-x-md q-pt-sm justify-between">
-          <label class="text-muted">WhatsApp Number:</label>
-          <label class="text_h6"> {{ getWhatsappNumber }} </label>
+          <label class="text-label"
+            ><img
+              src="../../assets/whatsapp_transparent.jpg"
+              width="25px"
+              class="q-pr-sm whatsapp_icon"
+            />{{ $t("app.telephoneTwo") }} :
+          </label>
+          <label class="text_value"> {{ getWhatsappNumber }} </label>
         </div>
 
         <div class="row q-col-gutter-x-md q-pt-sm justify-between">
-          <label class="text-muted">Address:</label>
-          <label class="text_h6"> {{ organisation.address }} </label>
+          <label class="text-label"
+            ><q-icon name="location_on" size="xs" class="q-pr-sm" />{{
+              $t("app.addressLabel")
+            }}
+            :
+          </label>
+          <label class="text_value">
+            {{ organisation.address }} {{ organisation.box_number }}</label
+          >
         </div>
 
         <div class="row q-col-gutter-x-md q-pt-sm justify-between">
-          <label class="text-muted">PO Box:</label>
-          <label class="text_h6"> {{ organisation.box_number }} </label>
+          <label class="text-label"
+            ><q-icon name="location_on" size="xs" class="q-pr-sm" />{{
+              $t("app.region")
+            }}
+            :
+          </label>
+          <label class="text_value"> {{ organisation.region }} </label>
         </div>
 
         <div class="row q-col-gutter-x-md q-pt-sm justify-between">
-          <label class="text-muted">Region:</label>
-          <label class="text_h6"> {{ organisation.region }} </label>
-        </div>
-
-        <div class="row q-col-gutter-x-md q-pt-sm justify-between">
-          <label class="text-muted">Salutation/Greeting:</label>
-          <label class="text_h6"> {{ organisation.salutation }} </label>
-        </div>
-
-        <div class="row q-col-gutter-x-md q-pt-sm justify-between">
-          <label class="text-muted">Trial start date:</label>
-          <label class="text_h6">
+          <label class="text-label"
+            ><q-icon name="hourglass_top" size="xs" class="q-pr-sm" />{{
+              $t("app.trialStartDate")
+            }}
+            :
+          </label>
+          <label class="text_value">
             {{ getFormatDate(subscription.trial_period_start_date) }}
           </label>
         </div>
 
         <div class="row q-col-gutter-x-md q-pt-sm justify-between">
-          <label class="text-muted">Trial end date:</label>
-          <label class="text_h6">
+          <label class="text-label"
+            ><q-icon name="hourglass_bottom" size="xs" class="q-pr-sm" />{{
+              $t("app.trialEndDate")
+            }}
+            :
+          </label>
+          <label class="text_value">
             {{ getFormatDate(subscription.trial_period_end_date) }}
           </label>
         </div>
@@ -64,7 +97,7 @@
     </div>
     <div class="col-8 col-md-8 col-lg-8 col-xs-12 col-sm-12">
       <div
-        class="text_h6 flex q-pb-sm"
+        class="header flex"
         :class="
           $q.platform.is.mobile ? 'justify-start q-pl-md' : 'justify-center'
         "
@@ -79,21 +112,18 @@
         "
       >
         <q-list>
-          <q-item
-            v-ripple
-            v-for="(feature, index) in features"
-            dense
-            :key="index"
-          >
+          <q-item v-for="(feature, index) in features" dense :key="index">
             <q-item-section avatar>
               <q-icon
-                color="secondary"
+                :color="
+                  feature.requires_subscription ? 'negative' : 'secondary'
+                "
                 text-color="white"
-                name="done"
-                size="xs"
+                :name="feature.requires_subscription ? 'cancel' : 'done'"
+                size="sm"
               />
             </q-item-section>
-            <q-item-section>{{ feature }}</q-item-section>
+            <q-item-section class="features">{{ feature.name }}</q-item-section>
           </q-item>
         </q-list>
       </div>
@@ -146,25 +176,39 @@ export default {
   background-color: $grey1;
 }
 
-.text_h6 {
+.text-label {
+  color: $grey2;
+}
+
+.header {
   color: $dark;
   font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
   font-size: 15px;
   line-height: 24px;
-  align-items: center;
-  text-align: center;
 }
 
-.billing_field {
+.text_value {
+  color: $dark;
   font-family: "Roboto";
   font-style: normal;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 24px;
+}
 
-  font-size: 14px;
-  align-items: center;
-  letter-spacing: 0.01em;
-  color: $dark;
+.text_h6 {
+  color: $grey5;
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 24px;
+}
+
+.whatsapp_icon {
+  color: $grey2 !important;
 }
 
 .bill_info {

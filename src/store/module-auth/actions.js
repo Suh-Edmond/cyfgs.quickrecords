@@ -306,9 +306,7 @@ export function downloadPdf({}, payload) {
 //upload any other files being used in the system
 export async function uploadImageRequest({ commit, dispatch }, payload) {
   return axios
-    .post(API_URL + payload.url, payload.data, {
-      withCredentials: false,
-    })
+    .post(API_URL + payload.url, payload.data)
     .then((res) => {
       let handle_response_payload = {
         data: "",
@@ -339,9 +337,7 @@ export async function uploadImageRequest({ commit, dispatch }, payload) {
 
 //fetch uploaded files
 export async function fetchUploadedImageRequest({}, payload) {
-  return await axios.get(API_URL + payload.url, {
-    withCredentials: false,
-  });
+  return await axios.get(API_URL + payload.url);
 }
 
 export function setFetchingState({ commit }, payload) {

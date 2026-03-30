@@ -192,14 +192,13 @@
 <script>
 import ButtonVue from "src/components/Button.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
-import { Notify, Platform } from "quasar";
+import { LocalStorage, Notify, Platform } from "quasar";
 import { VueTelInput } from "vue-tel-input";
 import { REGIONS } from "../../utils/regions";
 
 export default {
   mixins: [organisationMixinVue],
   mounted() {
-    this.getOrganisationInfo();
     this.setOrganisationInfo();
   },
   data() {
@@ -325,23 +324,24 @@ export default {
     },
 
     setOrganisationInfo() {
-      let data = this.$store.getters.getOrganisation;
-      let telephoneString = data.telephone.split("/");
-      if (data !== null) {
+      const authData = LocalStorage.getItem("data");
+      if (authData !== null) {
+        const userOrganisation = authData.subscription.organisation;
+        let telephoneString = userOrganisation.telephone.split("/");
         if (telephoneString.length > 1) {
           this.show_telephone2 = true;
         }
-        this.organisation.address = data.address;
-        this.organisation.name = data.name;
-        this.organisation.email = data.email;
+        this.organisation.address = userOrganisation.address;
+        this.organisation.name = userOrganisation.name;
+        this.organisation.email = userOrganisation.email;
         this.organisation.telephone = telephoneString[0];
         this.organisation.telephone2 =
           telephoneString[1] !== undefined ? telephoneString[1] : "";
-        this.organisation.salutation = data.salutation;
-        this.organisation.description = data.description;
-        this.organisation.box_number = data.box_number;
-        this.organisation.region = data.region;
-        this.organisation.logo = data.logo;
+        this.organisation.salutation = userOrganisation.salutation;
+        this.organisation.description = userOrganisation.description;
+        this.organisation.box_number = userOrganisation.box_number;
+        this.organisation.region = userOrganisation.region;
+        this.organisation.logo = userOrganisation.logo;
       }
 
       return this.organisation;
@@ -458,8 +458,8 @@ export default {
 
 .camara {
   position: absolute;
-  top: 17%;
-  left: 53%;
+  top: 14.9%;
+  left: 52%;
   cursor: pointer;
   color: $grey8;
 }

@@ -4,9 +4,7 @@
       <q-spinner color="primary" size="2.5em" />
     </div>
     <div class="row" v-if="!getLoadingState">
-      <label   class="q-pb-md title">{{
-        $t("app.availableRoleLabel")
-      }}</label>
+      <label class="q-pb-md title">{{ $t("app.availableRoleLabel") }}</label>
     </div>
     <div class="row" v-if="!getLoadingState">
       <div class="col-3 col-sm-12 col-md-3 col-lg-3 col-xs-12">
@@ -240,11 +238,11 @@
 </template>
 
 <script>
-  import roleMixin from "src/mixins/roleMixin.vue";
-  import ButtonVue from "src/components/Button.vue";
-  import moment from "moment";
+import roleMixin from "src/mixins/roleMixin.vue";
+import ButtonVue from "src/components/Button.vue";
+import moment from "moment";
 
-  export default {
+export default {
   mixins: [roleMixin],
 
   mounted() {
@@ -265,7 +263,9 @@
   },
   computed: {
     getRoles() {
-      return this.$store.getters.getRoles;
+      return this.$store.getters.getRoles.filter(
+        (e) => e.name !== "SYSTEM_ADMIN"
+      );
     },
 
     validateForm() {
@@ -283,8 +283,8 @@
     getSelectedRole() {
       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       return this.$store.getters.getRoles !== undefined &&
-      this.$store.getters.getRoles !== null &&
-      this.selected_role == null
+        this.$store.getters.getRoles !== null &&
+        this.selected_role == null
         ? this.$store.getters.getRoles[0]
         : this.selected_role;
     },

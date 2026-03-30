@@ -34,7 +34,7 @@
                 :class="$q.screen.lg ? 'q-px-md' : ''"
               >
                 <div>
-                  <label  class="form_field"
+                  <label class="form_field"
                     ><q-icon name="token" size="xs"></q-icon
                     >{{ $t("app.token") }}
                     <span class="text-red">*</span></label
@@ -45,7 +45,7 @@
                 <div class="q-mb-xl q-mt-xl">
                   <q-btn
                     class="form_button"
-                    :label="label"
+                    :label="$t('app.submit')"
                     :loading="loading"
                     :color="'primary'"
                     :disabled="validationToken"
@@ -86,7 +86,7 @@
                 :class="$q.screen.lg ? 'q-px-md' : ''"
               >
                 <div>
-                  <label  class="form_field"
+                  <label class="form_field"
                     ><q-icon name="lock" size="xs"></q-icon
                     >{{ $t("app.newPassword") }}
                     <span class="text-red">*</span></label
@@ -113,7 +113,7 @@
                   </q-input>
                 </div>
                 <div>
-                  <label  class="form_field"
+                  <label class="form_field"
                     ><q-icon name="lock" size="xs"></q-icon
                     >{{ $t("app.confirmPasword") }}
                     <span class="text-red">*</span></label
@@ -142,7 +142,7 @@
                 <div class="q-mb-xl">
                   <q-btn
                     class="form_button"
-                    :label="this.$t('app.saveBtnLabel')"
+                    :label="$t('app.saveBtnLabel')"
                     :loading="loading"
                     :disabled="validatePassword"
                     :color="'primary'"
@@ -198,7 +198,6 @@ export default {
   data() {
     return {
       token: "",
-      label: this.$t("app.submit"),
       loading: false,
       show_new_password_form: true,
       isPwd: true,

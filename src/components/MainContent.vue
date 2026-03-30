@@ -21,6 +21,7 @@
             flat
             v-if="canViewNotification()"
             size="sm"
+            @click="getNotifications()"
           >
             <q-badge
               floating
@@ -63,9 +64,29 @@
                         </q-btn>
                       </label>
                     </div>
+
+                    <div
+                      class="flex justify-center"
+                      v-if="isLoadingNotification"
+                    >
+                      <q-spinner color="primary" size="2em" :thickness="2" />
+                    </div>
                   </q-item-section>
                 </q-item>
 
+                <q-item
+                  ><q-item-section
+                    ><q-item-label
+                      lines="1"
+                      class="text-subtitle2 flex flex-center"
+                      v-if="
+                        notifications.length === 0 && !isLoadingNotification
+                      "
+                    >
+                      {{ $t("app.NoNotificationAvailable") }}
+                    </q-item-label></q-item-section
+                  ></q-item
+                >
                 <q-item
                   clickable
                   v-ripple
@@ -230,9 +251,15 @@
               @update-income-activity-history="updateIncomeActivityHistory"
               @update-sponsorship-history="updateSponsorshipHistory"
               @update-user-saving-history="updateUserSavingHistory"
-              @update-expenditure-item-transaction="updateExpenditureItemTransaction"
-              @update-expenditure-item-detail-transaction="updateExpenditureItemDetailTransaction"
-              @update-user-contribution-transaction="updateUserContributionTransaction"
+              @update-expenditure-item-transaction="
+                updateExpenditureItemTransaction
+              "
+              @update-expenditure-item-detail-transaction="
+                updateExpenditureItemDetailTransaction
+              "
+              @update-user-contribution-transaction="
+                updateUserContributionTransaction
+              "
             />
           </div>
         </q-card-section>
@@ -253,10 +280,6 @@ export default {
       (role) => role.name !== "MEMBER"
     ).name;
     this.auth_user_role = this.formatUserRole(welcome_title);
-    if(this.checkPresidentOrAdminRole()){
-      this.getNotifications();
-    }
-
   },
   props: {
     item: {
@@ -282,6 +305,7 @@ export default {
       has_intermediate_tab2: false,
       loading: false,
       notifications: [],
+      isLoadingNotification: false,
     };
   },
 
@@ -457,7 +481,7 @@ export default {
     editIncomeActivity(data) {
       this.updateDrawer(data);
     },
-    updateIncomeActivityHistory(data){
+    updateIncomeActivityHistory(data) {
       this.updateDrawer(data);
     },
     viewIncomeActivity(data) {
@@ -471,22 +495,22 @@ export default {
       this.updateDrawer(data);
     },
 
-    updateSponsorshipHistory(data){
+    updateSponsorshipHistory(data) {
       this.updateDrawer(data);
     },
 
-    updateUserSavingHistory(data){
-      this.updateDrawer(data)
+    updateUserSavingHistory(data) {
+      this.updateDrawer(data);
     },
-    updateExpenditureItemTransaction(data){
-      this.updateDrawer(data)
-    },
-
-    updateExpenditureItemDetailTransaction(data){
+    updateExpenditureItemTransaction(data) {
       this.updateDrawer(data);
     },
 
-    updateUserContributionTransaction(data){
+    updateExpenditureItemDetailTransaction(data) {
+      this.updateDrawer(data);
+    },
+
+    updateUserContributionTransaction(data) {
       this.updateDrawer(data);
     },
     formatUserRole(role) {
@@ -573,6 +597,7 @@ export default {
     },
 
     getNotifications() {
+      this.isLoadingNotification = true;
       let payload = {
         url: `/api/protected/organisations/members/get_invitation_notifications`,
         msg: this.$t("app.saveContributionSuccessMsg"),
@@ -589,6 +614,7 @@ export default {
         },
       };
       this.$store.dispatch("getRequest", payload).then((res) => {
+        this.isLoadingNotification = false;
         if (res.status === 200) {
           this.notifications = res.data.filter(
             (notification) => !notification.has_seen_notification

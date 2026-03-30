@@ -329,10 +329,8 @@ import ChangeExpenditureItemDetailTransaction from "components/ChangeExpenditure
 import UpdateUserContributionTransaction from "components/UpdateUserContributionTransaction";
 
 export default {
-  mixins: [organisationMixinVue, CurrentYearMixin, HelperMixin],
-  created() {
-    this.getOrganisationInfo();
-  },
+  mixins: [CurrentYearMixin, HelperMixin],
+  created() {},
   mounted() {},
   data() {
     return {

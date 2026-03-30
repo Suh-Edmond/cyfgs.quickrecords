@@ -235,6 +235,7 @@ import ContributionsMixin from "src/mixins/ContributionsMixin.vue";
 import ExpenditureItemDetailMixinVue from "src/mixins/ExpenditureItemDetailMixin.vue";
 import CurrentYearMixin from "src/mixins/CurrentYearMixin.vue";
 import CategoryConstants from "components/Constants/CategoryConstants";
+import { LocalStorage } from "quasar";
 
 export default {
   mixins: [
@@ -245,27 +246,13 @@ export default {
     ExpenditureItemDetailMixinVue,
     CurrentYearMixin,
   ],
-  beforeCreate() {
-    let payload = {
-      status: "none",
-      url: "/api/protected/organisation-info",
-      has_path_val: true,
-      show_feedback: false,
-      msg: "none",
-      color: "default",
-      error_msg: "default",
-      commit: "SET_ORGANISATION",
-      has_commit: true,
-      to_be_store_data: {
-        required: true,
-        has_value: false,
-        data: null,
-      },
-    };
-    this.$store.dispatch("getRequest", payload).then((res) => {});
-  },
+
   beforeMount() {
-    this.fetchCurrentYear();
+    const data = LocalStorage.getItem("data");
+    if (data === null) {
+      return;
+    }
+    this.$store.commit("SET_CURRENT_YEAR", data.current_session);
   },
 
   mounted() {

@@ -33,7 +33,7 @@
               v-show="!is_exist_user"
             >
               <div>
-                <label  class="form_field"
+                <label class="form_field"
                   >{{ $t("app.emailLabel") }}
                   <span class="text-red">*</span></label
                 >
@@ -48,7 +48,7 @@
               <div>
                 <q-btn
                   class="form_button q-mt-md"
-                  :label="label_continue"
+                  :label="$t('app.continue')"
                   :loading="loading"
                   :disabled="validatePhone"
                   :color="color"
@@ -72,7 +72,7 @@
               v-show="is_exist_user"
             >
               <div>
-                <label  class="form_field"
+                <label class="form_field"
                   >{{ $t("app.emailLabel") }}
                   <span class="text-red">*</span></label
                 >
@@ -85,7 +85,7 @@
                 />
               </div>
               <div>
-                <label  class="form_field"
+                <label class="form_field"
                   >{{ $t("app.passwordLabel") }}
                   <span class="text-red">*</span></label
                 >
@@ -105,7 +105,7 @@
                 </q-input>
               </div>
               <div>
-                <label  class="form_field"
+                <label class="form_field"
                   >{{ $t("app.confirmPasswordLabel") }}
                   <span class="text-red">*</span></label
                 >
@@ -133,7 +133,7 @@
               <div>
                 <q-btn
                   class="form_button"
-                  :label="label_sigin"
+                  :label="$t('app.signIn')"
                   :loading="loading"
                   :color="color"
                   :disabled="validateLogin"
@@ -211,8 +211,6 @@ export default {
       },
       isPwd: true,
       is_pwd_confirm: true,
-      label_continue: this.$t("app.continue"),
-      label_sigin: this.$t("app.signIn"),
       loading: false,
       is_exist_user: false,
       color: "primary",

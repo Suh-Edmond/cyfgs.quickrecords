@@ -746,5 +746,6 @@ export default {
       "Please provide a description, mission or vision of your organisation",
     regionError: "Region is required",
     invalidAddress: "Please provide an address",
+    NoNotificationAvailable:"No notifications are available"
   },
 };

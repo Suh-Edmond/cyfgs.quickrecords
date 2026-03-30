@@ -777,5 +777,6 @@ export default {
     regionError: " La région est obligatoire",
     invalidAddress: " Veuillez indiquer une adresse",
     NoNotificationAvailable: "Aucune notification n'est disponible",
+    tokenMask: "Jeton: #######",
   },
 };

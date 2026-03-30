@@ -26,9 +26,7 @@ export default async ({ Vue, router }) => {
           await axios_.get(CSRF_URL, {
             withCredentials: true,
           });
-        } catch (e) {
-          console.error("CSRF handshake failed", e);
-        }
+        } catch (e) {}
       }
 
       // Auth Token Handling (Broadcasting Readiness)

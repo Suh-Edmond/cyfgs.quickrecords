@@ -39,7 +39,20 @@
                     >{{ $t("app.token") }}
                     <span class="text-red">*</span></label
                   >
-                  <q-input v-model="token" outlined dense type="text">
+                  <q-input
+                    v-model="token"
+                    outlined
+                    dense
+                    mask="#######"
+                    inputmode="numeric"
+                    maxlength="7"
+                    :rules="[
+                      (val) =>
+                        (val && val.length === 7) ||
+                        'Please enter a 7-digit TOKEN',
+                    ]"
+                    :hint="$t('app.tokenMask')"
+                  >
                   </q-input>
                 </div>
                 <div class="q-mb-xl q-mt-xl">
@@ -242,7 +255,7 @@ export default {
         color: "default",
         show_feedback: true,
         to_on_ok: "none",
-        to_on_fail: "none",
+        to_on_fail: "PasswordReset",
         error_msg: "",
         to_be_store_data: {
           required: false,
@@ -266,7 +279,7 @@ export default {
               message: this.$t("app.tokenExpireMsg"),
             });
           }
-          if (res.status === 403) {
+          if (res.status === 403 || res.status === 401) {
             Notify.create({
               type: "info",
               position: Platform.is.mobile ? "bottom" : "top-right",

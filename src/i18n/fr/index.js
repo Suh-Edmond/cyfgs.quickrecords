@@ -776,5 +776,7 @@ export default {
       "Veuillez fournir une description, la mission ou la vision de votre organisation",
     regionError: " La région est obligatoire",
     invalidAddress: " Veuillez indiquer une adresse",
+    NoNotificationAvailable: "Aucune notification n'est disponible",
+    tokenMask: "Jeton: #######",
   },
 };

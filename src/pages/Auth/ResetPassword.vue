@@ -34,18 +34,31 @@
                 :class="$q.screen.lg ? 'q-px-md' : ''"
               >
                 <div>
-                  <label  class="form_field"
+                  <label class="form_field"
                     ><q-icon name="token" size="xs"></q-icon
                     >{{ $t("app.token") }}
                     <span class="text-red">*</span></label
                   >
-                  <q-input v-model="token" outlined dense type="text">
+                  <q-input
+                    v-model="token"
+                    outlined
+                    dense
+                    mask="#######"
+                    inputmode="numeric"
+                    maxlength="7"
+                    :rules="[
+                      (val) =>
+                        (val && val.length === 7) ||
+                        'Please enter a 7-digit TOKEN',
+                    ]"
+                    :hint="$t('app.tokenMask')"
+                  >
                   </q-input>
                 </div>
                 <div class="q-mb-xl q-mt-xl">
                   <q-btn
                     class="form_button"
-                    :label="label"
+                    :label="$t('app.submit')"
                     :loading="loading"
                     :color="'primary'"
                     :disabled="validationToken"
@@ -86,7 +99,7 @@
                 :class="$q.screen.lg ? 'q-px-md' : ''"
               >
                 <div>
-                  <label  class="form_field"
+                  <label class="form_field"
                     ><q-icon name="lock" size="xs"></q-icon
                     >{{ $t("app.newPassword") }}
                     <span class="text-red">*</span></label
@@ -113,7 +126,7 @@
                   </q-input>
                 </div>
                 <div>
-                  <label  class="form_field"
+                  <label class="form_field"
                     ><q-icon name="lock" size="xs"></q-icon
                     >{{ $t("app.confirmPasword") }}
                     <span class="text-red">*</span></label
@@ -142,7 +155,7 @@
                 <div class="q-mb-xl">
                   <q-btn
                     class="form_button"
-                    :label="this.$t('app.saveBtnLabel')"
+                    :label="$t('app.saveBtnLabel')"
                     :loading="loading"
                     :disabled="validatePassword"
                     :color="'primary'"
@@ -198,7 +211,6 @@ export default {
   data() {
     return {
       token: "",
-      label: this.$t("app.submit"),
       loading: false,
       show_new_password_form: true,
       isPwd: true,
@@ -243,7 +255,7 @@ export default {
         color: "default",
         show_feedback: true,
         to_on_ok: "none",
-        to_on_fail: "none",
+        to_on_fail: "PasswordReset",
         error_msg: "",
         to_be_store_data: {
           required: false,
@@ -267,7 +279,7 @@ export default {
               message: this.$t("app.tokenExpireMsg"),
             });
           }
-          if (res.status === 403) {
+          if (res.status === 403 || res.status === 401) {
             Notify.create({
               type: "info",
               position: Platform.is.mobile ? "bottom" : "top-right",

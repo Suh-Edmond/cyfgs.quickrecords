@@ -151,6 +151,7 @@ export default {
         data: {
           username: this.user.credential,
           password: this.user.password,
+          credential: this.user.credential,
         },
         msg: "Login Successful",
         color: "default",
@@ -171,6 +172,10 @@ export default {
             this.$store.dispatch(
               "setCurrentYear",
               response.data.data.current_session
+            );
+            this.$store.commit(
+              "SET_ORGANISATION",
+              response.data.data.subscription.organisation
             );
             this.$router.push({
               name: "dashboard",

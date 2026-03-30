@@ -40,7 +40,7 @@
               :class="$q.screen.lg ? 'q-px-md' : ''"
             >
               <div>
-                <label   class="form_field"
+                <label class="form_field"
                   ><q-icon name="email" size="xs" class="q-py-sm"></q-icon
                   >{{ $t("app.emailLabel") }}
                   <span class="text-red">*</span></label
@@ -57,7 +57,7 @@
               <div class="q-mb-xl">
                 <q-btn
                   class="form_button"
-                  :label="label"
+                  :label="$t('app.getPasswordResetToken')"
                   :loading="loading"
                   :disabled="validateEmail"
                   :color="'primary'"
@@ -119,7 +119,6 @@ export default {
       user: {
         email: "",
       },
-      label: this.$t("app.getPasswordResetToken"),
       loading: false,
       show_token_form: true,
       emailSentSuccessfully: true,

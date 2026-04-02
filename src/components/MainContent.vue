@@ -13,6 +13,7 @@
         <q-toolbar-title class="toolbar_title wrap">
           {{ $t("app.welcomeLabel") }} {{ auth_user_role }}
         </q-toolbar-title>
+
         <div>
           <q-btn
             round
@@ -167,6 +168,10 @@
           </q-btn-dropdown>
         </div>
       </q-toolbar>
+      <TrialTimerVue
+        :trialEndDate="getSubscriptionTrialEndDate"
+        :status="getSubscriptionStatus"
+      />
     </q-header>
     <div class="main_content">
       <q-card
@@ -272,6 +277,7 @@
 import { LocalStorage, SessionStorage } from "quasar";
 import HelperMixin from "src/mixins/HelperMixin.vue";
 import expenditureItemMixin from "src/mixins/expenditureItemMixin.vue";
+import TrialTimerVue from "./setup/TrialTimer.vue";
 export default {
   mixins: [expenditureItemMixin, HelperMixin],
   mounted() {
@@ -335,6 +341,27 @@ export default {
         this.auth_user.picture !== undefined &&
         this.auth_user.picture !== ""
       );
+    },
+
+    getSubscriptionTrialEndDate() {
+      const data = LocalStorage.getItem("data");
+      if (!data) {
+        return null;
+      }
+      const date =
+        data.subscription.status === "trialing"
+          ? LocalStorage.getItem("data").subscription.trial_period_end_date
+          : LocalStorage.getItem("data").subscription.current_period_end_date;
+
+      return date;
+    },
+
+    getSubscriptionStatus() {
+      const data = LocalStorage.getItem("data");
+      if (!data) {
+        return null;
+      }
+      return LocalStorage.getItem("data").subscription.status;
     },
   },
 
@@ -682,6 +709,9 @@ export default {
         this.getNotifications();
       });
     },
+  },
+  components: {
+    TrialTimerVue,
   },
 };
 </script>

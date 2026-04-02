@@ -778,5 +778,10 @@ export default {
     invalidAddress: " Veuillez indiquer une adresse",
     NoNotificationAvailable: "Aucune notification n'est disponible",
     tokenMask: "Jeton: #######",
+    trialTimeRemaining: "Votre période d'essai prend fin dans :",
+    trialExpiredMsg:
+      "Votre période d'essai a expiré. Veuillez vous abonner pour continuer à utiliser QuickRecords.",
+    subscriptionRequiredMsg:
+      "Votre abonnement arrive bientôt à expiration. Veuillez vous réabonner pour continuer à utiliser QuickRecords.",
   },
 };

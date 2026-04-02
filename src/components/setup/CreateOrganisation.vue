@@ -40,12 +40,17 @@
             :error="!!emailError"
             :error-message="emailError"
             @input="validateEmail()"
-          />
+          >
+            <template v-slot:hint>
+              Email is optional, but it is recommended to provide one for
+              account recovery and notifications.
+            </template>
+          </q-input>
         </div>
         <div class="col-2 col-md-2 col-sm-2 col-lg-2"></div>
       </div>
       <div
-        class="row"
+        class="row q-pt-md"
         :class="$q.platform.is.desktop ? 'q-gutter-x-md' : 'q-gutter-x-xs'"
       >
         <div class="col-2 col-md-2 col-sm-2 col-lg-2"></div>
@@ -247,8 +252,8 @@ export default {
       return (
         this.organisation.name !== null &&
         this.nameError === "" &&
-        this.organisation.email !== null &&
-        this.emailError === "" &&
+        (this.organisation.email === null ||
+          (this.organisation.email !== null && this.emailError === "")) &&
         this.organisation.telephone !== null &&
         this.telephoneOneError === "" &&
         this.organisation.telephone2 !== null &&
@@ -423,7 +428,10 @@ export default {
 
     validateEmail() {
       const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      const validEmail = regex.test(this.organisation.email);
+      const validEmail =
+        this.organisation !== null &&
+        this.organisation.email !== null &&
+        regex.test(this.organisation.email);
       this.emailError = validEmail ? "" : this.$t("app.invalidEmailErrorMsg");
       return validEmail;
     },

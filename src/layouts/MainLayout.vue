@@ -17,12 +17,11 @@
               alt=""
               width="130"
               height="110"
-              v-if="getOrganisation != null"
+              v-if="organisationExist"
             />
           </div>
           <div
             class="text-weight-bold text-center organisation_name text-wrap q-pt-md q-mb-xl"
-            v-if="getOrganisation != null"
           >
             {{ getOrganisation.name }}
           </div>
@@ -353,10 +352,22 @@ export default {
   },
   computed: {
     getOrganisation() {
-      return this.$store.getters.getOrganisation;
+      const data = LocalStorage.getItem("data");
+      if (data === undefined) {
+        return "";
+      }
+      return data.subscription.organisation;
     },
     getOrganisationLogo() {
-      return process.env.SERVER_BASE_URL + this.getOrganisation.logo;
+      const data = LocalStorage.getItem("data");
+      if (data === undefined) {
+        return "";
+      }
+      return process.env.SERVER_BASE_URL + data.subscription.organisation.logo;
+    },
+
+    organisationExist() {
+      return this.$store.getters.getOrganisation !== null;
     },
   },
   watch: {},

@@ -39,7 +39,7 @@
             >
             </q-input>
           </div>
-          <div class="q-pb-md">
+          <div class="q-pb-xs">
             <label class="form_field"
               ><q-icon name="phone" size="xs" class="q-pr-xs"></q-icon
               >{{ $t("app.telephoneLabel") }}
@@ -55,7 +55,7 @@
               @input="validateTelephone()"
             ></q-input>
           </div>
-          <div>
+          <div class="q-pb-md">
             <label class="form_field"
               ><q-icon name="email" size="xs" class="q-pr-xs"></q-icon
               >{{ $t("app.emailLabel") }}
@@ -70,6 +70,10 @@
               :error-message="emailError"
               @input="validateEmail()"
             >
+              <template v-slot:hint>
+                Email is optional, but it is recommended to provide one for
+                account recovery and notifications.
+              </template>
             </q-input>
           </div>
           <div>
@@ -180,8 +184,8 @@ export default {
   computed: {
     validateForm() {
       return (
-        this.user.email !== null &&
-        this.emailError === "" &&
+        (this.user.email === null ||
+          (this.user.email !== null && this.emailError === "")) &&
         this.user.telephone !== null &&
         this.telephoneError === "" &&
         this.user.name !== null &&
@@ -255,7 +259,11 @@ export default {
 
     validateEmail() {
       const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      const validEmail = regex.test(this.user.email);
+      const validEmail =
+        this.user !== null &&
+        thhis.user.email !== " " &&
+        this.user.email !== null &&
+        regex.test(this.user.email);
       this.emailError = validEmail ? "" : this.$t("app.invalidEmailErrorMsg");
       return validEmail;
     },

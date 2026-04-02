@@ -15,13 +15,13 @@
         alt=""
         width="130"
         height="110"
-        v-if="!organisationExist"
+        v-if="organisationExist"
       />
       <q-avatar
         size="120px"
         font-size="52px"
         color="grey-3"
-        v-if="organisationExist"
+        v-if="!organisationExist"
       >
       </q-avatar>
       <div>
@@ -59,10 +59,7 @@
           class="col-md-5 col-xs-12 col-sm-12"
           :class="$q.platform.is.desktop ? 'q-ml-md' : ' q-py-sm'"
         >
-          <label class="form_field"
-            >{{ $t("app.emailLabel") }}
-            <span class="text-red q-pl-xs">*</span></label
-          >
+          <label class="form_field">{{ $t("app.emailLabel") }} </label>
           <q-input dense v-model="organisation.email" outlined type="email" />
         </div>
         <div class="col-1 col-md-1 com-sm-1"></div>
@@ -195,6 +192,7 @@ import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import { LocalStorage, Notify, Platform } from "quasar";
 import { VueTelInput } from "vue-tel-input";
 import { REGIONS } from "../../utils/regions";
+import { store } from "quasar/wrappers";
 
 export default {
   mixins: [organisationMixinVue],
@@ -230,7 +228,6 @@ export default {
     validateForm() {
       return (
         this.organisation.name === "" ||
-        this.organisation.email === "" ||
         this.organisation.telephone === "" ||
         this.organisation.address === "" ||
         this.organisation.description === "" ||
@@ -239,13 +236,16 @@ export default {
     },
 
     organisationExist() {
-      return this.$store.getters.getOrganisation === null;
+      return this.$store.getters.getOrganisation !== null;
     },
 
     getOrganisationLogo() {
-      return (
-        process.env.SERVER_BASE_URL + this.$store.getters.getOrganisation.logo
-      );
+      const data = LocalStorage.getItem("data");
+      if (data === undefined) {
+        return "";
+      }
+
+      return process.env.SERVER_BASE_URL + data.subscription.organisation.logo;
     },
 
     canShowTelephoneField() {
@@ -292,7 +292,14 @@ export default {
       this.loading = true;
       this.$store
         .dispatch("postRequest", payload)
-        .then(() => {
+        .then((res) => {
+          const storedData = LocalStorage.getItem("data");
+          if (storedData) {
+            storedData.subscription.organisation.email = res.data.data.email;
+            LocalStorage.remove("data");
+            LocalStorage.set("data", storedData);
+          }
+
           this.getOrganisationInfo();
         })
         .finally(() => {
@@ -401,6 +408,12 @@ export default {
           if (response.status === 200) {
             this.organisation.logo = response.data.data;
             this.$store.dispatch("setOrganisation", this.organisation);
+            const storedData = LocalStorage.getItem("data");
+            if (storedData) {
+              storedData.subscription.organisation.logo = response.data.data;
+              LocalStorage.remove("data");
+              LocalStorage.set("data", storedData);
+            }
             Notify.create({
               type: "positive",
               message: this.$t("app.uploadLogoSuccessMsg"),
@@ -458,7 +471,7 @@ export default {
 
 .camara {
   position: absolute;
-  top: 14.9%;
+  top: 14.2%;
   left: 52%;
   cursor: pointer;
   color: $grey8;

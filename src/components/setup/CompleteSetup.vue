@@ -111,6 +111,11 @@ export default {
     },
     completedSetup() {
       LocalStorage.remove("subscriptions");
+      LocalStorage.remove("adminName");
+      LocalStorage.remove("adminUsername");
+      LocalStorage.remove("loginId");
+      LocalStorage.remove("organisation");
+      LocalStorage.remove("organisationId");
     },
   },
   components: {

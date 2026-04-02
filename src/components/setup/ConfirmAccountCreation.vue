@@ -152,7 +152,7 @@ export default {
           }
           if (res.status === 200) {
             const organisation = {
-              id: res.data.data.id,
+              id: res.data.data.organisation_id,
               name: res.data.data.organisation_name,
               email: res.data.data.organisation_email,
               description: res.data.data.organisation_description,

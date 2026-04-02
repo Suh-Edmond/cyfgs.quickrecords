@@ -443,6 +443,9 @@ export default {
 
     getApprovedUsers() {
       let approved_users = [];
+      if (this.$store.getters.getBarChartData.usersByMonth === undefined) {
+        return approved_users;
+      }
       this.$store.getters.getBarChartData.usersByMonth.forEach((e) => {
         approved_users.push(e[0]);
       });
@@ -451,6 +454,9 @@ export default {
 
     getPendingUsers() {
       let pending_users = [];
+      if (this.$store.getters.getBarChartData.usersByMonth === undefined) {
+        return pending_users;
+      }
       this.$store.getters.getBarChartData.usersByMonth.forEach((e) => {
         pending_users.push(e[1]);
       });
@@ -459,6 +465,9 @@ export default {
 
     getDeclineUsers() {
       let decline_users = [];
+      if (this.$store.getters.getBarChartData.usersByMonth === undefined) {
+        return decline_users;
+      }
       this.$store.getters.getBarChartData.usersByMonth.forEach((e) => {
         decline_users.push(e[2]);
       });
@@ -466,6 +475,9 @@ export default {
     },
     getNotRegisteredUsers() {
       let not_registered = [];
+      if (this.$store.getters.getBarChartData.usersByMonth === undefined) {
+        return not_registered;
+      }
       this.$store.getters.getBarChartData.usersByMonth.forEach((e) => {
         not_registered.push(e[3]);
       });

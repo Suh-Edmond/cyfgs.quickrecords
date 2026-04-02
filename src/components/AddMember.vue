@@ -62,17 +62,19 @@
               />
             </div>
             <div>
-              <label class="form_field"
-                >{{ $t("app.emailLabel") }}
-                <span class="text-red">*</span></label
-              >
+              <label class="form_field">{{ $t("app.emailLabel") }} </label>
               <q-input
                 v-model="user.email"
                 outlined
                 dense
                 type="email"
                 hide-bottom-space
-              />
+              >
+                <template v-slot:hint>
+                  Email is optional, but it is recommended to provide one for
+                  account recovery and notifications.
+                </template>
+              </q-input>
             </div>
             <div>
               <label class="form_field"

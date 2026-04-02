@@ -363,12 +363,11 @@ export default {
       if (data === undefined) {
         return "";
       }
-
       return process.env.SERVER_BASE_URL + data.subscription.organisation.logo;
     },
 
     organisationExist() {
-      return this.$store.getters.getOrganisation === null;
+      return this.$store.getters.getOrganisation !== null;
     },
   },
   watch: {},

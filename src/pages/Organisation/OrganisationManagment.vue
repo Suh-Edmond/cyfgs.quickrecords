@@ -236,7 +236,7 @@ export default {
     },
 
     organisationExist() {
-      return this.$store.getters.getOrganisation === null;
+      return this.$store.getters.getOrganisation !== null;
     },
 
     getOrganisationLogo() {

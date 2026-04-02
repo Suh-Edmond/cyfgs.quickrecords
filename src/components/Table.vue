@@ -1321,8 +1321,8 @@ export default {
 
     isRegisterEnabled() {
       return (
-        this.$store.getters.getRegAmount !== null &&
-        this.$store.getters.getRegAmount !== undefined &&
+        (this.$store.getters.getRegAmount !== null ||
+          this.$store.getters.getRegAmount !== undefined) &&
         this.$store.getters.getRegAmount.status === "ACTIVE"
       );
     },

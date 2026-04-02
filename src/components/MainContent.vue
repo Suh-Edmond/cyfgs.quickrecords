@@ -13,6 +13,7 @@
         <q-toolbar-title class="toolbar_title wrap">
           {{ $t("app.welcomeLabel") }} {{ auth_user_role }}
         </q-toolbar-title>
+
         <div>
           <q-btn
             round
@@ -21,6 +22,7 @@
             flat
             v-if="canViewNotification()"
             size="sm"
+            @click="getNotifications()"
           >
             <q-badge
               floating
@@ -63,9 +65,29 @@
                         </q-btn>
                       </label>
                     </div>
+
+                    <div
+                      class="flex justify-center"
+                      v-if="isLoadingNotification"
+                    >
+                      <q-spinner color="primary" size="2em" :thickness="2" />
+                    </div>
                   </q-item-section>
                 </q-item>
 
+                <q-item
+                  ><q-item-section
+                    ><q-item-label
+                      lines="1"
+                      class="text-subtitle2 flex flex-center"
+                      v-if="
+                        notifications.length === 0 && !isLoadingNotification
+                      "
+                    >
+                      {{ $t("app.NoNotificationAvailable") }}
+                    </q-item-label></q-item-section
+                  ></q-item
+                >
                 <q-item
                   clickable
                   v-ripple
@@ -146,6 +168,10 @@
           </q-btn-dropdown>
         </div>
       </q-toolbar>
+      <TrialTimerVue
+        :trialEndDate="getSubscriptionTrialEndDate"
+        :status="getSubscriptionStatus"
+      />
     </q-header>
     <div class="main_content">
       <q-card
@@ -230,9 +256,15 @@
               @update-income-activity-history="updateIncomeActivityHistory"
               @update-sponsorship-history="updateSponsorshipHistory"
               @update-user-saving-history="updateUserSavingHistory"
-              @update-expenditure-item-transaction="updateExpenditureItemTransaction"
-              @update-expenditure-item-detail-transaction="updateExpenditureItemDetailTransaction"
-              @update-user-contribution-transaction="updateUserContributionTransaction"
+              @update-expenditure-item-transaction="
+                updateExpenditureItemTransaction
+              "
+              @update-expenditure-item-detail-transaction="
+                updateExpenditureItemDetailTransaction
+              "
+              @update-user-contribution-transaction="
+                updateUserContributionTransaction
+              "
             />
           </div>
         </q-card-section>
@@ -245,6 +277,7 @@
 import { LocalStorage, SessionStorage } from "quasar";
 import HelperMixin from "src/mixins/HelperMixin.vue";
 import expenditureItemMixin from "src/mixins/expenditureItemMixin.vue";
+import TrialTimerVue from "./setup/TrialTimer.vue";
 export default {
   mixins: [expenditureItemMixin, HelperMixin],
   mounted() {
@@ -253,10 +286,6 @@ export default {
       (role) => role.name !== "MEMBER"
     ).name;
     this.auth_user_role = this.formatUserRole(welcome_title);
-    if(this.checkPresidentOrAdminRole()){
-      this.getNotifications();
-    }
-
   },
   props: {
     item: {
@@ -282,6 +311,7 @@ export default {
       has_intermediate_tab2: false,
       loading: false,
       notifications: [],
+      isLoadingNotification: false,
     };
   },
 
@@ -311,6 +341,27 @@ export default {
         this.auth_user.picture !== undefined &&
         this.auth_user.picture !== ""
       );
+    },
+
+    getSubscriptionTrialEndDate() {
+      const data = LocalStorage.getItem("data");
+      if (!data) {
+        return null;
+      }
+      const date =
+        data.subscription.status === "trialing"
+          ? LocalStorage.getItem("data").subscription.trial_period_end_date
+          : LocalStorage.getItem("data").subscription.current_period_end_date;
+
+      return date;
+    },
+
+    getSubscriptionStatus() {
+      const data = LocalStorage.getItem("data");
+      if (!data) {
+        return null;
+      }
+      return LocalStorage.getItem("data").subscription.status;
     },
   },
 
@@ -457,7 +508,7 @@ export default {
     editIncomeActivity(data) {
       this.updateDrawer(data);
     },
-    updateIncomeActivityHistory(data){
+    updateIncomeActivityHistory(data) {
       this.updateDrawer(data);
     },
     viewIncomeActivity(data) {
@@ -471,22 +522,22 @@ export default {
       this.updateDrawer(data);
     },
 
-    updateSponsorshipHistory(data){
+    updateSponsorshipHistory(data) {
       this.updateDrawer(data);
     },
 
-    updateUserSavingHistory(data){
-      this.updateDrawer(data)
+    updateUserSavingHistory(data) {
+      this.updateDrawer(data);
     },
-    updateExpenditureItemTransaction(data){
-      this.updateDrawer(data)
-    },
-
-    updateExpenditureItemDetailTransaction(data){
+    updateExpenditureItemTransaction(data) {
       this.updateDrawer(data);
     },
 
-    updateUserContributionTransaction(data){
+    updateExpenditureItemDetailTransaction(data) {
+      this.updateDrawer(data);
+    },
+
+    updateUserContributionTransaction(data) {
       this.updateDrawer(data);
     },
     formatUserRole(role) {
@@ -573,6 +624,7 @@ export default {
     },
 
     getNotifications() {
+      this.isLoadingNotification = true;
       let payload = {
         url: `/api/protected/organisations/members/get_invitation_notifications`,
         msg: this.$t("app.saveContributionSuccessMsg"),
@@ -589,6 +641,7 @@ export default {
         },
       };
       this.$store.dispatch("getRequest", payload).then((res) => {
+        this.isLoadingNotification = false;
         if (res.status === 200) {
           this.notifications = res.data.filter(
             (notification) => !notification.has_seen_notification
@@ -656,6 +709,9 @@ export default {
         this.getNotifications();
       });
     },
+  },
+  components: {
+    TrialTimerVue,
   },
 };
 </script>

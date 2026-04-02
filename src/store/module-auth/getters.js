@@ -117,19 +117,17 @@ export function getExpenditures(state) {
   return state.expenditures;
 }
 
-export  function getExpenditureCategory(state) {
+export function getExpenditureCategory(state) {
   return state.expenditure_category;
 }
 
-
 export function getSavings(state) {
-  return state.savings
+  return state.savings;
 }
 
 export function getExpenditureItemName(state) {
   return state.expenditure_item_name;
 }
-
 
 export function getSearchSavingParams(state) {
   return state.search_saving_param;
@@ -152,7 +150,7 @@ export function getPaymentActivities(state) {
 }
 
 export function getSponsorships(state) {
-  return state.sponsorships
+  return state.sponsorships;
 }
 
 export function getSelectedSponsorship(state) {
@@ -160,7 +158,7 @@ export function getSelectedSponsorship(state) {
 }
 
 export function getMemberToRegister(state) {
-  return state.member_to_register
+  return state.member_to_register;
 }
 
 export function getCurrentMember(state) {
@@ -172,7 +170,7 @@ export function getCurrentYear(state) {
 }
 
 export function getRegAmount(state) {
-  return state.reg_amount
+  return state.reg_amount;
 }
 
 export function getSessions(state) {
@@ -180,7 +178,7 @@ export function getSessions(state) {
 }
 
 export function getReportData(state) {
-  return state.report_data
+  return state.report_data;
 }
 
 export function getBarChartData(state) {
@@ -199,10 +197,18 @@ export function getTotalYearlyExpenditure(state) {
   return state.total_yearly_expenditure;
 }
 
-export function getSearchContributionParams(state){
-  return state.search_contribution_data
+export function getSearchContributionParams(state) {
+  return state.search_contribution_data;
 }
 
-export function getPagination(state){
+export function getPagination(state) {
   return state.pagination;
+}
+
+export function getProcessStage(state) {
+  return state.process_stage;
+}
+
+export function getSubscriptionPlans(state) {
+  return state.subscriptionPlans;
 }

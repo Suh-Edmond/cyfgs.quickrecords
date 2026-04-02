@@ -32,15 +32,29 @@
         <q-btn flat icon="close" size="sm" />
       </template>
     </q-banner>
+
+    <q-banner
+      inline-actions
+      rounded
+      class="bg-info text-white q-mb-md registration_text"
+      dense
+      v-if="!isRegisterAmountSet"
+    >
+      <span class="registration_text"
+        >{{ $t("app.registrationAmountNotSet") }}
+      </span>
+      <template v-slot:action>
+        <q-btn flat icon="close" size="sm" />
+      </template>
+    </q-banner>
+
     <q-form
       @submit="onRegisterMember"
       class="q-gutter-sm q-mt-md"
       :class="$q.platform.is.mobile ? 'q-pl-sm' : ''"
     >
       <div>
-        <label class="form_field">{{
-          $t("app.membersName")
-        }}</label>
+        <label class="form_field">{{ $t("app.membersName") }}</label>
         <q-input v-model="user.user_name" outlined dense disable />
       </div>
       <div>
@@ -48,9 +62,7 @@
         <q-input v-model="user.year" outlined dense disable hide-bottom-space />
       </div>
       <div>
-        <label class="form_field"
-          >{{ $t("app.amount") }}
-        </label>
+        <label class="form_field">{{ $t("app.amount") }} </label>
         <q-input
           v-model="user.amount"
           outlined
@@ -121,8 +133,7 @@ import ButtonVue from "src/components/Button.vue";
 import memberMixinVue from "src/mixins/memberMixin.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import RegistrationAmountMixinVue from "src/mixins/RegistrationAmountMixin.vue";
-import CurrentYearMixin from "src/mixins/CurrentYearMixin";
-import { Notify, Platform } from "quasar";
+import { LocalStorage, Notify, Platform } from "quasar";
 const months = [
   "January",
   "February",
@@ -138,21 +149,16 @@ const months = [
   "December",
 ];
 export default {
-  mixins: [
-    memberMixinVue,
-    organisationMixinVue,
-    RegistrationAmountMixinVue,
-    CurrentYearMixin,
-  ],
+  mixins: [memberMixinVue, organisationMixinVue, RegistrationAmountMixinVue],
   mounted() {
     let heading = this.$t("app.registerMemberHeading");
     this.$emit("set-heading", heading);
     this.getRegistrationAmount();
-    if (
-      this.$store.getters.getCurrentYear == null
-    ) {
-      this.fetchCurrentYear();
+    const data = LocalStorage.getItem("data");
+    if (data === null) {
+      return;
     }
+    this.$store.commit("SET_CURRENT_YEAR", data.current_session);
   },
   data() {
     return {
@@ -171,9 +177,10 @@ export default {
       return this.$store.getters.getRegAmount.frequency === "MONTHLY";
     },
     getRegisterMember() {
-      console.log(this.$store.getters.getRegAmount);
-      
-      if (this.$store.getters.getRegAmount == null) {
+      if (
+        this.$store.getters.getRegAmount === null ||
+        this.$store.getters.getRegAmount === undefined
+      ) {
         Notify.create({
           color: "info",
           message: this.$t("app.registrationAmountNotSet"),
@@ -185,6 +192,13 @@ export default {
         this.$store.getters.getMemberToRegister.name,
         this.$store.getters.getCurrentYear.year,
         this.$store.getters.getRegAmount.amount
+      );
+    },
+
+    isRegisterAmountSet() {
+      return (
+        this.$store.getters.getRegAmount !== null &&
+        this.$store.getters.getRegAmount !== undefined
       );
     },
 

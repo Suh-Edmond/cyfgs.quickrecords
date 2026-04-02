@@ -1,44 +1,73 @@
-import Vue from "vue";
 import axios_ from "axios";
-import router from "src/router";
 import { LocalStorage, Notify, Platform } from "quasar";
 
+// 1. Create the Axios instance
 const axios = axios_.create({
-  withCredentials: true
-})
+  withCredentials: true,
+  withXSRFToken: true,
+});
 
-axios.interceptors.response.use(function(response)  {
+const CSRF_URL = `${process.env.SERVER_BASE_URL}/sanctum/csrf-cookie`;
+export default async ({ Vue, router }) => {
+  // 2. Request Interceptor
+  axios.interceptors.request.use(
+    async (config) => {
+      // Laravel Sanctum CSRF Handshake
+      // We only trigger this if the XSRF cookie is missing and it's a "write" request
+      const hasXsrfToken = document.cookie
+        .split(";")
+        .some((item) => item.trim().startsWith("XSRF-TOKEN="));
 
-  return Promise.resolve(response);
+      if (
+        !hasXsrfToken &&
+        ["post", "put", "patch", "delete"].includes(config.method.toLowerCase())
+      ) {
+        try {
+          await axios_.get(CSRF_URL, {
+            withCredentials: true,
+          });
+        } catch (e) {}
+      }
 
-}, function(error) {
-  if(typeof error.response === undefined){
-    Notify.create({
-      type:'info',
-      message:'No Internet Connection',
-      position:Platform.is.mobile?'bottom':'top-right'
-    })
-  }
-  if(error.response.status === 401 && error.response.statusText === "Unauthorized"){
+      // Auth Token Handling (Broadcasting Readiness)
+      const data = LocalStorage.getItem("data");
+      if (data && data.user_data && data.user_data.token) {
+        config.headers.Authorization = `Bearer ${data.user_data.token}`;
+      }
 
-    LocalStorage.remove('data');
-    router.push({name:'Login'}, () => {})
-  }
-  return Promise.reject(error);
-})
+      config.headers.Accept = "application/json";
+      return config;
+    },
+    (error) => Promise.reject(error)
+  );
 
-axios.interceptors.request.use(function (config) {
-  const data = LocalStorage.getItem('data');
-  let token = "";
-  if(data != null){
-    token = data.user_data.token;
-  }
-  config.headers.common['Authorization'] = 'Bearer '+token;
+  // 3. Response Interceptor
+  axios.interceptors.response.use(
+    (response) => response,
+    async (error) => {
+      const { response } = error;
 
-  return config
+      if (!response) {
+        Notify.create({
+          type: "info",
+          message: "No Internet Connection",
+          position: Platform.is.mobile ? "bottom" : "top-right",
+        });
+      } else if (response.status === 401 || response.status === 419) {
+        // Clear data and redirect on unauthorized or session expired
+        LocalStorage.remove("data");
 
-})
+        // Use router.push to go back to login
+        if (router.currentRoute.path !== "/login") {
+          router.push({ name: "Login" }).catch(() => {});
+        }
+      }
+      return Promise.reject(error);
+    }
+  );
 
-Vue.prototype.$axios = axios
+  // 4. Vue 2 Prototype assignment
+  Vue.prototype.$axios = axios;
+};
 
-export { axios }
+export { axios };

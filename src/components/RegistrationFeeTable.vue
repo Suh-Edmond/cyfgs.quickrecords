@@ -13,7 +13,7 @@
         flat
       >
         <template v-slot:top-left>
-          <label   class="title">{{ table_header }}</label>
+          <label class="title">{{ table_header }}</label>
         </template>
         <template v-slot:top-right>
           <q-btn
@@ -24,7 +24,8 @@
             no-caps
             class="q-pa-xs"
             icon-right="add"
-            @click="show_add_fee = true"
+            :disabled="!canConfigureRegistrationFee"
+            @click="openAddFeeDialog()"
           >
             <q-tooltip> {{ $t("app.addRegFee") }} </q-tooltip>
           </q-btn>
@@ -94,7 +95,7 @@
       <q-card
         :style="$q.platform.is.desktop ? 'width: 350px' : 'width: 450px'"
         class="q-pt-sm q-pb-md"
-        :class="$q.platform.is.desktop?'q-px-sm':''"
+        :class="$q.platform.is.desktop ? 'q-px-sm' : ''"
       >
         <q-card-section class="row">
           <div class="text-h6 add_year" v-if="fee.id == null">
@@ -139,7 +140,7 @@
                 />
               </div>
             </div>
-            <div>
+            <div v-if="!isCreation">
               <label class="form_field"
                 >{{ $t("app.status") }} <span class="text-red">*</span></label
               >
@@ -197,7 +198,7 @@ import ButtonVue from "./Button.vue";
 import RegistrationFreqencyVue from "./Constants/RegistrationFreqency.vue";
 import SessionStatusVue from "./Constants/SessionStatus.vue";
 import HelperMixin from "src/mixins/HelperMixin.vue";
-  import moment from "moment";
+import moment from "moment";
 
 export default {
   mixins: [HelperMixin],
@@ -236,11 +237,27 @@ export default {
       ],
       statuses: [SessionStatusVue.ACTIVE, SessionStatusVue.IN_ACTIVE],
       show_confirm_dialog: false,
+      isCreation: true,
     };
   },
+  computed: {
+    canConfigureRegistrationFee() {
+      return this.$store.getters.getRegAmount === undefined;
+    },
+  },
   methods: {
+    openAddFeeDialog() {
+      this.isCreation = true;
+      this.fee.amount = 0.0;
+      this.fee.frequency = RegistrationFreqencyVue.YEARLY;
+      this.fee.is_compulsory = true;
+      this.fee.id = null;
+      this.fee.status = SessionStatusVue.ACTIVE;
+      this.show_add_fee = true;
+    },
     editFee(data) {
       this.show_add_fee = true;
+      this.isCreation = false;
       this.fee.amount = data.amount;
       this.fee.frequency = data.frequency;
       this.fee.id = data.id;

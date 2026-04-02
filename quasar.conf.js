@@ -9,6 +9,11 @@
 // https://v1.quasar.dev/quasar-cli/quasar-conf-js
 
 const ESLintPlugin = require("eslint-webpack-plugin");
+const dotenv = require("dotenv");
+const path = require("path");
+
+const envPath = path.resolve(__dirname, "../.env");
+dotenv.config({ path: envPath });
 
 module.exports = function (ctx) {
   return {
@@ -43,18 +48,25 @@ module.exports = function (ctx) {
     ],
 
     // Full list of options: https://v1.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
+
     build: {
       vueRouterMode: "history", // available values: 'hash', 'history'
       env: {
-        SERVER_BASE_URL:  "https://api.mountzioncm.com",
-        // SERVER_BASE_URL:  "http://localhost:8000",
+        // SERVER_BASE_URL:  "https://api.mountzioncm.com",
+        SERVER_BASE_URL: "http://localhost:8000",
         CLIENT_SERVER: "https://quickrecords-demo.vercel.app/auth/login",
         REDIRECT_URL: "https://quickrecords-demo.vercel.app/auth/invite-member",
         APP_NAME: "Quick_Records",
         FILE_CATEGORY: "LOGOS",
         BASE_FOLDER: "LOGOS",
         PROFILE_PICTURES: "PROFILE_PICTURES",
-        appLinkedinUrl: "https://www.linkedin.com/company/quickrecords"
+        appLinkedinUrl: "https://www.linkedin.com/company/quickrecords",
+        PAYMENT_CHARGES: 2,
+        VITE_REVERB_APP_KEY: "4duflprn6epgas47upi1",
+        VITE_REVERB_HOST: "localhost",
+        VITE_REVERB_PORT: "8001",
+        VITE_REVERB_SCHEME: "http",
+        VITE_REVERB_APP_SECRET: "ayvjxr9c1iiwvuxhramu",
       },
       distDir: ctx.mode.spa ? "public" : null,
       // env: envparser(),
@@ -85,12 +97,13 @@ module.exports = function (ctx) {
       //       { loader: "yaml-loader" },
       //     ]);
       // },
-      extendWebpack (cfg) { },
+      extendWebpack(cfg) {},
     },
 
     // Full list of options: https://v1.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-devServer
     devServer: {
       https: false,
+      host: "localhost",
       port: 7000,
       open: true, // opens browser window automatically
     },
@@ -114,7 +127,13 @@ module.exports = function (ctx) {
       // directives: [],
 
       // Quasar plugins
-      plugins: ["Notify", "LocalStorage", "SessionStorage", "Loading"],
+      plugins: [
+        "Notify",
+        "LocalStorage",
+        "SessionStorage",
+        "Loading",
+        "Dialog",
+      ],
       config: {
         notify: {
           /* look at QUASARCONFOPTIONS from the API card (bottom of page) */
@@ -208,7 +227,7 @@ module.exports = function (ctx) {
       // More info: https://v1.quasar.dev/quasar-cli/developing-electron-apps/node-integration
       nodeIntegration: true,
 
-      extendWebpack (/* cfg */) {
+      extendWebpack(/* cfg */) {
         // do something with Electron main process Webpack cfg
         // chainWebpack also available besides this extendWebpack
       },

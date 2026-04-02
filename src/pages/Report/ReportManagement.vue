@@ -103,19 +103,18 @@
 import ActivityReportTable from "src/components/ActivityReportTable.vue";
 import HelperMixin from "src/mixins/HelperMixin.vue";
 import QuarterlyReportTable from "src/components/QuarterlyReportTable.vue";
-import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
 import YearlyReportTable from "src/components/YearlyReportTable.vue";
 import FilterComponentVue from "src/components/FilterComponent.vue";
+import { LocalStorage } from "quasar";
 
 export default {
-  mixins: [HelperMixin, CurrentYearMixinVue],
+  mixins: [HelperMixin],
   mounted() {
-    if (
-      this.$store.getters.getCurrentYear === null ||
-      this.$store.getters.getCurrentYear === undefined
-    ) {
-      this.fetchCurrentYear();
+    const data = LocalStorage.getItem("data");
+    if (data === null) {
+      return;
     }
+    this.$store.commit("SET_CURRENT_YEAR", data.current_session);
   },
 
   data() {
@@ -138,7 +137,7 @@ export default {
       organisation_id: this.$store.getters.getOrganisation.id,
       session_id: this.$store.getters.getCurrentYear,
       show_hint: true,
-      show_preview_hint:true,
+      show_preview_hint: true,
     };
   },
   computed: {
@@ -156,8 +155,8 @@ export default {
       return (this.show_hint = !this.show_hint);
     },
 
-    closePreviewHint(){
-      return this.show_preview_hint = !this.show_preview_hint
+    closePreviewHint() {
+      return (this.show_preview_hint = !this.show_preview_hint);
     },
 
     generateReport(data) {

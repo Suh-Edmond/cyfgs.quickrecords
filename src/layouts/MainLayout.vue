@@ -12,11 +12,16 @@
       <div>
         <div class="left_drawer">
           <div class="bg-transparent q-pa-sm flex flex-center">
-            <img :src="getOrganisationLogo" alt=""  width="130" height="110" v-if="getOrganisation != null"/>
+            <img
+              :src="getOrganisationLogo"
+              alt=""
+              width="130"
+              height="110"
+              v-if="organisationExist"
+            />
           </div>
           <div
             class="text-weight-bold text-center organisation_name text-wrap q-pt-md q-mb-xl"
-            v-if="getOrganisation != null"
           >
             {{ getOrganisation.name }}
           </div>
@@ -56,7 +61,7 @@
         <div class="app_version">
           <a :href="appLinkedinUrl" class="app_name_text">
             QuickRecords v1.0
-            </a>
+          </a>
         </div>
       </div>
     </q-drawer>
@@ -146,7 +151,8 @@
           ></AddExpenditureItemDetail>
           <AddMemberSavingVue
             v-if="
-              current_tab.includes('Savings') && current_tab !== 'Search Savings'
+              current_tab.includes('Savings') &&
+              current_tab !== 'Search Savings'
             "
             @close-right-drawer="closeRightDrawer"
             @set-heading="setHeading"
@@ -251,7 +257,8 @@
             v-if="current_tab === 'Change Sponsorship History'"
             @close-right-drawer="closeRightDrawer"
             @set-heading="setHeading"
-            :sponsorship="data">
+            :sponsorship="data"
+          >
           </ChangeSponsorshipTransactionHistory>
           <ChangeUserSavingTransactionHistory
             v-if="current_tab === 'Change User Saving History'"
@@ -276,7 +283,8 @@
             v-if="current_tab === 'Change User Contribution Transaction'"
             @close-right-drawer="closeRightDrawer"
             @set-heading="setHeading"
-            :userContribution="data">
+            :userContribution="data"
+          >
           </UpdateUserContributionTransaction>
         </div>
       </q-page>
@@ -320,10 +328,8 @@ import ChangeExpenditureItemDetailTransaction from "components/ChangeExpenditure
 import UpdateUserContributionTransaction from "components/UpdateUserContributionTransaction";
 
 export default {
-  mixins: [organisationMixinVue, CurrentYearMixin, HelperMixin],
-  created() {
-    this.getOrganisationInfo();
-  },
+  mixins: [CurrentYearMixin, HelperMixin],
+  created() {},
   mounted() {},
   data() {
     return {
@@ -341,15 +347,27 @@ export default {
       right_drawer_tab: "",
       data: null,
       heading: "",
-      appLinkedinUrl: process.env.appLinkedinUrl
+      appLinkedinUrl: process.env.appLinkedinUrl,
     };
   },
   computed: {
     getOrganisation() {
-      return this.$store.getters.getOrganisation;
+      const data = LocalStorage.getItem("data");
+      if (data === undefined) {
+        return "";
+      }
+      return data.subscription.organisation;
     },
     getOrganisationLogo() {
-      return process.env.SERVER_BASE_URL + this.getOrganisation.logo;
+      const data = LocalStorage.getItem("data");
+      if (data === undefined) {
+        return "";
+      }
+      return process.env.SERVER_BASE_URL + data.subscription.organisation.logo;
+    },
+
+    organisationExist() {
+      return this.$store.getters.getOrganisation !== null;
     },
   },
   watch: {},
@@ -640,7 +658,7 @@ export default {
     ChangeUserSavingTransactionHistory,
     ChangeExpenditureItemTransaction,
     ChangeExpenditureItemDetailTransaction,
-    UpdateUserContributionTransaction
+    UpdateUserContributionTransaction,
   },
 };
 </script>
@@ -718,12 +736,11 @@ export default {
   flex-direction: column;
   left: 10%;
   bottom: 1%;
-
 }
 
 .app_name_text {
   color: $primary;
-  font-size: .9rem;
+  font-size: 0.9rem;
   font-weight: 600;
   text-decoration: none;
 }

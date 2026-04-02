@@ -516,6 +516,10 @@ export default {
         .dispatch("getRequest", payload)
         .then((res) => {
           if (res.success) {
+            const activeRegFee = res.data.find(
+              (fee) => fee.status === "ACTIVE"
+            );
+            this.$store.commit("SET_REG_AMOUNT", activeRegFee);
             res.data.forEach((ele) => {
               this.reg_table_data.push({
                 counter: res.data.indexOf(ele) + 1,

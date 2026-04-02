@@ -15,13 +15,13 @@
         alt=""
         width="130"
         height="110"
-        v-if="!organisationExist"
+        v-if="organisationExist"
       />
       <q-avatar
         size="120px"
         font-size="52px"
         color="grey-3"
-        v-if="organisationExist"
+        v-if="!organisationExist"
       >
       </q-avatar>
       <div>
@@ -240,9 +240,12 @@ export default {
     },
 
     getOrganisationLogo() {
-      return (
-        process.env.SERVER_BASE_URL + this.$store.getters.getOrganisation.logo
-      );
+      const data = LocalStorage.getItem("data");
+      if (data === undefined) {
+        return "";
+      }
+
+      return process.env.SERVER_BASE_URL + data.subscription.organisation.logo;
     },
 
     canShowTelephoneField() {
@@ -290,8 +293,6 @@ export default {
       this.$store
         .dispatch("postRequest", payload)
         .then((res) => {
-          console.log(res.data.data.email);
-
           const storedData = LocalStorage.getItem("data");
           if (storedData) {
             storedData.subscription.organisation.email = res.data.data.email;
@@ -407,6 +408,12 @@ export default {
           if (response.status === 200) {
             this.organisation.logo = response.data.data;
             this.$store.dispatch("setOrganisation", this.organisation);
+            const storedData = LocalStorage.getItem("data");
+            if (storedData) {
+              storedData.subscription.organisation.logo = response.data.data;
+              LocalStorage.remove("data");
+              LocalStorage.set("data", storedData);
+            }
             Notify.create({
               type: "positive",
               message: this.$t("app.uploadLogoSuccessMsg"),
@@ -464,7 +471,7 @@ export default {
 
 .camara {
   position: absolute;
-  top: 14.9%;
+  top: 14.2%;
   left: 52%;
   cursor: pointer;
   color: $grey8;

@@ -747,5 +747,10 @@ export default {
     invalidAddress: "Please provide an address",
     NoNotificationAvailable: "No notifications are available",
     tokenMask: "Token: #######",
+    trialTimeRemaining: "Your trial ends in:",
+    trialExpiredMsg:
+      "Your trial period has expired. Please subscribe to continue using QuickRecords.",
+    subscriptionRequiredMsg:
+      "Subscription is about to expire. Please subscribe to continue using QuickRecords.",
   },
 };

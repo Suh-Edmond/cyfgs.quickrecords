@@ -55,9 +55,7 @@
             }}
             :
           </label>
-          <label class="text_value">
-            {{ organisation.address }} {{ organisation.box_number }}</label
-          >
+          <label class="text_value"> {{ organisation.address }}</label>
         </div>
 
         <div class="row q-col-gutter-x-md q-pt-sm justify-between">

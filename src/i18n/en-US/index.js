@@ -727,7 +727,6 @@ export default {
     createAccountCaption:
       "Begin your experience by creating a QuickRecords account.",
     confirmAccountCaption: "Please confirm your account.",
-    createOrganisationCaption: "Set Up Organisation",
     subscriptionCaption: "Experience the full power of QuickRecords.",
     trialCaption:
       " You're just one step away from the full experience! Call/WhatsApp {telephone} to unlock every premuim feature.",
@@ -746,7 +745,7 @@ export default {
       "Please provide a description, mission or vision of your organisation",
     regionError: "Region is required",
     invalidAddress: "Please provide an address",
-    NoNotificationAvailable:"No notifications are available",
-    tokenMask:"Token: #######"
+    NoNotificationAvailable: "No notifications are available",
+    tokenMask: "Token: #######",
   },
 };

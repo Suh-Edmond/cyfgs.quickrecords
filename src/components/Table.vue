@@ -54,7 +54,10 @@
             key="has_register"
             :props="props"
             class="not_registered table_value"
-            v-if="props.row.registered && props.row.registered.approve !== 'APPROVED'"
+            v-if="
+              props.row.registered &&
+              props.row.registered.approve !== 'APPROVED'
+            "
           >
             NOT_REGISTERED
           </q-td>
@@ -62,7 +65,10 @@
             key="has_register"
             :props="props"
             class="registered table_value"
-            v-if="props.row.registered && props.row.registered.approve === 'APPROVED'"
+            v-if="
+              props.row.registered &&
+              props.row.registered.approve === 'APPROVED'
+            "
           >
             REGISTERED
           </q-td>
@@ -78,25 +84,33 @@
             key="approve"
             :props="props"
             class="registered table_value"
-            v-if="props.row.registered &&  props.row.registered.approve === 'APPROVED'"
+            v-if="
+              props.row.registered &&
+              props.row.registered.approve === 'APPROVED'
+            "
           >
-            {{props.row.registered.approve}}
+            {{ props.row.registered.approve }}
           </q-td>
           <q-td
             key="approve"
             :props="props"
             class="not_registered table_value"
-            v-if="props.row.registered &&  props.row.registered.approve === 'DECLINED'"
+            v-if="
+              props.row.registered &&
+              props.row.registered.approve === 'DECLINED'
+            "
           >
-            {{props.row.registered.approve}}
+            {{ props.row.registered.approve }}
           </q-td>
           <q-td
             key="approve"
             :props="props"
             class="text-info table_value"
-            v-if="props.row.registered &&  props.row.registered.approve === 'PENDING'"
+            v-if="
+              props.row.registered && props.row.registered.approve === 'PENDING'
+            "
           >
-            {{props.row.registered.approve}}
+            {{ props.row.registered.approve }}
           </q-td>
           <q-td
             key="approve"
@@ -104,7 +118,6 @@
             class="text-info table_value"
             v-if="props.row.registered === '' || props.row.registered === null"
           >
-
           </q-td>
 
           <q-td
@@ -265,7 +278,11 @@
               no-caps
               dense
               @click="onApprovedRecord(props.row, 'Approve')"
-              v-if="canValidateTransaction() && props.row.registered &&  props.row.registered.approve === 'PENDING'"
+              v-if="
+                canValidateTransaction() &&
+                props.row.registered &&
+                props.row.registered.approve === 'PENDING'
+              "
             />
 
             <!-- buttons for approve and decline row data -->
@@ -275,7 +292,11 @@
               no-caps
               dense
               @click="onDeclineRecord(props.row, 'Decline')"
-              v-if="canValidateTransaction() && props.row.registered &&  props.row.registered.approve === 'PENDING'"
+              v-if="
+                canValidateTransaction() &&
+                props.row.registered &&
+                props.row.registered.approve === 'PENDING'
+              "
             />
           </q-td>
         </q-tr>
@@ -841,7 +862,9 @@
                       clickable
                       v-close-popup
                       @click="onEditContribution(props.row)"
-                      v-if="show_member_contribution && checkAdminPresidentRole()"
+                      v-if="
+                        show_member_contribution && checkAdminPresidentRole()
+                      "
                     >
                       <q-item-section avatar class="q-mr-lg">
                         <span>
@@ -908,9 +931,7 @@
             {{ $t("app.inviteMsg") }}
           </div>
           <div v-if="show_invite">
-            <label  class="form_field">{{
-              $t("app.membersName")
-            }}</label>
+            <label class="form_field">{{ $t("app.membersName") }}</label>
             <q-input
               v-model="member_invite_name"
               outlined
@@ -1059,18 +1080,18 @@
   </div>
 </template>
 <script>
-  import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
-  import IncomeActivityMixin from "src/mixins/IncomeActivityMixin.vue";
-  import {LocalStorage, Notify, Platform} from "quasar";
-  import moment from "moment";
-  import ContributionsMixinVue from "src/mixins/ContributionsMixin.vue";
-  import memberMixin from "src/mixins/memberMixin.vue";
-  import ConfirmDialogVue from "./ConfirmDialog.vue";
-  import HelperMixin from "src/mixins/HelperMixin.vue";
-  import CategoryConstants from "components/Constants/CategoryConstants";
-  import TransactionStatus from "components/Constants/TransactionStatus";
+import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
+import IncomeActivityMixin from "src/mixins/IncomeActivityMixin.vue";
+import { LocalStorage, Notify, Platform } from "quasar";
+import moment from "moment";
+import ContributionsMixinVue from "src/mixins/ContributionsMixin.vue";
+import memberMixin from "src/mixins/memberMixin.vue";
+import ConfirmDialogVue from "./ConfirmDialog.vue";
+import HelperMixin from "src/mixins/HelperMixin.vue";
+import CategoryConstants from "components/Constants/CategoryConstants";
+import TransactionStatus from "components/Constants/TransactionStatus";
 
-  export default {
+export default {
   mixins: [
     UserSavingMixinVue,
     IncomeActivityMixin,
@@ -1080,9 +1101,7 @@
     HelperMixin,
   ],
 
-  mounted() {
-    
-  },
+  mounted() {},
 
   props: {
     columns: {
@@ -1300,6 +1319,14 @@
       return president_role !== undefined;
     },
 
+    isRegisterEnabled() {
+      return (
+        this.$store.getters.getRegAmount !== null &&
+        this.$store.getters.getRegAmount !== undefined &&
+        this.$store.getters.getRegAmount.status === "ACTIVE"
+      );
+    },
+
     checkRole() {
       const president_role = LocalStorage.getItem("data").user_data.roles.find(
         (role) =>
@@ -1307,7 +1334,9 @@
           role.name === "FINANCIAL_SECRETARY" ||
           role.name === "ADMIN"
       );
-      return president_role !== undefined;
+      console.log(this.$store.getters.getRegAmount);
+
+      return president_role !== undefined && this.isRegisterEnabled();
     },
 
     onRegisterMember(data) {
@@ -1390,7 +1419,9 @@
         url: this.setApproveUrlBaseOnType(this.approve_data),
         msg: this.setApproveFeedbackMsg(this.approve_data),
         data:
-          this.approve_data.type === CategoryConstants.MEMBERS_CONTRIBUTIONS ? this.setApproveContributionPayload(this.approve_data) : null,
+          this.approve_data.type === CategoryConstants.MEMBERS_CONTRIBUTIONS
+            ? this.setApproveContributionPayload(this.approve_data)
+            : null,
         color: "default",
         to_on_ok: "none",
         to_on_fail: "none",
@@ -1413,7 +1444,10 @@
 
     setApproveUrlBaseOnType(data) {
       let url = "";
-      let type = this.chosen_state === CategoryConstants.Approve ? TransactionStatus.APPROVED : TransactionStatus.DECLINED;
+      let type =
+        this.chosen_state === CategoryConstants.Approve
+          ? TransactionStatus.APPROVED
+          : TransactionStatus.DECLINED;
       switch (data.type) {
         case CategoryConstants.INCOME_ACTIVITIES:
           url = `/api/protected/income-activities/${data.id}/approve?type=${type}`;
@@ -1471,9 +1505,10 @@
             `${date}`;
           break;
         case CategoryConstants.MEMBERS:
-          
           this.register_member_name = data.name;
-          this.approve_msg = this.$t("app.regFor") + `${LocalStorage.getItem('data').current_session.year}`;
+          this.approve_msg =
+            this.$t("app.regFor") +
+            `${LocalStorage.getItem("data").current_session.year}`;
           break;
       }
       return this.approve_msg;
@@ -1540,7 +1575,10 @@
     },
 
     setApproveContributionPayload(data) {
-      let type = this.chosen_state === CategoryConstants.Approve ? TransactionStatus.APPROVED : TransactionStatus.DECLINED;
+      let type =
+        this.chosen_state === CategoryConstants.Approve
+          ? TransactionStatus.APPROVED
+          : TransactionStatus.DECLINED;
       return {
         payment_item_id: data.payment_item_id,
         user_id: data.user_id,
@@ -1579,13 +1617,13 @@
         tab: "Savings",
       };
       this.$store.dispatch("setUpdatedMemberSaving", data);
-      if(this.checkPresidentOrAdminRole()){
+      if (this.checkPresidentOrAdminRole()) {
         let transactionHistoryPayload = {
           data: data,
           tab: "Change User Saving History",
         };
         this.$emit("update-user-saving-history", transactionHistoryPayload);
-      }else {
+      } else {
         this.$emit("edit-member-saving", payload);
       }
     },
@@ -1606,16 +1644,15 @@
       };
       this.$store.dispatch("setUpdatedIncomeActivity", data);
 
-      if(this.checkPresidentOrAdminRole()){
+      if (this.checkPresidentOrAdminRole()) {
         let transactionHistoryPayload = {
           data: data,
           tab: "Change Income Activity History",
         };
         this.$emit("update-income-activity-history", transactionHistoryPayload);
-      }else {
+      } else {
         this.$emit("edit-income-activity", payload);
       }
-
     },
 
     onViewIncomeActivity(data) {
@@ -1675,13 +1712,16 @@
       };
       this.$store.dispatch("setSelectedContribution", data);
 
-      if(this.checkPresidentOrAdminRole()){
+      if (this.checkPresidentOrAdminRole()) {
         let transactionHistoryPayload = {
           data: data,
           tab: "Change User Contribution Transaction",
         };
-        this.$emit("update-user-contribution-transaction", transactionHistoryPayload);
-      }else {
+        this.$emit(
+          "update-user-contribution-transaction",
+          transactionHistoryPayload
+        );
+      } else {
         this.$emit("edit-contribution", payload);
       }
     },

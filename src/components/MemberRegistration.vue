@@ -32,6 +32,22 @@
         <q-btn flat icon="close" size="sm" />
       </template>
     </q-banner>
+
+    <q-banner
+      inline-actions
+      rounded
+      class="bg-info text-white q-mb-md registration_text"
+      dense
+      v-if="!isRegisterAmountSet"
+    >
+      <span class="registration_text"
+        >{{ $t("app.registrationAmountNotSet") }}
+      </span>
+      <template v-slot:action>
+        <q-btn flat icon="close" size="sm" />
+      </template>
+    </q-banner>
+
     <q-form
       @submit="onRegisterMember"
       class="q-gutter-sm q-mt-md"
@@ -117,7 +133,6 @@ import ButtonVue from "src/components/Button.vue";
 import memberMixinVue from "src/mixins/memberMixin.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import RegistrationAmountMixinVue from "src/mixins/RegistrationAmountMixin.vue";
-import CurrentYearMixin from "src/mixins/CurrentYearMixin";
 import { LocalStorage, Notify, Platform } from "quasar";
 const months = [
   "January",
@@ -162,9 +177,10 @@ export default {
       return this.$store.getters.getRegAmount.frequency === "MONTHLY";
     },
     getRegisterMember() {
-      console.log(this.$store.getters.getRegAmount);
-
-      if (this.$store.getters.getRegAmount == null) {
+      if (
+        this.$store.getters.getRegAmount === null ||
+        this.$store.getters.getRegAmount === undefined
+      ) {
         Notify.create({
           color: "info",
           message: this.$t("app.registrationAmountNotSet"),
@@ -176,6 +192,13 @@ export default {
         this.$store.getters.getMemberToRegister.name,
         this.$store.getters.getCurrentYear.year,
         this.$store.getters.getRegAmount.amount
+      );
+    },
+
+    isRegisterAmountSet() {
+      return (
+        this.$store.getters.getRegAmount !== null &&
+        this.$store.getters.getRegAmount !== undefined
       );
     },
 

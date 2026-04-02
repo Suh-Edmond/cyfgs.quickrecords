@@ -15,7 +15,7 @@
       >
         <template v-slot:top-left>
           <div>
-            <label  class="title">{{ table_header }}</label>
+            <label class="title">{{ table_header }}</label>
           </div>
         </template>
         <template v-slot:top-right>
@@ -24,6 +24,7 @@
             dense
             size="sm"
             color="primary"
+            :disable="!canAddSession"
             no-caps
             class="q-pa-xs"
             icon-right="add"
@@ -94,7 +95,7 @@
         <q-card-section class="q-pt-none">
           <q-form @submit="onSetSession" class="q-gutter-md">
             <div>
-              <label  class="form_field"
+              <label class="form_field"
                 >{{ $t("app.year") }} <span class="text-red">*</span></label
               >
               <q-input
@@ -106,7 +107,7 @@
               />
             </div>
             <div>
-              <label  class="form_field"
+              <label class="form_field"
                 >{{ $t("app.status") }} <span class="text-red">*</span></label
               >
               <q-select
@@ -197,6 +198,7 @@
 import ButtonVue from "./Button.vue";
 import SessionStatusVue from "./Constants/SessionStatus.vue";
 import HelperMixin from "src/mixins/HelperMixin.vue";
+import { LocalStorage } from "quasar";
 export default {
   mixins: [HelperMixin],
   props: {
@@ -230,14 +232,13 @@ export default {
       show_warning: false,
     };
   },
-  methods: {
-    getCurrentSession() {
-      const current_session = this.data.filter(
-        (ele) => ele.status === SessionStatusVue.ACTIVE
-      );
-      return current_session !== undefined ? current_session[0] : null;
+  computed: {
+    canAddSession() {
+      const data = LocalStorage.getItem("data");
+      return data.current_session === null;
     },
-
+  },
+  methods: {
     onSetSession() {
       this.show_add_session = false;
       return (this.show_warning = !this.show_warning);

@@ -59,10 +59,7 @@
           class="col-md-5 col-xs-12 col-sm-12"
           :class="$q.platform.is.desktop ? 'q-ml-md' : ' q-py-sm'"
         >
-          <label class="form_field"
-            >{{ $t("app.emailLabel") }}
-            <span class="text-red q-pl-xs">*</span></label
-          >
+          <label class="form_field">{{ $t("app.emailLabel") }} </label>
           <q-input dense v-model="organisation.email" outlined type="email" />
         </div>
         <div class="col-1 col-md-1 com-sm-1"></div>
@@ -195,6 +192,7 @@ import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import { LocalStorage, Notify, Platform } from "quasar";
 import { VueTelInput } from "vue-tel-input";
 import { REGIONS } from "../../utils/regions";
+import { store } from "quasar/wrappers";
 
 export default {
   mixins: [organisationMixinVue],
@@ -230,7 +228,6 @@ export default {
     validateForm() {
       return (
         this.organisation.name === "" ||
-        this.organisation.email === "" ||
         this.organisation.telephone === "" ||
         this.organisation.address === "" ||
         this.organisation.description === "" ||
@@ -292,7 +289,16 @@ export default {
       this.loading = true;
       this.$store
         .dispatch("postRequest", payload)
-        .then(() => {
+        .then((res) => {
+          console.log(res.data.data.email);
+
+          const storedData = LocalStorage.getItem("data");
+          if (storedData) {
+            storedData.subscription.organisation.email = res.data.data.email;
+            LocalStorage.remove("data");
+            LocalStorage.set("data", storedData);
+          }
+
           this.getOrganisationInfo();
         })
         .finally(() => {

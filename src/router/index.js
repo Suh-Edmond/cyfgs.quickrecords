@@ -45,6 +45,7 @@ export default function (
         position: Platform.is.mobile ? "bottom" : "top-right",
         message: "Login is required to view this page",
       });
+      return;
     }
 
     if (to.meta.middleware === "auth" && data !== null) {

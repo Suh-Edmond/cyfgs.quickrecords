@@ -40,13 +40,14 @@
 </template>
 
 <script>
-  import CategoryTable from "src/components/CategoryTable.vue";
-  import HelperMixinVue from "src/mixins/HelperMixin.vue";
-  import ExpenditureItemDetailMixinVue from "src/mixins/ExpenditureItemDetailMixin.vue";
-  import expenditureItemMixinVue from "src/mixins/expenditureItemMixin.vue";
-  import FilterComponentVue from "src/components/FilterComponent.vue";
+import CategoryTable from "src/components/CategoryTable.vue";
+import HelperMixinVue from "src/mixins/HelperMixin.vue";
+import ExpenditureItemDetailMixinVue from "src/mixins/ExpenditureItemDetailMixin.vue";
+import expenditureItemMixinVue from "src/mixins/expenditureItemMixin.vue";
+import FilterComponentVue from "src/components/FilterComponent.vue";
+import { LocalStorage } from "quasar";
 
-  export default {
+export default {
   mixins: [
     HelperMixinVue,
     ExpenditureItemDetailMixinVue,
@@ -120,7 +121,7 @@
       message: this.$t("app.deleteExpenditureItemWarningMsg"),
       status: "",
       payment_item_id: null,
-      session_id: this.$store.getters.getCurrentYear.id,
+      session_id: LocalStorage.getItem("data").current_session.id,
       loading_download: false,
     };
   },
@@ -208,8 +209,8 @@
       this.$emit("edit-expenditure-item", data);
     },
 
-    updateExpenditureItemTransaction(data){
-      this.$emit('update-expenditure-item-transaction', data);
+    updateExpenditureItemTransaction(data) {
+      this.$emit("update-expenditure-item-transaction", data);
     },
 
     viewExpenditureItem(data) {
@@ -261,7 +262,8 @@
     },
 
     filterItems(data) {
-      let expenditure_category = this.$store.getters.getCurrentExpenditureCategory;
+      let expenditure_category =
+        this.$store.getters.getCurrentExpenditureCategory;
       this.$router.push({
         path: `/dashboard/expenditure-categories/${expenditure_category.id}/items`,
         query: {

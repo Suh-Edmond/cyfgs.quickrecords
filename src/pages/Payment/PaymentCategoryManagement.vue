@@ -34,13 +34,14 @@
 </template>
 
 <script>
-  import CategoryTable from "src/components/CategoryTable.vue";
-  import PaymentCategoryMixinVue from "src/mixins/PaymentCategoryMixin.vue";
-  import HelperMixinVue from "src/mixins/HelperMixin.vue";
-  import CurrentYearMixin from "src/mixins/CurrentYearMixin.vue";
-  import FilterComponentVue from "src/components/FilterComponent.vue";
+import CategoryTable from "src/components/CategoryTable.vue";
+import PaymentCategoryMixinVue from "src/mixins/PaymentCategoryMixin.vue";
+import HelperMixinVue from "src/mixins/HelperMixin.vue";
+import CurrentYearMixin from "src/mixins/CurrentYearMixin.vue";
+import FilterComponentVue from "src/components/FilterComponent.vue";
+import { LocalStorage } from "quasar";
 
-  export default {
+export default {
   mixins: [PaymentCategoryMixinVue, HelperMixinVue, CurrentYearMixin],
   beforeMount() {
     this.$store.commit("SET_PAGINATION", {
@@ -53,7 +54,14 @@
   },
 
   mounted() {
-    this.fetchOrganisationCategories(this.organisation_id, 1, 7, "name", "", "");
+    this.fetchOrganisationCategories(
+      this.organisation_id,
+      1,
+      7,
+      "name",
+      "",
+      ""
+    );
   },
   data() {
     return {
@@ -92,7 +100,8 @@
       ],
       label: this.$t("app.delete"),
       message: this.$t("app.deletePaymentCategoryWarningMsg"),
-      organisation_id: this.$store.getters.getOrganisation.id,
+      organisation_id:
+        LocalStorage.getItem("data").subscription.organisation.id,
     };
   },
   computed: {

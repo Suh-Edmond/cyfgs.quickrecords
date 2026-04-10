@@ -23,15 +23,13 @@
 
     <div class="text-left q-mt-md q-mb-lg">
       <label class="text-muted info"
-      >{{ $t("app.warningField") }}<span class="text-red">*</span>
+        >{{ $t("app.warningField") }}<span class="text-red">*</span>
         {{ $t("app.fields") }}</label
       >
     </div>
     <q-form @submit="onUpdateIncomeActivityHistory" class="q-gutter-md">
       <div class="q-mb-md">
-        <label class="form_field"
-        >{{ $t("app.paymentItem") }}</label
-        >
+        <label class="form_field">{{ $t("app.paymentItem") }}</label>
         <q-input
           v-model="getCurrentIncomeActivity.payment_item.name"
           outlined
@@ -42,9 +40,7 @@
         />
       </div>
       <div class="q-mb-md">
-        <label class="form_field"
-        >{{ $t("app.nameLabel") }}</label
-        >
+        <label class="form_field">{{ $t("app.nameLabel") }}</label>
         <q-input
           v-model="getCurrentIncomeActivity.name"
           outlined
@@ -55,9 +51,7 @@
         />
       </div>
       <div class="q-mb-md">
-        <label class="form_field"
-        >{{ $t("app.date") }}</label
-        >
+        <label class="form_field">{{ $t("app.date") }}</label>
         <q-input
           v-model="getCurrentIncomeActivity.date"
           outlined
@@ -82,9 +76,7 @@
         </q-input>
       </div>
       <div class="q-mb-md">
-        <label class="form_field"
-        >{{ $t("app.venue") }}</label
-        >
+        <label class="form_field">{{ $t("app.venue") }}</label>
         <q-input
           v-model="getCurrentIncomeActivity.venue"
           outlined
@@ -95,9 +87,7 @@
         />
       </div>
       <div class="q-mb-md">
-        <label class="form_field"
-        >{{ $t("app.oldAmount") }}</label
-        >
+        <label class="form_field">{{ $t("app.oldAmount") }}</label>
         <q-input
           v-model="getCurrentIncomeActivity.amount"
           outlined
@@ -109,7 +99,8 @@
       </div>
       <div class="q-mb-md">
         <label class="form_field"
-        >{{ $t("app.newAmount") }}<span class="text-red q-ml-xs">*</span></label
+          >{{ $t("app.newAmount")
+          }}<span class="text-red q-ml-xs">*</span></label
         >
         <q-input
           v-model="income_activity_history.new_amount_deposited"
@@ -120,9 +111,9 @@
         />
       </div>
       <div class="q-mb-md">
-        <label class="form_field">{{
-          $t("app.reason")
-          }}<span class="text-red q-ml-xs">*</span></label>
+        <label class="form_field"
+          >{{ $t("app.reason") }}<span class="text-red q-ml-xs">*</span></label
+        >
         <q-input
           v-model="income_activity_history.reason"
           outlined
@@ -180,125 +171,140 @@
 </template>
 
 <script>
-  import ButtonVue from "src/components/Button.vue";
-  import IncomeActivityMixinVue from "src/mixins/IncomeActivityMixin.vue";
-  import TransactionStatus from "components/Constants/TransactionStatus";
-  import TransactionDataGroup from "components/Constants/TransactionDataGroup";
+import ButtonVue from "src/components/Button.vue";
+import IncomeActivityMixinVue from "src/mixins/IncomeActivityMixin.vue";
+import TransactionStatus from "components/Constants/TransactionStatus";
+import TransactionDataGroup from "components/Constants/TransactionDataGroup";
+import { LocalStorage } from "quasar";
 
-  export default {
-    name: "UpdateIncomeActivityHistory",
-    mixins: [IncomeActivityMixinVue],
-    props: {
-      incomeActivity: {
-        type: Object,
-        required: true,
+export default {
+  name: "UpdateIncomeActivityHistory",
+  mixins: [IncomeActivityMixinVue],
+  props: {
+    incomeActivity: {
+      type: Object,
+      required: true,
+    },
+  },
+  mounted() {
+    this.$emit(
+      "set-heading",
+      this.$t("app.updateIncomeActivityTitleComponent")
+    );
+  },
+
+  data() {
+    return {
+      loading: false,
+      payment_statuses: [
+        TransactionStatus.PENDING,
+        TransactionStatus.APPROVED,
+        TransactionStatus.DECLINED,
+      ],
+      income_activity_history: {
+        reason: null,
+        old_amount_deposited: this.incomeActivity.amount,
+        reference_data: this.incomeActivity.id,
+        organisation_id: null,
+        approve: this.incomeActivity.approve,
+        new_amount_deposited: 0,
+        transaction_data_group: TransactionDataGroup.INCOME_ACTIVITY,
       },
-    },
-    mounted() {
-      this.$emit("set-heading", this.$t("app.updateIncomeActivityTitleComponent"));
+      position: "right",
+      organisation_id:
+        LocalStorage.getItem("data").subscription.organisation.id,
+      show_banner: true,
+    };
+  },
+  computed: {
+    validateForm() {
+      return (
+        this.income_activity_history.new_amount_deposited === 0 ||
+        this.income_activity_history.reason == null ||
+        this.income_activity_history.reason.length < 30 ||
+        this.income_activity_history.approve == null
+      );
     },
 
-    data() {
-      return {
-        loading: false,
-        payment_statuses: [TransactionStatus.PENDING, TransactionStatus.APPROVED, TransactionStatus.DECLINED],
-        income_activity_history: {
-          reason: null,
-          old_amount_deposited: this.incomeActivity.amount,
-          reference_data: this.incomeActivity.id,
-          organisation_id: null,
-          approve: this.incomeActivity.approve,
-          new_amount_deposited: 0,
-          transaction_data_group:TransactionDataGroup.INCOME_ACTIVITY
+    getCurrentIncomeActivity() {
+      return this.incomeActivity;
+    },
+  },
+
+  methods: {
+    onUpdateIncomeActivityHistory() {
+      let payload = {
+        url: `/api/protected/transactions/update-history`,
+        data: this.income_activity_history,
+        msg: this.$t("app.addIncomeSuccessFeedbackMsg"),
+        color: "default",
+        to_on_ok: "none",
+        to_on_fail: "none",
+        show_feedback: true,
+        error_msg: this.$t("app.defaultErrorMsg"),
+        has_commit: false,
+        commit: "none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
         },
-        position: "right",
-        organisation_id: this.$store.getters.getOrganisation.id,
-        show_banner:true,
       };
-    },
-    computed: {
-      validateForm() {
-        return (
-          this.income_activity_history.new_amount_deposited === 0 ||
-          this.income_activity_history.reason == null ||
-          this.income_activity_history.reason.length < 30 ||
-          this.income_activity_history.approve == null
-        );
-      },
-
-      getCurrentIncomeActivity() {
-        return this.incomeActivity;
-      },
-
-    },
-
-    methods: {
-      onUpdateIncomeActivityHistory() {
-        let payload = {
-          url: `/api/protected/transactions/update-history`,
-          data: this.income_activity_history,
-          msg: this.$t("app.addIncomeSuccessFeedbackMsg"),
-          color: "default",
-          to_on_ok: "none",
-          to_on_fail: "none",
-          show_feedback: true,
-          error_msg: this.$t("app.defaultErrorMsg"),
-          has_commit: false,
-          commit: "none",
-          to_be_store_data: {
-            required: false,
-            has_value: false,
-            data: [],
-          },
-        };
-        this.loading = true;
-        this.$store.dispatch("postRequest", payload).then((res) => {
+      this.loading = true;
+      this.$store
+        .dispatch("postRequest", payload)
+        .then((res) => {
           let payment_item_id = this.incomeActivity.payment_item.id;
           let session_id = this.incomeActivity.session.id;
-          this.getPaymentItemIncomeActivities(payment_item_id, 1, 10, session_id, this.organisation_id);
-        }).finally(() => {
+          this.getPaymentItemIncomeActivities(
+            payment_item_id,
+            1,
+            10,
+            session_id,
+            this.organisation_id
+          );
+        })
+        .finally(() => {
           this.$emit("close-right-drawer");
           this.loading = false;
           this.resetForm();
-        })
-
-      },
-
-      resetForm() {
-        this.income_activity_history.new_amount_deposited = 0;
-        this.income_activity_history.approve = this.incomeActivity.approve;
-        this.income_activity_history.reason = null;
-        this.income_activity_history.reference_data = this.incomeActivity.id
-
-        return this.income_activity_history;
-      },
-      closeBanner(){
-        return this.show_banner = !this.show_banner;
-      }
+        });
     },
-    components: {
-      ButtonVue,
-    },
-  }
 
+    resetForm() {
+      this.income_activity_history.new_amount_deposited = 0;
+      this.income_activity_history.approve = this.incomeActivity.approve;
+      this.income_activity_history.reason = null;
+      this.income_activity_history.reference_data = this.incomeActivity.id;
+
+      return this.income_activity_history;
+    },
+    closeBanner() {
+      return (this.show_banner = !this.show_banner);
+    },
+  },
+  components: {
+    ButtonVue,
+  },
+};
 </script>
 
 <style scoped lang="scss">
-  .form_field {
-    font-family: "Roboto";
-    font-style: normal;
-    font-weight: 500;
-    font-size: 0.8rem;
-    align-items: center;
-    color: $grey5;
-  }
+.form_field {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 0.8rem;
+  align-items: center;
+  color: $grey5;
+}
 
-  .info {
-    color: $grey2;
-    font-size: smaller;
-  }
+.info {
+  color: $grey2;
+  font-size: smaller;
+}
 
-  .registration_text {
-    font-size: 0.8rem;
-  }
+.registration_text {
+  font-size: 0.8rem;
+}
 </style>

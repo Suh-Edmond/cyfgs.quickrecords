@@ -1,9 +1,9 @@
 <script>
+import { LocalStorage } from "quasar";
 import CurrentYearMixinVue from "./CurrentYearMixin.vue";
 export default {
   mixins: [CurrentYearMixinVue],
-  mounted() {
-  },
+  mounted() {},
   data() {
     return {};
   },
@@ -24,10 +24,7 @@ export default {
 
   methods: {
     fetchCategories(organisation_id, show_spinner) {
-      let year =
-        this.$store.getters.getCurrentYear != null
-          ? this.$store.getters.getCurrentYear.year
-          : null;
+      let year = LocalStorage.getItem("data").current_session.year;
       let payload = {
         url: `/api/protected/organisation/payment-categories?organisation_id=${organisation_id}&year=${year}`,
         msg: "none",

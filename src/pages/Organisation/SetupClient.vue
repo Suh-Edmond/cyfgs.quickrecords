@@ -132,13 +132,21 @@ import CompleteSetup from "src/components/setup/CompleteSetup.vue";
 export default {
   name: "PageIndex",
   mixins: [organisationMixin, memberMixinVue, UserSavingMixin],
+  mounted() {
+    const currentStep = LocalStorage.getItem("currentStep");
+    if (currentStep) {
+      this.step = parseInt(currentStep);
+    } else {
+      LocalStorage.set("currentStep", 1);
+    }
+  },
   data() {
     return {
       logo: null,
       loading: false,
       color: "primary",
       directory: "LOGOS",
-      step: 1,
+      step: Number(LocalStorage.getItem("currentStep")) || 1,
       processStatus: "CREATE_ACCOUNT",
       processStep: "CREATE_ACCOUNT",
       hasCompletedAccountCreation: false,
@@ -164,6 +172,7 @@ export default {
         this.$store.getters.getProcessStage.isSuccessful;
       this.step = this.$store.getters.getProcessStage.step;
       this.processStatus = this.$store.getters.getProcessStage.processStatus;
+      LocalStorage.set("currentStep", this.step);
     },
 
     handleAccountCreationEvent() {
@@ -171,12 +180,14 @@ export default {
         this.$store.getters.getProcessStage.isSuccessful;
       this.step = this.$store.getters.getProcessStage.step;
       this.processStatus = this.$store.getters.getProcessStage.processStatus;
+      LocalStorage.set("currentStep", this.step);
     },
     handleOrganisationCreationEvent() {
       this.hasCompletedAccountVerification =
         this.$store.getters.getProcessStage.isSuccessful;
       this.step = this.$store.getters.getProcessStage.step;
       this.processStatus = this.$store.getters.getProcessStage.processStatus;
+      LocalStorage.set("currentStep", this.step);
     },
 
     handleSubscriptionCreationEvent() {
@@ -184,6 +195,7 @@ export default {
         this.$store.getters.getProcessStage.isSuccessful;
       this.step = this.$store.getters.getProcessStage.step;
       this.processStatus = this.$store.getters.getProcessStage.processStatus;
+      LocalStorage.set("currentStep", this.step);
     },
 
     handleSubscriptionPaymentEvent() {
@@ -192,6 +204,7 @@ export default {
       this.hasCompletedTrial = this.$store.getters.getProcessStage.isSuccessful;
       this.step = this.$store.getters.getProcessStage.step;
       this.processStatus = this.$store.getters.getProcessStage.processStatus;
+      LocalStorage.set("currentStep", this.step);
     },
 
     handleMakePayment() {
@@ -199,6 +212,7 @@ export default {
         this.$store.getters.getProcessStage.isSuccessful;
       this.step = this.$store.getters.getProcessStage.step;
       this.processStatus = this.$store.getters.getProcessStage.processStatus;
+      LocalStorage.set("currentStep", this.step);
     },
 
     handleTrial() {
@@ -208,6 +222,7 @@ export default {
         this.$store.getters.getProcessStage.isSuccessful;
       this.step = this.$store.getters.getProcessStage.step;
       this.processStatus = this.$store.getters.getProcessStage.processStatus;
+      LocalStorage.set("currentStep", this.step);
     },
 
     handleStartTrialEvent() {
@@ -223,6 +238,7 @@ export default {
       this.hasCompletedPayment = false;
       this.processStatus = this.$store.getters.getProcessStage.processStatus;
       this.hasCompletedSetup = true; // TODO: Remove when payment is wokring;
+      LocalStorage.set("currentStep", this.step);
     },
     handleCompletePayment() {
       this.hasCompletedPayment =
@@ -230,6 +246,7 @@ export default {
       this.hasCompletedSetup = this.$store.getters.getProcessStage.isSuccessful;
       this.step = this.$store.getters.getProcessStage.step;
       this.processStatus = this.$store.getters.getProcessStage.processStatus;
+      LocalStorage.set("currentStep", this.step);
     },
 
     handleBackToOrganisation() {
@@ -237,6 +254,7 @@ export default {
         this.$store.getters.getProcessStage.isSuccessful;
       this.step = this.$store.getters.getProcessStage.step;
       this.processStatus = this.$store.getters.getProcessStage.processStatus;
+      LocalStorage.set("currentStep", this.step);
     },
 
     setProgressBar(showProgressBar) {
@@ -248,6 +266,7 @@ export default {
         this.$store.getters.getProcessStage.isSuccessful;
       this.step = this.$store.getters.getProcessStage.step;
       this.processStatus = this.$store.getters.getProcessStage.processStatus;
+      LocalStorage.set("currentStep", this.step);
     },
   },
   components: {

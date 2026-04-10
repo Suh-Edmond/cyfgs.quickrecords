@@ -26,8 +26,7 @@
       <div class="flex">
         <div>
           <label class="form_field"
-            >{{ $t("app.isRangeLabel") }}
-            <span class="text-red">*</span></label
+            >{{ $t("app.isRangeLabel") }} <span class="text-red">*</span></label
           >
         </div>
         <div class="q-gutter-sm q-ml-lg">
@@ -60,32 +59,36 @@
         />
       </div>
       <div v-if="payment_item.is_range">
-         <div class="q-mb-md">
-        <label class="form_field"
-          >{{ $t("app.startAmountLabel") }} <span class="text-red">*</span></label
-        >
-        <q-input
-          v-model="payment_item.start_amount"
-          outlined
-          dense
-          type="number"
-          hide-bottom-space
-        />
-        <label v-if="validateRangeAmount" class="text-red">{{ $t("app.inValidRangeAmount") }}</label>
-      </div>
+        <div class="q-mb-md">
+          <label class="form_field"
+            >{{ $t("app.startAmountLabel") }}
+            <span class="text-red">*</span></label
+          >
+          <q-input
+            v-model="payment_item.start_amount"
+            outlined
+            dense
+            type="number"
+            hide-bottom-space
+          />
+          <label v-if="validateRangeAmount" class="text-red">{{
+            $t("app.inValidRangeAmount")
+          }}</label>
+        </div>
 
-       <div>
-        <label class="form_field"
-          >{{ $t("app.endAmountLabel") }} <span class="text-red">*</span></label
-        >
-        <q-input
-          v-model="payment_item.end_amount"
-          outlined
-          dense
-          type="number"
-          hide-bottom-space
-        />
-      </div>
+        <div>
+          <label class="form_field"
+            >{{ $t("app.endAmountLabel") }}
+            <span class="text-red">*</span></label
+          >
+          <q-input
+            v-model="payment_item.end_amount"
+            outlined
+            dense
+            type="number"
+            hide-bottom-space
+          />
+        </div>
       </div>
       <div class="flex">
         <div>
@@ -401,11 +404,7 @@ export default {
         start_amount: 0,
         end_amount: 0,
       },
-      payment_item_types: [
-        "ALL_MEMBERS",
-        "A_MEMBER",
-        "GROUPED_MEMBERS",
-      ],
+      payment_item_types: ["ALL_MEMBERS", "A_MEMBER", "GROUPED_MEMBERS"],
       frequencies: ["YEARLY", "MONTHLY", "ONE_TIME", "QUARTERLY"],
       members: [],
       references: [],
@@ -415,7 +414,6 @@ export default {
   },
   computed: {
     validateForm() {
-
       return (
         this.payment_item.name === null ||
         this.payment_item.type === null ||
@@ -425,8 +423,8 @@ export default {
         (this.payment_item.type === "GROUPED_MEMBERS" &&
           this.references.length == 0) ||
         (this.payment_item.type === "A_MEMBER" &&
-          this.references.length == 0)  ||
-          (this.payment_item.is_range &&
+          this.references.length == 0) ||
+        (this.payment_item.is_range &&
           (this.payment_item.start_amount === 0 ||
             this.payment_item.end_amount === 0))
       );
@@ -458,9 +456,12 @@ export default {
       return data;
     },
 
-    validateRangeAmount(){
-      return  parseInt(this.payment_item.start_amount) > parseInt(this.payment_item.end_amount);
-    }
+    validateRangeAmount() {
+      return (
+        parseInt(this.payment_item.start_amount) >
+        parseInt(this.payment_item.end_amount)
+      );
+    },
   },
 
   watch: {
@@ -605,7 +606,8 @@ export default {
     },
 
     getOrganisationMembers() {
-      let organisation_id = this.$store.getters.getOrganisation.id;
+      let organisation_id =
+        LocalStorage.getItem("data").subscription.organisation.id;
       let payload = {
         url: `/api/protected/organisations/${organisation_id}/users`,
         msg: "none",
@@ -758,14 +760,12 @@ export default {
       this.loading = true;
       this.$store
         .dispatch("getRequest", payload)
-        .then((response) => {
-
-        })
+        .then((response) => {})
         .finally(() => {
           this.$store.commit("SET_IS_FETCHING", false);
           this.loading = false;
         });
-    }
+    },
   },
   components: {
     ButtonVue,

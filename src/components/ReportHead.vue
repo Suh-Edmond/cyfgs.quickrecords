@@ -43,8 +43,8 @@
       <div class="col-2 col-md-2 col-sm-12 col-xs-12"></div>
       <div class="col-2 col-md-2 col-sm-12 col-xs-12">
         <label class="text-capitalize detail text-weight-medium">
-          P.O. Box {{ getOrganisation.box_number }},
-          {{ getOrganisation.address }}</label
+          Address: {{ getOrganisation.address }},
+          {{ getOrganisation.region }}</label
         >
         <br />
         <label class="detail text-weight-medium"
@@ -88,10 +88,11 @@
 
 <script>
 import moment from "moment";
+import { LocalStorage } from "quasar";
 export default {
   computed: {
     getOrganisation() {
-      return this.$store.getters.getOrganisation;
+      return LocalStorage.getItem("data").subscription.organisation;
     },
 
     getPrintedDate() {
@@ -103,7 +104,7 @@ export default {
     },
 
     getOrganisationTelephone() {
-      return this.$store.getters.getOrganisation.telephone.split("/");
+      return this.getOrganisation.telephone.split("/");
     },
   },
 };

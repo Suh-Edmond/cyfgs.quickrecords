@@ -23,15 +23,13 @@
 
     <div class="text-left q-mt-md q-mb-lg">
       <label class="text-muted info"
-      >{{ $t("app.warningField") }}<span class="text-red">*</span>
+        >{{ $t("app.warningField") }}<span class="text-red">*</span>
         {{ $t("app.fields") }}</label
       >
     </div>
     <q-form @submit="onUpdateIncomeActivityHistory" class="q-gutter-md">
       <div class="q-mb-md">
-        <label class="form_field"
-        >{{ $t("app.paymentItem") }}</label
-        >
+        <label class="form_field">{{ $t("app.paymentItem") }}</label>
         <q-input
           v-model="getCurrentSponsorship.payment_item.name"
           outlined
@@ -42,9 +40,7 @@
         />
       </div>
       <div class="q-mb-md">
-        <label class="form_field"
-        >{{ $t("app.nameLabel") }}</label
-        >
+        <label class="form_field">{{ $t("app.nameLabel") }}</label>
         <q-input
           v-model="getCurrentSponsorship.supporter"
           outlined
@@ -55,9 +51,7 @@
         />
       </div>
       <div class="q-mb-md">
-        <label class="form_field"
-        >{{ $t("app.oldAmount") }}</label
-        >
+        <label class="form_field">{{ $t("app.oldAmount") }}</label>
         <q-input
           v-model="getOldAmountDeposited"
           outlined
@@ -69,7 +63,8 @@
       </div>
       <div class="q-mb-md">
         <label class="form_field"
-        >{{ $t("app.newAmount") }}<span class="text-red q-ml-xs">*</span></label
+          >{{ $t("app.newAmount")
+          }}<span class="text-red q-ml-xs">*</span></label
         >
         <q-input
           v-model="sponsorship_history.new_amount_deposited"
@@ -80,9 +75,9 @@
         />
       </div>
       <div class="q-mb-md">
-        <label class="form_field">{{
-          $t("app.reason")
-          }}<span class="text-red q-ml-xs">*</span></label>
+        <label class="form_field"
+          >{{ $t("app.reason") }}<span class="text-red q-ml-xs">*</span></label
+        >
         <q-input
           v-model="sponsorship_history.reason"
           outlined
@@ -140,125 +135,133 @@
 </template>
 
 <script>
-    import SponsorshipMixin from "src/mixins/SponsorshipMixin";
-    import TransactionStatus from "components/Constants/TransactionStatus";
-    import TransactionDataGroup from "components/Constants/TransactionDataGroup";
-    import ButtonVue from "components/Button";
+import SponsorshipMixin from "src/mixins/SponsorshipMixin";
+import TransactionStatus from "components/Constants/TransactionStatus";
+import TransactionDataGroup from "components/Constants/TransactionDataGroup";
+import ButtonVue from "components/Button";
+import { LocalStorage } from "quasar";
 
-    export default {
-      name: "ChangeSponsorshipTransactionHistory",
-      mixins: [SponsorshipMixin],
-      props: {
-        sponsorship: {
-          type: Object,
-          required: true,
+export default {
+  name: "ChangeSponsorshipTransactionHistory",
+  mixins: [SponsorshipMixin],
+  props: {
+    sponsorship: {
+      type: Object,
+      required: true,
+    },
+  },
+  mounted() {
+    this.$emit("set-heading", this.$t("app.updateSponsorshipTitleComponent"));
+  },
+
+  data() {
+    return {
+      loading: false,
+      payment_statuses: [
+        TransactionStatus.PENDING,
+        TransactionStatus.APPROVED,
+        TransactionStatus.DECLINED,
+      ],
+      sponsorship_history: {
+        reason: null,
+        old_amount_deposited: parseInt(this.sponsorship.amount_deposited),
+        reference_data: this.sponsorship.id,
+        organisation_id: null,
+        approve: this.sponsorship.approve,
+        new_amount_deposited: 0,
+        transaction_data_group: TransactionDataGroup.SPONSORSHIP,
+      },
+      position: "right",
+      organisation_id:
+        LocalStorage.getItem("data").subscription.organisation.id,
+      show_banner: true,
+    };
+  },
+  computed: {
+    validateForm() {
+      return (
+        this.sponsorship_history.new_amount_deposited === 0 ||
+        this.sponsorship_history.reason == null ||
+        this.sponsorship_history.reason.length < 30 ||
+        this.sponsorship_history.approve == null
+      );
+    },
+
+    getCurrentSponsorship() {
+      return this.sponsorship;
+    },
+    getOldAmountDeposited() {
+      return parseInt(this.sponsorship.amount_deposited);
+    },
+  },
+
+  methods: {
+    onUpdateIncomeActivityHistory() {
+      let payload = {
+        url: `/api/protected/transactions/update-history`,
+        data: this.sponsorship_history,
+        msg: this.$t("app.addSponsorshipSuccessMsg"),
+        color: "default",
+        to_on_ok: "none",
+        to_on_fail: "none",
+        show_feedback: true,
+        error_msg: this.$t("app.defaultErrorMsg"),
+        has_commit: false,
+        commit: "none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
         },
-      },
-      mounted() {
-        this.$emit("set-heading", this.$t("app.updateSponsorshipTitleComponent"));
-      },
+      };
+      this.loading = true;
+      this.$store
+        .dispatch("postRequest", payload)
+        .then((res) => {
+          let payment_item_id = this.sponsorship.payment_item.id;
+          this.getAllSponsorships(1, 10, payment_item_id, "");
+        })
+        .finally(() => {
+          this.$emit("close-right-drawer");
+          this.loading = false;
+          this.resetForm();
+        });
+    },
 
-      data() {
-        return {
-          loading: false,
-          payment_statuses: [TransactionStatus.PENDING, TransactionStatus.APPROVED, TransactionStatus.DECLINED],
-          sponsorship_history: {
-            reason: null,
-            old_amount_deposited: parseInt(this.sponsorship.amount_deposited),
-            reference_data: this.sponsorship.id,
-            organisation_id: null,
-            approve: this.sponsorship.approve,
-            new_amount_deposited: 0,
-            transaction_data_group:TransactionDataGroup.SPONSORSHIP
-          },
-          position: "right",
-          organisation_id: this.$store.getters.getOrganisation.id,
-          show_banner:true,
-        };
-      },
-      computed: {
-        validateForm() {
-          return (
-            this.sponsorship_history.new_amount_deposited === 0 ||
-            this.sponsorship_history.reason == null ||
-            this.sponsorship_history.reason.length < 30 ||
-            this.sponsorship_history.approve == null
-          );
-        },
+    resetForm() {
+      this.sponsorship_history.new_amount_deposited = 0;
+      this.sponsorship_history.approve = this.incomeActivity.approve;
+      this.sponsorship_history.reason = null;
+      this.sponsorship_history.reference_data = this.incomeActivity.id;
 
-        getCurrentSponsorship() {
-          return this.sponsorship;
-        },
-        getOldAmountDeposited() {
-          return parseInt(this.sponsorship.amount_deposited);
-        }
-      },
-
-      methods: {
-        onUpdateIncomeActivityHistory() {
-          let payload = {
-            url: `/api/protected/transactions/update-history`,
-            data: this.sponsorship_history,
-            msg: this.$t("app.addSponsorshipSuccessMsg"),
-            color: "default",
-            to_on_ok: "none",
-            to_on_fail: "none",
-            show_feedback: true,
-            error_msg: this.$t("app.defaultErrorMsg"),
-            has_commit: false,
-            commit: "none",
-            to_be_store_data: {
-              required: false,
-              has_value: false,
-              data: [],
-            },
-          };
-          this.loading = true;
-          this.$store.dispatch("postRequest", payload).then((res) => {
-            let payment_item_id = this.sponsorship.payment_item.id;
-            this.getAllSponsorships( 1, 10, payment_item_id, "");
-          }).finally(() => {
-            this.$emit("close-right-drawer");
-            this.loading = false;
-            this.resetForm();
-          })
-
-        },
-
-        resetForm() {
-          this.sponsorship_history.new_amount_deposited = 0;
-          this.sponsorship_history.approve = this.incomeActivity.approve;
-          this.sponsorship_history.reason = null;
-          this.sponsorship_history.reference_data = this.incomeActivity.id
-
-          return this.sponsorship_history;
-        },
-        closeBanner(){
-          return this.show_banner = !this.show_banner;
-        }
-      },
-      components: {
-        ButtonVue,
-      },
-    }
+      return this.sponsorship_history;
+    },
+    closeBanner() {
+      return (this.show_banner = !this.show_banner);
+    },
+  },
+  components: {
+    ButtonVue,
+  },
+};
 </script>
 
 <style scoped lang="scss">
-  .form_field {
-    font-family: "Roboto";
-    font-style: normal;
-    font-weight: 500;
-    font-size: 0.8rem;
-    align-items: center;
-    color: $grey5;
-  }
+.form_field {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 0.8rem;
+  align-items: center;
+  color: $grey5;
+}
 
-  .info {
-    color: $grey2;
-    font-size: smaller;
-  }
+.info {
+  color: $grey2;
+  font-size: smaller;
+}
 
-  .registration_text {
-    font-size: 0.8rem;
-  }
+.registration_text {
+  font-size: 0.8rem;
+}
 </style>

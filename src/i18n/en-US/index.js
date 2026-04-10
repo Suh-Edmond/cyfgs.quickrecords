@@ -666,7 +666,7 @@ export default {
     subscribe: "Subscribe Now!",
 
     invalidUsernameErrorMsg:
-      "Admin Username must have at least 4 character and contains no spaces",
+      "Admin Username must have at least 8 character and contains no spaces",
     invalidEmailErrorMsg: "The provided email address is invalid",
     invalidNameMsg: "The provided name is invalid",
     invalidPhoneError:

@@ -54,7 +54,7 @@
               {{ props.row.updated_by }}
             </q-td>
             <q-td key="created_at" :props="props" class="table_value">
-              {{ props.row.created_at }}
+              {{ formateDate(props.row.created_at) }}
             </q-td>
           </q-tr>
         </template>
@@ -195,6 +195,7 @@
 </template>
 
 <script>
+import moment from "moment";
 import ButtonVue from "./Button.vue";
 import SessionStatusVue from "./Constants/SessionStatus.vue";
 import HelperMixin from "src/mixins/HelperMixin.vue";
@@ -239,6 +240,10 @@ export default {
     },
   },
   methods: {
+    formateDate(date) {
+      return moment(date).format("MMMM Do YYYY");
+    },
+
     onSetSession() {
       this.show_add_session = false;
       return (this.show_warning = !this.show_warning);

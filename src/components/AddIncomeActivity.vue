@@ -124,9 +124,7 @@
         </q-input>
       </div>
       <div class="q-mb-md">
-        <label class="form_field">{{
-          $t("app.description")
-        }}</label>
+        <label class="form_field">{{ $t("app.description") }}</label>
         <q-input
           v-model="income_activity.description"
           outlined
@@ -189,6 +187,7 @@
 import ButtonVue from "src/components/Button.vue";
 import IncomeActivityMixinVue from "src/mixins/IncomeActivityMixin.vue";
 import moment from "moment";
+import { LocalStorage } from "quasar";
 
 export default {
   mixins: [IncomeActivityMixinVue],
@@ -219,7 +218,8 @@ export default {
       dialog: false,
       payment_items: [],
       start_filtering: false,
-      organisation_id: this.$store.getters.getOrganisation.id,
+      organisation_id:
+        LocalStorage.getItem("data").subscription.organisation.id,
     };
   },
   computed: {

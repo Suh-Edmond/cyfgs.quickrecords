@@ -36,13 +36,14 @@
 </template>
 
 <script>
-  import CategoryTable from "src/components/CategoryTable.vue";
-  import ExpenditureCategoryMixinVue from "src/mixins/ExpenditureCategoryMixin.vue";
-  import organisationMixinVue from "src/mixins/organisationMixin.vue";
-  import HelperMixinVue from "src/mixins/HelperMixin.vue";
-  import FilterComponentVue from "src/components/FilterComponent.vue";
+import CategoryTable from "src/components/CategoryTable.vue";
+import ExpenditureCategoryMixinVue from "src/mixins/ExpenditureCategoryMixin.vue";
+import organisationMixinVue from "src/mixins/organisationMixin.vue";
+import HelperMixinVue from "src/mixins/HelperMixin.vue";
+import FilterComponentVue from "src/components/FilterComponent.vue";
+import { LocalStorage } from "quasar";
 
-  export default {
+export default {
   mixins: [ExpenditureCategoryMixinVue, organisationMixinVue, HelperMixinVue],
   beforeMount() {
     this.$store.commit("SET_PAGINATION", {
@@ -100,14 +101,19 @@
       ],
       label: this.$t("app.delete"),
       message: this.$t("app.deleteExpenditureCategoryWarningMsg"),
-      organisation_id: this.$store.getters.getOrganisation.id,
+      organisation_id:
+        LocalStorage.getItem("data").subscription.organisation.id,
     };
   },
   computed: {
     getData() {
       let data = [];
-      if ((this.$store.getters.getExpenditureCategories !== null && this.$store.getters.getExpenditureCategories !== undefined) &&
-        (this.$store.getters.getExpenditureCategories.data !== null && this.$store.getters.getExpenditureCategories.data !== undefined)) {
+      if (
+        this.$store.getters.getExpenditureCategories !== null &&
+        this.$store.getters.getExpenditureCategories !== undefined &&
+        this.$store.getters.getExpenditureCategories.data !== null &&
+        this.$store.getters.getExpenditureCategories.data !== undefined
+      ) {
         this.$store.getters.getExpenditureCategories.data.forEach((element) => {
           data.push({
             counter:

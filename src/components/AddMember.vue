@@ -276,6 +276,7 @@ import ButtonVue from "src/components/Button.vue";
 import memberMixinVue from "src/mixins/memberMixin.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import { VueTelInput } from "vue-tel-input";
+import { LocalStorage } from "quasar";
 export default {
   mixins: [memberMixinVue, organisationMixinVue],
   created() {
@@ -304,7 +305,8 @@ export default {
       dialog: false,
       no_caps: true,
       tab: this.$t("app.addMember"),
-      organisation_id: this.$store.getters.getOrganisation.id,
+      organisation_id:
+        LocalStorage.getItem("data").subscription.organisation.id,
     };
   },
   computed: {

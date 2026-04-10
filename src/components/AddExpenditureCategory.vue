@@ -46,7 +46,6 @@
           />
         </div>
 
-
         <div
           v-if="$q.platform.is.desktop"
           :class="
@@ -83,6 +82,7 @@
 import ButtonVue from "src/components/Button.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import ExpenditureCategoryMixinVue from "src/mixins/ExpenditureCategoryMixin.vue";
+import { LocalStorage } from "quasar";
 
 export default {
   mixins: [organisationMixinVue, ExpenditureCategoryMixinVue],
@@ -104,12 +104,14 @@ export default {
       position: "right",
       dialog: false,
       no_caps: true,
+      organisationId: LocalStorage.getItem("data").subscription.organisation.id,
     };
   },
   computed: {
     validateForm() {
-      return this.expenditure.name == null ||
-        this.expenditure.description == null;
+      return (
+        this.expenditure.name == null || this.expenditure.description == null
+      );
     },
     getUpdatedExpenditureCategory() {
       return this.setFormField(this.getUpdatedExpenditureCategoryFromState());
@@ -130,7 +132,6 @@ export default {
           }`;
     },
     onAddExpenditureCategory() {
-      let current_session_id = this.$store.getters.getCurrentYear.id;
       let payload = {
         url: this.setRequestUrl(),
         data: {
@@ -162,7 +163,7 @@ export default {
           .dispatch("postRequest", payload)
           .then(() => {
             this.fetchOrganisationExpenditureCategories(
-              this.$store.getters.getOrganisation.id,
+              this.organisationId,
               1,
               10,
               "name",
@@ -180,7 +181,7 @@ export default {
           .dispatch("putRequest", payload)
           .then(() => {
             this.fetchOrganisationExpenditureCategories(
-              this.$store.getters.getOrganisation.id,
+              this.organisationId,
               1,
               10,
               "name",

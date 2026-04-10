@@ -23,17 +23,15 @@
 
     <div class="text-left q-mt-md q-mb-lg">
       <label class="text-muted info"
-      >{{ $t("app.warningField") }}<span class="text-red">*</span>
+        >{{ $t("app.warningField") }}<span class="text-red">*</span>
         {{ $t("app.fields") }}</label
       >
     </div>
     <q-form @submit="onUpdateIncomeActivityHistory" class="q-gutter-md">
       <div class="q-mb-md">
-        <label class="form_field"
-        >{{ $t("app.paymentItem") }}</label
-        >
+        <label class="form_field">{{ $t("app.paymentItem") }}</label>
         <q-input
-          v-model="expenditureItemData.payment_item.name"
+          v-model="getCurrentExpenditureItem.payment_item.name"
           outlined
           dense
           type="text"
@@ -42,11 +40,9 @@
         />
       </div>
       <div class="q-mb-md">
-        <label class="form_field"
-        >{{ $t("app.nameLabel") }}</label
-        >
+        <label class="form_field">{{ $t("app.nameLabel") }}</label>
         <q-input
-          v-model="expenditureItemData.name"
+          v-model="getCurrentExpenditureItem.name"
           outlined
           dense
           type="text"
@@ -55,11 +51,9 @@
         />
       </div>
       <div class="q-mb-md">
-        <label class="form_field"
-        >{{ $t("app.date") }}</label
-        >
+        <label class="form_field">{{ $t("app.date") }}</label>
         <q-input
-          v-model="expenditureItemData.date"
+          v-model="getCurrentExpenditureItem.date"
           outlined
           dense
           readonly
@@ -71,7 +65,7 @@
                 transition-show="scale"
                 transition-hide="scale"
               >
-                <q-date v-model="expenditureItemData.date">
+                <q-date v-model="getCurrentExpenditureItem.date">
                   <div class="row items-center justify-end">
                     <q-btn v-close-popup label="Close" color="primary" flat />
                   </div>
@@ -82,11 +76,9 @@
         </q-input>
       </div>
       <div class="q-mb-md">
-        <label class="form_field"
-        >{{ $t("app.venue") }}</label
-        >
+        <label class="form_field">{{ $t("app.venue") }}</label>
         <q-input
-          v-model="expenditureItemData.venue"
+          v-model="getCurrentExpenditureItem.venue"
           outlined
           dense
           type="text"
@@ -95,11 +87,9 @@
         />
       </div>
       <div class="q-mb-md">
-        <label class="form_field"
-        >{{ $t("app.oldEstimatedAmount") }}</label
-        >
+        <label class="form_field">{{ $t("app.oldEstimatedAmount") }}</label>
         <q-input
-          v-model="expenditureItemData.amount"
+          v-model="getCurrentExpenditureItem.amount"
           outlined
           dense
           type="number"
@@ -109,7 +99,8 @@
       </div>
       <div class="q-mb-md">
         <label class="form_field"
-        >{{ $t("app.newEstimatedAmount") }}<span class="text-red q-ml-xs">*</span></label
+          >{{ $t("app.newEstimatedAmount")
+          }}<span class="text-red q-ml-xs">*</span></label
         >
         <q-input
           v-model="expenditure_item_transaction.new_amount_deposited"
@@ -120,9 +111,9 @@
         />
       </div>
       <div class="q-mb-md">
-        <label class="form_field">{{
-          $t("app.reason")
-          }}<span class="text-red q-ml-xs">*</span></label>
+        <label class="form_field"
+          >{{ $t("app.reason") }}<span class="text-red q-ml-xs">*</span></label
+        >
         <q-input
           v-model="expenditure_item_transaction.reason"
           outlined
@@ -180,120 +171,135 @@
 </template>
 
 <script>
-  import TransactionDataGroup from "components/Constants/TransactionDataGroup";
-  import ButtonVue from "components/Button";
-  import expenditureItemMixin from "src/mixins/expenditureItemMixin";
+import TransactionDataGroup from "components/Constants/TransactionDataGroup";
+import ButtonVue from "components/Button";
+import expenditureItemMixin from "src/mixins/expenditureItemMixin";
+import { LocalStorage } from "quasar";
 
-  export default {
-    name: "ChangeExpenditureItemTransaction",
-    mixins: [expenditureItemMixin],
-    props: {
-      expenditureItemData: {
-        type: Object,
-        required: true,
+export default {
+  name: "ChangeExpenditureItemTransaction",
+  mixins: [expenditureItemMixin],
+  props: {
+    expenditureItemData: {
+      type: Object,
+      required: true,
+    },
+  },
+  mounted() {
+    this.$emit(
+      "set-heading",
+      this.$t("app.updateExpenditureItemTitleComponent")
+    );
+  },
+
+  data() {
+    return {
+      loading: false,
+      expenditure_item_transaction: {
+        reason: null,
+        old_amount_deposited: this.expenditureItemData.amount,
+        reference_data: this.expenditureItemData.id,
+        organisation_id: this.organisation_id,
+        approve: this.expenditureItemData.approve,
+        new_amount_deposited: 0,
+        transaction_data_group: TransactionDataGroup.EXPENDITURE_ITEMS,
       },
-    },
-    mounted() {
-      console.log(this.expenditureItemData)
-      this.$emit("set-heading", this.$t("app.updateExpenditureItemTitleComponent"));
+      position: "right",
+      organisation_id:
+        LocalStorage.getItem("data").subscription.organisation.id,
+      show_banner: true,
+    };
+  },
+  computed: {
+    validateForm() {
+      return (
+        this.expenditure_item_transaction.new_amount_deposited === 0 ||
+        this.expenditure_item_transaction.reason == null ||
+        this.expenditure_item_transaction.reason.length < 30 ||
+        this.expenditure_item_transaction.approve == null
+      );
     },
 
-    data() {
-      return {
-        loading: false,
-        expenditure_item_transaction: {
-          reason: null,
-          old_amount_deposited: this.expenditureItemData.amount,
-          reference_data: this.expenditureItemData.id,
-          organisation_id: this.organisation_id,
-          approve: this.expenditureItemData.approve,
-          new_amount_deposited: 0,
-          transaction_data_group: TransactionDataGroup.EXPENDITURE_ITEMS
+    getCurrentExpenditureItem() {
+      return this.expenditureItemData;
+    },
+  },
+
+  methods: {
+    onUpdateIncomeActivityHistory() {
+      let payload = {
+        url: `/api/protected/transactions/update-history`,
+        data: this.expenditure_item_transaction,
+        msg: this.$t("app.addExpenditureItemSuccessMsg"),
+        color: "default",
+        to_on_ok: "none",
+        to_on_fail: "none",
+        show_feedback: true,
+        error_msg: this.$t("app.defaultErrorMsg"),
+        has_commit: false,
+        commit: "none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
         },
-        position: "right",
-        organisation_id: this.$store.getters.getOrganisation.id,
-        show_banner:true,
       };
-    },
-    computed: {
-      validateForm() {
-        return (
-          this.expenditure_item_transaction.new_amount_deposited === 0 ||
-          this.expenditure_item_transaction.reason == null ||
-          this.expenditure_item_transaction.reason.length < 30 ||
-          this.expenditure_item_transaction.approve == null
-        );
-      },
-
-      getCurrentExpenditureItem() {
-        return this.expenditureItemData;
-      },
-    },
-
-    methods: {
-      onUpdateIncomeActivityHistory() {
-        let payload = {
-          url: `/api/protected/transactions/update-history`,
-          data: this.expenditure_item_transaction,
-          msg: this.$t("app.addExpenditureItemSuccessMsg"),
-          color: "default",
-          to_on_ok: "none",
-          to_on_fail: "none",
-          show_feedback: true,
-          error_msg: this.$t("app.defaultErrorMsg"),
-          has_commit: false,
-          commit: "none",
-          to_be_store_data: {
-            required: false,
-            has_value: false,
-            data: [],
-          },
-        };
-        this.loading = true;
-        this.$store.dispatch("postRequest", payload).then((res) => {
-          this.fetchExpenditureItems( 1, 10, "", "", this.expenditureItemData.payment_item.id, "");
-        }).finally(() => {
+      this.loading = true;
+      this.$store
+        .dispatch("postRequest", payload)
+        .then((res) => {
+          this.fetchExpenditureItems(
+            1,
+            10,
+            "",
+            "",
+            this.expenditureItemData.payment_item.id,
+            ""
+          );
+        })
+        .finally(() => {
           this.$emit("close-right-drawer");
           this.loading = false;
           this.resetForm();
-        })
-
-      },
-
-      resetForm() {
-        this.expenditure_item_transaction.new_amount_deposited = 0;
-        this.expenditure_item_transaction.approve = this.expenditureItemData.approve;
-        this.expenditure_item_transaction.reason = null;
-        this.expenditure_item_transaction.reference_data = this.expenditureItemData.id
-
-        return this.expenditure_item_transaction;
-      },
-      closeBanner(){
-        return this.show_banner = !this.show_banner;
-      }
+        });
     },
-    components: {
-      ButtonVue,
+
+    resetForm() {
+      this.expenditure_item_transaction.new_amount_deposited = 0;
+      this.expenditure_item_transaction.approve =
+        this.expenditureItemData.approve;
+      this.expenditure_item_transaction.reason = null;
+      this.expenditure_item_transaction.reference_data =
+        this.expenditureItemData.id;
+
+      return this.expenditure_item_transaction;
     },
-  }
+    closeBanner() {
+      return (this.show_banner = !this.show_banner);
+    },
+  },
+  components: {
+    ButtonVue,
+  },
+};
 </script>
 
 <style scoped lang="scss">
-  .form_field {
-    font-family: "Roboto";
-    font-style: normal;
-    font-weight: 500;
-    font-size: 0.8rem;
-    align-items: center;
-    color: $grey5;
-  }
+.form_field {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 0.8rem;
+  align-items: center;
+  color: $grey5;
+}
 
-  .info {
-    color: $grey2;
-    font-size: smaller;
-  }
+.info {
+  color: $grey2;
+  font-size: smaller;
+}
 
-  .registration_text {
-    font-size: 0.8rem;
-  }
+.registration_text {
+  font-size: 0.8rem;
+}
 </style>

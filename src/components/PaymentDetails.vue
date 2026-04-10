@@ -13,7 +13,7 @@
         </label>
       </div>
     </div>
-     <div class="flex justify-between q-pb-md">
+    <div class="flex justify-between q-pb-md">
       <div>
         <label class="label"
           ><span> <q-icon name="category" size="xs" class="q-pr-sm" /> </span
@@ -24,7 +24,7 @@
         <label class="value" v-if="!getPaymentDetails.details.is_range">
           NO
         </label>
-         <label class="value" v-if="getPaymentDetails.details.is_range">
+        <label class="value" v-if="getPaymentDetails.details.is_range">
           YES
         </label>
       </div>
@@ -48,13 +48,11 @@
         >
         <label class="value" v-if="getPaymentDetails.details.is_range"
           >{{
-            Number(
-              getPaymentDetails.details.start_amount
-            ).toLocaleString()
-          }}  -  {{
-            Number(
-              getPaymentDetails.details.end_amount
-            ).toLocaleString()
+            Number(getPaymentDetails.details.start_amount).toLocaleString()
+          }}
+          -
+          {{
+            Number(getPaymentDetails.details.end_amount).toLocaleString()
           }}
           XAF</label
         >
@@ -279,7 +277,6 @@
 </template>
 
 <script>
-import moment from "moment";
 import organisationMixin from "src/mixins/organisationMixin.vue";
 import memberMixin from "src/mixins/memberMixin.vue";
 import HelperMixin from "src/mixins/HelperMixin.vue";

@@ -31,13 +31,14 @@
   </div>
 </template>
 <script>
-  import TableVue from "src/components/Table.vue";
-  import memberMixin from "src/mixins/memberMixin.vue";
-  import organisationMixinVue from "src/mixins/organisationMixin.vue";
-  import HelperMixinVue from "src/mixins/HelperMixin.vue";
-  import FilterComponentVue from "src/components/FilterComponent.vue";
+import TableVue from "src/components/Table.vue";
+import memberMixin from "src/mixins/memberMixin.vue";
+import organisationMixinVue from "src/mixins/organisationMixin.vue";
+import HelperMixinVue from "src/mixins/HelperMixin.vue";
+import FilterComponentVue from "src/components/FilterComponent.vue";
+import { LocalStorage } from "quasar";
 
-  export default {
+export default {
   mixins: [memberMixin, organisationMixinVue, HelperMixinVue],
 
   mounted() {
@@ -120,7 +121,8 @@
           align: "left",
         },
       ],
-      organisation_id: this.$store.getters.getOrganisation.id,
+      organisation_id:
+        LocalStorage.getItem("data").subscription.organisation.id,
       loading_download: false,
     };
   },
@@ -153,7 +155,7 @@
             picture: member.picture,
             session_id: member.session_id,
             status: member.status,
-            registered:member.registered
+            registered: member.registered,
           });
         });
       }

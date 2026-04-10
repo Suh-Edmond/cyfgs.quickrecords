@@ -109,7 +109,8 @@ export default {
       position: "right",
       dialog: false,
       no_caps: true,
-      organisation_id: this.$store.getters.getOrganisation.id,
+      organisation_id:
+        LocalStorage.getItem("data").subscription.organisation.id,
     };
   },
   computed: {

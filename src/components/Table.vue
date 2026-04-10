@@ -1320,11 +1320,13 @@ export default {
     },
 
     isRegisterEnabled() {
-      return (
-        (this.$store.getters.getRegAmount !== null ||
-          this.$store.getters.getRegAmount !== undefined) &&
-        this.$store.getters.getRegAmount.status === "ACTIVE"
-      );
+      if (
+        this.$store.getters.getRegAmount === null ||
+        this.$store.getters.getRegAmount === undefined
+      ) {
+        return false;
+      }
+      return this.$store.getters.getRegAmount.status === "ACTIVE";
     },
 
     checkRole() {
@@ -1334,7 +1336,6 @@ export default {
           role.name === "FINANCIAL_SECRETARY" ||
           role.name === "ADMIN"
       );
-      console.log(this.$store.getters.getRegAmount);
 
       return president_role !== undefined && this.isRegisterEnabled();
     },
@@ -1399,7 +1400,6 @@ export default {
     },
 
     onApprovedRecord(row, state) {
-      this.registration_amount = this.$store.getters.getRegAmount.amount;
       this.show_approve_dialog = true;
       this.approve_data = row;
       this.chosen_state = state;
@@ -1407,7 +1407,6 @@ export default {
     },
 
     onDeclineRecord(row, state) {
-      this.registration_amount = this.$store.getters.getRegAmount.amount;
       this.show_approve_dialog = true;
       this.approve_data = row;
       this.chosen_state = state;
@@ -1517,7 +1516,8 @@ export default {
     fetchDataBaseOnTypeAfterApprove(data) {
       const route_data = Object.assign({}, this.$route.query);
 
-      let organisation_id = this.$store.getters.getOrganisation.id;
+      let organisation_id =
+        LocalStorage.getItem("data").subscription.organisation.id;
       let session_id = this.current_session_id;
       let status = route_data.status !== undefined ? route_data.status : "";
       let name = route_data.name !== undefined ? route_data.name : "";

@@ -38,13 +38,13 @@
 </template>
 
 <script>
-  import TableVue from "src/components/Table.vue";
-  import IncomeActivityMixinVue from "src/mixins/IncomeActivityMixin.vue";
-  import HelperMixinVue from "src/mixins/HelperMixin.vue";
-  import FilterComponentVue from "src/components/FilterComponent.vue";
-  import {LocalStorage} from "quasar";
+import TableVue from "src/components/Table.vue";
+import IncomeActivityMixinVue from "src/mixins/IncomeActivityMixin.vue";
+import HelperMixinVue from "src/mixins/HelperMixin.vue";
+import FilterComponentVue from "src/components/FilterComponent.vue";
+import { LocalStorage } from "quasar";
 
-  export default {
+export default {
   mixins: [IncomeActivityMixinVue, HelperMixinVue],
   beforeMount() {
     this.$store.commit("SET_PAGINATION", {
@@ -60,7 +60,7 @@
     const page = 1;
     const per_page = 7;
     this.getOrganisationIncomeActivities(
-      this.$store.getters.getOrganisation.id,
+      LocalStorage.getItem("data").subscription.organisation.id,
       page,
       per_page,
       ""
@@ -71,7 +71,8 @@
 
   data() {
     return {
-      organisation_id: this.$store.getters.getOrganisation.id,
+      organisation_id:
+        LocalStorage.getItem("data").subscription.organisation.id,
       payment_item_id: null,
       month: "",
       status: "",
@@ -162,7 +163,7 @@
             created_at: ele.created_at,
             updated_by: ele.updated_by,
             transactionHistory: ele.transactionHistory,
-            session: ele.session
+            session: ele.session,
           });
         });
       }
@@ -218,7 +219,7 @@
       this.$emit("view-income-activity", data);
     },
 
-    updateIncomeActivityHistory(data){
+    updateIncomeActivityHistory(data) {
       this.$emit("update-income-activity-history", data);
     },
 

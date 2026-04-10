@@ -22,12 +22,12 @@
         <q-card-section class="row justify-center q-py-lg">
           <div>
             <q-btn
-              to="/auth/login"
               class="form_button q-py-sm"
               :label="$t('app.loginToQuickRecords')"
               color="primary"
               no-caps
               type="submit"
+              :loading="isLoading"
               @click="completedSetup()"
             >
             </q-btn>
@@ -45,6 +45,7 @@ import AccountCompletedInTrial from "./AccountCompletedInTrial.vue";
 import TrialBanner from "./TrialBanner.vue";
 import TrialHeader from "./TrialHeader.vue";
 import { APP_FEATURES_EN, APP_FEATURES_FR } from "../../utils/app-features";
+import SessionStatusVue from "../Constants/SessionStatus.vue";
 export default {
   name: "PageIndex",
   mounted() {},
@@ -55,6 +56,7 @@ export default {
       features:
         this.$i18n.locale === "en-US" ? APP_FEATURES_EN : APP_FEATURES_FR,
       userSubscriptions: JSON.parse(LocalStorage.getItem("subscriptions")),
+      isLoading: false,
     };
   },
   emits: ["onMakePayment"],
@@ -110,12 +112,49 @@ export default {
       this.$emit("onMakePayment");
     },
     completedSetup() {
-      LocalStorage.remove("subscriptions");
-      LocalStorage.remove("adminName");
-      LocalStorage.remove("adminUsername");
-      LocalStorage.remove("loginId");
-      LocalStorage.remove("organisation");
-      LocalStorage.remove("organisationId");
+      this.createSession();
+    },
+
+    createSession() {
+      let payload = {
+        url: `/api/protected/sessions`,
+        data: {
+          status: SessionStatusVue.ACTIVE,
+          year: new Date().getFullYear(),
+          id: null,
+        },
+        msg: "none",
+        color: "default",
+        to_on_ok: "none",
+        to_on_fail: "none",
+        show_feedback: false,
+        error_msg: this.$t("app.defaultErrorMsg"),
+        has_commit: false,
+        commit: "none",
+        to_be_store_data: {
+          required: false,
+          has_value: false,
+          data: [],
+        },
+      };
+      this.isLoading = true;
+      this.$store
+        .dispatch("postRequest", payload)
+        .then(() => {
+          this.isLoading = false;
+          this.$router.push({
+            name: "Login",
+          });
+        })
+        .finally(() => {
+          LocalStorage.remove("subscriptions");
+          LocalStorage.remove("adminName");
+          LocalStorage.remove("adminUsername");
+          LocalStorage.remove("loginId");
+          LocalStorage.remove("organisation");
+          LocalStorage.remove("organisationId");
+          LocalStorage.remove("currentStep");
+        });
     },
   },
   components: {

@@ -343,6 +343,7 @@ export default {
           data: null,
         },
       };
+      this.$q.loading.show();
       this.$emit("setProgressBar", true);
       this.$store
         .dispatch("getRequest", payload)
@@ -355,6 +356,7 @@ export default {
         })
         .finally(() => {
           this.$emit("setProgressBar", false);
+          this.$q.loading.hide();
         });
     },
   },

@@ -536,15 +536,8 @@ export default {
   methods: {
     showStatistics(type) {
       let organisation_id =
-        this.$store.getters.getOrganisation !== null &&
-        this.$store.getters.getOrganisation !== undefined
-          ? this.$store.getters.getOrganisation.id
-          : null;
-      let current_session_id =
-        this.$store.getters.getCurrentYear !== null &&
-        this.$store.getters.getCurrentYear !== undefined
-          ? this.$store.getters.getCurrentYear.id
-          : "";
+        LocalStorage.getItem("data").subscription.organisation.id;
+      let current_session_id = LocalStorage.getItem("data").current_session.id;
       switch (type) {
         case CategoryConstants.MEMBERSHIP:
           this.statistics_type = CategoryConstants.MEMBERSHIP;
@@ -608,7 +601,7 @@ export default {
     },
 
     getSavingsStatistics() {
-      let session_id = this.$store.getters.getCurrentYear.id;
+      let session_id = LocalStorage.getItem("data").current_session.id;
       this.is_fetching = true;
       let payload = {
         url: `/api/protected/savings/statistics?session_id=${session_id}`,

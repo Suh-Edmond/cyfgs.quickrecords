@@ -276,7 +276,7 @@ export default {
     validateUsername() {
       const isvalid =
         this.validString(this.user.username) &&
-        this.user.username.length >= 4 &&
+        this.user.username.length >= 8 &&
         !this.user.username.includes(" ");
       this.usernameError = isvalid
         ? ""

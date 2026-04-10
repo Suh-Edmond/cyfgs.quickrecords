@@ -268,10 +268,7 @@ export default {
           box_number: this.organisation.box_number,
           salutation: this.organisation.salutation,
           region: this.organisation.region,
-          id:
-            this.$store.getters.getOrganisation == null
-              ? null
-              : this.$store.getters.getOrganisation.id,
+          id: LocalStorage.getItem("data").subscription.organisation.id,
         },
         url: "/api/protected/organisations",
         msg: this.$t("app.saveOrganisationSuccessMsg"),

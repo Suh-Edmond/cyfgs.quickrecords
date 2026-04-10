@@ -253,7 +253,7 @@ export default {
       this.$store
         .dispatch("postRequest", payload)
         .then(() => {
-          let id = this.$store.getters.getOrganisation.id;
+          let id = LocalStorage.getItem("data").subscription.organisation.id;
           this.filterOrganisationMembers(
             id,
             false,

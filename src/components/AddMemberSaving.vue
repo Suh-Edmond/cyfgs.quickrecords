@@ -63,9 +63,7 @@
         />
       </div>
       <div>
-        <label class="form_field"
-          >{{ $t("app.comment") }}
-        </label>
+        <label class="form_field">{{ $t("app.comment") }} </label>
         <q-input
           v-model="saving.comment"
           outlined
@@ -126,7 +124,7 @@
   </div>
 </template>
 <script>
-import { Notify, Platform } from "quasar";
+import { LocalStorage, Notify, Platform } from "quasar";
 import ButtonVue from "src/components/Button.vue";
 import memberMixinVue from "src/mixins/memberMixin.vue";
 import organisationMixinVue from "src/mixins/organisationMixin.vue";
@@ -157,7 +155,9 @@ export default {
       dialog: false,
       members: [],
       start_filtering: false,
-      organisation_id: this.$store.getters.getOrganisation.id,
+      organisation_id:
+        LocalStorage.getItem("data").subscription.organisation.id,
+      currentSessionId: LocalStorage.getItem("data").current_session.id,
     };
   },
   computed: {
@@ -273,7 +273,7 @@ export default {
               1,
               7,
               "",
-              this.$store.getters.getCurrentYear.id
+              this.currentSessionId
             );
           })
           .finally(() => {
@@ -297,7 +297,7 @@ export default {
               1,
               7,
               "",
-              this.$store.getters.getCurrentYear.id
+              this.currentSessionId
             );
           })
           .finally(() => {

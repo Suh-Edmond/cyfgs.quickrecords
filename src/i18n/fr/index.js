@@ -693,7 +693,7 @@ export default {
       "Félicitations pour avoir configuré votre organisation sur QuickRecords !",
     subscribe: "S'abonner maintenant !",
     invalidUsernameErrorMsg:
-      "Le nom d'utilisateur administrateur doit comporter au moins 4 caractères et ne pas contenir d'espaces",
+      "Le nom d'utilisateur administrateur doit comporter au moins 8 caractères et ne pas contenir d'espaces",
     invalidEmailErrorMsg: "L'adresse e-mail fournie n'est pas valide",
     invalidNameMsg: "Le nom fourni n'est pas valide",
     invalidPhoneError:

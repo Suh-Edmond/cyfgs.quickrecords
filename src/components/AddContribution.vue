@@ -999,7 +999,7 @@ export default {
     };
   },
   computed: {
-    checkPaymentItemBal() {      
+    checkPaymentItemBal() {
       if (
         this.selected_payment_item != null &&
         !this.selected_payment_item.is_range
@@ -1199,24 +1199,30 @@ export default {
             // //set the balance to be paid by the member has paid anything got the item before
             if (res) {
               this.contribution.total_amount_deposited = res.data;
-              let comparison_amount= this.selected_payment_item.is_range ? this.selected_payment_item.start_amount : this.selected_payment_item.amount;
-              
+              let comparison_amount = this.selected_payment_item.is_range
+                ? this.selected_payment_item.start_amount
+                : this.selected_payment_item.amount;
+
               this.contribution.balance =
-                this.contribution.total_amount_deposited >=
-                comparison_amount
+                this.contribution.total_amount_deposited >= comparison_amount
                   ? 0
                   : this.contribution.amount_payable - res.data;
-              
-              
+
               if (
                 this.contribution.balance === 0 ||
                 this.contribution.total_amount_deposited >=
                   this.selected_payment_item.start_amount
               ) {
-                 
-                this.has_completed_payment = this.selected_payment_item.is_range? false : this.contribution.total_amount_deposited  == this.selected_payment_item.amount;
+                this.has_completed_payment = this.selected_payment_item.is_range
+                  ? false
+                  : this.contribution.total_amount_deposited ==
+                    this.selected_payment_item.amount;
 
-                if (this.selected_payment_item.is_range &&  this.contribution.total_amount_deposited >= this.selected_payment_item.start_amount) {
+                if (
+                  this.selected_payment_item.is_range &&
+                  this.contribution.total_amount_deposited >=
+                    this.selected_payment_item.start_amount
+                ) {
                   Notify.create({
                     color: "info",
                     message: this.$t("app.minRangeAmountMet"),
@@ -1287,7 +1293,9 @@ export default {
                 // //set the balance to be paid by the member has paid anything got the item before
                 if (res) {
                   this.contribution.total_amount_deposited = res.data;
-                  let comparison_amount= this.selected_payment_item.is_range ? this.selected_payment_item.start_amount : this.selected_payment_item.amount;
+                  let comparison_amount = this.selected_payment_item.is_range
+                    ? this.selected_payment_item.start_amount
+                    : this.selected_payment_item.amount;
                   this.contribution.balance =
                     this.contribution.total_amount_deposited >=
                     comparison_amount
@@ -1298,9 +1306,16 @@ export default {
                     this.contribution.total_amount_deposited >=
                       this.selected_payment_item.start_amount
                   ) {
-                    this.has_completed_payment = this.selected_payment_item.is_range? false : this.contribution.total_amount_deposited  == this.selected_payment_item.amount;
-                    if (this.selected_payment_item.is_range &&  this.contribution.total_amount_deposited >=
-                      this.selected_payment_item.start_amount) {
+                    this.has_completed_payment = this.selected_payment_item
+                      .is_range
+                      ? false
+                      : this.contribution.total_amount_deposited ==
+                        this.selected_payment_item.amount;
+                    if (
+                      this.selected_payment_item.is_range &&
+                      this.contribution.total_amount_deposited >=
+                        this.selected_payment_item.start_amount
+                    ) {
                       Notify.create({
                         color: "info",
                         message: this.$t("app.minRangeAmountMet"),
@@ -1378,9 +1393,7 @@ export default {
     },
 
     getCurrentYearId() {
-      return this.$store.getters.getCurrentYear === null
-        ? LocalStorage.getItem("current_session").id
-        : this.$store.getters.getCurrentYear.id;
+      return LocalStorage.getItem("data").current_session.id;
     },
 
     setDispatchAction(payload, payment_item) {
@@ -1388,8 +1401,6 @@ export default {
       this.$store
         .dispatch("postRequest", payload)
         .then((res) => {
-           
-          
           let data = {
             payment_item_id: payment_item,
             year: this.getCurrentYearId(),
@@ -1398,8 +1409,7 @@ export default {
             status: "",
             date_range: "",
           };
-        
-          
+
           this.filterMembersContributions(
             data,
             data.year,
@@ -1439,7 +1449,8 @@ export default {
     },
 
     getPaymentItemMembers() {
-      let organisation_id = this.$store.getters.getOrganisation.id;
+      let organisation_id =
+        LocalStorage.getItem("data").subscription.organisation.id;
       this.is_fetching_members = true;
       let payload = {
         status: "none",

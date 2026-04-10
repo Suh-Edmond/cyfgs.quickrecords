@@ -999,6 +999,7 @@ import CurrentYearMixin from "src/mixins/CurrentYearMixin.vue";
 import PaymentItemMixinVue from "src/mixins/PaymentItemMixin.vue";
 import MonthsMixinVue from "src/mixins/MonthsMixin.vue";
 import HelperMixin from "src/mixins/HelperMixin.vue";
+import { LocalStorage } from "quasar";
 
 export default {
   props: {
@@ -1145,6 +1146,7 @@ export default {
         { label: this.$t("app.midYearOne"), value: "6" },
         { label: this.$t("app.midYearTwo"), value: "12" },
       ],
+      organisationId: LocalStorage.getItem("data").subscription.organisation.id,
     };
   },
 
@@ -1650,7 +1652,7 @@ export default {
     generateBalanceSheet() {
       let payload = {
         session: this.year,
-        organisation_id: this.$store.getters.getOrganisation.id,
+        organisation_id: this.organisationId,
       };
 
       this.$emit("generate-balance-sheet", payload);
@@ -1659,7 +1661,7 @@ export default {
     downloadBalanceSheet() {
       let payload = {
         session: this.year,
-        organisation_id: this.$store.getters.getOrganisation.id,
+        organisation_id: this.organisationId,
       };
       this.$emit("download-balance-sheet", payload);
     },

@@ -126,7 +126,7 @@ export default {
       group: null,
       options: [],
       label: this.$t("app.generateReport"),
-      year: this.$store.getters.getCurrentYear.year,
+      year: LocalStorage.getItem("data").current_session.year,
       heading: null,
       is_fetching: false,
       option: null,
@@ -134,8 +134,9 @@ export default {
       report_options: [],
       incomes: [],
       activity_report_data: [],
-      organisation_id: this.$store.getters.getOrganisation.id,
-      session_id: this.$store.getters.getCurrentYear,
+      organisation_id:
+        LocalStorage.getItem("data").subscription.organisation.id,
+      session_id: LocalStorage.getItem("data").current_session,
       show_hint: true,
       show_preview_hint: true,
     };

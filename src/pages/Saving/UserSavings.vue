@@ -42,6 +42,7 @@
 import TableVue from "src/components/Table.vue";
 import HelperMixinVue from "src/mixins/HelperMixin.vue";
 import FilterComponentVue from "src/components/FilterComponent.vue";
+import { LocalStorage } from "quasar";
 export default {
   mixins: [HelperMixinVue],
 
@@ -92,10 +93,11 @@ export default {
         descending: false,
         page: 1,
         rowsPerPage: 10,
-        rowsNumber:
-          this.$store.getters.getMemberSavings ? this.$store.getters.getMemberSavings.total : 0,
+        rowsNumber: this.$store.getters.getMemberSavings
+          ? this.$store.getters.getMemberSavings.total
+          : 0,
       },
-      session_id: this.$store.getters.getCurrentYear.id,
+      session_id: LocalStorage.getItem("data").current_session.id,
     };
   },
   computed: {
@@ -176,15 +178,15 @@ export default {
         .dispatch("getRequest", payload)
         .then(() => {
           let data = this.$store.getters.getMemberSavings;
-         if(data !== undefined){
-           this.pagination.page = data.current_page;
-           this.pagination.rowsPerPage = data.per_page;
-           this.pagination.rowsNumber = data.total;
-         }else {
-           this.pagination.page = 1;
-           this.pagination.rowsPerPage = 10;
-           this.pagination.rowsNumber = 10;
-         }
+          if (data !== undefined) {
+            this.pagination.page = data.current_page;
+            this.pagination.rowsPerPage = data.per_page;
+            this.pagination.rowsNumber = data.total;
+          } else {
+            this.pagination.page = 1;
+            this.pagination.rowsPerPage = 10;
+            this.pagination.rowsNumber = 10;
+          }
         })
         .finally(() => {
           this.$store.commit("SET_IS_FETCHING", false);
@@ -201,7 +203,7 @@ export default {
       this.$emit("edit-member-saving", data);
     },
 
-    updateUserSavingHistory(data){
+    updateUserSavingHistory(data) {
       this.$emit("update-user-saving-history", data);
     },
 
@@ -210,7 +212,7 @@ export default {
         path: `/dashboard/members-savings/users/${this.$route.params.id}`,
         query: {
           status: data.payment_status,
-          month:   data.month.label ? data.month.label : "",
+          month: data.month.label ? data.month.label : "",
           t: new Date().getTime(),
         },
       });

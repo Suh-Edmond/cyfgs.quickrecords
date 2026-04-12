@@ -6,7 +6,7 @@ window.Pusher = Pusher;
 console.log("REVERB HOST:", process.env.VITE_REVERB_HOST);
 
 axios.defaults.withCredentials = true;
-axios.defaults.baseURL = "http://localhost:8000";
+axios.defaults.baseURL = `${process.env.SERVER_BASE_URL}`;
 
 const startBroadcasting = async () => {
   try {
@@ -39,7 +39,7 @@ const initEcho = () => {
     forceTLS: false,
     // forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? "https") === "https",
     enabledTransports: ["ws", "wss"],
-    authEndpoint: "http://localhost:8000/api/broadcasting/auth",
+    authEndpoint: `${process.env.SERVER_BASE_URL}/api/broadcasting/auth`,
     auth: {
       headers: {
         Accept: "application/json",

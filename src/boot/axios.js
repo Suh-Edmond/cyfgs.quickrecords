@@ -25,6 +25,7 @@ export default async ({ Vue, router }) => {
         try {
           await axios_.get(CSRF_URL, {
             withCredentials: true,
+            withXSRFToken: true,
           });
         } catch (e) {}
       }

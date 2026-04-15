@@ -117,11 +117,12 @@ export default {
 
     createSession() {
       let payload = {
-        url: `/api/protected/sessions`,
+        url: `/api/protected/init/sessions`,
         data: {
           status: SessionStatusVue.ACTIVE,
           year: new Date().getFullYear(),
           id: null,
+          loginId: LocalStorage.getItem("loginId"),
         },
         msg: "none",
         color: "default",

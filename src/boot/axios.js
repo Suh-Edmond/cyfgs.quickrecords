@@ -1,21 +1,20 @@
 import axios_ from "axios";
-import { LocalStorage, Notify, Platform } from "quasar";
+import { LocalStorage, Notify } from "quasar";
 
 const axios = axios_.create({
   baseURL: process.env.SERVER_BASE_URL, // Ensure this matches api.mountzioncm.com
-  withCredentials: true,
-  withXSRFToken: true,
+  withCredentials: false,
 });
 
 export default async ({ Vue, router }) => {
   axios.interceptors.request.use(
-    async (config) => {
+    (config) => {
       // 1. Always ensure headers are correct
       config.headers.Accept = "application/json";
 
       // 2. Auth Token Handling
       const data = LocalStorage.getItem("data");
-      if (data?.user_data?.token) {
+      if (data && data.user_data && data.user_data.token) {
         config.headers.Authorization = `Bearer ${data.user_data.token}`;
       }
 
@@ -26,17 +25,8 @@ export default async ({ Vue, router }) => {
 
   axios.interceptors.response.use(
     (response) => response,
-    async (error) => {
-      const { response, config } = error;
-
-      // 3. Handle 419 (CSRF Mismatch) by retrying ONCE
-      if (response?.status === 419 && !config._retry) {
-        config._retry = true;
-        // Re-initialize the CSRF cookie
-        await axios.get("/sanctum/csrf-cookie");
-        // Re-run the original request
-        return axios(config);
-      }
+    (error) => {
+      const { response } = error;
 
       if (!response) {
         Notify.create({

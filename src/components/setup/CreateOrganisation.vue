@@ -299,7 +299,7 @@ export default {
             : organisation !== null
             ? organisation.id
             : "",
-          account_id: LocalStorage.getItem("loginId"),
+          loginId: LocalStorage.getItem("loginId"),
         },
         url: "/api/public/auth/organisations/create-account",
         msg: this.$t("app.saveOrganisationSuccessMsg"),

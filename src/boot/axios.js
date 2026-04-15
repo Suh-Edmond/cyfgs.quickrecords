@@ -1,5 +1,5 @@
 import axios_ from "axios";
-import { LocalStorage, Notify } from "quasar";
+import { LocalStorage, Notify, Platform } from "quasar";
 
 const axios = axios_.create({
   baseURL: process.env.SERVER_BASE_URL, // Ensure this matches api.mountzioncm.com
@@ -32,6 +32,7 @@ export default async ({ Vue, router }) => {
         Notify.create({
           type: "info",
           message: "No Internet Connection",
+          position: Platform.is.mobile ? "bottom" : "top",
         });
       } else if (response.status === 401) {
         LocalStorage.remove("data");

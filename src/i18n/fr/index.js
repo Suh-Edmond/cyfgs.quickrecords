@@ -784,6 +784,6 @@ export default {
     subscriptionRequiredMsg:
       "Votre abonnement arrive bientôt à expiration. Veuillez vous réabonner pour continuer à utiliser QuickRecords.",
     optionalFieldHintMsg:
-      "L'adresse e-mail est facultative, mais il est recommandé d'en fournir une pour la récupération de compte, les notifications et les invitations.",
+      "Adresse e-mail facultative pour la récupération, les notifications et les invitations.",
   },
 };

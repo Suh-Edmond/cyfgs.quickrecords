@@ -1208,7 +1208,7 @@ export default {
       type: null,
       delete_msg: "",
       show_confirm_dialog_detail: false,
-      registration_amount: null,
+      registration_amount: this.$store.getters.getRegAmount.amount,
       income_amount: 0,
       contributor: null,
       roles: ["TREASURER", "FINANCIAL_SECRETARY", "PRESIDENT"],

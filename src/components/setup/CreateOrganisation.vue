@@ -42,8 +42,7 @@
             @input="validateEmail()"
           >
             <template v-slot:hint>
-              Email is optional, but it is recommended to provide one for
-              account recovery and notifications.
+              {{ $t("app.optionalFieldHintMsg") }}
             </template>
           </q-input>
         </div>

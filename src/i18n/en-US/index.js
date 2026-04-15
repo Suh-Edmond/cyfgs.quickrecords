@@ -752,5 +752,7 @@ export default {
       "Your trial period has expired. Please subscribe to continue using QuickRecords.",
     subscriptionRequiredMsg:
       "Subscription is about to expire. Please subscribe to continue using QuickRecords.",
+    optionalFieldHintMsg:
+      "Email is optional, but it is recommended to provide one for account recovery, notifications and invitations.",
   },
 };

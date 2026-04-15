@@ -170,6 +170,9 @@ export default {
         month_name: "",
       },
       monthsOptions: [],
+      currentSession: LocalStorage.getItem("data")
+        ? LocalStorage.getItem("data").current_session
+        : null,
     };
   },
   computed: {
@@ -190,7 +193,7 @@ export default {
       }
       return this.setFormField(
         this.$store.getters.getMemberToRegister.name,
-        this.$store.getters.getCurrentYear.year,
+        this.currentSession.year,
         this.$store.getters.getRegAmount.amount
       );
     },

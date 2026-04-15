@@ -63,13 +63,7 @@
             </div>
             <div>
               <label class="form_field">{{ $t("app.emailLabel") }} </label>
-              <q-input
-                v-model="user.email"
-                outlined
-                dense
-                type="email"
-                hide-bottom-space
-              >
+              <q-input v-model="user.email" outlined dense type="email" hint="">
                 <template v-slot:hint>
                   {{ $t("app.optionalFieldHintMsg") }}
                 </template>

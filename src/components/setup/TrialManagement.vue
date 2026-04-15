@@ -245,7 +245,7 @@ export default {
         organisation_id: LocalStorage.getItem("organisationId"),
         referral_code: null,
         is_trial: true,
-        login_id: LocalStorage.getItem("loginId"),
+        loginId: LocalStorage.getItem("loginId"),
         auto_renewal: false,
       };
       let payload = {

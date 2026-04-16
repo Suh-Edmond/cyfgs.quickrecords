@@ -37,6 +37,9 @@
               :error="!!usernameError"
               :error-message="usernameError"
             >
+              <template v-slot:hint>
+                {{ $t("app.usernameHintMsg") }}
+              </template>
             </q-input>
           </div>
           <div class="q-pb-xs">

@@ -24,7 +24,7 @@
             dense
             size="sm"
             color="primary"
-            :disable="!canAddSession"
+            :disable="!isAddSessionEnabled"
             no-caps
             class="q-pa-xs"
             icon-right="add"
@@ -66,7 +66,7 @@
       <!-- end table for session -->
     </div>
 
-    <!--add registration fee -->
+    <!--add session -->
     <q-dialog v-model="show_add_session">
       <q-card
         :style="$q.platform.is.desktop ? 'width: 350px' : 'width: 450px'"
@@ -145,7 +145,7 @@
         </q-card-section>
       </q-card>
     </q-dialog>
-    <!--end add registration fee -->
+    <!--end add session -->
 
     <q-dialog v-model="show_warning">
       <q-card
@@ -234,7 +234,7 @@ export default {
     };
   },
   computed: {
-    canAddSession() {
+    isAddSessionEnabled() {
       const data = LocalStorage.getItem("data");
       return data.current_session === null;
     },

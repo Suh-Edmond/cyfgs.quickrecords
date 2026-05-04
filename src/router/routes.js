@@ -309,6 +309,16 @@ const routes = [
           has_intermediate_tab: false,
         },
       },
+      {
+        name: "clients",
+        path: "/dashboard/clients/managment",
+        component: () => import("src/pages/Client/ClientManagement.vue"),
+        meta: {
+          middleware: "auth",
+          role: "MEMBER",
+          has_intermediate_tab: false,
+        },
+      },
     ],
   },
 

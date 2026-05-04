@@ -24,7 +24,7 @@
             no-caps
             class="q-pa-xs"
             icon-right="add"
-            :disabled="!canConfigureRegistrationFee"
+            :disabled="!isAddRegistrationFeeEnabled"
             @click="openAddFeeDialog()"
           >
             <q-tooltip> {{ $t("app.addRegFee") }} </q-tooltip>
@@ -241,7 +241,7 @@ export default {
     };
   },
   computed: {
-    canConfigureRegistrationFee() {
+    isAddRegistrationFeeEnabled() {
       return this.$store.getters.getRegAmount === undefined;
     },
   },

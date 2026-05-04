@@ -306,7 +306,6 @@ import AddIncomeActivity from "src/components/AddIncomeActivity.vue";
 import ViewIncomeActivity from "src/components/ViewIncomeActivity.vue";
 import ViewContribution from "src/components/ViewContribution.vue";
 import AddContribution from "src/components/AddContribution.vue";
-import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import ViewMemberSaving from "src/components/ViewMemberSaving.vue";
 import SearchSavings from "src/components/SearchSavings.vue";
 import SearchContribution from "src/components/SearchContribution.vue";
@@ -594,6 +593,18 @@ export default {
         icon: "summarize",
         label: this.$t("app.balanceSheetLabel"),
         disable: this.getOrganisation == null,
+        has_image: false,
+        requires_add: false,
+        treasurer_only: false,
+      });
+
+      menu_tabs.push({
+        to: "clients",
+        roles: ["SYSTEM_ADMIN"],
+        name: "Clients",
+        icon: "diversity_3",
+        label: this.$t("app.clients"),
+        disable: false,
         has_image: false,
         requires_add: false,
         treasurer_only: false,

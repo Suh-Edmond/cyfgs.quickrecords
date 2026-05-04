@@ -756,5 +756,6 @@ export default {
       "Optional email for recovery, notifications and invitations.",
     usernameHintMsg:
       "Admin username would be used to login to your account and manage your organisation.",
+    clients: "Clients",
   },
 };

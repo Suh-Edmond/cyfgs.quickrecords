@@ -169,6 +169,7 @@
         </div>
       </q-toolbar>
       <TrialTimerVue
+        v-if="$q.platform.is.desktop"
         :trialEndDate="getSubscriptionTrialEndDate"
         :status="getSubscriptionStatus"
       />

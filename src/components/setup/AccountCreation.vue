@@ -140,11 +140,20 @@
             >
             </q-btn>
           </div>
-          <div class="row justify-center bottom q-pt-md">
-            {{ $t("app.haveAccountMsg") }}
-            <span @click="onConfirmAccountCreation()" class="sign_link"
-              >&nbsp;{{ $t("app.confirmAccount") }}</span
-            >
+          <div class="row justify-between bottom q-pt-md">
+            <p>
+              {{ $t("app.haveAccountMsg") }}
+              <span @click="onConfirmAccountCreation()" class="sign_link"
+                >&nbsp;{{ $t("app.confirmAccount") }}</span
+              >
+            </p>
+
+            <p>
+              {{ $t("app.haveSubscription") }}
+              <span @click="onLogin()" class="sign_link"
+                >&nbsp;{{ $t("app.loginBtnLabel") }}</span
+              >
+            </p>
           </div>
         </q-form>
       </q-card-section>
@@ -307,6 +316,10 @@ export default {
       });
 
       this.$emit("confirmAccountCreation");
+    },
+
+    onLogin() {
+      this.$router.push("/auth/login");
     },
   },
   components: {},

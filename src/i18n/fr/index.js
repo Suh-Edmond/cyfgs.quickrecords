@@ -787,5 +787,6 @@ export default {
       "Adresse e-mail facultative pour la récupération, les notifications et les invitations.",
     usernameHintMsg:
       "Le nom d'utilisateur de l'administrateur sera utilisé pour se connecter à votre compte et gérer votre organisation.",
+    haveSubscription: "Vous êtes déjà abonné ?",
   },
 };

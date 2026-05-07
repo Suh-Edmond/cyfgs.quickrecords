@@ -757,5 +757,6 @@ export default {
     usernameHintMsg:
       "Admin username would be used to login to your account and manage your organisation.",
     clients: "Clients",
+    haveSubscription: "Already have a subscription ?",
   },
 };

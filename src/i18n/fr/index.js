@@ -788,5 +788,6 @@ export default {
     usernameHintMsg:
       "Le nom d'utilisateur de l'administrateur sera utilisé pour se connecter à votre compte et gérer votre organisation.",
     haveSubscription: "Vous êtes déjà abonné ?",
+    noOrganisationAccount: "Vous n'avez pas de compte ? Inscrivez-vous",
   },
 };

@@ -31,7 +31,7 @@
             <q-item-section>
               <q-item-label
                 :class="current_tag === role.name ? '' : 'role_name'"
-                >{{ role.name }}</q-item-label
+                >{{ formatRoleName(role.name) }}</q-item-label
               >
             </q-item-section>
           </q-item>
@@ -73,7 +73,7 @@
           <label
             class="value text-weight-bold"
             v-if="getSelectedRole !== undefined"
-            >{{ getSelectedRole.name }}</label
+            >{{ formatRoleName(getSelectedRole.name) }}</label
           >
         </div>
         <div class="flex justify-between q-mt-sm">
@@ -158,7 +158,7 @@
             :key="permission.name"
             size="md"
           >
-            {{ permission.name }}
+            {{ formatPermissionName(permission.name) }}
           </q-chip>
         </div>
       </div>
@@ -291,6 +291,14 @@ export default {
   },
 
   methods: {
+    formatRoleName(roleName) {
+      return roleName.replaceAll("_", " ");
+    },
+
+    formatPermissionName(permissionName) {
+      return permissionName.replaceAll("-", " ");
+    },
+
     getFirstLetter(role) {
       let avatar_letter = "";
       switch (role) {

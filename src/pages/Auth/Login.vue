@@ -70,15 +70,27 @@
                     class="q-pl-lg"
                   ></q-icon>
                 </q-btn>
-                <router-link
-                  to="/auth/password-reset/get-token"
-                  class="sign_link"
-                  v-if="!$q.platform.is.mobile"
-                >
-                  <span class="forgot_password text-right q-mt-xl">{{
-                    $t("app.forgotPasswordMsg")
-                  }}</span>
-                </router-link>
+                <div class="flex justify-between">
+                  <a
+                    :href="clientOnboardingUrl"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="account_setup"
+                  >
+                    <span class="forgot_password text-right q-mt-xl">{{
+                      $t("app.noOrganisationAccount")
+                    }}</span>
+                  </a>
+                  <router-link
+                    to="/auth/password-reset/get-token"
+                    class="sign_link"
+                    v-if="!$q.platform.is.mobile"
+                  >
+                    <span class="forgot_password text-right q-mt-xl">{{
+                      $t("app.forgotPasswordMsg")
+                    }}</span>
+                  </router-link>
+                </div>
               </div>
 
               <div
@@ -133,6 +145,7 @@ export default {
       color: "primary",
       no_caps: true,
       baseUrl: process.env.CLIENT_SERVER,
+      clientOnboardingUrl: process.env.CLIENT_ONBOARDING_URL,
     };
   },
   computed: {
@@ -290,6 +303,10 @@ export default {
   cursor: pointer;
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
+}
+
+.account_setup {
+  text-decoration: none;
 }
 
 .sign_link {

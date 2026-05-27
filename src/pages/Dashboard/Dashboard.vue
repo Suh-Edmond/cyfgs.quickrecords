@@ -655,7 +655,7 @@ export default {
           "YEARLY",
           "QUARTERLY",
           "MONTHLY",
-          "ONE_TIME",
+          "ONE TIME",
         ];
         this.barChartData1.datasets[0].label = this.$t(
           "app.avgContributionFrequencyMsg"
@@ -664,11 +664,9 @@ export default {
         this.barChartData1.datasets[0].data = percentages[1].avg_by_frequency;
 
         this.barChartData2.labels = [
-          "ALL_MEMBERS",
-          "A_MEMBER",
-          "MEMBERS_WITH_ROLES",
-          "MEMBERS_WITHOUT_ROLES",
-          "GROUPED_MEMBERS",
+          "ALL MEMBERS",
+          "A MEMBER",
+          "GROUPED MEMBERS",
         ];
         this.barChartData2.datasets[0].label = this.$t(
           "app.avgContributionsByPaymentTypeMsg"

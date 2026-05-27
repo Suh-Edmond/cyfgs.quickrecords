@@ -179,7 +179,7 @@
       </div>
 
       <!-- when the payment item type is A_MEMBER -->
-      <div v-if="payment_item.type === 'A_MEMBER'">
+      <div v-if="payment_item.type === 'A MEMBER'">
         <div v-if="references.length === 0">
           <label class="q-mt-sm form_field"
             >{{ $t("app.selectMember") }} <span class="text-red">*</span></label
@@ -236,7 +236,7 @@
       </div>
 
       <!-- When the type is GROUPED_MEMBERS -->
-      <div v-if="payment_item.type === 'GROUPED_MEMBERS'">
+      <div v-if="payment_item.type === 'GROUPED MEMBERS'">
         <div v-if="references.length === 0">
           <label class="q-mt-sm form_field"
             >{{ $t("app.selectMembers") }}
@@ -395,8 +395,8 @@ export default {
         description: "",
         id: null,
         payment_category_id: null,
-        type: "ALL_MEMBERS",
-        frequency: "ONE_TIME",
+        type: "ALL MEMBERS",
+        frequency: "ONE TIME",
         amount: 0,
         reference: null,
         deadline: new Date().setDate(new Date().getDate() + 1),
@@ -404,8 +404,8 @@ export default {
         start_amount: 0,
         end_amount: 0,
       },
-      payment_item_types: ["ALL_MEMBERS", "A_MEMBER", "GROUPED_MEMBERS"],
-      frequencies: ["YEARLY", "MONTHLY", "ONE_TIME", "QUARTERLY"],
+      payment_item_types: ["ALL MEMBERS", "A MEMBER", "GROUPED MEMBERS"],
+      frequencies: ["YEARLY", "MONTHLY", "ONE TIME", "QUARTERLY"],
       members: [],
       references: [],
       start_filtering: false,
@@ -420,9 +420,9 @@ export default {
         this.payment_item.frequency === null ||
         this.payment_item.deadline === null ||
         (!this.payment_item.is_range && this.payment_item.amount === 0) ||
-        (this.payment_item.type === "GROUPED_MEMBERS" &&
+        (this.payment_item.type === "GROUPED MEMBERS" &&
           this.references.length == 0) ||
-        (this.payment_item.type === "A_MEMBER" &&
+        (this.payment_item.type === "A MEMBER" &&
           this.references.length == 0) ||
         (this.payment_item.is_range &&
           (this.payment_item.start_amount === 0 ||
@@ -484,9 +484,9 @@ export default {
         data: {
           name: this.payment_item.name,
           amount: this.payment_item.amount,
-          type: this.payment_item.type,
+          type: this.payment_item.type.replaceAll(" ", "_"),
           amount: this.payment_item.amount,
-          frequency: this.payment_item.frequency,
+          frequency: this.payment_item.frequency.replaceAll(" ", "_"),
           compulsory: this.payment_item.compulsory,
           description: this.payment_item.description,
           reference: this.buildStringOfReferences(this.references),
@@ -514,9 +514,9 @@ export default {
 
     resetForm() {
       this.payment_item.name = null;
-      this.payment_item.type = "ALL_MEMBERS";
+      this.payment_item.type = "ALL MEMBERS";
       this.payment_item.amount = 0;
-      this.payment_item.frequency = "ONE_TIME";
+      this.payment_item.frequency = "ONE TIME";
       this.payment_item.reference = null;
       this.payment_item.deadline = moment(
         new Date().setDate(new Date().getDate() + 1)
@@ -597,8 +597,8 @@ export default {
     handlePaymentItemType() {
       this.payment_item.reference = null;
       if (
-        this.payment_item.type === "A_MEMBER" ||
-        (this.payment_item.type === "GROUPED_MEMBERS" &&
+        this.payment_item.type === "A MEMBER" ||
+        (this.payment_item.type === "GROUPED MEMBERS" &&
           this.getMembersFromStore.length === 0)
       ) {
         this.getOrganisationMembers();
@@ -632,7 +632,7 @@ export default {
 
     selectMember() {
       let selected = null;
-      if (this.payment_item.type === "A_MEMBER") {
+      if (this.payment_item.type === "A MEMBER") {
         selected = JSON.parse(JSON.stringify(this.payment_item.reference));
         this.references.push({ label: selected.label, value: selected.value });
         this.payment_item.reference = null;

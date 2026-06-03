@@ -55,6 +55,7 @@ module.exports = function (ctx) {
         SERVER_BASE_URL: ctx.mode.dev
           ? "http://localhost:8000"
           : "https://api.mountzioncm.com",
+        // SERVER_BASE_URL: "http://localhost:8000",
         CLIENT_SERVER: "https://app.quickrecords.xyz/auth/login",
         CLIENT_ONBOARDING_URL:
           "https://app.quickrecords.xyz/auth/client-onboarding",

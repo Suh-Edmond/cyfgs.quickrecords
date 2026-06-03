@@ -4,7 +4,7 @@
       <span>{{ $t("app.trialTimeRemaining") }} </span>
       <strong> {{ days }}d {{ hours }}h {{ minutes }}m {{ seconds }}s </strong>
     </div>
-    <div v-else>
+    <div v-if="isSubscriptionExpired">
       <span class="expired"> {{ $t("app.trialExpiredMsg") }}</span>
     </div>
 
@@ -54,6 +54,8 @@ export default {
     },
 
     isSubscriptionExpired() {
+      console.log(this.countDown <= 0 && this.status === "past_due");
+
       return this.countDown <= 0 && this.status === "past_due";
     },
     days() {

@@ -254,6 +254,8 @@ export default {
   },
   methods: {
     onSubmit() {
+      let organisationId =
+        LocalStorage.getItem("data").subscription.organisation.id;
       let payload = {
         data: {
           name: this.organisation.name,
@@ -268,9 +270,9 @@ export default {
           box_number: this.organisation.box_number,
           salutation: this.organisation.salutation,
           region: this.organisation.region,
-          id: LocalStorage.getItem("data").subscription.organisation.id,
+          id: organisationId,
         },
-        url: "/api/protected/organisations",
+        url: `/api/protected/organisations/${organisationId}`,
         msg: this.$t("app.saveOrganisationSuccessMsg"),
         color: "default",
         to_on_ok: "none",
@@ -288,7 +290,7 @@ export default {
 
       this.loading = true;
       this.$store
-        .dispatch("postRequest", payload)
+        .dispatch("putRequest", payload)
         .then((res) => {
           const storedData = LocalStorage.getItem("data");
           if (storedData) {

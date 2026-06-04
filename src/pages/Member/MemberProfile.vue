@@ -41,12 +41,7 @@
               <div class="row">
                 <div class="col-md-4 col-sm-12 col-xs-12">
                   <div class="text-center">
-                    <q-avatar
-                      size="150px"
-                      v-if="
-                         getProfilePicture !== ''
-                      "
-                    >
+                    <q-avatar size="150px" v-if="getProfilePicture !== ''">
                       <img
                         :src="getProfilePicture"
                         :alt="$t('app.profilePicAlt')"
@@ -78,7 +73,7 @@
                   </div>
                   <!-- member roles -->
                   <div class="flex q-px-md q-pb-md">
-                    <label  class="role_heading"
+                    <label class="role_heading"
                       ><span
                         ><q-icon
                           name="military_tech"
@@ -87,8 +82,6 @@
                       >{{ $t("app.rolesName") }}
                     </label>
                     <q-space />
-
-
                   </div>
                   <q-list>
                     <q-item
@@ -169,7 +162,7 @@
                   <div v-if="!edit_profile">
                     <div class="row">
                       <div class="q-pb-lg">
-                        <label  class="personal_info">{{
+                        <label class="personal_info">{{
                           $t("app.personalInformationLabel")
                         }}</label>
                       </div>
@@ -188,7 +181,7 @@
                       </div>
                     </div>
                     <div class="flex q-pb-md">
-                      <label   class="label"
+                      <label class="label"
                         ><q-icon name="person" class="person_icon"></q-icon>
                         {{ $t("app.nameLabel") }} </label
                       ><q-space />
@@ -450,7 +443,10 @@
                     <label
                       class="text-bold text-warning registration_status_msg"
                       >{{ $t("app.notCompletedRegistration") }}:
-                      <span v-if="getCurrentYear">{{ getCurrentYear.year }}</span></label>
+                      <span v-if="getCurrentYear">{{
+                        getCurrentYear.year
+                      }}</span></label
+                    >
                   </div>
                   <div
                     class="q-mb-xl"
@@ -470,7 +466,9 @@
                     <label
                       class="text-bold text-secondary registration_status_msg"
                       >{{ $t("app.hasCompletedRegistration") }}:
-                      <span v-if="getCurrentYear">{{ getCurrentYear.year }}</span></label
+                      <span v-if="getCurrentYear">{{
+                        getCurrentYear.year
+                      }}</span></label
                     >
                   </div>
                   <div
@@ -545,11 +543,22 @@
                       <q-td key="name" :props="props" class="table_value">
                         {{ props.row.name }}
                       </q-td>
-                      <q-td key="balance" :props="props" class="table_value" v-if="!props.row.is_range">
+                      <q-td
+                        key="balance"
+                        :props="props"
+                        class="table_value"
+                        v-if="!props.row.is_range"
+                      >
                         {{ Number(props.row.balance).toLocaleString() }}
                       </q-td>
-                      <q-td key="balance" :props="props" class="table_value" v-if="props.row.is_range">
-                        {{ Number(props.row.start_amount).toLocaleString() }} -  {{ Number(props.row.end_amount).toLocaleString() }}
+                      <q-td
+                        key="balance"
+                        :props="props"
+                        class="table_value"
+                        v-if="props.row.is_range"
+                      >
+                        {{ Number(props.row.start_amount).toLocaleString() }} -
+                        {{ Number(props.row.end_amount).toLocaleString() }}
                       </q-td>
 
                       <q-td key="frequency" :props="props" class="table_value">
@@ -855,8 +864,12 @@
                 <tr v-for="(item, index) in selected_items" :key="index">
                   <td class="text-left">{{ index + 1 }}</td>
                   <td class="text-left">{{ item.name }}</td>
-                  <td class="text-left" v-if="!item.is_range">{{ item.balance }}</td>
-                   <td class="text-left" v-if="item.is_range">{{ item.start_amount }}</td>
+                  <td class="text-left" v-if="!item.is_range">
+                    {{ item.balance }}
+                  </td>
+                  <td class="text-left" v-if="item.is_range">
+                    {{ item.start_amount }}
+                  </td>
                 </tr>
                 <tr>
                   <td class="text-left text-weight-bold">
@@ -872,13 +885,9 @@
           </div>
           <div class="q-mb-md">
             <label class="form_field"
-            >{{ $t("app.date") }} <span class="text-red">*</span></label
+              >{{ $t("app.date") }} <span class="text-red">*</span></label
             >
-            <q-input
-              v-model="bulk_payment.date"
-              outlined
-              dense
-            >
+            <q-input v-model="bulk_payment.date" outlined dense>
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
                   <q-popup-proxy
@@ -888,7 +897,12 @@
                   >
                     <q-date v-model="bulk_payment.date">
                       <div class="row items-center justify-end">
-                        <q-btn v-close-popup label="Close" color="primary" flat />
+                        <q-btn
+                          v-close-popup
+                          label="Close"
+                          color="primary"
+                          flat
+                        />
                       </div>
                     </q-date>
                   </q-popup-proxy>
@@ -959,15 +973,11 @@
             />
           </div>
           <div class="q-mt-sm">
-            <label class="form_field"
-              >{{ $t("app.emailLabel") }} <span class="text-red">*</span></label
-            >
+            <label class="form_field">{{ $t("app.emailLabel") }} </label>
             <q-input v-model="user.email" outlined dense type="email" />
           </div>
           <div class="q-mt-sm">
-            <label class="form_field"
-              >{{ $t("app.telephoneLabel") }}
-            </label>
+            <label class="form_field">{{ $t("app.telephoneLabel") }} </label>
             <q-input
               v-model="user.telephone"
               outlined
@@ -1038,7 +1048,7 @@ export default {
   mounted() {
     this.getMemberProfile(this.$route.params.id);
     this.getUserRoles(this.$route.params.id);
-    if(!this.checkTreasurerRoleOnly()){
+    if (!this.checkTreasurerRoleOnly()) {
       this.getMembersDebts(true);
       this.getMembersContributions(true);
     }
@@ -1197,10 +1207,10 @@ export default {
       showEditProfileDialog: false,
       loading_download: false,
       bulk_payment: {
-        date:moment(new Date()).format("YYYY/MM/DD"),
+        date: moment(new Date()).format("YYYY/MM/DD"),
       },
-      loading_paid_download:false,
-      loading_upaid_download:false,
+      loading_paid_download: false,
+      loading_upaid_download: false,
     };
   },
   computed: {
@@ -1212,9 +1222,14 @@ export default {
       return moment(this.getCurrentMember.updated_at).format("MMMM Do YYYY");
     },
     validateForm() {
-      return (this.user.name == null ||
+      return (
+        this.user.name == null ||
         this.user.telephone == null ||
-        this.user.address == null || false || this.user.occupation == null || this.user.gender == null || this.user.email == null);
+        this.user.address == null ||
+        false ||
+        this.user.occupation == null ||
+        this.user.gender == null
+      );
     },
 
     validatePayment() {
@@ -1265,7 +1280,10 @@ export default {
     },
 
     getProfilePicture() {
-      return   this.getCurrentMember == null ||  this.getCurrentMember.picture == null ? '' : process.env.SERVER_BASE_URL + this.getCurrentMember.picture;
+      return this.getCurrentMember == null ||
+        this.getCurrentMember.picture == null
+        ? ""
+        : process.env.SERVER_BASE_URL + this.getCurrentMember.picture;
     },
 
     validateDownloadUnPaidItems() {
@@ -1276,9 +1294,9 @@ export default {
       return this.data1.length < 0;
     },
 
-    getCurrentYear(){
-      return LocalStorage.getItem("data").current_session
-    }
+    getCurrentYear() {
+      return LocalStorage.getItem("data").current_session;
+    },
   },
   watch: {
     getFormField() {
@@ -1367,7 +1385,6 @@ export default {
     },
 
     showEditProfile() {
-
       this.setFormField(this.$store.getters.getCurrentMember);
       if (Platform.is.mobile) {
         this.showEditProfileDialog = true;
@@ -1443,7 +1460,7 @@ export default {
     },
 
     computeTotal(data, evt) {
-      let amount_payable = data.is_range ? data.start_amount : data.balance
+      let amount_payable = data.is_range ? data.start_amount : data.balance;
       if (evt) {
         this.total_amount_payable += amount_payable;
         this.total_amount_payable = parseFloat(this.total_amount_payable);
@@ -1461,8 +1478,6 @@ export default {
     showAddRole() {
       this.show_add_role_dialog = true;
     },
-
-
 
     onAddRole() {
       let user_id = this.getCurrentMember.id;
@@ -1626,7 +1641,9 @@ export default {
           data.push({
             user_id: this.$store.getters.getCurrentMember.id,
             payment_item_id: ele.id,
-            amount_deposited: ele.is_range ? parseInt(ele.start_amount): parseInt(ele.balance),
+            amount_deposited: ele.is_range
+              ? parseInt(ele.start_amount)
+              : parseInt(ele.balance),
             is_compulsory: ele.is_compulsory,
             code: ele.code,
             year: this.current_year.id,
@@ -1635,13 +1652,15 @@ export default {
             month_name: ele.month_name,
             registration_id: ele.id,
             contributed_via_saving: false,
-            date: this.bulk_payment.date.replaceAll("/", "-")
+            date: this.bulk_payment.date.replaceAll("/", "-"),
           });
         } else {
           data.push({
             user_id: this.$store.getters.getCurrentMember.id,
             payment_item_id: ele.id,
-            amount_deposited: ele.is_range ? parseInt(ele.start_amount): parseInt(ele.balance),
+            amount_deposited: ele.is_range
+              ? parseInt(ele.start_amount)
+              : parseInt(ele.balance),
             is_compulsory: ele.is_compulsory,
             code: ele.code,
             year: ele.session.id,
@@ -1703,7 +1722,7 @@ export default {
                 session: ele.session,
                 is_range: ele.is_range,
                 start_amount: ele.start_amount,
-                end_amount: ele.end_amount
+                end_amount: ele.end_amount,
               });
             });
           }
@@ -1763,13 +1782,12 @@ export default {
                 created_by: ele.created_by,
                 comment: ele.comment,
                 is_compulsory: ele.is_compulsory,
-                date:ele.date,
-                is_range:ele.is_range,
+                date: ele.date,
+                is_range: ele.is_range,
                 start_amount: ele.start_amount,
-                end_amount: ele.end_amount
+                end_amount: ele.end_amount,
               });
             });
-
           }
         })
         .finally(() => {
@@ -1813,7 +1831,6 @@ export default {
             position: Platform.is.mobile ? "bottom-left" : "top-right",
           });
         });
-
     },
 
     downloadPaidItem() {
@@ -1851,12 +1868,7 @@ export default {
             position: Platform.is.mobile ? "bottom-left" : "top-right",
           });
         });
-
     },
-
-
-
-
   },
   components: {
     ButtonVue,

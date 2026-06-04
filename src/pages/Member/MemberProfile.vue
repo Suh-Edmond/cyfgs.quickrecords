@@ -339,8 +339,7 @@
                       <div>
                         <label class="form_field"
                           >{{ $t("app.emailLabel") }}
-                          <span class="text-red">*</span></label
-                        >
+                        </label>
                         <q-input
                           v-model="user.email"
                           outlined

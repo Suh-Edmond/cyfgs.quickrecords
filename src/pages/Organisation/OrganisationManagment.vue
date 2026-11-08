@@ -292,14 +292,13 @@ export default {
       this.$store
         .dispatch("putRequest", payload)
         .then((res) => {
-          const storedData = LocalStorage.getItem("data");
-          if (storedData) {
-            storedData.subscription.organisation.email = res.data.data.email;
-            LocalStorage.remove("data");
-            LocalStorage.set("data", storedData);
+          if (res.data) {
+            let authData = LocalStorage.getItem("data");
+            if (authData) {
+              authData.subscription.organisation = res.data;
+              LocalStorage.set("data", authData);
+            }
           }
-
-          this.getOrganisationInfo();
         })
         .finally(() => {
           this.loading = false;
@@ -407,11 +406,10 @@ export default {
           if (response.status === 200) {
             this.organisation.logo = response.data.data;
             this.$store.dispatch("setOrganisation", this.organisation);
-            const storedData = LocalStorage.getItem("data");
-            if (storedData) {
-              storedData.subscription.organisation.logo = response.data.data;
-              LocalStorage.remove("data");
-              LocalStorage.set("data", storedData);
+            let authData = LocalStorage.getItem("data");
+            if (authData) {
+              authData.subscription.organisation.logo = response.data.data;
+              LocalStorage.set("data", authData);
             }
             Notify.create({
               type: "positive",

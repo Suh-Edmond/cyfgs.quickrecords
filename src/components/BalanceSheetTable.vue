@@ -5,7 +5,7 @@
     </div>
 
     <div class="q-pt-xl text-center text-bold">
-      <label   class="heading">{{ heading }}</label>
+      <label class="heading">{{ heading }}</label>
     </div>
     <div class="q-pt-md row q-mb-xs">
       <table
@@ -50,7 +50,7 @@
             v-for="(contribution, i) in value.contributions"
             :key="i"
           >
-            {{ Number(contribution.amount_deposited).toLocaleString() }}
+            {{ Number(contribution.amount).toLocaleString() }}
           </td>
 
           <td style="border: 1px solid black; padding: 3px; text-align: center">
@@ -200,20 +200,35 @@
             {{ formatConstants(column.frequency) }}
           </td>
           <td style="padding: 5px; border: 1px solid black">
-            <span v-if="column.type === 'SAVINGS'">{{Number(column.total_amount_deposited).toLocaleString()}}</span>
+            <span v-if="column.type === 'SAVINGS'">{{
+              Number(column.total_amount_deposited).toLocaleString()
+            }}</span>
             <span v-else>{{ Number(column.amount).toLocaleString() }}</span>
           </td>
           <td style="padding: 5px; border: 1px solid black">
             <span v-if="column.type === 'SAVINGS'">0</span>
-            <span v-else>{{ Number(column.total_expect_amount).toLocaleString() }}</span>
+            <span v-else>{{
+              Number(column.total_expect_amount).toLocaleString()
+            }}</span>
           </td>
           <td style="padding: 5px; border: 1px solid black">
             <span v-if="column.type === 'SAVINGS'">0</span>
-            <span v-else>{{ Number(column.total_amount_deposited).toLocaleString() }}</span>
+            <span v-else>{{
+              Number(column.total_amount_deposited).toLocaleString()
+            }}</span>
           </td>
           <td style="padding: 5px; border: 1px solid black">
             <span v-if="column.type === 'SAVINGS'">0</span>
-            <span v-else> {{ Number(computeBalance(column.total_expect_amount, column.total_amount_deposited)).toLocaleString() }}</span>
+            <span v-else>
+              {{
+                Number(
+                  computeBalance(
+                    column.total_expect_amount,
+                    column.total_amount_deposited
+                  )
+                ).toLocaleString()
+              }}</span
+            >
           </td>
           <td style="padding: 5px; border: 1px solid black">
             <q-chip
@@ -296,20 +311,16 @@
       <div class="col-md-1 col-sm-1 col-xs-1"></div>
       <div class="col-md-10 col-xs-12 col-sm-12">
         <div class="q-my-lg text-center">
-          <label
-
-            class="admin_title text-uppercase text-weight-bold"
-            >{{ $t("app.presentedBy") }}</label
-          >
+          <label class="admin_title text-uppercase text-weight-bold">{{
+            $t("app.presentedBy")
+          }}</label>
         </div>
         <div class="flex justify-between">
           <div
             class="col-md-6 text-bold text-center text-uppercase admin_details"
           >
             <div>
-              <label class="admin_title"
-                >{{ $t("app.finSec") }} </label
-              ><br />
+              <label class="admin_title">{{ $t("app.finSec") }} </label><br />
               <span
                 class="admin_name"
                 v-for="fin_sec in getFinancialSecretary"
@@ -327,9 +338,7 @@
             class="col-md-6 text-bold text-center text-uppercase admin_details"
           >
             <div>
-              <label class="admin_title">{{
-                $t("app.treasurer")
-              }}</label
+              <label class="admin_title">{{ $t("app.treasurer") }}</label
               ><br />
               <span
                 class="admin_name"
@@ -352,9 +361,7 @@
             class="col-md-12 text-bold text-center text-uppercase admin_details"
           >
             <div>
-              <label class="admin_title">{{
-                $t("app.president")
-              }}</label
+              <label class="admin_title">{{ $t("app.president") }}</label
               ><br />
               <span
                 class="admin_name"
@@ -433,14 +440,14 @@ export default {
     getFinancialSecretary() {
       return this.data.fin_sec;
     },
-
-
   },
 
   methods: {
-    computeBalance(expected_amount, amount_contributed){
-      return amount_contributed >= expected_amount ? 0: expected_amount - amount_contributed
-    }
+    computeBalance(expected_amount, amount_contributed) {
+      return amount_contributed >= expected_amount
+        ? 0
+        : expected_amount - amount_contributed;
+    },
   },
 
   components: {

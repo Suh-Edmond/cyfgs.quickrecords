@@ -35,7 +35,6 @@
     <div class="flex flex-center q-mt-lg" v-if="getLoadingState">
       <q-spinner color="primary" size="3em" />
     </div>
-
     <div v-if="$q.platform.is.desktop">
       <BalanceSheetTable
         :heading="setTableHeader"

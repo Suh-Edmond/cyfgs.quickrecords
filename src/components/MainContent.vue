@@ -346,13 +346,13 @@ export default {
 
     getSubscriptionTrialEndDate() {
       const data = LocalStorage.getItem("data");
-      if (!data) {
-        return null;
+      let date = null;
+      if (data) {
+        date =
+          data.subscription.status === "trialing"
+            ? LocalStorage.getItem("data").subscription.trial_period_end_date
+            : LocalStorage.getItem("data").subscription.current_period_end_date;
       }
-      const date =
-        data.subscription.status === "trialing"
-          ? LocalStorage.getItem("data").subscription.trial_period_end_date
-          : LocalStorage.getItem("data").subscription.current_period_end_date;
 
       return date;
     },

@@ -759,5 +759,14 @@ export default {
     clients: "Clients",
     haveSubscription: "Already have a subscription ?",
     noOrganisationAccount: "Don't have an account? Sign Up",
+    debtorListHint:
+      "Select a year to view the list of members who have not completed their payment for the year",
+    debtorListTitle: "Debtor List for the Year ",
+    debtorListCaption:
+      "The list of members who have not completed their payment for the year",
+    debtorListDownloadLabel: "Debtor List for the Year ",
+    debtorListDownloadCaption:
+      "The list of members who have not completed their payment for the year",
+    debtorListLabel: "Debtor List",
   },
 };

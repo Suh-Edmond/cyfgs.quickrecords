@@ -329,6 +329,17 @@ const routes = [
           has_intermediate_tab: false,
         },
       },
+
+      {
+        name: "bulk_upload",
+        path: "/dashboard/clients/bulk-upload",
+        component: () => import("src/pages/Member/BulkUpload.vue"),
+        meta: {
+          middleware: "auth",
+          role: "MEMBER",
+          has_intermediate_tab: false,
+        },
+      },
     ],
   },
 

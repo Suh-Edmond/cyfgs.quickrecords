@@ -610,6 +610,18 @@ export default {
         treasurer_only: false,
       });
 
+      menu_tabs.push({
+        to: "bulk_upload",
+        roles: ["SYSTEM_ADMIN"],
+        name: "Bulk Upload",
+        icon: "diversity_3",
+        label: this.$t("app.bulkUpload"),
+        disable: false,
+        has_image: false,
+        requires_add: false,
+        treasurer_only: false,
+      });
+
       return menu_tabs;
     },
 

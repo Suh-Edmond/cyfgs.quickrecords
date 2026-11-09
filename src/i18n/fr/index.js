@@ -789,14 +789,6 @@ export default {
       "Le nom d'utilisateur de l'administrateur sera utilisé pour se connecter à votre compte et gérer votre organisation.",
     haveSubscription: "Vous êtes déjà abonné ?",
     noOrganisationAccount: "Vous n'avez pas de compte ? Inscrivez-vous",
-     debtorListHint:
-      "Sélectionnez une année pour voir la liste des membres qui n'ont pas terminé leur paiement pour l'année",
-    debtorListTitle: "Liste des débiteurs pour l'année ",
-    debtorListCaption:
-      "La liste des membres qui n'ont pas terminé leur paiement pour l'année",
-    debtorListDownloadLabel: "Liste des débiteurs pour l'année ",
-    debtorListDownloadCaption:
-      "La liste des membres qui n'ont pas terminé leur paiement pour l'année",
-    debtorListLabel: "Liste des débiteurs",
+    bulkUpload: "Téléchargement en masse",
   },
 };

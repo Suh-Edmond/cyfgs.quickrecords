@@ -10,38 +10,22 @@
 
       <!---------------DETAILS--------------------->
       <div class="col-6 col-lg-6 col-md-6 col-sm-12 col-xs-12 text-center">
-        <label style="text-uppercase detail text-weight-bolder;"
+        <label style="text-uppercase detail" class="text-bold"
+          >PRESBYTERIAN CHURCH IN CAMEROON (PCC)</label
+        ><br />
+        <label style="text-uppercase detail" class="text-bold"
           >CHRISTIAN YOUTH FELLOWSHIP (C.Y.F)</label
         ><br />
-        <label style="text-uppercase detail text-weight-bolder;"
+        <label style="text-uppercase detail" class="text-bold"
           >FAKO NORTH PRESBYTERY</label
         >
         <br />
-        <label style="text-uppercase detail text-weight-bolder;"
-          >BUEA ZONE</label
-        >
+        <label style="text-uppercase detail" class="text-bold">BUEA ZONE</label>
         <br />
-        <label style="text-uppercase detail text-weight-bolder;">
-          {{ getOrganisation.name }}
+        <label style="text-uppercase detail" class="text-bold">
+          {{ getOrganisation.name }} - {{ getOrganisation.address }}
         </label>
         <br />
-        <label style="text-uppercase detail text-weight-bolder;"
-          >{{ getOrganisation.address }} - {{ getOrganisation.region }}</label
-        >
-        <br />
-        <label style="text-uppercase detail text-weight-medium;">
-          {{ getOrganisation.email }}
-        </label>
-        <br />
-        <label style="text-uppercase detail text-weight-medium;">
-          <span
-            style="list-style-type: none"
-            v-for="(value, index) in getOrganisationTelephone"
-            :key="index"
-          >
-            {{ value }}<br />
-          </span>
-        </label>
       </div>
       <!-------------END OF DETAILS------------->
 
@@ -56,6 +40,40 @@
         />
       </div>
       <!-------------END OF LOGO----------------->
+
+      <div class="col-1 col-md-1 col-sm-12 col-xs-12"></div>
+    </div>
+    <div class="row q-mt-xl">
+      <div class="col-1 col-md-1 col-sm-12 col-xs-12"></div>
+      <!----------------LOGO--------------------->
+      <div class="col-2 col-md-2 col-sm-12 col-xs-12">
+        <label style="text-uppercase detail" class="text-bold"
+          >P.O. Box
+          <span class="q-pl-sm">{{ getOrganisation.box_number }}</span> ,
+          {{ getOrganisation.address }}</label
+        >
+        <br />
+        <label style="text-uppercase detail" class="text-bold">
+          Email: {{ getOrganisation.email }}
+        </label>
+      </div>
+
+      <div
+        class="col-6 col-lg-6 col-md-6 col-sm-12 col-xs-12 text-center"
+      ></div>
+
+      <div class="col-2 col-lg-2 col-md-2 col-sm-12 col-xs-12 flex justify-end">
+        <label class="q-pr-md text-bold">Mobile: </label>
+        <label style="text-uppercase detail" class="text-bold">
+          <span
+            style="list-style-type: none"
+            v-for="(value, index) in getOrganisationTelephone"
+            :key="index"
+          >
+            {{ value }}<br />
+          </span>
+        </label>
+      </div>
 
       <div class="col-1 col-md-1 col-sm-12 col-xs-12"></div>
     </div>

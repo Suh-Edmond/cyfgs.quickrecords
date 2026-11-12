@@ -816,6 +816,26 @@
           </q-td>
           <q-td key="action" :props="props">
             <q-btn
+              class="approve_btn"
+              :label="$t('app.approve')"
+              no-caps
+              unelevated
+              dense
+              @click="onApprovedRecord(props.row, 'Approve')"
+              v-if="canValidateTransaction() && props.row.approve === 'PENDING'"
+            />
+
+            <!-- buttons for approve and decline row data -->
+            <q-btn
+              class="decline_btn q-mx-xl"
+              :label="$t('app.decline')"
+              no-caps
+              unelevated
+              dense
+              @click="onDeclineRecord(props.row, 'Decline')"
+              v-if="canValidateTransaction() && props.row.approve === 'PENDING'"
+            />
+            <q-btn
               unelevated
               no-caps
               dense
@@ -1575,6 +1595,10 @@ export default {
     },
 
     setApproveContributionPayload(data) {
+      let authData = LocalStorage.getItem("data");
+      if (authData === null || authData === undefined) {
+        return;
+      }
       let type =
         this.chosen_state === CategoryConstants.Approve
           ? TransactionStatus.APPROVED
@@ -1582,8 +1606,14 @@ export default {
       return {
         payment_item_id: data.payment_item_id,
         user_id: data.user_id,
-        session_id: data.session_id,
+        session_id:
+          data.session_id == undefined || data.session_id == null
+            ? authData.current_session.id
+            : data.session_id,
         type: type,
+        id: data.id,
+        balance: data.balance,
+        total_amount_deposited: data.total_amount_deposited,
       };
     },
 

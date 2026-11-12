@@ -284,12 +284,12 @@ export default {
       } else {
         data = this.getFilteredContributions;
       }
-      
+
       return data;
     },
 
     computeTotalContributions() {
-      return  this.$store.getters.getFilteredContributions !== null
+      return this.$store.getters.getFilteredContributions !== null
         ? this.$store.getters.getFilteredContributions.total_amount
         : 0;
     },
@@ -338,43 +338,44 @@ export default {
     getFilteredContributions() {
       let data = [];
 
-      if (this.$store.getters.getFilteredContributions !== null && this.$store.getters.getFilteredContributions !== undefined) {
-          this.$store.getters.getFilteredContributions.data.forEach((ele) => {
-            data.push({
-              counter:
-                this.$store.getters.getFilteredContributions.data.indexOf(ele) +
-                1,
-              amount_deposited: ele.amount_deposited,
-              total_amount_deposited: ele.total_amount_deposited,
-              id: ele.id,
-              approve: ele.approve,
-              balance: ele.balance,
-              payment_item_amount: ele.payment_item_amount,
-              payment_item_id: ele.payment_item_id,
-              payment_item_complusory: ele.payment_item_complusory,
-              payment_item_name: ele.payment_item_name,
-              comment: ele.comment,
-              code: ele.code,
-              type: "MEMBERS_CONTRIBUTIONS",
-              compulsory: ele.compulsory,
-              created_at: ele.created_at,
-              updated_by: ele.updated_by,
-              status: ele.status,
-              user_id: ele.user_id,
-              user_name: ele.user_name,
-              user_telephone: ele.user_telephone,
-              session_id: ele.session_id,
-            });
+      if (
+        this.$store.getters.getFilteredContributions !== null &&
+        this.$store.getters.getFilteredContributions !== undefined
+      ) {
+        this.$store.getters.getFilteredContributions.data.forEach((ele) => {
+          data.push({
+            counter:
+              this.$store.getters.getFilteredContributions.data.indexOf(ele) +
+              1,
+            amount_deposited: ele.amount_deposited,
+            total_amount_deposited: ele.total_amount_deposited,
+            id: ele.id,
+            approve: ele.approve,
+            balance: ele.balance,
+            payment_item_amount: ele.payment_item_amount,
+            payment_item_id: ele.payment_item_id,
+            payment_item_complusory: ele.payment_item_complusory,
+            payment_item_name: ele.payment_item_name,
+            comment: ele.comment,
+            code: ele.code,
+            type: "MEMBERS_CONTRIBUTIONS",
+            compulsory: ele.compulsory,
+            created_at: ele.created_at,
+            updated_by: ele.updated_by,
+            status: ele.status,
+            user_id: ele.user_id,
+            user_name: ele.user_name,
+            user_telephone: ele.user_telephone,
+            session_id: ele.session_id,
           });
-        }
+        });
+      }
       return data;
     },
 
     computeTotalContributionsForFilteredRecord() {
       let total = 0;
-      if (
-        this.$store.getters.getFilteredContributions !== null
-      ) {
+      if (this.$store.getters.getFilteredContributions !== null) {
         total = this.$store.getters.getFilteredContributions.total_amount;
       }
       return total;
@@ -384,9 +385,7 @@ export default {
       let title = "";
       const payment_item = this.$store.getters.getSearchContributionParams;
       const search_params = this.$store.getters.getSearchContributionParams;
-      if (
-        payment_item !== null 
-      ) {
+      if (payment_item !== null) {
         title =
           this.$t("app.contributionPartTitle") + `${payment_item.item.label}`;
       } else if (
@@ -514,8 +513,10 @@ export default {
       filter
     ) {
       let search_filter = filter === undefined ? "" : filter;
-       
-      
+      if (search_filter.length < 5) {
+        return;
+      }
+
       let payload = {
         status: "none",
         url: `/api/protected/organisations/contributions/search?payment_item_id=${payment_item_id}&month=${month}&year=${year}
@@ -593,9 +594,12 @@ export default {
         url = `/api/protected/download-contributions?payment_item_id=${payment_item_id}&month=${month}&year=${year}&status=${status}&payment_item_name=${payment_item_name}&page=1&per_page=1000`;
       }
 
-      let file_name = status !== "NOT_PAID" ? this.$t("app.memberContributionDownloadLabel") +
-        payment_item_name +
-        ".pdf" : "Members_Not_Contributed for" + payment_item_name
+      let file_name =
+        status !== "NOT_PAID"
+          ? this.$t("app.memberContributionDownloadLabel") +
+            payment_item_name +
+            ".pdf"
+          : "Members_Not_Contributed for" + payment_item_name;
       this.loading_download = this.downloadPdf(url, file_name);
     },
 

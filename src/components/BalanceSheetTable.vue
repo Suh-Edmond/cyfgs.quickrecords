@@ -50,7 +50,7 @@
             v-for="(contribution, i) in value.contributions"
             :key="i"
           >
-            {{ Number(contribution.amount).toLocaleString() }}
+            {{ Number(contribution.amount_deposited).toLocaleString() }}
           </td>
 
           <td style="border: 1px solid black; padding: 3px; text-align: center">

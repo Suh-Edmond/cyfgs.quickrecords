@@ -109,15 +109,20 @@ export default {
     checkPresidentOrAdminRole() {
       const canViewNotification = LocalStorage.getItem("data")
         .user_data.roles.map((role) => role.name)
-        .filter((role) => (role === "ADMIN" || role === "PRESIDENT"));
+        .filter((role) => role === "ADMIN" || role === "PRESIDENT");
 
-      return canViewNotification.length !== 0
+      return canViewNotification.length !== 0;
     },
 
     canValidateTransaction() {
       const istreasurer = LocalStorage.getItem("data")
         .user_data.roles.map((role) => role.name)
-        .find((role) => role === "TREASURER" || role === "ADMIN");
+        .find(
+          (role) =>
+            role === "TREASURER" ||
+            role === "PRESIDENT" ||
+            role === "SYSTEM_ADMIN"
+        );
       return istreasurer !== undefined;
     },
 

@@ -113,8 +113,8 @@
         :class="$q.platform.is.desktop ? 'q-pt-sm q-px-sm' : ' q-px-sm q-pt-xl'"
         :columns="columns"
         :data="getFilteredContributions"
-        :label="label"
-        :message="message"
+        :label="$t('app.delete')"
+        :message="$t('app.deleteContributionWarningMsg')"
         :show_savings="false"
         :show_income_activity="false"
         :show_members="false"
@@ -217,8 +217,6 @@ export default {
       payment_item_id: null,
       has_recommendation_response: false,
       loading: false,
-      message: this.$t("app.deleteContributionWarningMsg"),
-      label: this.$t("app.delete"),
       columns: [
         {
           name: "user_name",
@@ -431,11 +429,26 @@ export default {
 
     getPagination() {
       return {
-        sortBy: this.$store.getters.getPagination.sortBy,
-        descending: this.$store.getters.getPagination.descending,
-        page: this.$store.getters.getPagination.page,
-        rowsPerPage: this.$store.getters.getPagination.rowsPerPage,
-        rowsNumber: this.$store.getters.getPagination.rowsNumber,
+        sortBy:
+          this.$store.getters.getPagination != null
+            ? this.$store.getters.getPagination.sortBy
+            : "name",
+        descending:
+          this.$store.getters.getPagination != null
+            ? this.$store.getters.getPagination.descending
+            : false,
+        page:
+          this.$store.getters.getPagination != null
+            ? this.$store.getters.getPagination.page
+            : 1,
+        rowsPerPage:
+          this.$store.getters.getPagination != null
+            ? this.$store.getters.getPagination.rowsPerPage
+            : 10,
+        rowsNumber:
+          this.$store.getters.getPagination != null
+            ? this.$store.getters.getPagination.rowsNumber
+            : 1,
       };
     },
 
@@ -458,6 +471,8 @@ export default {
 
   methods: {
     onRequest(props) {
+      console.log(props);
+
       const { page, rowsPerPage } = props.pagination;
       const fetch_count =
         rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
@@ -513,7 +528,7 @@ export default {
       filter
     ) {
       let search_filter = filter === undefined ? "" : filter;
-      if (search_filter.length < 5) {
+      if (search_filter && search_filter.length < 5) {
         return;
       }
 

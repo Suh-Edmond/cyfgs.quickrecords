@@ -13,8 +13,8 @@
       :class="$q.platform.is.desktop ? 'q-pt-sm q-px-sm' : ' q-px-sm q-pt-lg'"
       :columns="columns"
       :data="getMembers"
-      :label="label"
-      :message="message"
+      :label="this.$t('app.delete')"
+      :message="this.$t('app.deleteMemberWarningMsg')"
       :show_savings="false"
       :show_income_activity="false"
       :show_members="true"
@@ -66,8 +66,6 @@ export default {
       has_register: "",
       filter: "",
       gender: "",
-      message: this.$t("app.deleteMemberWarningMsg"),
-      label: this.$t("app.delete"),
       columns: [
         {
           name: "name",

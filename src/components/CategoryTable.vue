@@ -764,23 +764,25 @@
       v-if="
         canValidateTransaction &&
         selectedExpenditureDetails.length > 0 &&
-        show_expenditure_item_detail"
-      @fetch-expenditure-details="fetchExpenditureDetails">
-      </BulkValidationExpenditureItemDetails>
+        show_expenditure_item_detail
+      "
+      @fetch-expenditure-details="fetchExpenditureDetails"
+    >
+    </BulkValidationExpenditureItemDetails>
   </div>
 </template>
 <script>
-  import {LocalStorage} from "quasar";
-  import PaymentCategoryMixinVue from "src/mixins/PaymentCategoryMixin.vue";
-  import expenditureItemMixinVue from "src/mixins/expenditureItemMixin.vue";
-  import ExpenditureItemDetailMixinVue from "src/mixins/ExpenditureItemDetailMixin.vue";
-  import moment from "moment";
-  import ConfirmDialog from "./ConfirmDialog.vue";
-  import HelperMixin from "src/mixins/HelperMixin.vue";
-  import BulkValidationExpenditureItemDetails from "./BulkValidationExpenditureItemDetails.vue";
-  import CategoryConstants from "components/Constants/CategoryConstants";
+import { LocalStorage } from "quasar";
+import PaymentCategoryMixinVue from "src/mixins/PaymentCategoryMixin.vue";
+import expenditureItemMixinVue from "src/mixins/expenditureItemMixin.vue";
+import ExpenditureItemDetailMixinVue from "src/mixins/ExpenditureItemDetailMixin.vue";
+import moment from "moment";
+import ConfirmDialog from "./ConfirmDialog.vue";
+import HelperMixin from "src/mixins/HelperMixin.vue";
+import BulkValidationExpenditureItemDetails from "./BulkValidationExpenditureItemDetails.vue";
+import CategoryConstants from "components/Constants/CategoryConstants";
 
-  export default {
+export default {
   mixins: [
     PaymentCategoryMixinVue,
     expenditureItemMixinVue,
@@ -1026,13 +1028,16 @@
       };
       this.$store.dispatch("setUpdatedExpenditureItem", expenditure_item);
 
-      if(this.checkPresidentOrAdminRole()){
+      if (this.checkPresidentOrAdminRole()) {
         let transactionHistoryPayload = {
           data: expenditure_item,
           tab: "Change Expenditure Item Transaction",
         };
-        this.$emit("update-expenditure-item-transaction", transactionHistoryPayload);
-      }else {
+        this.$emit(
+          "update-expenditure-item-transaction",
+          transactionHistoryPayload
+        );
+      } else {
         this.$emit("edit-expenditure-item", payload);
       }
     },
@@ -1055,18 +1060,19 @@
         data: expenditure_item_detail,
         tab: "Expenditure Item Details",
       };
-      if(this.checkPresidentOrAdminRole()){
+      if (this.checkPresidentOrAdminRole()) {
         let transactionHistoryPayload = {
           data: expenditure_item_detail,
           tab: "Change Expenditure Item Detail Transaction",
-        }
-        this.$emit("update-expenditure-item-detail-transaction", transactionHistoryPayload);
-      }else {
+        };
+        this.$emit(
+          "update-expenditure-item-detail-transaction",
+          transactionHistoryPayload
+        );
+      } else {
         this.$emit("edit-expenditure-item-detail", payload);
       }
     },
-
-
 
     onViewItemDetail(data) {
       let payload = {
@@ -1116,9 +1122,11 @@
     },
 
     setApproveFeedbackMsg() {
-      return this.$t("app.recordWas") +
+      return (
+        this.$t("app.recordWas") +
         `${this.chosen_state} ` +
-        this.$t("app.successfull");
+        this.$t("app.successfull")
+      );
     },
 
     setApproveWarningMsgByType(data) {
@@ -1155,7 +1163,7 @@
           this.filterExpenditureItems(
             1,
             10,
-            { value : this.$route.query.expenditure_category_id },
+            { value: this.$route.query.expenditure_category_id },
             { value: "" },
             { value: this.$route.query.session },
             ""
@@ -1228,15 +1236,14 @@
 
     computeTotalSelectedItems(data, evt) {
       if (data.is_selected) {
-        const exist = this.selectedExpenditureDetails.find(
-          (ele) => ele.id === data.id
-        );
-        if (exist === undefined) {
+        if (
+          !this.selectedExpenditureDetails.some((ele) => ele.id === data.id)
+        ) {
           this.selectedExpenditureDetails.push(data);
         }
       } else {
         this.selectedExpenditureDetails =
-          this.selectedExpenditureDetails.filter((ele) => ele.id === data.id);
+          this.selectedExpenditureDetails.filter((ele) => ele.id !== data.id);
       }
       return this.selectedExpenditureDetails;
     },

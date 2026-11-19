@@ -1076,6 +1076,30 @@ export default {
     },
 
     onAddContribution() {
+      if (
+        this.$route.query.payment_item_id !==
+          this.contribution.payment_item_id.value ||
+        this.$route.year !== this.year.value
+      ) {
+        this.$router.push({
+          path: this.$route.path,
+          query: {
+            ...this.$route.query,
+            payment_item_id: this.contribution.payment_item_id.value,
+            year: this.year.value,
+            status: "",
+            amount: parseFloat(this.contribution.amount_deposited),
+            frequency: "",
+            page: 1,
+            per_page: 10,
+            month:
+              this.contribution.month_name !== undefined
+                ? this.contribution.month_name
+                : "",
+          },
+        });
+      }
+
       let payload = {
         url: `/api/protected/contributions`,
         data: {

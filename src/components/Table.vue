@@ -653,6 +653,16 @@
 
         <!--------------------------------------------------------------------CONTRIBUTION-------------------------------------->
         <q-tr :props="props" v-if="show_contribution">
+          <q-td key="is_selected" :props="props" class="table_value">
+            <q-checkbox
+              v-model="props.row.is_selected"
+              v-if="props.row.approve === 'PENDING'"
+              dense
+              size="md"
+              @input="computeTotalSelectedItems(props.row, $event)"
+              toggle-order="ft"
+            />
+          </q-td>
           <q-td key="user_name" :props="props" class="table_value">
             {{ props.row.user_name }}
           </q-td>
@@ -1097,6 +1107,13 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+
+    <BulkValidationContributionsVue
+      :selectedContributions="selectedContributions"
+      v-if="isBulkContributionValidationEnabled && show_contribution"
+      @fetch-contributions-details="fetchContributions"
+    >
+    </BulkValidationContributionsVue>
   </div>
 </template>
 <script>
@@ -1110,6 +1127,7 @@ import ConfirmDialogVue from "./ConfirmDialog.vue";
 import HelperMixin from "src/mixins/HelperMixin.vue";
 import CategoryConstants from "components/Constants/CategoryConstants";
 import TransactionStatus from "components/Constants/TransactionStatus";
+import BulkValidationContributionsVue from "./BulkValidationContributions.vue";
 
 export default {
   mixins: [
@@ -1236,6 +1254,9 @@ export default {
       selected_role: "",
       loading_invitation: false,
       current_session_id: LocalStorage.getItem("data").current_session.id,
+      selectedContributions: [],
+      organisation_id:
+        LocalStorage.getItem("data").subscription.organisation.id,
     };
   },
 
@@ -1251,6 +1272,13 @@ export default {
 
     validateMemberInvite() {
       return this.selected_role === "";
+    },
+
+    isBulkContributionValidationEnabled() {
+      const hasPendingContribution = this.selectedContributions.filter(
+        (e) => e.approve === "PENDING"
+      );
+      return hasPendingContribution.length > 0 && this.canValidateTransaction();
     },
   },
 
@@ -1534,20 +1562,13 @@ export default {
     },
 
     fetchDataBaseOnTypeAfterApprove(data) {
-      const route_data = Object.assign({}, this.$route.query);
-
-      let organisation_id =
-        LocalStorage.getItem("data").subscription.organisation.id;
-      let session_id = this.current_session_id;
-      let status = route_data.status !== undefined ? route_data.status : "";
-      let name = route_data.name !== undefined ? route_data.name : "";
-      let amount_deposited =
-        this.$route.amount_deposited !== undefined
-          ? route_data.amount_deposited
-          : "";
-      let month = route_data.month !== undefined ? route_data.month : "";
-      let date = route_data.date ? route_data.date : "";
-      let range = route_data.range ? route_data.range : "";
+      let organisation_id = this.organisation_id;
+      let session_id = data.session_id;
+      let status = this.$route.query.status;
+      let amount_deposited = this.$route.amount_deposited;
+      let month = this.$route.query.month;
+      let date = this.$route.query.date ? this.$route.query.date : "";
+      let range = this.$route.query.range ? this.$route.query.range : "";
       switch (data.type) {
         case CategoryConstants.INCOME_ACTIVITIES:
           this.getOrganisationIncomeActivities(organisation_id, 1, 10);
@@ -1558,7 +1579,7 @@ export default {
         case CategoryConstants.MEMBERS_CONTRIBUTIONS:
           let payload = {
             payment_item_id: data.payment_item_id,
-            year: data.session_id,
+            year: session_id,
           };
           this.filterMembersContributions(
             payload,
@@ -1568,8 +1589,8 @@ export default {
             date,
             range,
             amount_deposited,
-            1,
-            10
+            this.$route.query.page,
+            this.$route.query.per_page
           );
           this.$store.dispatch("setSearchContributionParams", {
             item: {
@@ -1582,8 +1603,8 @@ export default {
           this.filterOrganisationMembers(
             organisation_id,
             true,
-            1,
-            10,
+            tthis.$route.query.page,
+            this.$route.query.per_page,
             "name",
             "",
             "",
@@ -1762,9 +1783,44 @@ export default {
       this.type = CategoryConstants.MEMBERS_CONTRIBUTIONS;
       this.delete_msg = this.$t("app.deleteContributionWarningMsg");
     },
+
+    computeTotalSelectedItems(data, evt) {
+      if (data.is_selected) {
+        if (!this.selectedContributions.some((ele) => ele.id === data.id)) {
+          this.selectedContributions.push(data);
+        }
+      } else {
+        this.selectedContributions = this.selectedContributions.filter(
+          (ele) => ele.id !== data.id
+        );
+      }
+      return this.selectedContributions;
+    },
+
+    fetchContributions() {
+      let search_year = this.$route.query.year;
+      let payload = {
+        payment_item_id: this.$route.query.payment_item_id,
+        year: search_year,
+      };
+
+      this.filterMembersContributions(
+        payload,
+        search_year,
+        "",
+        "",
+        "",
+        "",
+        this.$route.query.amount,
+        this.$route.query.page,
+        this.$route.query.per_page
+      );
+      return (this.selectedContributions = []);
+    },
   },
   components: {
     ConfirmDialogVue,
+    BulkValidationContributionsVue,
   },
 };
 </script>

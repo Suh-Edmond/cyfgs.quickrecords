@@ -760,5 +760,6 @@ export default {
     haveSubscription: "Already have a subscription ?",
     noOrganisationAccount: "Don't have an account? Sign Up",
     bulkUpload: "Bulk Upload",
+    bulkConntributionConfirmation: " the following Contributions",
   },
 };

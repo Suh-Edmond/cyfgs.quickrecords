@@ -47,8 +47,8 @@
       <TableVue
         :columns="columns"
         :data="getTableData"
-        :label="label"
-        :message="message"
+        :label="$t('app.delete')"
+        :message="$t('app.deleteContributionWarningMsg')"
         :show_savings="false"
         :show_income_activity="false"
         :show_members="false"
@@ -219,6 +219,13 @@ export default {
       loading: false,
       columns: [
         {
+          name: "is_selected",
+          label: "",
+          field: "is_selected",
+          sortable: true,
+          align: "left",
+        },
+        {
           name: "user_name",
           required: true,
           label: "Member's Name",
@@ -322,6 +329,7 @@ export default {
               user_name: ele.user_name,
               user_telephone: ele.user_telephone,
               session_id: ele.session_id,
+              is_selected: false,
             });
           }
         );
@@ -365,6 +373,7 @@ export default {
             user_name: ele.user_name,
             user_telephone: ele.user_telephone,
             session_id: ele.session_id,
+            is_selected: false,
           });
         });
       }
@@ -471,20 +480,18 @@ export default {
 
   methods: {
     onRequest(props) {
-      console.log(props);
-
       const { page, rowsPerPage } = props.pagination;
       const fetch_count =
         rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
       const filter = props.filter;
-      const search_params = this.$store.getters.getSearchContributionParams;
+
       this.filterContributions(
-        search_params.item.value,
-        search_params.month,
-        search_params.year,
-        search_params.status,
-        search_params.date,
-        search_params.range,
+        this.$route.query.payment_item_id,
+        "",
+        this.$route.query.year,
+        this.$route.query.status,
+        "",
+        "",
         page,
         fetch_count,
         filter

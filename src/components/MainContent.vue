@@ -169,7 +169,7 @@
         </div>
       </q-toolbar>
       <TrialTimerVue
-        v-if="$q.platform.is.desktop"
+        v-if="$q.platform.is.desktop && getSubscriptionStatus !== 'active'"
         :trialEndDate="getSubscriptionTrialEndDate"
         :status="getSubscriptionStatus"
       />
@@ -346,14 +346,17 @@ export default {
 
     getSubscriptionTrialEndDate() {
       const data = LocalStorage.getItem("data");
-      let date = null;
+      let date = "";
       if (data) {
+        let subscriptionStatus = data.subscription.status;
+        if (subscriptionStatus === "active") {
+          return;
+        }
         date =
-          data.subscription.status === "trialing"
-            ? LocalStorage.getItem("data").subscription.trial_period_end_date
-            : LocalStorage.getItem("data").subscription.current_period_end_date;
+          subscriptionStatus === "trialing"
+            ? data.subscription.trial_period_end_date
+            : data.subscription.current_period_end_date;
       }
-
       return date;
     },
 
@@ -362,7 +365,7 @@ export default {
       if (!data) {
         return null;
       }
-      return LocalStorage.getItem("data").subscription.status;
+      return data.subscription.status;
     },
   },
 

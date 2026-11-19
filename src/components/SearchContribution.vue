@@ -2,7 +2,7 @@
   <div :class="$q.platform.is.desktop ? 'q-ml-sm q-mr-sm' : 'q-ml-lg q-mr-sm'">
     <q-linear-progress indeterminate v-show="is_fetching_members" />
     <div class="q-my-md">
-      <label  class="text">{{ $t("app.filterMsg") }} </label>
+      <label class="text">{{ $t("app.filterMsg") }} </label>
     </div>
     <div class="q-mb-lg row">
       <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
@@ -53,7 +53,7 @@
 
     <!-- filter by status of contributions -->
     <div class="q-my-md">
-      <label  class="text">{{ $t("app.filterStatus") }}</label>
+      <label class="text">{{ $t("app.filterStatus") }}</label>
     </div>
     <div class="q-mb-lg row">
       <div v-for="status in statuses" :key="status.index">
@@ -74,7 +74,7 @@
     <!-- filter by duration -->
     <hr class="separator" />
     <div class="q-my-md">
-      <label  class="text">{{ $t("app.filterDelay") }}</label>
+      <label class="text">{{ $t("app.filterDelay") }}</label>
     </div>
 
     <!--  by month -->
@@ -308,7 +308,6 @@ export default {
     },
 
     filterByDuration(status) {
-
       let payload = {
         organisation_id: this.getOrganisationId(),
         status: status !== null && status !== "" ? status : "",
@@ -332,6 +331,20 @@ export default {
         amount: this.param.payment_item_id.amount,
         frequency: this.param.payment_item_id.frequency,
       };
+
+      this.$router.push({
+        path: this.$route.path,
+        query: {
+          ...this.$route.query,
+          payment_item_id: payload.payment_item_id.value,
+          year: payload.year,
+          status: payload.status,
+          amount: payload.amount,
+          frequency: payload.frequency,
+          page: 1,
+          per_page: 10,
+        },
+      });
 
       this.loading = this.filterMembersContributions(
         payload,

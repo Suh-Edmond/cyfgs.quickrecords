@@ -790,5 +790,6 @@ export default {
     haveSubscription: "Vous êtes déjà abonné ?",
     noOrganisationAccount: "Vous n'avez pas de compte ? Inscrivez-vous",
     bulkUpload: "Téléchargement en masse",
+    partConfirmationMsg: " the following Contributions",
   },
 };

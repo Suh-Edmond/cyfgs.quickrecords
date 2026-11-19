@@ -3,7 +3,9 @@
     <!--------------------------------------------------TABLE FOR EXPENDITURE DETAILS---------------------------------------->
     <div>
       <div
-        :class="$q.screen.lg ? 'row q-gutter-sm q-pb-sm' : 'row q-gutter-sm q-pb-sm'"
+        :class="
+          $q.screen.lg ? 'row q-gutter-sm q-pb-sm' : 'row q-gutter-sm q-pb-sm'
+        "
         :style="
           $q.screen.lg ? 'background-color:#F6F6F6; border-radius:10px' : ''
         "
@@ -84,11 +86,11 @@
 </template>
 
 <script>
-  import CategoryTable from "src/components/CategoryTable.vue";
-  import HelperMixinVue from "src/mixins/HelperMixin.vue";
-  import ContributionSummary from "src/components/ContributionSummary.vue";
+import CategoryTable from "src/components/CategoryTable.vue";
+import HelperMixinVue from "src/mixins/HelperMixin.vue";
+import ContributionSummary from "src/components/ContributionSummary.vue";
 
-  export default {
+export default {
   mixins: [HelperMixinVue],
 
   mounted() {
@@ -365,8 +367,6 @@
         );
       });
     },
-
-
 
     generateExpenditureItemDetailResponse(response) {
       this.expenditure_item_details = [];

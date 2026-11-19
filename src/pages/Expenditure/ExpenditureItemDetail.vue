@@ -36,7 +36,9 @@
         @view-expenditure-item-detail="viewExpenditureItemDetail"
         @delete-row="onDeleteRow"
         @onRequest="onRequest"
-        @update-expenditure-item-detail-transaction="updateExpenditureItemDetailTransaction"
+        @update-expenditure-item-detail-transaction="
+          updateExpenditureItemDetailTransaction
+        "
       >
       </CategoryTable>
 
@@ -51,14 +53,14 @@
 </template>
 
 <script>
-  import CategoryTable from "src/components/CategoryTable.vue";
-  import HelperMixinVue from "src/mixins/HelperMixin.vue";
-  import ExpenditureItemDetailMixinVue from "src/mixins/ExpenditureItemDetailMixin.vue";
-  import FilterComponentVue from "src/components/FilterComponent.vue";
-  import ContributionSummary from "src/components/ContributionSummary.vue";
-  import {LocalStorage} from "quasar";
+import CategoryTable from "src/components/CategoryTable.vue";
+import HelperMixinVue from "src/mixins/HelperMixin.vue";
+import ExpenditureItemDetailMixinVue from "src/mixins/ExpenditureItemDetailMixin.vue";
+import FilterComponentVue from "src/components/FilterComponent.vue";
+import ContributionSummary from "src/components/ContributionSummary.vue";
+import { LocalStorage } from "quasar";
 
-  export default {
+export default {
   mixins: [HelperMixinVue, ExpenditureItemDetailMixinVue],
   beforeMount() {
     this.$store.commit("SET_PAGINATION", {
@@ -251,7 +253,6 @@
     },
 
     getExpenditureItemDetails() {
-
       let details = [];
       const data = this.$store.getters.getExpenditureItemDetails;
 
@@ -341,7 +342,7 @@
       this.$emit("edit-expenditure-item-detail", data);
     },
 
-    updateExpenditureItemDetailTransaction(data){
+    updateExpenditureItemDetailTransaction(data) {
       this.$store.dispatch("setUpdatedExpenditureItemDetail", data.data);
       this.$emit("update-expenditure-item-detail-transaction", data);
     },

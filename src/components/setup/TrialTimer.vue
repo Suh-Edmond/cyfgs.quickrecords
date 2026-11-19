@@ -19,7 +19,7 @@ export default {
   props: {
     trialEndDate: {
       required: true,
-      type: String,
+      type: Object,
     },
     status: {
       required: true,
@@ -42,6 +42,9 @@ export default {
   },
   computed: {
     targetDate() {
+      if (this.trialEndDate === undefined) {
+        return;
+      }
       return new Date(this.trialEndDate).getTime();
     },
     timeLeft() {
@@ -54,8 +57,6 @@ export default {
     },
 
     isSubscriptionExpired() {
-      console.log(this.countDown <= 0 && this.status === "past_due");
-
       return this.countDown <= 0 && this.status === "past_due";
     },
     days() {

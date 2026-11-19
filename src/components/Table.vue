@@ -1809,9 +1809,9 @@ export default {
         search_year,
         "",
         "",
-        null,
-        null,
-        0,
+        "",
+        "",
+        this.$route.query.amount,
         this.$route.query.page,
         this.$route.query.per_page
       );

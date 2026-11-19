@@ -1076,7 +1076,11 @@ export default {
     },
 
     onAddContribution() {
-      if (!this.$route.query.payment_item_id && !this.$route.year) {
+      if (
+        this.$route.query.payment_item_id !==
+          this.contribution.payment_item_id.value ||
+        this.$route.year !== this.year.value
+      ) {
         this.$router.push({
           path: this.$route.path,
           query: {

@@ -15,8 +15,8 @@
         :class="$q.platform.is.desktop ? 'q-pt-sm q-px-sm' : ' q-px-xs q-pt-lg'"
         :columns="columns"
         :data="getMemberContributions"
-        :label="label"
-        :message="message"
+        :label="$t('app.delete')"
+        :message="$t('app.deleteContributionWarningMsg')"
         :show_savings="false"
         :show_income_activity="false"
         :show_members="false"
@@ -32,7 +32,9 @@
         @edit-contribution="editContribution"
         @delete-row="deleteRow"
         @onRequest="onRequest"
-        @update-user-contribution-transaction="updateUserContributionTransaction"
+        @update-user-contribution-transaction="
+          updateUserContributionTransaction
+        "
       >
       </TableVue>
 
@@ -47,13 +49,13 @@
 </template>
 
 <script>
-  import TableVue from "src/components/Table.vue";
-  import ContributionsMixin from "src/mixins/ContributionsMixin.vue";
-  import HelperMixin from "src/mixins/HelperMixin.vue";
-  import FilterComponentVue from "src/components/FilterComponent.vue";
-  import ContributionSummary from "src/components/ContributionSummary.vue";
+import TableVue from "src/components/Table.vue";
+import ContributionsMixin from "src/mixins/ContributionsMixin.vue";
+import HelperMixin from "src/mixins/HelperMixin.vue";
+import FilterComponentVue from "src/components/FilterComponent.vue";
+import ContributionSummary from "src/components/ContributionSummary.vue";
 
-  export default {
+export default {
   mixins: [ContributionsMixin, HelperMixin],
 
   mounted() {
@@ -70,14 +72,8 @@
   },
   data() {
     return {
-      label_print: this.$t("app.print"),
-      color_print: "positive",
-      label_fetch_user: this.$t("app.filter"),
       loading: false,
-      color: "primary",
       no_caps: true,
-      message: this.$t("app.deleteContributionWarningMsg"),
-      label: this.$t("app.delete"),
       title: "",
       columns: [
         {
@@ -192,8 +188,8 @@
             payment_item_complusory: ele.payment_item_compulsory,
             payment_item_name: ele.payment_item_name,
             is_range: ele.is_range,
-            start_amount:ele.start_amount,
-            end_amount:ele.end_amount,
+            start_amount: ele.start_amount,
+            end_amount: ele.end_amount,
             payment_category: ele.payment_category,
             comment: ele.comment,
             code: ele.code,
@@ -265,7 +261,7 @@
       this.$emit("edit-contribution", data);
     },
 
-    updateUserContributionTransaction(data){
+    updateUserContributionTransaction(data) {
       this.$emit("update-user-contribution-transaction", data);
     },
 

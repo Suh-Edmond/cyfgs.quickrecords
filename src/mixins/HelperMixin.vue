@@ -33,7 +33,7 @@ export default {
         ["Declined", "DECLINED"],
         ["All", "ALL"],
       ]),
-      transaction_statuses: new Map([
+      transaction_status: new Map([
         ["Incomplete", "INCOMPLETE"],
         ["Complete", "COMPLETE"],
         ["All", "ALL"],

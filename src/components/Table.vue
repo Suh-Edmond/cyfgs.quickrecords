@@ -1564,9 +1564,9 @@ export default {
     fetchDataBaseOnTypeAfterApprove(data) {
       let organisation_id = this.organisation_id;
       let session_id = data.session_id;
-      let status = this.$route.query.status;
+      let status = this.$route.query.status ? this.$route.query.status : "";
       let amount_deposited = this.$route.amount_deposited;
-      let month = this.$route.query.month;
+      let month = this.$route.query.month ? this.$route.query.month : "";
       let date = this.$route.query.date ? this.$route.query.date : "";
       let range = this.$route.query.range ? this.$route.query.range : "";
       switch (data.type) {

@@ -18,8 +18,8 @@
         :class="$q.platform.is.desktop ? 'q-pt-sm q-px-sm' : ' q-px-sm q-pt-xl'"
         :columns="columns"
         :data="getExpenditureItems"
-        :label="label"
-        :message="message"
+        :label="$t('app.delete')"
+        :message="$t('app.deleteExpenditureItemWarningMsg')"
         :title="getTableTitle"
         :show_payment_category="false"
         :show_payment_item="false"
@@ -117,8 +117,6 @@ export default {
         },
       ],
       data: [],
-      label: this.$t("app.delete"),
-      message: this.$t("app.deleteExpenditureItemWarningMsg"),
       status: "",
       payment_item_id: null,
       session_id: LocalStorage.getItem("data").current_session.id,
@@ -194,6 +192,16 @@ export default {
         this.payment_item_id !== "" && this.payment_item_id !== null
           ? this.payment_item_id.value
           : "";
+      this.$router.push({
+        path: this.$route.path,
+        query: {
+          ...this.$route.query,
+          page: page,
+          per_page: fetch_count,
+          payment_item_id: payment_item_value,
+        },
+      });
+
       const filter = props.filter;
       this.fetchExpenditureItems(
         page,

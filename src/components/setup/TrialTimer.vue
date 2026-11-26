@@ -19,7 +19,6 @@ export default {
   props: {
     trialEndDate: {
       required: true,
-      type: Object,
     },
     status: {
       required: true,

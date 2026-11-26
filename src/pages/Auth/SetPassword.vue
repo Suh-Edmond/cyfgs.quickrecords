@@ -51,7 +51,7 @@
                   :label="$t('app.continue')"
                   :loading="loading"
                   :disabled="validatePhone"
-                  :color="color"
+                  color="primary"
                   no-caps
                   type="submit"
                 >
@@ -135,7 +135,7 @@
                   class="form_button"
                   :label="$t('app.signIn')"
                   :loading="loading"
-                  :color="color"
+                  color="primary"
                   :disabled="validateLogin"
                   no-caps
                   type="submit"
@@ -213,8 +213,6 @@ export default {
       is_pwd_confirm: true,
       loading: false,
       is_exist_user: false,
-      color: "primary",
-      no_caps: true,
       show_invitation_link_expire_msg: false,
     };
   },

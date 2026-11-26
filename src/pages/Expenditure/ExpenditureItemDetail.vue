@@ -17,8 +17,8 @@
         :class="$q.platform.is.desktop ? 'q-pt-sm q-px-sm' : ' q-px-sm q-pt-xl'"
         :columns="getTableColumns"
         :data="getExpenditureItemDetails"
-        :label="label"
-        :message="message"
+        :label="$t('app.delete')"
+        :message="$t('app.expenditureItemDetailDeleteMsg')"
         :title="getExpenditureItemName"
         :show_payment_category="false"
         :show_payment_item="false"
@@ -179,8 +179,6 @@ export default {
           sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
         },
       ],
-      label: this.$t("app.delete"),
-      message: this.$t("app.expenditureItemDetailDeleteMsg"),
       status: "",
       total_item_amount: 0,
       total_amount_given: 0,

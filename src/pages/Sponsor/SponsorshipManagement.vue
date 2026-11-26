@@ -31,13 +31,13 @@
 </template>
 
 <script>
-  import SponsorshipTable from "src/components/SponsorshipTable.vue";
-  import PaymentItemMixin from "src/mixins/PaymentItemMixin.vue";
-  import SponsorshipMixin from "src/mixins/SponsorshipMixin.vue";
-  import HelperMixin from "src/mixins/HelperMixin.vue";
-  import FilterComponentVue from "src/components/FilterComponent.vue";
+import SponsorshipTable from "src/components/SponsorshipTable.vue";
+import PaymentItemMixin from "src/mixins/PaymentItemMixin.vue";
+import SponsorshipMixin from "src/mixins/SponsorshipMixin.vue";
+import HelperMixin from "src/mixins/HelperMixin.vue";
+import FilterComponentVue from "src/components/FilterComponent.vue";
 
-  export default {
+export default {
   mixins: [PaymentItemMixin, SponsorshipMixin, HelperMixin],
   beforeMount() {
     this.$store.commit("SET_PAGINATION", {
@@ -116,15 +116,16 @@
     },
 
     setTableTitle() {
-       
       let title = "";
-      if(this.payment_item_id !== null && this.payment_item_id !== ""){
-        title = this.$t("app.partSponsorshipTitle") + this.payment_item_id.label;
-      }else if(this.session_id !== null && this.session_id !== ""){
-           title = this.$t("app.partSponsorshipTitle") + this.session_id.label;
+
+      if (this.payment_item_id && this.payment_item_id.label) {
+        title =
+          this.$t("app.partSponsorshipTitle") + this.payment_item_id.label;
+      } else if (this.session_id && this.session_id.label) {
+        title = this.$t("app.partSponsorshipTitle") + this.session_id.label;
       }
-      
-      return title
+
+      return title;
     },
 
     getPagination() {
@@ -288,7 +289,7 @@
       this.$emit("edit-sponsorship", data);
     },
 
-    updateSponsorshipHistory(data){
+    updateSponsorshipHistory(data) {
       this.$emit("update-sponsorship-history", data);
     },
 
@@ -298,7 +299,7 @@
       this.session_id = data.year;
     },
 
-     fetchPaymentActivities() {
+    fetchPaymentActivities() {
       let payload = {
         status: "none",
         url: `/api/protected/payment-items`,

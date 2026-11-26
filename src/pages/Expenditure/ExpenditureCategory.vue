@@ -17,8 +17,8 @@
         :class="$q.platform.is.desktop ? 'q-pt-sm q-px-sm' : ' q-px-sm q-pt-xl'"
         :columns="columns"
         :data="getData"
-        :label="label"
-        :message="message"
+        :label="$t('app.delete')"
+        :message="$t('app.deleteExpenditureCategoryWarningMsg')"
         :show_payment_category="false"
         :show_payment_item="false"
         :show_expenditure_category="true"
@@ -99,8 +99,6 @@ export default {
           field: "action",
         },
       ],
-      label: this.$t("app.delete"),
-      message: this.$t("app.deleteExpenditureCategoryWarningMsg"),
       organisation_id:
         LocalStorage.getItem("data").subscription.organisation.id,
     };

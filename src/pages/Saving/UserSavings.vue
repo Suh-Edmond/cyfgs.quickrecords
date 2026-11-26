@@ -15,8 +15,8 @@
         :class="$q.platform.is.desktop ? 'q-pt-sm q-px-sm' : ' q-px-sm q-pt-lg'"
         :columns="columns"
         :data="getMemberSavings"
-        :label="label"
-        :message="message"
+        :label="$t('app.delete')"
+        :message="$t('app.deleteSavingWarningMsg')"
         :title="''"
         :show_savings="false"
         :show_member_savings="true"
@@ -84,8 +84,6 @@ export default {
           align: "left",
         },
       ],
-      label: this.$t("app.delete"),
-      message: this.$t("app.deleteSavingWarningMsg"),
       status: "",
       month: "",
       pagination: {

@@ -656,7 +656,7 @@
           <q-td key="is_selected" :props="props" class="table_value">
             <q-checkbox
               v-model="props.row.is_selected"
-              v-if="props.row.approve === 'PENDING'"
+              v-if="canValidateTransaction() && props.row.approve === 'PENDING'"
               dense
               size="md"
               @input="computeTotalSelectedItems(props.row, $event)"
@@ -1331,14 +1331,14 @@ export default {
               message: this.$t("app.memberInviteSuccess"),
               position: Platform.is.mobile ? "bottom" : "top-right",
             });
-          } else if (response.status === 403) {
+          } else if (response.status === 409) {
             Notify.create({
               type: "info",
               color: "info",
               message: this.$t("app.oneMemberRoleWarningMsg"),
               position: Platform.is.mobile ? "bottom" : "top-right",
             });
-          } else if (response.status === 427) {
+          } else if (response.status === 400) {
             Notify.create({
               type: "info",
               color: "info",
@@ -1564,9 +1564,9 @@ export default {
     fetchDataBaseOnTypeAfterApprove(data) {
       let organisation_id = this.organisation_id;
       let session_id = data.session_id;
-      let status = this.$route.query.status;
+      let status = this.$route.query.status ? this.$route.query.status : "";
       let amount_deposited = this.$route.amount_deposited;
-      let month = this.$route.query.month;
+      let month = this.$route.query.month ? this.$route.query.month : "";
       let date = this.$route.query.date ? this.$route.query.date : "";
       let range = this.$route.query.range ? this.$route.query.range : "";
       switch (data.type) {
@@ -1589,8 +1589,8 @@ export default {
             date,
             range,
             amount_deposited,
-            this.$route.query.page,
-            this.$route.query.per_page
+            this.$route.query.page ? this.$route.query.page : 1,
+            this.$route.query.per_page ? this.$route.query.page : 10
           );
           this.$store.dispatch("setSearchContributionParams", {
             item: {
@@ -1603,8 +1603,8 @@ export default {
           this.filterOrganisationMembers(
             organisation_id,
             true,
-            tthis.$route.query.page,
-            this.$route.query.per_page,
+            this.$route.query.page ? this.$route.query.page : 1,
+            this.$route.query.per_page ? this.$route.query.page : 10,
             "name",
             "",
             "",

@@ -1,5 +1,6 @@
 <script>
 import { LocalStorage } from "quasar";
+import TransactionStatusVue from "src/components/Constants/TransactionStatus.vue";
 export default {
   data() {
     return {
@@ -16,8 +17,6 @@ export default {
       payment_items_type: new Map([
         ["All Members", "ALL_MEMBERS"],
         ["A Member", "A_MEMBER"],
-        ["Members with roles", "MEMBERS_WITH_ROLES"],
-        ["Members without roles", "MEMBERS_WITHOUT_ROLES"],
         ["Grouped members", "GROUPED_MEMBERS"],
         ["All", "ALL"],
       ]),
@@ -26,6 +25,7 @@ export default {
         ["Monthly", "MONTHLY"],
         ["One-time", "ONE_TIME"],
         ["All", "ALL"],
+        ["Weekly", "WEEKLY"],
       ]),
       payment_states: new Map([
         ["Pending", "PENDING"],
@@ -115,15 +115,13 @@ export default {
     },
 
     canValidateTransaction() {
-      const istreasurer = LocalStorage.getItem("data")
+      const authUser = LocalStorage.getItem("data")
         .user_data.roles.map((role) => role.name)
         .find(
           (role) =>
-            role === "TREASURER" ||
-            role === "PRESIDENT" ||
-            role === "SYSTEM_ADMIN"
+            role === "TREASURER" || role === "ADMIN" || role === "PRESIDENT"
         );
-      return istreasurer !== undefined;
+      return authUser !== undefined;
     },
 
     computeTotal(data) {
@@ -160,7 +158,7 @@ export default {
     },
     indexTransactionStatus(status) {
       return status !== "" && status !== "undefined" && status != null
-        ? this.transaction_statuses.get(status)
+        ? TransactionStatusVue.TRANSACTION_STATES.get(status)
         : "";
     },
     indexGender(sex) {

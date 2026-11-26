@@ -57,10 +57,10 @@
               <div class="q-mt-xl">
                 <q-btn
                   class="form_button"
-                  :label="label_sigin"
+                  :label="$t('app.loginBtnLabel')"
                   :loading="loading"
                   :disabled="validateLogin"
-                  :color="color"
+                  color="primary"
                   no-caps
                   type="submit"
                 >
@@ -140,10 +140,7 @@ export default {
         credential: "",
       },
       isPwd: true,
-      label_sigin: this.$t("app.loginBtnLabel"),
       loading: false,
-      color: "primary",
-      no_caps: true,
       baseUrl: process.env.CLIENT_SERVER,
       clientOnboardingUrl: process.env.CLIENT_ONBOARDING_URL,
     };

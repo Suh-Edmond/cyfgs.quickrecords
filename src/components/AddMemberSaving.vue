@@ -86,7 +86,7 @@
           no-caps
           outline
           @click="resetForm"
-          :disable="onMemberSavingExist"
+          :disabled="onMemberSavingExist"
         >
         </q-btn>
         <ButtonVue
@@ -116,7 +116,7 @@
           no-caps
           outline
           @click="resetForm"
-          :disable="onMemberSavingExist"
+          :disabled="onMemberSavingExist"
         >
         </q-btn>
       </div>
@@ -151,7 +151,6 @@ export default {
         comment: " ",
         id: null,
       },
-      position: "right",
       dialog: false,
       members: [],
       start_filtering: false,
@@ -209,6 +208,16 @@ export default {
     },
 
     onAddSaving() {
+      this.$router.push({
+        path: this.$route.path,
+        query: {
+          ...this.$route.query,
+          status: "",
+          page: 1,
+          per_page: 10,
+          month: "",
+        },
+      });
       let payload = {
         url: this.setActionUrl(this.saving.id, this.saving.user_id.value),
         data: {

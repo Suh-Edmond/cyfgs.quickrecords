@@ -15,8 +15,8 @@
         :class="$q.platform.is.desktop ? 'q-pt-sm q-px-sm' : ' q-px-sm q-pt-md'"
         :columns="columns"
         :data="getData"
-        :label="label"
-        :message="message"
+        :label="$t('app.delete')"
+        :message="$t('app.deletePaymentCategoryWarningMsg')"
         :show_payment_category="true"
         :show_payment_item="false"
         :show_expenditure_category="false"
@@ -48,7 +48,7 @@ export default {
       sortBy: "name",
       descending: false,
       page: 1,
-      rowsPerPage: 7,
+      rowsPerPage: 10,
       rowsNumber: 0,
     });
   },
@@ -57,7 +57,7 @@ export default {
     this.fetchOrganisationCategories(
       this.organisation_id,
       1,
-      7,
+      10,
       "name",
       "",
       ""
@@ -98,8 +98,6 @@ export default {
           field: "action",
         },
       ],
-      label: this.$t("app.delete"),
-      message: this.$t("app.deletePaymentCategoryWarningMsg"),
       organisation_id:
         LocalStorage.getItem("data").subscription.organisation.id,
     };
@@ -197,7 +195,7 @@ export default {
       this.fetchOrganisationCategories(
         this.organisation_id,
         1,
-        7,
+        10,
         "name",
         data.year.label,
         ""
@@ -233,7 +231,7 @@ export default {
         this.fetchOrganisationCategories(
           this.organisation_id,
           1,
-          7,
+          10,
           "name",
           "",
           ""

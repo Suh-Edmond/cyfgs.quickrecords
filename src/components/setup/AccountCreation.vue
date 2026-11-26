@@ -272,7 +272,7 @@ export default {
       const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       const validEmail =
         this.user !== null &&
-        thhis.user.email !== " " &&
+        this.user.email !== " " &&
         this.user.email !== null &&
         regex.test(this.user.email);
       this.emailError = validEmail ? "" : this.$t("app.invalidEmailErrorMsg");

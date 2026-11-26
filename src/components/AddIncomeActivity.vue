@@ -146,7 +146,7 @@
           no-caps
           outline
           @click="resetForm"
-          :disable="existIncomeActivity"
+          :disabled="existIncomeActivity"
         >
         </q-btn>
         <ButtonVue
@@ -176,7 +176,7 @@
           no-caps
           outline
           @click="resetForm"
-          :disable="existIncomeActivity"
+          :disabled="existIncomeActivity"
         >
         </q-btn>
       </div>

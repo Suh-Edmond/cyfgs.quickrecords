@@ -125,7 +125,6 @@ export default {
       loading_download: false,
       group: null,
       options: [],
-      label: this.$t("app.generateReport"),
       year: LocalStorage.getItem("data").current_session.year,
       heading: null,
       is_fetching: false,

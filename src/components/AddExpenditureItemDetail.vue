@@ -85,9 +85,7 @@
         </q-input>
       </div>
       <div class="q-mb-md">
-        <label class="form_field">{{
-          $t("app.comment")
-        }}</label>
+        <label class="form_field">{{ $t("app.comment") }}</label>
         <q-input
           v-model="expenditure_item_detail.comment"
           dense
@@ -113,7 +111,7 @@
           no-caps
           outline
           @click="resetForm"
-          :disable="existExpenditureItemDetail || canAddExpenditureDetails"
+          :disabled="existExpenditureItemDetail || canAddExpenditureDetails"
         >
         </q-btn>
         <ButtonVue
@@ -143,7 +141,7 @@
           no-caps
           outline
           @click="resetForm"
-          :disable="existExpenditureItemDetail || canAddExpenditureDetails"
+          :disabled="existExpenditureItemDetail || canAddExpenditureDetails"
         >
         </q-btn>
       </div>

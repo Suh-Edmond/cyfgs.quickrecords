@@ -112,8 +112,8 @@
         :class="$q.platform.is.desktop ? 'q-pt-sm q-px-sm' : ' q-px-sm q-pt-xl'"
         :columns="columns"
         :data="getExpenditures"
-        :label="label"
-        :message="message"
+        :label="$t('app.delete')"
+        :message="$t('app.deleteExpenditureItemWarningMsg')"
         :title="table_title"
         :show_payment_category="false"
         :show_payment_item="false"
@@ -129,16 +129,16 @@
 </template>
 
 <script>
-  import CategoryTable from "src/components/CategoryTable.vue";
-  import {SessionStorage} from "quasar";
-  import HelperMixinVue from "src/mixins/HelperMixin.vue";
-  import ExpenditureItemDetailMixinVue from "src/mixins/ExpenditureItemDetailMixin.vue";
-  import OrganisationMixin from "src/mixins/organisationMixin.vue";
-  import expenditureItemMixinVue from "src/mixins/expenditureItemMixin.vue";
-  import PaymentItemMixinVue from "src/mixins/PaymentItemMixin.vue";
-  import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
+import CategoryTable from "src/components/CategoryTable.vue";
+import { SessionStorage } from "quasar";
+import HelperMixinVue from "src/mixins/HelperMixin.vue";
+import ExpenditureItemDetailMixinVue from "src/mixins/ExpenditureItemDetailMixin.vue";
+import OrganisationMixin from "src/mixins/organisationMixin.vue";
+import expenditureItemMixinVue from "src/mixins/expenditureItemMixin.vue";
+import PaymentItemMixinVue from "src/mixins/PaymentItemMixin.vue";
+import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
 
-  export default {
+export default {
   mixins: [
     PaymentItemMixinVue,
     CurrentYearMixinVue,
@@ -205,8 +205,6 @@
         },
       ],
       data: [],
-      label: this.$t("app.delete"),
-      message: this.$t("app.deleteExpenditureItemWarningMsg"),
       expenditure_category_id: null,
       start_filter: false,
       filtered_items: [],
@@ -246,7 +244,10 @@
 
     getExpenditures() {
       let data = [];
-      if (this.$store.getters.getExpenditures !== null && this.$store.getters.getExpenditures !== undefined) {
+      if (
+        this.$store.getters.getExpenditures !== null &&
+        this.$store.getters.getExpenditures !== undefined
+      ) {
         this.$store.getters.getExpenditures.data.forEach((ele) => {
           data.push({
             counter: this.$store.getters.getExpenditures.data.indexOf(ele) + 1,
@@ -280,11 +281,21 @@
 
     getPagination() {
       return {
-        sortBy: this.$store.getters.getPagination ? this.$store.getters.getPagination.sortBy : 'name',
-        descending: this.$store.getters.getPagination ? this.$store.getters.getPagination.descending : true,
-        page: this.$store.getters.getPagination ? this.$store.getters.getPagination.page : 1,
-        rowsPerPage: this.$store.getters.getPagination ? this.$store.getters.getPagination.rowsPerPage: 10,
-        rowsNumber: this.$store.getters.getPagination ? this.$store.getters.getPagination.rowsNumber : 1,
+        sortBy: this.$store.getters.getPagination
+          ? this.$store.getters.getPagination.sortBy
+          : "name",
+        descending: this.$store.getters.getPagination
+          ? this.$store.getters.getPagination.descending
+          : true,
+        page: this.$store.getters.getPagination
+          ? this.$store.getters.getPagination.page
+          : 1,
+        rowsPerPage: this.$store.getters.getPagination
+          ? this.$store.getters.getPagination.rowsPerPage
+          : 10,
+        rowsNumber: this.$store.getters.getPagination
+          ? this.$store.getters.getPagination.rowsNumber
+          : 1,
       };
     },
   },

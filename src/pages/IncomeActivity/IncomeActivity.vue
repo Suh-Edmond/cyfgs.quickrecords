@@ -16,9 +16,9 @@
         :class="$q.platform.is.desktop ? 'q-pt-sm q-px-sm' : ' q-px-sm q-pt-lg'"
         :columns="columns"
         :data="getIncomeActivities"
-        :label="label"
+        :label="$t('app.delete')"
         :title="getTableTitle"
-        :message="message"
+        :message="$t('app.deleteIncomeActvityWarningMsg')"
         :show_savings="false"
         :show_income_activity="true"
         :show_contribution="false"
@@ -118,8 +118,6 @@ export default {
           align: "left",
         },
       ],
-      label: this.$t("app.delete"),
-      message: this.$t("app.deleteIncomeActvityWarningMsg"),
       loading_download: false,
       session_id: "",
     };
@@ -133,13 +131,17 @@ export default {
 
     getTableTitle() {
       let month_name =
-        this.month !== "" || null
-          ? this.$t("app.forTheMonthOf") + this.month.label
+        this.month && this.month.label
+          ? ` ${this.$t("app.forTheMonthOf")} ${this.month.label}`
           : "";
-      return this.payment_item_id != null || ""
-        ? this.$t("app.incomeTitlePart") +
-            `${this.payment_item_id.label}` +
-            month_name
+
+      let itemLabel =
+        this.payment_item_id && this.payment_item_id.label
+          ? this.payment_item_id.label
+          : null;
+
+      return itemLabel
+        ? `${this.$t("app.incomeTitlePart")}${itemLabel}${month_name}`
         : "";
     },
 

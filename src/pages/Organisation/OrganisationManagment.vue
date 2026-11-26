@@ -166,7 +166,7 @@
           :label="$t('app.saveBtnLabel')"
           :loading="loading"
           :disabled="validateForm"
-          :color="color"
+          :color="'primary'"
           :no_caps="true"
         >
         </ButtonVue>
@@ -176,7 +176,7 @@
           :label="$t('app.saveBtnLabel')"
           :loading="loading"
           :disabled="validateForm"
-          :color="color"
+          :color="'primary'"
           :no_caps="true"
           class="full-width"
         >
@@ -192,7 +192,6 @@ import organisationMixinVue from "src/mixins/organisationMixin.vue";
 import { LocalStorage, Notify, Platform } from "quasar";
 import { VueTelInput } from "vue-tel-input";
 import { REGIONS } from "../../utils/regions";
-import { store } from "quasar/wrappers";
 
 export default {
   mixins: [organisationMixinVue],
@@ -215,10 +214,8 @@ export default {
         id: null,
         logo: null,
       },
-      label: "Save",
       loading: false,
       show_loading: false,
-      color: "primary",
       show_telephone2: false,
       updatedTelephone: "",
       regions: REGIONS,

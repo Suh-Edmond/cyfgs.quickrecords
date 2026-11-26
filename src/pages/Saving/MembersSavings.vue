@@ -19,8 +19,8 @@
           "
           :columns="columns"
           :data="getMembersSavings"
-          :label="label"
-          :message="message"
+          :label="$t('app.delete')"
+          :message="$t('app.deleteSavingWarningMsg')"
           :show_savings="true"
           :show_income_activity="false"
           :show_members="false"
@@ -52,8 +52,8 @@
         :class="$q.platform.is.desktop ? 'q-pt-sm q-px-sm' : ' q-px-sm q-pt-lg'"
         :columns="columns"
         :data="getMembersSavings"
-        :label="label"
-        :message="message"
+        :label="$t('app.delete')"
+        :message="$t('app.deleteSavingWarningMsg')"
         :show_savings="true"
         :show_income_activity="false"
         :show_members="false"
@@ -71,15 +71,15 @@
 </template>
 
 <script>
-  import {LocalStorage} from "quasar";
-  import TableVue from "src/components/Table.vue";
-  import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
-  import HelperMixinVue from "src/mixins/HelperMixin.vue";
-  import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
-  import MonthsMixinVue from "src/mixins/MonthsMixin.vue";
-  import FilterComponentVue from "src/components/FilterComponent.vue";
+import { LocalStorage } from "quasar";
+import TableVue from "src/components/Table.vue";
+import UserSavingMixinVue from "src/mixins/UserSavingMixin.vue";
+import HelperMixinVue from "src/mixins/HelperMixin.vue";
+import CurrentYearMixinVue from "src/mixins/CurrentYearMixin.vue";
+import MonthsMixinVue from "src/mixins/MonthsMixin.vue";
+import FilterComponentVue from "src/components/FilterComponent.vue";
 
-  export default {
+export default {
   mixins: [
     UserSavingMixinVue,
     HelperMixinVue,
@@ -146,8 +146,6 @@
           field: "action",
         },
       ],
-      label: this.$t("app.delete"),
-      message: this.$t("app.deleteSavingWarningMsg"),
       organisation_id: LocalStorage.getItem("data").user_data.organisation_id,
       session_id: LocalStorage.getItem("data").current_session.id,
       loading_download: false,

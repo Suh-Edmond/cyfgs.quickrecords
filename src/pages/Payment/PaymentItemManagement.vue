@@ -16,8 +16,8 @@
         :class="$q.platform.is.desktop ? 'q-pt-sm q-px-sm' : ' q-px-sm q-pt-xl'"
         :columns="columns"
         :data="getPaymentItemsFromState"
-        :label="label"
-        :message="message"
+        :label="$t('app.delete')"
+        :message="$t('app.deletePaymentItemWarningMsg')"
         :title="getPaymentCategoryName"
         :show_payment_category="false"
         :show_payment_item="true"
@@ -123,13 +123,13 @@
 </template>
 
 <script>
-  import CategoryTable from "src/components/CategoryTable.vue";
-  import HelperMixinVue from "src/mixins/HelperMixin.vue";
-  import ConfirmDialog from "src/components/ConfirmDialog.vue";
-  import FilterComponentVue from "src/components/FilterComponent.vue";
-import { LocalStorage } from 'quasar';
+import CategoryTable from "src/components/CategoryTable.vue";
+import HelperMixinVue from "src/mixins/HelperMixin.vue";
+import ConfirmDialog from "src/components/ConfirmDialog.vue";
+import FilterComponentVue from "src/components/FilterComponent.vue";
+import { LocalStorage } from "quasar";
 
-  export default {
+export default {
   mixins: [HelperMixinVue],
   beforeMount() {
     this.$store.commit("SET_PAGINATION", {
@@ -210,8 +210,6 @@ import { LocalStorage } from 'quasar';
       ],
       state: "",
       data: [],
-      label: this.$t("app.delete"),
-      message: this.$t("app.deletePaymentItemWarningMsg"),
       is_compulsory: "",
       type: "",
       frequency: "",
@@ -242,7 +240,7 @@ import { LocalStorage } from 'quasar';
           items.push({
             counter: this.$store.getters.getPaymentItems.data.indexOf(ele) + 1,
             name: ele.name,
-            amount: ele.is_range ? ele.start_amount: ele.amount,
+            amount: ele.is_range ? ele.start_amount : ele.amount,
             id: ele.id,
             compulsory: ele.compulsory,
             payment_category_id: ele.payment_category_id,
@@ -257,9 +255,9 @@ import { LocalStorage } from 'quasar';
             updated_by: ele.updated_by,
             deadline: ele.deadline,
             deadline_state: ele.deadline_state,
-            is_range:ele.is_range,
+            is_range: ele.is_range,
             start_amount: ele.start_amount,
-            end_amount:ele.end_amount
+            end_amount: ele.end_amount,
           });
         });
       }
@@ -284,12 +282,12 @@ import { LocalStorage } from 'quasar';
   methods: {
     fetchPaymentItems(is_filtering, page, per_page, sort_by, filter) {
       let search_filter = filter === undefined ? "" : filter;
-      let is_compulsory_value =
-        this.is_compulsory ? this.is_compulsory.value : "";
-      let state_value =
-        this.state   ? this.state.value : "";
+      let is_compulsory_value = this.is_compulsory
+        ? this.is_compulsory.value
+        : "";
+      let state_value = this.state ? this.state.value : "";
       let payment_category_id = this.$route.params.id;
-      let type_value = this.type   ? this.type : "";
+      let type_value = this.type ? this.type : "";
       let payload = {
         status: "none",
         url: `/api/protected/filter-payment-items?payment_category_id=${payment_category_id}&is_compulsory=${is_compulsory_value}&type=${type_value}

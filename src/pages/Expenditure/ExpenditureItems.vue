@@ -194,6 +194,16 @@ export default {
         this.payment_item_id !== "" && this.payment_item_id !== null
           ? this.payment_item_id.value
           : "";
+      this.$router.push({
+        path: this.$route.path,
+        query: {
+          ...this.$route.query,
+          page: page,
+          per_page: fetch_count,
+          payment_item_id: payment_item_value,
+        },
+      });
+
       const filter = props.filter;
       this.fetchExpenditureItems(
         page,

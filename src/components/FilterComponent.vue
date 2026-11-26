@@ -1113,7 +1113,7 @@ export default {
       statuses: ["Compulsory", "Not Compulsory", "All"],
       states: ["Active", "Expired", "All"],
       payment_item_types: ["All Members", "A Member", "Grouped members", "All"],
-      frequencies: ["Yearly", "Monthly", "One-time", "All"],
+      frequencies: ["Yearly", "Monthly", "One-time", "All", "Weekly"],
       payment_item_id: "",
       start_payment_item_select_filtering: false,
       payment_statuses: ["Pending", "Approved", "Declined", "All"],

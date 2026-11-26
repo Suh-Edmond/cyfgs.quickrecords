@@ -1161,9 +1161,9 @@ export default {
       switch (data.type) {
         case CategoryConstants.EXPENDITURE_ITEMS:
           this.filterExpenditureItems(
-            1,
-            10,
-            { value: this.$route.query.expenditure_category_id },
+            this.$route.query.page ? this.$route.query.page : 1,
+            this.$route.query.per_page ? this.$route.query.per_page : 10,
+            { value: this.$route.params.id },
             { value: "" },
             { value: this.$route.query.session },
             ""

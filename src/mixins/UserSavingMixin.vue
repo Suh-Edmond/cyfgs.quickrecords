@@ -1,7 +1,6 @@
 <script>
-import CurrentYearMixin from "./CurrentYearMixin.vue";
+import { LocalStorage } from "quasar";
 export default {
-  mixins: [CurrentYearMixin],
   data() {
     return {
       loading: false,
@@ -9,10 +8,12 @@ export default {
   },
   methods: {
     getOrganisationMemberSavings(id, page, per_page) {
-      let session_id =
-        this.getCurrentYear() != null ? this.getCurrentYear().id : "";
+      const active_session = LocalStorage.getItem("data").current_session;
+      if (!active_session) {
+        return;
+      }
       let payload = {
-        url: `/api/protected/user-savings?organisation_id=${id}&session_id=${session_id}&page=${page}&per_page=${per_page}`,
+        url: `/api/protected/user-savings?organisation_id=${id}&session_id=${active_session.id}&page=${page}&per_page=${per_page}`,
         msg: "none",
         color: "default",
         status: "none",
@@ -48,10 +49,12 @@ export default {
         },
       };
       this.$store.commit("SET_IS_FETCHING", true);
-      this.$store.dispatch("getRequest", payload).then(() => {})
-      .finally(() => {
-        this.$store.commit("SET_IS_FETCHING", false);
-      });
+      this.$store
+        .dispatch("getRequest", payload)
+        .then(() => {})
+        .finally(() => {
+          this.$store.commit("SET_IS_FETCHING", false);
+        });
     },
 
     filterSaving(url) {
@@ -73,18 +76,21 @@ export default {
       };
       this.$store.commit("SET_IS_FETCHING", true);
       this.loading = true;
-      this.$store.dispatch("getRequest", payload).then((response) => {
-        this.$store.commit("SET_PAGINATION", {
+      this.$store
+        .dispatch("getRequest", payload)
+        .then((response) => {
+          this.$store.commit("SET_PAGINATION", {
             sortBy: "name",
             descending: false,
             page: response.data.current_page,
             rowsPerPage: response.data.per_page,
             rowsNumber: response.data.total,
           });
-      }).finally(() => {
-        this.$store.commit("SET_IS_FETCHING", false);
-        this.loading = false;
-      });
+        })
+        .finally(() => {
+          this.$store.commit("SET_IS_FETCHING", false);
+          this.loading = false;
+        });
     },
 
     getPaginatedOrganisationMemberSavings(
@@ -127,8 +133,7 @@ export default {
         .finally(() => {
           this.$store.commit("SET_IS_FETCHING", false);
         });
-
-    }
+    },
   },
 };
 </script>

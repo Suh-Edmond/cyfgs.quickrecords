@@ -207,6 +207,15 @@ export default {
       const fetch_count =
         rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
       const filter = props.filter;
+      this.$router.push({
+        path: this.$route.path,
+        query: {
+          ...this.$route.query,
+          page: page,
+          per_page: fetch_count,
+          has_register: this.has_register,
+        },
+      });
 
       this.getPaginatedOrganisationMembers(
         this.organisation_id,

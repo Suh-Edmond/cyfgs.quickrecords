@@ -1589,8 +1589,8 @@ export default {
             date,
             range,
             amount_deposited,
-            this.$route.query.page,
-            this.$route.query.per_page
+            this.$route.query.page ? this.$route.query.page : 1,
+            this.$route.query.per_page ? this.$route.query.page : 10
           );
           this.$store.dispatch("setSearchContributionParams", {
             item: {
@@ -1603,8 +1603,8 @@ export default {
           this.filterOrganisationMembers(
             organisation_id,
             true,
-            tthis.$route.query.page,
-            this.$route.query.per_page,
+            this.$route.query.page ? this.$route.query.page : 1,
+            this.$route.query.per_page ? this.$route.query.page : 10,
             "name",
             "",
             "",

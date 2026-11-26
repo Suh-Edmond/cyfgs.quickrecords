@@ -135,7 +135,7 @@
         :data="data"
         :columns="columns"
         :table_loading="loading_session"
-        :table_header="session_table_header"
+        :table_header="$t('app.sessionLabel')"
         @fetch-sessions="getSessions"
         class="col-8 col-md-8 col-sm-12 col-xs-12"
         v-if="tag === 'Session'"
@@ -143,7 +143,7 @@
       <RegistrationFeeTable
         :columns="reg_table_columns"
         :data="reg_table_data"
-        :table_header="table_header"
+        :table_header="$t('app.regFeeLabel')"
         :loading="loading_reg_fees"
         @fetch-registration-fee="getRegFee"
         class="col-8 col-md-8 col-sm-12 col-xs-12 col-lg-8"
@@ -173,7 +173,7 @@
             <div class="q-mt-lg flex justify-end">
               <ButtonVue
                 class="form_button"
-                :label="saveBtnLabel"
+                :label="$t('app.saveBtnLabel')"
                 :loading="is_fetching"
                 color="primary"
                 :disabled="validateForm"
@@ -209,13 +209,13 @@
                 outlined
                 :options="year_statuses"
                 dense
-                :label="yearLabel"
+                :label="$t('app.selectYearLabel')"
               />
             </div>
             <div class="flex q-mt-lg justify-end" v-if="$q.platform.is.desktop">
               <ButtonVue
                 class="form_button"
-                :label="saveBtnLabel"
+                :label="$t('app.saveBtnLabel')"
                 :loading="is_fetching"
                 color="primary"
                 :no_caps="true"
@@ -226,7 +226,7 @@
             <div class="flex q-mt-lg" v-if="$q.platform.is.mobile">
               <ButtonVue
                 class="full-width"
-                :label="saveBtnLabel"
+                :label="$t('app.saveBtnLabel')"
                 :loading="is_fetching"
                 color="primary"
                 :no_caps="true"
@@ -256,8 +256,6 @@ export default {
   },
   data() {
     return {
-      saveBtnLabel: this.$t("app.saveBtnLabel"),
-      yearLabel: this.$t("app.selectYearLabel"),
       columns: [
         {
           name: "year",
@@ -347,8 +345,6 @@ export default {
         { name: "action", label: "Action", field: "action", align: "left" },
       ],
       reg_table_data: [],
-      table_header: this.$t("app.regFeeLabel"),
-      session_table_header: this.$t("app.sessionLabel"),
       loading_session: false,
       loading_reg_fees: false,
     };

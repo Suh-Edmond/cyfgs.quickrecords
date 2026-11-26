@@ -115,15 +115,13 @@ export default {
     },
 
     canValidateTransaction() {
-      const istreasurer = LocalStorage.getItem("data")
+      const authUser = LocalStorage.getItem("data")
         .user_data.roles.map((role) => role.name)
         .find(
           (role) =>
-            role === "TREASURER" ||
-            role === "PRESIDENT" ||
-            role === "SYSTEM_ADMIN"
+            role === "TREASURER" || role === "ADMIN" || role === "PRESIDENT"
         );
-      return istreasurer !== undefined;
+      return authUser !== undefined;
     },
 
     computeTotal(data) {

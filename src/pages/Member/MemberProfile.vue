@@ -1701,7 +1701,6 @@ export default {
         .dispatch("getRequest", payload)
         .then((res) => {
           if (res !== undefined && res.data.length > 0) {
-            console.log(res.data);
 
             res.data.forEach((ele) => {
               this.due_amount += ele.balance;

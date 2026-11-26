@@ -677,7 +677,7 @@ export default {
     minRangeAmountMet:
       "Le membre a déjà atteint le montant minimum de la fourchette pour l'élément de paiement",
     reasonLengthWarning: "La raison doit comporter au moins 20 caractères.",
-    usernameLabel: "Nom d'utilisateur",
+    usernameLabel: "Identifiant / E-mail",
     usernameAdminLabel: "Nom d'utilisateur administrateur",
     nameAdminLabel: "Nom de l'administrateur",
     createAccountTitle: "Créer un compte",

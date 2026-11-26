@@ -49,20 +49,6 @@
           <div>
             <label class="title">{{ $t("app.roleDetails") }}</label>
           </div>
-          <div>
-            <q-btn
-              icon="edit"
-              size="sm"
-              color="primary"
-              flat
-              round
-              @click="showDialog"
-            >
-              <q-tooltip>
-                {{ $t("app.editRole") }}
-              </q-tooltip>
-            </q-btn>
-          </div>
         </div>
         <div class="flex justify-between q-mt-lg">
           <label
@@ -75,32 +61,6 @@
             v-if="getSelectedRole !== undefined"
             >{{ formatRoleName(getSelectedRole.name) }}</label
           >
-        </div>
-        <div class="flex justify-between q-mt-sm">
-          <label
-            ><span class="label text-weight-meduim">{{ $t("app.term") }}</span>
-          </label>
-          <label
-            class="value text-weight-bold"
-            v-if="getSelectedRole.name !== 'MEMBER'"
-            >{{ getSelectedRole.term }}</label
-          >
-          <label class="value text-weight-bold" v-else> 0</label>
-        </div>
-        <div class="flex justify-between q-mt-sm">
-          <label
-            ><span class="label text-weight-meduim">{{
-              $t("app.memberCountLabel")
-            }}</span>
-          </label>
-          <label
-            class="value text-weight-bold"
-            v-if="getSelectedRole.name !== 'MEMBER'"
-            >{{ getSelectedRole.number_of_members }}</label
-          >
-          <label class="value text-weight-bold" v-else>{{
-            $t("app.all")
-          }}</label>
         </div>
         <div class="flex justify-between q-mt-sm">
           <label

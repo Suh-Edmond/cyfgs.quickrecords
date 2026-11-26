@@ -145,7 +145,6 @@ export default {
       this.$store
         .dispatch("getRequest", payload)
         .then((response) => {
-          console.log(response);
           this.data = response.data.map((ele) => {
             return {
               name: ele.name,

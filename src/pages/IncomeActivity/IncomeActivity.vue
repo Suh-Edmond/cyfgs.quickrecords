@@ -131,13 +131,17 @@ export default {
 
     getTableTitle() {
       let month_name =
-        this.month !== "" || this.month !== null
-          ? this.$t("app.forTheMonthOf") + this.month.label
+        this.month && this.month.label
+          ? ` ${this.$t("app.forTheMonthOf")} ${this.month.label}`
           : "";
-      return this.payment_item_id != null || this.payment_item_id != ""
-        ? this.$t("app.incomeTitlePart") +
-            `${this.payment_item_id.label}` +
-            month_name
+
+      let itemLabel =
+        this.payment_item_id && this.payment_item_id.label
+          ? this.payment_item_id.label
+          : null;
+
+      return itemLabel
+        ? `${this.$t("app.incomeTitlePart")}${itemLabel}${month_name}`
         : "";
     },
 

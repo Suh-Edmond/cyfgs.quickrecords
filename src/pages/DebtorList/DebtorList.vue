@@ -133,7 +133,6 @@ export default {
           if (res.success) {
             this.balance_sheet_data = res.data;
             this.show_balance_sheet = true;
-            console.log(this.balance_sheet_data);
           }
         })
         .finally(() => {

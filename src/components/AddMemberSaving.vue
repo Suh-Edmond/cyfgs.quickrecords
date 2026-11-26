@@ -86,7 +86,7 @@
           no-caps
           outline
           @click="resetForm"
-          :disable="onMemberSavingExist"
+          :disabled="onMemberSavingExist"
         >
         </q-btn>
         <ButtonVue
@@ -116,7 +116,7 @@
           no-caps
           outline
           @click="resetForm"
-          :disable="onMemberSavingExist"
+          :disabled="onMemberSavingExist"
         >
         </q-btn>
       </div>

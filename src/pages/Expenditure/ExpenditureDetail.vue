@@ -53,7 +53,7 @@
         :class="$q.platform.is.desktop ? 'q-pt-sm q-px-sm' : ' q-px-sm q-pt-xl'"
         :columns="columns"
         :data="getExpenditureItemDetails"
-        :label="label"
+        :label="$t('app.delete')"
         :message="message"
         :title="getTableTitle"
         :show_payment_category="false"
@@ -100,7 +100,6 @@ export default {
   data() {
     return {
       start_filter: false,
-      color: "primary",
       loading_download: false,
       columns: [
         {
@@ -156,7 +155,6 @@ export default {
           sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
         },
       ],
-      label: this.$t("app.delete"),
       message: "",
       statuses: ["Pending", "Approved", "Declined", "All"],
       status: "",

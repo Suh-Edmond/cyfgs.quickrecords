@@ -430,8 +430,6 @@ export default {
             });
           }
           if (res.status == 200) {
-            console.log({ ...res });
-
             this.payment.transaction_id = res.data.data.reference;
             this.$q
               .dialog({
@@ -439,15 +437,9 @@ export default {
                 message:
                   "Please confirm the payment or dial *126# to confirm the payment",
               })
-              .onOk(() => {
-                console.log("OK");
-              })
-              .onCancel(() => {
-                console.log("Cancel");
-              })
-              .onDismiss(() => {
-                console.log("I am triggered on both OK and Cancel");
-              });
+              .onOk(() => {})
+              .onCancel(() => {})
+              .onDismiss(() => {});
 
             // this.$store.commit("SET_PROCESS_STEP", {
             //   processStatus: ProcessStatusVue.COMPLETE_SETUP,

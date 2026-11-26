@@ -650,7 +650,7 @@ export default {
     minRangeAmountMet:
       "Member has already met the minimum range amount for the payment item",
     reasonLengthWarning: "Please the reason must be at least 20 characters",
-    usernameLabel: "Username",
+    usernameLabel: "Username/Email",
     usernameAdminLabel: "Admin Username",
     nameAdminLabel: "Admin Name",
     createAccountTitle: "Create an Account",

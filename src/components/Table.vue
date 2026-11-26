@@ -656,7 +656,7 @@
           <q-td key="is_selected" :props="props" class="table_value">
             <q-checkbox
               v-model="props.row.is_selected"
-              v-if="props.row.approve === 'PENDING'"
+              v-if="canValidateTransaction() && props.row.approve === 'PENDING'"
               dense
               size="md"
               @input="computeTotalSelectedItems(props.row, $event)"
@@ -1331,14 +1331,14 @@ export default {
               message: this.$t("app.memberInviteSuccess"),
               position: Platform.is.mobile ? "bottom" : "top-right",
             });
-          } else if (response.status === 403) {
+          } else if (response.status === 409) {
             Notify.create({
               type: "info",
               color: "info",
               message: this.$t("app.oneMemberRoleWarningMsg"),
               position: Platform.is.mobile ? "bottom" : "top-right",
             });
-          } else if (response.status === 427) {
+          } else if (response.status === 400) {
             Notify.create({
               type: "info",
               color: "info",
